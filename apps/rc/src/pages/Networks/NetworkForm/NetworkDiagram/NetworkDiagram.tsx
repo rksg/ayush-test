@@ -44,29 +44,23 @@ interface DiagramProps {
 }
 
 interface DefaultDiagramProps extends DiagramProps {
-  type: undefined;
 }
 interface DpskDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.DPSK;
 }
 
 interface OpenDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.OPEN;
 }
 
 interface PskDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.PSK;
   enableMACAuth?: boolean;
 }
 interface AaaDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.AAA;
   enableAuthProxy?: boolean;
   enableAccountingProxy?: boolean;
   enableAaaAuthBtn?: boolean;
   showButtons?: boolean;
 }
 interface CaptivePortalDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.CAPTIVEPORTAL;
   networkPortalType?: GuestNetworkTypeEnum;
   wisprWithPsk?: boolean;
 }
@@ -152,7 +146,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
 
-export function NetworkDiagram () {
+export function NetworkDiagram (props: NetworkDiagramProps) {
   const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
   const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
@@ -170,8 +164,11 @@ export function NetworkDiagram () {
 
   const enableMACAuth = data?.wlan?.macAddressAuthentication
 
-  const diagram = getDiagram({ ...data,
-    ...{ showButtons, enableAaaAuthBtn, cloudpathType: selected?.deploymentType, enableMACAuth } })
+  const diagram = getDiagram({
+    ...data,
+    ...{ showButtons, enableAaaAuthBtn, cloudpathType: selected?.deploymentType, enableMACAuth },
+    ...props
+  })
 
 
   function AaaButtons () {

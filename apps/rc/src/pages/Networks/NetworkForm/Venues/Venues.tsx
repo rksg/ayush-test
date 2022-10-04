@@ -127,7 +127,7 @@ export function Venues () {
     setTableData(data)
   }
 
-  const actions: TableProps<Venue>['actions'] = [
+  const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows) => {
@@ -177,7 +177,7 @@ export function Venues () {
         setTableData(tableData)
       }
     }
- 
+
     if(data && venues === undefined){
       if(cloneMode){
         const venuesData = data?.venues?.map(item => {
@@ -275,7 +275,7 @@ export function Venues () {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
-            actions={actions}
+            rowActions={rowActions}
             rowSelection={{
               type: 'checkbox'
             }}

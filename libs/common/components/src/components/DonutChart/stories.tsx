@@ -12,10 +12,17 @@ import { EventParams } from '../Chart/helper'
 import { DonutChart } from '.'
 
 export const data = [
-  { value: 2123, name: 'Requires Attention', color: cssStr('--acx-semantics-red-60') },
+  { value: 2123, name: 'Requires Attention', color: cssStr('--acx-semantics-red-50') },
   { value: 322, name: 'Temporarily Degraded', color: cssStr('--acx-semantics-yellow-40') },
   { value: 50, name: 'Operational', color: cssStr('--acx-neutrals-50') },
   { value: 30000, name: 'In Setup Phase', color: cssStr('--acx-semantics-green-50') }
+]
+
+export const incidents = [
+  { value: 12, name: 'P1', color: cssStr('--acx-semantics-red-50') },
+  { value: 28, name: 'P2', color: cssStr('--acx-accents-orange-50') },
+  { value: 42, name: 'P3', color: cssStr('--acx-semantics-yellow-50') },
+  { value: 76, name: 'P4', color: cssStr('--acx-semantics-yellow-30') }
 ]
 
 export const topSwitchModels = [
@@ -33,7 +40,7 @@ const clickHandler = (params: EventParams) => {
 
 storiesOf('Donut Chart', module)
   .addDecorator(withKnobs)
-  .add('Chart View', () => {
+  .add('With formatter', () => {
     const { $t } = useIntl()
     return <div style={{ width: 238, height: 176 }}>
       <Card title='Venues'>
@@ -50,6 +57,23 @@ storiesOf('Donut Chart', module)
       </Card>
     </div>
   })
+  .add('With legend (name - value)', () => {
+    const { $t } = useIntl()
+    return <div style={{ width: 278, height: 176 }}>
+      <Card title='Incidents'>
+        <AutoSizer>
+          {({ height, width }) => (
+            <DonutChart
+              style={{ width, height }}
+              showLegend={true}
+              legend='name-value'
+              dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
+              data={incidents}/>
+          )}
+        </AutoSizer>
+      </Card>
+    </div>
+  })
   .add('With subTitle', () => {
     const { $t } = useIntl()
     return <div style={{ width: 238, height: 206 }}>
@@ -60,7 +84,7 @@ storiesOf('Donut Chart', module)
               showLegend={false}
               style={{ width, height }}
               title='With a very long title'
-              subTitle={'With a very long subtitle..............................'}
+              subTitle={'This is very long subtitle and it should go to next line'}
               tooltipFormat={defineMessage({
                 defaultMessage: `{name}: <b>{formattedValue} {value, plural,
                   one {Client}
@@ -103,7 +127,7 @@ storiesOf('Donut Chart', module)
       </Card>
     </div>
   })
-  .add('Large Donut with Labels', () => {
+  .add('Large - with Labels', () => {
     const { $t } = useIntl()
     return <div style={{ width: 496, height: 278 }}>
       <Card title='Top 5 Switch Models'>
@@ -115,8 +139,11 @@ storiesOf('Donut Chart', module)
               showLabel={true}
               showTotal={false}
               showLegend={false}
-              showTooltipPercentage={true}
-              type={'large'}
+              tooltipFormat={defineMessage({
+                defaultMessage: `{name}<br></br>
+                  <space><b>{formattedValue}</b> ({formattedPercent})</space>`
+              })}
+              size={'large'}
               dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={topSwitchModels}/>
           )}

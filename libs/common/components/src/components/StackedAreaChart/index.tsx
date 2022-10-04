@@ -70,7 +70,7 @@ export function StackedAreaChart <
       type: 'time',
       axisLabel: {
         ...axisLabelOptions(),
-        formatter: dateAxisFormatter
+        formatter: dateAxisFormatter()
       }
     },
     yAxis: {

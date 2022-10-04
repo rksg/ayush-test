@@ -17,7 +17,8 @@ import {
   NetworkDetailHeader,
   CommonResult,
   NetworkDetail,
-  RadiusValidate
+  RadiusValidate,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 
 export const baseNetworkApi = createApi({
@@ -60,7 +61,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     addNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
-        const createNetworkReq = createHttpRequest(CommonUrlsInfo.addNetworkDeep, params)
+        const createNetworkReq = createHttpRequest(WifiUrlsInfo.addNetworkDeep, params)
         return {
           ...createNetworkReq,
           body: payload
@@ -70,7 +71,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     updateNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateNetworkDeep, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkDeep, params)
         return {
           ...req,
           body: payload
@@ -80,7 +81,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     deleteNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.deleteNetwork, params)
+        const req = createHttpRequest(WifiUrlsInfo.deleteNetwork, params)
         return {
           ...req
         }
@@ -89,7 +90,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.addNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params)
         return {
           ...req,
           body: payload
@@ -99,21 +100,21 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.deleteNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params)
         return {
           ...req
         }
       },
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
-    getNetwork: build.query<NetworkSaveData | undefined, RequestPayload>({
+    getNetwork: build.query<NetworkSaveData | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
-        if (!params?.networkId) return Promise.resolve({ data: undefined } as QueryReturnValue<
-          undefined,
+        if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
-        const result = await fetch(createHttpRequest(CommonUrlsInfo.getNetwork, params))
+        const result = await fetch(createHttpRequest(WifiUrlsInfo.getNetwork, params))
         return result as QueryReturnValue<NetworkSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
@@ -179,7 +180,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           }))
         }
         const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
-        const venueNetworkApGroupList = 
+        const venueNetworkApGroupList =
               venueNetworkApGroupQuery.data as { response: NetworkVenue[] }
 
         const networkDeepListInfo = {
@@ -218,8 +219,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
   })
 })
 
-export const aggregatedVenueNetworksData = (networkList: TableResult<Network>, 
-  venueNetworkApGroupList:{ response: NetworkVenue[] }, 
+export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
+  venueNetworkApGroupList:{ response: NetworkVenue[] },
   networkDeepListList:{ response: NetworkDetail[] }) => {
   const data:Network[] = []
   networkList.data.forEach(item => {

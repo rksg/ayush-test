@@ -1,12 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
-import {
-  AnalyticsFilter,
-  defaultNetworkPath,
-  NetworkPath,
-  PathNode
-} from '@acx-ui/analytics/utils'
+import { dataApi }                             from '@acx-ui/analytics/services'
+import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { NetworkPath, PathNode }               from '@acx-ui/utils'
 
 type NetworkData = PathNode & { path: NetworkPath }
 export type ApOrSwitch = {
@@ -14,7 +10,7 @@ export type ApOrSwitch = {
   name: string
   mac: string
 }
-type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
+export type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
 export type Child = NetworkData & ApsOrSwitches
 interface Response {
   network: {

@@ -1,7 +1,7 @@
 import { capitalize }                                           from 'lodash'
 import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
-import { intlFormats } from '@acx-ui/utils'
+import { intlFormats, PathNode, NodeType } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
 import { incidentInformation } from './incidentInformation'
@@ -11,8 +11,6 @@ import type { IncidentInformation } from './incidentInformation'
 import type {
   IncidentSeverities,
   SeverityRange,
-  PathNode,
-  NodeType,
   Incident
 } from './types/incidents'
 
@@ -27,7 +25,7 @@ export function transformIncidentQueryResult (
   return { ...incident, ...info }
 }
 
-export function calculateSeverity (severity: number): IncidentSeverities | void {
+export function calculateSeverity (severity: number): IncidentSeverities {
   const severityMap = new Map(
     Object
       .keys(incidentSeverities)
@@ -39,12 +37,14 @@ export function calculateSeverity (severity: number): IncidentSeverities | void 
       }) as Iterable<readonly [string, SeverityRange]>
   ) as Map<string, SeverityRange>
 
+  let severityType: IncidentSeverities = 'P1'
   for (let [p, filter] of severityMap) {
     if (severity > filter.gt) {
-      return p as IncidentSeverities
+      severityType = p as IncidentSeverities
+      break
     }
   }
-
+  return severityType
 }
 
 type NormalizedNodeType = 'network'
@@ -92,8 +92,8 @@ export function useFormattedNodeType (nodeType: NodeType) {
   return formattedNodeType(nodeType, intl)
 }
 
-export const useImpactValues = 
-  <Type extends 'ap' | 'client'> (type: Type, incident: Incident): 
+export const useImpactValues =
+  <Type extends 'ap' | 'client'> (type: Type, incident: Incident):
   Record<string, string | number | null | {}> => {
     const intl = useIntl()
     const values = impactValues(intl, type, incident)

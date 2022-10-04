@@ -4,7 +4,7 @@ import { NetworkSaveData } from '@acx-ui/rc/utils'
 export interface NetworkFormContextType {
   editMode: boolean,
   cloneMode: boolean,
-  data: NetworkSaveData | undefined
+  data: NetworkSaveData | null
   setData?: (data: NetworkSaveData) => void
 }
 const NetworkFormContext = createContext({} as NetworkFormContextType)

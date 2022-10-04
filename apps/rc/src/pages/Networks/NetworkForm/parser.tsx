@@ -279,20 +279,22 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   if (get(data, 'wlan.advancedCustomization.dnsProxyEnabled')) {
     advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
   }
-  
-  
+
+
   if (get(data, 'wlan.advancedCustomization.radioCustomization')) {
     advancedCustomization.radioCustomization = {
       ...advancedCustomization.radioCustomization,
       rfBandUsage: RfBandUsageEnum.BOTH,
       bssMinimumPhyRate: get(data, 'wlan.bssMinimumPhyRate'),
-      phyTypeConstraint: get(data, 'wlan.enableOfdmOnly') ? 
+      phyTypeConstraint: get(data, 'wlan.enableOfdmOnly') ?
         PhyTypeConstraintEnum.OFDM: PhyTypeConstraintEnum.NONE,
       managementFrameMinimumPhyRate: get(data, 'wlan.managementFrameMinimumPhyRate')
     }
   }
- 
 
+  if (get(data, 'wlan.advancedCustomization.vlanPool')) {
+    advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
+  }
 
   let saveData:NetworkSaveData = {
     ...originalData,

@@ -3,7 +3,7 @@
 exports[`NetworkForm should create AAA network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -54,7 +54,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              Add Network
+              Create New Network
             </h1>
           </span>
         </div>
@@ -257,9 +257,12 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                           <label
                             class="ant-form-item-required"
                             for="details_name"
-                            title="Network Name"
+                            title=""
                           >
                             Network Name
+                            <svg>
+                              QuestionMarkCircleOutlined.svg
+                            </svg>
                           </label>
                         </div>
                         <div
@@ -393,12 +396,14 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                   />
                                                 </span>
                                                 <span>
-                                                  Pre-Shared Key (PSK)
-                                                  <div
-                                                    class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
-                                                  >
-                                                    Require users to enter a passphrase (that you have defined for the network) to connect
-                                                  </div>
+                                                  <span>
+                                                    Pre-Shared Key (PSK)
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                    >
+                                                      Require users to enter a passphrase (that you have defined for the network) to connect
+                                                    </div>
+                                                  </span>
                                                 </span>
                                               </label>
                                             </div>
@@ -407,13 +412,14 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                               style="margin-bottom: 8px;"
                                             >
                                               <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
                                               >
                                                 <span
-                                                  class="ant-radio"
+                                                  class="ant-radio ant-radio-disabled"
                                                 >
                                                   <input
                                                     class="ant-radio-input"
+                                                    disabled=""
                                                     type="radio"
                                                     value="dpsk"
                                                   />
@@ -422,12 +428,14 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                   />
                                                 </span>
                                                 <span>
-                                                  Dynamic Pre-Shared Key (DPSK)
-                                                  <div
-                                                    class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
-                                                  >
-                                                    Require users to enter a passphrase to connect. The passphrase is unique per device
-                                                  </div>
+                                                  <span>
+                                                    Dynamic Pre-Shared Key (DPSK)
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                    >
+                                                      Require users to enter a passphrase to connect. The passphrase is unique per device
+                                                    </div>
+                                                  </span>
                                                 </span>
                                               </label>
                                             </div>
@@ -451,12 +459,14 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                   />
                                                 </span>
                                                 <span>
-                                                  Enterprise AAA (802.1X)
-                                                  <div
-                                                    class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
-                                                  >
-                                                    Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
-                                                  </div>
+                                                  <span>
+                                                    Enterprise AAA (802.1X)
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                    >
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                    </div>
+                                                  </span>
                                                 </span>
                                               </label>
                                             </div>
@@ -481,12 +491,14 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                   />
                                                 </span>
                                                 <span>
-                                                  Captive Portal
-                                                  <div
-                                                    class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
-                                                  >
-                                                    Users are authorized through a captive portal in various methods
-                                                  </div>
+                                                  <span>
+                                                    Captive Portal
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                    >
+                                                      Users are authorized through a captive portal in various methods
+                                                    </div>
+                                                  </span>
                                                 </span>
                                               </label>
                                             </div>
@@ -509,12 +521,14 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                   />
                                                 </span>
                                                 <span>
-                                                  Open Network
-                                                  <div
-                                                    class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
-                                                  >
-                                                    Allow users to access the network without any authentication/security (not recommended)
-                                                  </div>
+                                                  <span>
+                                                    Open Network
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                    >
+                                                      Allow users to access the network without any authentication/security (not recommended)
+                                                    </div>
+                                                  </span>
                                                 </span>
                                               </label>
                                             </div>
@@ -545,7 +559,8 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                           class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                         >
                           <img
-                            src="none.png"
+                            alt="Open Network"
+                            src="open.png"
                           />
                         </div>
                       </div>
@@ -616,16 +631,6 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                         </div>
                       </div>
                     </div>
-                    <div>
-                      <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                        type="button"
-                      >
-                        <span>
-                          Show more settings
-                        </span>
-                      </button>
-                    </div>
                   </div>
                   <div
                     class="ant-col ant-col-14"
@@ -672,7 +677,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                   Select venues to activate this network
                 </p>
                 <div
-                  class="ant-form-item"
+                  class="ant-form-item ant-form-item-has-success"
                 >
                   <div
                     class="ant-row ant-form-item-row"

@@ -1,0 +1,5 @@
+export * from './wifiCallingUrls'
+export * from './commonUrls'
+export * from './wifiUrls'
+export * from './switchUrls'
+export * from './mspUrls'

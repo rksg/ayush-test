@@ -9,8 +9,8 @@ import {
   transformIncidentQueryResult,
   shortDescription,
   formattedNodeType,
-  formattedPath,
   impactValues,
+  impactedArea,
   calculateSeverity,
   noDataSymbol
 } from '@acx-ui/analytics/utils'
@@ -67,7 +67,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
     const childClientImpact = impactValueObj['clientImpactRatioFormatted']
     const childClientCount = impactValueObj['clientImpactCountFormatted']
     const childDescription = shortDescription(childIncident, intl)
-    const childScope = formattedPath(child.path, child.sliceValue, intl)
+    const childScope = impactedArea(child.path, child.sliceValue, intl)!
     const childType = formattedNodeType(child.sliceType, intl)
     const childSeverityLabel = calculateSeverity(child.severity) ?? noDataSymbol
 
@@ -92,7 +92,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
   const clientImpact = impactValueObj['clientImpactRatioFormatted']
   const impactedClients = impactValueObj['clientImpactCountFormatted']
   const description = shortDescription(incidentInfo, intl)
-  const scope = formattedPath(incident.path, incident.sliceValue, intl)
+  const scope = impactedArea(incident.path, incident.sliceValue, intl)!
   const type = formattedNodeType(incident.sliceType, intl)
   const severityLabel = calculateSeverity(incident.severity) ?? noDataSymbol
 
@@ -132,9 +132,10 @@ export const api = dataApi.injectEndpoints({
             $end: DateTime,
             $code: [String],
             $includeMuted: Boolean,
-            $severity: [Range]
+            $severity: [Range],
+            $filter: FilterInput
           ) {
-            network(start: $start, end: $end) {
+            network(start: $start, end: $end, filter : $filter) {
               hierarchyNode(path: $path) {
                 incidents: incidents(
                   filter: {
@@ -157,7 +158,8 @@ export const api = dataApi.injectEndpoints({
           end: payload.endDate,
           code: payload.code ?? incidentCodes,
           includeMuted: true,
-          severity: [{ gt: 0, lte: 1 }]
+          severity: [{ gt: 0, lte: 1 }],
+          filter: payload?.filter
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {
