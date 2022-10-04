@@ -8,6 +8,14 @@
  */
 
 module.exports = {
+  '@badge-height': '16px',
+  '@badge-height-sm': '16px',
+  '@badge-font-size': 'var(--acx-body-5-font-size)',
+  '@badge-font-size-sm': 'var(--acx-body-5-font-size)',
+  '@badge-font-weight': 'var(--acx-body-font-weight-bold)',
+  '@badge-text-color': 'var(--acx-primary-white)',
+  '@badge-color': 'var(--acx-semantics-red-60)',
+  '@badge-dot-size': '8px',
   '@badge-status-size': '8px',
 
   '@body-background': 'var(--acx-primary-white)',
