@@ -27,40 +27,23 @@ export const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
 )
 export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
 
-function getFilterObj (path : NetworkPath) {
-  const pathLength = path.length
-  switch(pathLength){
-    case 1:
-      return { networkNodes: [], switchNodes: [] }
-    case 2:
-      return {
-        networkNodes: [path.slice(1)].map(([node]) => [{ type: 'zone', name: node.name }]),
-        switchNodes: [path.slice(1)].map(([node]) => [{ type: 'switchGroup', name: node.name }])
-      }
-    default:
-      if(path[1].type === 'zone')
-        return {
-          networkNodes: [path.slice(1)]
-        }
-      if(path[1].type === 'switchGroup')
-        return {
-          switchNodes: [path.slice(1)]
-        }
-      return { networkNodes: [], switchNodes: [] }
-  }
-}
-
 export function useAnalyticsFilter () {
   const { getNetworkFilter, setNetworkPath } = useContext(AnalyticsFilterContext)
   const { path, raw } = getNetworkFilter()
   const { dateFilter } = useContext(DateFilterContext)
   const { range, startDate, endDate } = dateFilter
-
   return {
     filters: {
-      path: defaultNetworkPath,
       ...getDateRangeFilter(range, startDate, endDate),
-      filter: getFilterObj(path) as pathFilter
+      ...(path.length === 2 ? { // venue level
+        filter: {
+          networkNodes: [path.slice(1)].map(([node]) => [{ type: 'zone', name: node.name }]),
+          switchNodes: [path.slice(1)].map(([node]) => [{ type: 'switchGroup', name: node.name }])
+        } as pathFilter,
+        path: defaultNetworkPath
+      } : {
+        path
+      })
     } as const,
     setNetworkPath,
     getNetworkFilter,
