@@ -12,6 +12,7 @@ import { VenueDetailsTab }          from './VenueDetailsTab'
 import VenueEditPageHeader          from './VenueEditPageHeader'
 import { WifiConfigTab }            from './WifiConfigTab'
 import { NetworkingSettingContext } from './WifiConfigTab/NetworkingTab'
+import { SecuritySettingContext }   from './WifiConfigTab/SecurityTab'
 
 const tabs = {
   details: VenueDetailsTab,
@@ -39,6 +40,9 @@ export const VenueEditContext = createContext({} as {
 
   editNetworkingContextData: NetworkingSettingContext,
   setEditNetworkingContextData: (data: NetworkingSettingContext) => void
+
+  editSecurityContextData: SecuritySettingContext,
+  setEditSecurityContextData: (data: SecuritySettingContext) => void
 })
 
 export function VenueEdit () {
@@ -48,13 +52,18 @@ export function VenueEdit () {
   const [
     editNetworkingContextData, setEditNetworkingContextData
   ] = useState({} as NetworkingSettingContext)
+  const [
+    editSecurityContextData, setEditSecurityContextData
+  ] = useState({} as SecuritySettingContext)
 
   return (
     <VenueEditContext.Provider value={{
       editContextData,
       setEditContextData,
       editNetworkingContextData,
-      setEditNetworkingContextData
+      setEditNetworkingContextData,
+      editSecurityContextData,
+      setEditSecurityContextData
     }}>
       <VenueEditPageHeader />
       { Tab && <Tab /> }

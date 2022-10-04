@@ -1,43 +1,129 @@
-import { useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Divider, Form, Input, Select, Switch } from 'antd'
-import { useIntl }                      from 'react-intl'
+import { Col, Divider, Form, InputNumber, Row, Select, Switch, Tooltip } from 'antd'
+import { useIntl }                                                       from 'react-intl'
 
 import { showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import {
+  useGetRoguePoliciesQuery,
+  useGetDenialOfServiceProtectionQuery,
+  useUpdateDenialOfServiceProtectionMutation,
+  useGetVenueRogueApQuery,
+  useUpdateVenueRogueApMutation
+} from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
+
+import { VenueEditContext } from '../../'
 
 // import { VenueEditContext } from '../../index'
 
-export interface SecuritySettingContext {
-  SecurityData: unknown,
-  updateSecurity: (() => void)
+export interface SecuritySetting {
+  dosProtectionEnabled: boolean,
+  blockingPeriod: number,
+  checkPeriod: number,
+  failThreshold: number,
+  rogueApEnabled: boolean,
+  reportThreshold: number,
+  roguePolicyId: string
 }
 
-export interface SecuritySetting{
-  dosProtection: boolean
+export interface SecuritySettingContext {
+  SecurityData: SecuritySetting,
+  updateSecurity: (() => void)
 }
 
 const { Option } = Select
 
-const { useWatch } = Form
-
 export function SecurityTab () {
   const { $t } = useIntl()
+  const params = useParams()
 
-  const formRef = useRef<StepsFormInstance<SecuritySetting>>()
-  //   const [
-  //     dosProtection
-  //   ] = [
-  //     useWatch<boolean>('dosProtection')
-  //   ]
+  const formRef = useRef<StepsFormInstance>()
+  const {
+    editContextData,
+    setEditContextData,
+    editSecurityContextData,
+    setEditSecurityContextData
+  } = useContext(VenueEditContext)
 
-  const [dosProtection, setDosProtection] = useState(false)
-  const [rogueApSetting, setRogueApSetting] = useState(false)
+  const [dosProtection, setDosProtection] = useState<boolean>(false)
+  const [rogueAp, setRogueAp] = useState<boolean>(false)
 
-  const roguePolicyOptions = <Option>Default</Option>
+  const [updateDenialOfServiceProtection] = useUpdateDenialOfServiceProtectionMutation()
+  const [updateVenueRogueAp] = useUpdateVenueRogueApMutation()
+
+  const { data: dosProctectionData } = useGetDenialOfServiceProtectionQuery({ params })
+  const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
+
+  const { selectOptions } = useGetRoguePoliciesQuery({ params },{
+    selectFromResult ({ data }) {
+      return {
+        selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? []
+      }
+    }
+  })
+
+  useEffect(() => {
+    if(dosProctectionData && venueRogueApData){
+      const {
+        enabled: dosProtectionEnabled,
+        blockingPeriod,
+        checkPeriod,
+        failThreshold
+      } = dosProctectionData
+
+      const {
+        enabled: rogueApEnabled,
+        reportThreshold,
+        roguePolicyId
+      } = venueRogueApData
+
+      formRef?.current?.setFieldsValue({
+        dosProtectionEnabled,
+        blockingPeriod,
+        checkPeriod,
+        failThreshold,
+        rogueApEnabled,
+        reportThreshold,
+        roguePolicyId
+      })
+
+      setDosProtection(dosProtectionEnabled)
+      rogueApEnabled && setRogueAp(rogueApEnabled)
+    }
+  }, [dosProctectionData, venueRogueApData])
 
   const handleUpdateSecuritySettings = async () => {
     try {
-      console.log(dosProtection, formRef?.current?.getFieldValue('dosProtection'))
+      if(dosProtection){
+        const {
+          blockingPeriod,
+          checkPeriod,
+          failThreshold
+        } = formRef?.current?.getFieldsValue()
+
+        const payload = {
+          enabled: dosProtection,
+          blockingPeriod,
+          checkPeriod,
+          failThreshold
+        }
+        await updateDenialOfServiceProtection({ params, payload })
+      }
+
+      if(rogueAp){
+        const {
+          reportThreshold,
+          roguePolicyId
+        } = formRef?.current?.getFieldsValue()
+
+        const payload = {
+          enabled: rogueAp,
+          reportThreshold,
+          roguePolicyId
+        }
+        await updateVenueRogueAp({ params, payload })
+      }
     } catch {
       showToast({
         type: 'error',
@@ -46,11 +132,15 @@ export function SecurityTab () {
     }
   }
 
+  const handleChange = (data: any) => {
+    console.log(data)
+  }
   return (
     <StepsForm
       formRef={formRef}
       onFinish={handleUpdateSecuritySettings}
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      onFormChange={handleChange}
     >
       <StepsForm.StepForm>
         <Divider orientation='left' plain>
@@ -63,12 +153,15 @@ export function SecurityTab () {
               height: '30px'
             }}> {$t({ defaultMessage: 'Dos Protection' })} </div>
             <Form.Item
+              name='dosProtectionEnabled'
+              valuePropName='checked'
+              initialValue={false}
               style={{
                 display: 'flex', alignItems: 'center',
                 height: '30px'
               }}
             >
-              <Switch onClick={() => setDosProtection(!dosProtection)} />
+              <Switch onChange={() => setDosProtection(!dosProtection)}/>
             </Form.Item>
           </div>
         </Divider>
@@ -79,43 +172,55 @@ export function SecurityTab () {
             paddingTop: '5px',
             paddingRight: '5px'
           }}> {$t({ defaultMessage: 'Block a client for ' })} </div>
-          <Form.Item
-            style={{
-              display: 'inline-block',
-              paddingRight: '5px'
-            }}
-            name={['block']}
-            initialValue={60}
-            children={<Input style={{ width: '50px' }} />}
-          />
+          <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
+            <Form.Item
+              style={{
+                display: 'inline-block',
+                paddingRight: '5px'
+              }}
+              name='blockingPeriod'
+              rules={[
+                { required: true }
+              ]}
+              initialValue={60}
+              children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+            />
+          </Tooltip>
           <div style={{
             display: 'inline-block',
             paddingTop: '5px',
             paddingRight: '5px'
           }}> {$t({ defaultMessage: ' seconds after ' })} </div>
-          <Form.Item
-            style={{
-              display: 'inline-block',
-              paddingRight: '5px'
-            }}
-            name={['repeat']}
-            initialValue={5}
-            children={<Input style={{ width: '50px' }} />}
-          />
+          <Tooltip title={$t({ defaultMessage: 'Allowed values are 2-25' })}>
+            <Form.Item
+              style={{
+                display: 'inline-block',
+                paddingRight: '5px'
+              }}
+              rules={[
+                { required: true }
+              ]}
+              name='failThreshold'
+              initialValue={5}
+              children={<InputNumber min={2} max={25} style={{ width: '70px' }} />}
+            />
+          </Tooltip>
           <div style={{
             display: 'inline-block',
             paddingTop: '5px',
             paddingRight: '5px'
           }}> {$t({ defaultMessage: '  repeat authentication failures within ' })} </div>
-          <Form.Item
-            style={{
-              display: 'inline-block',
-              paddingRight: '5px'
-            }}
-            name={['within']}
-            initialValue={30}
-            children={<Input style={{ width: '50px' }} />}
-          />
+          <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
+            <Form.Item
+              style={{
+                display: 'inline-block',
+                paddingRight: '5px'
+              }}
+              name='checkPeriod'
+              initialValue={30}
+              children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+            />
+          </Tooltip>
           <div style={{
             display: 'inline-block',
             paddingTop: '5px',
@@ -133,33 +238,45 @@ export function SecurityTab () {
               height: '30px'
             }}> {$t({ defaultMessage: 'Rogue AP Detection:' })} </div>
             <Form.Item
+              name='rogueApEnabled'
+              valuePropName='checked'
+              initialValue={false}
               style={{
                 display: 'flex', alignItems: 'center',
                 height: '30px'
               }}
             >
-              <Switch onClick={() => setRogueApSetting(!rogueApSetting)} />
+              <Switch onChange={() => setRogueAp(!rogueAp)}/>
             </Form.Item>
           </div>
         </Divider>
-        { rogueApSetting &&
-        <div>
+        { rogueAp &&
+        <>
+          <Row>
+            <Col span={2}>
+              <Form.Item
+                label={$t({ defaultMessage: 'Report SNR Threshold:' })}
+                name='reportThreshold'
+                initialValue={0}
+                children={<InputNumber
+                  min={0}
+                  max={100}
+                  style={{ width: '120px' }} />} />
+            </Col>
+            <Col span={1}>
+              <div style={{ marginTop: '30px' }}>dB</div>
+            </Col>
+          </Row>
           <Form.Item
-            name={['reportThreshold']}
-            label={$t({ defaultMessage: 'Report SNR Threshold:' })}
-            initialValue={30}
-            children={<><Input style={{ width: '50px' }} /> <span>dB</span></>}
-          />
-          <Form.Item
-            name={['roguePolicyId']}
+            name='roguePolicyId'
             label={$t({ defaultMessage: 'Report SNR Threshold:' })}
             style={{ width: '200px' }}
+            initialValue={selectOptions.filter(item => item.props.children === 'Default profile')}
           >
-            <Select>
-              {roguePolicyOptions}
-            </Select>
+            <Select
+              children={selectOptions} />
           </Form.Item>
-        </div>
+        </>
         }
       </StepsForm.StepForm>
     </StepsForm>

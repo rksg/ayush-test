@@ -94,7 +94,7 @@ export interface VenueApModels {
 	models: string[]
 }
 
-    
+
 export interface Address {
   addressLine?: string
   city?: string
@@ -158,4 +158,11 @@ export interface VenueSettings {
   rogueAp: VenueRogueAp
   enableClientIsolationAllowlist?: boolean
   id?: string
+}
+
+export interface VenueDosProtection {
+  blockingPeriod: number
+  checkPeriod: number
+  enabled: boolean
+  failThreshold: number
 }

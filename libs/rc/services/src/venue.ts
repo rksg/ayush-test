@@ -13,7 +13,10 @@ import {
   VenueCapabilities,
   VenueLed,
   VenueApModels,
-  VenueSettings
+  VenueSettings,
+  VenueDosProtection,
+  VenueRogueAp,
+  RogueClassificationPolicy
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -37,7 +40,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddVenue', 'DeleteVenue'], () => {
+          showActivityMessage(msg, [
+            'AddVenue',
+            'DeleteVenue',
+            'UpdateVenueRogueAp',
+            'AddRoguePolicy',
+            'UpdateRoguePolicy',
+            'UpdateDenialOfServiceProtection'
+          ], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
@@ -136,6 +146,50 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getDenialOfServiceProtection: build.query<VenueDosProtection, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getDenialOfServiceProtection, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateDenialOfServiceProtection: build.mutation<VenueDosProtection, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateDenialOfServiceProtection, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
+    }),
+    getVenueRogueAp: build.query<VenueRogueAp, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueRogueAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
+    }),
+    getRoguePolicies: build.query<RogueClassificationPolicy[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getRoguePolicies, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -152,5 +206,10 @@ export const {
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
-  useUpdateVenueLedOnMutation
+  useUpdateVenueLedOnMutation,
+  useGetDenialOfServiceProtectionQuery,
+  useUpdateDenialOfServiceProtectionMutation,
+  useGetVenueRogueApQuery,
+  useUpdateVenueRogueApMutation,
+  useGetRoguePoliciesQuery
 } = venueApi
