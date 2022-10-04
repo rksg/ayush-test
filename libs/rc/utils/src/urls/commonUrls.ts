@@ -138,5 +138,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   validateRadius: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
+  },
+  getUserProfile: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/user-profile'
   }
 }

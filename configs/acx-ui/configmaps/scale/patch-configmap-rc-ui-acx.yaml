@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-rc-ui-acx
+data:
+    google.maps.key: "AIzaSyB3qIewrpkyQaSIIkOygIy11QKz2CyV1Y8"
+    splitio.ff.key: "dt1vi86ncfjjh04k8e4gp8auf6v41iutk4su"
+    captive.portal.domain.name: "scalealto.ruckuswireless.com"
