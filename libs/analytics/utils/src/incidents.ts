@@ -1,5 +1,5 @@
-import { capitalize }                       from 'lodash'
-import { defineMessage, MessageDescriptor } from 'react-intl'
+import { capitalize }    from 'lodash'
+import { defineMessage } from 'react-intl'
 
 import { formatter, intlFormats, getIntl, PathNode, NodeType } from '@acx-ui/utils'
 
@@ -69,25 +69,18 @@ export function normalizeNodeType (nodeType: NodeType): NormalizedNodeType {
   }
 }
 
-/**
- * Returns message descriptor to the matching `nodeType`
- */
-export function nodeTypes (nodeType: NodeType): MessageDescriptor {
-  switch (normalizeNodeType(nodeType)) {
-    case 'network': return defineMessage({ defaultMessage: 'Organization' })
-    case 'apGroup': return defineMessage({ defaultMessage: 'AP Group' })
-    case 'zone': return defineMessage({ defaultMessage: 'Venue' })
-    case 'switchGroup': return defineMessage({ defaultMessage: 'Venue' })
-    case 'switch': return defineMessage({ defaultMessage: 'Switch' })
-    case 'AP': return defineMessage({ defaultMessage: 'Access Point' })
-    default:
-      return defineMessage({ defaultMessage: 'Unknown' })
-  }
-}
-
-export function formattedNodeType (nodeType: NodeType) {
+export function nodeTypes (nodeType: NodeType): string {
   const { $t } = getIntl()
-  return $t(nodeTypes(nodeType))
+  switch (normalizeNodeType(nodeType)) {
+    case 'network': return $t(defineMessage({ defaultMessage: 'Organization' }))
+    case 'apGroup': return $t(defineMessage({ defaultMessage: 'AP Group' }))
+    case 'zone': return $t(defineMessage({ defaultMessage: 'Venue' }))
+    case 'switchGroup': return $t(defineMessage({ defaultMessage: 'Venue' }))
+    case 'switch': return $t(defineMessage({ defaultMessage: 'Switch' }))
+    case 'AP': return $t(defineMessage({ defaultMessage: 'Access Point' }))
+    default:
+      return $t(defineMessage({ defaultMessage: 'Unknown' }))
+  }
 }
 
 export const useImpactValues =
@@ -120,7 +113,7 @@ export function formattedPath (path: PathNode[], sliceValue: string) {
     .filter(node => node.type !== 'network')
     .map(node => ({
       nodeName: formattedNodeName(node, sliceValue),
-      nodeType: $t(nodeTypes(node.type))
+      nodeType: nodeTypes(node.type)
     }))
     .map(node => $t({
       defaultMessage: '{nodeName} ({nodeType})',
@@ -145,7 +138,7 @@ export function incidentScope (incident: Incident) {
     defaultMessage: '{nodeType}: {nodeName}',
     description: 'Uses to generate incident impacted scope for various incident descriptions'
   }, {
-    nodeType: formattedNodeType(incident.sliceType),
+    nodeType: nodeTypes(incident.sliceType),
     nodeName: impactedArea(incident.path, incident.sliceValue)
   })
   return scope

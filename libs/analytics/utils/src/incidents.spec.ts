@@ -8,7 +8,7 @@ import {
   calculateSeverity,
   impactValues,
   transformIncidentQueryResult,
-  formattedNodeType,
+  nodeTypes,
   formattedPath,
   impactedArea,
   useImpactValues,
@@ -83,19 +83,19 @@ describe('shortDescription', () => {
   })
 })
 
-describe('formattedNodeType', () => {
+describe('nodeTypes', () => {
   it('should return correct value', () => {
-    expect(formattedNodeType('network')).toEqual('Organization')
-    expect(formattedNodeType('apGroupName')).toEqual('AP Group')
-    expect(formattedNodeType('apGroup')).toEqual('AP Group')
-    expect(formattedNodeType('zoneName')).toEqual('Venue')
-    expect(formattedNodeType('zone')).toEqual('Venue')
-    expect(formattedNodeType('switchGroup')).toEqual('Venue')
-    expect(formattedNodeType('switch')).toEqual('Switch')
-    expect(formattedNodeType('apMac')).toEqual('Access Point')
-    expect(formattedNodeType('ap')).toEqual('Access Point')
-    expect(formattedNodeType('AP')).toEqual('Access Point')
-    expect(formattedNodeType('other' as unknown as NodeType)).toEqual('Unknown')
+    expect(nodeTypes('network')).toEqual('Organization')
+    expect(nodeTypes('apGroupName')).toEqual('AP Group')
+    expect(nodeTypes('apGroup')).toEqual('AP Group')
+    expect(nodeTypes('zoneName')).toEqual('Venue')
+    expect(nodeTypes('zone')).toEqual('Venue')
+    expect(nodeTypes('switchGroup')).toEqual('Venue')
+    expect(nodeTypes('switch')).toEqual('Switch')
+    expect(nodeTypes('apMac')).toEqual('Access Point')
+    expect(nodeTypes('ap')).toEqual('Access Point')
+    expect(nodeTypes('AP')).toEqual('Access Point')
+    expect(nodeTypes('other' as unknown as NodeType)).toEqual('Unknown')
   })
 })
 
