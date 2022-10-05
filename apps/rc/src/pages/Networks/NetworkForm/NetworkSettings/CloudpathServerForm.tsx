@@ -61,6 +61,21 @@ export function CloudpathServerForm () {
             selected.authRadius.primary.port
           }
         />
+        { selected.accountingRadius &&
+          <>
+            <Subtitle level={4}>
+              { $t({ defaultMessage: 'Radius Accounting Service' }) }
+            </Subtitle>
+            <Form.Item
+              label={$t({ defaultMessage: 'IP Address' })}
+              children={
+                selected.accountingRadius?.primary.ip +
+                ':' +
+                selected.accountingRadius?.primary.port
+              }
+            />
+          </>
+        }
         <Form.Item
           label={$t({ defaultMessage: 'Radius Shared Secret' })}
           children={<Input.Password
