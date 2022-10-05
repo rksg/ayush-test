@@ -156,8 +156,8 @@ export const networkImpactCharts = {
           '{percentage} of failures impacted {dominant} AP model' }),
       broad: defineMessage({
         defaultMessage: `This incident impacted {count} {count, plural,
-          one {AP Model}
-          other {AP Models}
+          one {AP model}
+          other {AP models}
         }`
       })
     },
@@ -172,7 +172,7 @@ export const networkImpactCharts = {
     summary: {
       dominance: defineMessage({
         defaultMessage:
-          '{percentage} of failures impacted {dominant} Ap firmware' }),
+          '{percentage} of failures impacted {dominant} AP firmware' }),
       broad: defineMessage({
         defaultMessage: `This incident impacted {count} {count, plural,
           one {AP firmware}
