@@ -184,7 +184,9 @@ export const onApply = (
 function ConnectedNetworkFilter () {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
-  const incidentsList = useIncidentsListQuery(({ ...filters, path: defaultNetworkPath }), {
+  const incidentsList = useIncidentsListQuery(({
+    ...filters, path: defaultNetworkPath, includeMuted: false
+  }), {
     selectFromResult: ({ data }) => ({
       data: data ? getSeverityFromIncidents(data) : []
     })

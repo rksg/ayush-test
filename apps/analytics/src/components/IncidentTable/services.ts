@@ -139,7 +139,9 @@ export interface MutationResponse {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentsList: build.query<IncidentNodeData, IncidentFilter>({
+    incidentsList: build.query<IncidentNodeData, IncidentFilter & {
+      includeMuted?: boolean
+    }>({
       query: (payload) => ({
         document: gql`
           query IncidentTableWidget(
@@ -173,7 +175,7 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           code: payload.code ?? incidentCodes,
-          includeMuted: true,
+          includeMuted: payload.includeMuted ?? true,
           severity: [{ gt: 0, lte: 1 }],
           filter: payload?.filter
         }
