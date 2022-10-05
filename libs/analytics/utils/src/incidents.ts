@@ -136,23 +136,10 @@ export function incidentScope (incident: Incident) {
   return scope
 }
 
-const thresholdMapping = {
-  ttc: 'timeToConnect'
-}
-
 export const getThreshold = (incident: Incident) => {
-  const { $t } = getIntl()
   const { code } = incident
   if (code === 'ttc') {
-    const codeMap = thresholdMapping[code]
-    const value = formatter('durationFormat')(
-      kpiThreshold[codeMap as keyof typeof kpiThreshold]) as string
-    const threshold = $t({
-      defaultMessage: '{threshold}'
-    }, {
-      threshold: value
-    })
-    return threshold
+    return String(formatter('durationFormat')(kpiThreshold.timeToConnect))
   } else {
     return undefined
   }
@@ -162,7 +149,7 @@ export const shortDescription = (incident: Incident) => {
   const { $t } = getIntl()
   const scope = incidentScope(incident)
   const threshold = getThreshold(incident)
-  return $t(incident.shortDescription, { scope, ...threshold && { threshold } })
+  return $t(incident.shortDescription, { scope, threshold })
 }
 
 export const impactValues = <Type extends 'ap' | 'client'> (
