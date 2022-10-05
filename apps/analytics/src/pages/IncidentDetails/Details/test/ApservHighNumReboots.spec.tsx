@@ -1,6 +1,6 @@
-import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
-import { Provider }                        from '@acx-ui/store'
-import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
+import { fakeIncidentHighReboot }       from '@acx-ui/analytics/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { ApservHighNumReboots } from '../ApservHighNumReboots'
 
@@ -16,11 +16,11 @@ describe('i-apserv-high-num-reboots', () => {
   mockDOMWidth()
   it('should render correctly', () => {
     const params = {
-      incidentId: fakeIncident1.id
+      incidentId: fakeIncidentHighReboot.id
     }
 
     const { asFragment } = render(<Provider>
-      <ApservHighNumReboots {...mockFakeIncident('i-apserv-high-num-reboots')} />
+      <ApservHighNumReboots {...fakeIncidentHighReboot} />
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()

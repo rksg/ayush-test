@@ -3,7 +3,7 @@ import { capitalize, omit } from 'lodash'
 import { renderHook }         from '@acx-ui/test-utils'
 import { PathNode, NodeType } from '@acx-ui/utils'
 
-import { fakeIncident, fakeIncident1, mockFakeIncident } from './fakeIncident'
+import { fakeIncident, fakeIncident1, fakeIncidentTtc, fakeIncidentApInfraWanthroughput } from './fakeIncident'
 import {
   calculateSeverity,
   impactValues,
@@ -205,9 +205,9 @@ describe('impactValues', () => {
 
 describe('useGetThreshold', () => {
   it('should return the correct result for ttc', () => {
-    expect(getThreshold(mockFakeIncident('ttc'))).toEqual('2s')
+    expect(getThreshold(fakeIncidentTtc)).toEqual('2s')
   })
   it('should return undefined when code does not match', () => {
-    expect(getThreshold(mockFakeIncident('i-apinfra-poe-low'))).toEqual(undefined)
+    expect(getThreshold(fakeIncidentApInfraWanthroughput)).toEqual(undefined)
   })
 })
