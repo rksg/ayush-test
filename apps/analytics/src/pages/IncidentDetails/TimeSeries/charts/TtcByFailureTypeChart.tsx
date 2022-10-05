@@ -52,7 +52,7 @@ export const TtcByFailureTypeChart = ({ data }: { data: ChartsData }) => {
     ...ttcByFailureTypes
   } as TimeSeriesData, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'TIME TO CONNECT (BY STAGE)' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'Time to Connect (By Stage)' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         <StackedAreaChart

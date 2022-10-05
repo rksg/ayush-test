@@ -81,7 +81,7 @@ export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: 
   const chartResults = getSeriesData(queryResults.data as TimeSeriesData, seriesMapping)
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'CONNECTION EVENTS' })} type='no-border'>
+      <Card title={$t({ defaultMessage: 'Connection Events' })} type='no-border'>
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
