@@ -80,14 +80,39 @@ export const DrawerOrderList = styled.ol`
 
 export const IncidentTableWrapper =
 styled((props: TableProps<IncidentTableRow>) => <Table {...props} />)`
+  --incident-table-muted-row-font-color: var(--acx-neutrals-40);
+  --incident-table-muted-row-background-color: var(--acx-neutrals-20);
+
   .table-row-muted {
-    color: var(--acx-neutrals-40);
-    background-color: var(--acx-neutrals-20);
+    color: var(--incident-table-muted-row-font-color);
+    background-color: var(--incident-table-muted-row-background-color);
+  }
+
+  && tbody > tr.table-row-muted:hover > td {
+    background: var(--incident-table-muted-row-background-color);
+  }
+
+  .ant-table-row-selected.table-row-muted {
+    background-color: var(--incident-table-muted-row-background-color);
+  }
+
+  .table-row-muted .ant-table-cell {
+    background-color: var(--incident-table-muted-row-background-color);
+  }
+
+  .ant-table-row.table-row-muted:hover {
+    background-color: var(--incident-table-muted-row-background-color);
+  }
+
+  .table-row-muted .ant-table-cell-row-hover {
+    background-color: var(--incident-table-muted-row-background-color);
   }
 
   .ant-table-cell {
     color: unset;
-    &-fix-left, &-fix-right {
+
+    &-fix-left, 
+    &-fix-right {
       background: unset;
     }
   }
