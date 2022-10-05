@@ -44,8 +44,6 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
 }) => {
   const intl = useIntl()
   const { visible, onOpen, onClose } = useDrawer(false)
-  const scope = formattedPath(incident.path, incident.sliceValue)
-  const area = impactedArea(incident.path, incident.sliceValue)
   const fields = {
     [Attributes.ClientImpactCount]: {
       key: 'clientImpactCount',
@@ -94,8 +92,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           defaultMessage: 'Scope',
           description: 'Incident impacted scope'
         }),
-        children: area,
-        tooltip: scope
+        children: impactedArea(incident.path, incident.sliceValue),
+        tooltip: formattedPath(incident.path, incident.sliceValue)
       })
     },
     [Attributes.Duration]: {
