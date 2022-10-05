@@ -139,7 +139,7 @@ export function incidentScope (incident: Incident) {
 export const getThreshold = (incident: Incident) => {
   const { code } = incident
   if (code === 'ttc') {
-    return String(formatter('durationFormat')(kpiThreshold.timeToConnect))
+    return kpiThreshold.timeToConnect
   } else {
     return undefined
   }
@@ -149,6 +149,8 @@ export const shortDescription = (incident: Incident) => {
   const { $t } = getIntl()
   const scope = incidentScope(incident)
   const threshold = getThreshold(incident)
+    ? formatter('longDurationFormat')(getThreshold(incident))
+    : undefined
   return $t(incident.shortDescription, { scope, threshold })
 }
 
