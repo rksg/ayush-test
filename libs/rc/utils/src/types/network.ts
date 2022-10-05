@@ -1,4 +1,5 @@
 import {
+  GuestNetworkTypeEnum,
   NetworkTypeEnum,
   PassphraseExpirationEnum,
   PassphraseFormatEnum,
@@ -6,8 +7,10 @@ import {
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
+import { NetworkVenue }                  from '../models/NetworkVenue'
 import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
+
 
 export interface CreateNetworkFormFields {
   name: string;
@@ -25,6 +28,42 @@ export interface CreateNetworkFormFields {
   managementFrameProtection?: string;
   macAddressAuthentication?: boolean;
   macAuthMacFormat?: string;
+}
+
+export interface Network { // TODO: Move all Network type from libs/rc/services/src/type
+  id: string
+  name: string
+  description: string
+  nwSubType: string
+  ssid: string
+  vlan: number
+  aps: number
+  clients: number
+  venues: { count: number, names: string[] }
+  captiveType: GuestNetworkTypeEnum
+  deepNetwork?: NetworkDetail
+  vlanPool?: { name: string }
+  activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
+  allApDisabled?: boolean
+}
+
+export interface NetworkDetail {
+  type: NetworkTypeEnum
+  tenantId: string
+  name: string
+  venues: NetworkVenue[]
+  id: string,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum,
+    ssid?: string;
+    vlanId?: number;
+    enable?: boolean;
+    advancedCustomization?:
+      OpenWlanAdvancedCustomization |
+      AAAWlanAdvancedCustomization |
+      DpskWlanAdvancedCustomization |
+      PskWlanAdvancedCustomization;
+  },
 }
 
 export interface NetworkSaveData {
@@ -54,7 +93,7 @@ export interface NetworkSaveData {
     macAuthMacFormat?: string;
     wlanSecurity?: WlanSecurityEnum;
     wepHexKey?: string;
-    advancedCustomization?: 
+    advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
@@ -94,18 +133,4 @@ export interface NetworkSaveData {
     format?: PassphraseFormatEnum;
     expiration?: PassphraseExpirationEnum;
   }
-}
-
-export interface NetworkVenue {
-  id?: string
-  name?: string
-  apGroups: string[],
-  scheduler: {
-    type: string
-  },
-  isAllApGroups: boolean,
-  allApGroupsRadio: string,
-  allApGroupsRadioTypes: string[],
-  venueId: string,
-  networkId: string
 }

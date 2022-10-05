@@ -48,6 +48,11 @@ describe('NetworkFilter', () => {
       {
         value: 'n4',
         label: 'SSID 4'
+      },
+      {
+        value: 'n5',
+        label: 'n5',
+        ignoreSelection: true
       }
     ]
 
@@ -70,6 +75,11 @@ describe('NetworkFilter', () => {
     fireEvent.mouseDown(await screen.findByRole('combobox'))
     fireEvent.click(allOptions[1])
     expect(onApplyMock).toBeCalledTimes(2)
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    fireEvent.click(allOptions[4])
+    expect(onApplyMock).toBeCalledTimes(2)
+
   })
 
   it('renders simple list, triggers onApply with multi-select', async () => {

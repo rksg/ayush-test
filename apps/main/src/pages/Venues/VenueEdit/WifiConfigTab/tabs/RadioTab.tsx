@@ -1,9 +1,9 @@
 import { Anchor, Col, Divider, Form, Row, Select } from 'antd'
-import { useIntl }                   from 'react-intl'
+import { useIntl }                                 from 'react-intl'
 
-import { Subtitle } from '@acx-ui/components'
+import { Subtitle }              from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }             from '@acx-ui/react-router-dom'
 const { Link } = Anchor
 const { Option } = Select
 
@@ -13,15 +13,16 @@ export function RadioTab () {
   const externalTitle = $t({ defaultMessage: 'External Amtenna' })
   const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
-      let selectoptions = data?.map(item => ({label: item.name, value: item.id})) || []
-          selectoptions.unshift({label: 'No model selected', value: ''})
+      let selectoptions = data?.map(item => ({ label: item.name, value: item.id })) || []
+      selectoptions.unshift({ label: 'No model selected', value: '' })
       return {
-        selectOptions: selectoptions?.map(item => <Option key={item.value}>{item.label}</Option>) ?? [],
+        selectOptions: selectoptions?.map(item =>
+          <Option key={item.value}>{item.label}</Option>) ?? [],
         selected: ''
       }
     }
   })
-  console.log('selected: ', selected)
+
   return (
     <Row gutter={20}>
       <Col span={4}>
@@ -45,7 +46,7 @@ export function RadioTab () {
             label={$t({ defaultMessage: 'AP Model' })}
             initialValue={selected}
           >
-            <Select 
+            <Select
               style={{ width: '280px' }}
               children={selectOptions} />
           </Form.Item>

@@ -14,6 +14,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'
   }),
+  subnetMask: defineMessage({
+    defaultMessage: 'Please enter a valid subnet mask',
+    description: 'Validation - subnet mask checks'
+  }),
   invalid: defineMessage({
     defaultMessage: 'This field is invalid',
     description: 'Validation - invalid checks'
@@ -42,6 +46,18 @@ export const validationMessages = {
   max: defineMessage({
     defaultMessage: "This value should be lower than or equal to $'{max'}",
     description: 'Validation - max checks'
+  }),
+  hasGraveAccentAndDollarSign: defineMessage({
+    defaultMessage: '"`" and "$(" are not allowed',
+    description: 'Validation - grave accent and dollar sign checks'
+  }),
+  hasGraveAccent: defineMessage({
+    defaultMessage: '"`" is not allowed',
+    description: 'Validation - grave accent checks'
+  }),
+  hasDollarSign: defineMessage({
+    defaultMessage: '"$(" is not allowed',
+    description: 'Validation - dollar sign checks'
   })
 }
 

@@ -1,4 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import {
+  createApi,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
@@ -7,6 +12,8 @@ import {
   TableResult,
   Service,
   CommonResult,
+  DHCPSaveData,
+  WifiCallingUrls,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
@@ -76,8 +83,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-
-
     devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
         const devicePolicyListReq = createHttpRequest(
@@ -90,7 +95,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-
     applicationPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
         const applicationPolicyListReq = createHttpRequest(
@@ -114,7 +118,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    vlanPoolList: build.query<TableResult<VlanPool>, RequestPayload>({
+    vlanPoolList: build.query<VlanPool[], RequestPayload>({
       query: ({ params }) => {
         const vlanPoolListReq = createHttpRequest(
           WifiUrlsInfo.getVlanPools,
@@ -125,12 +129,38 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    deleteService: build.mutation<CommonResult, RequestPayload>({
+    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.deleteService, params)
+        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
         return {
           ...req
         }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getDHCP: build.query<DHCPSaveData | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
+        if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        return result as QueryReturnValue<DHCPSaveData,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    saveDHCP: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload }) => {
+
+        const createDHCPReq = createHttpRequest(CommonUrlsInfo.saveDHCPService, params)
+        return {
+          ...createDHCPReq,
+          body: payload
+        }
+
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     })
@@ -145,7 +175,9 @@ export const {
   useApplicationPolicyListQuery,
   useDevicePolicyListQuery,
   useServiceListQuery,
-  useDeleteServiceMutation,
+  useGetDHCPQuery,
+  useSaveDHCPMutation,
   useVlanPoolListQuery,
-  useAccessControlProfileListQuery
+  useAccessControlProfileListQuery,
+  useDeleteWifiCallingServiceMutation
 } = serviceApi

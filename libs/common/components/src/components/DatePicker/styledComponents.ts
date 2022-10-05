@@ -9,7 +9,7 @@ type WrapperProps = {
 }
 /* eslint-disable max-len */
 export const Wrapper = styled.div<WrapperProps>`
-  --acx-date-picker-ranges-width: 130px;
+  --acx-date-picker-ranges-width: 125px;
 
   > .ant-picker {
     width: 23em;
@@ -28,10 +28,6 @@ export const Wrapper = styled.div<WrapperProps>`
       background: var(--acx-accents-blue-50);
       margin-left: 33px;
     }
-  }
-
-  .ant-picker-focused {
-    box-shadow: none;
   }
 
   .ant-picker-dropdown {
@@ -87,6 +83,12 @@ export const Wrapper = styled.div<WrapperProps>`
       : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1}) {
         font-weight: var(--acx-body-font-weight-bold);
       }
+      li {
+        span.ant-tag {
+          padding: 0;
+          margin: 0;
+        }
+      }
       position: absolute;
       width: var(--acx-date-picker-ranges-width);
       top: 10px;
@@ -95,7 +97,7 @@ export const Wrapper = styled.div<WrapperProps>`
       display: flex;
       flex-direction: column;
       background-color: var(--acx-neutrals-10);
-      padding: 20px;
+      padding: 10px 20px;
       border-radius: 4px 0 0 4px;
       .ant-picker-preset > .ant-tag-blue {
         color: var(--acx-neutrals-100);
@@ -121,23 +123,15 @@ export const Wrapper = styled.div<WrapperProps>`
     .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single).ant-picker-cell-range-hover-start::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single).ant-picker-cell-range-hover-end::before,
-    .ant-picker-panel
-      > :not(.ant-picker-date-panel)
-      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,
-    .ant-picker-panel
-      > :not(.ant-picker-date-panel)
-      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
+    .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,
+    .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
     .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
       background: var(--acx-accents-blue-10);
     }
-    .ant-picker-date-panel
-      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start
-      .ant-picker-cell-inner::after,
-    .ant-picker-date-panel
-      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end
-      .ant-picker-cell-inner::after {
+    .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
+    .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
       background: var(--acx-accents-blue-10);
     }
     .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
@@ -148,12 +142,11 @@ export const Wrapper = styled.div<WrapperProps>`
     .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range)::after {
       border-color: var(--acx-accents-blue-50);
     }
-    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end)
-      .ant-picker-cell-inner,
-    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start)
-      .ant-picker-cell-inner {
+    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end) .ant-picker-cell-inner,
+    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start) .ant-picker-cell-inner {
       border-radius: 20px;
     }
+    .ant-picker-cell:hover .ant-picker-cell-inner,
     .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
       border-radius: 20px;
     }
@@ -171,9 +164,6 @@ export const Wrapper = styled.div<WrapperProps>`
 export const TimePickerRow = styled.div`
   height: 48px;
   text-align: center;
-  .ant-picker {
-    border-color: var(--acx-neutrals-50);
-  }
 `
 export const TimePickerColon = styled.span`
   margin-left: 3px;
@@ -194,9 +184,6 @@ export const TimePickerWrapper = styled(TimePicker)`
       }
     }
     .ant-picker-time-panel-column {
-      .ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
-        background: var(--acx-accents-blue-10);
-      }
       &::after {
         display: none;
       }
@@ -208,7 +195,7 @@ export const RangeApplyRow = styled.div`
   display: flex;
   background-color: var(--acx-neutrals-10);
   align-items: center;
-  height: 48px;
+  padding: var(--acx-modal-footer-small-padding);
 `
 export const SelectedRange = styled.div`
   flex: auto;
@@ -216,8 +203,8 @@ export const SelectedRange = styled.div`
   font-size: var(--acx-subtitle-5-font-size);
   font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
 `
-export const Buttons = styled(Space).attrs({ size: 12 })`
-  padding-right: 14px;
+export const Buttons = styled(Space)`
+  gap: var(--acx-modal-footer-small-button-space) !important;
   .ant-space-item {
     line-height: normal;
   }

@@ -1,5 +1,8 @@
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { forwardRef, RefCallback } from 'react'
+
+import ReactECharts from 'echarts-for-react'
+import { useIntl }  from 'react-intl'
+import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { getSeriesData, IncidentFilter } from '@acx-ui/analytics/utils'
 import {
@@ -7,40 +10,59 @@ import {
   CardTypes,
   Loader,
   MultiLineTimeSeriesChart,
-  cssStr
+  cssStr,
+  NoData
 } from '@acx-ui/components'
+import { TimeStamp } from '@acx-ui/types'
+
+import { TimeWindow } from '../../pages/Health/HealthPageContext'
 
 import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
+
 type Key = keyof Omit<NetworkHistoryData, 'time'>
 
-const lineColors = [
-  cssStr('--acx-accents-blue-30'),
-  cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-50')
-]
-
-function NetworkHistoryWidget ({
-  hideTitle,
-  type = 'default',
-  filters
-}: {
+interface NetworkHistoryWidgetComponentProps {
   hideTitle?: boolean;
   type?: CardTypes;
   filters: IncidentFilter;
-}) {
+  hideIncidents?: boolean;
+  brush?: { timeWindow: TimeWindow, setTimeWindow: (range: TimeWindow) => void }
+}
+
+const NetworkHistoryWidget = forwardRef<
+  ReactECharts,
+  NetworkHistoryWidgetComponentProps
+>((props, ref) => {
+  const {
+    hideTitle,
+    type = 'default',
+    filters,
+    hideIncidents,
+    brush
+  } = props
   const { $t } = useIntl()
-  const seriesMapping = [
-    { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
+  let seriesMapping = [
     {
-      key: 'impactedClientCount',
-      name: $t({ defaultMessage: 'Impacted Clients' })
+      key: 'newClientCount',
+      name: $t({ defaultMessage: 'New Clients' })
     },
     {
       key: 'connectedClientCount',
       name: $t({ defaultMessage: 'Connected Clients' })
     }
   ] as Array<{ key: Key; name: string }>
+  const lineColors = [
+    cssStr('--acx-accents-blue-50'),
+    cssStr('--acx-accents-blue-30')
+  ]
+  if (!hideIncidents) {
+    seriesMapping.push({
+      key: 'impactedClientCount',
+      name: $t({ defaultMessage: 'Impacted Clients' })
+    })
+    lineColors.push(cssStr('--acx-accents-orange-50'))
+  }
   const queryResults = useNetworkHistoryQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
@@ -53,16 +75,21 @@ function NetworkHistoryWidget ({
       <Card title={title} type={type}>
         <AutoSizer>
           {({ height, width }) => (
-            <MultiLineTimeSeriesChart
-              style={{ width, height }}
-              data={queryResults.data}
-              lineColors={lineColors}
-            />
+            queryResults.data.length ?
+              <MultiLineTimeSeriesChart
+                style={{ width, height }}
+                data={queryResults.data}
+                lineColors={lineColors}
+                brush={brush?.timeWindow}
+                onBrushChange={brush?.setTimeWindow as (range: TimeStamp[]) => void}
+                chartRef={ref as RefCallback<ReactECharts> | undefined}
+              />
+              : <NoData/>
           )}
         </AutoSizer>
       </Card>
     </Loader>
   )
-}
+})
 
 export default NetworkHistoryWidget

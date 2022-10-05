@@ -3,7 +3,7 @@
 exports[`Alarm List should render list 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__AlarmListWrapper-sc-vxay0u-0 jrWHHP"
+    class="styledComponents__AlarmListWrapper-sc-vxay0u-0 eWQyPP"
     style="height: 300px; width: 300px;"
   >
     <div

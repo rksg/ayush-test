@@ -2,10 +2,8 @@ import '@testing-library/jest-dom'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { 
-  incidentCodes,
+import {
   noDataSymbol,
-  incidentInformation,
   fakeIncident,
   NodeType,
   PathNode
@@ -20,9 +18,7 @@ import {
   severitySort,
   FormatIntlString,
   FormatIntlStringProps,
-  GetCategory,
   IncidentTableComponentProps,
-  GetScope,
   dateSort,
   defaultSort,
   ShortIncidentDescription
@@ -77,20 +73,19 @@ describe('IncidentTable: utils', () => {
     slaThreshold: null,
     currentSlaThreshold: null
   }
-  
+
   const sampleIncident = fakeIncident(incidentValues)
 
   describe('getIncidentBySeverity', () => {
     const testSeverityArr = [
-      { value: 0.001, label: 'P4' }, 
-      { value: 0.65, label: 'P3' }, 
+      { value: 0.001, label: 'P4' },
+      { value: 0.65, label: 'P3' },
       { value: 0.8, label: 'P2' },
-      { value: 1, label: 'P1' },
-      { value: undefined, label: noDataSymbol }
+      { value: 1, label: 'P1' }
     ]
-    
+
     it.each(testSeverityArr)(
-      'should show correct label: %s for value %n', 
+      'should show correct label: %s for value %n',
       async ({ label, value }) => {
         render(<Provider>
           <GetIncidentBySeverity value={value as unknown as number} id={'test'}/>
@@ -213,21 +208,21 @@ describe('IncidentTable: utils', () => {
       await screen.findByText('test')
       expect(screen.getByText('test').textContent).toBe('test')
     })
-  
+
     it('should render scoped', async () => {
       const scopeMsg = defineMessage({ defaultMessage: 'test {scope}' })
       render(<RenderDummyString message={scopeMsg} scope='scope'/>)
       await screen.findByText('test scope')
       expect(screen.getByText('test scope').textContent).toBe('test scope')
     })
-  
+
     it('should render threshold', async () => {
       const scopeMsg = defineMessage({ defaultMessage: 'test: {threshold}' })
       render(<RenderDummyString message={scopeMsg} threshold='threshold'/>)
       await screen.findByText('test: threshold')
       expect(screen.getByText('test: threshold').textContent).toBe('test: threshold')
     })
-  
+
     it('should render threshold & scope', async () => {
       const scopeMsg = defineMessage({ defaultMessage: 'test: {threshold} & {scope}' })
       render(<RenderDummyString message={scopeMsg} threshold='threshold' scope='scope'/>)
@@ -237,60 +232,17 @@ describe('IncidentTable: utils', () => {
     })
   })
 
-  describe('getCategory', () => {
-    interface RenderGetCategoryProps {
-      code?: string
-      subCategory?: boolean
-    }
-  
-    const RenderGetCategory = (props: RenderGetCategoryProps) => {
-      return <Provider>
-        {GetCategory(props.code as string, props.subCategory)}
-      </Provider>
-    }
-  
-    it('getCategory: valid codes', async () => {
-      incidentCodes.forEach(async (code) => {
-        render(<RenderGetCategory code={code}/>)
-        const category = incidentInformation[code].category.defaultMessage as string
-        await screen.findByText(category)
-        expect(screen.getByText(category).textContent).toBe(category)
-      })
-    })
-
-    it('getCategory: valid codes on subCategory', async () => {
-      incidentCodes.forEach(async (code) => {
-        render(<RenderGetCategory code={code} subCategory={true}/>)
-        const subCategory = incidentInformation[code].subCategory.defaultMessage as string
-        await screen.findByText(subCategory)
-        expect(screen.getByText(subCategory).textContent).toBe(subCategory)
-      })
-    })
-  })
-
-  describe('ShortIncidentDescription', () => {  
+  describe('ShortIncidentDescription', () => {
     const RenderShortDescription = (props: IncidentTableComponentProps) => {
       return <Provider><ShortIncidentDescription onClickDesc={jest.fn()} {...props}/></Provider>
     }
-  
+
     it('ShortIncidentDescription: it renders on valid incident', async () => {
       render(<RenderShortDescription incident={sampleIncident}/>)
       // eslint-disable-next-line max-len
       const expectedShortDesc = '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
       await screen.findByText(expectedShortDesc)
       expect(screen.getByText(expectedShortDesc).textContent).toBe(expectedShortDesc)
-    })
-  })
-
-  describe('GetScope', () => {
-    const RenderGetScope = (props: IncidentTableComponentProps) => {
-      return <Provider><GetScope {...props} /></Provider>
-    }
-  
-    it('should render GetScope on correct incident', async () => {
-      const { asFragment } = 
-        render(<RenderGetScope incident={sampleIncident}/>)
-      expect(asFragment()).toMatchSnapshot()
     })
   })
 

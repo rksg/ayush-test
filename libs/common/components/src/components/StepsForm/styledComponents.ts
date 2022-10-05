@@ -1,6 +1,5 @@
-
-import { Typography }  from 'antd'
-import styled, { css } from 'styled-components/macro'
+import { Typography }                     from 'antd'
+import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 const stepCompletedStyle = css`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
@@ -12,9 +11,78 @@ const stepCompletedStyle = css`
   }
 `
 
-export const Wrapper = styled.section<{ editMode?: boolean }>`
-  --acx-steps-form-max-width: 1280px;
-  --acx-steps-form-steps-container-max-width: 152px;
+export const StepsContainer = styled.div`
+  position: fixed;
+  padding-top: calc(
+    var(--acx-steps-form-form-title-line-height) +
+    var(--acx-steps-form-form-title-margin-bottom) +
+    3px
+  );
+  z-index: 1;
+`
+export const StepsContainerGlobalOverride = createGlobalStyle`
+  .ant-pro-basicLayout {
+    ${StepsContainer} {
+      // col span=4/24, gutter=20px
+      width: calc((
+        100% - var(--acx-sider-width) -
+        var(--acx-content-horizontal-space) * 2
+      ) * 4 / 24 - 20px);
+    }
+  }
+  .ant-pro-basicLayout.sider-collapsed {
+    ${StepsContainer} {
+      // col span=4/24, gutter=20px
+      width: calc((
+        100% - var(--acx-sider-collapsed-width) -
+        var(--acx-content-horizontal-space) * 2
+      ) * 4 / 24 - 20px);
+    }
+  }
+`
+
+export const ActionsContainer = styled.div`
+  position: fixed;
+  bottom: 0;
+  padding: var(--acx-steps-form-actions-vertical-space) 0;
+  background-color: var(--acx-neutrals-10);
+  z-index: 3;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 -100% 0 -100%;
+    background-color: var(--acx-neutrals-10);
+  }
+  .ant-space-item .ant-space {
+    position: absolute;
+    left: 50%;
+    bottom: var(--acx-steps-form-actions-vertical-space);
+    transform: translate(-50%, 0);
+  }
+`
+export const ActionsContainerGlobalOverride = createGlobalStyle`
+  .ant-pro-basicLayout {
+    ${ActionsContainer} {
+      width: calc(
+        100% - var(--acx-sider-width) -
+        var(--acx-content-horizontal-space) * 2
+      );
+    }
+  }
+  .ant-pro-basicLayout.sider-collapsed {
+    ${ActionsContainer} {
+      width: calc(
+        100% - var(--acx-sider-collapsed-width) -
+        var(--acx-content-horizontal-space) * 2
+      );
+    }
+  }
+`
+
+export const Wrapper = styled.section<{
+  singleStep: boolean,
+  editMode?: boolean
+}>`
   --acx-steps-form-steps-title-color: var(--acx-primary-black);
   --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
   --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
@@ -27,24 +95,10 @@ export const Wrapper = styled.section<{ editMode?: boolean }>`
   --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
   --acx-steps-form-form-title-margin-bottom: 16px;
 
-  --acx-steps-form-container-margin: 20px;
-
-  --acx-steps-form-steps-container-margin:
-    calc(
-      var(--acx-steps-form-container-margin) +
-      var(--acx-steps-form-form-title-line-height) +
-      var(--acx-steps-form-form-title-margin-bottom) +
-      2px
-    )
-    0
-    var(--acx-steps-form-container-margin)
-  ;
-
   --acx-steps-form-actions-vertical-space: 12px;
 
   .ant-pro-steps-form {
     position: relative;
-    max-width: var(--acx-steps-form-max-width);
   }
   .ant-pro-steps-form-step {
     position: initial;
@@ -58,7 +112,11 @@ export const Wrapper = styled.section<{ editMode?: boolean }>`
   // resetting due to it causes extra space out of box
   .ant-descriptions-view table { table-layout: initial; }
 
-  // customize Steps component
+  ${props => props.singleStep && css`
+    ${StepsContainer} {
+      display: none;
+    }
+  `}
   .ant-steps-dot {
     .ant-steps-item {
       .ant-steps-item-title {
@@ -143,6 +201,17 @@ export const Wrapper = styled.section<{ editMode?: boolean }>`
       ` : ''}
     }
   }
+
+  .ant-pro-steps-form-container {
+    margin: unset;
+    // col span=4/24
+    margin-left: ${props => props.singleStep ? '0;' : '16.66666667%;'}
+    // button height=32px
+    margin-bottom: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
+    width: unset;
+    min-width: unset;
+    flex: 1;
+  }
 `
 
 export const Title = styled(Typography.Title).attrs({ level: 3 })`
@@ -150,61 +219,5 @@ export const Title = styled(Typography.Title).attrs({ level: 3 })`
   line-height: var(--acx-steps-form-form-title-line-height);
   font-weight: var(--acx-steps-form-form-title-font-weight);
   margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
-`
-
-export const StepsContainer = styled.div`
-  position: fixed;
-  display: block;
-  padding: var(--acx-steps-form-steps-container-margin);
-  padding-left: var(--acx-content-horizontal-space);
-  margin-left: calc(-1 * var(--acx-content-horizontal-space));
-  height: 100%;
-  width: 100%;
-  max-width: var(--acx-steps-form-steps-container-max-width);
-  background-color: var(--acx-primary-white);
-  z-index: 1;
-`
-
-export const ActionsContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  padding-top: var(--acx-steps-form-actions-vertical-space);
-  padding-bottom: var(--acx-steps-form-actions-vertical-space);
-  padding-left: calc(
-    var(--acx-steps-form-steps-container-max-width) +
-    var(--acx-steps-form-container-margin)
-  );
-  width: 100vw;
-  display: flex;
-  justify-content: flex-start;
-  z-index: 3;
-  &::before {
-    content: '';
-    position: fixed;
-    margin-top: calc(var(--acx-steps-form-actions-vertical-space) * -1);
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--acx-neutrals-10);
-  }
-`
-
-export const Container = styled.div`
-  .ant-pro-steps-form-container {
-    margin: unset;
-    margin: var(--acx-steps-form-container-margin);
-    margin-left: calc(
-      var(--acx-steps-form-steps-container-max-width) +
-      var(--acx-steps-form-container-margin)
-    );
-    margin-bottom: calc(
-      var(--acx-steps-form-actions-vertical-space) * 2 +
-      32px // button height
-    );
-    margin-right: 0;
-    width: unset;
-    min-width: unset;
-    flex: 1;
-  }
 `
 

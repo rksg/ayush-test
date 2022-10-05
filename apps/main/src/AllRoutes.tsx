@@ -9,6 +9,7 @@ import NetworksBase     from './pages/Networks'
 import ServicesBase     from './pages/Services'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
+import { VenuesForm }   from './pages/Venues/VenuesForm'
 import { VenuesTable }  from './pages/Venues/VenuesTable'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
@@ -30,14 +31,22 @@ function AllRoutes () {
         <Route path='services/*' element={<ServicesBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
-        <Route path='venues'>
-          <Route index element={<VenuesTable />} />
-          <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
-          <Route path=':venueId/edit/:activeTab' element={<VenueEdit />} />
-        </Route>
+        <Route path='venues/*' element={<VenuesRoutes />} />
       </Route>
       <Route path='v/:tenantId/*' element={<MspRoutes />} />
     </>
+  )
+}
+
+function VenuesRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId/venues'>
+      <Route index element={<VenuesTable />} />
+      <Route path='add' element={<VenuesForm />} />
+      <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
+      <Route path=':venueId/edit/:activeTab' element={<VenueEdit />} />
+      <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
+    </Route>
   )
 }
 

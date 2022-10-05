@@ -3,6 +3,10 @@ import { ApiInfo } from '../apiService'
 export const websocketServerUrl = '/api/websocket/socket.io'
 
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
+  getVMNetworksList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/network'
+  },
   getNetworksDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
@@ -65,18 +69,74 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getServicesList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/services'
-  },
-  deleteService: {
-    method: 'delete',
-    url: '/api/tenant/:tenantId/service/:serviceId'
+    url: '/api/viewmodel/tenant/:tenantId/serviceprofiles'
   },
   getVenuesList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
   },
+  addVenue: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/venue'
+  },
+  getVenue: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/:venueId'
+  },
+  deleteVenue: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue/:venueId'
+  },
+  deleteVenues: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue'
+  },
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getService: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/service/:serviceId'
+  },
+  saveDHCPService: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
+  },
+  getVenueFloorplans: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
+  },
+  getVenueCapabilities: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
+  },
+  getVenueApModels: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models'
+  },
+  getVenueLedOn: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/led'
+  },
+  updateVenueLedOn: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/led'
+  },
+  getVenueNetworkList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
+  },
+  venueNetworkApGroup: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
+  },
+  getNetworkDeepList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/get/deep'
+  },
+  validateRadius: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   }
 }

@@ -5,10 +5,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/vlan-pool'
   },
-  getVMNetworksList: {
-    method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/network'
-  },
   getNetwork: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/network/:networkId/deep'
@@ -32,9 +28,5 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   deleteNetworkVenue: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId'
-  },
-  getVenue: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/venue/:venueId'
   }
 }

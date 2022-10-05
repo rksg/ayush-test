@@ -8,6 +8,14 @@
  */
 
 module.exports = {
+  '@badge-height': '16px',
+  '@badge-height-sm': '16px',
+  '@badge-font-size': 'var(--acx-body-5-font-size)',
+  '@badge-font-size-sm': 'var(--acx-body-5-font-size)',
+  '@badge-font-weight': 'var(--acx-body-font-weight-bold)',
+  '@badge-text-color': 'var(--acx-primary-white)',
+  '@badge-color': 'var(--acx-semantics-red-60)',
+  '@badge-dot-size': '8px',
   '@badge-status-size': '8px',
 
   '@body-background': 'var(--acx-primary-white)',
@@ -50,7 +58,7 @@ module.exports = {
   '@heading-color': 'var(--acx-primary-black)',
 
   '@input-border-color': 'var(--acx-neutrals-50)',
-  '@input-hover-border-color': 'var(--acx-accents-orange-50)',
+  '@input-hover-border-color': 'var(--acx-primary-black)',
 
   '@input-number-handler-border-color': 'var(--acx-neutrals-50)',
 
@@ -93,6 +101,9 @@ module.exports = {
   '@screen-xxl': '1920px',
 
   '@select-border-color': 'var(--acx-neutrals-50)',
+  '@select-item-active-bg': 'var(--acx-accents-orange-10)',
+  '@select-item-selected-bg': 'var(--acx-accents-orange-20)',
+  '@select-item-selected-font-weight': 'var(--acx-body-font-weight-bold)',
 
   '@tabs-highlight-color': 'var(--acx-primary-black)',
   '@tabs-hover-color': 'var(--acx-accents-orange-50)',
@@ -100,6 +111,7 @@ module.exports = {
   '@tabs-horizontal-gutter': '18px',
   '@tabs-horizontal-padding': '0px',
 
+  '@table-border-radius-base': '0',
   '@table-bg': 'var(--acx-primary-white)',
   '@table-header-bg': 'var(--acx-primary-white)',
   '@table-header-sort-bg': 'var(--acx-primary-white)',

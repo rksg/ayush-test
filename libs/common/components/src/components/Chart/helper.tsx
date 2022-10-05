@@ -5,7 +5,6 @@ import {
   RegisteredSeriesOption,
   TooltipComponentOption
 } from 'echarts'
-import moment             from 'moment-timezone'
 import { renderToString } from 'react-dom/server'
 import {
   MessageDescriptor,
@@ -15,8 +14,12 @@ import {
   defineMessage
 } from 'react-intl'
 
-import { TimeStamp }              from '@acx-ui/types'
-import { formatter, intlFormats } from '@acx-ui/utils'
+import { TimeStamp } from '@acx-ui/types'
+import {
+  formatter,
+  dateTimeFormats,
+  intlFormats
+} from '@acx-ui/utils'
 
 import { cssStr, cssNumber } from '../../theme/helper'
 
@@ -98,17 +101,26 @@ export const axisLabelOptions = () => ({
   fontWeight: cssNumber('--acx-body-font-weight')
 })
 
-export const dateAxisFormatter = (value: number): string => {
-  const dateTime = moment(value).format('YYYY-MM-DD HH:mm')
-  let formatted
-  if (dateTime.match(/^\d{4}-01-01 00:00$/))
-    formatted = formatter('yearFormat')(value)
-  else if (dateTime.match(/^\d{4}-\d{2}-01 00:00$/))
-    formatted = formatter('monthFormat')(value)
-  else if (dateTime.match(/^\d{4}-\d{2}-\d{2} 00:00$/))
-    formatted = formatter('monthDateFormat')(value)
-  return (formatted ||
-    formatter('shortDateTimeFormat')(value)) as string
+const dateTimeFormatMap: { [key: string]: string } = {
+  YYYY: 'yyyy',
+  YY: 'yy',
+  DD: 'dd',
+  D: 'd'
+}
+const convertDateTimeFormat = (format: string) => format
+  .split(/([ :])/)
+  .map((part, i, whole) => i % 2
+    ? null
+    : `{${dateTimeFormatMap[part] || part}}${whole[i + 1] || ''}`)
+  .filter(Boolean)
+  .join('')
+export const dateAxisFormatter = () => {
+  return {
+    year: convertDateTimeFormat(dateTimeFormats.yearFormat),
+    month: convertDateTimeFormat(dateTimeFormats.monthFormat),
+    day: convertDateTimeFormat(dateTimeFormats.monthDateFormat),
+    hour: convertDateTimeFormat(dateTimeFormats.timeFormat)
+  }
 }
 
 export const tooltipOptions = () => ({
@@ -157,19 +169,36 @@ export const timeSeriesTooltipFormatter = (
 }
 
 export const stackedBarTooltipFormatter = (
-  dataFormatter?: ((value: unknown) => string | null)
+  intl: IntlShape,
+  dataFormatter?: ((value: unknown) => string | null),
+  format?: MessageDescriptor
 ) => (
   parameters: TooltipComponentFormatterCallbackParams
 ) => {
   const param = parameters as TooltipFormatterParams
   const value = param.value as string[]
+  const name = param.seriesName
+  const formattedValue = dataFormatter ? dataFormatter(value[0]) : value[0]
+  const tooltipFormat = format ?? defineMessage({
+    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
+    description: 'StackedBarChart: default tooltip format for stacked bar chart'
+  })
+  const text = <FormattedMessage {...tooltipFormat}
+    values={{
+      name, formattedValue,
+      br: () => <br />,
+      span: content => <span>{content}</span>,
+      b: content => <b>{content}</b>,
+      space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+    }}
+  />
+
   return renderToString(
-    <UI.TooltipWrapper>
-      <UI.Badge
-        color={param.color?.toString()}
-        text={dataFormatter ? dataFormatter(value[0]) : value[0]}
-      />
-    </UI.TooltipWrapper>
+    <RawIntlProvider value={intl}>
+      <UI.TooltipWrapper>
+        <UI.Badge color={param.color?.toString()} text={text} />
+      </UI.TooltipWrapper>
+    </RawIntlProvider>
   )
 }
 

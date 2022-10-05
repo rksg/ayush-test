@@ -91,7 +91,7 @@ export class OpenWlanAdvancedCustomization {
   joinWaitThreshold: number
 
   enableOptimizedConnectivityExperience?: boolean
-  
+
   broadcastProbeResponseDelay: number
 
   rssiAssociationRejectionThreshold: number

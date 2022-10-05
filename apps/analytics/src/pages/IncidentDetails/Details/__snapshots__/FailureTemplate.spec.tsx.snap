@@ -3,7 +3,7 @@
 exports[`IncidentDetailsTemplate should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -52,24 +52,27 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 fpazJI"
+              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
               type="P3"
             >
               P3
             </span>
           </span>
-          <span
-            class="ant-page-header-heading-sub-title"
-            title="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
-          >
-            EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
-          </span>
         </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+        </span>
       </div>
     </div>
   </div>
@@ -136,7 +139,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
                   />
                 </div>
                 <div
@@ -189,7 +192,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
                       class="Grid__Container-sc-5irhjd-1 zzbxI"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 klEBQV looZqI"
+                        class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 lgTSMV looZqI"
                       >
                         Root Cause Analysis
                       </div>
@@ -206,7 +209,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
                       class="Grid__Container-sc-5irhjd-1 zzbxI"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 klEBQV looZqI"
+                        class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 lgTSMV looZqI"
                       >
                         Recommended Action
                       </div>
@@ -241,9 +244,9 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          time series section
-        </div>
+        <div
+          data-testid="timeSeries"
+        />
       </div>
     </div>
   </div>

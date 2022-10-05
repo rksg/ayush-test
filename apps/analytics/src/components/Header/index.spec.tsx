@@ -2,11 +2,19 @@ import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { api }   from './services'
-import { input } from './services.spec'
+import { header1, header2 } from './__tests__/fixtures'
+import { api }              from './services'
 
 import Header, { Header as DumbHeader } from './index'
 
+jest.mock('../../components/NetworkFilter', () => () => <div>network filter</div>)
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  useAnalyticsFilter: () => ({
+    filters: { path: [{ type: 'network', name: 'Network' }], filter: {} }
+  })
+}))
 describe('Analytics dumb header', () => {
   const props = {
     title: 'title',
@@ -34,17 +42,17 @@ describe('Analytics connected header', () => {
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
-      data: input[1].queryResult
+      data: header2.queryResult
     })
     render(<Provider> <Header title={''}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render header', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
-      data: input[0].queryResult
+      data: header1.queryResult
     })
     render(<Provider><Header title={'Title'}/></Provider>)
     await screen.findByText('Title')
-    expect(screen.getByTitle('Entire Organization')).toHaveTextContent('Type:')
+    expect(screen.getByTitle('Organization')).toHaveTextContent('Type:')
   })
 })

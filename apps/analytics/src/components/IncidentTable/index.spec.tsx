@@ -124,13 +124,14 @@ const filters : IncidentFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
-  range: DateRange.last24Hours
+  range: DateRange.last24Hours,
+  filter: {}
 }
 describe('IncidentTableWidget', () => {
 
-  beforeEach(() =>
+  beforeEach(() => {
     store.dispatch(api.util.resetApiState())
-  )
+  })
 
   afterEach(() => cleanup())
 
@@ -230,30 +231,28 @@ describe('IncidentTableWidget', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const priorityHeader = columnHeaders[0]
-    const elem = await screen.findByText(priorityHeader)
     const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
     expect(caretDown).toHaveLength(1)
 
-    fireEvent.click(elem)
-    fireEvent.click(elem)
+    fireEvent.click(await screen.findByText(priorityHeader))
+    fireEvent.click(await screen.findByText(priorityHeader))
     const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
     expect(caretUp).toHaveLength(1)
 
-    fireEvent.click(elem)
+    fireEvent.click(await screen.findByText(priorityHeader))
 
     for (let i = 1; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
-      const elem = await screen.findByText(header)
 
-      fireEvent.click(elem)
+      fireEvent.click(await screen.findByText(header))
       const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
       expect(caretUp).toHaveLength(1)
 
-      fireEvent.click(elem)
+      fireEvent.click(await screen.findByText(header))
       const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
       expect(caretDown).toHaveLength(2)
 
-      fireEvent.click(elem)
+      fireEvent.click(await screen.findByText(header))
     }
   })
 
@@ -350,7 +349,7 @@ describe('IncidentTableWidget', () => {
       await screen.findByText(
         'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
       )
-    ) 
+    )
     expect(await screen.findByText('Root cause:')).toBeVisible()
   })
   it('should render drawer when click on description & show impacted clients', async () => {
@@ -371,14 +370,14 @@ describe('IncidentTableWidget', () => {
       await screen.findByText(
         'RADIUS failures are unusually high in Access Point: r710_!21690 (60:D0:2C:22:6B:90)'
       )
-    ) 
+    )
     expect(await screen.findByText('Root cause:')).toBeVisible()
   })
   it('should close drawer when click on drawer close button', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-  
+
     render(<Provider><IncidentTableWidget filters={filters}/></Provider>,{
       route: {
         path: '/t/tenantId/analytics/incidents',
@@ -392,7 +391,7 @@ describe('IncidentTableWidget', () => {
       await screen.findByText(
         'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
       )
-    ) 
+    )
     fireEvent.click(await screen.findByRole('button', { name: /close/i }))
     expect(screen.queryByText('Root cause:')).toBeNull()
   })

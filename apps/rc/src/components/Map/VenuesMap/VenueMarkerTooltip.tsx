@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { StackedBarChart }                 from '@acx-ui/components'
 import { Table }                           from '@acx-ui/components'
@@ -20,19 +20,16 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
     {
       title: $t({ defaultMessage: 'Networking Devices' }),
       dataIndex: 'networkDevices',
-      key: 'networkDevices',
-      width: 162
+      key: 'networkDevices'
     },
     {
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      key: 'clients',
-      width: 162
+      key: 'clients'
     }
   ]
   return columns
 }
-
 
 interface VenueMarkerTooltipProps {
   onNavigate?: (params: NavigateProps) => void;
@@ -40,9 +37,10 @@ interface VenueMarkerTooltipProps {
 }
 
 export function VenueMarkerTooltip (
-  props: { venue: VenueMarkerOptions } & VenueMarkerTooltipProps) {
+  props: { venueMarker: VenueMarkerOptions } & VenueMarkerTooltipProps) {
   const { $t } = useIntl()
   const {
+    name,
     venueId,
     apStat,
     switchStat,
@@ -50,7 +48,7 @@ export function VenueMarkerTooltip (
     switchesCount,
     clientsCount,
     switchClientsCount
-  } = props.venue
+  } = props.venueMarker
 
   const { onNavigate, needPadding = true } = props
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
@@ -59,7 +57,10 @@ export function VenueMarkerTooltip (
     showLabels: false,
     style: { height: 10, width: 100 },
     showTotal: false,
-    barColors: deviceConnectionStatusColors
+    barColors: deviceConnectionStatusColors,
+    tooltipFormat: defineMessage({
+      defaultMessage: '<span><b>{formattedValue}</b></span>'
+    })
   }
 
   const data = [
@@ -118,8 +119,9 @@ export function VenueMarkerTooltip (
   return (
     <UI.Wrapper needPadding={needPadding}>
       <UI.InfoWindowHeader>
-        <UI.Title onClick={() => onNavigate && onNavigate({ venueId, path: 'overview' })}>
-          {props.venue.name}
+        <UI.Title onClick={
+          () => onNavigate && onNavigate({ venueId, path: 'venue-details/overview' })}>
+          {name}
         </UI.Title>
       </UI.InfoWindowHeader>
       <Table

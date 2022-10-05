@@ -22,7 +22,7 @@ exports[`Alarm widget should render "No active alarms" when no alarms exist 1`] 
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
               >
                 Alarms
               </div>

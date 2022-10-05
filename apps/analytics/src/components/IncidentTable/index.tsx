@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
+import { Tooltip }                                  from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
   Incident,
   noDataSymbol,
   IncidentFilter,
-  nodeTypes,
   getRootCauseAndRecommendations,
-  useShortDescription
+  useShortDescription,
+  formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
 import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
@@ -21,16 +22,12 @@ import {
   FormatDate,
   clientImpactSort,
   ShortIncidentDescription,
-  GetCategory,
-  GetScope,
   severitySort,
   dateSort,
-  defaultSort,
-  ClientImpact
+  defaultSort
 } from './utils'
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
-
   const { $t } = useIntl()
   const { metadata } = props.selectedIncidentToShowDescription
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
@@ -59,7 +56,8 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
 }
 
 function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const queryResults = useIncidentsListQuery(filters)
   const basePath = useTenantLink('/analytics/incidents/')
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
@@ -68,7 +66,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
 
-  const actions: TableProps<Incident>['actions'] = [
+  const rowActions: TableProps<Incident>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Mute' })),
       onClick: () => {
@@ -81,7 +79,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     {
       title: $t(defineMessage({ defaultMessage: 'Severity' })),
       width: 80,
-      dataIndex: 'severity',
+      dataIndex: 'severityLabel',
       key: 'severity',
       render: (_, value) => <GetIncidentBySeverity value={value.severity} id={value.id}/>,
       sorter: {
@@ -89,16 +87,17 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         multiple: 1
       },
       defaultSortOrder: 'descend',
-      fixed: 'left'
+      fixed: 'left',
+      filterable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
-      width: 'auto',
+      width: 130,
       dataIndex: 'endTime',
       valueType: 'dateTime',
       key: 'endTime',
       render: (_, value) => {
-        return <Link to={`${basePath.pathname}/${value.id}`}>
+        return <Link to={{ ...basePath, pathname: `${basePath.pathname}/${value.id}` }}>
           <FormatDate datetimestamp={value.endTime} />
         </Link>
       },
@@ -110,10 +109,10 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
-      width: 'auto',
+      width: 100,
       dataIndex: 'duration',
       key: 'duration',
-      render: (_, value) => formatter('durationFormat')(value.duration) as string,
+      render: (_, value) => formatter('durationFormat')(value.duration),
       sorter: {
         compare: (a, b) => defaultSort(b.duration, a.duration),
         multiple: 3
@@ -121,90 +120,91 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
-      width: 'auto',
+      width: 200,
       dataIndex: 'description',
       key: 'description',
-      render: (_, value: Incident ) => (
+      render: (_, value ) => (
         <ShortIncidentDescription
           onClickDesc={setDrawerSelection}
           incident={value}
         />
       ),
       sorter: {
-        compare: (a: Incident, b: Incident) => defaultSort(a.code, b.code),
+        compare: (a, b) => defaultSort(a.description, b.description),
         multiple: 4
       },
-      ellipsis: true
+      searchable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
-      width: 'auto',
+      width: 100,
       dataIndex: 'category',
       key: 'category',
-      render: (_, value) => GetCategory(value.code),
       sorter: {
-        compare: (a, b) => defaultSort(a.code, b.code),
+        compare: (a, b) => defaultSort(a.category as string, b.category as string),
         multiple: 5
-      }
+      },
+      filterable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
-      width: 'auto',
+      width: 130,
       dataIndex: 'subCategory',
       key: 'subCategory',
-      render: (_, value) => GetCategory(value.code, true),
       sorter: {
-        compare: (a, b) => defaultSort(a.code, b.code),
-        multiple: 5
+        compare: (a, b) => defaultSort(a.subCategory as string, b.subCategory as string),
+        multiple: 6
       },
       show: false
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
-      width: 'auto',
-      dataIndex: 'clientCount',
-      key: 'clientCount',
-      render: (_, incident) => <ClientImpact type='clientImpact' incident={incident}/>,
+      width: 130,
+      dataIndex: 'clientImpact',
+      key: 'clientImpact',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
-        multiple: 6
+        compare: (a, b) => clientImpactSort(a.clientImpact, b.clientImpact),
+        multiple: 7
       }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
-      width: 'auto',
-      dataIndex: 'impactedClientCount',
-      key: 'impactedClientCount',
-      render: (_, incident) => <ClientImpact type='impactedClients' incident={incident}/>,
+      width: 160,
+      dataIndex: 'impactedClients',
+      key: 'impactedClients',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
-        multiple: 7
+        compare: (a, b) => clientImpactSort(a.impactedClients, b.impactedClients),
+        multiple: 8
       },
       align: 'center'
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Scope' })),
-      width: 'auto',
+      width: 200,
       dataIndex: 'scope',
-      ellipsis: true,
       key: 'scope',
-      render: (_, value) => <GetScope incident={value} />,
+      render: (_, value ) => {
+        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue, intl)}>
+          {value.scope}
+        </Tooltip>
+      },
       sorter: {
-        compare: (a, b) => clientImpactSort(a.code, b.code),
-        multiple: 8
-      }
+        compare: (a, b) => defaultSort(a.scope, b.scope),
+        multiple: 9
+      },
+      searchable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
-      width: 'auto',
+      width: 90,
       dataIndex: 'type',
       key: 'type',
-      render: (_, value) => $t(nodeTypes(value.sliceType)),
       sorter: {
-        compare: (a, b) => clientImpactSort(a.code, b.code),
-        multiple: 8
+        compare: (a, b) => defaultSort(a.type, b.type),
+        multiple: 10
       },
-      show: false
+      show: false,
+      filterable: true
     }
   ]
 
@@ -214,23 +214,17 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         type='tall'
         dataSource={queryResults?.data}
         columns={ColumnHeaders}
-        actions={actions}
+        rowActions={rowActions}
         rowSelection={{
           type: 'radio',
           defaultSelectedRowKeys: queryResults.data
             ? mutedKeysFilter(queryResults.data)
             : undefined
         }}
-        pagination={{
-          defaultPageSize: 10,
-          position: ['bottomCenter'],
-          pageSizeOptions: [5, 10, 20, 25, 50, 100],
-          showTotal: undefined
-        }}
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
-        scroll={{ y: 'max-content' }}
+        ellipsis={true}
         indentSize={6}
       />
       {drawerSelection &&
