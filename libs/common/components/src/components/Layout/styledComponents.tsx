@@ -1,3 +1,8 @@
+import {
+  Button as AntButton,
+  Divider as AntDivider,
+  Space
+} from 'antd'
 import styled, { css } from 'styled-components/macro'
 
 import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
@@ -5,6 +10,10 @@ import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
 import modifyVars from '../../theme/modify-vars'
 
 export const Wrapper = styled.div`
+  --acx-header-item-margin: 20px;
+  --acx-header-divider-margin: 5px;
+  --acx-header-button-margin: 12px;
+
   .ant-pro-basicLayout {
     .ant-layout.ant-layout-has-sider {
       .ant-layout-sider {
@@ -34,16 +43,26 @@ export const Wrapper = styled.div`
           border-top-left-radius: 20px;
         }
       }
-      .ant-menu-submenu{
-        .ant-menu-submenu-title{
+      .ant-menu-title-content {
+        a {
+          color: var(--acx-primary-white);
+        }
+      }
+      .ant-menu-submenu {
+        .ant-menu-submenu-title {
+          font-family: var(--acx-accent-brand-font);
+          font-size: var(--acx-headline-4-font-size);
+          font-weight: var(--acx-headline-4-font-weight);
           border-left: 2px solid transparent;
+          padding-left: 18px !important;
+          padding-right: 0;
           .ant-pro-menu-item {
-            color: var(--acx-primary-white);
+            transition: opacity 0.2s ease-in-out;
           }
         }
         &-selected {
           background-color: transparent;
-          .ant-menu-submenu-title{
+          .ant-menu-submenu-title {
             font-weight: var(--acx-headline-4-font-weight-bold);
             border-left-color: var(--acx-accents-orange-50);
             background-color: var(--acx-neutrals-70);
@@ -55,17 +74,18 @@ export const Wrapper = styled.div`
         .ant-menu-sub {
           background-color: var(--acx-neutrals-80);
           padding-bottom: 4px;
-          .ant-menu-item{
+          .ant-menu-item {
             height: 32px;
             margin: auto;
             display: flex;
             align-items: center;
             background-color: var(--acx-neutrals-80);
             border-left-color: transparent;
-            padding-left: 16px !important;
+            padding-left: 18px !important;
+            padding-right: 0;
             font-size: var(--acx-headline-5-font-size);
-            opacity: 60%;
             font-weight: var(--acx-headline-5-font-weight);
+            opacity: 60%;
             &-selected {
               opacity: 100%;
               font-weight: var(--acx-headline-5-font-weight-semi-bold);
@@ -75,18 +95,19 @@ export const Wrapper = styled.div`
       }
       .ant-menu-item {
         border-left: 2px solid transparent;
-        padding-left: 16px;
+        padding-left: 18px !important;
+        padding-right: 0;
         font-family: var(--acx-accent-brand-font);
         font-size: var(--acx-headline-4-font-size);
+        font-weight: var(--acx-headline-4-font-weight);
         line-height: 38px;
         &-selected {
           font-weight: var(--acx-headline-4-font-weight-bold);
           border-left-color: var(--acx-accents-orange-50);
         }
         .ant-menu-title-content {
-          text-overflow: clip;
           .ant-pro-menu-item-title {
-            transition: opacity .2s ease-in-out;
+            transition: opacity 0.2s ease-in-out;
             vertical-align: middle;
           }
         }
@@ -115,10 +136,11 @@ export const Wrapper = styled.div`
           min-width: var(--acx-sider-collapsed-width) !important;
           width: var(--acx-sider-collapsed-width) !important;
         }
-        .ant-menu-submenu{
-          background-color: var(--acx-primary-black);
-          .ant-menu-submenu-title {
-            padding-left: 16px;
+        .ant-menu-submenu {
+          &-open {
+            background-color: unset;
+          }
+          &-title {
             .ant-pro-menu-item {
               opacity: 0;
             }
@@ -129,6 +151,10 @@ export const Wrapper = styled.div`
             opacity: 0;
           }
         }
+        .ant-menu-submenu-popup {
+          .ant-menu-sub {
+            background-color: var(--acx-neutrals-80);
+          }
       }
     }
   }
@@ -139,7 +165,9 @@ export const Wrapper = styled.div`
     line-height: var(--acx-header-height) !important;
     .ant-pro-global-header {
       background-color: var(--acx-primary-black);
+      color: var(--acx-primary-white);
       padding: 0 20px 0 var(--acx-sider-width);
+      font-size: var(--acx-body-4-font-size);
     }
   }
 
@@ -171,23 +199,121 @@ export const Content = styled.div`
   }
 `
 
+export const LeftHeaderContentWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--acx-header-item-margin);
+  height: 100%;
+`
+export const LogoDivider = styled(AntDivider).attrs({ type: 'vertical' })`
+  border-right: 1px solid var(--acx-neutrals-70);
+  height: 32px;
+  top: 0;
+  margin: 0;
+`
+
+export const RightHeaderContentWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--acx-header-button-margin);
+  height: 100%;
+`
+
+const MenuIcon = styled.span`
+  margin-right: 8px;
+  > svg {
+    vertical-align: middle;
+    height: 20px;
+    width: 20px;
+  }
+`
+export const MenuIconOutlined = styled(MenuIcon)`
+  > svg {
+    path {
+      stroke: var(--acx-primary-white);
+    }
+    circle {
+      stroke: var(--acx-primary-white);
+    }
+  }
+`
+export const MenuIconSolid = styled(MenuIcon)`
+  > svg {
+    stroke: var(--acx-neutrals-70);
+  }
+`
+
 const arrowStyle = css`
   path {
     stroke: var(--acx-primary-white);
   }
   vertical-align: middle;
 `
-
-export const ArrowCollapsed = styled(ArrowChevronRight)`
-  ${arrowStyle}
-`
-
 export const Arrow = styled(ArrowChevronLeft)`
   ${arrowStyle}
 `
-
-export const TextWrapper = styled.div`
+export const ArrowCollapsed = styled(ArrowChevronRight)`
+  ${arrowStyle}
+`
+export const CollapseText = styled.div`
   display: inline-block;
   vertical-align: middle;
-  margin-left: 12px;
+  margin-left: 5px;
 `
+
+const Button = styled(AntButton).attrs({ type: 'primary' })`
+  background-color: var(--acx-neutrals-70);
+  border: none;
+  &:hover, &:focus {
+    border-color: var(--acx-accents-orange-55);
+    background-color: var(--acx-accents-orange-55);
+  }
+  > svg {
+    width: 16px;
+    height: 100%;
+  }
+`
+export const LayoutUI = {
+  iconOutlinedOverride: css`
+    path { stroke: none !important; }
+  `,
+  iconSolidOverride: css`
+    stroke: none !important;
+  `,
+  Icon: styled.span`
+    > svg {
+      width: 16px;
+      height: 16px;
+      vertical-align: text-bottom;
+      path {
+        stroke: var(--acx-primary-white);
+      }
+    }
+  `,
+  DropdownText: styled.span.attrs(props => ({ children: <Space>{props.children}</Space> }))`
+    font-size: var(--acx-body-3-font-size);
+    line-height: 1;
+  ` as React.FC<React.PropsWithChildren>,
+  ButtonOutlined: styled(Button)`
+    > svg path {
+      stroke: var(--acx-primary-white);
+    }
+  `,
+  ButtonSolid: styled(Button)`
+    > svg {
+      stroke: var(--acx-neutrals-70);
+      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+    &:hover, &:focus {
+      > svg {
+        stroke: var(--acx-accents-orange-55);
+      }
+    }
+  `,
+  Divider: styled(LogoDivider)`
+    margin: 0 var(--acx-header-divider-margin) 0
+      calc(var(--acx-header-divider-margin) - 1px);
+  `
+}

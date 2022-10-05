@@ -15,7 +15,6 @@ import {
   venuesResponse,
   networksResponse,
   successResponse,
-  networkDeepResponse,
   venueListResponse,
   policyListResponse
 } from './__tests__/fixtures'
@@ -95,7 +94,6 @@ const networkResponse = {
 
 describe('NetworkForm', () => {
   beforeEach(() => {
-    networkDeepResponse.name = 'open network edit test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),

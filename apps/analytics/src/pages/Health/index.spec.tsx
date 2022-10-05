@@ -20,6 +20,10 @@ jest.mock('react-router-dom', () => ({
 }))
 jest.mock('./ConnectedClientsOverTime', () => () => <div>Summary TimeSeries</div>)
 
+jest.mock('./SummaryBoxes', () => ({
+  SummaryBoxes: () => <div data-testid='Summary Boxes' />
+}))
+
 describe('HealthPage', () => {
   beforeEach(() => {
     store.dispatch(dataApi.util.resetApiState())
@@ -27,13 +31,16 @@ describe('HealthPage', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: [] } } }
+    })
   })
   const params = { activeTab: 'overview', tenantId: 'tenant-id' }
   it('should render page header and grid layout', async () => {
     render(<Provider><HealthPage /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     expect(screen.getByText('Health')).toBeVisible()
-    expect(screen.getByText('Summary Boxes')).toBeVisible()
+    expect(screen.getByTestId('Summary Boxes')).toBeVisible()
     expect(screen.getByText('Summary TimeSeries')).toBeVisible()
     expect(screen.getByText('Overview')).toBeVisible()
     expect(screen.getByText('Customized SLA Threshold')).toBeVisible()
