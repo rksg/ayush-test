@@ -27,8 +27,61 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 
 const { Option } = Select
 
-function useColumns () {
+const transformDeviceTypeString = (row: EcDeviceInventory) => {
+  switch (row.deviceType) {
+    case EntitlementNetworkDeviceType.WIFI:
+      return 'Access Point'
+    case EntitlementNetworkDeviceType.SWITCH:
+      return 'Switch'
+  }
+  return ''
+}
+
+const transformDeviceOperStatus = (row: EcDeviceInventory) => {
+  switch (row.deviceType) {
+    case EntitlementNetworkDeviceType.WIFI:
+      // const intl = useIntl()
+      // const apStatus =
+      //   transformApStatus(intl, row.deviceStatus as ApDeviceStatusEnum, APView.AP_LIST)
+      // return apStatus.message
+    case EntitlementNetworkDeviceType.SWITCH:
+      const switchStatus = transformSwitchStatus(row.deviceStatus as SwitchStatusEnum)
+      return switchStatus
+  }
+  return ''
+}
+
+const transformSwitchStatus = (switchStatus: SwitchStatusEnum) => {
+  switch (switchStatus) {
+    case SwitchStatusEnum.OPERATIONAL:
+      return 'Operational'
+    case SwitchStatusEnum.DISCONNECTED:
+      return 'Requires Attention'
+    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
+      return 'Never contacted cloud'
+    case SwitchStatusEnum.INITIALIZING:
+      return 'Initializing'
+    case SwitchStatusEnum.APPLYING_FIRMWARE:
+      return 'Firmware updating'
+    case SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED:
+      return 'Never contacted Active Switch'
+    default:
+      return 'Never contacted cloud'
+  }
+}
+
+const onApply = (
+  // selectedOptions?: SingleValueType | SingleValueType[] | undefined
+) => {
+  showToast({
+    type: 'success',
+    content: 'Cascader Options Selected:'
+  })
+}
+
+export function DeviceInventory () {
   const { $t } = useIntl()
+  const [ search, setSearch ] = useState('')
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [
     {
@@ -106,79 +159,21 @@ function useColumns () {
     }
   ]
 
-  return columns
-}
-
-const transformDeviceTypeString = (row: EcDeviceInventory) => {
-  switch (row.deviceType) {
-    case EntitlementNetworkDeviceType.WIFI:
-      return 'Access Point'
-    case EntitlementNetworkDeviceType.SWITCH:
-      return 'Switch'
+  const defaultPayload = {
+    searchString: '',
+    fields: [
+      'deviceType',
+      'venueName',
+      'serialNumber',
+      'switchMac',
+      'name',
+      'tenantId',
+      'apMac',
+      'model',
+      'customerName',
+      'deviceStatus' ]
   }
-  return ''
-}
 
-const transformDeviceOperStatus = (row: EcDeviceInventory) => {
-  switch (row.deviceType) {
-    case EntitlementNetworkDeviceType.WIFI:
-      // const intl = useIntl()
-      // const apStatus =
-      //   transformApStatus(intl, row.deviceStatus as ApDeviceStatusEnum, APView.AP_LIST)
-      // return apStatus.message
-    case EntitlementNetworkDeviceType.SWITCH:
-      const switchStatus = transformSwitchStatus(row.deviceStatus as SwitchStatusEnum)
-      return switchStatus
-  }
-  return ''
-}
-
-const transformSwitchStatus = (switchStatus: SwitchStatusEnum) => {
-  switch (switchStatus) {
-    case SwitchStatusEnum.OPERATIONAL:
-      return 'Operational'
-    case SwitchStatusEnum.DISCONNECTED:
-      return 'Requires Attention'
-    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
-      return 'Never contacted cloud'
-    case SwitchStatusEnum.INITIALIZING:
-      return 'Initializing'
-    case SwitchStatusEnum.APPLYING_FIRMWARE:
-      return 'Firmware updating'
-    case SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED:
-      return 'Never contacted Active Switch'
-    default:
-      return 'Never contacted cloud'
-  }
-}
-
-const defaultPayload = {
-  searchString: '',
-  fields: [
-    'deviceType',
-    'venueName',
-    'serialNumber',
-    'switchMac',
-    'name',
-    'tenantId',
-    'apMac',
-    'model',
-    'customerName',
-    'deviceStatus' ]
-}
-
-const onApply = (
-  // selectedOptions?: SingleValueType | SingleValueType[] | undefined
-) => {
-  showToast({
-    type: 'success',
-    content: 'Cascader Options Selected:'
-  })
-}
-
-export function DeviceInventory () {
-  const { $t } = useIntl()
-  const [ search, setSearch ] = useState('')
   const DeviceTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
@@ -188,7 +183,7 @@ export function DeviceInventory () {
     return (
       <Loader states={[tableQuery]}>
         <Table
-          columns={useColumns()}
+          columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

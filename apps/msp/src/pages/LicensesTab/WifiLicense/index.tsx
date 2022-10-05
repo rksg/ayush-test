@@ -116,23 +116,23 @@ export function WifiLicense () {
       cssStr('--acx-accents-blue-50'),
       cssStr('--acx-neutrals-30')
     ]
-    
+
     return (
       <Loader states={[queryResults]}>
-        <label>Total Wi-Fi Licenses: 
-            <StackedBarChart
-              style={{ marginLeft: 15, height: 50, width: 400 }}
-              showLabels={false}
-              barWidth={20}
-              data={[{
-                category: 'Total Wi-Fi Licenses: ',
-                series: [
-                  { name: 'used', value: totalCount },
-                  { name: 'us', value: 18 }
-                ]
-              }]}
-              barColors={barColors}
-            />
+        <label>Total Wi-Fi Licenses:
+          <StackedBarChart
+            style={{ marginLeft: 15, height: 50, width: 400 }}
+            showLabels={false}
+            barWidth={20}
+            data={[{
+              category: 'Total Wi-Fi Licenses: ',
+              series: [
+                { name: 'used', value: totalCount },
+                { name: 'us', value: 18 }
+              ]
+            }]}
+            barColors={barColors}
+          />
         </label>
       </Loader>
     )

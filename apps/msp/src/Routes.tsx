@@ -8,7 +8,7 @@ import { AddIntegrator }   from './pages/Integrators/AddIntegrator'
 import Layout              from './pages/Layout'
 import { LicensesTab }     from './pages/LicensesTab'
 import { MspCustomers }    from './pages/MspCustomers'
-import { AddMspEc }        from './pages/MspCustomers/AddMspEc'
+import { AddMspCustomer }  from './pages/MspCustomers/AddMspCustomer'
 import { VarCustomers }    from './pages/VarCustomers'
 
 export default function MspRoutes () {
@@ -20,7 +20,7 @@ export default function MspRoutes () {
         element={<TenantNavigate replace to='/dashboard/mspCustomers' tenantType='v'/>}
       />
       <Route path='dashboard/mspCustomers' element={<MspCustomers />} />
-      <Route path='dashboard/mspCustomers/create' element={<AddMspEc />} />
+      <Route path='dashboard/mspCustomers/create' element={<AddMspCustomer />} />
       <Route path='dashboard/varCustomers' element={<VarCustomers />} />
       <Route path='integrators' element={<Integrators />} />
       <Route path='integrators/create' element={<AddIntegrator />} />

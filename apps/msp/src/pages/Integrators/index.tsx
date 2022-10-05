@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
@@ -11,6 +13,8 @@ import {
   MspEc
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+
+import { ResendInviteModal } from '../../components/ResendInviteModal'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -105,6 +109,8 @@ const defaultPayload = {
 export function Integrators () {
   const { $t } = useIntl()
 
+  const [modalVisible, setModalVisible] = useState(false)
+
   const IntegratorssTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
@@ -126,7 +132,7 @@ export function Integrators () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
-        onClick: () => alert()
+        onClick: () => setModalVisible(true)
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
@@ -178,6 +184,10 @@ export function Integrators () {
         ]}
       />
       <IntegratorssTable />
+      <ResendInviteModal
+        visible={modalVisible}
+        setVisible={setModalVisible}
+      />
     </>
   )
 }

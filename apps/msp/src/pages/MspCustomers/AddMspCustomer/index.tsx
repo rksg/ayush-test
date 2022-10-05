@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
+import { Row, Col, Form, Input, Divider } from 'antd'
 
 import {
   PageHeader,
@@ -14,7 +14,7 @@ import {
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
-export function AddMspEc () {
+export function AddMspCustomer () {
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
 
@@ -38,18 +38,47 @@ export function AddMspEc () {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
-              <Form.Item name='field1' label='Field 1'>
+              <h3>Account Detail</h3>
+              <Form.Item
+                name='field1'
+                label='Customer Account Name'
+                rules={[
+                  { required: true }
+                ]}>
                 <Input />
               </Form.Item>
-              <Form.Item name='field2' label='Field 2'>
+              <Form.Item name='field2' label='Address'>
                 <Input />
               </Form.Item>
-              <Form.Item name='field3' label='Field 3'>
+              <Form.Item name='field3' label='MSP Administrators'>
                 <Input />
               </Form.Item>
-              <Form.Item name='field4' label='Field 4'>
+              <Divider></Divider>
+              <h3>Subscriptions</h3>
+              <Form.Item name='field4' label='Assigned Wi-Fi Subscriptions'>
                 <Input />
               </Form.Item>
+              <Form.Item name='field4' label='Assigned Switch Subscriptions'>
+                <Input />
+              </Form.Item>
+              <Form.Item name='field4' label='Service Start Date'>
+                <Input />
+              </Form.Item>
+              <Form.Item name='field4' label='Service Expiration Date'>
+                <Input />
+              </Form.Item>
+              <Divider></Divider>
+              <h3>Customer Administrator</h3>
+              <Form.Item name='field1' label='Email'>
+                <Input />
+              </Form.Item>
+              <Form.Item name='field2' label='Name'>
+                <Input />
+              </Form.Item>
+              <Form.Item name='field3' label='Admin Role'>
+                <Input />
+              </Form.Item>
+
             </Col>
           </Row>
         </StepsForm.StepForm>
