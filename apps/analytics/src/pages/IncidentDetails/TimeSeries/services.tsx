@@ -59,7 +59,6 @@ export function getBuffer (chartBuffer: ChartIncident['buffer']) {
   return buffer
 }
 
-
 export function getIncidentTimeSeriesPeriods (incident: ChartIncident) {
   const { startTime, endTime } = incident
   const buffer = getBuffer(incident.buffer)
@@ -69,6 +68,41 @@ export function getIncidentTimeSeriesPeriods (incident: ChartIncident) {
       buffer.front.value, buffer.front.unit as unitOfTime.DurationConstructor),
     end: moment(endTime).add(
       buffer.back.value, buffer.back.unit as unitOfTime.DurationConstructor)
+  }
+}
+
+const joinQuery = (queries: string) => {
+  if(queries.includes('code')) {
+    return gql`
+      query IncidentTimeSeries(
+        $path: [HierarchyNodeInput],
+        $start: DateTime,
+        $end: DateTime,
+        $granularity: String,
+        $code: String
+      ) {
+        network(start: $start, end: $end) {
+          hierarchyNode(path: $path) {
+            ${queries}
+          }
+        }
+      }
+    `
+  } else {
+    return gql`
+      query IncidentTimeSeries(
+        $path: [HierarchyNodeInput],
+        $start: DateTime,
+        $end: DateTime,
+        $granularity: String
+      ) {
+        network(start: $start, end: $end) {
+          hierarchyNode(path: $path) {
+            ${queries}
+          }
+        }
+      }
+    `
   }
 }
 
@@ -83,21 +117,7 @@ export const Api = dataApi.injectEndpoints({
           chart => timeSeriesCharts[chart].query(payload.incident)
         ).join('\n')
         return {
-          document: gql`
-            query IncidentTimeSeries(
-              $path: [HierarchyNodeInput],
-              $start: DateTime,
-              $end: DateTime,
-              $granularity: String,
-              $code: String
-            ) {
-              network(start: $start, end: $end) {
-                hierarchyNode(path: $path) {
-                  ${queries}
-                }
-              }
-            }
-          `,
+          document: joinQuery(queries),
           variables: {
             code: payload.incident.code,
             codeMap: [payload.incident.code],
