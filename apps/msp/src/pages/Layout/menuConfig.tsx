@@ -1,26 +1,23 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { LayoutProps, genPlaceholder } from '@acx-ui/components'
+import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
-  MspSubscriptionOutlined as MspSubscriptionOutlinedOriginal,
-  MspSubscriptionSolid as MspSubscriptionSolidOriginal,
-  ServicesOutlined,
-  ServicesSolid,
+  MspSubscriptionOutlined as MspSubscriptionOutlinedBase,
+  MspSubscriptionSolid as MspSubscriptionSolidBase,
+  IntegratorsOutlined,
+  IntegratorsSolid,
   UsersThreeOutlined,
   UsersThreeSolid
 } from '@acx-ui/icons'
 
-const MspSubscriptionOutlined = styled(MspSubscriptionOutlinedOriginal)`
-  path { stroke: none !important; }
-`
-const MspSubscriptionSolid = styled(MspSubscriptionSolidOriginal)`
-  path { stroke: none !important; }
-`
+const MspSubscriptionOutlined =
+  styled(MspSubscriptionOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
+const MspSubscriptionSolid = styled(MspSubscriptionSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -46,8 +43,8 @@ export function useMenuConfig () {
       path: '/integrators',
       name: $t({ defaultMessage: 'Integrators' }),
       tenantType: 'v',
-      inactiveIcon: ServicesOutlined,
-      activeIcon: ServicesSolid
+      inactiveIcon: IntegratorsOutlined,
+      activeIcon: IntegratorsSolid
     },
     {
       path: '/deviceInventory',
