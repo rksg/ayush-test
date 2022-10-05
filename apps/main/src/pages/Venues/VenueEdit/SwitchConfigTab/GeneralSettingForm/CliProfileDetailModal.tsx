@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Col, Divider, Form, Row, Select, Typography } from 'antd'
+import { Col, Divider, Form, Row, Select, Tooltip, Typography } from 'antd'
 
 import { cssStr, Modal }                                  from '@acx-ui/components'
 import { ConfigurationProfile, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
@@ -19,6 +19,7 @@ export function CliProfileDetailModal (props: {
   const { formState, setFormState, formData } = props
   const profiles = getProfilesByKeys(formState.configProfiles, formData.profileId)
   const [selectedProfile, setSelectedProfile] = useState<ConfigurationProfile>(profiles?.[0])
+  const switchModels = selectedProfile?.venueCliTemplate?.switchModels?.split(',') ?? []
 
   const closeModal = () => {
     setFormState({
@@ -66,10 +67,16 @@ export function CliProfileDetailModal (props: {
           <Form.Item
             label={$t({ defaultMessage: 'Switch Models' })}
             children={
-              selectedProfile?.venueCliTemplate?.switchModels?.includes(',')
-                ? `${selectedProfile?.venueCliTemplate?.switchModels.split(',')?.length} 
-                    ${$t({ defaultMessage: 'models' })}`
-                : selectedProfile?.venueCliTemplate?.switchModels
+              <Tooltip
+                title={switchModels.length > 1
+                  ? switchModels?.map((m, idx) => <div key={idx}>{m}</div>)
+                  : ''}
+                placement='bottom'
+              >{
+                  switchModels.length > 1
+                    ? `${switchModels.length} ${$t({ defaultMessage: 'models' })}`
+                    : switchModels[0]
+                }</Tooltip>
             }
           />
           <Form.Item

@@ -22,7 +22,7 @@ export function ConfigProfileModal (props: {
 }) {
   const { $t } = getIntl()
   const { formState, setFormState, formData, setFormData } = props
-  const [disableButton, setDisableButton] = useState(false) 
+  const [disableButton, setDisableButton] = useState(false)
   const [selectedProfileKeys, setSelectedProfileKeys] = useState('')
   const [selectedCliProfileKeys, setSelectedCliProfileKeys] = useState([] as Key[])
 
@@ -150,7 +150,7 @@ export function ConfigProfileModal (props: {
               defaultSelectedRowKeys: selectedCLIKeys,
               onChange: onChangeCLI
             }}
-            // TODO: 
+            // TODO:
             actions={[{
               label: 'Add CLI Profile',
               onClick: () => {}

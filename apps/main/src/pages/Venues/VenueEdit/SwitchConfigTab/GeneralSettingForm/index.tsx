@@ -4,7 +4,7 @@ import { Col, Divider, Form, Input, Space, Switch } from 'antd'
 import { isEqual }                                  from 'lodash'
 
 import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { ConfigurationOutlined, DeleteOutlinedIcon }               from '@acx-ui/icons'
+import { ConfigurationOutlined }                                   from '@acx-ui/icons'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
@@ -15,11 +15,11 @@ import { getIntl }                                                              
 
 import { VenueEditContext, EditContext } from '../../index'
 
-import { CliProfileDetailModal }     from './CliProfileDetailModal'
-import { ConfigProfileModal }        from './ConfigProfileModal'
-import { RegularProfileDetailModal } from './RegularProfileDetailModal'
-import { ButtonWrapper, RowStyle }   from './styledComponents'
-import { SyslogServerModal }         from './SyslogServerModal'
+import { CliProfileDetailModal }                       from './CliProfileDetailModal'
+import { ConfigProfileModal }                          from './ConfigProfileModal'
+import { RegularProfileDetailModal }                   from './RegularProfileDetailModal'
+import { ButtonWrapper, DeleteOutlinedIcon, RowStyle } from './styledComponents'
+import { SyslogServerModal }                           from './SyslogServerModal'
 
 export interface FormState {
   changeModalvisible: boolean,
@@ -36,7 +36,7 @@ const defaultState = {
   cliModalvisible: false,
   syslogModalvisible: false,
   cliApplied: false,
-  configProfiles: []  
+  configProfiles: []
 }
 const defaultFormData = {
   profileId: [],
@@ -107,10 +107,10 @@ export function GeneralSettingForm () {
       tabKey: activeSubTab,
       tabTitle: $t({ defaultMessage: 'General' }),
       newData: {
-        ...formData   
+        ...formData
       },
       oldData: {
-        profileId: data?.profileId ?? [], 
+        profileId: data?.profileId ?? [],
         dns: data?.dns ?? [],
         syslogEnabled: data?.syslogEnabled ?? false,
         syslogPrimaryServer: data?.syslogPrimaryServer,
@@ -175,7 +175,7 @@ export function GeneralSettingForm () {
         })}
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
-        { <StepsForm.StepForm
+        <StepsForm.StepForm
           layout='horizontal'
           labelAlign='left'
           labelCol={{ span: 6 }}
@@ -187,10 +187,8 @@ export function GeneralSettingForm () {
           <RowStyle gutter={20}>
             <Col span={12}>
               <Form.Item
-                name='name'
                 label={$t({ defaultMessage: 'Configuration Profile' })}
                 validateFirst
-                hasFeedback
                 children={
                   <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: '12px', display: 'flex' }} >
@@ -210,9 +208,8 @@ export function GeneralSettingForm () {
                           <Button type='link'
                             key='view'
                             onClick={() => {
-                              const selectedCLI = selectedProfiles?.filter(p => 
+                              const selectedCLI = selectedProfiles?.filter(p =>
                                 p.profileType === ProfileTypeEnum.CLI)?.length
-
                               selectedCLI
                                 ? setFormState({ ...formState, cliModalvisible: true })
                                 : setFormState({ ...formState, regularModalvisible: true })
@@ -258,7 +255,6 @@ export function GeneralSettingForm () {
                       children={
                         <Input
                           size='small'
-                          defaultValue={formData.dns?.[index]}
                           suffix={
                             <DeleteOutlinedIcon
                               role='deleteBtn'
@@ -303,13 +299,13 @@ export function GeneralSettingForm () {
             </Col>
           </RowStyle>
           <ConfigProfileModal {...{ formState, setFormState, formData, setFormData }} />
-          { formState.cliModalvisible && 
+          { formState.cliModalvisible &&
             <CliProfileDetailModal {...{ formState, setFormState, formData }} /> }
-          { formState.syslogModalvisible && 
+          { formState.syslogModalvisible &&
             <SyslogServerModal {...{ formState, setFormState, formData, setFormData }} /> }
-          { formState.regularModalvisible && 
+          { formState.regularModalvisible &&
             <RegularProfileDetailModal {...{ formState, setFormState, formData }} /> }
-        </StepsForm.StepForm> }
+        </StepsForm.StepForm>
       </StepsForm>
     </Loader>
   )

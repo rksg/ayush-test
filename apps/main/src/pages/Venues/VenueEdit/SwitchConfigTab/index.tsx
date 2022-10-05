@@ -43,7 +43,7 @@ export function SwitchConfigTab () {
       history: $t({ defaultMessage: 'Configuration History' }),
       interfaces: $t({ defaultMessage: 'Routed Interfaces' }),
       settings: $t({ defaultMessage: 'Advanced Settings' })
-    } 
+    }
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
     return editContextData?.isDirty && params?.activeSubTab === tabkey

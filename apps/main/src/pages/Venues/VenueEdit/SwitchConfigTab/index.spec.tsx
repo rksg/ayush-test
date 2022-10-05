@@ -19,7 +19,7 @@ describe('SwitchConfigTab', () => {
     const { asFragment } = render(<Provider>
       <VenueEditContext.Provider value={{ editContextData: {}, setEditContextData: jest.fn() }}>
         <SwitchConfigTab />
-      </VenueEditContext.Provider> 
+      </VenueEditContext.Provider>
     </Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
     await screen.findByRole('tab', { name: 'General' })

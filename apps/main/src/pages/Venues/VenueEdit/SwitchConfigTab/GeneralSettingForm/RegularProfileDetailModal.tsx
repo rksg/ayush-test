@@ -1,10 +1,17 @@
 import { Typography } from 'antd'
 
-import { Modal, Table, TableProps }                         from '@acx-ui/components'
-import { useSwitchConfigProfileQuery }                      from '@acx-ui/rc/services'
-import { Acl, Vlan, SwitchModel, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { useParams }                                        from '@acx-ui/react-router-dom'
-import { getIntl }                                          from '@acx-ui/utils'
+import { Modal, Table, TableProps }    from '@acx-ui/components'
+import { useSwitchConfigProfileQuery } from '@acx-ui/rc/services'
+import {
+  Acl,
+  Vlan,
+  SwitchModel,
+  VenueSwitchConfiguration,
+  SpanningTreeProtocolName,
+  transformTitleCase
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+import { getIntl }   from '@acx-ui/utils'
 
 import { FormState } from './index'
 
@@ -31,15 +38,19 @@ export function RegularProfileDetailModal (props: {
   }, {
     title: $t({ defaultMessage: 'IGMP Snooping' }),
     dataIndex: 'igmpSnooping',
-    key: 'igmpSnooping'
+    key: 'igmpSnooping',
+    render: (data) => transformTitleCase(data as string)
   }, {
     title: $t({ defaultMessage: 'Multicast Version' }),
-    dataIndex: 'name',
-    key: 'name'
+    dataIndex: 'multicastVersion',
+    key: 'multicastVersion'
   }, {
     title: $t({ defaultMessage: 'Spanning Tree' }),
     dataIndex: 'spanningTreeProtocol',
-    key: 'spanningTreeProtocol'
+    key: 'spanningTreeProtocol',
+    render: (data) => {
+      return data ? SpanningTreeProtocolName[data as keyof typeof SpanningTreeProtocolName] : null
+    }
   }, {
     title: $t({ defaultMessage: '# of Ports' }),
     dataIndex: 'switchFamilyModels',
@@ -58,18 +69,19 @@ export function RegularProfileDetailModal (props: {
   const aclsColumns: TableProps<Acl>['columns']= [{
     title: $t({ defaultMessage: 'ACL Name' }),
     dataIndex: 'name',
-    key: 'name'    
+    key: 'name'
   }, {
     title: $t({ defaultMessage: 'ACL Type' }),
     dataIndex: 'aclType',
-    key: 'aclType'    
+    key: 'aclType',
+    render: (data) => transformTitleCase(data as string)
   }]
 
   const closeModal = () => {
     setFormState({
       ...formState,
       regularModalvisible: false
-    })    
+    })
   }
 
   return (<Modal
@@ -99,6 +111,6 @@ export function RegularProfileDetailModal (props: {
       rowKey='id'
       columns={aclsColumns}
       dataSource={data?.acls}
-    />    
+    />
   </Modal>)
 }
