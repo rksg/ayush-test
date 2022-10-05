@@ -1,5 +1,4 @@
-import { capitalize }    from 'lodash'
-import { defineMessage } from 'react-intl'
+import { capitalize } from 'lodash'
 
 import { intlFormats, PathNode, NodeType, getIntl, formatter } from '@acx-ui/utils'
 
@@ -71,14 +70,14 @@ export function normalizeNodeType (nodeType: NodeType): NormalizedNodeType {
 export function nodeTypes (nodeType: NodeType): string {
   const { $t } = getIntl()
   switch (normalizeNodeType(nodeType)) {
-    case 'network': return $t(defineMessage({ defaultMessage: 'Organization' }))
-    case 'apGroup': return $t(defineMessage({ defaultMessage: 'AP Group' }))
-    case 'zone': return $t(defineMessage({ defaultMessage: 'Venue' }))
-    case 'switchGroup': return $t(defineMessage({ defaultMessage: 'Venue' }))
-    case 'switch': return $t(defineMessage({ defaultMessage: 'Switch' }))
-    case 'AP': return $t(defineMessage({ defaultMessage: 'Access Point' }))
+    case 'network': return $t({ defaultMessage: 'Organization' })
+    case 'apGroup': return $t({ defaultMessage: 'AP Group' })
+    case 'zone': return $t({ defaultMessage: 'Venue' })
+    case 'switchGroup': return $t({ defaultMessage: 'Venue' })
+    case 'switch': return $t({ defaultMessage: 'Switch' })
+    case 'AP': return $t({ defaultMessage: 'Access Point' })
     default:
-      return $t(defineMessage({ defaultMessage: 'Unknown' }))
+      return $t({ defaultMessage: 'Unknown' })
   }
 }
 
@@ -137,16 +136,9 @@ export function incidentScope (incident: Incident) {
 }
 
 export const getThreshold = (incident: Incident) => {
-  const { $t } = getIntl()
   const { code } = incident
   if (code === 'ttc') {
-    const value = formatter('durationFormat')(kpiConfig.timeToConnect.histogram.initialThreshold)
-    const threshold = $t({
-      defaultMessage: '{threshold}'
-    }, {
-      threshold: value
-    })
-    return threshold
+    return String(formatter('durationFormat')(kpiConfig.timeToConnect.histogram.initialThreshold))
   } else {
     return undefined
   }
@@ -156,7 +148,7 @@ export const shortDescription = (incident: Incident) => {
   const { $t } = getIntl()
   const scope = incidentScope(incident)
   const threshold = getThreshold(incident)
-  return $t(incident.shortDescription, { scope, ...threshold && { threshold } })
+  return $t(incident.shortDescription, { scope, threshold })
 }
 
 export const impactValues = <Type extends 'ap' | 'client'> (
