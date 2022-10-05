@@ -18,13 +18,16 @@ export default function KpiSection (props: { tab: HealthTab }) {
   const healthFilter = useContext(HealthPageContext)
   const { timeWindow, setTimeWindow } = healthFilter
   const { filters } = useAnalyticsFilter()
+  
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
       instance.group = 'timeSeriesGroup'
     }
   }
+
   useEffect(() => { connect('timeSeriesGroup') }, [])
+  
   return (<>{
     kpis.map((kpi, index) => (<KpiRow key={kpi}>
       <GridCol col={{ span: 16 }}>

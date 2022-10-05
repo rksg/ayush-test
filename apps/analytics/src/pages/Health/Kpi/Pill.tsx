@@ -50,7 +50,7 @@ const tranformHistResponse = (
 }
 const formatPillText = (value: number = 0, suffix: string) => suffix
   ? `${formatter('percentFormatRound')(value / 100)} ${suffix}`
-  : `${formatter('percentFormatRound')(value/ 100)}`
+  : `${formatter('percentFormatRound')(value / 100)}`
 
 function HealthPill ({ filters, kpi, timeWindow }: {
   filters: AnalyticsFilter, kpi: string, timeWindow: [string, string]
@@ -80,8 +80,9 @@ function HealthPill ({ filters, kpi, timeWindow }: {
   const { success, total } = queryResults.data as PillData
   const percent = total > 0 ? (success / total) * 100 : 0
   const { pillSuffix, description, thresholdDesc, thresholdFormatter } = pill
+  const countFormat = formatter('countFormat')
   const translatedDesc = description
-    ? $t(description, { successCount: success, totalCount: total })
+    ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total) })
     : ''
   const translatedThresholdDesc = []
   if (thresholdDesc.length) {
@@ -99,7 +100,10 @@ function HealthPill ({ filters, kpi, timeWindow }: {
   return <Loader states={[queryResults]} key={kpi}>
     <UI.PillTitle><span>{$t(text)}</span><span><InformationOutlined /></span></UI.PillTitle>
     <UI.PillWrap>
-      <ProgressPill percent={percent} formatter={value => formatPillText(value, pillSuffix)}/>
+      <ProgressPill
+        percent={percent}
+        formatter={value => formatPillText(value, pillSuffix && $t(pillSuffix))}
+      />
     </UI.PillWrap>
     <UI.PillDesc>{translatedDesc}</UI.PillDesc>
     {translatedThresholdDesc.length > 0 &&
