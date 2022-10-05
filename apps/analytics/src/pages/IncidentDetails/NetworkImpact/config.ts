@@ -156,8 +156,8 @@ export const networkImpactCharts = {
           '{percentage} of failures impacted {dominant} AP model' }),
       broad: defineMessage({
         defaultMessage: `This incident impacted {count} {count, plural,
-          one {Ap Model}
-          other {Ap Models}
+          one {AP Model}
+          other {AP Models}
         }`
       })
     },
