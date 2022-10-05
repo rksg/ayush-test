@@ -100,7 +100,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
                             style="margin-bottom: 16px;"
                           >
                             <div
-                              class="ant-form-item styledComponents__FormItemRounded-sc-1y3m4a1-0 bNRQvv"
+                              class="ant-form-item styledComponents__FormItemRounded-sc-1y3m4a1-0 cDUtLW"
                             >
                               <div
                                 class="ant-row ant-form-item-row"

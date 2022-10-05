@@ -42,8 +42,12 @@
   }
 
   .ant-badge {
+    sup.ant-badge-count {
+      box-shadow: unset;
+    }
     &-status-text {
       font-size: var(--acx-body-4-font-size);
+      font-weight: var(--acx-body-font-weight);
       line-height: var(--acx-body-4-line-height);
     }
   }
@@ -97,9 +101,38 @@
     }
   }
 
+  .ant-dropdown-menu {
+    min-width: 90px;
+    padding: 8px 0;
+    box-shadow: 0px 6px 16px rgba(51, 51, 51, 0.2);
+
+    &-item {
+      font-size: var(--acx-body-4-font-size);
+      font-weight: var(--acx-body-font-weight);
+
+      &:hover {
+        background-color: var(--acx-accents-orange-10);
+      }
+
+      &-selected {
+        color: unset;
+        background-color: unset;
+        font-weight: var(--acx-body-font-weight-bold);
+      }
+
+      &-divider {
+        margin: 4px 12px;
+        background-color: var(--acx-neutrals-25);
+      }
+    }
+  }
+
   .ant-cascader {
     width: 100%;
+
     &-menu {
+      border-right: 1px solid var(--acx-neutrals-20);
+
       &-item {
         &:hover {
           background-color: var(--acx-accents-orange-10);
@@ -119,16 +152,14 @@
       margin-bottom: 16px;
     }
 
-    &-item-label > label,
-    &-item-control-input-content {
-      > svg {
-        path {
-          stroke: var(--acx-primary-black);
-        }
-        width: 16px;
-        height: 16px;
-        margin-left: 5px;
+    &-item-label label > svg,
+    &-item-control-input-content > svg {
+      path {
+        stroke: var(--acx-primary-black);
       }
+      width: 16px;
+      height: 16px;
+      margin-left: 5px;
     }
 
     &-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
@@ -142,7 +173,7 @@
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
       }
-      svg {
+      > svg {
         order: -1
       }
     }
@@ -294,6 +325,9 @@
         }
       }
     }
+    .ant-picker-footer, .ant-picker-footer-extra {
+      line-height: inherit;
+    }
   }
 
   .ant-radio {
@@ -395,8 +429,9 @@
   }
 
   .ant-select {
-    .ant-cascader-dropdown {
-      padding-bottom: 0 !important;
+    &-dropdown {
+      font-size: var(--acx-body-4-font-size);
+      font-weight: var(--acx-body-font-weight);
     }
     .ant-select-arrow {
       margin-right: -3px;
@@ -575,6 +610,7 @@
       }
     }
   }
+
   .ant-message {
     top: initial;
     bottom: 20px;

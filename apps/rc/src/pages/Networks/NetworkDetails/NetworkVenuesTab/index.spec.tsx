@@ -32,6 +32,7 @@ import {
 
 import { NetworkVenuesTab } from './index'
 
+jest.mock('socket.io-client')
 
 describe('NetworkVenuesTab', () => {
   beforeAll(async () => {
@@ -64,13 +65,14 @@ describe('NetworkVenuesTab', () => {
       )
     )
 
-    render(<Provider><NetworkVenuesTab /></Provider>, {
+    const { asFragment } = render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
+    expect(asFragment()).toMatchSnapshot()
     expect(within(row1).queryAllByRole('button')).toHaveLength(4)
     expect(row1).toHaveTextContent('VLAN-1 (Default)')
     expect(row1).toHaveTextContent('All APs')
@@ -95,7 +97,7 @@ describe('NetworkVenuesTab', () => {
         CommonUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
       )
-    )    
+    )
     jest.mocked(useSplitTreatment).mockReturnValue(true)
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
