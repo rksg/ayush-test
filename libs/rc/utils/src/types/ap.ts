@@ -1,3 +1,4 @@
+import { APMeshRole } from '../constants'
 
 export interface APRadio {
   channel?: number,
@@ -43,11 +44,11 @@ export interface APMesh {
   apStatusData?: {
     APRadio?: Array<APRadio>
   },
-  clients?: number,
+  clients?: { count: number, names: string[] },
   deviceGroupId?: string,
   deviceGroupName?: string,
   deviceStatus?: string,
-  meshRole: string,
+  meshRole: APMeshRole,
   hops?: number,
   downlink?: APMesh[],
   uplink?: Uplink[],

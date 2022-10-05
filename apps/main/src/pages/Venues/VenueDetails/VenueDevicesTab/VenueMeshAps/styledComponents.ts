@@ -1,15 +1,23 @@
 import { Button } from 'antd'
 import styled     from 'styled-components/macro'
 
-
 import {
+  ArrowCorner,
+  ApSingle,
   List,
   ListSolid,
   LineChartOutline1,
   LineChartSolid1,
   Mesh,
-  MeshSolid
+  MeshSolid,
+  SignalDown,
+  SignalUp,
+  Wired
 } from '@acx-ui/icons'
+
+export const SpanStyle = styled.span`
+color: var(--acx-primary-white);
+`
 
 export const ListIcon = styled(List)`
 display: 'inline';
@@ -54,33 +62,52 @@ path {
   stroke: var(--acx-primary-black);
 }
 `
-export const IconWrapper = styled.div`
-  .icon-arrow-corner:before {
-    font-size: 14px;
-    vertical-align: middle;
-    padding-right: 3px;
-  }
-  .icon-ap-single:before {
-    font-size: 18px;
-    vertical-align: middle;
-    padding-right: 3px;
-  }
-  .icon-wired:before {
-    font-size: 18px;
-    vertical-align: middle;
-    padding-right: 3px;
-  }
-  .icon-signal-down:before {
-    font-size: 18px;
-    vertical-align: middle;
-    padding-right: 3px;
-  }
-  .icon-wlan:before {
-    font-size: 18px;
-    vertical-align: middle;
-    padding-right: 3px;
+
+export const ArrowCornerIcon = styled(ArrowCorner)`
+  width: 20px;
+  height: 20px;
+  vertical-align: text-top;
+  path {
+    stroke: var(--acx-accents-blue-50);
   }
 `
+
+export const ApSingleIcon = styled(ApSingle)`
+  width: 20px;
+  height: 20px;
+  vertical-align: text-top;
+  path {
+    stroke: var(--acx-accents-blue-50);
+  }
+`
+
+export const SignalDownIcon = styled(SignalDown)`
+  width: 20px;
+  height: 20px;
+  vertical-align: text-top;
+  path {
+    stroke: var(--acx-primary-black);
+  }
+`
+
+export const SignalUpIcon = styled(SignalUp)`
+  width: 20px;
+  height: 20px;
+  vertical-align: text-top;
+  path {
+    stroke: var(--acx-primary-black);
+  }
+`
+
+export const WiredIcon = styled(Wired)`
+  width: 20px;
+  height: 20px;
+  vertical-align: text-top;
+  path {
+    stroke: var(--acx-accents-blue-50);
+  }
+`
+
 export const WhiteButton = styled(Button)`
   margin-top: 0;
   svg path{

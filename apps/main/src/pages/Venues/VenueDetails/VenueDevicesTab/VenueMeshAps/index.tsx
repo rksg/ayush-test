@@ -1,5 +1,5 @@
-import { Tooltip } from 'antd'
-import { useIntl } from 'react-intl'
+import { List, Tooltip }          from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Table, TableProps, Loader } from '@acx-ui/components'
 import { useMeshApsQuery }                   from '@acx-ui/rc/services'
@@ -14,16 +14,21 @@ import {
   ListIcon,
   LineChartIcon,
   MeshIcon,
-  IconWrapper,
-  WhiteButton
+  WhiteButton,
+  ArrowCornerIcon,
+  ApSingleIcon,
+  SignalDownIcon,
+  SignalUpIcon,
+  WiredIcon,
+  SpanStyle
 } from './styledComponents'
 
 function venueNameColTpl (
   name: string, meshRole: string, id: string, intl: ReturnType<typeof useIntl>){
   const icon = {
-    [APMeshRole.RAP]: 'icon-arrow-corner',
-    [APMeshRole.MAP]: 'icon-ap-single',
-    [APMeshRole.EMAP]: 'icon-wired',
+    [APMeshRole.RAP]: <ArrowCornerIcon />,
+    [APMeshRole.MAP]: <ApSingleIcon />,
+    [APMeshRole.EMAP]: <WiredIcon />,
     [APMeshRole.DISABLED]: ''
   }
   const tooltipTitle = {
@@ -33,37 +38,45 @@ function venueNameColTpl (
     [APMeshRole.DISABLED]: intl.$t({ defaultMessage: 'disabled' })
   }
   return (
-    <IconWrapper>
-      <Tooltip title={tooltipTitle[meshRole as APMeshRole]}
-        className={`${icon[meshRole as APMeshRole]}`}>
-        <TenantLink to={`aps/${id}/details/overview`}>{name}</TenantLink>
-      </Tooltip>
-    </IconWrapper>
+    <Tooltip title={tooltipTitle[meshRole as APMeshRole]}>
+      {icon[meshRole as APMeshRole]}
+      <TenantLink to={`aps/${id}/details/overview`}>{name}</TenantLink>
+    </Tooltip>
   )
 }
 
-const getNamesTooltip = (object: { count: number, names: string[] }, maxShow = 10) => {
+const getNamesTooltip = (object: { count: number, names: string[] },
+  intl: ReturnType<typeof useIntl>, maxShow = 10) => {
   if (!object || object.count === 0) {
     return
   }
 
+  interface NamesDataType {
+    key: React.Key
+    name: string
+  }
+  const data: NamesDataType[] = []
   let names: string[]
-  let tooltip: string
+  let key: number = 1
   names = object.names.slice(0, maxShow)
   if (names && object.names.length > 0) {
-    tooltip = '<table>'
     names.forEach(name => {
-      tooltip += `<tr><td>${name}</td></tr>`
+      data.push({ key, name })
+      key++
     })
     if (object.count > maxShow) {
-      tooltip += `<tr><td>And ${object.count - maxShow} more</td></tr>`
+      const lastRow = intl.$t(defineMessage({
+        defaultMessage: 'And {total} more' }), { total: object.count - maxShow })
+      data.push({ key, name: lastRow })
     }
-    tooltip += '</table>'
 
-    return tooltip
+    return (<List
+      dataSource={data}
+      renderItem={item => <List.Item><SpanStyle>{item.name}</SpanStyle></List.Item>}
+    />)
   }
 
-  return ''
+  return
 }
 
 function getCols (intl: ReturnType<typeof useIntl>) {
@@ -102,9 +115,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       render: function (data, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
-            <IconWrapper>
-              <span className='icon-signal-down'>{data}</span>
-            </IconWrapper>
+            <div><SignalDownIcon />{data}</div>
           )
         }
         return
@@ -118,7 +129,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       render: function (data, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
-            <IconWrapper><span className='icon-wlan'>{data}</span></IconWrapper>
+            <span><SignalUpIcon />{data}</span>
           )
         }
         return
@@ -153,9 +164,10 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       align: 'center',
       render: function (data, row) {
         if (row.clients && typeof row.clients === 'object') {
-          return <Tooltip title={getNamesTooltip(row.clients)}>{data || 0}</Tooltip>
+          return <Tooltip title={
+            getNamesTooltip(row.clients, intl)}>{ row.clients.count || 0}</Tooltip>
         }else{
-          return data || 0
+          return 0
         }
       }
     },
