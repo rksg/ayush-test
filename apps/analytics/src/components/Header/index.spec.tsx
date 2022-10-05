@@ -12,10 +12,14 @@ jest.mock('../../components/NetworkFilter', () => () => <div>network filter</div
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({
-    filters: { path: [{ type: 'network', name: 'Network' }], filter: {} },
+    filters: {
+      path: [{ type: 'network', name: 'Network' }],
+      filter: { networkNodes: [[{ type: 'zone', name: 'zone' }]] }
+    },
     getNetworkFilter: jest
       .fn()
-      .mockReturnValueOnce({ path: [{ type: 'network', name: 'Network' }] }) })
+      .mockReturnValueOnce({ path: [{ type: 'network', name: 'Network' }] })
+  })
 }))
 describe('Analytics dumb header', () => {
   const props = {
@@ -55,7 +59,7 @@ describe('Analytics connected header', () => {
       data: header1.queryResult
     })
     render(<Provider><Header title={'Title'} shouldQuerySwitch/></Provider>)
-    await screen.findByText('Title')
+    await screen.findByText('zone')
     expect(screen.getByTitle('Organization')).toHaveTextContent('Type:')
   })
 })

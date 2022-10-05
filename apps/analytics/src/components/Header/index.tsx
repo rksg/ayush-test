@@ -36,7 +36,8 @@ export type HeaderData = {
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
   data: HeaderData
   replaceTitle: boolean,
-  shouldQuerySwitch: boolean
+  shouldQuerySwitch: boolean,
+  venueTitle? : string | null
 }
 
 export const useSubTitle = (subTitles: SubTitle[]) => {
@@ -61,17 +62,24 @@ export const useSubTitle = (subTitles: SubTitle[]) => {
   )
 }
 
-export const Header = ({ data, replaceTitle, shouldQuerySwitch, ...otherProps }: HeaderProps) => {
+export const Header = ({
+  data,
+  replaceTitle,
+  shouldQuerySwitch,
+  venueTitle,
+  ...otherProps
+}: HeaderProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
   const { title, subTitle } = data
   const props = { ...otherProps, subTitle: useSubTitle(subTitle) }
-  if (replaceTitle) props.title = title
+  if (replaceTitle) props.title = venueTitle ? venueTitle : title
   return (
     <PageHeader
       {...props}
       extra={[
-        <NetworkFilter key='network-filter'
+        <NetworkFilter
+          key='network-filter'
           shouldQuerySwitch={shouldQuerySwitch}
         />,
         <RangePicker
@@ -80,7 +88,7 @@ export const Header = ({ data, replaceTitle, shouldQuerySwitch, ...otherProps }:
             startDate: moment(startDate),
             endDate: moment(endDate)
           }}
-          enableDates={dateRangeForLast(3,'months')}
+          enableDates={dateRangeForLast(3, 'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
@@ -93,6 +101,14 @@ export const Header = ({ data, replaceTitle, shouldQuerySwitch, ...otherProps }:
 const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean }) => {
   const { filters } = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
+  const isVenue = !!(
+    filters?.filter?.networkNodes?.[0]?.length &&
+    filters?.filter?.networkNodes?.[0]?.length === 1
+  )
+  const replaceTitle = filters.path.length > 1 || isVenue
+  const venueTitle = isVenue
+    ? filters?.filter?.networkNodes?.[0][0]?.name
+    : null
   return (
     <ConnectedHeaderWrapper>
       <Loader states={[queryResults]}>
@@ -100,7 +116,8 @@ const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean 
           {...props}
           shouldQuerySwitch={props.shouldQuerySwitch}
           data={queryResults.data as HeaderData}
-          replaceTitle={filters.path.length > 1}
+          replaceTitle={replaceTitle}
+          venueTitle={venueTitle}
         />
       </Loader>
     </ConnectedHeaderWrapper>

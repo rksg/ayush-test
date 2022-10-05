@@ -44,7 +44,7 @@ export function useAnalyticsFilter () {
       } : {
         path
       })
-    } as const,
+    } as AnalyticsFilter,
     setNetworkPath,
     getNetworkFilter,
     raw
