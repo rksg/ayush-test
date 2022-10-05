@@ -71,7 +71,7 @@ exports[`i-apinfra-poe-low should render correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          AP(s) operating in Low Power Mode: Access Point: RuckusAP (70:CA:97:01:A0:C0)
+          Sub-optimal WAN throughput - speed mismatch between AP and peer device: Venue: AlphaNet_5_1
         </span>
       </div>
     </div>

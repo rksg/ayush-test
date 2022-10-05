@@ -57,10 +57,10 @@ exports[`i-apserv-high-num-reboots should render correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
-              type="P3"
+              class="styledComponents__Pill-sc-j61ge1-0 fA-dLEH"
+              type="P2"
             >
-              P3
+              P2
             </span>
           </span>
         </div>
