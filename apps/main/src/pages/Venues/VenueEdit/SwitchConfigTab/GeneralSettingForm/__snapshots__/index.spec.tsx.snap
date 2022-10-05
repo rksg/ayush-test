@@ -100,7 +100,6 @@ exports[`GeneralSettingForm should render correctly 1`] = `
                           >
                             <label
                               class=""
-                              for="0_name"
                               title="Configuration Profile"
                             >
                               Configuration Profile
@@ -117,7 +116,6 @@ exports[`GeneralSettingForm should render correctly 1`] = `
                               >
                                 <div
                                   class="ant-space ant-space-horizontal ant-space-align-center"
-                                  id="0_name"
                                   style="display: flex; justify-content: space-between;"
                                 >
                                   <div

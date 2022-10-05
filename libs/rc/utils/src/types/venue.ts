@@ -103,12 +103,12 @@ export interface AclRule {
 	source: string,
 	destination: string,
 	sequence: number
-	action: 'permit' | 'Permit',
+	action: 'permit' | 'deny',
 	protocol: 'ip' | 'tcp' | 'udp'
 }
 
 export interface Acl {
-	aclType: 'Standard' | 'extended'
+	aclType: 'standard' | 'extended'
 	id: string,
 	name: string,
 	aclRules: AclRule[]
