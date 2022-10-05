@@ -15,8 +15,6 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
 
-// import { VenueEditContext } from '../../index'
-
 export interface SecuritySetting {
   dosProtectionEnabled: boolean,
   blockingPeriod: number,
@@ -29,7 +27,7 @@ export interface SecuritySetting {
 
 export interface SecuritySettingContext {
   SecurityData: SecuritySetting,
-  updateSecurity: (() => void)
+  updateSecurity: ((data?: SecuritySetting) => void)
 }
 
 const { Option } = Select
@@ -55,10 +53,11 @@ export function SecurityTab () {
   const { data: dosProctectionData } = useGetDenialOfServiceProtectionQuery({ params })
   const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
 
-  const { selectOptions } = useGetRoguePoliciesQuery({ params },{
+  const { selectOptions, selected } = useGetRoguePoliciesQuery({ params },{
     selectFromResult ({ data }) {
       return {
-        selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? []
+        selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
+        selected: data?.find((item) => item.id === formRef.current?.getFieldValue('roguePolicyId'))
       }
     }
   })
@@ -93,34 +92,23 @@ export function SecurityTab () {
     }
   }, [dosProctectionData, venueRogueApData])
 
-  const handleUpdateSecuritySettings = async () => {
+  const handleUpdateSecuritySettings = async (data?: SecuritySetting) => {
     try {
-      if(dosProtection){
-        const {
-          blockingPeriod,
-          checkPeriod,
-          failThreshold
-        } = formRef?.current?.getFieldsValue()
-
+      if(data?.dosProtectionEnabled){
         const payload = {
-          enabled: dosProtection,
-          blockingPeriod,
-          checkPeriod,
-          failThreshold
+          enabled: data?.dosProtectionEnabled,
+          blockingPeriod: data?.blockingPeriod,
+          checkPeriod: data?.checkPeriod,
+          failThreshold: data?.failThreshold
         }
         await updateDenialOfServiceProtection({ params, payload })
       }
 
-      if(rogueAp){
-        const {
-          reportThreshold,
-          roguePolicyId
-        } = formRef?.current?.getFieldsValue()
-
+      if(data?.rogueApEnabled){
         const payload = {
-          enabled: rogueAp,
-          reportThreshold,
-          roguePolicyId
+          enabled: data?.rogueApEnabled,
+          reportThreshold: data?.reportThreshold,
+          roguePolicyId: data?.roguePolicyId
         }
         await updateVenueRogueAp({ params, payload })
       }
@@ -132,8 +120,16 @@ export function SecurityTab () {
     }
   }
 
-  const handleChange = (data: any) => {
-    console.log(data)
+  const handleChange = () => {
+    setEditContextData({
+      ...editContextData,
+      isDirty: true
+    })
+    setEditSecurityContextData({
+      ...editSecurityContextData,
+      SecurityData: formRef.current?.getFieldsValue(),
+      updateSecurity: handleUpdateSecuritySettings
+    })
   }
   return (
     <StepsForm
@@ -271,7 +267,7 @@ export function SecurityTab () {
             name='roguePolicyId'
             label={$t({ defaultMessage: 'Report SNR Threshold:' })}
             style={{ width: '200px' }}
-            initialValue={selectOptions.filter(item => item.props.children === 'Default profile')}
+            initialValue={selected}
           >
             <Select
               children={selectOptions} />

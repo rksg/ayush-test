@@ -22,7 +22,8 @@ function VenueEditTabs () {
   const {
     editContextData,
     setEditContextData,
-    editNetworkingContextData
+    editNetworkingContextData,
+    editSecurityContextData
   } = useContext(VenueEditContext)
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -49,6 +50,7 @@ function VenueEditTabs () {
           editContextData,
           setEditContextData,
           editNetworkingContextData,
+          editSecurityContextData,
           intl,
           tx.retry
         )

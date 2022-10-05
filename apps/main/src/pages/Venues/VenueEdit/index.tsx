@@ -75,6 +75,7 @@ export function showUnsavedModal (
   editContextData: AdvancedSettingContext,
   setEditContextData: (data: AdvancedSettingContext) => void,
   editNetworkingContextData: NetworkingSettingContext,
+  editSecurityContextData: SecuritySettingContext,
   intl: IntlShape,
   callback?: () => void
 ) {
@@ -124,6 +125,10 @@ export function showUnsavedModal (
         }
         if(editNetworkingContextData?.updateMesh){
           editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
+        }
+      }else if(editContextData?.tabTitle === 'Security'){
+        if(editSecurityContextData?.updateSecurity){
+          editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
         }
       }
       callback?.()

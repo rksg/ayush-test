@@ -188,11 +188,11 @@ export const timezoneResult = {
   timeZoneName: 'Pacific Daylight Time'
 }
 
-export const venueSetting = { 
+export const venueSetting = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
   wifiFirmwareVersion: '6.2.0.103.486',
   countryCode: 'US',
-  mesh: { 
+  mesh: {
     enabled: true
   },
   bandBalancing: {
@@ -203,7 +203,7 @@ export const venueSetting = {
     radioParams6G: {
       method: 'CHANNELFLY',
       scanInterval: 20,
-      allowedChannels: 
+      allowedChannels:
       // eslint-disable-next-line max-len
       ['1','5','9','13','17','21','25','29','33','37','41','45','49','53','57','61','65','69','73','77','81','85','89','93','97','101','105','109','113','117','121','125','129','133','137','141','145','149','153','157','161','165','169','173','177','181','185','189','193','197','201','205','209','213','217','221'],
       channelBandwidth: 'AUTO',
@@ -514,3 +514,35 @@ export const networkDeepList = {
 }
 
 export const venueApsList = { fields: ['meshRole','serialNumber'],totalCount: 0,page: 1,data: [] }
+
+export const venueDosProtection = {
+  enabled: true,
+  blockingPeriod: 50,
+  failThreshold: 6,
+  checkPeriod: 30
+}
+
+export const venueRougeAp = {
+  enabled: true,
+  reportThreshold: 0,
+  roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
+export const venueRoguePolicy = [{
+  venues: [{ id: '3db73a30cd06490aaf4bca01a1eb8894',name: 'My-Venue' }],
+  name: 'Default profile',
+  rules: [
+    { name: 'Same Network Rule',type: 'SameNetworkRule',classification: 'Malicious',priority: 1 },
+    { name: 'Mac Spoofing Rule',type: 'MacSpoofingRule',classification: 'Malicious',priority: 2 },
+    { name: 'SSID Spoofing Rule',type: 'SsidSpoofingRule',classification: 'Malicious',priority: 3 },
+    { name: 'RTS Abuse Rule',type: 'RTSAbuseRule',classification: 'Malicious',priority: 4 },
+    { name: 'CTS Abuse Rule',type: 'CTSAbuseRule',classification: 'Malicious',priority: 5 },
+    { name: 'Deauth Flood Rule',type: 'DeauthFloodRule',classification: 'Malicious',priority: 6 },
+    { name: 'Disassoc Flood Rule',type: 'DisassocFloodRule',
+      classification: 'Malicious',priority: 7 },
+    { name: 'Excessive Power Rule',type: 'ExcessivePowerRule',
+      classification: 'Malicious',priority: 8 },
+    { name: 'Null SSID Rule',type: 'NullSSIDRule',classification: 'Malicious',priority: 9 },
+    { name: 'Adhoc',type: 'AdhocRule',classification: 'Unclassified',priority: 10 }],
+  id: '9700ca95e4be4a22857f0e4b621a685f' }
+]
