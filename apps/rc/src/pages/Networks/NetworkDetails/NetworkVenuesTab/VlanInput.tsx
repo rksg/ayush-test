@@ -25,7 +25,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { getVlanString, VlanDate } from './NetworkApGroupDialog'
 
-export function VlanInput ({ apgroup, network, onChange }: { apgroup: NetworkApGroup, network?:NetworkSaveData, onChange: (data: VlanDate) => void }) {
+export function VlanInput ({ apgroup, network, onChange }: { apgroup: NetworkApGroup, network?:NetworkSaveData|null , onChange: (data: VlanDate) => void }) {
   const { $t } = useIntl()
 
   const [isEditMode, setEditMode] = useState(false)

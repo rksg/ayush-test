@@ -72,7 +72,7 @@ const radioTypeEnumToString = (radioType: RadioTypeEnum) => {
 interface ApGroupModalProps extends AntdModalProps {
   networkVenue?: NetworkVenue
   venueName?: string
-  network?: NetworkSaveData
+  network?: NetworkSaveData | null
   formName: string
 }
 
