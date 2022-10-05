@@ -80,8 +80,9 @@ function HealthPill ({ filters, kpi, timeWindow }: {
   const { success, total } = queryResults.data as PillData
   const percent = total > 0 ? (success / total) * 100 : 0
   const { pillSuffix, description, thresholdDesc, thresholdFormatter } = pill
+  const countFormat = formatter('countFormat')
   const translatedDesc = description
-    ? $t(description, { successCount: success, totalCount: total })
+    ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total) })
     : ''
   const translatedThresholdDesc = []
   if (thresholdDesc.length) {
