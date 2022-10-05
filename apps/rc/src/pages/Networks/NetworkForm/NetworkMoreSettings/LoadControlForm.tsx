@@ -73,7 +73,7 @@ export function LoadControlForm () {
           defaultValue={100}
           min={1}
           max={512}
-          marks={{ 0: '0', 512: '512' }}
+          marks={{ 1: '1', 512: '512' }}
         />
       </Form.Item>
 
