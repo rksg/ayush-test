@@ -66,8 +66,8 @@ export enum NetworkImpactChartTypes {
   Radio,
   Reason,
   ClientManufacturer,
-  ApModel,
-  ApVersion,
+  APModel,
+  APVersion,
   OS
 }
 
@@ -144,7 +144,7 @@ export const networkImpactCharts = {
     },
     order: 2
   },
-  [NetworkImpactChartTypes.ApModel]: {
+  [NetworkImpactChartTypes.APModel]: {
     key: 'apModel',
     title: defineMessage({ defaultMessage: 'AP Model' }),
     dimension: 'apModels',
@@ -163,7 +163,7 @@ export const networkImpactCharts = {
     },
     order: 3
   },
-  [NetworkImpactChartTypes.ApVersion]: {
+  [NetworkImpactChartTypes.APVersion]: {
     key: 'apVersion',
     title: defineMessage({ defaultMessage: 'AP Version' }),
     dimension: 'apFwVersions',

@@ -29,8 +29,8 @@ export const CovClientrssiLow = (incident: Incident) => {
   const networkImpactCharts: NetworkImpactChartTypes[] = [
     NetworkImpactChartTypes.WLAN,
     NetworkImpactChartTypes.OS,
-    NetworkImpactChartTypes.ApModel,
-    NetworkImpactChartTypes.ApVersion,
+    NetworkImpactChartTypes.APModel,
+    NetworkImpactChartTypes.APVersion,
     NetworkImpactChartTypes.Radio
   ]
 
