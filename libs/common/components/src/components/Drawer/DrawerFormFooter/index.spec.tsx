@@ -1,10 +1,10 @@
-import { DrawerFormFooter } from "@acx-ui/components"
-import { render, screen, waitFor } from "@acx-ui/test-utils"
-import userEvent from "@testing-library/user-event"
+import { render, screen, waitFor } from '@acx-ui/test-utils'
+
+import { DrawerFormFooter } from '.'
 
 
 describe('DrawerFormFooter', () => {
-  it('should render footer', () => {
+  it('should render footer', async () => {
     const { asFragment, rerender } = render(
       <DrawerFormFooter
         onCancel={jest.fn()}
@@ -20,7 +20,7 @@ describe('DrawerFormFooter', () => {
         onSave={jest.fn()} />
     )
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: /Add another/i })).toBeInTheDocument()
     })
   })
