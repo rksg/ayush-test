@@ -14,6 +14,7 @@ import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
 import { HealthPageContextProvider } from './HealthPageContext'
 import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
+import { SummaryBoxes }              from './SummaryBoxes'
 
 const healthTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
 export type HealthTab = 'overview' | 'connection' | 'performance' | 'infrastructure'
@@ -52,8 +53,8 @@ export default function HealthPage () {
     <>
       <Header title={$t({ defaultMessage: 'Health' })} />
       <GridRow>
-        <GridCol col={{ span: 24 }} style={{ height: '105px' }}>
-          <div>Summary Boxes</div>
+        <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
+          <SummaryBoxes/>
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>

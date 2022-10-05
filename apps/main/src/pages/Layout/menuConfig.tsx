@@ -1,36 +1,41 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { genPlaceholder } from '@acx-ui/components'
+import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
 import {
-  AI as AIOriginal,
+  AIOutlined as AIOutlinedBase,
+  AISolid as AISolidBase,
   AccountCircleOutlined,
   AccountCircleSolid,
+  AdminOutlined,
+  AdminSolid as AdminSolidBase,
   CalendarDateOutlined,
   CalendarDateSolid,
-  ConfigurationOutlined,
-  ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
   LocationOutlined,
   LocationSolid,
   NetworksOutlined,
   NetworksSolid,
+  PoliciesOutlined,
+  PoliciesSolid as PoliciesSolidBase,
   ReportsOutlined,
   ReportsSolid,
   ServicesOutlined,
-  ServicesSolid,
+  ServicesSolid as ServicesSolidBase,
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
 
-const AI = styled(AIOriginal)`
-  path { stroke: none !important; }
-`
+const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
+const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
+const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
+const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
+const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig () {
   const { $t } = useIntl()
-  const config = [
+  const config: LayoutProps['menuConfig'] = [
     {
       path: '/dashboard',
       name: $t({ defaultMessage: 'Dashboard' }),
@@ -40,8 +45,8 @@ export function useMenuConfig () {
     {
       path: '/analytics',
       name: $t({ defaultMessage: 'AI Analytics' }),
-      inactiveIcon: AI,
-      activeIcon: AI,
+      inactiveIcon: AIOutlined,
+      activeIcon: AISolid,
       routes: [
         {
           path: '/analytics/incidents',
@@ -103,8 +108,8 @@ export function useMenuConfig () {
     {
       path: '/policies',
       name: $t({ defaultMessage: 'Policies' }),
-      inactiveIcon: ServicesOutlined,
-      activeIcon: ServicesSolid
+      inactiveIcon: PoliciesOutlined,
+      activeIcon: PoliciesSolid
     },
     {
       path: '/users',
@@ -116,8 +121,8 @@ export function useMenuConfig () {
     {
       path: '/administration',
       name: $t({ defaultMessage: 'Administration' }),
-      inactiveIcon: ConfigurationOutlined,
-      activeIcon: ConfigurationSolid
+      inactiveIcon: AdminOutlined,
+      activeIcon: AdminSolid
     }
   ]
   return config

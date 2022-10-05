@@ -35,32 +35,50 @@ const txpowerMapping = {
   _10DB: '-10dB',
   _MIN: 'Min'
 }
-const durations = {
-  years: 'y',
-  months: 'mo',
-  days: 'd',
-  hours: 'h',
-  minutes: 'm',
-  seconds: 's',
-  milliseconds: 'ms'
-}
+const durations = [
+  'years',
+  'months',
+  'days',
+  'hours',
+  'minutes',
+  'seconds',
+  'milliseconds'
+]
 
 const shorten = (value: number) => {
   return parseFloat(value.toPrecision(3)).toString()
 }
 
-function durationFormat (milliseconds: number) {
-  const results = []
+function durationFormat (milliseconds: number, intl: IntlShape) {
+  let results: Record<string, number> = {}
   let significance = 0
-  for (let scale in durations) {
+
+  const mapping = {
+    years_months: defineMessage({ defaultMessage: '{years} y {months} mo' }),
+    months_days: defineMessage({ defaultMessage: '{months} mo {days} d' }),
+    days_hours: defineMessage({ defaultMessage: '{days} d {hours} h' }),
+    hours_minutes: defineMessage({ defaultMessage: '{hours} h {minutes} m' }),
+    minutes_seconds: defineMessage({ defaultMessage: '{minutes} m {seconds} s' }),
+    seconds_milliseconds: defineMessage({ defaultMessage: '{seconds} s {milliseconds} ms' }),
+    years: defineMessage({ defaultMessage: '{years} y' }),
+    months: defineMessage({ defaultMessage: '{months} mo' }),
+    days: defineMessage({ defaultMessage: '{days} d' }),
+    hours: defineMessage({ defaultMessage: '{hours} h' }),
+    minutes: defineMessage({ defaultMessage: '{minutes} m' }),
+    seconds: defineMessage({ defaultMessage: '{seconds} s' }),
+    milliseconds: defineMessage({ defaultMessage: '{milliseconds} ms' })
+  }
+
+  for (let i = 0; i < durations.length; i++) {
+    const scale = durations[i]
     const value = moment.duration(milliseconds).get(scale as moment.unitOfTime.Base)
     if (value > 0) {
+      // to show decimal on seconds only
       if (scale === 'seconds' && significance === 0) {
-        // to show decimal on seconds only
-        results.push(shorten(milliseconds / 1000) + durations[scale])
+        results[scale] = parseFloat((milliseconds / 1000).toPrecision(3))
         break
       }
-      results.push(shorten(value) + durations[scale as keyof typeof durations])
+      results[scale] = parseFloat(value.toPrecision(3))
       if (++significance === 2) {
         break
       }
@@ -68,7 +86,8 @@ function durationFormat (milliseconds: number) {
       break
     }
   }
-  return results.length ? results.join(' ') : '0'
+  const intlMessage = Object.entries(mapping).find(([key]) => key.split('_').every(k => results[k]))
+  return intlMessage ? intl.$t(intlMessage[1], results) : '0'
 }
 
 function numberFormat (base: number, units: string[], value: number) {
