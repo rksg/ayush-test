@@ -15,6 +15,7 @@ import {
   incidentScope,
   getThreshold
 } from './incidents'
+import kpiThreshold from './kpiThreshold'
 
 import type { Incident } from './types/incidents'
 
@@ -78,7 +79,7 @@ describe('shortDescription', () => {
       sliceValue: 'Venue 1'
     })
     expect(shortDescription(incident))
-      .toEqual('Time to connect is greater than 2s in Venue: Venue 1')
+      .toEqual('Time to connect is greater than 2 seconds in Venue: Venue 1')
   })
 })
 
@@ -204,7 +205,7 @@ describe('impactValues', () => {
 
 describe('useGetThreshold', () => {
   it('should return the correct result for ttc', () => {
-    expect(getThreshold(fakeIncidentTtc)).toEqual('2s')
+    expect(getThreshold(fakeIncidentTtc)).toEqual(kpiThreshold.timeToConnect)
   })
   it('should return undefined when code does not match', () => {
     expect(getThreshold(fakeIncidentApInfraWanthroughput)).toEqual(undefined)
