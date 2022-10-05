@@ -13,6 +13,13 @@ import {
   MultiLineTimeSeriesChart
 } from '.'
 
+const markers = [{
+  startTime: +new Date('2020-11-01T00:00:00.000Z'),
+  endTime: +new Date('2020-11-05T00:00:00.000Z'),
+  data: { id: 1 },
+  itemStyle: { opacity: 0.3, color: '#FF00FF' }
+}]
+
 describe('MultiLineTimeSeriesChart', () => {
   mockDOMWidth()
 
@@ -57,12 +64,7 @@ describe('MultiLineTimeSeriesChart', () => {
   it('should render mark area if enabled', async () => {
     const { asFragment } = render(<MultiLineTimeSeriesChart
       data={getSeriesData()}
-      markers={[{
-        startTime: +new Date('2020-11-01T00:00:00.000Z'),
-        endTime: +new Date('2020-11-05T00:00:00.000Z'),
-        data: { id: 1 },
-        itemStyle: { opacity: 0.3, color: '#FF00FF' }
-      }]}
+      markers={markers}
     />)
     await waitFor(() => {
       expect(asFragment().querySelector('path[fill="#FF00FF"]')).not.toBeNull()
@@ -145,13 +147,6 @@ describe('useBrush', () => {
 })
 
 describe('useOnMarkAreaClick', () => {
-  const markers = [{
-    startTime: +new Date('2020-11-01T00:00:00.000Z'),
-    endTime: +new Date('2020-11-05T00:00:00.000Z'),
-    data: { id: 1 },
-    itemStyle: { opacity: 0.3, color: '#FF0000' }
-  }]
-
   it('handles null echart ref', () => {
     eChartsRef = { current: null } as RefObject<ReactECharts>
     renderHook(() => useOnMarkAreaClick(eChartsRef, markers, jest.fn()))
