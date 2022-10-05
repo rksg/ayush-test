@@ -8,7 +8,7 @@ import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import type { TimeStamp }           from '@acx-ui/types'
 import { formatter }                from '@acx-ui/utils'
 
-import { cssStr }              from '../../theme/helper'
+import { cssStr }       from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
@@ -18,8 +18,9 @@ import {
   axisLabelOptions,
   dateAxisFormatter,
   tooltipOptions,
-  timeSeriesTooltipFormatter
-} from '../Chart/helper'
+  timeSeriesTooltipFormatter,
+  getTimeSeriesSymbol
+}                       from '../Chart/helper'
 
 import type { ECharts, EChartsOption, MarkAreaComponentOption } from 'echarts'
 import type { EChartsReactProps }                               from 'echarts-for-react'
@@ -65,8 +66,6 @@ export interface MultiLineTimeSeriesChartProps <
     onBrushChange?: (range: TimeStamp[]) => void
     chartRef?: RefObject<ReactECharts>
   }
-
-
 
 export function useBrush<T> (
   eChartsRef: RefObject<ReactECharts>,
@@ -179,7 +178,7 @@ export function MultiLineTimeSeriesChart <
         data: datum.data,
         type: 'line',
         smooth: true,
-        symbol: 'none',
+        symbol: getTimeSeriesSymbol(data),
         z: 1,
         zlevel: 1,
         lineStyle: { width: 1 },

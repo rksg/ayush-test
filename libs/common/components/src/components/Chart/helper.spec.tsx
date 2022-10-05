@@ -1,14 +1,17 @@
+import { CallbackDataParams }     from 'echarts/types/dist/shared'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { renderHook } from '@acx-ui/test-utils'
-import { TimeStamp }  from '@acx-ui/types'
+import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { renderHook }          from '@acx-ui/test-utils'
+import { TimeStamp }           from '@acx-ui/types'
 
 import {
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
   stackedBarTooltipFormatter,
   donutChartTooltipFormatter,
-  getDeviceConnectionStatusColors
+  getDeviceConnectionStatusColors,
+  getTimeSeriesSymbol
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
@@ -22,6 +25,41 @@ describe('dateAxisFormatter', () => {
         month: '{MMM}',
         year: '{yyyy}'
       })
+  })
+})
+
+describe('getTimeSeriesSymbol', () => {
+  it('should return none for sysmbo', () => {
+    const series = [{
+      key: 'series1',
+      name: 'series1',
+      data: [
+        ['2022-04-07T09:15:00.000Z', 1],
+        ['2022-04-07T09:30:00.000Z', 2],
+        ['2022-04-07T09:45:00.000Z', 3],
+        ['2022-04-07T10:00:00.000Z', 4],
+        ['2022-04-07T10:15:00.000Z', 5]
+      ] as TimeSeriesChartData['data']
+    }]
+    expect(
+      getTimeSeriesSymbol(series)([], { seriesIndex: 0, dataIndex: 2 } as CallbackDataParams)
+    ).toEqual('none')
+  })
+  it('should return circle for sysmbo when single data point', () => {
+    const series = [{
+      key: 'series1',
+      name: 'series1',
+      data: [
+        ['2022-04-07T09:15:00.000Z', '-'],
+        ['2022-04-07T09:30:00.000Z', '-'],
+        ['2022-04-07T09:45:00.000Z', 3],
+        ['2022-04-07T10:00:00.000Z', '-'],
+        ['2022-04-07T10:15:00.000Z', '-']
+      ] as TimeSeriesChartData['data']
+    }]
+    expect(
+      getTimeSeriesSymbol(series)([], { seriesIndex: 0, dataIndex: 2 } as CallbackDataParams)
+    ).toEqual('circle')
   })
 })
 

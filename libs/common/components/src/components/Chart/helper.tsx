@@ -5,7 +5,8 @@ import {
   RegisteredSeriesOption,
   TooltipComponentOption
 } from 'echarts'
-import { renderToString } from 'react-dom/server'
+import { CallbackDataParams } from 'echarts/types/dist/shared'
+import { renderToString }     from 'react-dom/server'
 import {
   MessageDescriptor,
   IntlShape,
@@ -175,6 +176,18 @@ export const timeSeriesTooltipFormatter = (
     </UI.TooltipWrapper>
   )
 }
+
+export const getTimeSeriesSymbol = (data: TimeSeriesChartData[]) =>
+  (_: TimeSeriesChartData['data'], params: CallbackDataParams) => {
+    const series = data[params.seriesIndex!].data
+    if( params.dataIndex - 1 > 0
+        && typeof series[(params.dataIndex - 1) as number ][1] !== 'number'
+        && params.dataIndex + 1 < series.length
+        && typeof series[params.dataIndex + 1][1] !== 'number'){
+      return 'circle'
+    }
+    return 'none'
+  }
 
 export const stackedBarTooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null),
