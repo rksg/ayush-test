@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DrawerFormFooter should render footer 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-jSMfEi kRyGFb"
+  >
+    <div />
+    <div>
+      <button
+        class="ant-btn ant-btn-default"
+        type="button"
+      >
+        <span>
+          Cancel
+        </span>
+      </button>
+      <button
+        class="ant-btn ant-btn-primary"
+        type="button"
+      >
+        <span>
+          Save
+        </span>
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;

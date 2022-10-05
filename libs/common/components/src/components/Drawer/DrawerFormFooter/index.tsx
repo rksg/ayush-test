@@ -21,7 +21,7 @@ export const DrawerFormFooter = (props: DrawerFormFooterProps) => {
   const {
     showAddAnother = false,
     addAnotherChecked = false,
-    addAnotherText,
+    addAnotherText = $t({ defaultMessage: 'Add another' }),
     onAddAnotherChange,
     cancelText = $t({ defaultMessage: 'Cancel' }),
     saveText = $t({ defaultMessage: 'Save' }),

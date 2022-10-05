@@ -137,7 +137,8 @@ describe('MdnsProxyScope', () => {
     expect(scopeVenueData).toContainEqual(targetScopeData)
   })
 
-  it('should set activated APs when switch the AP table pagination', async () => {
+  jest.retryTimes(3)
+  it('should set activated APs when switching AP table page', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,

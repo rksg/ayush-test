@@ -102,7 +102,7 @@ describe('MdnsProxyScopeApDrawer', () => {
 
       return Promise.all(allCheckboxClicked)
     }, { timeout: 2000 })
-  })
+  }, 10000)
 
   it('should deactivate the AP by clicking switch component in Apply column', async () => {
     render(
