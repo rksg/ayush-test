@@ -147,8 +147,18 @@ exports[`ttc should render correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="TtcFailureChart,ClientCountChart,TtcByFailureTypeChart"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-TtcFailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-TtcByFailureTypeChart"
+          />
+        </div>
       </div>
     </div>
   </div>

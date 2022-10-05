@@ -3,9 +3,9 @@ import { fakeIncident1, mockFakeIncident }                from '@acx-ui/analytic
 import { Provider }                                       from '@acx-ui/store'
 import { mockDOMWidth, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { TimeSeries }           from '../../TimeSeries'
-import { TimeSeriesChartTypes } from '../../TimeSeries/config'
-import { Ttc }                  from '../Ttc'
+import { Ttc } from '../Ttc'
+
+import { mockTimeSeries } from './__tests__/fixtures'
 
 jest.mock('../../IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
@@ -17,18 +17,12 @@ jest.mock('../../NetworkImpact', () => ({
 jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
-jest.mock('../../TimeSeries', () => ({
-  ...jest.requireActual('../../TimeSeries'),
-  TimeSeries: jest.fn()
-}))
+jest.mock('../../TimeSeries')
 
 describe('ttc', () => {
   mockDOMWidth()
+  mockTimeSeries()
   it('should render correctly', () => {
-    (TimeSeries as unknown as jest.Mock)
-      .mockImplementation((props) =>
-        <div data-testid={props.charts
-          .map((chart: keyof typeof TimeSeriesChartTypes) => TimeSeriesChartTypes[chart])} />)
     const params = { incidentId: fakeIncident1.id }
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: { network: { hierarchyNode: {} } }
