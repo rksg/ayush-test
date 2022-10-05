@@ -1,13 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, RefCallback } from 'react'
+
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
 import { AnalyticsFilter, kpiConfig }                       from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, cssStr, NoData } from '@acx-ui/components'
-import type { TimeStamp }                                   from '@acx-ui/types'
+import type { TimeStamp, TimeStampRange }                                   from '@acx-ui/types'
 import { formatter }                                        from '@acx-ui/utils'
 
 import { KPITimeseriesResponse, useKpiTimeseriesQuery } from './services'
@@ -25,7 +25,12 @@ const transformResponse = ({ data, time }: KPITimeseriesResponse) => {
 export const formatYDataPoint = (data: number | unknown) =>
   data !== null ? formatter('percentFormat')(data) : '-'
 
-function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
+function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow }: { 
+  filters: AnalyticsFilter,
+  kpi: string,
+  chartRef: RefCallback<ReactECharts>,
+  setTimeWindow: { (timeWidow: TimeStampRange): void } | undefined
+}) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const queryResults = useKpiTimeseriesQuery(
@@ -38,13 +43,7 @@ function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: strin
         }]
       })
     })
-  const connectChart = (chart: ReactECharts | null) => {
-    if (chart) {
-      const instance = chart.getEchartsInstance()
-      instance.group = 'timeSeriesGroup'
-    }
-  }
-  useEffect(() => { connect('timeSeriesGroup') }, [])
+  
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
@@ -57,7 +56,8 @@ function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: strin
               dataFormatter={formatYDataPoint}
               yAxisProps={{ min: 0, max: 1 }}
               disableLegend
-              chartRef={connectChart}
+              chartRef={chartRef}
+              onDataZoom={setTimeWindow}
             />
             : <NoData/>
         )}

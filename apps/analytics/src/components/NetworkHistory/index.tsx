@@ -13,9 +13,7 @@ import {
   cssStr,
   NoData
 } from '@acx-ui/components'
-import { TimeStamp } from '@acx-ui/types'
-
-import { TimeWindow } from '../../pages/Health/HealthPageContext'
+import { TimeStamp, TimeStampRange } from '@acx-ui/types'
 
 import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
@@ -27,7 +25,7 @@ interface NetworkHistoryWidgetComponentProps {
   type?: CardTypes;
   filters: IncidentFilter;
   hideIncidents?: boolean;
-  brush?: { timeWindow: TimeWindow, setTimeWindow: (range: TimeWindow) => void }
+  brush?: { timeWindow: TimeStampRange, setTimeWindow: (range: TimeStampRange) => void }
 }
 
 const NetworkHistoryWidget = forwardRef<

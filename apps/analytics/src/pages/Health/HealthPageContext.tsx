@@ -6,13 +6,12 @@ import {
   useAnalyticsFilter,
   AnalyticsFilter
 } from '@acx-ui/analytics/utils'
-import { TimeStamp } from '@acx-ui/types'
+import { TimeStamp, TimeStampRange } from '@acx-ui/types'
 
-export type TimeWindow = [TimeStamp, TimeStamp]
 
 export interface HealthFilter extends AnalyticsFilter {
-  timeWindow: TimeWindow
-  setTimeWindow: (timeWindow: TimeWindow) => void
+  timeWindow: TimeStampRange
+  setTimeWindow: (timeWindow: TimeStampRange) => void
 }
 
 export const HealthPageContext = createContext(null as unknown as HealthFilter)
@@ -20,7 +19,7 @@ export const HealthPageContext = createContext(null as unknown as HealthFilter)
 export const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
 export const isAfter = (a: TimeStamp, b: TimeStamp) => moment(a).isAfter(b)
 
-export const formatTimeWindow = (window: TimeWindow, defaultWindow: TimeWindow) => {
+export const formatTimeWindow = (window: TimeStampRange, defaultWindow: TimeStampRange) => {
   if (typeof window[0] === 'number') {
     window[0] = moment(window[0]).format()
   }
@@ -43,9 +42,9 @@ export const formatTimeWindow = (window: TimeWindow, defaultWindow: TimeWindow) 
 export function HealthPageContextProvider (props: { children: ReactNode }) {
   const analyticsFilter = useAnalyticsFilter()
   const { startDate, endDate } = analyticsFilter.filters
-  const [timeWindow, setTimeWindow] = useState<TimeWindow>([startDate, endDate])
+  const [timeWindow, setTimeWindow] = useState<TimeStampRange>([startDate, endDate])
 
-  const setTimeWindowCallback = useCallback((window: TimeWindow) => {
+  const setTimeWindowCallback = useCallback((window: TimeStampRange) => {
     const formattedWindow = formatTimeWindow(window, [startDate, endDate])
     setTimeWindow(formattedWindow)
   }, [startDate, endDate])
