@@ -67,7 +67,8 @@ describe('MultiLineTimeSeriesChart', () => {
       markers={markers}
     />)
     await waitFor(() => {
-      expect(asFragment().querySelector('path[fill="#FF00FF"]')).not.toBeNull()
+      const markAreaPaths = asFragment().querySelectorAll('path[fill="#FF00FF"]')
+      expect(markAreaPaths.length).toEqual(1)
     })
   })
 })
