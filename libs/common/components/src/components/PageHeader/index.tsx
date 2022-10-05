@@ -8,7 +8,7 @@ import {
 } from 'antd'
 import _ from 'lodash'
 
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, TenantType } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -17,7 +17,7 @@ export interface PageHeaderProps
 {
   title: string,
   titleExtra?: React.ReactNode,
-  breadcrumb?: { text: string, link: string }[]
+  breadcrumb?: { text: string, link: string, tenantType?: TenantType }[]
 }
 
 function PageHeader (props: PageHeaderProps) {
@@ -33,7 +33,8 @@ function PageHeader (props: PageHeaderProps) {
     pageHeaderProps.breadcrumb = <Breadcrumb>
       {props.breadcrumb.map((breadcrumb, index) => {
         return <Breadcrumb.Item key={index}>
-          <TenantLink to={breadcrumb.link}>{breadcrumb.text}</TenantLink>
+          <TenantLink to={breadcrumb.link}
+            tenantType={breadcrumb.tenantType}>{breadcrumb.text}</TenantLink>
         </Breadcrumb.Item>
       })}
       <Breadcrumb.Item key='last'>&nbsp;</Breadcrumb.Item>

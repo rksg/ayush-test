@@ -20,6 +20,7 @@ function useColumns () {
       dataIndex: 'name',
       key: 'name',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
       render: function (data) {
         return (
@@ -135,7 +136,8 @@ export function Integrators () {
             customContent: {
               action: 'DELETE',
               entityName: $t({ defaultMessage: 'Integrator' }),
-              entityValue: name
+              entityValue: name,
+              confirmationText: $t({ defaultMessage: 'Delete' })
             },
             onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
               .then(clearSelection)
@@ -169,7 +171,7 @@ export function Integrators () {
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <TenantLink to='/mspcustomers/create' key='add'>
+          <TenantLink to='/integrators/create' tenantType='v' key='add'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
           </TenantLink>,
           <Button key='download' icon={<DownloadOutlined />} />

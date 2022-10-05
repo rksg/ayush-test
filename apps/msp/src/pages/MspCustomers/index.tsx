@@ -3,10 +3,13 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
+  cssStr,
+  deviceStatusColors,
   Loader,
   PageHeader,
   showActionModal,
   showToast,
+  StackedBarChart,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -34,6 +37,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Customers' }),
       dataIndex: 'name',
       key: 'name',
+      searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data) {
@@ -52,7 +56,8 @@ function useColumns () {
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'streetAddress',
       key: 'streetAddress',
-      sorter: true
+      sorter: true,
+      show: false
     },
     {
       title: $t({ defaultMessage: 'Active Alarm' }),
@@ -69,9 +74,8 @@ function useColumns () {
       dataIndex: 'activeIncindents',
       key: 'activeIncindents',
       sorter: true,
-      align: 'center',
       render: function () {
-        return '0'
+        return getEmptyStatusChart()
       }
     },
     {
@@ -91,6 +95,7 @@ function useColumns () {
       dataIndex: 'mspEcAdminCount',
       key: 'mspEcAdminCount',
       sorter: true,
+      show: false,
       align: 'center'
     },
     {
@@ -210,6 +215,23 @@ const transformExpirationDate = (row: MspEc) => {
   return expirationDate
 }
 
+function getEmptyStatusChart () {
+  return <StackedBarChart
+    style={{ height: 10, width: 100 }}
+    data={[{
+      category: 'emptyStatus',
+      series: [{
+        name: '',
+        value: 1
+      }]
+    }]}
+    showTooltip={false}
+    showLabels={false}
+    showTotal={false}
+    barColors={[cssStr(deviceStatusColors.empty)]}
+  />
+}
+
 const defaultPayload = {
   searchString: '',
   filters: { tenantType: ['MSP_EC'] },
@@ -264,7 +286,8 @@ export function MspCustomers () {
             customContent: {
               action: 'DELETE',
               entityName: $t({ defaultMessage: 'EC' }),
-              entityValue: name
+              entityValue: name,
+              confirmationText: $t({ defaultMessage: 'Delete' })
             },
             onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
               .then(clearSelection)
@@ -297,7 +320,7 @@ export function MspCustomers () {
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <TenantLink to='/mspcustomers/create' key='addMspEc'>
+          <TenantLink to='/dashboard/mspcustomers/create' tenantType='v' key='addMspEc'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </TenantLink>,
           <Button key='download' icon={<DownloadOutlined />} />

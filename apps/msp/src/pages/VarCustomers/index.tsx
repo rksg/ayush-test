@@ -1,57 +1,100 @@
+import { useState } from 'react'
+
+import { Divider }   from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import {
+  Button,
+  cssStr,
+  deviceStatusColors,
+  Loader,
+  PageHeader,
+  StackedBarChart,
+  Table,
+  TableProps
+} from '@acx-ui/components'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
-  useVarCustomerListQuery
-  // useInviteCustomerListQuery
+  useVarCustomerListQuery,
+  useInviteCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
   DelegationEntitlementRecord,
   EntitlementNetworkDeviceType,
   EntitlementUtil,
-  MspEc,
+  VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-// function useInvitaionColumns () {
-//   const { $t } = useIntl()
+function useInvitaionColumns () {
+  const { $t } = useIntl()
 
-//   const columnsPendingInvitaion: TableProps<MspEc>['columns'] = [
-//     {
-//       title: $t({ defaultMessage: 'Account Name' }),
-//       dataIndex: 'tenantName',
-//       sorter: true,
-//       defaultSortOrder: 'ascend' as SortOrder,
-//       render: function (data, row) {
-//         return (
-//           <TenantLink to={``}>{data}</TenantLink>
-//         )
-//       }
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Account Email' }),
-//       dataIndex: 'tenantEmail',
-//       sorter: true
-//     }
-//   ]
-//   return columnsPendingInvitaion
-// }
+  function onAcceptInvite (row: VarCustomer) {
+    return <>
+      <Button onClick={() => handleReject(row)}>{$t({ defaultMessage: 'Reject' })}</Button>
+      <Button onClick={() => handleAccept(row)}
+        type='secondary'
+        style={{ marginLeft: 10 }}>{$t({ defaultMessage: 'Accept' })}</Button>
+    </>
+  }
+
+  const handleReject = (row: VarCustomer) => {
+    const name = row.tenantName
+    alert('tenant ' + name + 'rejected')
+  }
+
+  const handleAccept = (row: VarCustomer) => {
+    const name = row.tenantName
+    alert('tenant ' + name + 'accepted')
+  }
+
+  const columnsPendingInvitaion: TableProps<VarCustomer>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Account Name' }),
+      dataIndex: 'tenantName',
+      key: 'tenantName',
+      sorter: true,
+      defaultSortOrder: 'ascend' as SortOrder,
+      render: function (data) {
+        return (
+          <TenantLink to={''}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Account Email' }),
+      dataIndex: 'tenantEmail',
+      key: 'tenantEmail',
+      sorter: true
+    },
+    {
+      dataIndex: 'acceptInvite',
+      key: 'acceptInvite',
+      width: 220,
+      render: function (data, row) {
+        return onAcceptInvite(row)
+      }
+    }
+  ]
+
+  return columnsPendingInvitaion
+}
 
 function useCustomerColumns () {
   const { $t } = useIntl()
 
-  const columns: TableProps<MspEc>['columns'] = [
+  const columns: TableProps<VarCustomer>['columns'] = [
     {
       title: $t({ defaultMessage: 'Customer' }),
       dataIndex: 'tenantName',
       key: 'tenantName',
+      searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
       render: function (data) {
@@ -83,9 +126,21 @@ function useCustomerColumns () {
       dataIndex: 'activeIncindents',
       key: 'activeIncindents',
       sorter: true,
-      align: 'center',
       render: function () {
-        return '0'
+        return <StackedBarChart
+          style={{ height: 10, width: 100 }}
+          data={[{
+            category: 'emptyStatus',
+            series: [{
+              name: '',
+              value: 1
+            }]
+          }]}
+          showTooltip={false}
+          showLabels={false}
+          showTotal={false}
+          barColors={[cssStr(deviceStatusColors.empty)]}
+        />
       }
     },
     {
@@ -126,7 +181,7 @@ function useCustomerColumns () {
   return columns
 }
 
-const transformApUtilization = (row: MspEc) => {
+const transformApUtilization = (row: VarCustomer) => {
   const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
     en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
   if (entitlement.length > 0) {
@@ -144,7 +199,7 @@ const transformApUtilization = (row: MspEc) => {
   return '0%'
 }
 
-const transformNextExpirationDate = (row: MspEc) => {
+const transformNextExpirationDate = (row: VarCustomer) => {
   let expirationDate = '--'
   let toBeRemoved = ''
   const entitlements = row.entitlements
@@ -166,57 +221,59 @@ const transformNextExpirationDate = (row: MspEc) => {
   return `${expirationDate} (${toBeRemoved})`
 }
 
-// const invitationPayload = {
-//   searchString: '',
-//   fields: ['tenantName', 'tenantEmail'],
-//   filters: {
-//     status: ['DELEGATION_STATUS_INVITED'],
-//     delegationType: ['DELEGATION_TYPE_VAR'],
-//     isValid: [true]
-//   }
-// }
-
-const varCustomerPayload = {
-  searchString: '',
-  fields: [
-    'tenantName',
-    'tenantEmail',
-    'alarmCount',
-    'priorityIncidents',
-    'apEntitlement.quantity',
-    'apEntitlement',
-    'switchEntitlement',
-    'nextExpirationLicense',
-    'id'],
-  searchTargetFields: ['tenantName', 'tenantEmail'],
-  filters: {
-    status: ['DELEGATION_STATUS_ACCEPTED'],
-    delegationType: ['DELEGATION_TYPE_VAR'],
-    isValid: [true]
-  }
-}
-
 export function VarCustomers () {
   const { $t } = useIntl()
+  const [inviteCount, setInviteCount] = useState(0)
+  const [ search, setSearch ] = useState('')
 
-  // const PendingInvitaion = () => {
-  //   const tableQuery = useTableQuery({
-  //     useQuery: useInviteCustomerListQuery,
-  //     defaultPayload: invitationPayload
-  //   })
+  const invitationPayload = {
+    searchString: '',
+    fields: ['tenantName', 'tenantEmail'],
+    filters: {
+      status: ['DELEGATION_STATUS_INVITED'],
+      delegationType: ['DELEGATION_TYPE_VAR'],
+      isValid: [true]
+    }
+  }
 
-  //   return (
-  //     <Loader states={[tableQuery]}>
-  //       <Table
-  //         columns={useInvitaionColumns()}
-  //         dataSource={tableQuery.data?.data}
-  //         pagination={tableQuery.pagination}
-  //         onChange={tableQuery.handleTableChange}
-  //         rowKey='id'
-  //       />
-  //     </Loader>
-  //   )
-  // }
+  const PendingInvitaion = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useInviteCustomerListQuery,
+      defaultPayload: invitationPayload
+    })
+    setInviteCount(tableQuery.data?.totalCount as number)
+    return (
+      <Loader states={[tableQuery]}>
+        <Table
+          columns={useInvitaionColumns()}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+        />
+      </Loader>
+    )
+  }
+
+  const varCustomerPayload = {
+    searchString: '',
+    fields: [
+      'tenantName',
+      'tenantEmail',
+      'alarmCount',
+      'priorityIncidents',
+      'apEntitlement.quantity',
+      'apEntitlement',
+      'switchEntitlement',
+      'nextExpirationLicense',
+      'id'],
+    searchTargetFields: ['tenantName', 'tenantEmail'],
+    filters: {
+      status: ['DELEGATION_STATUS_ACCEPTED'],
+      delegationType: ['DELEGATION_TYPE_VAR'],
+      isValid: [true]
+    }
+  }
 
   const VarCustomerTable = () => {
     const tableQuery = useTableQuery({
@@ -226,6 +283,11 @@ export function VarCustomers () {
 
     return (
       <Loader states={[tableQuery]}>
+        <div style={{ display: 'flex', direction: 'ltr', width: '400px', float: 'left' }}>
+          <Button style={{ position: 'absolute', right: 0 }}
+            key='download'
+            icon={<DownloadOutlined />} />
+        </div><hr/>
         <Table
           columns={useCustomerColumns()}
           dataSource={tableQuery.data?.data}
@@ -248,16 +310,10 @@ export function VarCustomers () {
         ]}
       />
 
-      {/* <PageHeader
-        title={$t({ defaultMessage: 'Pending Invitations' })}
-      />
-      <PendingInvitaion /> */}
-      <PageHeader
-        title=''
-        extra={[
-          <Button key='download' icon={<DownloadOutlined />} />
-        ]}
-      />
+      <h3>{$t({ defaultMessage: 'Pending Invitations' })} ({inviteCount})</h3>
+      <PendingInvitaion />
+      <Divider/>
+
       <VarCustomerTable />
     </>
   )

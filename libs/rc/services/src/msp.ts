@@ -6,7 +6,12 @@ import {
   RequestPayload,
   TableResult,
   CommonResult,
-  MspEc, EcDeviceInventory
+  MspAdministrator,
+  MspAssignmentSummary,
+  MspEntitlement,
+  MspEntitlementSummary,
+  MspEc, EcDeviceInventory,
+  VarCustomer
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -38,7 +43,7 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
-    varCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
+    varCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
         const varCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
         return {
@@ -48,7 +53,7 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
-    inviteCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
+    inviteCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
         const inviteCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
         return {
@@ -68,6 +73,46 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    mspAdminList: build.query<MspAdministrator[], RequestPayload>({
+      query: ({ params }) => {
+        const mspAdminListReq =
+          createHttpRequest(MspUrlsInfo.getAdministrators, params)
+        return {
+          ...mspAdminListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    mspEntitlementList: build.query<MspEntitlement[], RequestPayload>({
+      query: ({ params }) => {
+        const mspEntitlementListReq =
+          createHttpRequest(MspUrlsInfo.getMspEntitlement, params)
+        return {
+          ...mspEntitlementListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    mspEntitlementSummary: build.query<MspEntitlementSummary[], RequestPayload>({
+      query: ({ params }) => {
+        const mspEntitlementSummaryReq =
+          createHttpRequest(MspUrlsInfo.getMspEntitlementSummary, params)
+        return {
+          ...mspEntitlementSummaryReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    mspAssignmentSummary: build.query<MspAssignmentSummary[], RequestPayload>({
+      query: ({ params }) => {
+        const mspAssignmentSummaryReq =
+          createHttpRequest(MspUrlsInfo.getMspAssignmentSummary, params)
+        return {
+          ...mspAssignmentSummaryReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -76,5 +121,9 @@ export const {
   useDeleteMspEcMutation,
   useVarCustomerListQuery,
   useInviteCustomerListQuery,
-  useDeviceInventoryListQuery
+  useDeviceInventoryListQuery,
+  useMspAdminListQuery,
+  useMspEntitlementListQuery,
+  useMspEntitlementSummaryQuery,
+  useMspAssignmentSummaryQuery
 } = mspApi
