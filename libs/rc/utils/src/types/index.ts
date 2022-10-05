@@ -297,7 +297,7 @@ export interface CloudpathServer {
     id: string
     primary: RadiusService
   }
-  accountingRadiu?: {
+  accountingRadius?: {
     id: string
     primary: RadiusService
   }
