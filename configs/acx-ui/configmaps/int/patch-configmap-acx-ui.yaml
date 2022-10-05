@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: configmap-rc-ui-acx
+  name: configmap-acx-ui
 data:
     captive.portal.domain.name: "intalto.ruckuswireless.com"
     google.maps.key: "AIzaSyB39cAm6pQ7R8xRtcJNDWUxLjWPKGT_jHQ"

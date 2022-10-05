@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: configmap-rc-ui-acx
+  name: configmap-acx-ui
 data:
     splitio.ff.key: "mv0ie7nqslfon47mabelfdloqdem1alfctqp"
     google.maps.key: "AIzaSyCO5O4se2-GDzFXqfUFAMDZHycyZfugqSc"

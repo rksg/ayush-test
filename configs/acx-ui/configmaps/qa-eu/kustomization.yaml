@@ -3,4 +3,4 @@ kind: Kustomization
 bases:
   - ../base
 patchesStrategicMerge:
-  - patch-configmap-rc-ui-acx.yaml
+  - patch-configmap-acx-ui.yaml
