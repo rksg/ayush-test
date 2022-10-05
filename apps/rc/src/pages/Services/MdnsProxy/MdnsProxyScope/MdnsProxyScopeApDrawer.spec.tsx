@@ -62,7 +62,9 @@ describe('MdnsProxyScopeApDrawer', () => {
     await within(activatedRow).findByRole('switch', { checked: true })
   })
 
-  it('should activate the APs by clicking Activate row action', async () => {
+  it('should activate the AP by clicking Activate row action', async () => {
+    const targetAp = mockedApList.data[0]
+
     render(
       <Provider>
         <MdnsProxyScopeApDrawer
@@ -77,32 +79,20 @@ describe('MdnsProxyScopeApDrawer', () => {
       }
     )
 
-    // eslint-disable-next-line max-len
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    // Click all the records
-    await waitFor(() => {
-      const allCheckboxClicked = mockedApList.data.map(async ap => {
-        const row = await screen.findByRole('row', { name: new RegExp(ap.name) })
-        return userEvent.click(within(row).getByRole('checkbox'))
-      })
+    // Select the checkbox in the row
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetAp.name) })
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
 
-      return Promise.all(allCheckboxClicked)
-    }, { timeout: 2000 })
-
+    // Click Activate button in the row actions
     await userEvent.click(await screen.findByRole('button', { name: 'Activate' }))
 
     // Check if each record is activated
     await waitFor(() => {
-      const allCheckboxClicked = mockedApList.data.map(async ap => {
-        const row = await screen.findByRole('row', { name: new RegExp(ap.name) })
-        const activatedAp = await within(row).findByRole('switch')
-        expect(activatedAp).toBeChecked()
-      })
-
-      return Promise.all(allCheckboxClicked)
-    }, { timeout: 2000 })
-  }, 10000)
+      expect(within(targetRow).getByRole('switch')).toBeChecked()
+    })
+  })
 
   it('should deactivate the AP by clicking switch component in Apply column', async () => {
     render(
