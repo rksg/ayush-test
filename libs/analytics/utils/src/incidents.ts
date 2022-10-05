@@ -83,13 +83,6 @@ export function nodeTypes (nodeType: NodeType): string {
   }
 }
 
-export const useImpactValues =
-  <Type extends 'ap' | 'client'> (type: Type, incident: Incident):
-  Record<string, string | number | null | {}> => {
-    const values = impactValues(type, incident)
-    return values
-  }
-
 function formattedNodeName (
   node: PathNode,
   sliceValue: string

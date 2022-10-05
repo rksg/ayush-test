@@ -11,7 +11,6 @@ import {
   nodeTypes,
   formattedPath,
   impactedArea,
-  useImpactValues,
   shortDescription,
   incidentScope,
   getThreshold
@@ -144,9 +143,9 @@ describe('impactedArea', () => {
     expect(impactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
   })
 
-  describe('useImpactValues', () => {
+  describe('impactValues', () => {
     it('returns object for invalid count & impactArea', () => {
-      expect(useImpactValues('client', fakeIncident1)).toMatchObject({
+      expect(impactValues('client', fakeIncident1)).toMatchObject({
         clientImpactDescription: '5 of 27 clients (18.52%)'
       })
     })
