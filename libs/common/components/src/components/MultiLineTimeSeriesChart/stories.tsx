@@ -5,9 +5,11 @@ import { storiesOf }        from '@storybook/react'
 import { connect }          from 'echarts'
 import ReactECharts         from 'echarts-for-react'
 
+import { incidentSeverities }                from '@acx-ui/analytics/utils'
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
 import type { TimeStamp, TimeStampRange }    from '@acx-ui/types'
 
+import { cssStr } from '../../theme/helper'
 import { Button } from '../Button'
 
 import { MultiLineTimeSeriesChart } from '.'
@@ -18,7 +20,7 @@ const getData = () => {
   const data = [[base, Math.random() * 3000]]
   for (let i = 1; i < 37; i++) {
     const value = Math.round((Math.random()-0.5) * 250 + data[i - 1][1])
-    const displayValue = (Math.random() > 0.20) ? value : null
+    const displayValue = value
     data.push([base + oneDay * i, displayValue as number])
   }
   return data as [TimeStamp, number][]
@@ -106,22 +108,37 @@ storiesOf('MultiLineTimeSeriesChart', module)
     onDataZoom={(range) => { console.log(range.map(r => new Date(r).toISOString())) }}
   />)
 
-  .add('With Marked Areas', () => <MultiLineTimeSeriesChart
+  .add('With Mark Areas', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
     markers={[{
       startTime: +new Date('2020-11-01T00:00:00.000Z'),
       endTime: +new Date('2020-11-05T00:00:00.000Z'),
       data: { id: 1 },
-      itemStyle: { opacity: 0.2, color: '#FF0000' }
+      itemStyle: { opacity: 0.3, color: cssStr(incidentSeverities.P1.color) }
+    }, {
+      startTime: +new Date('2020-11-07T00:00:00.000Z'),
+      endTime: +new Date('2020-11-08:00:00.000Z'),
+      data: { id: 2 },
+      itemStyle: { opacity: 0.3, color: cssStr(incidentSeverities.P4.color) }
+    }, {
+      startTime: +new Date('2020-11-13T00:00:00.000Z'),
+      endTime: +new Date('2020-11-15T00:00:00.000Z'),
+      data: { id: 3 },
+      itemStyle: { opacity: 1, color: cssStr(incidentSeverities.P1.color) }
     }, {
       startTime: +new Date('2020-11-20T00:00:00.000Z'),
+      endTime: +new Date('2020-11-23T00:00:00.000Z'),
+      data: { id: 4 },
+      itemStyle: { opacity: 0.3, color: cssStr(incidentSeverities.P3.color) }
+    }, {
+      startTime: +new Date('2020-11-26T00:00:00.000Z'),
       endTime: +new Date('2020-11-30T00:00:00.000Z'),
-      data: { id: 2 },
-      itemStyle: { opacity: 0.2, color: '#0000FF' }
+      data: { id: 5 },
+      itemStyle: { opacity: 0.3, color: cssStr(incidentSeverities.P2.color) }
     }]}
     // eslint-disable-next-line no-console
-    onMarkedAreaClick={(data) => { console.log(data) }}
+    onMarkAreaClick={(data) => { console.log(data) }}
   />)
 
   .add('With Brush', () => <MultiLineTimeSeriesChart

@@ -26,11 +26,12 @@ describe('useDataZoom', () => {
   it('handles null echart ref', () => {
     eChartsRef = { current: null } as RefObject<ReactECharts>
     renderHook(() => useDataZoom(eChartsRef, true, getSeriesData()))
+    // intentionally no assertion to cover the line where echart ref is null
   })
 
   it('does not dispatch action if zoom is not enabled', () => {
     renderHook(() => useDataZoom(eChartsRef, false, getSeriesData()))
-    expect(eChartsRef.current?.getEchartsInstance().dispatchAction).not.toBeCalled()
+    expect(mockDispatchActionFn).not.toBeCalled()
   })
 
   it('dispatches action to select zoom', () => {
