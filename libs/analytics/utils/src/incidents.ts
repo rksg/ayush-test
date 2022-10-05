@@ -1,7 +1,7 @@
 import { capitalize }    from 'lodash'
 import { defineMessage } from 'react-intl'
 
-import { formatter, intlFormats, getIntl, PathNode, NodeType } from '@acx-ui/utils'
+import { intlFormats, PathNode, NodeType, getIntl, formatter } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
 import { kpiConfig }           from './HealthKPIConfig'
@@ -14,7 +14,6 @@ import type {
   SeverityRange,
   Incident
 } from './types/incidents'
-
 
 /**
  * Uses to transform incident record loaded from API and

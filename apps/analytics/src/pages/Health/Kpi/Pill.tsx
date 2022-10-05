@@ -1,10 +1,14 @@
-import { sum } from 'lodash'
-import { MessageDescriptor, useIntl, defineMessage } from 'react-intl'
+import { sum }     from 'lodash'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
+
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { formatter } from '@acx-ui/utils'
-import { ProgressPill, Loader, Card} from '@acx-ui/components'
-import { InformationOutlined } from '@acx-ui/icons'
+import { ProgressPill, Loader }       from '@acx-ui/components'
+import { InformationOutlined }        from '@acx-ui/icons'
+import { formatter }                  from '@acx-ui/utils'
+
 import * as UI from '../styledComponents'
+
 import {
   useKpiHistogramQuery,
   useKpiTimeseriesQuery,
@@ -14,11 +18,20 @@ import {
 
 type PillData = { success: number, total: number }
 
-const transformTSResponse = ({ data }: KPITimeseriesResponse) : PillData => {
-  const [success, total] = data.reduce(([success, total], datum) => (
-    datum && datum.length && (datum[0] !== null && datum[1] !== null )
-      ? [success + datum[0], total + datum[1]] : [success, total]
-  ), [0, 0])
+const transformTSResponse = (
+  { data, time }: KPITimeseriesResponse,
+  window: { startDate: string, endDate: string }
+) : PillData => {
+  const [success, total] = data
+    .filter((_, index) =>
+      moment(time[index]).isBetween(
+        moment(window.startDate), moment(window.endDate), undefined, '[]'
+      )
+    )
+    .reduce(([success, total], datum) => (
+      datum && datum.length && (datum[0] !== null && datum[1] !== null )
+        ? [success + datum[0], total + datum[1]] : [success, total]
+    ), [0, 0])
   return { success, total }
 }
 
@@ -37,24 +50,30 @@ const tranformHistResponse = (
 }
 const formatPillText = (value: number = 0, suffix: string) => suffix
   ? `${formatter('percentFormatRound')(value / 100)} ${suffix}`
-  : `${formatter('percentFormatRound')(value/ 100)}`
+  : `${formatter('percentFormatRound')(value / 100)}`
 
-function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
+function HealthPill ({ filters, kpi, timeWindow }: {
+  filters: AnalyticsFilter, kpi: string, timeWindow: [string, string]
+}) {
   const { histogram, pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { $t } = useIntl()
+  const [ startDate, endDate ] = timeWindow
   let queryResults
   if (histogram) {
-    queryResults = useKpiHistogramQuery({ ...filters, kpi }, {
-      selectFromResult: ({ data, ...rest }) => ({
-        ...rest,
-        data: data ? tranformHistResponse({ ...data!, kpi }) : { success: 0, total: 0 }
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    queryResults = useKpiHistogramQuery(
+      { ...filters, startDate, endDate, kpi }, {
+        selectFromResult: ({ data, ...rest }) => ({
+          ...rest,
+          data: data ? tranformHistResponse({ ...data!, kpi }) : { success: 0, total: 0 }
+        })
       })
-    })
   } else {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     queryResults = useKpiTimeseriesQuery({ ...filters, kpi }, {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
-        data: data ? transformTSResponse(data!) : { success: 0, total: 0 }
+        data: data ? transformTSResponse(data!, { startDate, endDate }) : { success: 0, total: 0 }
       })
     })
   }
@@ -71,16 +90,19 @@ function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }
     translatedThresholdDesc.push(
       $t(
         thresholdDesc[1],
-        { 
+        {
           threshold: thresholdFormatter ? thresholdFormatter(initialThreshold) : initialThreshold
         }
       )
     )
   }
   return <Loader states={[queryResults]} key={kpi}>
-    <UI.PillTitle><span>{text}</span><span><InformationOutlined /></span></UI.PillTitle>
+    <UI.PillTitle><span>{$t(text)}</span><span><InformationOutlined /></span></UI.PillTitle>
     <UI.PillWrap>
-      <ProgressPill percent={percent} formatter={value => formatPillText(value, pillSuffix)}/>
+      <ProgressPill
+        percent={percent}
+        formatter={value => formatPillText(value, pillSuffix && $t(pillSuffix))}
+      />
     </UI.PillWrap>
     <UI.PillDesc>{translatedDesc}</UI.PillDesc>
     {translatedThresholdDesc.length > 0 &&

@@ -11,7 +11,7 @@ export type KPITimeseriesResponse = {
   time: string[]
 }
 
-interface Response <TimeSeriesData> {
+interface TimeseriesResponse <TimeSeriesData> {
   timeSeries: TimeSeriesData
 }
 export type KPIHistogramResponse = {
@@ -67,7 +67,7 @@ export const timeseriesApi = dataApi.injectEndpoints({
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
-      transformResponse: (response: Response<KPITimeseriesResponse>) =>
+      transformResponse: (response: TimeseriesResponse<KPITimeseriesResponse>) =>
         response.timeSeries
     })
   })
@@ -76,7 +76,7 @@ const getHistogramQuery = (kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { apiMetric, splits } = Object(config).histogram
   return `
-    query pillKPI($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
+    query histogramKPI($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
       histogram: histogram(path: $path, start: $start, end: $end) {
         data: ${apiMetric}(splits: [${splits.join(', ')}])
       }
