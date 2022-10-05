@@ -84,7 +84,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           defaultMessage: 'Type',
           description: 'Path node type'
         }),
-        children: intl.$t(nodeTypes(incident.sliceType))
+        children: nodeTypes(incident.sliceType)
       })
     },
     [Attributes.Scope]: {

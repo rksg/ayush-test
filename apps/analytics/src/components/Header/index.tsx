@@ -45,7 +45,7 @@ export const useSubTitle = (subTitles: SubTitle[]) => {
       {subTitles.map(({ key, value }, index) => {
         const labelKey = key as keyof typeof labelMap
         const content = key === 'type'
-          ? $t(nodeTypes(value[0] as NodeType))
+          ? nodeTypes(value[0] as NodeType)
           : value.length > 1
             ? `${value[0]} (${value.length})`
             : `${value[0]}`

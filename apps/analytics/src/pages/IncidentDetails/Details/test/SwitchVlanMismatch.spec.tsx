@@ -1,6 +1,6 @@
-import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
-import { Provider }                        from '@acx-ui/store'
-import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
+import { fakeIncidentVlan }             from '@acx-ui/analytics/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { SwitchVlanMismatch } from '../SwitchVlanMismatch'
 
@@ -16,11 +16,11 @@ describe('i-switch-vlan-mismatch', () => {
   mockDOMWidth()
   it('should render correctly', () => {
     const params = {
-      incidentId: fakeIncident1.id
+      incidentId: fakeIncidentVlan.id
     }
 
     const { asFragment } = render(<Provider>
-      <SwitchVlanMismatch {...mockFakeIncident('i-switch-vlan-mismatch')} />
+      <SwitchVlanMismatch {...fakeIncidentVlan} />
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()

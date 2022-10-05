@@ -1,6 +1,6 @@
-import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
-import { Provider }                        from '@acx-ui/store'
-import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
+import { fakeIncidentApInfraWanthroughput } from '@acx-ui/analytics/utils'
+import { Provider }                         from '@acx-ui/store'
+import { mockDOMWidth, render, screen }     from '@acx-ui/test-utils'
 
 import { ApinfraWanthroughputLow } from '../ApinfraWanthroughputLow'
 
@@ -16,11 +16,11 @@ describe('i-apinfra-poe-low', () => {
   mockDOMWidth()
   it('should render correctly', () => {
     const params = {
-      incidentId: fakeIncident1.id
+      incidentId: fakeIncidentApInfraWanthroughput.id
     }
 
     const { asFragment } = render(<Provider>
-      <ApinfraWanthroughputLow {...mockFakeIncident('i-apinfra-poe-low')}/>
+      <ApinfraWanthroughputLow {...fakeIncidentApInfraWanthroughput}/>
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()

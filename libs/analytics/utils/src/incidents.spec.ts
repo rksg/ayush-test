@@ -3,15 +3,14 @@ import { capitalize, omit } from 'lodash'
 import { renderHook }         from '@acx-ui/test-utils'
 import { PathNode, NodeType } from '@acx-ui/utils'
 
-import { fakeIncident, fakeIncident1, mockFakeIncident } from './fakeIncident'
+import { fakeIncident, fakeIncident1, fakeIncidentTtc, fakeIncidentApInfraWanthroughput } from './fakeIncident'
 import {
   calculateSeverity,
   impactValues,
   transformIncidentQueryResult,
-  formattedNodeType,
+  nodeTypes,
   formattedPath,
   impactedArea,
-  useImpactValues,
   shortDescription,
   incidentScope,
   getThreshold
@@ -83,19 +82,19 @@ describe('shortDescription', () => {
   })
 })
 
-describe('formattedNodeType', () => {
+describe('nodeTypes', () => {
   it('should return correct value', () => {
-    expect(formattedNodeType('network')).toEqual('Organization')
-    expect(formattedNodeType('apGroupName')).toEqual('AP Group')
-    expect(formattedNodeType('apGroup')).toEqual('AP Group')
-    expect(formattedNodeType('zoneName')).toEqual('Venue')
-    expect(formattedNodeType('zone')).toEqual('Venue')
-    expect(formattedNodeType('switchGroup')).toEqual('Venue')
-    expect(formattedNodeType('switch')).toEqual('Switch')
-    expect(formattedNodeType('apMac')).toEqual('Access Point')
-    expect(formattedNodeType('ap')).toEqual('Access Point')
-    expect(formattedNodeType('AP')).toEqual('Access Point')
-    expect(formattedNodeType('other' as unknown as NodeType)).toEqual('Unknown')
+    expect(nodeTypes('network')).toEqual('Organization')
+    expect(nodeTypes('apGroupName')).toEqual('AP Group')
+    expect(nodeTypes('apGroup')).toEqual('AP Group')
+    expect(nodeTypes('zoneName')).toEqual('Venue')
+    expect(nodeTypes('zone')).toEqual('Venue')
+    expect(nodeTypes('switchGroup')).toEqual('Venue')
+    expect(nodeTypes('switch')).toEqual('Switch')
+    expect(nodeTypes('apMac')).toEqual('Access Point')
+    expect(nodeTypes('ap')).toEqual('Access Point')
+    expect(nodeTypes('AP')).toEqual('Access Point')
+    expect(nodeTypes('other' as unknown as NodeType)).toEqual('Unknown')
   })
 })
 
@@ -144,9 +143,9 @@ describe('impactedArea', () => {
     expect(impactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
   })
 
-  describe('useImpactValues', () => {
+  describe('impactValues', () => {
     it('returns object for invalid count & impactArea', () => {
-      expect(useImpactValues('client', fakeIncident1)).toMatchObject({
+      expect(impactValues('client', fakeIncident1)).toMatchObject({
         clientImpactDescription: '5 of 27 clients (18.52%)'
       })
     })
@@ -205,9 +204,9 @@ describe('impactValues', () => {
 
 describe('useGetThreshold', () => {
   it('should return the correct result for ttc', () => {
-    expect(getThreshold(mockFakeIncident('ttc'))).toEqual('2s')
+    expect(getThreshold(fakeIncidentTtc)).toEqual('2s')
   })
   it('should return undefined when code does not match', () => {
-    expect(getThreshold(mockFakeIncident('i-apinfra-poe-low'))).toEqual(undefined)
+    expect(getThreshold(fakeIncidentApInfraWanthroughput)).toEqual(undefined)
   })
 })

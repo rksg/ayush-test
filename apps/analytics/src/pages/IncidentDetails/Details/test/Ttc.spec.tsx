@@ -1,7 +1,6 @@
-import { dataApiURL }                                     from '@acx-ui/analytics/services'
-import { fakeIncident1, mockFakeIncident }                from '@acx-ui/analytics/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { mockDOMWidth, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { fakeIncidentTtc }              from '@acx-ui/analytics/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { Ttc } from '../Ttc'
 
@@ -23,12 +22,9 @@ describe('ttc', () => {
   mockDOMWidth()
   mockTimeSeries()
   it('should render correctly', () => {
-    const params = { incidentId: fakeIncident1.id }
-    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
-      data: { network: { hierarchyNode: {} } }
-    })
+    const params = { incidentId: fakeIncidentTtc.id }
     const { asFragment } = render(<Provider>
-      <Ttc {...mockFakeIncident('ttc')} />
+      <Ttc {...fakeIncidentTtc} />
     </Provider>, { route: { params } })
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
     expect(screen.getByTestId('networkImpact')).toBeVisible()
