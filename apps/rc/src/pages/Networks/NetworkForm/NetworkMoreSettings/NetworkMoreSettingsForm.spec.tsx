@@ -176,7 +176,7 @@ describe('NetworkMoreSettingsForm', () => {
     expect(screen.getByText(/200 mbps/i)).toBeVisible()
     await userEvent.click(downloadLimitCheckbox)
 
-  })
+  }, 15000)
 
 
   it('aaa type wlan', async () => {
