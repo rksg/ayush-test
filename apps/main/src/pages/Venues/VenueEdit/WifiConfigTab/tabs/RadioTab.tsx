@@ -11,17 +11,6 @@ export function RadioTab () {
   const { $t } = useIntl()
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const externalTitle = $t({ defaultMessage: 'External Amtenna' })
-  const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      let selectoptions = data?.map(item => ({ label: item.name, value: item.id })) || []
-      selectoptions.unshift({ label: 'No model selected', value: '' })
-      return {
-        selectOptions: selectoptions?.map(item =>
-          <Option key={item.value}>{item.label}</Option>) ?? [],
-        selected: ''
-      }
-    }
-  })
 
   return (
     <Row gutter={20}>
@@ -41,15 +30,6 @@ export function RadioTab () {
             { externalTitle }
             <Divider style={{ marginTop: '4px' }} />
           </Subtitle>
-          <Form.Item
-            name={['external', 'apModel']}
-            label={$t({ defaultMessage: 'AP Model' })}
-            initialValue={selected}
-          >
-            <Select
-              style={{ width: '280px' }}
-              children={selectOptions} />
-          </Form.Item>
         </Form>
       </Col>
     </Row>
