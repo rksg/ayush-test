@@ -5,8 +5,8 @@ import { defineMessage } from 'react-intl'
 import { formatter } from '@acx-ui/utils'
 
 const pillSuffix = {
-  success: 'success',
-  meetGoal: 'meets goal'
+  success: defineMessage({ defaultMessage: 'success' }),
+  meetGoal: defineMessage({ defaultMessage: 'meets goal' })
 }
 
 const createBarChartConfig = (apiMetric: string) => ({
@@ -187,7 +187,6 @@ export const kpiConfig = {
       apiMetric: 'throughputCountAndSessionCount',
       minGranularity: 'PT3M'
     },
-    // // TODO: multiple initial SLA ?
     histogram: {
       highlightAbove: true,
       initialThreshold: 10000,
