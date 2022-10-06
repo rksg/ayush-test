@@ -1,5 +1,5 @@
-import { List, Tooltip }          from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { List, Tooltip } from 'antd'
+import { useIntl }       from 'react-intl'
 
 import { Button, Table, TableProps, Loader } from '@acx-ui/components'
 import { useMeshApsQuery }                   from '@acx-ui/rc/services'
@@ -65,8 +65,8 @@ const getNamesTooltip = (object: { count: number, names: string[] },
       key++
     })
     if (object.count > maxShow) {
-      const lastRow = intl.$t(defineMessage({
-        defaultMessage: 'And {total} more' }), { total: object.count - maxShow })
+      const lastRow = intl.$t({
+        defaultMessage: 'And {total} more' }, { total: object.count - maxShow })
       data.push({ key, name: lastRow })
     }
 
@@ -230,8 +230,7 @@ export function VenueMeshApsTable () {
 
     return (
       <Loader states={[
-        tableQuery,
-        { isLoading: false }
+        tableQuery
       ]}>
         <Table
           columns={getCols(useIntl())}
