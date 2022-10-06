@@ -40,7 +40,6 @@ export function SecurityTab () {
   const {
     editContextData,
     setEditContextData,
-    editSecurityContextData,
     setEditSecurityContextData
   } = useContext(VenueEditContext)
 
@@ -112,6 +111,10 @@ export function SecurityTab () {
         }
         await updateVenueRogueAp({ params, payload })
       }
+      setEditContextData({
+        ...editContextData,
+        isDirty: false
+      })
     } catch {
       showToast({
         type: 'error',
@@ -123,10 +126,10 @@ export function SecurityTab () {
   const handleChange = () => {
     setEditContextData({
       ...editContextData,
+      tabKey: 'security',
       isDirty: true
     })
     setEditSecurityContextData({
-      ...editSecurityContextData,
       SecurityData: formRef.current?.getFieldsValue(),
       updateSecurity: handleUpdateSecuritySettings
     })

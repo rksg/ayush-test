@@ -115,18 +115,18 @@ export function showUnsavedModal (
     key: 'save',
     closeAfterAction: true,
     handler: async () => {
-      if(editContextData?.tabTitle === 'Advanced Settings'){
+      if(editContextData?.tabKey === 'settings'){
         if(editContextData?.updateChanges){
           editContextData?.updateChanges?.()
         }
-      }else if(editContextData?.tabTitle === 'Networking'){
+      }else if(editContextData?.tabKey === 'networking'){
         if(editNetworkingContextData?.updateCellular){
           editNetworkingContextData?.updateCellular?.()
         }
         if(editNetworkingContextData?.updateMesh){
           editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
         }
-      }else if(editContextData?.tabTitle === 'Security'){
+      }else if(editContextData?.tabKey === 'security'){
         if(editSecurityContextData?.updateSecurity){
           editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
         }
