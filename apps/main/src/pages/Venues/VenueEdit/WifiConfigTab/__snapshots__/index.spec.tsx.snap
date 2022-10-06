@@ -141,98 +141,214 @@ exports[`WifiConfigTab should render correctly 1`] = `
           role="tabpanel"
           tabindex="0"
         >
-          <div
-            class="ant-row Grid__GridRow-sc-5irhjd-2"
-            style="margin: -10px -10px -10px -10px;"
+          <section
+            class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
           >
             <div
-              class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-              style="padding: 10px 10px 10px 10px;"
+              class="ant-pro-steps-form"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="ant-row"
+                style="margin-left: -12px; margin-right: -12px;"
               >
-                <div>
+                <div
+                  class="ant-col ant-col-24"
+                  style="padding-left: 12px; padding-right: 12px;"
+                >
                   <div
-                    class=""
+                    class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
                   >
                     <div
-                      class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 gMCsgt"
-                      style="max-height: calc(100vh - 275px);"
+                      class="ant-steps ant-steps-vertical ant-steps-dot"
                     >
                       <div
-                        class="ant-anchor"
+                        class="ant-steps-item ant-steps-item-process ant-steps-item-active"
                       >
                         <div
-                          class="ant-anchor-ink"
+                          class="ant-steps-item-container"
                         >
-                          <span
-                            class="ant-anchor-ink-ball visible"
-                            style="top: -4.5px;"
+                          <div
+                            class="ant-steps-item-tail"
                           />
-                        </div>
-                        <div
-                          class="ant-anchor-link ant-anchor-link-active"
-                        >
-                          <a
-                            class="ant-anchor-link-title ant-anchor-link-title-active"
-                            href="#Wi-Fi-Radio-Settings"
-                            title="Wi-Fi Radio Settings"
+                          <div
+                            class="ant-steps-item-icon"
                           >
-                            Wi-Fi Radio Settings
-                          </a>
-                        </div>
-                        <div
-                          class="ant-anchor-link"
-                        >
-                          <a
-                            class="ant-anchor-link-title"
-                            href="#External-Antenna"
-                            title="External Antenna"
+                            <span
+                              class="ant-steps-icon"
+                            >
+                              <span
+                                class="ant-steps-icon-dot"
+                              />
+                            </span>
+                          </div>
+                          <div
+                            class="ant-steps-item-content"
                           >
-                            External Antenna
-                          </a>
+                            <div
+                              class="ant-steps-item-title"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
-              style="padding: 10px 10px 10px 10px;"
-            >
               <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
+                class="ant-row"
+                style="margin-left: -12px; margin-right: -12px;"
               >
                 <div
-                  class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
-                  id="Wi-Fi-Radio-Settings"
+                  class="ant-col ant-col-24"
+                  style="padding-left: 12px; padding-right: 12px;"
                 >
-                  <h3
-                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
-                    id="radio-settings"
+                  <div
+                    class="ant-pro-steps-form-container"
                   >
-                    Wi-Fi Radio Settings
-                  </h3>
-                  Radio Settings Component
+                    <div
+                      class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+                    >
+                      <form
+                        autocomplete="off"
+                        class="ant-form ant-form-vertical"
+                        id="0"
+                      >
+                        <input
+                          style="display: none;"
+                          type="text"
+                        />
+                        <div
+                          class="ant-row Grid__GridRow-sc-5irhjd-2"
+                          style="margin: -10px -10px -10px -10px;"
+                        >
+                          <div
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI"
+                            >
+                              <div>
+                                <div
+                                  class=""
+                                >
+                                  <div
+                                    class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 gMCsgt"
+                                    style="max-height: calc(100vh - 275px);"
+                                  >
+                                    <div
+                                      class="ant-anchor"
+                                    >
+                                      <div
+                                        class="ant-anchor-ink"
+                                      >
+                                        <span
+                                          class="ant-anchor-ink-ball visible"
+                                          style="top: -4.5px;"
+                                        />
+                                      </div>
+                                      <div
+                                        class="ant-anchor-link ant-anchor-link-active"
+                                      >
+                                        <a
+                                          class="ant-anchor-link-title ant-anchor-link-title-active"
+                                          href="#Wi-Fi-Radio-Settings"
+                                          title="Wi-Fi Radio Settings"
+                                        >
+                                          Wi-Fi Radio Settings
+                                        </a>
+                                      </div>
+                                      <div
+                                        class="ant-anchor-link"
+                                      >
+                                        <a
+                                          class="ant-anchor-link-title"
+                                          href="#External-Antenna"
+                                          title="External Antenna"
+                                        >
+                                          External Antenna
+                                        </a>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI"
+                            >
+                              <div
+                                class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+                                id="Wi-Fi-Radio-Settings"
+                              >
+                                <h3
+                                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                                  id="radio-settings"
+                                >
+                                  Wi-Fi Radio Settings
+                                </h3>
+                                Radio Settings Component
+                              </div>
+                              <div
+                                class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+                                id="External-Antenna"
+                              >
+                                <h3
+                                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                                  id="external-antenna"
+                                >
+                                  External Antenna
+                                </h3>
+                                External Antenna Component
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <div
+                class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+              >
                 <div
-                  class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
-                  id="External-Antenna"
+                  class="ant-space ant-space-horizontal ant-space-align-center"
                 >
-                  <h3
-                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
-                    id="external-antenna"
+                  <div
+                    class="ant-space-item"
+                    style="margin-right: 12px;"
                   >
-                    External Antenna
-                  </h3>
-                  External Antenna Component
+                    <button
+                      class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                      type="button"
+                    >
+                      <span>
+                        Save
+                      </span>
+                    </button>
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <button
+                      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                      type="button"
+                    >
+                      <span>
+                        Cancel
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
         <div
           aria-hidden="true"
