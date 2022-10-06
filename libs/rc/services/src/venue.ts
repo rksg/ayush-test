@@ -10,7 +10,6 @@ import {
   TableResult,
   Venue,
   VenueDetailHeader,
-  WifiUrlsInfo,
   VenueCapabilities,
   VenueLed,
   VenueApModels
