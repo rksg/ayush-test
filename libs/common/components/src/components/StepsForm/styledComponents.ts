@@ -225,7 +225,6 @@ export const Title = styled(Typography.Title).attrs({ level: 3 })`
 
 export const SectionTitle = styled(Subtitle).attrs({ level: 3 })`
   &.ant-typography {
-    width: 50%;
     padding-bottom: 4px;
     border-bottom: 1px solid var(--acx-neutrals-30);
     margin-bottom: 32px;
