@@ -63,7 +63,10 @@ const NetworkHistoryWidget = forwardRef<
     })
     lineColors.push(cssStr('--acx-accents-orange-50'))
   }
-  const queryResults = useNetworkHistoryQuery(filters, {
+  const queryResults = useNetworkHistoryQuery({
+    ...filters,
+    hideIncidents
+  }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest
