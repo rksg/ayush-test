@@ -4,6 +4,7 @@ import { renderHook }         from '@acx-ui/test-utils'
 import { PathNode, NodeType } from '@acx-ui/utils'
 
 import { fakeIncident, fakeIncident1, fakeIncidentTtc, fakeIncidentApInfraWanthroughput } from './fakeIncident'
+import { healthKPIConfig }                                                                from './healthKPIConfig'
 import {
   calculateSeverity,
   impactValues,
@@ -15,7 +16,6 @@ import {
   incidentScope,
   getThreshold
 } from './incidents'
-import kpiThreshold from './kpiThreshold'
 
 import type { Incident } from './types/incidents'
 
@@ -203,9 +203,10 @@ describe('impactValues', () => {
   })
 })
 
-describe('useGetThreshold', () => {
+describe('getThreshold', () => {
   it('should return the correct result for ttc', () => {
-    expect(getThreshold(fakeIncidentTtc)).toEqual(kpiThreshold.timeToConnect)
+    expect(getThreshold(fakeIncidentTtc))
+      .toEqual(healthKPIConfig.timeToConnect.histogram.initialThreshold)
   })
   it('should return undefined when code does not match', () => {
     expect(getThreshold(fakeIncidentApInfraWanthroughput)).toEqual(undefined)
