@@ -147,7 +147,7 @@ export function MultiLineTimeSeriesChart <
     ],
     grid: {
       ...gridOptions(),
-      ...(disableLegend ? { top: '5px' } : {})
+      ...(disableLegend ? { top: '6px' } : {})
     },
     ...(disableLegend ? {} : {
       legend: {
