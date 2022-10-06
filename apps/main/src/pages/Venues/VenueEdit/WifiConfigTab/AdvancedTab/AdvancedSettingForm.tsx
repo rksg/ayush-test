@@ -25,7 +25,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext, AdvancedSettingContext } from '../index'
+import { VenueEditContext, AdvancedSettingContext } from '../../index'
 
 export interface ModelOption {
   label: string
