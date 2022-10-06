@@ -15,8 +15,6 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }))
 
-jest.mock('socket.io-client')
-
 describe('VenuePageHeader', () => {
   beforeEach(() => store.dispatch(venueApi.util.resetApiState()))
 

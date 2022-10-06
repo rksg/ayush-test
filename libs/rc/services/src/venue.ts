@@ -89,6 +89,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    deleteVenue: build.mutation<Venue, RequestPayload>({
+      query: ({ params, payload }) => {
+        if(payload){ //delete multiple rows
+          const req = createHttpRequest(CommonUrlsInfo.deleteVenues, params)
+          return {
+            ...req,
+            body: payload
+          }
+        }else{ //delete single row
+          const req = createHttpRequest(CommonUrlsInfo.deleteVenue, params)
+          return {
+            ...req
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
+    }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
       query: ({ params }) => {
         const floorPlansReq = createHttpRequest(CommonUrlsInfo.getVenueFloorplans, params)
@@ -200,6 +217,7 @@ export const {
   useAddVenueMutation,
   useGetVenueQuery,
   useVenueDetailsHeaderQuery,
+  useDeleteVenueMutation,
   useFloorPlanListQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,

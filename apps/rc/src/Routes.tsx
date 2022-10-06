@@ -6,6 +6,7 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails }                        from './pages/Networks/NetworkDetails/NetworkDetails'
 import { NetworkForm }                           from './pages/Networks/NetworkForm/NetworkForm'
 import { NetworksTable }                         from './pages/Networks/NetworksTable'
+import { DHCPForm }                              from './pages/Services/DHCPForm/DHCPForm'
 import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
 import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
 import { ServicesTable }                         from './pages/Services/ServicesTable'
@@ -74,11 +75,11 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
-        element={<h1>DHCP create page</h1>}
+        element={<DHCPForm/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
-        element={<h1>DHCP edit page</h1>}
+        element={<DHCPForm/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}

@@ -7,6 +7,8 @@ import { Incident } from '@acx-ui/analytics/utils'
 
 import { timeSeriesCharts, TimeSeriesChartTypes } from './config'
 
+import type { TimeSeriesChartResponse } from './types'
+
 export type BufferConfig = {
   value: number;
   unit: unitOfTime.Base;
@@ -20,15 +22,11 @@ export interface ChartDataProps {
   incident: ChartIncident
 }
 
-interface Response <ChartsData> {
+interface Response <TimeSeriesChartResponse> {
   network: {
-    hierarchyNode: ChartsData
+    hierarchyNode: TimeSeriesChartResponse
   }
 }
-
-export type ChartsData = {
-  relatedIncidents: Incident[],
-} & Record<string, Record<string, number[] | string[]>>
 
 export const calcGranularity = (start: string, end: string): string => {
   const duration = moment.duration(moment(end).diff(moment(start))).asHours()
@@ -73,7 +71,7 @@ export function getIncidentTimeSeriesPeriods (incident: ChartIncident) {
 export const Api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     Charts: build.query<
-      ChartsData,
+      TimeSeriesChartResponse,
       ChartDataProps
     >({
       query: (payload) => {
@@ -105,7 +103,8 @@ export const Api = dataApi.injectEndpoints({
           }
         }
       },
-      transformResponse: (response: Response<ChartsData>) => response.network.hierarchyNode
+      transformResponse: (response: Response<TimeSeriesChartResponse>) =>
+        response.network.hierarchyNode
     })
   })
 })

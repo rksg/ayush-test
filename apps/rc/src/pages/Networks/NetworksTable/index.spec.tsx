@@ -13,6 +13,8 @@ import {
 
 import { NetworksTable } from '.'
 
+jest.mock('socket.io-client')
+
 const list = {
   totalCount: 10,
   page: 1,
@@ -155,7 +157,8 @@ const list = {
 
 describe('Networks Table', () => {
   let params: { tenantId: string }
-  beforeEach(async () => {
+
+  beforeEach(() => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
