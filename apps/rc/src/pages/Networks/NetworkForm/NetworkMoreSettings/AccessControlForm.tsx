@@ -308,6 +308,7 @@ function SelectAccessProfileProfile () {
 
 function AccessControlConfigForm () {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
   const [
     enableLayer2,
     enableLayer3,
@@ -443,7 +444,12 @@ function AccessControlConfigForm () {
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
-          children={<Switch />}
+          children={<Switch
+            onChange={function (checked: boolean) {
+              if (!checked) {
+                form.setFieldValue(['wlan', 'advancedCustomization', 'devicePolicyId'], null)
+              }
+            }} />}
         />
 
         {enableDeviceOs && <>
