@@ -363,6 +363,7 @@ export function MoreSettingsForm (props: {
             style={{ marginBottom: '15px' }}
             children={
               <Select
+                data-testid='mgmtTxRateSelect'
                 disabled={enableOfdmOnly ||
                   (bssMinimumPhyRate !== BssMinRateEnum.VALUE_NONE)}
                 defaultValue={MgmtTxRateEnum.VALUE_1}

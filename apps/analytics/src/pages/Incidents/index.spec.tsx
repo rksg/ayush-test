@@ -12,7 +12,10 @@ jest.mock('../../components/NetworkHistory', () => () => <div>Network</div>)
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({
-    filters: { path: [{ type: 'network', name: 'Network' }] }
+    filters: { path: [{ type: 'network', name: 'Network' }] },
+    getNetworkFilter: jest
+      .fn()
+      .mockReturnValueOnce({ path: [{ type: 'network', name: 'Network' }] })
   })
 }))
 jest.mock('../../components/IncidentBySeverity', () => () => <div>IncidentBySeverity</div>)
