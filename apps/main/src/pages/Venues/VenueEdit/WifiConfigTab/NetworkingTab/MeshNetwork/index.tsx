@@ -95,7 +95,7 @@ export function MeshNetwork () {
           setMeshEnabled(true)
           setEditContextData && setEditContextData({
             ...editContextData,
-            tabKey: 'networking',
+            unsavedTabKey: 'networking',
             tabTitle: $t({ defaultMessage: 'Networking' }),
             isDirty: true
           })
@@ -119,7 +119,7 @@ export function MeshNetwork () {
         setMeshEnabled(false)
         setEditContextData && setEditContextData({
           ...editContextData,
-          tabKey: 'networking',
+          unsavedTabKey: 'networking',
           tabTitle: $t({ defaultMessage: 'Networking' }),
           isDirty: true
         })

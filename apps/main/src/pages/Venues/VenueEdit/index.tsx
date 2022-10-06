@@ -23,6 +23,7 @@ const tabs = {
 export interface AdvancedSettingContext {
   tabTitle: string,
   tabKey?: string,
+  unsavedTabKey?: string,
   isDirty: boolean,
   hasError?: boolean,
   oldData?: VenueLed[],
@@ -115,18 +116,18 @@ export function showUnsavedModal (
     key: 'save',
     closeAfterAction: true,
     handler: async () => {
-      if(editContextData?.tabKey === 'settings'){
+      if(editContextData?.unsavedTabKey === 'settings'){
         if(editContextData?.updateChanges){
           editContextData?.updateChanges?.()
         }
-      }else if(editContextData?.tabKey === 'networking'){
+      }else if(editContextData?.unsavedTabKey === 'networking'){
         if(editNetworkingContextData?.updateCellular){
           editNetworkingContextData?.updateCellular?.()
         }
         if(editNetworkingContextData?.updateMesh){
           editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
         }
-      }else if(editContextData?.tabKey === 'security'){
+      }else if(editContextData?.unsavedTabKey === 'security'){
         if(editSecurityContextData?.updateSecurity){
           editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
         }

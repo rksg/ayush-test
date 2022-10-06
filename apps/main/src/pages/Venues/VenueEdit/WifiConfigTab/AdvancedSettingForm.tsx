@@ -56,6 +56,7 @@ export function AdvancedSettingForm () {
     const data = editContextData?.tempData?.[tab] || []
     setEditContextData({
       ...editContextData,
+      unsavedTabKey: 'settings',
       tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
       oldData: data,
       newData: data,
@@ -92,6 +93,7 @@ export function AdvancedSettingForm () {
   useEffect(() => {
     setEditContextData({
       ...editContextData,
+      unsavedTabKey: 'settings',
       tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
       newData: tableData,
       oldData: (venueLed?.data as VenueLed[])?.map(

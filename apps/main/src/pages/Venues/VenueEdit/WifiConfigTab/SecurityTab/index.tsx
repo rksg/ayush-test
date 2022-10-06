@@ -126,7 +126,7 @@ export function SecurityTab () {
   const handleChange = () => {
     setEditContextData({
       ...editContextData,
-      tabKey: 'security',
+      unsavedTabKey: 'security',
       isDirty: true
     })
     setEditSecurityContextData({
