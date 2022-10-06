@@ -757,7 +757,7 @@ export const rootCauseRecommendationMap = {
             <li>Ensure that PSE - PoE switch or PoE injector capacity and cumulative power requirements of all APs for full operation are appropriately matched.</li>
             <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS Cloud. In rare cases it might indicate configuration corruption.</li>
             <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS Cloud. Download time out is the main cause.</li>
-            <li>Controller can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing RUCKUS Cloud to reboot the AP. In these cases, an alarm is raised. Use RUCKUS Cloud alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li>
+            <li>RUCKUS Cloud can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing RUCKUS Cloud to reboot the AP. In these cases, an alarm is raised. Use RUCKUS Cloud alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li>
           </ol>
         `
       })
