@@ -145,7 +145,10 @@ export function MultiLineTimeSeriesChart <
       cssStr('--acx-accents-orange-50'),
       cssStr('--acx-semantics-yellow-40')
     ],
-    grid: { ...gridOptions() },
+    grid: {
+      ...gridOptions(),
+      ...(disableLegend ? { top: '5px' } : {})
+    },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),

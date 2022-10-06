@@ -158,6 +158,7 @@ storiesOf('MultiLineTimeSeriesChart', module)
       <MultiLineTimeSeriesChart
         style={{ width: 460, height: 230 }}
         data={object('data', getSeriesData())}
+        disableLegend
       />
     </div>
   )

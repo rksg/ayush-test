@@ -23,6 +23,23 @@ const markers = [{
 describe('MultiLineTimeSeriesChart', () => {
   mockDOMWidth()
 
+  it('should use imperative handle', async () => {
+    const mockCallbackRef = jest.fn()
+    let createHandleCallback: () => RefObject<ReactECharts>
+    jest.spyOn(React, 'useImperativeHandle').mockImplementation((ref, callback) => {
+      expect(ref).toEqual(mockCallbackRef)
+      createHandleCallback = callback as () => RefObject<ReactECharts>
+    })
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData()}
+      chartRef={mockCallbackRef}
+    />)
+    await waitFor(() => {
+      expect(createHandleCallback()).not.toBeNull()
+    })
+    jest.restoreAllMocks()
+  })
+
   it('should call formatter for yAxis', () => {
     const formatter = jest.fn()
     render(<MultiLineTimeSeriesChart
