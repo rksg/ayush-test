@@ -14,7 +14,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   useAnalyticsFilter: () => ({
     filters: {
       path: [{ type: 'network', name: 'Network' }],
-      filter: { networkNodes: [[{ type: 'zone', name: 'zone' }]] }
+      filter: { networkNodes: [[{ type: 'zone', name: 'Venue' }]] }
     },
     getNetworkFilter: jest
       .fn()
@@ -27,7 +27,7 @@ describe('Analytics dumb header', () => {
     replaceTitle: true,
     shouldQuerySwitch: true,
     data: {
-      title: 'title',
+      name: 'name',
       subTitle: [
         { key: 'apCount', value: [1] },
         { key: 'version', value: ['1', '2'] }
@@ -36,7 +36,7 @@ describe('Analytics dumb header', () => {
   }
   it('should render correctly', async () => {
     render(<DumbHeader {...props}/>)
-    expect(await screen.findByText('title')).toBeVisible()
+    expect(await screen.findByText('name')).toBeVisible()
     expect(await screen.findByText('APs: 1')).toBeVisible()
     expect(await screen.findByText('Firmware: 1 (2)')).toBeVisible()
     expect(await screen.findByText('network filter')).toBeVisible()
@@ -49,17 +49,17 @@ describe('Analytics connected header', () => {
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
-      data: header2.queryResult
+      data: header1.queryResult
     })
     render(<Provider> <Header title={''} shouldQuerySwitch/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render header', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
-      data: header1.queryResult
+      data: header2.queryResult
     })
     render(<Provider><Header title={'Title'} shouldQuerySwitch/></Provider>)
-    await screen.findByText('zone')
-    expect(screen.getByTitle('Organization')).toHaveTextContent('Type:')
+    await screen.findByText('Venue')
+    expect(screen.getByTitle('Venue')).toHaveTextContent('Type:')
   })
 })

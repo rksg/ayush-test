@@ -7,8 +7,7 @@ import {  NetworkPath, NodeType, pathFilter } from '@acx-ui/utils'
 import { HeaderData, SubTitle } from '.'
 
 interface NetworkNodeInfo {
-  type: string,
-  name: string,
+  name?: string,
   clientCount?: number,
   apCount?: number,
   switchCount?: number,
@@ -35,7 +34,7 @@ type QueryVariables = {
 const lowPreferenceList = ['0.0.0.0', '0', 'Unknown']
 
 const getAttributesByNodeType = (nodeType: NodeType) => {
-  const defaultAttributes = ['type', 'apCount', 'clientCount' ] as const
+  const defaultAttributes = ['apCount', 'clientCount' ] as const
   const venueAttributes = [...defaultAttributes, 'switchCount']
   const attributes = {
     network: venueAttributes,
@@ -73,7 +72,6 @@ const getQuery = (path: NetworkPath) : string => {
       ){
         network(start: $startDate, end: $endDate) {
           node: ap(mac: $mac) {
-            type: __typename
             name
             ${getAttributesByNodeType(type).join('\n')}
           }
@@ -88,7 +86,6 @@ const getQuery = (path: NetworkPath) : string => {
       ){
         network(start: $startDate, end: $endDate) {
           node: switch(mac: $mac, path: $path) {
-            type
             name
             ${getAttributesByNodeType(type).join('\n')}
           }
@@ -101,7 +98,6 @@ const getQuery = (path: NetworkPath) : string => {
       ){
         network(start: $startDate, end: $endDate, filter: $filter) {
           node: hierarchyNode(path:$path) {
-            name
             ${getAttributesByNodeType(type).join('\n')}
           }
         }
@@ -130,11 +126,9 @@ export const transformForDisplay = (data: NetworkNodeInfo): HeaderData => {
     .filter(([, value]) => value)
     .map(([key, value]) => ({
       key: key as SubTitle['key'],
-      value: key === 'type'
-        ? [String(value)]
-        : sortPreference(value)
+      value: sortPreference(value)
     }))
-  return { title: name, subTitle }
+  return { name, subTitle }
 }
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({

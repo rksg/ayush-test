@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -29,54 +31,46 @@ export type SubTitle = {
 }
 
 export type HeaderData = {
-  title: string
+  name?: string
   subTitle: SubTitle[]
 }
 
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
-  data: HeaderData
-  replaceTitle: boolean,
-  shouldQuerySwitch: boolean,
-  venueTitle? : string | null
+  data: HeaderData,
+  shouldQuerySwitch: boolean
 }
 
-export const useSubTitle = (subTitles: SubTitle[]) => {
+export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement => {
   const { $t } = useIntl()
-  return (
-    <>
-      {subTitles.map(({ key, value }, index) => {
-        const labelKey = key as keyof typeof labelMap
-        const content = key === 'type'
-          ? $t(nodeTypes(value[0] as NodeType))
-          : value.length > 1
-            ? `${value[0]} (${value.length})`
-            : `${value[0]}`
-        return (
-          <span key={key} title={key === 'type' ? content : value.join(', ')}>
-            {$t(labelMap[labelKey])} {content}
-            {index < subTitles.length - 1 && <Divider key={key} type='vertical' />}
-          </span>
-        )
-      })}
-    </>
-  )
+  const subs = [{ key: 'type', value: [$t(nodeTypes(type))] }, ...subTitles]
+  return <>
+    {subs.map(({ key, value }, index) => {
+      const labelKey = key as keyof typeof labelMap
+      const content = value.length > 1 ? `${value[0]} (${value.length})` : `${value[0]}`
+      return (
+        <span key={key} title={value.join(', ')}>
+          {$t(labelMap[labelKey])} {content}
+          {index < subs.length - 1 && <Divider key={key} type='vertical' />}
+        </span>
+      )
+    })}
+  </>
 }
 
-export const Header = ({
-  data,
-  replaceTitle,
-  shouldQuerySwitch,
-  venueTitle,
-  ...otherProps
-}: HeaderProps) => {
+export const Header = ({ data, shouldQuerySwitch, ...props }: HeaderProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-
-  const { title, subTitle } = data
-  const props = { ...otherProps, subTitle: useSubTitle(subTitle) }
-  if (replaceTitle) props.title = venueTitle ? venueTitle : title
+  const { filters, getNetworkFilter } = useAnalyticsFilter()
+  const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
+  const { path } = getNetworkFilter()
+  const { name, type } = (filter || path).slice(-1)[0]
   return (
     <PageHeader
       {...props}
+      subTitle={useSubTitle(data.subTitle, type)}
+      title={filter || path.length > 1 ?
+        (data.name || name) // ap/switch name from data || venue name from filter
+        : props.title // displays Incidents at root level
+      }
       extra={[
         <NetworkFilter
           key='network-filter'
@@ -101,14 +95,6 @@ export const Header = ({
 const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean }) => {
   const { filters } = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
-  const isVenue = !!(
-    filters?.filter?.networkNodes?.[0]?.length &&
-    filters?.filter?.networkNodes?.[0]?.length === 1
-  )
-  const replaceTitle = filters.path.length > 1 || isVenue
-  const venueTitle = isVenue
-    ? filters?.filter?.networkNodes?.[0][0]?.name
-    : null
   return (
     <ConnectedHeaderWrapper>
       <Loader states={[queryResults]}>
@@ -116,8 +102,6 @@ const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean 
           {...props}
           shouldQuerySwitch={props.shouldQuerySwitch}
           data={queryResults.data as HeaderData}
-          replaceTitle={replaceTitle}
-          venueTitle={venueTitle}
         />
       </Loader>
     </ConnectedHeaderWrapper>
