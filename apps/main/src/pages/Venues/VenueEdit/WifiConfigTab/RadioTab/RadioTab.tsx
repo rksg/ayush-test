@@ -1,8 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, Subtitle } from '@acx-ui/components'
-
-import * as UI from '../../styledComponents'
+import { AnchorLayout, StepsForm } from '@acx-ui/components'
 
 import { ExternalAntenna } from './ExternalAntenna'
 import { RadioSettings }   from './RadioSettings'
@@ -15,10 +13,9 @@ export function RadioTab () {
     title: wifiSettingTitle,
     content: (
       <>
-        <Subtitle level={3} id='radio-settings'>
+        <StepsForm.SectionTitle id='radio-settings'>
           { wifiSettingTitle }
-        </Subtitle>
-        <UI.Divider />
+        </StepsForm.SectionTitle>
         <RadioSettings />
       </>
     )
@@ -26,10 +23,9 @@ export function RadioTab () {
     title: externalTitle,
     content: (
       <>
-        <Subtitle level={3} id='external-antenna'>
+        <StepsForm.SectionTitle id='external-antenna'>
           { externalTitle }
-        </Subtitle>
-        <UI.Divider />
+        </StepsForm.SectionTitle>
         <ExternalAntenna />
       </>
     )

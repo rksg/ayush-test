@@ -211,15 +211,11 @@ exports[`WifiConfigTab should render correctly 1`] = `
                   id="Wi-Fi-Radio-Settings"
                 >
                   <h3
-                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn kkvZfH"
                     id="radio-settings"
                   >
                     Wi-Fi Radio Settings
                   </h3>
-                  <div
-                    class="ant-divider ant-divider-horizontal styledComponents__CustomDivider-sc-munepy-0 hSIZIA"
-                    role="separator"
-                  />
                   Radio Settings Component
                 </div>
                 <div
@@ -227,15 +223,11 @@ exports[`WifiConfigTab should render correctly 1`] = `
                   id="External-Antenna"
                 >
                   <h3
-                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn kkvZfH"
                     id="external-antenna"
                   >
                     External Antenna
                   </h3>
-                  <div
-                    class="ant-divider ant-divider-horizontal styledComponents__CustomDivider-sc-munepy-0 hSIZIA"
-                    role="separator"
-                  />
                   External Antenna Component
                 </div>
               </div>

@@ -1,6 +1,8 @@
 import { Typography }                     from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
+import { Subtitle } from '../Subtitle'
+
 const stepCompletedStyle = css`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
     &::after {
@@ -221,3 +223,11 @@ export const Title = styled(Typography.Title).attrs({ level: 3 })`
   margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
 `
 
+export const SectionTitle = styled(Subtitle).attrs({ level: 3 })`
+  &.ant-typography {
+    width: 50%;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--acx-neutrals-30);
+    margin-bottom: 32px;
+  }
+`
