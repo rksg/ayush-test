@@ -19,12 +19,15 @@ const lineColors = [cssStr('--acx-accents-blue-30')]
 const transformResponse = (
   { data, time }: KPITimeseriesResponse, [startDate, endDate]: TimeStampRange
 ) => {
-  console.log([startDate, endDate], time
-    .filter(t =>
-      moment(t).isBetween(moment(startDate), moment(endDate), undefined, '[]')))
+  //console.log('start', startDate, moment(startDate).utc().toISOString())
+  //console.log('end', endDate, moment(endDate).utc().toISOString())
+  //time = time.filter(t => moment(t).isBetween(moment(startDate).utc(), moment(endDate).utc(), undefined, '[]'))
   return data
-  .filter((_, index) =>
-    moment(time[index]).isBetween(moment(startDate), moment(endDate), undefined, '[]'))
+  // .filter((_, index) => {
+  //   //console.log('t[index]', index, time[index])
+  //   //console.log(moment(time[index]).isBetween(moment(startDate).utc().toISOString(), moment(endDate).utc().toISOString(), undefined, '[]'))
+  //   return moment(time[index]).isBetween(moment(startDate).utc().toISOString(), moment(endDate).utc().toISOString(), undefined, '[]')
+  // })
   .map((datum, index) => ([
     time[index],
     datum && datum.length && (datum[0] !== null && datum[1] !== null)
@@ -55,7 +58,8 @@ function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: {
         }]
       })
     })
-  
+    
+  //console.log(moment(timeWindow[0]).utc().toISOString(), moment(timeWindow[1]).utc().toISOString(),queryResults.data)
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
@@ -69,7 +73,7 @@ function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: {
               yAxisProps={{ min: 0, max: 1 }}
               disableLegend
               chartRef={chartRef}
-              //onDataZoom={setTimeWindow}
+              onDataZoom={setTimeWindow}
             />
             : <NoData/>
         )}
