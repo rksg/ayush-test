@@ -18,7 +18,7 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   severity: { [key: string]: number };
 }
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
-
+type ConnectedNetworkFilterProps = { shouldQuerySwitch : boolean }
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
 ): VenuesWithSeverityNodes =>
@@ -45,7 +45,12 @@ const getSeverityCircles = (
   let severityArray = nodes.reduce((acc: string[], val: ApOrSwitch) => {
     venueWiseSeverities.forEach((apOrSwitchWithSeverity: NodesWithSeverity) => {
       const severity = calculateSeverity(apOrSwitchWithSeverity.severity[val?.mac])
-      if (severity && !acc.includes(severity)) acc.push(severity)
+      if (
+        severity &&
+        !acc.includes(severity) &&
+        apOrSwitchWithSeverity.severity[val?.mac]
+      )
+        acc.push(severity)
     })
     return acc
   }, [])
@@ -181,17 +186,21 @@ export const onApply = (
   setNetworkPath(path, value || [])
 }
 
-function ConnectedNetworkFilter () {
+function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterProps) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
-  const incidentsList = useIncidentsListQuery(({
-    ...filters, path: defaultNetworkPath, includeMuted: false
-  }), {
-    selectFromResult: ({ data }) => ({
-      data: data ? getSeverityFromIncidents(data) : []
-    })
-  })
-  const queryResults = useNetworkFilterQuery(omit(filters, 'path'), {
+  const incidentsList = useIncidentsListQuery(
+    omit({
+      ...filters, path: defaultNetworkPath, includeMuted: false
+    }, 'filter'),
+    {
+      selectFromResult: ({ data }) => ({
+        data: data ? getSeverityFromIncidents(data) : []
+      })
+    }
+  )
+  const networkFilter = { ...filters, shouldQuerySwitch }
+  const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) : [],
       ...rest

@@ -806,8 +806,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                             class="ant-slider-step"
                           >
                             <span
-                              class="ant-slider-dot"
-                              style="left: -0.19569471624266144%; transform: translateX(-50%);"
+                              class="ant-slider-dot ant-slider-dot-active"
+                              style="left: 0%; transform: translateX(-50%);"
                             />
                             <span
                               class="ant-slider-dot"
@@ -828,10 +828,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                             class="ant-slider-mark"
                           >
                             <span
-                              class="ant-slider-mark-text"
-                              style="left: -0.19569471624266144%; transform: translateX(-50%);"
+                              class="ant-slider-mark-text ant-slider-mark-text-active"
+                              style="left: 0%; transform: translateX(-50%);"
                             >
-                              0
+                              1
                             </span>
                             <span
                               class="ant-slider-mark-text"
@@ -1350,6 +1350,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                         >
                           <div
                             class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow ant-select-disabled"
+                            data-testid="mgmtTxRateSelect"
                             style="width: 150px;"
                           >
                             <div
