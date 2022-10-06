@@ -1,6 +1,6 @@
-import { forwardRef, RefObject } from 'react'
+import { forwardRef, RefCallback } from 'react'
 
-import EChartsReact from 'echarts-for-react'
+import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
@@ -22,12 +22,6 @@ import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
 type Key = keyof Omit<NetworkHistoryData, 'time'>
 
-let lineColors = [
-  cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-50'),
-  cssStr('--acx-accents-blue-30')
-]
-
 interface NetworkHistoryWidgetComponentProps {
   hideTitle?: boolean;
   type?: CardTypes;
@@ -37,7 +31,7 @@ interface NetworkHistoryWidgetComponentProps {
 }
 
 const NetworkHistoryWidget = forwardRef<
-  EChartsReact, 
+  ReactECharts,
   NetworkHistoryWidgetComponentProps
 >((props, ref) => {
   const {
@@ -49,34 +43,33 @@ const NetworkHistoryWidget = forwardRef<
   } = props
   const { $t } = useIntl()
   let seriesMapping = [
-    { 
+    {
       key: 'newClientCount',
       name: $t({ defaultMessage: 'New Clients' })
-    },
-    {
-      key: 'impactedClientCount',
-      name: $t({ defaultMessage: 'Impacted Clients' })
     },
     {
       key: 'connectedClientCount',
       name: $t({ defaultMessage: 'Connected Clients' })
     }
   ] as Array<{ key: Key; name: string }>
-
-  if (hideIncidents) {
-    seriesMapping = seriesMapping.filter(value => value.key !== 'impactedClientCount')
-    lineColors = lineColors.filter(value => value !== cssStr('--acx-accents-orange-50'))
+  const lineColors = [
+    cssStr('--acx-accents-blue-50'),
+    cssStr('--acx-accents-blue-30')
+  ]
+  if (!hideIncidents) {
+    seriesMapping.push({
+      key: 'impactedClientCount',
+      name: $t({ defaultMessage: 'Impacted Clients' })
+    })
+    lineColors.push(cssStr('--acx-accents-orange-50'))
   }
-
   const queryResults = useNetworkHistoryQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest
     })
   })
-
   const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
-
   return (
     <Loader states={[queryResults]}>
       <Card title={title} type={type}>
@@ -89,7 +82,7 @@ const NetworkHistoryWidget = forwardRef<
                 lineColors={lineColors}
                 brush={brush?.timeWindow}
                 onBrushChange={brush?.setTimeWindow as (range: TimeStamp[]) => void}
-                chartRef={ref as RefObject<EChartsReact> | undefined}
+                chartRef={ref as RefCallback<ReactECharts> | undefined}
               />
               : <NoData/>
           )}

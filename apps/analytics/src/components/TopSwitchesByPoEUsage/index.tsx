@@ -75,7 +75,7 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
   const navigate = useNavigate()
 
   const intl = useIntl()
-  
+
 
   const queryResults = useTopSwitchesByPoEUsageQuery(filters,
     {

@@ -10,7 +10,7 @@ import {
   TableProps,
   deviceStatusColors
 } from '@acx-ui/components'
-import { useApListQuery } from '@acx-ui/rc/services' 
+import { useApListQuery } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
   ApExtraParams,

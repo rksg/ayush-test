@@ -15,7 +15,7 @@ const filters = {
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours,
-  filter: {} 
+  filter: {}
 } as AnalyticsFilter
 
 const sample = {

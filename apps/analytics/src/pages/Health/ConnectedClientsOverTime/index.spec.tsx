@@ -1,6 +1,4 @@
-import { createRef } from 'react'
-
-import EChartsReact from 'echarts-for-react'
+import ReactECharts from 'echarts-for-react'
 
 import { dataApiURL }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter }    from '@acx-ui/analytics/utils'
@@ -25,14 +23,14 @@ function mockGetClientSize (width = 280, height = 280) {
   const originalWidth = Object.getOwnPropertyDescriptor(Element.prototype, 'clientWidth')
 
   beforeAll(() => {
-    Object.defineProperty(Element.prototype, 'clientHeight', 
+    Object.defineProperty(Element.prototype, 'clientHeight',
       { configurable: true, writable: true, value: height }
     )
-    Object.defineProperty(Element.prototype, 'clientWidth', 
+    Object.defineProperty(Element.prototype, 'clientWidth',
       { configurable: true, writable: true, value: width }
     )
   })
-  
+
   afterAll(() => {
     Object.defineProperty(Element.prototype, 'clientHeight', originalHeight as PropertyDescriptor)
     Object.defineProperty(Element.prototype, 'clientWidth', originalWidth as PropertyDescriptor)
@@ -44,7 +42,7 @@ describe('HealthConnectedClientsOverTime', () => {
   mockGetClientSize(280, 200)
 
   beforeEach(() => store.dispatch(api.util.resetApiState()))
-  
+
   afterEach(() => cleanup())
 
   const sample = {
@@ -77,18 +75,34 @@ describe('HealthConnectedClientsOverTime', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    const ref = createRef<EChartsReact>()
+
+    const callbackRef = (chart: ReactECharts) => {
+      if (chart) {
+        const instance = chart.getEchartsInstance()
+        instance.dispatchAction({
+          type: 'brush',
+          areas: [{
+            brushType: 'lineX',
+            coordRange: ['2022-04-07T09:30:00.000Z', '2022-04-07T10:00:00.000Z'],
+            xAxisIndex: 0
+          }]
+        }, {
+          silent: false,
+          flush: true
+        })
+      }
+    }
     const { asFragment } = render(
       <Provider>
         <HealthPageContext.Provider value={healthContext}>
-          <ConnectedClientsOverTime ref={ref}/>
+          <ConnectedClientsOverTime ref={callbackRef}/>
         </HealthPageContext.Provider>
       </Provider>
     )
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-   
-    const chartComponent = () => 
+
+    const chartComponent = () =>
       asFragment().querySelector('div[_echarts_instance_^="ec_"]') as Element
     expect(chartComponent()).not.toBeNull()
 
@@ -96,28 +110,15 @@ describe('HealthConnectedClientsOverTime', () => {
     expect(rect.clientHeight).toBe(200)
     expect(rect.clientWidth).toBe(280)
 
-    const instance = ref.current!.getEchartsInstance()
-    instance.dispatchAction({
-      type: 'brush',
-      areas: [{
-        brushType: 'lineX',
-        coordRange: ['2022-04-07T09:30:00.000Z', '2022-04-07T10:00:00.000Z'],
-        xAxisIndex: 0
-      }]
-    }, {
-      silent: false,
-      flush: true
-    })
-    
     const chartSvgs = [...chartComponent().querySelectorAll('svg > g > path')]
 
     const startEndBrushes = () => chartSvgs.filter(
-      elem => elem 
+      elem => elem
         && elem.getAttribute('fill') === '#000'
         && elem.getAttribute('fill-opacity') === '0'
     )
     expect(startEndBrushes()).toHaveLength(2)
-    
+
     const blueTimeWindow = chartSvgs.filter(
       elem => elem && elem.getAttribute('stroke') === '#123456'
     )
