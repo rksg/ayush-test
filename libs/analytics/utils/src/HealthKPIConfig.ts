@@ -262,7 +262,7 @@ export const kpiConfig = {
       ],
       thresholdFormatter: formatter('percentFormat'),
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: defineMessage({ defaultMessage: 'AP-Controller connection uptime measures the percentage of time the AP radios are fully available for client service.{br}{br}The time-series graph on the left displays the percentage of AP-Controller connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'AP-RUCKUS Cloud connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-RUCKUS Cloud connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
       //thresholdFormat: x => formatter('percentFormat')(x)
     }
   },
