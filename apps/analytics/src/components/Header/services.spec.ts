@@ -26,8 +26,8 @@ describe('NetworkNodeInfo', () => {
     store.dispatch(api.util.resetApiState())
   )
 
-  input.forEach(({ path, queryResult, transformedResult }) => {
-    it(`should return correct data for ${transformedResult.title}`, async () => {
+  input.forEach(({ path, queryResult, transformedResult, name }) => {
+    it(`should return correct data for ${name}`, async () => {
       mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
         data: queryResult
       })

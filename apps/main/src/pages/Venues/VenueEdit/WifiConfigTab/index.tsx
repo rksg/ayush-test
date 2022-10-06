@@ -7,7 +7,8 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, AdvancedSettingContext } from '../index'
 
-import { AdvancedSettingForm } from './AdvancedSettingForm'
+import { AdvancedSettingForm } from './AdvancedTab/AdvancedSettingForm'
+import { RadioTab }            from './RadioTab/RadioTab'
 
 export function WifiConfigTab () {
   const { $t } = useIntl()
@@ -53,7 +54,7 @@ export function WifiConfigTab () {
       type='card'
     >
       <Tabs.TabPane tab={tabTitleMap('radio')} key='radio'>
-        {$t({ defaultMessage: 'Radio' })}
+        <RadioTab />
       </Tabs.TabPane>
       <Tabs.TabPane tab={tabTitleMap('networking')} key='networking'>
         {$t({ defaultMessage: 'Networking' })}
