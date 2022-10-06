@@ -141,7 +141,98 @@ exports[`WifiConfigTab should render correctly 1`] = `
           role="tabpanel"
           tabindex="0"
         >
-          Radio
+          <div
+            class="ant-row Grid__GridRow-sc-5irhjd-2"
+            style="margin: -10px -10px -10px -10px;"
+          >
+            <div
+              class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div>
+                  <div
+                    class=""
+                  >
+                    <div
+                      class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 gMCsgt"
+                      style="max-height: calc(100vh - 275px);"
+                    >
+                      <div
+                        class="ant-anchor"
+                      >
+                        <div
+                          class="ant-anchor-ink"
+                        >
+                          <span
+                            class="ant-anchor-ink-ball visible"
+                            style="top: -4.5px;"
+                          />
+                        </div>
+                        <div
+                          class="ant-anchor-link ant-anchor-link-active"
+                        >
+                          <a
+                            class="ant-anchor-link-title ant-anchor-link-title-active"
+                            href="#Wi-Fi-Radio-Settings"
+                            title="Wi-Fi Radio Settings"
+                          >
+                            Wi-Fi Radio Settings
+                          </a>
+                        </div>
+                        <div
+                          class="ant-anchor-link"
+                        >
+                          <a
+                            class="ant-anchor-link-title"
+                            href="#External-Antenna"
+                            title="External Antenna"
+                          >
+                            External Antenna
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+                  id="Wi-Fi-Radio-Settings"
+                >
+                  <h3
+                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                    id="radio-settings"
+                  >
+                    Wi-Fi Radio Settings
+                  </h3>
+                  Radio Settings Component
+                </div>
+                <div
+                  class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+                  id="External-Antenna"
+                >
+                  <h3
+                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                    id="external-antenna"
+                  >
+                    External Antenna
+                  </h3>
+                  External Antenna Component
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div
           aria-hidden="true"
