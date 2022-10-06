@@ -7,7 +7,7 @@ import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import { mockServer, render } from '@acx-ui/test-utils'
 
-import { AlarmsTable } from '../../Alarms/Table'
+import { AlarmsTable } from '.'
 
 
 const params = {
@@ -40,7 +40,7 @@ const alarmsList = {
     'switchMacAddress'
   ]
 }
-describe('MeshNetwork', () => {
+describe('AlarmsTable', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
