@@ -13,11 +13,11 @@ import {
   venueLed,
   venueApModels
 } from '../../../__tests__/fixtures'
-import { VenueEditContext, AdvancedSettingContext } from '../../index'
+import { VenueEditContext, EditContext } from '../../index'
 
 import { AdvancedSettingForm } from './AdvancedSettingForm'
 
-let editContextData = {} as AdvancedSettingContext
+let editContextData = {} as EditContext
 const setEditContextData = jest.fn()
 
 const mockedUsedNavigate = jest.fn()
