@@ -12,8 +12,8 @@ import {
   venueCaps,
   venueLed,
   venueApModels
-} from '../../__tests__/fixtures'
-import { VenueEditContext, EditContext } from '../index'
+} from '../../../__tests__/fixtures'
+import { VenueEditContext, EditContext } from '../../index'
 
 import { AdvancedSettingForm } from './AdvancedSettingForm'
 
