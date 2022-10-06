@@ -211,7 +211,7 @@ exports[`WifiConfigTab should render correctly 1`] = `
                   id="Wi-Fi-Radio-Settings"
                 >
                   <h3
-                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn kkvZfH"
+                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
                     id="radio-settings"
                   >
                     Wi-Fi Radio Settings
@@ -223,7 +223,7 @@ exports[`WifiConfigTab should render correctly 1`] = `
                   id="External-Antenna"
                 >
                   <h3
-                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn kkvZfH"
+                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
                     id="external-antenna"
                   >
                     External Antenna
