@@ -15,6 +15,7 @@ import {
   KPITimeseriesResponse,
   KPIHistogramResponse
 } from './services'
+import { TimeStampRange } from '@acx-ui/types'
 
 type PillData = { success: number, total: number }
 
@@ -53,11 +54,11 @@ const formatPillText = (value: number = 0, suffix: string) => suffix
   : `${formatter('percentFormatRound')(value / 100)}`
 
 function HealthPill ({ filters, kpi, timeWindow }: {
-  filters: AnalyticsFilter, kpi: string, timeWindow: [string, string]
+  filters: AnalyticsFilter, kpi: string, timeWindow: TimeStampRange
 }) {
   const { histogram, pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { $t } = useIntl()
-  const [ startDate, endDate ] = timeWindow
+  const [ startDate, endDate ] = timeWindow as [string, string]
   let queryResults
   if (histogram) {
     // eslint-disable-next-line react-hooks/rules-of-hooks

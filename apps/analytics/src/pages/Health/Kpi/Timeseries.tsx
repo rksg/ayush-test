@@ -3,6 +3,8 @@ import { useEffect, RefCallback } from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
+import moment      from 'moment-timezone'
+
 import ReactECharts from 'echarts-for-react'
 
 import { AnalyticsFilter, kpiConfig }                       from '@acx-ui/analytics/utils'
@@ -14,22 +16,32 @@ import { KPITimeseriesResponse, useKpiTimeseriesQuery } from './services'
 
 const lineColors = [cssStr('--acx-accents-blue-30')]
 
-const transformResponse = ({ data, time }: KPITimeseriesResponse) => {
-  return data.map((datum, index) => ([
+const transformResponse = (
+  { data, time }: KPITimeseriesResponse, [startDate, endDate]: TimeStampRange
+) => {
+  console.log([startDate, endDate], time
+    .filter(t =>
+      moment(t).isBetween(moment(startDate), moment(endDate), undefined, '[]')))
+  return data
+  .filter((_, index) =>
+    moment(time[index]).isBetween(moment(startDate), moment(endDate), undefined, '[]'))
+  .map((datum, index) => ([
     time[index],
     datum && datum.length && (datum[0] !== null && datum[1] !== null)
       ? datum[1] === 0 ? 0 : (datum[0] / datum[1])
       : null
-  ])) as [TimeStamp, number][]
+])) as [TimeStamp, number][]
 }
+
 export const formatYDataPoint = (data: number | unknown) =>
   data !== null ? formatter('percentFormat')(data) : '-'
 
-function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow }: { 
+function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: { 
   filters: AnalyticsFilter,
   kpi: string,
   chartRef: RefCallback<ReactECharts>,
-  setTimeWindow: { (timeWidow: TimeStampRange): void } | undefined
+  setTimeWindow: { (timeWidow: TimeStampRange): void } | undefined,
+  timeWindow: TimeStampRange
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
@@ -39,7 +51,7 @@ function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow }: {
         ...rest,
         data: data! && [{
           name: $t(text),
-          data: transformResponse(data)
+          data: transformResponse(data, timeWindow)
         }]
       })
     })
@@ -57,7 +69,7 @@ function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow }: {
               yAxisProps={{ min: 0, max: 1 }}
               disableLegend
               chartRef={chartRef}
-              onDataZoom={setTimeWindow}
+              //onDataZoom={setTimeWindow}
             />
             : <NoData/>
         )}

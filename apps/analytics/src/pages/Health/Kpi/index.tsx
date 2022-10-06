@@ -18,7 +18,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
   const healthFilter = useContext(HealthPageContext)
   const { timeWindow, setTimeWindow } = healthFilter
   const { filters } = useAnalyticsFilter()
-  
+
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -33,7 +33,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
       <GridCol col={{ span: 16 }}>
         <GridRow style={{ height: '150px' }}>
           <GridCol col={{ span: 5 }}>
-            <HealthPill filters={filters} kpi={kpi} timeWindow={timeWindow as [string, string]}/>
+            <HealthPill filters={filters} kpi={kpi} timeWindow={timeWindow}/>
           </GridCol>
           <GridCol col={{ span: 19 }}>
             <KpiTimeseries
@@ -41,6 +41,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
               kpi={kpi} 
               chartRef={connectChart}
               setTimeWindow={index < 1 ? setTimeWindow : undefined}
+              timeWindow={timeWindow}
             />
           </GridCol>
         </GridRow>
