@@ -1,9 +1,15 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }                                                  from '@acx-ui/analytics/services'
-import { fakeIncident1 }                                               from '@acx-ui/analytics/utils'
-import { Provider, store }                                             from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { dataApiURL }      from '@acx-ui/analytics/services'
+import { fakeIncident1 }   from '@acx-ui/analytics/utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  mockGraphqlQuery,
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  mockDOMWidth
+} from '@acx-ui/test-utils'
 
 import { TimeSeriesChartTypes } from './config'
 import { Api }                  from './services'
@@ -11,16 +17,13 @@ import { Api }                  from './services'
 import { TimeSeries } from '.'
 
 describe('Timeseries component', () => {
+  mockDOMWidth()
+
   const charts = [
     TimeSeriesChartTypes.FailureChart,
-    TimeSeriesChartTypes.ClientCountChart,
     TimeSeriesChartTypes.AttemptAndFailureChart
   ]
-  const props = {
-    incident: fakeIncident1,
-    charts: charts
-  }
-  const expectedResult = {
+  const queryResponse = {
     network: {
       hierarchyNode: {
         failureChart: {
@@ -29,18 +32,6 @@ describe('Timeseries component', () => {
             '2022-07-19T09:30:00.000Z'
           ],
           eap: [1, 1]
-        },
-        clientCountChart: {
-          time: [
-            '2022-07-19T09:15:00.000Z',
-            '2022-07-19T09:30:00.000Z',
-            '2022-07-19T09:45:00.000Z',
-            '2022-07-19T10:00:00.000Z',
-            '2022-07-19T10:15:00.000Z'
-          ],
-          newClientCount: [1, 2, 3, 4, 5],
-          impactedClientCount: [6, 7, 8, 9, 10],
-          connectedClientCount: [11, 12, 13, 14, 15]
         },
         attemptAndFailureChart: {
           time: [
@@ -62,20 +53,18 @@ describe('Timeseries component', () => {
     }
   }
 
-  it('should match snapshot', async () => {
+  it('should render charts', async () => {
     store.dispatch(Api.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
-      data: expectedResult
+      data: queryResponse
     })
-    render(<BrowserRouter>
+    const { asFragment } = render(<BrowserRouter>
       <Provider>
-        <TimeSeries {...props} />
+        <TimeSeries incident={fakeIncident1} charts={charts} />
       </Provider>
     </BrowserRouter>
     )
-
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.getByText(/eap failures/i).textContent).toEqual('EAP Failures')
-    expect(screen.getByText(/clients/i).textContent).toEqual('Clients')
+    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')).toHaveLength(2)
   })
 })
