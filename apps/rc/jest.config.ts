@@ -14,5 +14,6 @@ module.exports = {
       functions: 83,
       lines: 90.5
     }
-  }
+  },
+  setupFilesAfterEnv: [`${__dirname}/force-gc.js`]
 }

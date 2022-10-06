@@ -34,9 +34,7 @@ RUN export $(cat ${ENV_FILE}) \
 FROM build-base as acx-ui
 ENV NODE_OPTIONS=--max-old-space-size=8192
 RUN npx nx run-many --target=lint --all --verbose
-# RUN npx nx run rc:test --coverage --runInBand --logHeapUsage --expose-gc
-RUN npx nx run rc:test --coverage --verbose
-RUN npx nx run-many --target=test --all --exclude=rc --coverage --runInBand --verbose
+RUN npx nx run-many --target=test --all --coverage --runInBand --verbose
 
 ###############################################################
 
