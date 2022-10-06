@@ -1,11 +1,13 @@
 import { Incident } from '@acx-ui/analytics/utils'
 
-import attemptAndFailureChart from './charts/AttemptAndFailureChart'
-import clientCountChart       from './charts/ClientCountChart'
-import failureChart           from './charts/FailureChart'
-import ttcByFailureTypeChart  from './charts/TtcByFailureTypeChart'
-import ttcFailureChart        from './charts/TtcFailureChart'
-import { ChartsData }         from './services'
+import apDisconnectionCountChart          from './charts/ApDisconnectionCountChart'
+import attemptAndFailureChart             from './charts/AttemptAndFailureChart'
+import clientCountChart                   from './charts/ClientCountChart'
+import downtimeEventTypeDistributionChart from './charts/DowntimeEventTypeDistributionChart'
+import failureChart                       from './charts/FailureChart'
+import ttcByFailureTypeChart              from './charts/TtcByFailureTypeChart'
+import ttcFailureChart                    from './charts/TtcFailureChart'
+import { ChartsData }                     from './services'
 
 interface TimeSeriesChart {
   query: (incident: Incident) => string,
@@ -17,7 +19,9 @@ export enum TimeSeriesChartTypes {
   ClientCountChart,
   AttemptAndFailureChart,
   TtcFailureChart,
-  TtcByFailureTypeChart
+  TtcByFailureTypeChart,
+  ApDisconnectionCountChart,
+  DowntimeEventTypeDistributionChart
 }
 
 export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
@@ -25,5 +29,7 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.ClientCountChart]: clientCountChart,
   [TimeSeriesChartTypes.AttemptAndFailureChart]: attemptAndFailureChart,
   [TimeSeriesChartTypes.TtcFailureChart]: ttcFailureChart,
-  [TimeSeriesChartTypes.TtcByFailureTypeChart]: ttcByFailureTypeChart
+  [TimeSeriesChartTypes.TtcByFailureTypeChart]: ttcByFailureTypeChart,
+  [TimeSeriesChartTypes.ApDisconnectionCountChart]: apDisconnectionCountChart,
+  [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart]: downtimeEventTypeDistributionChart
 }

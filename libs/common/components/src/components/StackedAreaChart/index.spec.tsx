@@ -6,7 +6,7 @@ import { cssStr } from '../../theme/helper'
 
 import { data } from './stories'
 
-import { StackedAreaChart, getSeriesTotal } from '.'
+import { StackedAreaChart, StepStackedAreaChart, getSeriesTotal } from '.'
 
 describe('getSeriesTotal',() => {
   it('should return correct total series', () => {
@@ -34,7 +34,14 @@ describe('getSeriesTotal',() => {
   })
 })
 
-describe('StackedAreaChart',() => {
+describe('StackedAreaChart', () => {
+  it('should render StackedAreaChart', () => {
+    const { asFragment } = render(<StackedAreaChart data={data} />)
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('svg')).toBeDefined()
+  })
   it('should call formatter for yAxis', () => {
     const formatter = jest.fn()
     render(<StackedAreaChart
@@ -59,5 +66,15 @@ describe('StackedAreaChart',() => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-50')}"]`))
       .toBeNull()
+  })
+})
+
+describe('StepStackedAreaChart',() => {
+  it('should render StackedAreaChart', () => {
+    const { asFragment } = render(<StepStackedAreaChart data={data} />)
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('svg')).toBeDefined()
   })
 })
