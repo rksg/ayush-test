@@ -61,7 +61,7 @@ export function renderPendoAnalyticsTag () {
   window.pendoInitalization = pendoInitalization
   document.body.appendChild(script)
 }
-// this is wip need to add more pendo attributes below 
+// this is wip need to add more pendo attributes below
 export function pendoInitalization (): void {
   const tenantId = getTenantId()
   if (window.pendo) {
