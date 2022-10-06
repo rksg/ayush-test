@@ -29,7 +29,7 @@ describe('useDataZoom', () => {
     // intentionally no assertion to cover the line where echart ref is null
   })
 
-  it('does not dispatch action if zoom is not enabled', () => {
+  it('does not dispatch action to select zoom if zoom is not enabled', () => {
     renderHook(() => useDataZoom(eChartsRef, false, getSeriesData()))
     expect(mockDispatchActionFn).not.toBeCalled()
   })
@@ -41,6 +41,21 @@ describe('useDataZoom', () => {
       type: 'takeGlobalCursor',
       key: 'dataZoomSelect',
       dataZoomSelectActive: true
+    })
+  })
+
+  it('dispatches action for initial zoom', () => {
+    renderHook(() => useDataZoom(eChartsRef, true, getSeriesData(), ['2020-11-10', '2020-11-20']))
+    expect(mockDispatchActionFn).toBeCalledTimes(2)
+    expect(mockDispatchActionFn).nthCalledWith(1, {
+      type: 'takeGlobalCursor',
+      key: 'dataZoomSelect',
+      dataZoomSelectActive: true
+    })
+    expect(mockDispatchActionFn).nthCalledWith(2, {
+      type: 'dataZoom',
+      startValue: '2020-11-10',
+      endValue: '2020-11-20'
     })
   })
 
@@ -62,6 +77,7 @@ describe('useDataZoom', () => {
         eChartsRef,
         true,
         getSeriesData(),
+        undefined,
         mockOnDataZoom
       )
       onDatazoomCallback({

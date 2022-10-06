@@ -56,6 +56,7 @@ const Connected = () => {
         chartRef={connectChart}
         style={{ width: 504, height: 300 }}
         data={getSeriesData(i)}
+        zoom={['2020-11-10', '2020-11-20']}
         // eslint-disable-next-line no-console
         onDataZoom={(range) => { console.log(range.map(r => new Date(r).toISOString())) }}
       />)}

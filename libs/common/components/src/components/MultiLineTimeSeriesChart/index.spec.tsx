@@ -126,7 +126,7 @@ describe('useBrush', () => {
     // intentionally no assertion to cover the line where echart ref is null
   })
 
-  it('handles undefined brush props', () => {
+  it('handles undefined brush prop', () => {
     renderHook(() => useBrush(eChartsRef, getSeriesData(), undefined))
     expect(mockDispatchActionFn).not.toBeCalled()
   })
