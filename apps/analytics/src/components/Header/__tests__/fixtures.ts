@@ -71,7 +71,7 @@ export const header4 = {
     network: {
       node: {
         name: 'Access Point', clientCount: 100,
-        model: ['r710'], version: ['Unknown', '1'], mac: 'AA', internalIp: ['ip1', 'ip2']
+        model: ['r710'], version: ['Unknown', '1'], mac: 'AA', internalIp: ['ip1', 'Unknown', 'ip2']
       }
     }
   },
@@ -83,7 +83,7 @@ export const header4 = {
       { key: 'model', value: ['r710'] },
       { key: 'version', value: ['1', 'Unknown'] },
       { key: 'mac', value: ['AA'] },
-      { key: 'internalIp', value: ['ip2', 'ip1'] }
+      { key: 'internalIp', value: ['ip2', 'ip1', 'Unknown'] }
     ]
   }
 }

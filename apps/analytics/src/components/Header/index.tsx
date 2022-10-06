@@ -3,7 +3,7 @@ import { ReactElement } from 'react'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import {  nodeTypes, useAnalyticsFilter }                   from '@acx-ui/analytics/utils'
+import { nodeTypes, useAnalyticsFilter }                    from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps, Loader, RangePicker } from '@acx-ui/components'
 import { useDateFilter, dateRangeForLast, NodeType }        from '@acx-ui/utils'
 
