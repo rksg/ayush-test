@@ -80,7 +80,7 @@ export function LoadControlForm () {
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'enableBandBalancing']}
         valuePropName='checked'
-        initialValue={false}
+        initialValue={true}
         children={
           <Checkbox
             children={$t({ defaultMessage: 'Enable load balancing between all radios' })} />
@@ -89,7 +89,7 @@ export function LoadControlForm () {
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'clientLoadBalancingEnable']}
         valuePropName='checked'
-        initialValue={false}
+        initialValue={true}
         children={
           <Checkbox children={$t({ defaultMessage: 'Enable load balancing between APs' })} />
         }
