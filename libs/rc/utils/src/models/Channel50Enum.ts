@@ -28,4 +28,3 @@ export enum Channel50Enum {
   _169 = '169',
   _173 = '173',
 }
-  
