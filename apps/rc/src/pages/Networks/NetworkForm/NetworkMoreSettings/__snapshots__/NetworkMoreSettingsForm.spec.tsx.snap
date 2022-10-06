@@ -1350,6 +1350,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                         >
                           <div
                             class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow ant-select-disabled"
+                            data-testid="mgmtTxRateSelect"
                             style="width: 150px;"
                           >
                             <div
