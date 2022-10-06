@@ -65,7 +65,7 @@ export const ArrowCornerIcon = styled(ArrowCorner)`
   height: 20px;
   vertical-align: text-top;
   path {
-    stroke: var(--acx-accents-blue-50);
+    fill: currentColor;
   }
 `
 
@@ -74,7 +74,7 @@ export const ApSingleIcon = styled(SignalLeft)`
   height: 20px;
   vertical-align: text-top;
   path {
-    stroke: var(--acx-accents-blue-50);
+    fill: currentColor;
   }
 `
 
@@ -101,7 +101,7 @@ export const WiredIcon = styled(Wired)`
   height: 20px;
   vertical-align: text-top;
   path {
-    stroke: var(--acx-accents-blue-50);
+    fill: currentColor;
   }
 `
 

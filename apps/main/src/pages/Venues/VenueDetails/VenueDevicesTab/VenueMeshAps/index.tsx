@@ -39,8 +39,10 @@ function venueNameColTpl (
   }
   return (
     <Tooltip title={tooltipTitle[meshRole as APMeshRole]}>
-      {icon[meshRole as APMeshRole]}
-      <TenantLink to={`aps/${id}/details/overview`}>{name}</TenantLink>
+      <TenantLink to={`aps/${id}/details/overview`}>
+        {icon[meshRole as APMeshRole]}
+        {name}
+      </TenantLink>
     </Tooltip>
   )
 }
