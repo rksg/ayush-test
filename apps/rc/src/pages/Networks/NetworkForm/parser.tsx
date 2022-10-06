@@ -280,16 +280,23 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
   }
 
+  // radioCustomization
+  advancedCustomization.radioCustomization = {
+    ...advancedCustomization.radioCustomization,
+    rfBandUsage: RfBandUsageEnum.BOTH,
+    bssMinimumPhyRate: get(data, 'bssMinimumPhyRate'),
+    phyTypeConstraint: get(data, 'enableOfdmOnly') ?
+      PhyTypeConstraintEnum.OFDM : PhyTypeConstraintEnum.NONE,
+    managementFrameMinimumPhyRate: get(data, 'managementFrameMinimumPhyRate')
+  }
 
-  if (get(data, 'wlan.advancedCustomization.radioCustomization')) {
-    advancedCustomization.radioCustomization = {
-      ...advancedCustomization.radioCustomization,
-      rfBandUsage: RfBandUsageEnum.BOTH,
-      bssMinimumPhyRate: get(data, 'wlan.bssMinimumPhyRate'),
-      phyTypeConstraint: get(data, 'wlan.enableOfdmOnly') ?
-        PhyTypeConstraintEnum.OFDM: PhyTypeConstraintEnum.NONE,
-      managementFrameMinimumPhyRate: get(data, 'wlan.managementFrameMinimumPhyRate')
-    }
+  // loadControlForm
+  if(get(data, 'totalUplinkLimited') === false) {
+    advancedCustomization.totalUplinkRateLimiting = 0
+  }
+
+  if(get(data, 'totalDownlinkLimited') === false) {
+    advancedCustomization.totalDownlinkRateLimiting = 0
   }
 
   if (get(data, 'wlan.advancedCustomization.vlanPool')) {

@@ -76,8 +76,9 @@ export default function TopSSIDsByTrafficWidget ({
   const ssidTable = data && data.topNSSIDByTraffic && data.topNSSIDByTraffic.length ? <Table
     columns={columns}
     dataSource={getDataSource(data.topNSSIDByTraffic, data.totalUserTraffic)}
-    type={'compact'}
+    type='compact'
     pagination={false}
+    rowKey='name'
   /> : <NoData/>
 
 

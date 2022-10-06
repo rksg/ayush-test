@@ -190,7 +190,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.2.2:2222')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
     })
-  }, 20000)
+  })
 
   it('should render Network AAA diagram with AAA buttons', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
