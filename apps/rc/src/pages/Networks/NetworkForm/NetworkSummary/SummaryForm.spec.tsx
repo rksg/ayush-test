@@ -1,12 +1,25 @@
 import '@testing-library/jest-dom'
-
 import { Form } from 'antd'
+import { rest } from 'msw'
 
+import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
-import { render }                                                           from '@acx-ui/test-utils'
+import { mockServer, render }                                               from '@acx-ui/test-utils'
+
+import {
+  venuesResponse,
+  networksResponse,
+  successResponse,
+  cloudpathResponse,
+  networkDeepResponse,
+  venueListResponse
+} from '../__tests__/fixtures'
 
 import { SummaryForm } from './SummaryForm'
+
+
+jest.mock('socket.io-client')
 
 const mockSummary = {
   name: 'test',
@@ -27,6 +40,27 @@ const mockSummary = {
 }
 
 describe('SummaryForm', () => {
+  beforeEach(() => {
+    networkDeepResponse.name = 'AAA network test'
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
+      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networksResponse))),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
+    )
+  })
   it('should render cloudpath enabled successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     mockSummary.isCloudpathEnabled = true

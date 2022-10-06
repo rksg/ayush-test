@@ -1,6 +1,6 @@
-import { forwardRef, RefObject } from 'react'
+import { forwardRef, RefCallback } from 'react'
 
-import EChartsReact from 'echarts-for-react'
+import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
@@ -31,7 +31,7 @@ interface NetworkHistoryWidgetComponentProps {
 }
 
 const NetworkHistoryWidget = forwardRef<
-  EChartsReact,
+  ReactECharts,
   NetworkHistoryWidgetComponentProps
 >((props, ref) => {
   const {
@@ -82,7 +82,7 @@ const NetworkHistoryWidget = forwardRef<
                 lineColors={lineColors}
                 brush={brush?.timeWindow}
                 onBrushChange={brush?.setTimeWindow as (range: TimeStamp[]) => void}
-                chartRef={ref as RefObject<EChartsReact> | undefined}
+                chartRef={ref as RefCallback<ReactECharts> | undefined}
               />
               : <NoData/>
           )}
