@@ -78,18 +78,20 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     isMuted: boolean
   }[]>([])
 
+  const selectedIncident = selectedRowData[0]
   const data = (showMuted)
     ? queryResults.data
     : filterMutedIncidents(queryResults.data)
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
-      label: $t(defineMessage({ defaultMessage: 'Mute/Unmute' })),
+      label: $t(selectedIncident?.isMuted
+        ? defineMessage({ defaultMessage: 'Unmute' })
+        : defineMessage({ defaultMessage: 'Mute' })
+      ),
       onClick: async () => {
-        await Promise.all(selectedRowData.map(async (row) => {
-          const { id, code, severityLabel, isMuted } = row
-          await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
-        }))
+        const { id, code, severityLabel, isMuted } = selectedIncident
+        await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
         setSelectedRowData([])
       }
     }

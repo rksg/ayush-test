@@ -283,7 +283,7 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Mute/Unmute' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Mute' }))
     expect(screen.getByRole('alert')).toBeInTheDocument()
   })
 
@@ -375,6 +375,10 @@ describe('IncidentTableWidget', () => {
 
     const afterShowMuted = await screen.findAllByRole('radio', { hidden: true, checked: false })
     expect(afterShowMuted).toHaveLength(3)
+
+    // check the action says umnute:
+    fireEvent.click(afterShowMuted[0])
+    await screen.findByRole('button', { name: 'Unmute' })
 
     fireEvent.click(settingsButton)
     const resetButton = await screen.findByText('Reset to default')
