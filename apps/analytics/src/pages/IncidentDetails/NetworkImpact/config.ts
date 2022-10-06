@@ -23,7 +23,6 @@ export type NetworkImpactChartConfig = {
 }
 
 export interface NetworkImpactChart {
-  key: string
   title: MessageDescriptor
   highlight: MessageDescriptor
   dominanceFn?: (data: NetworkImpactChartData['data'], incident: Incident) => {
@@ -36,8 +35,7 @@ export interface NetworkImpactChart {
   summary: {
     dominance: MessageDescriptor,
     broad: MessageDescriptor
-  },
-  order?: number
+  }
 }
 
 export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
@@ -103,7 +101,6 @@ export const networkImpactChartConfigs: Readonly<Record<
   NetworkImpactChart
 >> = {
   [NetworkImpactChartTypes.WLAN]: {
-    key: NetworkImpactChartTypes.WLAN,
     title: defineMessage({ defaultMessage: 'WLAN' }),
     highlight: highlights.clients,
     dominanceFn: getWLANDominance,
@@ -118,7 +115,6 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.Radio]: {
-    key: NetworkImpactChartTypes.Radio,
     title: defineMessage({ defaultMessage: 'Radio' }),
     transformKeyFn: (val: string) => formatter('radioFormat')(val) as string,
     highlight: highlights.clients,
@@ -133,7 +129,6 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.Reason]: {
-    key: NetworkImpactChartTypes.Reason,
     title: defineMessage({ defaultMessage: 'Reason' }),
     transformKeyFn: mapCodeToReason,
     highlight: highlights.clients,
@@ -148,7 +143,6 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.ClientManufacturer]: {
-    key: NetworkImpactChartTypes.ClientManufacturer,
     title: defineMessage({ defaultMessage: 'Client Manufacturers' }),
     highlight: highlights.clients,
     summary: {
@@ -163,7 +157,6 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.APModelByAP]: {
-    key: NetworkImpactChartTypes.APModelByAP,
     title: defineMessage({ defaultMessage: 'AP Model' }),
     highlight: highlights.aps,
     summary: {
@@ -179,7 +172,6 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.APFwVersionByAP]: {
-    key: NetworkImpactChartTypes.APFwVersionByAP,
     title: defineMessage({ defaultMessage: 'AP Firmware' }),
     highlight: highlights.aps,
     summary: {
@@ -195,7 +187,6 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.EventTypeByAP]: {
-    key: NetworkImpactChartTypes.EventTypeByAP,
     title: defineMessage({ defaultMessage: 'Event Type' }),
     highlight: highlights.aps,
     summary: {
@@ -211,7 +202,6 @@ export const networkImpactChartConfigs: Readonly<Record<
     }
   },
   [NetworkImpactChartTypes.ReasonByAP]: {
-    key: NetworkImpactChartTypes.ReasonByAP,
     title: defineMessage({ defaultMessage: 'Reason' }),
     highlight: highlights.aps,
     transformKeyFn: getAPRebootReason,

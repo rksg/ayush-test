@@ -4,8 +4,8 @@ import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
 
 import {
-  networkImpactChartConfigs,
-  NetworkImpactChartConfig
+  NetworkImpactChartConfig,
+  NetworkImpactChartTypes
 } from './config'
 
 export interface RequestPayload {
@@ -14,7 +14,6 @@ export interface RequestPayload {
 }
 
 export interface NetworkImpactChartData {
-  key: string
   count: number
   data: { key: string, name: string, value: number }[]
 }
@@ -22,13 +21,14 @@ export interface Response {
   incident: Record<string, Omit<NetworkImpactChartData, 'key'>>
 }
 
+type ResultType = Partial<Record<NetworkImpactChartTypes, NetworkImpactChartData>>
+
 const transformResponse = ({ incident }: Response, _: {}, payload: RequestPayload) => {
-  return payload.charts.reduce((agg: Record<string, NetworkImpactChartData>, { chart }) => {
-    const { key } = networkImpactChartConfigs[chart]
-    agg[key] = {
-      ...incident[key],
-      key: key,
-      data: incident[key].data.map(item => ({ ...item, name: item.key }))
+  return payload.charts.reduce((agg: ResultType, { chart }) => {
+    const result = incident[chart]
+    agg[chart] = {
+      ...result,
+      data: result.data.map(item => ({ ...item, name: item.key }))
     }
     return agg
   }, {})
@@ -36,14 +36,10 @@ const transformResponse = ({ incident }: Response, _: {}, payload: RequestPayloa
 
 export const networkImpactChartsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    networkImpactCharts: build.query<
-      Record<string, NetworkImpactChartData>,
-      RequestPayload
-    >({
+    networkImpactCharts: build.query<ResultType, RequestPayload>({
       query: (payload) => {
         const queries = payload.charts.map(({ chart, type, dimension }) => {
-          const { key } = networkImpactChartConfigs[chart]
-          return gql`${key}: topN(n: 10, by: "${dimension}", type: "${type}") {
+          return gql`${chart}: topN(n: 10, by: "${dimension}", type: "${type}") {
             count data { key value }
           }`
         })
