@@ -50,7 +50,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Client Impact Count' }),
         children: impactValues('client', incident).clientImpactDescription,
-        onClick: () => onOpen('client')
+        ...(incident.impactedClientCount || -1 > 0 ? { onClick: () => onOpen('client') } : {})
       })
     },
     [Attributes.ApImpactCount]: {
@@ -58,7 +58,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'AP Impact Count' }),
         children: impactValues('ap', incident).apImpactDescription,
-        onClick: () => onOpen('ap')
+        ...(incident.impactedApCount || -1 > 0 ? { onClick: () => onOpen('ap') } : {})
       })
     },
     [Attributes.IncidentCategory]: {
