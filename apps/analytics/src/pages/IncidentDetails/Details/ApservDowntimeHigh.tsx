@@ -11,6 +11,8 @@ import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import { TimeSeries }                        from '../TimeSeries'
+import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -43,6 +45,10 @@ export const ApservDowntimeHigh = (incident: Incident) => {
     type: 'apDowntime',
     dimension: 'reason'
   }]
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.ApDisconnectionCountChart,
+    TimeSeriesChartTypes.DowntimeEventTypeDistributionChart
+  ]
 
   return (
     <>
@@ -69,7 +75,7 @@ export const ApservDowntimeHigh = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Chart</div>
+          <TimeSeries incident={incident} charts={timeSeriesCharts} />
         </GridCol>
       </GridRow>
     </>

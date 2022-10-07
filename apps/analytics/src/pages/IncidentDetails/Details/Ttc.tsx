@@ -42,7 +42,9 @@ export const Ttc = (incident: Incident) => {
     dimension: 'manufacturer'
   }]
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.ClientCountChart
+    TimeSeriesChartTypes.TtcFailureChart,
+    TimeSeriesChartTypes.ClientCountChart,
+    TimeSeriesChartTypes.TtcByFailureTypeChart
   ]
 
   return (

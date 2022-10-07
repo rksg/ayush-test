@@ -5,6 +5,7 @@ import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 import { ApservDowntimeHigh } from '../ApservDowntimeHigh'
 
 import { mockNetworkImpact } from './__tests__/fixtures'
+import { mockTimeSeries }    from './__tests__/fixtures'
 
 jest.mock('../../IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
@@ -15,9 +16,12 @@ jest.mock('../../Insights', () => ({
 }))
 jest.mock('../../NetworkImpact')
 
+jest.mock('../../TimeSeries')
+
 describe('i-apserv-downtime-high', () => {
   mockDOMWidth()
   mockNetworkImpact()
+  mockTimeSeries()
 
   it('should render correctly', () => {
     const params = {

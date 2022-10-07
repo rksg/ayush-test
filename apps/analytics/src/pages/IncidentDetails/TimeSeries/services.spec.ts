@@ -60,7 +60,7 @@ describe('chartQuery', () => {
     }
   }
 
-  it('should return correct data when relatedIncidents is requested', async () => {
+  it('should return correct data', async () => {
     const expectedResult = {
       network: {
         hierarchyNode: {
@@ -72,27 +72,6 @@ describe('chartQuery', () => {
             startTime: '2022-04-07T12:15:00.000Z',
             endTime: '2022-04-07T13:15:00.000Z'
           }
-        }
-      }
-    }
-    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
-      data: expectedResult
-    })
-    const { status, data, error } = await store.dispatch(
-      Api.endpoints.Charts.initiate({
-        incident: fakeIncident1,
-        charts
-      })
-    )
-    expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
-    expect(error).toBe(undefined)
-  })
-  it('should return correct data when relatedIncidents is not requested', async () => {
-    const expectedResult = {
-      network: {
-        hierarchyNode: {
-          ...expectedQueryResults
         }
       }
     }

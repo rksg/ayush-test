@@ -5,7 +5,9 @@ import ReactECharts from 'echarts-for-react'
 
 import { mockDOMWidth, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
-import { getSeriesData } from './stories'
+import { cssStr } from '../../theme/helper'
+
+import { getData, getSeriesData } from './stories'
 
 import {
   useBrush,
@@ -52,6 +54,29 @@ describe('MultiLineTimeSeriesChart', () => {
       brush={['2022-09-07', '2022-09-07']}
     />)
     expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
+  })
+
+  it('should not show series if show is false', () => {
+    const formatter = jest.fn()
+    const { asFragment } = render(<MultiLineTimeSeriesChart
+      data={[ ...getSeriesData(), {
+        key: 'series-hide',
+        name: 'seriesNames',
+        show: false,
+        data: getData()
+      }]}
+      dataFormatter={formatter}
+      disableLegend={true}
+    />)
+
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-30')}"]`))
+      .not.toBeNull()
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-50')}"]`))
+      .not.toBeNull()
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-orange-50')}"]`))
+      .not.toBeNull()
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-semantics-yellow-40')}"]`))
+      .toBeNull()
   })
 })
 

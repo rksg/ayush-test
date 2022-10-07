@@ -1,8 +1,9 @@
 import { storiesOf } from '@storybook/react'
 
 import { TimeStamp } from '@acx-ui/types'
+import { formatter } from '@acx-ui/utils'
 
-import { StackedAreaChart } from '.'
+import { StackedAreaChart, StepStackedAreaChart } from '.'
 
 const getData = () => {
   const base = +new Date(2020, 9, 29)
@@ -16,9 +17,33 @@ const getData = () => {
 }
 
 export const data = [
-  { name: '2.4 GHz', value: getData() },
-  { name: '5 GHz', value: getData() }
+  { key: '2.4GHz', name: '2.4 GHz', data: getData() },
+  { key: '5GHz', name: '5 GHz', data: getData() }
 ]
 
 storiesOf('StackedAreaChart', module)
-  .add('Chart View', () => <StackedAreaChart data={data} style={{ width: 500 }}/>)
+  .add('Chart View', () => <StackedAreaChart
+    data={data}
+    style={{ width: 500 }}
+  />)
+  .add('StepChart View', () => <StepStackedAreaChart
+    data={data}
+    style={{ width: 500 }}
+  />)
+  .add('With Formatter', () => <StackedAreaChart
+    data={[
+      { key: 'count', name: 'Count Sample', data: getData() },
+      { key: 'duration', name: 'Duration Sample', data: getData() }
+    ]}
+    dataFormatter={formatter('countFormat')}
+    seriesFormatters={{
+      count: formatter('countFormat'),
+      duration: formatter('durationFormat')
+    }}
+    style={{ width: 500 }}
+  />)
+  .add('Show Total', () => <StackedAreaChart
+    data={data}
+    style={{ width: 500 }}
+    tooltipTotalTitle={'Total'}
+  />)

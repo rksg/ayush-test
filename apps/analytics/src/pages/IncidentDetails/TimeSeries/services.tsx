@@ -28,6 +28,10 @@ interface Response <TimeSeriesChartResponse> {
   }
 }
 
+export type ChartsData = {
+  relatedIncidents?: Incident[],
+} & Record<string, Record<string, number[] | string[] | Record<string, number[] | string[]>>>
+
 export const calcGranularity = (start: string, end: string): string => {
   const duration = moment.duration(moment(end).diff(moment(start))).asHours()
   if (duration > 24 * 7) return 'PT1H' // 1 hour if duration > 7 days
@@ -84,7 +88,7 @@ export const Api = dataApi.injectEndpoints({
               $path: [HierarchyNodeInput],
               $start: DateTime,
               $end: DateTime,
-              $granularity: String,
+              ${(queries.includes('$granularity')) ? '$granularity: String,' : ''}
               $code: String
             ) {
               network(start: $start, end: $end) {

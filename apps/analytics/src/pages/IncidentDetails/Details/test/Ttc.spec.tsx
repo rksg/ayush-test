@@ -1,10 +1,11 @@
-import { fakeIncidentTtc  }             from '@acx-ui/analytics/utils'
+import { fakeIncidentTtc }              from '@acx-ui/analytics/utils'
 import { Provider }                     from '@acx-ui/store'
 import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { Ttc } from '../Ttc'
 
 import { mockNetworkImpact } from './__tests__/fixtures'
+import { mockTimeSeries }    from './__tests__/fixtures'
 
 jest.mock('../../IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
@@ -14,20 +15,17 @@ jest.mock('../../NetworkImpact')
 jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
+jest.mock('../../TimeSeries')
 
 describe('ttc', () => {
   mockDOMWidth()
   mockNetworkImpact()
-
+  mockTimeSeries()
   it('should render correctly', () => {
-    const params = {
-      incidentId: fakeIncidentTtc.id
-    }
-
+    const params = { incidentId: fakeIncidentTtc.id }
     const { asFragment } = render(<Provider>
       <Ttc {...fakeIncidentTtc} />
     </Provider>, { route: { params } })
-
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
     expect(screen.getByTestId('networkImpact')).toBeVisible()
     expect(screen.getByTestId('insights')).toBeVisible()
