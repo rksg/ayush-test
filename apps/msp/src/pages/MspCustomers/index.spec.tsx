@@ -53,7 +53,7 @@ describe('MspCustomers', () => {
     }
 
     const { asFragment } = render(<Provider><MspCustomers /></Provider>, {
-      route: { params, path: '/:tenantId/mspCustomers' }
+      route: { params, path: '/:tenantId/dashboard/mspCustomers' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

@@ -7,14 +7,14 @@ import {
   StepsFormInstance
 } from '@acx-ui/components'
 import {
-  NetworkTypeEnum,
+  // NetworkTypeEnum,
   CreateNetworkFormFields,
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
-  useParams
+  useTenantLink
+  // useParams
 } from '@acx-ui/react-router-dom'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
@@ -22,36 +22,36 @@ function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, m
 export function AddIntegrator () {
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
-  const params = useParams()
-  const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
+  // const params = useParams()
+  // const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   //   const [createNetwork] = useCreateNetworkMutation()
   //DetailsState
-  const [state, updateState] = useState<CreateNetworkFormFields>({
-    name: '',
-    type: NetworkTypeEnum.AAA,
-    isCloudpathEnabled: false,
-    venues: []
-  })
+  // const [state, updateState] = useState<CreateNetworkFormFields>({
+  //   name: '',
+  //   type: NetworkTypeEnum.AAA,
+  //   isCloudpathEnabled: false,
+  //   venues: []
+  // })
   const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
 
-  const updateData = (newData: Partial<CreateNetworkFormFields>) => {
-    updateState({ ...state, ...newData })
-  }
+  // const updateData = (newData: Partial<CreateNetworkFormFields>) => {
+  //   updateState({ ...state, ...newData })
+  // }
 
-  const [saveState, updateSaveState] = useState<NetworkSaveData>()
+  // const [saveState, updateSaveState] = useState<NetworkSaveData>()
 
-  const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if( state.isCloudpathEnabled ){
-      delete saveState?.accountingRadius
-      delete saveState?.authRadius
-    }else{
-      delete saveState?.cloudpathServerId
-    }
-    const newSavedata = { ...saveState, ...saveData }
-    newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
-    updateSaveState({ ...saveState, ...newSavedata })
-  }
+  // const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
+  //   if( state.isCloudpathEnabled ){
+  //     delete saveState?.accountingRadius
+  //     delete saveState?.authRadius
+  //   }else{
+  //     delete saveState?.cloudpathServerId
+  //   }
+  //   const newSavedata = { ...saveState, ...saveData }
+  //   newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
+  //   updateSaveState({ ...saveState, ...newSavedata })
+  // }
 
   const handleAddIntegrator = async () => {
     try {
@@ -99,12 +99,12 @@ export function AddIntegrator () {
           name='customers'
           title='Customers'
           //   validateTrigger='onBlur'
-          onFinish={async (data) => {
-            // // const detailsSaveData = transferDetailToSave(data)
-            // updateData(data)
-            // updateSaveData(detailsSaveData)
-            return true
-          }}
+          // onFinish={async (data) => {
+          //   // const detailsSaveData = transferDetailToSave(data)
+          //   updateData(data)
+          //   updateSaveData(detailsSaveData)
+          //   return true
+          // }}
         >
           {/* <NetworkFormContext.Provider value={{ setNetworkType }}>
             <NetworkDetailForm />
@@ -117,8 +117,8 @@ export function AddIntegrator () {
           //   validateTrigger='onBlur'
           onFinish={async (data) => {
             data = {
-              ...data,
-              ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
+              ...data
+              // ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
             }
             // const settingSaveData = tranferSettingsToSave(data)
             // updateData(data)

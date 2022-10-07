@@ -5,43 +5,31 @@ import { MspUrlsInfo }                                                   from '@
 import { Provider }                                                      from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { VarCustomers } from '.'
+import { DeviceInventory } from '.'
 
 const list = {
   totalCount: 1,
   page: 1,
   data: [
     {
-      alarmCount: 0,
-      delegationType: 'DELEGATION_TYPE_VAR',
-      entitlements: [
-        {
-          consumed: '0',
-          entitlementDeviceType: 'DVCNWTYPE_WIFI',
-          expirationDate: '2023-09-09T00:00:00Z',
-          expirationDateTs: '1694217600000',
-          quantity: '1040',
-          tenantId: '79cae97ce39343c99632600b30be5465',
-          toBeRemovedQuantity: 0,
-          type: 'entitlement'
-        }
-      ],
-      id: '2ea8eaabc07840caa5fed7a80913a83a',
-      status: 'DELEGATION_STATUS_ACCEPTED',
-      switchLicenses: 80,
-      tenantEmail: 'dog151@email.com',
-      tenantId: '79cae97ce39343c99632600b30be5465',
-      tenantName: 'Dog Company 151',
-      wifiLicenses: 1040
+      apMac: '892838227723',
+      customerName: 'EC 111',
+      deviceStatus: '1_01_NeverContactedCloud',
+      deviceType: 'DVCNWTYPE_WIFI',
+      managedAs: 'MSP',
+      name: "EC 111's AP",
+      serialNumber: '892838227723',
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82',
+      venueName: 'My-Venue'
     }
   ]
 }
 
-describe('VarCustomers', () => {
+describe('DeviceInventory', () => {
   it('should render correctly', async () => {
     mockServer.use(
       rest.post(
-        MspUrlsInfo.getVarDelegations.url,
+        MspUrlsInfo.getMspDeviceInventory.url,
         (req, res, ctx) => res(ctx.json(list))
       )
     )
@@ -49,8 +37,8 @@ describe('VarCustomers', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
-    const { asFragment } = render(<Provider><VarCustomers /></Provider>, {
-      route: { params, path: '/:tenantId/dashboard/varCustomers' }
+    const { asFragment } = render(<Provider><DeviceInventory /></Provider>, {
+      route: { params, path: '/:tenantId/deviceinventory' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -62,7 +50,7 @@ describe('VarCustomers', () => {
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(list.data.length)
     list.data.forEach((item, index) => {
-      expect(within(rows[index]).getByText(item.tenantName)).toBeVisible()
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
 
     expect(asFragment()).toMatchSnapshot()

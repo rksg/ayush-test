@@ -64,5 +64,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   mspAssignmentBulkOperation: {
     method: 'post',
     url: '/api/entitlement-assign/tenant/:tenantId/assignment/bulkOperation'
+  },
+  resendEcInvitation: {
+    method: 'post',
+    url: '/api/mspservice/tenant/:mspEcTenantId/emailinvitation'
   }
 }

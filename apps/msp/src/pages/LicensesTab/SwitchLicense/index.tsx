@@ -15,7 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
-  EntitlementDeviceSubType,
+  // EntitlementDeviceSubType,
   EntitlementUtil,
   MspEntitlement
 } from '@acx-ui/rc/utils'

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { Select }    from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
@@ -8,7 +7,6 @@ import {
   Button,
   Loader,
   PageHeader,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -25,8 +23,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-const { Option } = Select
-
 const transformDeviceTypeString = (row: EcDeviceInventory) => {
   switch (row.deviceType) {
     case EntitlementNetworkDeviceType.WIFI:
@@ -40,10 +36,10 @@ const transformDeviceTypeString = (row: EcDeviceInventory) => {
 const transformDeviceOperStatus = (row: EcDeviceInventory) => {
   switch (row.deviceType) {
     case EntitlementNetworkDeviceType.WIFI:
-      // const intl = useIntl()
-      // const apStatus =
-      //   transformApStatus(intl, row.deviceStatus as ApDeviceStatusEnum, APView.AP_LIST)
-      // return apStatus.message
+      const intl = useIntl()
+      const apStatus =
+        transformApStatus(intl, row.deviceStatus as ApDeviceStatusEnum, APView.AP_LIST)
+      return apStatus.message
     case EntitlementNetworkDeviceType.SWITCH:
       const switchStatus = transformSwitchStatus(row.deviceStatus as SwitchStatusEnum)
       return switchStatus
@@ -68,15 +64,6 @@ const transformSwitchStatus = (switchStatus: SwitchStatusEnum) => {
     default:
       return 'Never contacted cloud'
   }
-}
-
-const onApply = (
-  // selectedOptions?: SingleValueType | SingleValueType[] | undefined
-) => {
-  showToast({
-    type: 'success',
-    content: 'Cascader Options Selected:'
-  })
 }
 
 export function DeviceInventory () {

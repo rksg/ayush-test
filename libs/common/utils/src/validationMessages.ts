@@ -58,6 +58,10 @@ export const validationMessages = {
   hasDollarSign: defineMessage({
     defaultMessage: '"$(" is not allowed',
     description: 'Validation - dollar sign checks'
+  }),
+  emailAddress: defineMessage({
+    defaultMessage: 'Please enter a valid email address',
+    description: 'Validation - email address checks'
   })
 }
 

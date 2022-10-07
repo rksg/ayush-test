@@ -105,3 +105,14 @@ export function subnetMaskIpRegExp (value: string) {
   }
   return Promise.resolve()
 }
+
+export function emailRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.emailAddress))
+  }
+  return Promise.resolve()
+}

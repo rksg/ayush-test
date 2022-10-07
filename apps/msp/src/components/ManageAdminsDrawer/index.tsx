@@ -30,7 +30,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const { visible, setVisible } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
-  const [ search, setSearch ] = useState('')
+  // const [ search, setSearch ] = useState('')
 
   const onClose = () => {
     setVisible(false)
@@ -110,7 +110,10 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   </Form>
 
   const footer = [
-    <Button onClick={() => form.submit()} type={'secondary'}>{$t({ defaultMessage: 'Save' })}</Button>,
+    <Button
+      onClick={() => form.submit()}
+      type={'secondary'}>{$t({ defaultMessage: 'Save' })}
+    </Button>,
     <Button onClick={resetFields}>{$t({ defaultMessage: 'Cancel' })}</Button>
   ]
 

@@ -264,6 +264,7 @@ export function MspCustomers () {
 
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
+  const [tenantId, setTenantId] = useState('')
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -317,9 +318,9 @@ export function MspCustomers () {
       key: 'mspAdminCount',
       sorter: true,
       align: 'center',
-      onCell: (data, row) => {
+      onCell: () => {
         return {
-          onClick: (ev) => {
+          onClick: () => {
             setDrawerVisible(true)
           }
         }
@@ -405,7 +406,10 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
-        onClick: () => setModalVisible(true)
+        onClick: (selectedRows) => {
+          setTenantId(selectedRows[0].id)
+          setModalVisible(true)
+        }
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
@@ -463,6 +467,7 @@ export function MspCustomers () {
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
+        tenantId={tenantId}
       />
     </>
   )

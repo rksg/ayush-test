@@ -113,6 +113,16 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    resendEcInvitation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.resendEcInvitation, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -125,5 +135,6 @@ export const {
   useMspAdminListQuery,
   useMspEntitlementListQuery,
   useMspEntitlementSummaryQuery,
-  useMspAssignmentSummaryQuery
+  useMspAssignmentSummaryQuery,
+  useResendEcInvitationMutation
 } = mspApi

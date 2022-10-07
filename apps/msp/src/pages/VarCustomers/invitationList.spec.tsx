@@ -5,7 +5,7 @@ import { MspUrlsInfo }                                                   from '@
 import { Provider }                                                      from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { VarCustomers } from '.'
+import { InvitationList } from './invitationList'
 
 const list = {
   totalCount: 1,
@@ -37,7 +37,7 @@ const list = {
   ]
 }
 
-describe('VarCustomers', () => {
+describe('InvitationList', () => {
   it('should render correctly', async () => {
     mockServer.use(
       rest.post(
@@ -49,11 +49,11 @@ describe('VarCustomers', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
-    const { asFragment } = render(<Provider><VarCustomers /></Provider>, {
+    const { asFragment } = render(<Provider><InvitationList /></Provider>, {
       route: { params, path: '/:tenantId/dashboard/varCustomers' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = screen.getByRole('table').querySelector('tbody')!

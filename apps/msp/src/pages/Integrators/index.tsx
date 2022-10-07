@@ -110,6 +110,7 @@ export function Integrators () {
   const { $t } = useIntl()
 
   const [modalVisible, setModalVisible] = useState(false)
+  const [tenantId, setTenantId] = useState('')
 
   const IntegratorssTable = () => {
     const tableQuery = useTableQuery({
@@ -132,7 +133,10 @@ export function Integrators () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
-        onClick: () => setModalVisible(true)
+        onClick: (selectedRows) => {
+          setTenantId(selectedRows[0].id)
+          setModalVisible(true)
+        }
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
@@ -187,6 +191,7 @@ export function Integrators () {
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
+        tenantId={tenantId}
       />
     </>
   )
