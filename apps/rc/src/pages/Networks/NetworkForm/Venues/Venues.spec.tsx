@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
+
 import { networkApi }      from '@acx-ui/rc/services'
 import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -17,6 +18,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import { Venues } from './Venues'
+
+jest.mock('socket.io-client')
 
 const list = {
   totalCount: 2,

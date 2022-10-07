@@ -17,7 +17,9 @@ import {
   RadiusServer,
   TacacsServer,
   LocalUser,
-  AAASetting
+  AAASetting,
+  VenueSwitchConfiguration,
+  ConfigurationProfile
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -141,6 +143,43 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    configProfiles: build.query<ConfigurationProfile[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getConfigProfiles, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: { data: ConfigurationProfile[] }) {
+        return result?.data
+      }
+    }),
+    venueSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
+        return{
+          ...req
+        }
+      }
+    }),
     venueSwitchAAAServerList: build.query<
     TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -219,5 +258,9 @@ export const {
   useAddAAAServerMutation,
   useUpdateAAAServerMutation,
   useDeleteAAAServerMutation,
-  useBulkDeleteAAAServerMutation
+  useBulkDeleteAAAServerMutation,
+  useConfigProfilesQuery,
+  useVenueSwitchSettingQuery,
+  useUpdateVenueSwitchSettingMutation,
+  useSwitchConfigProfileQuery
 } = venueApi
