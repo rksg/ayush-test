@@ -1,7 +1,6 @@
-import { Divider } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, Subtitle } from '@acx-ui/components'
+import { AnchorLayout, StepsForm } from '@acx-ui/components'
 
 import { AAAServers } from './AAAServers'
 
@@ -13,22 +12,18 @@ export function SwitchAAATab () {
     title: serversTitle,
     content: (
       <>
-        <Subtitle level={3} id='aaa-servers'>
+        <StepsForm.SectionTitle id='aaa-servers'>
           { serversTitle }
-        </Subtitle>
-        <Divider style={{ marginTop: '4px' }} />
+        </StepsForm.SectionTitle>
         <AAAServers />
       </>
     )
   }, {
     title: settingsTitle,
     content: (
-      <>
-        <Subtitle level={3} id='aaa-settings'>
-          { settingsTitle }
-        </Subtitle>
-        <Divider style={{ marginTop: '4px' }} />
-      </>
+      <StepsForm.SectionTitle id='aaa-settings'>
+        { settingsTitle }
+      </StepsForm.SectionTitle>
     )
   }]
   return (

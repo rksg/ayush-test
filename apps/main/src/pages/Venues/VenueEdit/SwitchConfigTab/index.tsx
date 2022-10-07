@@ -3,12 +3,12 @@ import { useContext } from 'react'
 import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { SwitchAAATab } from './SwitchAAATab/SwitchAAATab'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
 
 import { GeneralSettingForm } from './GeneralSettingForm'
+import { SwitchAAATab }       from './SwitchAAATab/SwitchAAATab'
 
 const { TabPane } = Tabs
 

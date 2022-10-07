@@ -110,7 +110,6 @@ describe('AAAServers', () => {
       </Provider>,
       { route: { params } }
     )
-    // const radiusPanel = screen.getByTestId('radius')
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
@@ -140,7 +139,6 @@ describe('AAAServers', () => {
       { route: { params } }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const addButton = screen.getByRole('button', { name: 'Add RADIUS Server' })
     expect(addButton).toBeVisible()
@@ -187,12 +185,10 @@ describe('AAAServers', () => {
       { route: { params } }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
     const sharedSecretElem = await screen.findByDisplayValue('dg')
     fireEvent.click(sharedSecretElem)
     const row1 = await screen.findByText('r0')
     fireEvent.click(row1)
-    expect(asFragment()).toMatchSnapshot()
     const editButton = screen.getByRole('button', { name: /edit/i })
     expect(editButton).toBeVisible()
 
@@ -226,14 +222,13 @@ describe('AAAServers', () => {
         res(ctx.json({}))
       )
     )
-    const { asFragment } = render(
+    render(
       <Provider>
         <AAAServers />
       </Provider>,
       { route: { params } }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const row1 = await screen.findByText('r0')
     fireEvent.click(row1)
@@ -275,7 +270,6 @@ describe('AAAServers', () => {
       { route: { params } }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
     const row1 = await screen.findByText('r0')
     fireEvent.click(row1)
 

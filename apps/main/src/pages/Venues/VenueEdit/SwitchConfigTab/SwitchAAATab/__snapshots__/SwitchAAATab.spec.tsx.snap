@@ -72,16 +72,11 @@ exports[`SwitchAAATab should render correctly 1`] = `
           id="Servers-&-Users"
         >
           <h3
-            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
             id="aaa-servers"
           >
             Servers & Users
           </h3>
-          <div
-            class="ant-divider ant-divider-horizontal"
-            role="separator"
-            style="margin-top: 4px;"
-          />
           <div
             class="styledComponents__AAAServers-sc-1m2ni0r-0 ZnKYN"
           >
@@ -345,16 +340,11 @@ exports[`SwitchAAATab should render correctly 1`] = `
           id="Settings"
         >
           <h3
-            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
             id="aaa-settings"
           >
             Settings
           </h3>
-          <div
-            class="ant-divider ant-divider-horizontal"
-            role="separator"
-            style="margin-top: 4px;"
-          />
         </div>
       </div>
     </div>

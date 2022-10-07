@@ -77,7 +77,7 @@ export function AAAServers () {
         ghost={true}
         bordered={false}
       >
-        <Panel data-testid='radius' header={getPanelHeader(AAAServerTypeEnum.RADIUS, 0)} key='1' >
+        <Panel header={getPanelHeader(AAAServerTypeEnum.RADIUS, 0)} key='1' >
           <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} aaaSetting={aaaSetting} />
         </Panel>
 

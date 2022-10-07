@@ -310,28 +310,22 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) => {
               const rows = getSelectedRows(selectedRowKeys)
+              const label = option.tooltip
+                ? <Tooltip placement='top' title={option.tooltip}>{option.label}</Tooltip>
+                : option.label
               let visible = typeof option.visible === 'function'
                 ? option.visible(rows)
                 : option.visible ?? true
 
               if (!visible) return null
-              return option.tooltip ?
-                <UI.ActionButton
-                  key={option.label}
-                  disabled={option.disabled}
-                  onClick={() =>
-                    option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
-                >
-                  <Tooltip placement='top' title={option.tooltip}>{option.label}</Tooltip>
-                </UI.ActionButton>
-                :
-                <UI.ActionButton
-                  key={option.label}
-                  disabled={option.disabled}
-                  onClick={() =>
-                    option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
-                  children={option.label}
-                />
+              return <UI.ActionButton
+                key={option.label}
+                disabled={option.disabled}
+                onClick={() =>
+                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
+              >
+                {label}
+              </UI.ActionButton>
             })}
           </Space>
         </Space>
