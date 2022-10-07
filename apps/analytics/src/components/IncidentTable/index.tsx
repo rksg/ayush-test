@@ -83,7 +83,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     ? queryResults.data
     : filterMutedIncidents(queryResults.data)
 
-  const rowActions: TableProps<IncidentTableRow>['rowActions'] = selectedIncident ? [
+  const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
       label: $t(selectedIncident?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
@@ -95,7 +95,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         setSelectedRowData([])
       }
     }
-  ] : []
+  ]
 
   const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = useMemo(() => [
     {
@@ -242,12 +242,12 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         rowSelection={{
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
-          onSelect: (selectedRowKeys) => {
+          onChange: (_, [row]) => {
             setSelectedRowData([{
-              id: selectedRowKeys.id,
-              code: selectedRowKeys.code,
-              severityLabel: selectedRowKeys.severityLabel,
-              isMuted: selectedRowKeys.isMuted
+              id: row.id,
+              code: row.code,
+              severityLabel: row.severityLabel,
+              isMuted: row.isMuted
             }])
           }
         }}
