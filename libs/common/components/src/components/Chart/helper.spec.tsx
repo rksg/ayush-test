@@ -29,7 +29,7 @@ describe('dateAxisFormatter', () => {
 })
 
 describe('getTimeSeriesSymbol', () => {
-  it('should return none for sysmbo', () => {
+  it('should return none for symbol', () => {
     const series = [{
       key: 'series1',
       name: 'series1',
@@ -45,7 +45,7 @@ describe('getTimeSeriesSymbol', () => {
       getTimeSeriesSymbol(series)([], { seriesIndex: 0, dataIndex: 2 } as CallbackDataParams)
     ).toEqual('none')
   })
-  it('should return circle for sysmbo when single data point', () => {
+  it('should return circle for symbol when single data point', () => {
     const series = [{
       key: 'series1',
       name: 'series1',
