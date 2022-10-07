@@ -32,6 +32,16 @@ export function domainNameRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function syslogServerRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)$')
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function trailingNorLeadingSpaces (value: string) {
   const { $t } = getIntl()
   if (value && (value.endsWith(' ') || value.startsWith(' '))) {

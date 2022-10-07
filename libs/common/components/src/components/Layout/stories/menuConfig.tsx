@@ -1,34 +1,40 @@
 import styled from 'styled-components/macro'
 
 import {
-  AI as AIOriginal,
+  AIOutlined as AIOutlinedBase,
+  AISolid as AISolidBase,
   AccountCircleOutlined,
   AccountCircleSolid,
+  AdminOutlined,
+  AdminSolid as AdminSolidBase,
   CalendarDateOutlined,
   CalendarDateSolid,
-  ConfigurationOutlined,
-  ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
   LocationOutlined,
   LocationSolid,
   NetworksOutlined,
   NetworksSolid,
+  PoliciesOutlined,
+  PoliciesSolid as PoliciesSolidBase,
   ReportsOutlined,
   ReportsSolid,
   ServicesOutlined,
-  ServicesSolid,
+  ServicesSolid as ServicesSolidBase,
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
 
-import { genPlaceholder } from '..'
+import { genPlaceholder, LayoutProps } from '..'
+import { LayoutUI }                    from '../styledComponents'
 
-const AI = styled(AIOriginal)`
-  path { stroke: none !important; }
-`
+const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
+const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
+const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
+const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
+const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
-const config = [
+const config: LayoutProps['menuConfig'] = [
   {
     path: '/dashboard',
     name: 'Dashboard',
@@ -38,8 +44,8 @@ const config = [
   {
     path: '/analytics',
     name: 'AI Analytics',
-    inactiveIcon: AI,
-    activeIcon: AI,
+    inactiveIcon: AIOutlined,
+    activeIcon: AISolid,
     routes: [
       {
         path: '/analytics/incidents',
@@ -103,8 +109,8 @@ const config = [
   {
     path: '/policies',
     name: 'Policies',
-    inactiveIcon: ServicesOutlined,
-    activeIcon: ServicesSolid
+    inactiveIcon: PoliciesOutlined,
+    activeIcon: PoliciesSolid
   },
   {
     path: '/users',
@@ -116,8 +122,8 @@ const config = [
   {
     path: '/administration',
     name: 'Administration',
-    inactiveIcon: ConfigurationOutlined,
-    activeIcon: ConfigurationSolid
+    inactiveIcon: AdminOutlined,
+    activeIcon: AdminSolid
   }
 ]
 

@@ -2,6 +2,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+
 import * as config                      from '@acx-ui/config'
 import { networkApi }                   from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -18,6 +19,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import { NetworkVenuesTab } from './index'
+
+jest.mock('socket.io-client')
 
 const network = {
   type: 'aaa',
@@ -125,13 +128,14 @@ describe('NetworkVenuesTab', () => {
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
     }
 
-    render(<Provider><NetworkVenuesTab /></Provider>, {
+    const { asFragment } = render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
+    expect(asFragment()).toMatchSnapshot()
     expect(within(row1).queryAllByRole('button')).toHaveLength(4)
     expect(row1).toHaveTextContent('VLAN-1 (Default)')
     expect(row1).toHaveTextContent('All APs')

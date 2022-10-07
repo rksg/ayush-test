@@ -1,8 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit'
-
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
-import { mockGraphqlQuery }    from '@acx-ui/test-utils'
+import { dataApiURL }       from '@acx-ui/analytics/services'
+import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
+import { store }            from '@acx-ui/store'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import * as fixtures from './__tests__/fixtures'
 import { api }       from './services'
@@ -17,13 +16,6 @@ const input = [
 ]
 
 describe('NetworkNodeInfo', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataApi.middleware])
-  })
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -34,8 +26,8 @@ describe('NetworkNodeInfo', () => {
     store.dispatch(api.util.resetApiState())
   )
 
-  input.forEach(({ path, queryResult, transformedResult }) => {
-    it(`should return correct data for ${transformedResult.title}`, async () => {
+  input.forEach(({ path, queryResult, transformedResult, name }) => {
+    it(`should return correct data for ${name}`, async () => {
       mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
         data: queryResult
       })

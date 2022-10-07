@@ -200,5 +200,27 @@ describe('NetworkMoreSettingsForm', () => {
     fireEvent.click(enableFastRoamingCheckbox)
     expect(screen.getByText(/mobility domain id/i)).toBeVisible()
   })
+  it('Adjust BBS Min Rate value', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    render(
+      <Provider>
+        <Form>
+          <MoreSettingsForm wlanData={mockWlanData} />
+        </Form>
+      </Provider>,
+      { route: { params } })
+
+    await userEvent.click(screen.getByText(/none/i))
+    await userEvent.click(screen.getByText(/5.5 Mbps/i))
+    const mgmtTxRateSelect = screen.getByTestId('mgmtTxRateSelect')
+    expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
+
+    const ofdmCheckbox = screen.getByRole('checkbox', {
+      name: /enable ofdm only \(disable 802\.11b\)/i
+    })
+
+    await userEvent.click(ofdmCheckbox)
+    expect(within(mgmtTxRateSelect).getByText(/6 Mbps/i)).toBeVisible()
+  })
 })
 
