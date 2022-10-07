@@ -13,10 +13,9 @@ import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
 import { formatter }                      from '@acx-ui/utils'
 
-import { onMarkedAreaClick, getMarkers } from './incidentTimeSeriesMarker'
+import { onMarkAreaClick, getMarkers } from './incidentTimeSeriesMarker'
 
 import type { TimeSeriesChartProps } from '../types'
-
 
 const failureChartQuery = (incident: Incident) => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {
@@ -54,7 +53,7 @@ export const FailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps)
           dataFormatter={formatter('countFormat')}
           yAxisProps={{ max: 1, min: 0 }}
           disableLegend={true}
-          onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
+          onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
           markers={getMarkers(relatedIncidents!, incident)}
         />
       )}

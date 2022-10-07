@@ -66,7 +66,8 @@ describe('failureChartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts: [TimeSeriesChartTypes.FailureChart]
+        charts: [TimeSeriesChartTypes.FailureChart],
+        minGranularity: 'PT180S'
       })
     )
     expect(status).toBe('fulfilled')

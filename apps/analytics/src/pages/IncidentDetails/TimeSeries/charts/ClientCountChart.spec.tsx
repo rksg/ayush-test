@@ -49,7 +49,8 @@ describe('clientCountChartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts: [TimeSeriesChartTypes.ClientCountChart]
+        charts: [TimeSeriesChartTypes.ClientCountChart],
+        minGranularity: 'PT180S'
       })
     )
     expect(status).toBe('fulfilled')

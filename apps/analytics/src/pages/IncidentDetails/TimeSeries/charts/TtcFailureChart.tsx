@@ -12,7 +12,7 @@ import { useKpiTimeseriesQuery, KpiPayload } from '../../../Health/Kpi/services'
 import { getIncidentTimeSeriesPeriods }      from '../services'
 import { TimeSeriesChartProps }              from '../types'
 
-import { getMarkers, onMarkedAreaClick } from './incidentTimeSeriesMarker'
+import { getMarkers, onMarkAreaClick } from './incidentTimeSeriesMarker'
 
 const ttcFailureChartQuery = () => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {
@@ -86,7 +86,7 @@ export const TtcFailureChart = ({ chartRef, data, incident }: TimeSeriesChartPro
               data={chartResults}
               dataFormatter={formatter('countFormat')}
               seriesFormatters={seriesFormatters}
-              onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
+              onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
               markers={getMarkers(data.relatedIncidents!, incident)}
             />
           )}

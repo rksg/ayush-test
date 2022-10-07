@@ -2,7 +2,7 @@ import { Path } from 'react-router-dom'
 
 import { fakeIncident } from '@acx-ui/analytics/utils'
 
-import { onMarkedAreaClick, getMarkers } from './incidentTimeSeriesMarker'
+import { onMarkAreaClick, getMarkers } from './incidentTimeSeriesMarker'
 
 const incidnets = [
   fakeIncident({
@@ -28,7 +28,7 @@ describe('onMarkedAreaClick', () => {
     const navigate = jest.fn()
     const [incident, relatedIncident] = incidnets
     const basePath = { pathname: '/analytics/incidents/' }
-    onMarkedAreaClick(navigate, basePath as Path, incident)(relatedIncident)
+    onMarkAreaClick(navigate, basePath as Path, incident)(relatedIncident)
     expect(navigate).toBeCalledTimes(1)
     expect(navigate).toBeCalledWith({
       ...basePath,
@@ -39,7 +39,7 @@ describe('onMarkedAreaClick', () => {
     const navigate = jest.fn()
     const [incident] = incidnets
     const basePath = { pathname: '/analytics/incidents/' }
-    onMarkedAreaClick(navigate, basePath as Path, incident)(incident)
+    onMarkAreaClick(navigate, basePath as Path, incident)(incident)
     expect(navigate).not.toBeCalled()
   })
 })

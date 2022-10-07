@@ -9,7 +9,7 @@ import {
 import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/utils'
 
-import { TimeSeriesChartProps } from '../types'
+import type { TimeSeriesChartProps } from '../types'
 
 const ttcByFailureTypeChartQuery = () => gql`
   ttcByFailureTypeChart: timeSeries(granularity: $granularity) {
