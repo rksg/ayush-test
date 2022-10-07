@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext, AdvancedSettingContext } from '../index'
+import { VenueEditContext, EditContext } from '../index'
 
 import { AdvancedSettingForm } from './AdvancedTab/AdvancedSettingForm'
 import { RadioTab }            from './RadioTab/RadioTab'
@@ -18,11 +18,14 @@ export function WifiConfigTab () {
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
   const onTabChange = (tab: string) => {
-    const activeSubTab = params?.activeSubTab as keyof AdvancedSettingContext['tempData']
+    const activeSubTab = params?.activeSubTab as keyof EditContext['tempData']
     setEditContextData({
       ...editContextData,
       tabKey: activeSubTab,
+      newData: undefined,
+      oldData: undefined,
       tempData: {
+        ...editContextData.tempData,
         [activeSubTab]: editContextData.newData
       }
     })
