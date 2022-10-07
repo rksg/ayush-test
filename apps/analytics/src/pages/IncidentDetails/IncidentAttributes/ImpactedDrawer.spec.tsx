@@ -37,7 +37,7 @@ describe('Drawer', () => {
       render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     })
-    it('should render drawer', async () => {
+    it.only('should render drawer', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
         data: { incident: { impactedAPs: sample } } })
       render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
