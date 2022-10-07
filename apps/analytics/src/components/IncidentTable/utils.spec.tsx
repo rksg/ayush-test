@@ -10,8 +10,8 @@ import {
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { incidentTests }                   from './__tests__/fixtures'
-import { IncidentTableRow, transformData } from './services'
+import { incidentTests } from './__tests__/fixtures'
+import { transformData } from './services'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -306,22 +306,15 @@ describe('IncidentTable: utils', () => {
 
   describe('filterMutedIncidents', () => {
     it('should filter child & parent muted incidents', () => {
-      const sampleIncidents = incidentTests.map(incident => transformData(incident))
-      const unmutedIncidents: IncidentTableRow[] = []
-      sampleIncidents.forEach(incident => {
-        if (incident.isMuted) {
+      const sampleIncidents =
+        incidentTests.map(incident => transformData(incident as unknown as Incident))
+      const unmutedIncidents = sampleIncidents
+        .filter(incident => !incident.isMuted)
+        .map(datum => ({
+          ...datum,
           // eslint-disable-next-line testing-library/no-node-access
-          incident.children?.forEach(child => {
-            if (!child.isMuted) {
-              unmutedIncidents.push(child)
-            }
-          })
-        } else {
-          // eslint-disable-next-line testing-library/no-node-access
-          incident.children = incident.children?.filter(child => !child.isMuted)
-          unmutedIncidents.push(incident)
-        }
-      })
+          children: datum.children?.filter(child => !child.isMuted)
+        }))
 
       const filteredIncidents = filterMutedIncidents(sampleIncidents)
       expect(filteredIncidents).toHaveLength(unmutedIncidents.length)

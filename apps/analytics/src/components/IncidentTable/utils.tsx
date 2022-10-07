@@ -107,23 +107,11 @@ export const severitySort = (a?: unknown, b?: unknown) => {
 
 export const filterMutedIncidents = (data?: IncidentTableRow[]) => {
   if (!data) return []
-  const finalData: IncidentTableRow[] = []
-  data.forEach(datum => {
-    if (datum.isMuted) {
-      datum.children?.forEach(child => {
-        if (!child.isMuted) {
-          finalData.push(child)
-        }
-      })
-    } else {
-      const copyDatum = {
-        ...datum,
-        children: datum.children?.filter(child => {
-          return !child.isMuted
-        })
-      }
-      finalData.push(copyDatum)
-    }
-  })
-  return finalData
+  const unmutedIncidents = data
+    .filter(incident => !incident.isMuted)
+    .map(datum => ({
+      ...datum,
+      children: datum.children?.filter(child => !child.isMuted)
+    }))
+  return unmutedIncidents
 }
