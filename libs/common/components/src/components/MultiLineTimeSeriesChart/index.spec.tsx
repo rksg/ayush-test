@@ -73,7 +73,17 @@ describe('MultiLineTimeSeriesChart', () => {
     useStateSpy.mockImplementation(() => [true, mockSetCanResetZoom])
     render(<MultiLineTimeSeriesChart
       data={getSeriesData()}
-      brush={['2022-09-07', '2022-09-07']}
+    />)
+    expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
+  })
+
+  it('should render reset button after zoom and legend is disabled', async () => {
+    const mockSetCanResetZoom = jest.fn()
+    const useStateSpy = jest.spyOn(React, 'useState')
+    useStateSpy.mockImplementation(() => [true, mockSetCanResetZoom])
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData()}
+      disableLegend
     />)
     expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
   })

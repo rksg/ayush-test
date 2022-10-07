@@ -133,6 +133,7 @@ export function MultiLineTimeSeriesChart <
 
   const { $t } = useIntl()
 
+  disableLegend = Boolean(disableLegend)
   const zoomEnabled = !Boolean(props.brush)
   const [canResetZoom, onDatazoomCallback, resetZoomCallback] =
     useDataZoom<TChartData>(eChartsRef, zoomEnabled, data, props.zoom, props.onDataZoom)
@@ -247,6 +248,7 @@ export function MultiLineTimeSeriesChart <
         size='small'
         onClick={resetZoomCallback}
         children={$t({ defaultMessage: 'Reset Zoom' })}
+        $disableLegend={disableLegend}
       />}
     </UI.Wrapper>
   )
