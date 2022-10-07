@@ -194,12 +194,13 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               <label
-                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
               >
                 <span
-                  class="ant-checkbox"
+                  class="ant-checkbox ant-checkbox-checked"
                 >
                   <input
+                    checked=""
                     class="ant-checkbox-input"
                     id="wlan_advancedCustomization_enableBandBalancing"
                     type="checkbox"
@@ -234,12 +235,13 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               <label
-                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
               >
                 <span
-                  class="ant-checkbox"
+                  class="ant-checkbox ant-checkbox-checked"
                 >
                   <input
+                    checked=""
                     class="ant-checkbox-input"
                     id="wlan_advancedCustomization_clientLoadBalancingEnable"
                     type="checkbox"

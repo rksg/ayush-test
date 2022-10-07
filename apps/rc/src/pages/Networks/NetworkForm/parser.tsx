@@ -298,6 +298,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   if(get(data, 'totalDownlinkLimited') === false) {
     advancedCustomization.totalDownlinkRateLimiting = 0
   }
+  // accessControlForm
+  if (!get(data, 'wlan.advancedCustomization.devicePolicyId')) {
+    advancedCustomization.devicePolicyId = null
+  }
 
   if (get(data, 'wlan.advancedCustomization.vlanPool')) {
     advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
