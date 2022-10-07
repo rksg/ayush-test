@@ -82,3 +82,9 @@ export interface VenueLed {
 export interface VenueApModels {
 	models: string[]
 }
+
+export interface VenueExternalAntenna {
+	enable24G: boolean
+  enable50G: boolean
+  model: string
+}

@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
+  WifiUrlsInfo,
   createHttpRequest,
   FloorPlanDto,
   onSocketActivityChanged,
@@ -12,7 +13,8 @@ import {
   VenueDetailHeader,
   VenueCapabilities,
   VenueLed,
-  VenueApModels
+  VenueApModels,
+  VenueExternalAntenna
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -135,7 +137,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
-    })
+    }),
+    getVenueExternalAntenna: build.query<VenueExternalAntenna[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.GetVenueExternalAntenna, params)
+        return{
+          ...req
+        }
+      }
+    }),
   })
 })
 
@@ -150,5 +160,6 @@ export const {
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
-  useUpdateVenueLedOnMutation
+  useUpdateVenueLedOnMutation,
+  useGetVenueExternalAntennaQuery,
 } = venueApi
