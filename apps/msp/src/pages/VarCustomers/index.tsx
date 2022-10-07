@@ -1,6 +1,5 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 
-// import { Divider }   from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
@@ -30,8 +29,6 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-
-// import { InvitationList } from './invitationList'
 
 function useCustomerColumns () {
   const { $t } = useIntl()
@@ -170,10 +167,10 @@ const transformNextExpirationDate = (row: VarCustomer) => {
 
 export function VarCustomers () {
   const { $t } = useIntl()
-  const [ search, setSearch ] = useState('')
+  // const [ search, setSearch ] = useState('')
 
   const varCustomerPayload = {
-    searchString: search,
+    searchString: '',
     fields: [
       'tenantName',
       'tenantEmail',
@@ -226,9 +223,6 @@ export function VarCustomers () {
           </TenantLink>
         ]}
       />
-
-      {/* <InvitationList />
-      <Divider/> */}
 
       <VarCustomerTable />
     </>

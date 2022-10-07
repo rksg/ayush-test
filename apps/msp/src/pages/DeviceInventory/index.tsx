@@ -1,4 +1,4 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
@@ -33,10 +33,10 @@ const transformDeviceTypeString = (row: EcDeviceInventory) => {
   return ''
 }
 
-const transformDeviceOperStatus = (row: EcDeviceInventory) => {
+function TransformDeviceOperStatus (row: EcDeviceInventory) {
+  const intl = useIntl()
   switch (row.deviceType) {
     case EntitlementNetworkDeviceType.WIFI:
-      const intl = useIntl()
       const apStatus =
         transformApStatus(intl, row.deviceStatus as ApDeviceStatusEnum, APView.AP_LIST)
       return apStatus.message
@@ -68,7 +68,7 @@ const transformSwitchStatus = (switchStatus: SwitchStatusEnum) => {
 
 export function DeviceInventory () {
   const { $t } = useIntl()
-  const [ search, setSearch ] = useState('')
+  // const [ search, setSearch ] = useState('')
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [
     {
@@ -122,7 +122,7 @@ export function DeviceInventory () {
       sorter: true,
       key: 'deviceStatus',
       render: function (data, row) {
-        return transformDeviceOperStatus(row)
+        return TransformDeviceOperStatus(row)
       }
     },
     {

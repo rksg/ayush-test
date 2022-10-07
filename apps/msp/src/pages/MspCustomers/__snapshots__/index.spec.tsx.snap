@@ -1019,7 +1019,7 @@ exports[`MspCustomers should render correctly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  _echarts_instance_="ec_1665169692237"
+                                  _echarts_instance_="ec_1665171002816"
                                   class="echarts-for-react "
                                   size-sensor-id="1"
                                   style="height: 10px; width: 100px; position: relative;"
@@ -1084,11 +1084,7 @@ exports[`MspCustomers should render correctly 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                <a
-                                  href="/ecc2d7cf9d2342fdb31ae0e24958fcac/dashboard/mspCustomers"
-                                >
-                                  1
-                                </a>
+                                1
                               </td>
                               <td
                                 class="ant-table-cell"

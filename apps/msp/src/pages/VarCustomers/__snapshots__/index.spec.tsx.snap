@@ -832,7 +832,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  _echarts_instance_="ec_1665169693942"
+                                  _echarts_instance_="ec_1665171004447"
                                   class="echarts-for-react "
                                   size-sensor-id="1"
                                   style="height: 10px; width: 100px; position: relative;"

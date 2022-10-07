@@ -29,133 +29,125 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, Link } from '@acx-ui/react-router-dom'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
-// import { ManageAdminsDrawer } from '../../components/ManageAdminsDrawer'
 import { ResendInviteModal } from '../../components/ResendInviteModal'
 
-// function useColumns () {
-//   const { $t } = useIntl()
+function useColumns () {
+  const { $t } = useIntl()
 
-//   const columns: TableProps<MspEc>['columns'] = [
-//     {
-//       title: $t({ defaultMessage: 'Customers' }),
-//       dataIndex: 'name',
-//       key: 'name',
-//       searchable: true,
-//       sorter: true,
-//       defaultSortOrder: 'ascend',
-//       render: function (data) {
-//         return (
-//           <TenantLink to={''}>{data}</TenantLink>
-//         )
-//       }
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Status' }),
-//       dataIndex: 'status',
-//       key: 'status',
-//       sorter: true
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Address' }),
-//       dataIndex: 'streetAddress',
-//       key: 'streetAddress',
-//       sorter: true,
-//       show: false
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Active Alarm' }),
-//       dataIndex: 'alarmCount',
-//       key: 'alarmCount',
-//       sorter: true,
-//       align: 'center',
-//       render: function () {
-//         return '0'
-//       }
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Active Incindents' }),
-//       dataIndex: 'activeIncindents',
-//       key: 'activeIncindents',
-//       sorter: true,
-//       render: function () {
-//         return getEmptyStatusChart()
-//       }
-//     },
-//     {
-//       title: $t({ defaultMessage: 'MSP Admins' }),
-//       dataIndex: 'mspAdminCount',
-//       key: 'mspAdminCount',
-//       sorter: true,
-//       align: 'center',
-//       onCell: (data, row) => {
-//         return {
-//           onClick: (ev) => {
-//             setVisible(true)
-//           }
-//         }
-//       },
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Customer Admins' }),
-//       dataIndex: 'mspEcAdminCount',
-//       key: 'mspEcAdminCount',
-//       sorter: true,
-//       show: false,
-//       align: 'center'
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-//       dataIndex: 'wifiLicenses',
-//       key: 'wifiLicenses',
-//       sorter: true,
-//       align: 'center',
-//       render: function (data, row) {
-//         return transformApEntitlement(row)
-//       }
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
-//       dataIndex: 'wifiLicensesUtilization',
-//       key: 'wifiLicensesUtilization',
-//       sorter: true,
-//       align: 'center',
-//       render: function (data, row) {
-//         return transformApUtilization(row)
-//       }
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Switch Licenses' }),
-//       dataIndex: 'switchLicens',
-//       key: 'switchLicens',
-//       sorter: true,
-//       align: 'center',
-//       render: function (data, row) {
-//         return transformSwitchEntitlement(row)
-//       }
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Active From' }),
-//       dataIndex: 'creationDate',
-//       key: 'creationDate',
-//       sorter: true,
-//       render: function (data, row) {
-//         return transformCreationDate(row)
-//       }
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Service Expired On' }),
-//       dataIndex: 'expirationDate',
-//       key: 'expirationDate',
-//       sorter: true,
-//       render: function (data, row) {
-//         return transformExpirationDate(row)
-//       }
-//     }
-//   ]
-//   return columns
-// }
+  const columns: TableProps<MspEc>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Customers' }),
+      dataIndex: 'name',
+      key: 'name',
+      searchable: true,
+      sorter: true,
+      defaultSortOrder: 'ascend',
+      render: function (data) {
+        return (
+          <TenantLink to={''}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'status',
+      key: 'status',
+      sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Address' }),
+      dataIndex: 'streetAddress',
+      key: 'streetAddress',
+      sorter: true,
+      show: false
+    },
+    {
+      title: $t({ defaultMessage: 'Active Alarm' }),
+      dataIndex: 'alarmCount',
+      key: 'alarmCount',
+      sorter: true,
+      align: 'center',
+      render: function () {
+        return '0'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Active Incindents' }),
+      dataIndex: 'activeIncindents',
+      key: 'activeIncindents',
+      sorter: true,
+      render: function () {
+        return getEmptyStatusChart()
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'MSP Admins' }),
+      dataIndex: 'mspAdminCount',
+      key: 'mspAdminCount',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Customer Admins' }),
+      dataIndex: 'mspEcAdminCount',
+      key: 'mspEcAdminCount',
+      sorter: true,
+      show: false,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+      dataIndex: 'wifiLicenses',
+      key: 'wifiLicenses',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformApEntitlement(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
+      dataIndex: 'wifiLicensesUtilization',
+      key: 'wifiLicensesUtilization',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformApUtilization(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Switch Licenses' }),
+      dataIndex: 'switchLicens',
+      key: 'switchLicens',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformSwitchEntitlement(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Active From' }),
+      dataIndex: 'creationDate',
+      key: 'creationDate',
+      sorter: true,
+      render: function (data, row) {
+        return transformCreationDate(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Service Expired On' }),
+      dataIndex: 'expirationDate',
+      key: 'expirationDate',
+      sorter: true,
+      render: function (data, row) {
+        return transformExpirationDate(row)
+      }
+    }
+  ]
+  return columns
+}
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
@@ -262,128 +254,8 @@ const defaultPayload = {
 export function MspCustomers () {
   const { $t } = useIntl()
 
-  // const [drawerVisible, setDrawerVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
-
-  const columns: TableProps<MspEc>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Customers' }),
-      dataIndex: 'name',
-      key: 'name',
-      searchable: true,
-      sorter: true,
-      defaultSortOrder: 'ascend',
-      render: function (data) {
-        return (
-          <TenantLink to={''}>{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status',
-      key: 'status',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Address' }),
-      dataIndex: 'streetAddress',
-      key: 'streetAddress',
-      sorter: true,
-      show: false
-    },
-    {
-      title: $t({ defaultMessage: 'Active Alarm' }),
-      dataIndex: 'alarmCount',
-      key: 'alarmCount',
-      sorter: true,
-      align: 'center',
-      render: function () {
-        return '0'
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incindents' }),
-      dataIndex: 'activeIncindents',
-      key: 'activeIncindents',
-      sorter: true,
-      render: function () {
-        return getEmptyStatusChart()
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'MSP Admins' }),
-      dataIndex: 'mspAdminCount',
-      key: 'mspAdminCount',
-      sorter: true,
-      align: 'center',
-      // onCell: () => {
-      //   return {
-      //     onClick: () => {
-      //       setDrawerVisible(true)
-      //     }
-      //   }
-      // },
-      render: data=><Link to=''>{data}</Link>
-    },
-    {
-      title: $t({ defaultMessage: 'Customer Admins' }),
-      dataIndex: 'mspEcAdminCount',
-      key: 'mspEcAdminCount',
-      sorter: true,
-      show: false,
-      align: 'center'
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'wifiLicenses',
-      key: 'wifiLicenses',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return transformApEntitlement(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
-      dataIndex: 'wifiLicensesUtilization',
-      key: 'wifiLicensesUtilization',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return transformApUtilization(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchLicens',
-      key: 'switchLicens',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return transformSwitchEntitlement(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active From' }),
-      dataIndex: 'creationDate',
-      key: 'creationDate',
-      sorter: true,
-      render: function (data, row) {
-        return transformCreationDate(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Service Expired On' }),
-      dataIndex: 'expirationDate',
-      key: 'expirationDate',
-      sorter: true,
-      render: function (data, row) {
-        return transformExpirationDate(row)
-      }
-    }
-  ]
 
   const MspEcTable = () => {
     const tableQuery = useTableQuery({
@@ -433,7 +305,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
-          columns={columns}
+          columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -460,10 +332,6 @@ export function MspCustomers () {
         ]}
       />
       <MspEcTable />
-      {/* <ManageAdminsDrawer
-        visible={drawerVisible}
-        setVisible={setDrawerVisible}
-      /> */}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
