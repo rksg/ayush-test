@@ -1,0 +1,80 @@
+import React, { RefObject } from 'react'
+
+import ReactECharts from 'echarts-for-react'
+
+import { renderHook } from '@acx-ui/test-utils'
+
+import { getSeriesData } from '../MultiLineTimeSeriesChart/stories'
+
+import { useDataZoom } from './useDataZoom'
+
+type DispatchAction = ((payload: unknown, opt?: boolean | {
+  silent?: boolean;
+  flush?: boolean | undefined;
+}) => void)
+let mockDispatchActionFn: DispatchAction
+let eChartsRef: RefObject<ReactECharts>
+
+describe('useDataZoom', () => {
+  beforeEach(() => {
+    mockDispatchActionFn = jest.fn() as DispatchAction
+    eChartsRef = {
+      current: { getEchartsInstance: () => ({ dispatchAction: mockDispatchActionFn }) }
+    } as RefObject<ReactECharts>
+  })
+
+  it('handles null echart ref', () => {
+    eChartsRef = { current: null } as RefObject<ReactECharts>
+    renderHook(() => useDataZoom(eChartsRef, true, getSeriesData()))
+  })
+
+  it('does not dispatch action if zoom is not enabled', () => {
+    renderHook(() => useDataZoom(eChartsRef, false, getSeriesData()))
+    expect(eChartsRef.current?.getEchartsInstance().dispatchAction).not.toBeCalled()
+  })
+
+  it('dispatches action to select zoom', () => {
+    renderHook(() => useDataZoom(eChartsRef, true, getSeriesData()))
+    expect(mockDispatchActionFn).toBeCalledTimes(1)
+    expect(mockDispatchActionFn).toBeCalledWith({
+      type: 'takeGlobalCursor',
+      key: 'dataZoomSelect',
+      dataZoomSelectActive: true
+    })
+  })
+
+  it('handles resetZoomCallback if echart ref is null', () => {
+    eChartsRef = { current: null } as RefObject<ReactECharts>
+    renderHook(() => {
+      const [, , resetZoomCallback] = useDataZoom(eChartsRef, true, getSeriesData())
+      resetZoomCallback()
+    })
+  })
+
+  it('handles zoom and reset', () => {
+    const mockOnDataZoom = jest.fn()
+    const mockSetCanResetZoom = jest.fn()
+    const useStateSpy = jest.spyOn(React, 'useState')
+    useStateSpy.mockImplementation(() => [false, mockSetCanResetZoom])
+    renderHook(() => {
+      const [, onDatazoomCallback, resetZoomCallback] = useDataZoom(
+        eChartsRef,
+        true,
+        getSeriesData(),
+        mockOnDataZoom
+      )
+      onDatazoomCallback({
+        batch: [{
+          startValue: +new Date('2020-10-01'),
+          endValue: +new Date('2020-10-02')
+        }]
+      })
+      expect(mockSetCanResetZoom).toHaveBeenCalledWith(true)
+      resetZoomCallback()
+      expect(mockDispatchActionFn).toBeCalledTimes(1)
+      expect(mockDispatchActionFn).toBeCalledWith({ type: 'dataZoom', start: 0, end: 100 })
+      onDatazoomCallback({ start: 0, end: 100 })
+      expect(mockSetCanResetZoom).toHaveBeenCalledWith(false)
+    })
+  })
+})

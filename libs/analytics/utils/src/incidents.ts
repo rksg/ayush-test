@@ -3,9 +3,9 @@ import { capitalize } from 'lodash'
 import { formatter, intlFormats, getIntl, PathNode, NodeType } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
+import { kpiConfig }           from './healthKPIConfig'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
-import kpiThreshold            from './kpiThreshold'
 
 import type { IncidentInformation } from './incidentInformation'
 import type {
@@ -139,7 +139,7 @@ export function incidentScope (incident: Incident) {
 export const getThreshold = (incident: Incident) => {
   const { code } = incident
   if (code === 'ttc') {
-    return kpiThreshold.timeToConnect
+    return kpiConfig.timeToConnect.histogram.initialThreshold
   } else {
     return undefined
   }
