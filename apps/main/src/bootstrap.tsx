@@ -4,8 +4,12 @@ import { createRoot } from 'react-dom/client'
 
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
-import { BrowserRouter }                       from '@acx-ui/react-router-dom'
-import { Provider }                            from '@acx-ui/store'
+import {
+  CommonUrlsInfo,
+  createHttpRequest
+} from '@acx-ui/rc/utils'
+import { BrowserRouter } from '@acx-ui/react-router-dom'
+import { Provider }      from '@acx-ui/store'
 
 import AllRoutes from './AllRoutes'
 
@@ -61,18 +65,53 @@ export function renderPendoAnalyticsTag () {
   window.pendoInitalization = pendoInitalization
   document.body.appendChild(script)
 }
-// this is wip need to add more pendo attributes below
+
 export function pendoInitalization (): void {
   const tenantId = getTenantId()
-  if (window.pendo) {
-    window.pendo.initialize = {
-      visitor: {
-        id: tenantId
-      }
+  const param = { tenantId }
+  const userUrl = createHttpRequest(
+    CommonUrlsInfo.getUserProfile,
+    param
+  )
+
+  async function getUsers () {
+    let url = userUrl.url
+    try {
+      let res = await fetch(url)
+      return await res.json()
+    } catch (error) {
+      /* eslint-disable no-console */
+      console.log(error)
     }
-    /* eslint-disable no-console */
-    console.log('Pendo initialize !! ', window.pendo.initialize)
   }
+
+  async function pendoInit () {
+    let user = await getUsers()
+    if (window.pendo) {
+      window.pendo.initialize = {
+        visitor: {
+          id: user.externalId,
+          full_name: `${user.firstName} ${user.lastName}`,
+          role: user.role,
+          version: user.pver,
+          var: user.var,
+          varTenantId: user.varTenantId,
+          support: user.support,
+          dogfood: user.dogfood,
+          region: user.region,
+          username: user.username,
+          delegated: user.tenantId !== user.varTenantId
+        },
+        account: {
+          id: user.tenantId,
+          name: user.companyName
+        }
+      }
+      /* eslint-disable no-console */
+      console.log('Pendo initialize !! ', window.pendo.initialize)
+    }
+  }
+  pendoInit()
 }
 
 export async function init () {
