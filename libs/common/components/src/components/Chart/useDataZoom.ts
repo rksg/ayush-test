@@ -1,7 +1,9 @@
 import { RefObject, useEffect, useCallback, useState } from 'react'
 
+
 import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
+import moment       from 'moment-timezone'
 
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
 import type { TimeStampRange }               from '@acx-ui/types'
@@ -36,8 +38,14 @@ export function useDataZoom<TChartData extends MultiLineTimeSeriesChartData> (
   useEffect(() => {
     if (!eChartsRef?.current || isEmpty(zoom)) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
-    echartInstance.dispatchAction({ type: 'dataZoom', startValue: zoom![0], endValue: zoom![1] })
-  }, [eChartsRef, zoom])
+    const firstSeries = data[0].data
+    if (
+      moment(firstSeries[0][0]).diff(moment(zoom![0])) !== 0 ||
+      moment(firstSeries[firstSeries.length - 1][0]).diff(moment(zoom![1])) !== 0
+    ) {
+      echartInstance.dispatchAction({ type: 'dataZoom', startValue: zoom![0], endValue: zoom![1] })
+    }
+  }, [eChartsRef, zoom, data])
 
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
   const onDatazoomCallback = useCallback((event: OnDatazoomEvent) => {

@@ -59,6 +59,16 @@ describe('useDataZoom', () => {
     })
   })
 
+  it('does not dispatch action for initial zoom if range is same as data', () => {
+    renderHook(() => useDataZoom(eChartsRef, true, getSeriesData(), ['2020-10-29', '2020-12-04']))
+    expect(mockDispatchActionFn).toBeCalledTimes(1)
+    expect(mockDispatchActionFn).toBeCalledWith({
+      type: 'takeGlobalCursor',
+      key: 'dataZoomSelect',
+      dataZoomSelectActive: true
+    })
+  })
+
   it('handles resetZoomCallback if echart ref is null', () => {
     eChartsRef = { current: null } as RefObject<ReactECharts>
     renderHook(() => {
