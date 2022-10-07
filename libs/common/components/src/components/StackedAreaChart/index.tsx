@@ -61,7 +61,7 @@ export function StackedAreaChart <
   ...props
 }: StackedAreaChartProps<TChartData>) {
 
-  const data = tooltipTotalTitle && !isEmpty(initalData.length)
+  const data = tooltipTotalTitle && !isEmpty(initalData)
     ? initalData.concat(getSeriesTotal<TChartData>(initalData, tooltipTotalTitle))
     : initalData
 
