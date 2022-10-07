@@ -15,12 +15,6 @@ import {
 }                 from './ImpactedDrawer'
 import { impactedApi, ImpactedAP, ImpactedClient } from './services'
 
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...(jest.requireActual('@acx-ui/react-router-dom')),
-  TenantLink: ({ to, children }: { to: string, children: React.ReactNode }) =>
-    <div>{to} - {children}</div>
-}), { virtual: true })
-
 describe('Drawer', () => {
   beforeAll(() => jest.spyOn(console, 'error').mockImplementation(() => {}))
   afterAll(() => jest.resetAllMocks())
@@ -42,12 +36,13 @@ describe('Drawer', () => {
         data: { incident: { impactedAPs: sample } } })
       render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-      await screen.findByPlaceholderText('Search for...')
-      await screen.findByText(new RegExp(`TBD(.*) - (.*)${sample[0].name}(.*)${sample[1].name}`))
-      await screen.findByText(sample[0].mac)
-      await screen.findByText(`${sample[0].model} (2)`)
-      await screen.findByText(`${sample[0].version} (2)`)
-      await screen.findByText('1 Impacted AP')
+      screen.getByPlaceholderText('Search for...')
+      expect(screen.getByRole('link').textContent)
+        .toEqual(`${sample[0].name}${sample[1].name}`)
+      screen.getByText(sample[0].mac)
+      screen.getByText(`${sample[0].model} (2)`)
+      screen.getByText(`${sample[0].version} (2)`)
+      screen.getByText('1 Impacted AP')
     })
     it('should render error', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
@@ -86,17 +81,16 @@ describe('Drawer', () => {
         data: { incident: { impactedClients: sample } } })
       render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-      await screen.findByPlaceholderText('Search for...')
-      await screen.findByText(sample[0].mac)
-      await screen.findByText(`${sample[0].manufacturer} (2)`)
-      await screen.findByText(`${sample[0].ssid} (2)`)
-      await screen.findByText(
-        new RegExp(`TBD(.*) - (.*)${sample[0].hostname}(.*)${sample[1].hostname}`)
-      )
-      await screen.findByText(`${sample[0].username} (2)`)
-      await screen.findByText('1 Impacted Client')
-      await screen.findByText('Hostname')
-      const icons = await screen.findAllByText('InformationOutlined.svg')
+      screen.getByPlaceholderText('Search for...')
+      screen.getByText(sample[0].mac)
+      screen.getByText(`${sample[0].manufacturer} (2)`)
+      screen.getByText(`${sample[0].ssid} (2)`)
+      expect(screen.getByRole('link').textContent)
+        .toEqual(`${sample[0].hostname}${sample[1].hostname}`)
+      screen.getByText(`${sample[0].username} (2)`)
+      screen.getByText('1 Impacted Client')
+      screen.getByText('Hostname')
+      const icons = screen.getAllByText('InformationOutlined.svg')
       expect(icons.length).toBe(2)
     })
     it('should render error', async () => {
