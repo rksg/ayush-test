@@ -42,7 +42,7 @@ type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
 
 export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement => {
   const { $t } = useIntl()
-  const subs = [{ key: 'type', value: [$t(nodeTypes(type))] }, ...subTitles]
+  const subs = [{ key: 'type', value: [nodeTypes(type)] }, ...subTitles]
   return <>
     {subs.map(({ key, value }, index) => {
       const labelKey = key as keyof typeof labelMap

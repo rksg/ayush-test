@@ -43,31 +43,38 @@ const durations = [
   'minutes',
   'seconds',
   'milliseconds'
-]
+] as const
 
 const shorten = (value: number) => {
   return parseFloat(value.toPrecision(3)).toString()
 }
 
-function durationFormat (milliseconds: number, intl: IntlShape) {
-  let results: Record<string, number> = {}
+const durationMapping = {
+  years: defineMessage({ defaultMessage: '{years} y' }),
+  months: defineMessage({ defaultMessage: '{months} mo' }),
+  days: defineMessage({ defaultMessage: '{days} d' }),
+  hours: defineMessage({ defaultMessage: '{hours} h' }),
+  minutes: defineMessage({ defaultMessage: '{minutes} m' }),
+  seconds: defineMessage({ defaultMessage: '{seconds} s' }),
+  milliseconds: defineMessage({ defaultMessage: '{milliseconds} ms' })
+}
+const longDurationMapping = {
+  years: defineMessage({ defaultMessage: '{years} {years, plural, one {year} other {years}}' }),
+  months: defineMessage({ defaultMessage: '{months} {months, plural, one {month} other {months}}' }), // eslint-disable-line max-len
+  days: defineMessage({ defaultMessage: '{days} {days, plural, one {day} other {days}}' }),
+  hours: defineMessage({ defaultMessage: '{hours} {hours, plural, one {hour} other {hours}}' }),
+  minutes: defineMessage({ defaultMessage: '{minutes} {minutes, plural, one {minute} other {minutes}}' }), // eslint-disable-line max-len
+  seconds: defineMessage({ defaultMessage: '{seconds} {seconds, plural, one {second} other {seconds}}' }), // eslint-disable-line max-len
+  milliseconds: defineMessage({ defaultMessage: '{milliseconds} {milliseconds, plural, one {millisecond} other {milliseconds}}' }) // eslint-disable-line max-len
+}
+const combineDuration = defineMessage({
+  defaultMessage: '{duration1} {duration2}',
+  description: 'e.g. duration1 = 3 mo, duration2 = 2 d, result = 3 mo 2 d'
+})
+function durationFormat (milliseconds: number, format: 'short' | 'long', { $t }: IntlShape) {
+  const mapping = format === 'short' ? durationMapping : longDurationMapping
+  let results: Partial<Record<typeof durations[number], number>> = {}
   let significance = 0
-
-  const mapping = {
-    years_months: defineMessage({ defaultMessage: '{years} y {months} mo' }),
-    months_days: defineMessage({ defaultMessage: '{months} mo {days} d' }),
-    days_hours: defineMessage({ defaultMessage: '{days} d {hours} h' }),
-    hours_minutes: defineMessage({ defaultMessage: '{hours} h {minutes} m' }),
-    minutes_seconds: defineMessage({ defaultMessage: '{minutes} m {seconds} s' }),
-    seconds_milliseconds: defineMessage({ defaultMessage: '{seconds} s {milliseconds} ms' }),
-    years: defineMessage({ defaultMessage: '{years} y' }),
-    months: defineMessage({ defaultMessage: '{months} mo' }),
-    days: defineMessage({ defaultMessage: '{days} d' }),
-    hours: defineMessage({ defaultMessage: '{hours} h' }),
-    minutes: defineMessage({ defaultMessage: '{minutes} m' }),
-    seconds: defineMessage({ defaultMessage: '{seconds} s' }),
-    milliseconds: defineMessage({ defaultMessage: '{milliseconds} ms' })
-  }
 
   for (let i = 0; i < durations.length; i++) {
     const scale = durations[i]
@@ -86,8 +93,15 @@ function durationFormat (milliseconds: number, intl: IntlShape) {
       break
     }
   }
-  const intlMessage = Object.entries(mapping).find(([key]) => key.split('_').every(k => results[k]))
-  return intlMessage ? intl.$t(intlMessage[1], results) : '0'
+  const [
+    duration1,
+    duration2 = ''
+  ] = (Object.entries(results) as [typeof durations[number], number][])
+    .map(([key, value]) => $t(mapping[key], { [key]: value }))
+
+  return duration1
+    ? $t(combineDuration, { duration1, duration2 }).trim()
+    : '0'
 }
 
 function numberFormat (base: number, units: string[], value: number) {
@@ -123,7 +137,8 @@ function calendarFormat (number: number, intl: IntlShape) {
 }
 
 export const formats = {
-  durationFormat,
+  durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
+  longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
   calendarFormat: (number: number, intl: IntlShape) => calendarFormat(number, intl),
   decibelFormat: (number: number) => Math.round(number) + ' dB',
   decibelMilliWattsFormat: (number: number) => Math.round(number) + ' dBm',

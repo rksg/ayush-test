@@ -7,8 +7,8 @@ import {
   impactValues,
   Incident,
   nodeTypes,
-  useFormattedPath,
-  useImpactedArea
+  formattedPath,
+  impactedArea
 } from '@acx-ui/analytics/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -44,23 +44,21 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
 }) => {
   const intl = useIntl()
   const { visible, onOpen, onClose } = useDrawer(false)
-  const scope = useFormattedPath(incident.path, incident.sliceValue)
-  const impactedArea = useImpactedArea(incident.path, incident.sliceValue)
   const fields = {
     [Attributes.ClientImpactCount]: {
       key: 'clientImpactCount',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Client Impact Count' }),
-        children: impactValues(intl, 'client', incident).clientImpactDescription,
-        onClick: () => onOpen('client')
+        children: impactValues('client', incident).clientImpactDescription,
+        ...(incident.impactedClientCount || -1 > 0 ? { onClick: () => onOpen('client') } : {})
       })
     },
     [Attributes.ApImpactCount]: {
       key: 'apImpactCount',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'AP Impact Count' }),
-        children: impactValues(intl, 'ap', incident).apImpactDescription,
-        onClick: () => onOpen('ap')
+        children: impactValues('ap', incident).apImpactDescription,
+        ...(incident.impactedApCount || -1 > 0 ? { onClick: () => onOpen('ap') } : {})
       })
     },
     [Attributes.IncidentCategory]: {
@@ -84,7 +82,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           defaultMessage: 'Type',
           description: 'Path node type'
         }),
-        children: intl.$t(nodeTypes(incident.sliceType))
+        children: nodeTypes(incident.sliceType)
       })
     },
     [Attributes.Scope]: {
@@ -94,8 +92,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           defaultMessage: 'Scope',
           description: 'Incident impacted scope'
         }),
-        children: impactedArea,
-        tooltip: scope
+        children: impactedArea(incident.path, incident.sliceValue),
+        tooltip: formattedPath(incident.path, incident.sliceValue)
       })
     },
     [Attributes.Duration]: {
