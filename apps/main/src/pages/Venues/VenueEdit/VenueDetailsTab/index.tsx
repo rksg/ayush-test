@@ -1,8 +1,7 @@
-import { useIntl } from 'react-intl'
+import { VenuesForm } from '../../VenuesForm'
 
 export function VenueDetailsTab () {
-  const { $t } = useIntl()
   return (
-    <>{$t({ defaultMessage: 'Venue Details' })}</>
+    <VenuesForm />
   )
 }
