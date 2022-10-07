@@ -44,7 +44,6 @@ describe('Drawer', () => {
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       await screen.findByPlaceholderText('Search for...')
       await screen.findByText(new RegExp(`TBD(.*) - (.*)${sample[0].name}(.*)${sample[1].name}`))
-      screen.debug(undefined, Infinity)
       await screen.findByText(sample[0].mac)
       await screen.findByText(`${sample[0].model} (2)`)
       await screen.findByText(`${sample[0].version} (2)`)
