@@ -45,12 +45,17 @@ export function StackedAreaChart <
       cssStr('--acx-accents-blue-70'),
       cssStr('--acx-accents-blue-50')
     ],
-    grid: { ...gridOptions() },
-    legend: {
-      ...legendOptions(),
-      textStyle: legendTextStyleOptions(),
-      data: data.map(datum => datum[legendProp]) as unknown as string[]
+    grid: {
+      ...gridOptions(),
+      ...(disableLegend ? { top: '6px' } : {})
     },
+    ...(disableLegend ? {} : {
+      legend: {
+        ...legendOptions(),
+        textStyle: legendTextStyleOptions(),
+        data: data.map(datum => datum[legendProp]) as unknown as string[]
+      }
+    }),
     tooltip: {
       ...tooltipOptions(),
       trigger: 'axis',

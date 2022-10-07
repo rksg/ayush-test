@@ -37,10 +37,11 @@ const lineColors = [
   cssStr('--acx-semantics-red-50')
 ]
 
+const buffer = 0
+
 export const RssQualityByClientsChart = ({ data }: { data: ChartsData }) => {
   const { rssQualityByClientsChart } = data
-  const intl = useIntl()
-  const { $t } = intl
+  const { $t } = useIntl()
 
   const seriesMapping = [
     { key: 'good', name: $t({ defaultMessage: 'Good' }) },
@@ -56,7 +57,7 @@ export const RssQualityByClientsChart = ({ data }: { data: ChartsData }) => {
         <StackedAreaChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={formatter('countFormat')}
+          dataFormatter={formatter('percentFormat')}
           lineColors={lineColors}
           disableLegend={true}
         />
@@ -65,5 +66,5 @@ export const RssQualityByClientsChart = ({ data }: { data: ChartsData }) => {
   </Card>
 }
 
-const chartConfig = { chart: RssQualityByClientsChart, query: rssQualityByClientsChartQuery }
+const chartConfig = { chart: RssQualityByClientsChart, query: rssQualityByClientsChartQuery, buffer: buffer }
 export default chartConfig

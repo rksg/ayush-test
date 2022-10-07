@@ -36,7 +36,7 @@ const bufferList = {
 }
 
 export const TimeSeries: React.FC<ChartDataProps> = (props) => {
-  const buffer: BufferType = bufferList[props.incident.code]
+  const buffer: BufferType = 0
 
   const queryProps = {
     ...props,

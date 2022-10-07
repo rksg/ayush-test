@@ -71,41 +71,6 @@ export function getIncidentTimeSeriesPeriods (incident: ChartIncident) {
   }
 }
 
-const joinQuery = (queries: string) => {
-  if(queries.includes('code')) {
-    return gql`
-      query IncidentTimeSeries(
-        $path: [HierarchyNodeInput],
-        $start: DateTime,
-        $end: DateTime,
-        $granularity: String,
-        $code: String
-      ) {
-        network(start: $start, end: $end) {
-          hierarchyNode(path: $path) {
-            ${queries}
-          }
-        }
-      }
-    `
-  } else {
-    return gql`
-      query IncidentTimeSeries(
-        $path: [HierarchyNodeInput],
-        $start: DateTime,
-        $end: DateTime,
-        $granularity: String
-      ) {
-        network(start: $start, end: $end) {
-          hierarchyNode(path: $path) {
-            ${queries}
-          }
-        }
-      }
-    `
-  }
-}
-
 export const Api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     Charts: build.query<
@@ -117,7 +82,21 @@ export const Api = dataApi.injectEndpoints({
           chart => timeSeriesCharts[chart].query(payload.incident)
         ).join('\n')
         return {
-          document: joinQuery(queries),
+          document: gql`
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput],
+              $start: DateTime,
+              $end: DateTime,
+              $granularity: String,
+              ${(queries.includes('code')) ? '$code: String' : ''}
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  ${queries}
+                }
+              }
+            }
+          `,
           variables: {
             code: payload.incident.code,
             codeMap: [payload.incident.code],

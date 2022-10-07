@@ -3,6 +3,7 @@ import { Provider }                        from '@acx-ui/store'
 import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
 import { CovClientrssiLow } from '../CovClientrssiLow'
+import { mockTimeSeries } from './__tests__/fixtures'
 
 jest.mock('../../NetworkImpact', () => ({
   NetworkImpact: () => <div data-testid='networkImpact' />
@@ -14,12 +15,11 @@ jest.mock('../../IncidentAttributes', () => ({
 jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
-jest.mock('../../IncidentDetails/TimeSeries', () => ({
-  TimeSeries: () => <div data-testid='timeSeries' />
-}))
+jest.mock('../../TimeSeries')
 
 describe('p-cov-clientrssi-low', () => {
   mockDOMWidth()
+  mockTimeSeries()
   it('should render correctly', () => {
     const params = {
       incidentId: fakeIncident1.id
@@ -32,7 +32,6 @@ describe('p-cov-clientrssi-low', () => {
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
     expect(screen.getByTestId('networkImpact')).toBeVisible()
     expect(screen.getByTestId('insights')).toBeVisible()
-    expect(screen.getByTestId('timeSeries')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
 })
