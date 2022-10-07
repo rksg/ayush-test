@@ -755,9 +755,9 @@ export const rootCauseRecommendationMap = {
           <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
           <ol>
             <li>Ensure that PSE - PoE switch or PoE injector capacity and cumulative power requirements of all APs for full operation are appropriately matched.</li>
-            <li>(Typical) Check the connectivity to the AP gateway and latency to the controller. In rare cases it might indicate configuration corruption.</li>
-            <li>(Typical) Check the connectivity to the AP gateway and latency to the controller. Download time out is the main cause.</li>
-            <li>Controller can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing controller to reboot the AP. In these cases, an alarm is raised. Use controller alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li>
+            <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS Cloud. In rare cases it might indicate configuration corruption.</li>
+            <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS Cloud. Download time out is the main cause.</li>
+            <li>RUCKUS Cloud can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing RUCKUS Cloud to reboot the AP. In these cases, an alarm is raised. Use RUCKUS Cloud alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li>
           </ol>
         `
       })
@@ -767,12 +767,12 @@ export const rootCauseRecommendationMap = {
     DEFAULT: {
       rootCauses: defineMessage({
         defaultMessage: `
-          <p>System has detected high number of AP-controller connection failures. This can occur due to following reasons:</p>
+          <p>System has detected high number of AP-RUCKUS Cloud connection failures. This can occur due to following reasons:</p>
           <ol>
-            <li>Intermittent or permanent loss of connectivity between AP and controller. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-controller connection failures.</li>
-            <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-controller communication failure.</li>
-            <li>Lack of reachability from AP to controller over a WAN connection or cloud would cause APs to disconnect from controller.</li>
-            <li>In rare cases, AP certificate is invalid which forces controller to deny the incoming connection from the AP.</li>
+            <li>Intermittent or permanent loss of connectivity between AP and RUCKUS Cloud. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-RUCKUS Cloud connection failures.</li>
+            <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-RUCKUS Cloud communication failure.</li>
+            <li>Lack of reachability from AP to RUCKUS Cloud over a WAN connection or cloud would cause APs to disconnect from RUCKUS Cloud.</li>
+            <li>In rare cases, AP certificate is invalid which forces RUCKUS Cloud to deny the incoming connection from the AP.</li>
           </ol>
         `
       }),
@@ -780,9 +780,9 @@ export const rootCauseRecommendationMap = {
         defaultMessage: `
           <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
           <ol>
-            <li>Test network connection between AP and controller.</li>
+            <li>Test network connection between AP and RUCKUS Cloud.</li>
             <li>Ensure that there is clear communication on all required ports.</li>
-            <li>Test WAN connection health to ensure there is a route from AP to the controller and there is no or acceptable packet loss.</li>
+            <li>Test WAN connection health to ensure there is a route from AP to RUCKUS Cloud and there is no or acceptable packet loss.</li>
             <li>Ensure that AP certificate is valid. Work with Ruckus customer support to identify and resolve this condition.</li>
           </ol>
         `

@@ -1,6 +1,6 @@
-import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
-import { Provider }                        from '@acx-ui/store'
-import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
+import { fakeIncidentPoePd }            from '@acx-ui/analytics/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { SwitchPoePd } from '../SwitchPoePd'
 
@@ -17,11 +17,11 @@ describe('i-switch-poe-pd', () => {
 
   it('should render correctly', () => {
     const params = {
-      incidentId: fakeIncident1.id
+      incidentId: fakeIncidentPoePd.id
     }
 
     const { asFragment } = render(<Provider>
-      <SwitchPoePd {...mockFakeIncident('i-switch-poe-pd')} />
+      <SwitchPoePd {...fakeIncidentPoePd} />
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()

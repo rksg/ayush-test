@@ -4,14 +4,14 @@ export const header1 = {
   queryResult: {
     network: {
       node: {
-        type: 'network', name: 'Network', apCount: 50, clientCount: 100, switchCount: null
+        apCount: 50, clientCount: 100, switchCount: null
       }
     }
   },
+  name: 'Network',
   transformedResult: {
-    title: 'Network',
+    name: undefined,
     subTitle: [
-      { key: 'type', value: ['network'] },
       { key: 'apCount', value: [50] },
       { key: 'clientCount', value: [100] }
     ]
@@ -23,14 +23,14 @@ export const header2 = {
   queryResult: {
     network: {
       node: {
-        type: 'zone', name: 'Venue', apCount: 50, clientCount: 100
+        apCount: 50, clientCount: 100
       }
     }
   },
+  name: 'Venue',
   transformedResult: {
-    title: 'Venue',
+    name: undefined,
     subTitle: [
-      { key: 'type', value: ['zone'] },
       { key: 'apCount', value: [50] },
       { key: 'clientCount', value: [100] }
     ]
@@ -46,14 +46,14 @@ export const header3 = {
   queryResult: {
     network: {
       node: {
-        type: 'apGroup', name: 'AP Group', apCount: 50, clientCount: 100
+        apCount: 50, clientCount: 100
       }
     }
   },
+  name: 'AP Group',
   transformedResult: {
-    title: 'AP Group',
+    name: undefined,
     subTitle: [
-      { key: 'type', value: ['apGroup'] },
       { key: 'apCount', value: [50] },
       { key: 'clientCount', value: [100] }
     ]
@@ -70,20 +70,20 @@ export const header4 = {
   queryResult: {
     network: {
       node: {
-        type: 'AP', name: 'Access Point', clientCount: 100,
-        model: ['r710'], version: ['Unknown', '1'], mac: 'AA', internalIp: ['ip1', 'ip2']
+        name: 'Access Point', clientCount: 100,
+        model: ['r710'], version: ['Unknown', '1'], mac: 'AA', internalIp: ['ip1', 'Unknown', 'ip2']
       }
     }
   },
+  name: 'Access Point',
   transformedResult: {
-    title: 'Access Point',
+    name: 'Access Point',
     subTitle: [
-      { key: 'type', value: ['AP'] },
       { key: 'clientCount', value: [100] },
       { key: 'model', value: ['r710'] },
       { key: 'version', value: ['1', 'Unknown'] },
       { key: 'mac', value: ['AA'] },
-      { key: 'internalIp', value: ['ip2', 'ip1'] }
+      { key: 'internalIp', value: ['ip2', 'ip1', 'Unknown'] }
     ]
   }
 }
@@ -96,14 +96,14 @@ export const header5 = {
   queryResult: {
     network: {
       node: {
-        type: 'switchGroup', name: 'Switch Group', switchCount: 100
+        switchCount: 100
       }
     }
   },
+  name: 'Switch Group',
   transformedResult: {
-    title: 'Switch Group',
+    name: undefined,
     subTitle: [
-      { key: 'type', value: ['switchGroup'] },
       { key: 'switchCount', value: [100] }
     ]
   }
@@ -118,15 +118,15 @@ export const header6 = {
   queryResult: {
     network: {
       node: {
-        type: 'switch', name: 'Switch', model: 'm',
+        name: 'Switch', model: 'm',
         firmware: '123', portCount: 20
       }
     }
   },
+  name: 'Switch',
   transformedResult: {
-    title: 'Switch',
+    name: 'Switch',
     subTitle: [
-      { key: 'type', value: ['switch'] },
       { key: 'model', value: ['m'] },
       { key: 'firmware', value: ['123'] },
       { key: 'portCount', value: [20] }

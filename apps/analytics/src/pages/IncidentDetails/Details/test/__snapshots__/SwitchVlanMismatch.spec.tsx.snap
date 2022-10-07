@@ -71,7 +71,7 @@ exports[`i-switch-vlan-mismatch should render correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          VLAN mismatch found in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+          VLAN mismatch found in Venue: GRP2
         </span>
       </div>
     </div>

@@ -11,8 +11,8 @@ const ConnectedClientsOverTime = forwardRef<ReactECharts>((
   ref
 ) => {
   const healthFilter = useContext(HealthPageContext)
-  const { startDate, endDate, range, path, timeWindow, setTimeWindow } = healthFilter
-  const filters = { startDate, endDate, range, path }
+  const { startDate, endDate, range, path, timeWindow, setTimeWindow, filter } = healthFilter
+  const filters = { startDate, endDate, range, path, filter }
 
   return (
     <NetworkHistoryWidget

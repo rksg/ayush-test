@@ -57,10 +57,10 @@ exports[`p-cov-clientrssi-low should render correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
-              type="P3"
+              class="styledComponents__Pill-sc-j61ge1-0 jWXhBJ"
+              type="P4"
             >
-              P3
+              P4
             </span>
           </span>
         </div>
@@ -71,7 +71,7 @@ exports[`p-cov-clientrssi-low should render correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Clients with low RSS are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+          Clients with low RSS are unusually high in AP Group: Outdoor
         </span>
       </div>
     </div>

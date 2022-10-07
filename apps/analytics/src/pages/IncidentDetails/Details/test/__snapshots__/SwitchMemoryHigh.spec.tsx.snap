@@ -57,10 +57,10 @@ exports[`p-switch-memory-high should render correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
-              type="P3"
+              class="styledComponents__Pill-sc-j61ge1-0 fA-dLEH"
+              type="P2"
             >
-              P3
+              P2
             </span>
           </span>
         </div>
@@ -71,7 +71,7 @@ exports[`p-switch-memory-high should render correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          High memory utilization detected in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+          High memory utilization detected in Switch: ICX8200-24 Router (38:45:3B:3C:EC:70)
         </span>
       </div>
     </div>

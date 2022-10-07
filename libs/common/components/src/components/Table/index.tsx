@@ -22,6 +22,7 @@ import type {
   TableProps as AntTableProps,
   TablePaginationConfig
 } from 'antd'
+import type { RowSelectMethod } from 'antd/lib/table/interface'
 
 export type {
   ColumnType,
@@ -49,7 +50,8 @@ export interface TableProps <RecordType>
       onClick: () => void
     }>
     rowActions?: Array<{
-      label: string,
+      label: string
+      visible?: boolean | ((selectedItems: RecordType[]) => boolean)
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
@@ -152,17 +154,24 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     const key = record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)
 
+    let newKeys: Key[] | undefined
+    let type: RowSelectMethod
     if (props.rowSelection.type === 'radio') {
+      type = 'single'
       if (!isSelected) {
-        setSelectedRowKeys([key])
+        newKeys = [key]
       }
     } else {
-      setSelectedRowKeys(isSelected
+      type = 'multiple'
+      newKeys = isSelected
         // remove if selected
         ? selectedRowKeys.filter(k => k !== key)
         // add into collection if not selected
-        : [...selectedRowKeys, key])
+        : [...selectedRowKeys, key]
     }
+    if (!newKeys) return
+    setSelectedRowKeys(newKeys)
+    props.rowSelection?.onChange?.(newKeys, getSelectedRows(newKeys), { type })
   }
   columns = columns.map(column => column.searchable && searchValue
     ? {
@@ -297,14 +306,20 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
             />
           </Space>
           <Space size={0} split={<UI.Divider type='vertical' />}>
-            {props.rowActions?.map((option) =>
-              <UI.ActionButton
+            {props.rowActions?.map((option) => {
+              const rows = getSelectedRows(selectedRowKeys)
+              let visible = typeof option.visible === 'function'
+                ? option.visible(rows)
+                : option.visible ?? true
+
+              if (!visible) return null
+
+              return <UI.ActionButton
                 key={option.label}
-                onClick={() =>
-                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
+                onClick={() => option.onClick(rows, () => { onCleanSelected() })}
                 children={option.label}
               />
-            )}
+            })}
           </Space>
         </Space>
       )}

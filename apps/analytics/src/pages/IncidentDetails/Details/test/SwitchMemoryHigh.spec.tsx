@@ -1,6 +1,6 @@
-import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
-import { Provider }                        from '@acx-ui/store'
-import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
+import { fakeIncidentSwitchMemory }     from '@acx-ui/analytics/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { SwitchMemoryHigh } from '../SwitchMemoryHigh'
 
@@ -17,11 +17,11 @@ describe('p-switch-memory-high', () => {
 
   it('should render correctly', () => {
     const params = {
-      incidentId: fakeIncident1.id
+      incidentId: fakeIncidentSwitchMemory.id
     }
 
     const { asFragment } = render(<Provider>
-      <SwitchMemoryHigh {...mockFakeIncident('p-switch-memory-high')} />
+      <SwitchMemoryHigh {...fakeIncidentSwitchMemory} />
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
