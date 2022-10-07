@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Divider }   from 'antd'
+// import { Divider }   from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
@@ -31,7 +31,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { InvitationList } from './invitationList'
+// import { InvitationList } from './invitationList'
 
 function useCustomerColumns () {
   const { $t } = useIntl()
@@ -227,8 +227,8 @@ export function VarCustomers () {
         ]}
       />
 
-      <InvitationList />
-      <Divider/>
+      {/* <InvitationList />
+      <Divider/> */}
 
       <VarCustomerTable />
     </>

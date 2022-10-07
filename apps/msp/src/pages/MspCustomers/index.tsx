@@ -31,8 +31,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, Link } from '@acx-ui/react-router-dom'
 
-import { ManageAdminsDrawer } from '../../components/ManageAdminsDrawer'
-import { ResendInviteModal }  from '../../components/ResendInviteModal'
+// import { ManageAdminsDrawer } from '../../components/ManageAdminsDrawer'
+import { ResendInviteModal } from '../../components/ResendInviteModal'
 
 // function useColumns () {
 //   const { $t } = useIntl()
@@ -262,7 +262,7 @@ const defaultPayload = {
 export function MspCustomers () {
   const { $t } = useIntl()
 
-  const [drawerVisible, setDrawerVisible] = useState(false)
+  // const [drawerVisible, setDrawerVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
 
@@ -318,13 +318,13 @@ export function MspCustomers () {
       key: 'mspAdminCount',
       sorter: true,
       align: 'center',
-      onCell: () => {
-        return {
-          onClick: () => {
-            setDrawerVisible(true)
-          }
-        }
-      },
+      // onCell: () => {
+      //   return {
+      //     onClick: () => {
+      //       setDrawerVisible(true)
+      //     }
+      //   }
+      // },
       render: data=><Link to=''>{data}</Link>
     },
     {
@@ -460,10 +460,10 @@ export function MspCustomers () {
         ]}
       />
       <MspEcTable />
-      <ManageAdminsDrawer
+      {/* <ManageAdminsDrawer
         visible={drawerVisible}
         setVisible={setDrawerVisible}
-      />
+      /> */}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}

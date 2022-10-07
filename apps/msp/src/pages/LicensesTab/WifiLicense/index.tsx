@@ -1,19 +1,19 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 
 import {
-  cssStr,
-  StackedBarChart,
+  // cssStr,
+  // StackedBarChart,
   Loader,
   Table,
   TableProps
 } from '@acx-ui/components'
 import {
-  useMspEntitlementListQuery,
-  useMspEntitlementSummaryQuery
+  useMspEntitlementListQuery
+  // useMspEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -80,7 +80,7 @@ function useColumns () {
 }
 
 export function WifiLicense () {
-  const [totalCount, setTotalCount] = useState(0)
+  // const [totalCount, setTotalCount] = useState(0)
   const { $t } = useIntl()
 
   const actions: TableProps<MspEntitlement>['actions'] = [
@@ -96,47 +96,47 @@ export function WifiLicense () {
     }
   ]
 
-  const WifiLicenseSummary = () => {
-    const queryResults = useMspEntitlementSummaryQuery({
-      params: useParams()
-    },{
-      selectFromResult: ({ data, ...rest }) => ({
-        data,
-        ...rest
-      })
-    })
-    queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
-    if (queryResults.data) {
-      const summary = queryResults.data[0]
-      const totalQuantity = summary.quantity + summary.courtesyQuantity
-      setTotalCount(totalQuantity)
-    }
+  // const WifiLicenseSummary = () => {
+  //   const queryResults = useMspEntitlementSummaryQuery({
+  //     params: useParams()
+  //   },{
+  //     selectFromResult: ({ data, ...rest }) => ({
+  //       data,
+  //       ...rest
+  //     })
+  //   })
+  //   queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
+  //   if (queryResults.data) {
+  //     const summary = queryResults.data[0]
+  //     const totalQuantity = summary.quantity + summary.courtesyQuantity
+  //     setTotalCount(totalQuantity)
+  //   }
 
-    const barColors = [
-      cssStr('--acx-accents-blue-50'),
-      cssStr('--acx-neutrals-30')
-    ]
+  //   const barColors = [
+  //     cssStr('--acx-accents-blue-50'),
+  //     cssStr('--acx-neutrals-30')
+  //   ]
 
-    return (
-      <Loader states={[queryResults]}>
-        <label>Total Wi-Fi Licenses:
-          <StackedBarChart
-            style={{ marginLeft: 15, height: 50, width: 400 }}
-            showLabels={false}
-            barWidth={20}
-            data={[{
-              category: 'Total Wi-Fi Licenses: ',
-              series: [
-                { name: 'used', value: totalCount },
-                { name: 'us', value: 18 }
-              ]
-            }]}
-            barColors={barColors}
-          />
-        </label>
-      </Loader>
-    )
-  }
+  //   return (
+  //     <Loader states={[queryResults]}>
+  //       <label>Total Wi-Fi Licenses:
+  //         <StackedBarChart
+  //           style={{ marginLeft: 15, height: 50, width: 400 }}
+  //           showLabels={false}
+  //           barWidth={20}
+  //           data={[{
+  //             category: 'Total Wi-Fi Licenses: ',
+  //             series: [
+  //               { name: 'used', value: totalCount },
+  //               { name: 'us', value: 18 }
+  //             ]
+  //           }]}
+  //           barColors={barColors}
+  //         />
+  //       </label>
+  //     </Loader>
+  //   )
+  // }
 
   const WifiLicenseTable = () => {
     const queryResults = useMspEntitlementListQuery({
@@ -163,7 +163,7 @@ export function WifiLicense () {
 
   return (
     <>
-      <WifiLicenseSummary />
+      {/* <WifiLicenseSummary /> */}
       <WifiLicenseTable />
     </>
   )

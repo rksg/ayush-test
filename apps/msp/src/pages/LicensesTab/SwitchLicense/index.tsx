@@ -3,15 +3,15 @@ import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 
 import {
-  cssStr,
-  StackedBarChart,
+  // cssStr,
+  // StackedBarChart,
   Loader,
   Table,
   TableProps
 } from '@acx-ui/components'
 import {
-  useMspEntitlementListQuery,
-  useMspEntitlementSummaryQuery
+  useMspEntitlementListQuery
+  // useMspEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -103,60 +103,48 @@ export function SwitchLicense () {
     }
   ]
 
-  const SwitchLicenseSummary = () => {
-    const queryResults = useMspEntitlementSummaryQuery({
-      params: useParams()
-    },{
-      selectFromResult: ({ data, ...rest }) => ({
-        data,
-        ...rest
-      })
-    })
-    queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
-    // if (queryResults.data) {
-    //   queryResults.data.forEach(summary => {
-    //     // const devicesUsed = assigned.quantity;
-    //     // const summary = result.filter(device => device.deviceSubType === assigned.deviceSubType);
-    //     let totalQuantity = 0
-    //     let effetiveDate = ''
-    //     let courtesyTooltip = ''
-    //     totalQuantity = summary.quantity + summary.courtesyQuantity
-    //     effetiveDate = summary.effectiveDate
-    //     courtesyTooltip = `purchased: ${summary.quantity}\ncourtesy: ${summary.courtesyQuantity}`
-    //   })
-    // }
-    const barColors = [
-      cssStr('--acx-accents-blue-50'),
-      cssStr('--acx-neutrals-30')
-    ]
+  // const SwitchLicenseSummary = () => {
+  //   const queryResults = useMspEntitlementSummaryQuery({
+  //     params: useParams()
+  //   },{
+  //     selectFromResult: ({ data, ...rest }) => ({
+  //       data,
+  //       ...rest
+  //     })
+  //   })
+  //   queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
+  //   const barColors = [
+  //     cssStr('--acx-accents-blue-50'),
+  //     cssStr('--acx-neutrals-30')
+  //   ]
 
-    return (
-      <Loader states={[queryResults]}>
-        {/* <label>Total Switch Licenses Usage:</label> */}
-        {queryResults.data && queryResults.data.map((summary) => (
-          (summary.quantity > 0) &&
-          (<li style={{ marginTop: 0 }}>
-            {/* {EntitlementUtil.deviceSubTypeToText(summary.deviceSubType as EntitlementDeviceSubType)} */}
-            {/* <span style={{ marginLeft: 120 }}>{summary.quantity + summary.courtesyQuantity}</span> */}
-            <span><StackedBarChart
-              style={{ marginLeft: 15, height: 40, width: 400 }}
-              // showLabels={false}
-              barWidth={20}
-              data={[{
-                category: 'ICX-7150',
-                series: [
-                  { name: 'used', value: summary.quantity + summary.courtesyQuantity },
-                  { name: 'us', value: 18 }
-                ]
-              }]}
-              barColors={barColors}
-            /></span>
+  //   return (
+  //     <Loader states={[queryResults]}>
+  //       {/* <label>Total Switch Licenses Usage:</label> */}
+  //       {queryResults.data && queryResults.data.map((summary) => (
+  //         (summary.quantity > 0) &&
+  //         (<li style={{ marginTop: 0 }}>
+  //           {/* {EntitlementUtil.deviceSubTypeToText(summary.deviceSubType as EntitlementDeviceSubType)} */}
+  //           {/* <span style={{ marginLeft: 120 }}>{summary.quantity + summary.courtesyQuantity}</span> */}
+  //           <span><StackedBarChart
+  //             style={{ marginLeft: 15, height: 40, width: 400 }}
+  //             // showLabels={false}
+  //             barWidth={20}
+  //             data={[{
+  //               category: 'ICX-7150',
+  //               series: [
+  //                 { name: 'used', value: summary.quantity + summary.courtesyQuantity },
+  //                 { name: 'us', value: 18 }
+  //               ]
+  //             }]}
+  //             barColors={barColors}
+  //           /></span>
 
-          </li>)
-        ))}
-      </Loader>
-    )
-  }
+  //         </li>)
+  //       ))}
+  //     </Loader>
+  //   )
+  // }
 
   const SwitchLicenseTable = () => {
     const queryResults = useMspEntitlementListQuery({
@@ -183,7 +171,7 @@ export function SwitchLicense () {
 
   return (
     <>
-      <SwitchLicenseSummary />
+      {/* <SwitchLicenseSummary /> */}
       <SwitchLicenseTable />
     </>
   )
