@@ -37,13 +37,14 @@ describe('Drawer', () => {
       render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     })
-    it('should render drawer', async () => {
+    it.only('should render drawer', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
         data: { incident: { impactedAPs: sample } } })
       render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       await screen.findByPlaceholderText('Search for...')
       await screen.findByText(new RegExp(`TBD(.*) - (.*)${sample[0].name}(.*)${sample[1].name}`))
+      screen.debug(undefined, Infinity)
       await screen.findByText(sample[0].mac)
       await screen.findByText(`${sample[0].model} (2)`)
       await screen.findByText(`${sample[0].version} (2)`)
