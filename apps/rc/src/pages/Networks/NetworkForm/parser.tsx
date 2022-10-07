@@ -290,6 +290,15 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     managementFrameMinimumPhyRate: get(data, 'managementFrameMinimumPhyRate')
   }
 
+  // loadControlForm
+  if(get(data, 'totalUplinkLimited') === false) {
+    advancedCustomization.totalUplinkRateLimiting = 0
+  }
+
+  if(get(data, 'totalDownlinkLimited') === false) {
+    advancedCustomization.totalDownlinkRateLimiting = 0
+  }
+
   if (get(data, 'wlan.advancedCustomization.vlanPool')) {
     advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
   }
