@@ -1,4 +1,4 @@
-import { forwardRef, useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
