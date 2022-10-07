@@ -13,7 +13,7 @@ import {
 import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/utils'
 
-import { ChartsData } from '../services'
+import type { TimeSeriesChartProps } from '../types'
 
 const attemptAndFailureChartQuery = (incident: Incident) => gql`
   attemptAndFailureChart: timeSeries(granularity: $granularity) {
@@ -26,8 +26,7 @@ const attemptAndFailureChartQuery = (incident: Incident) => gql`
   }
 `
 
-export const AttemptAndFailureChart = (
-  { incident, data }: { incident: Incident, data: ChartsData }) => {
+export const AttemptAndFailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps) => {
   const { attemptAndFailureChart } = data
   const intl = useIntl()
   const { $t } = intl
@@ -46,6 +45,7 @@ export const AttemptAndFailureChart = (
     <AutoSizer>
       {({ height, width }) => (
         <MultiLineTimeSeriesChart
+          chartRef={chartRef}
           style={{ height, width }}
           data={chartResults}
           dataFormatter={formatter('countFormat')}

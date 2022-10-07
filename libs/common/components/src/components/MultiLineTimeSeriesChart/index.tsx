@@ -1,11 +1,18 @@
-import { RefObject, useEffect, useImperativeHandle, useRef } from 'react'
+import {
+  RefObject,
+  RefCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useCallback
+} from 'react'
 
 import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
-import styled       from 'styled-components/macro'
+import { useIntl }  from 'react-intl'
 
 import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStamp }           from '@acx-ui/types'
+import type { TimeStampRange }      from '@acx-ui/types'
 import { formatter }                from '@acx-ui/utils'
 
 import { cssStr }       from '../../theme/helper'
@@ -21,16 +28,14 @@ import {
   timeSeriesTooltipFormatter,
   getTimeSeriesSymbol
 }                       from '../Chart/helper'
+import { useDataZoom } from '../Chart/useDataZoom'
+
+import * as UI from './styledComponents'
 
 import type { ECharts, EChartsOption, MarkAreaComponentOption } from 'echarts'
 import type { EChartsReactProps }                               from 'echarts-for-react'
 
-const Chart = styled(ReactECharts)`
-  svg path[stroke="#123456"] {
-    stroke-dasharray: 2;
-    stroke: var(--acx-accents-blue-50);
-    clip-path: inset(0 round 5px);
-  }`
+type OnBrushendEvent = { areas: { coordRange: TimeStampRange }[] }
 
 type MarkAreaOption = Extract<
   Exclude<MarkAreaComponentOption['data'], undefined>[number],
@@ -50,8 +55,7 @@ export interface MultiLineTimeSeriesChartProps <
 >
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[],
-    /** @default 'name' */
-    legendProp?: keyof TChartData,
+    legendProp?: keyof TChartData,  /** @default 'name' */
     lineColors?: string[],
     dataFormatter?: ReturnType<typeof formatter>
     seriesFormatters?: Record<string, ReturnType<typeof formatter>>
@@ -59,39 +63,35 @@ export interface MultiLineTimeSeriesChartProps <
       max: number,
       min: number
     }
-    disableLegend?: boolean,
-    onMarkedAreaClick?: (data: MarkerData) => void,
+    disableLegend?: boolean
+    chartRef?: RefCallback<ReactECharts>
+    onDataZoom?: (range: TimeStampRange) => void
+    brush?: TimeStampRange
+    onBrushChange?: (range: TimeStampRange) => void
     markers?: Marker<MarkerData>[]
-    brush?: [TimeStamp, TimeStamp]
-    onBrushChange?: (range: TimeStamp[]) => void
-    chartRef?: RefObject<ReactECharts>
+    onMarkedAreaClick?: (data: MarkerData) => void
   }
 
-export function useBrush<T> (
+export function useBrush<TChartData extends TimeSeriesChartData> (
   eChartsRef: RefObject<ReactECharts>,
-  brush?: [TimeStamp, TimeStamp],
-  data?: T[]
-) {
+  data: TChartData[],
+  brush?: TimeStampRange,
+  onBrushChange?: (range: TimeStampRange) => void
+): (params: OnBrushendEvent) => void {
   useEffect(() => {
-    if (!eChartsRef || !eChartsRef.current || isEmpty(brush)) return
-    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
+    if (!eChartsRef?.current || isEmpty(brush)) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
     echartInstance.dispatchAction({
       type: 'brush',
-      areas: [{
-        brushType: 'lineX',
-        coordRange: brush,
-        xAxisIndex: 0
-      }]
+      areas: [{ brushType: 'lineX', coordRange: brush, xAxisIndex: 0 }]
     })
   }, [eChartsRef, brush, data])
-}
 
-export const useOnBrushChange = (
-  onBrushChange?: (range: TimeStamp[]) => void
-) => {
-  return (params: { areas: { coordRange: [TimeStamp, TimeStamp] }[] }) => {
-    onBrushChange && onBrushChange(params.areas[0].coordRange)
-  }
+  const onBrushendCallback = useCallback((event: OnBrushendEvent) => {
+    onBrushChange && onBrushChange(event.areas[0].coordRange)
+  }, [onBrushChange])
+
+  return onBrushendCallback
 }
 
 export function useOnMarkedAreaClick <MarkerData> (
@@ -99,8 +99,8 @@ export function useOnMarkedAreaClick <MarkerData> (
   onMarkedAreaClick?: (data: MarkerData) => void
 ) {
   useEffect(() => {
-    if (!eChartsRef || !eChartsRef.current) return
-    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
+    if (!eChartsRef?.current) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
     echartInstance.on('click', 'series.line', function (params) {
       const markedAreaProps = (params.data as unknown as { data: MarkerData }).data
       onMarkedAreaClick?.(markedAreaProps)
@@ -122,11 +122,15 @@ export function MultiLineTimeSeriesChart <
   onMarkedAreaClick,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData, MarkerData>) {
-  const zoomEnabled = !Boolean(props.brush)
-
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
-  useBrush(eChartsRef, props.brush, data)
+
+  const { $t } = useIntl()
+
+  const zoomEnabled = !Boolean(props.brush)
+  const [canResetZoom, onDatazoomCallback, resetZoomCallback] =
+    useDataZoom<TChartData>(eChartsRef, zoomEnabled, data, props.onDataZoom)
+  const onBrushendCallback = useBrush(eChartsRef, data, props.brush, props.onBrushChange)
   useOnMarkedAreaClick(eChartsRef, onMarkedAreaClick)
 
   const option: EChartsOption = {
@@ -137,13 +141,13 @@ export function MultiLineTimeSeriesChart <
       cssStr('--acx-semantics-yellow-40')
     ],
     grid: { ...gridOptions() },
-    legend: {
-      ...legendOptions(),
-      textStyle: legendTextStyleOptions(),
-      data: data
-        .filter(datum=> datum.show !== false )
-        .map(datum => datum[legendProp]) as unknown as string[]
-    },
+    ...(disableLegend ? {} : {
+      legend: {
+        ...legendOptions(),
+        textStyle: legendTextStyleOptions(),
+        data: data.map(datum => datum[legendProp]) as unknown as string[]
+      }
+    }),
     tooltip: {
       ...tooltipOptions(),
       trigger: 'axis',
@@ -191,17 +195,18 @@ export function MultiLineTimeSeriesChart <
       })),
     ...(zoomEnabled ? {
       toolbox: {
-        top: '15%',
         feature: {
           dataZoom: {
             yAxisIndex: 'none',
-            brushStyle: { color: 'rgba(0, 0, 0, 0.05)' }
+            brushStyle: { color: 'rgba(0, 0, 0, 0.05)' },
+            icon: { back: 'path://', zoom: 'path://' }
           },
           brush: { type: ['rect'], icon: { rect: 'path://' } }
         }
       },
       dataZoom: [
         {
+          id: 'zoom',
           type: 'inside',
           zoomLock: true
         }
@@ -213,20 +218,30 @@ export function MultiLineTimeSeriesChart <
         brushStyle: {
           borderWidth: 4,
           color: 'rgba(0, 0, 0, 0.05)',
-          borderColor: '#123456' // special color code to identify path of brush
+          borderColor: '#123456' // special color code to target path of brush
         }
       }
     })
   }
-  if (option && disableLegend === true) { delete(option.legend) }
 
   return (
-    <Chart
-      {...props}
-      ref={eChartsRef}
-      opts={{ renderer: 'svg' }}
-      option={option}
-      onEvents={{ brushend: useOnBrushChange(props.onBrushChange) }}
-    />
+    <UI.Wrapper>
+      <ReactECharts
+        {...props}
+        ref={eChartsRef}
+        opts={{ renderer: 'svg' }}
+        option={option}
+        onEvents={zoomEnabled ? {
+          datazoom: onDatazoomCallback
+        } : {
+          brushend: onBrushendCallback
+        }}
+      />
+      {canResetZoom && <UI.ResetButton
+        size='small'
+        onClick={resetZoomCallback}
+        children={$t({ defaultMessage: 'Reset Zoom' })}
+      />}
+    </UI.Wrapper>
   )
 }

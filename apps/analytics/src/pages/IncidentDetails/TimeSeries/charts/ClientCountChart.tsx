@@ -6,7 +6,7 @@ import { getSeriesData, TimeSeriesData }  from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/utils'
 
-import { ChartsData } from '../services'
+import type { TimeSeriesChartProps } from '../types'
 
 const clientCountChartQuery = () => gql`
   clientCountChart: timeSeries(granularity: $granularity) {
@@ -17,7 +17,7 @@ const clientCountChartQuery = () => gql`
   }
 `
 
-export const ClientCountChart = ({ data }: { data: ChartsData }) => {
+export const ClientCountChart = ({ chartRef, data }: TimeSeriesChartProps) => {
   const { clientCountChart } = data
   const intl = useIntl()
   const { $t } = intl
@@ -34,6 +34,7 @@ export const ClientCountChart = ({ data }: { data: ChartsData }) => {
     <AutoSizer>
       {({ height, width }) => (
         <MultiLineTimeSeriesChart
+          chartRef={chartRef}
           style={{ height, width }}
           data={chartResults}
           dataFormatter={formatter('countFormat')}

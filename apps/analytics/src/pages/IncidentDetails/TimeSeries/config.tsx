@@ -5,11 +5,12 @@ import clientCountChart       from './charts/ClientCountChart'
 import failureChart           from './charts/FailureChart'
 import ttcByFailureTypeChart  from './charts/TtcByFailureTypeChart'
 import ttcFailureChart        from './charts/TtcFailureChart'
-import { ChartsData }         from './services'
+
+import type { TimeSeriesChartProps } from './types'
 
 interface TimeSeriesChart {
   query: (incident: Incident) => string,
-  chart?: ({ incident, data }: { incident: Incident, data: ChartsData }) => JSX.Element
+  chart: (props: TimeSeriesChartProps) => JSX.Element
 }
 
 export enum TimeSeriesChartTypes {

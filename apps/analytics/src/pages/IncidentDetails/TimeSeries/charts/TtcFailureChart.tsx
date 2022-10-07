@@ -3,18 +3,14 @@ import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import AutoSizer       from 'react-virtualized-auto-sizer'
 
-import {
-  Incident,
-  TimeSeriesData,
-  getSeriesData,
-  kpiConfig
-}                                                 from '@acx-ui/analytics/utils'
-import { Card, Loader, MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { useTenantLink }                          from '@acx-ui/react-router-dom'
-import { formatter }                              from '@acx-ui/utils'
+import { TimeSeriesData, getSeriesData, kpiConfig } from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart }   from '@acx-ui/components'
+import { useTenantLink }                            from '@acx-ui/react-router-dom'
+import { formatter }                                from '@acx-ui/utils'
 
-import { useKpiTimeseriesQuery, KpiPayload }        from '../../../Health/Kpi/services'
-import { ChartsData, getIncidentTimeSeriesPeriods } from '../services'
+import { useKpiTimeseriesQuery, KpiPayload } from '../../../Health/Kpi/services'
+import { getIncidentTimeSeriesPeriods }      from '../services'
+import { TimeSeriesChartProps }              from '../types'
 
 import { getMarkers, onMarkedAreaClick } from './incidentTimeSeriesMarker'
 
@@ -47,7 +43,7 @@ export const aggregateTTC = (
   slowConnections: (number|null)[]
 })
 
-export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
+export const TtcFailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
@@ -85,12 +81,13 @@ export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: 
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
+              chartRef={chartRef}
               style={{ height, width }}
               data={chartResults}
               dataFormatter={formatter('countFormat')}
               seriesFormatters={seriesFormatters}
               onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
-              markers={getMarkers(data.relatedIncidents, incident)}
+              markers={getMarkers(data.relatedIncidents!, incident)}
             />
           )}
         </AutoSizer>

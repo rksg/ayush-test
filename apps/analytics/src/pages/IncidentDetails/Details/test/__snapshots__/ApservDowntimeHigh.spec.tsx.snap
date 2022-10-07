@@ -71,7 +71,7 @@ exports[`i-apserv-downtime-high should render correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          High AP-Controller connection failures in Venue: Default Zone
+          High AP-RUCKUS Cloud connection failures in Venue: Default Zone
         </span>
       </div>
     </div>

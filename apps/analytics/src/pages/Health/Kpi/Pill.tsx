@@ -1,3 +1,4 @@
+import { Tooltip } from 'antd'
 import { sum }     from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -79,9 +80,10 @@ function HealthPill ({ filters, kpi, timeWindow }: {
   }
   const { success, total } = queryResults.data as PillData
   const percent = total > 0 ? (success / total) * 100 : 0
-  const { pillSuffix, description, thresholdDesc, thresholdFormatter } = pill
+  const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill
+  const countFormat = formatter('countFormat')
   const translatedDesc = description
-    ? $t(description, { successCount: success, totalCount: total })
+    ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total) })
     : ''
   const translatedThresholdDesc = []
   if (thresholdDesc.length) {
@@ -97,7 +99,12 @@ function HealthPill ({ filters, kpi, timeWindow }: {
     )
   }
   return <Loader states={[queryResults]} key={kpi}>
-    <UI.PillTitle><span>{$t(text)}</span><span><InformationOutlined /></span></UI.PillTitle>
+    <UI.PillTitle>
+      <span>{$t(text)}</span>
+      <span>
+        <Tooltip placement='top' title={$t(tooltip, { br: '\n' })}><InformationOutlined /></Tooltip>
+      </span>
+    </UI.PillTitle>
     <UI.PillWrap>
       <ProgressPill
         percent={percent}

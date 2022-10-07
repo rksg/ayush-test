@@ -9,9 +9,11 @@ import { store }                                  from '@acx-ui/store'
 import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
 import { TimeSeriesChartTypes } from '../config'
-import { ChartsData, Api }      from '../services'
+import { Api }                  from '../services'
 
 import { FailureChart } from './FailureChart'
+
+import type { TimeSeriesChartResponse } from '../types'
 
 const expectedResult = {
   failureChart: {
@@ -39,16 +41,17 @@ const expectedResult = {
       path: [{ type: 'zone', name: 'Zone' }]
     })
   ]
-} as unknown as ChartsData
+} as unknown as TimeSeriesChartResponse
 
 afterEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('FailureChart', () => {
   mockDOMWidth()
+
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <FailureChart incident={fakeIncident1} data={expectedResult}/>
+        <FailureChart chartRef={()=>{}} incident={fakeIncident1} data={expectedResult}/>
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()

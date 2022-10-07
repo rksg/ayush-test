@@ -1,83 +1,81 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 import { withKnobs,object } from '@storybook/addon-knobs'
 import { storiesOf }        from '@storybook/react'
 import { connect }          from 'echarts'
 import ReactECharts         from 'echarts-for-react'
 
-import { TimeStamp } from '@acx-ui/types'
-import { formatter } from '@acx-ui/utils'
+import { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
+import { TimeStamp, TimeStampRange } from '@acx-ui/types'
+import { formatter }                 from '@acx-ui/utils'
 
 import { Button } from '../Button'
 
 import { MultiLineTimeSeriesChart } from '.'
 
+
 export const getData = () => {
   const base = +new Date(2020, 9, 29)
   const oneDay = 24 * 3600 * 1000
   const data = [[base, Math.random() * 3000]]
-
   for (let i = 1; i < 37; i++) {
-    // eslint-disable-next-line max-len
     const value = Math.round((Math.random()-0.5) * 250 + data[i - 1][1])
     const displayValue = (Math.random() > 0.20) ? value : null
     data.push([base + oneDay * i, displayValue as number])
   }
   return data as [TimeStamp, number][]
 }
-
-const seriesNames = ['New Clients', 'Impacted Clients', 'Connected Clients']
-
-export const getSeriesData = () => {
+const seriesNames = [
+  ['New Clients', 'Impacted Clients', 'Connected Clients'],
+  ['Total Failures', 'EAP Failures', 'EAP Attempts']
+]
+export const getSeriesData = (index = 0) => {
   const series = []
   for (let i = 0; i < 3; i++) {
     series.push({
-      key: `series-${i}`,
-      name: seriesNames[i],
+      key: `series-${index}-${i}`,
+      name: seriesNames[index][i],
       data: getData()
     })
   }
   return series
 }
 
-const ConnectedCharts = () => {
+const connectChart = (chart: ReactECharts | null) => {
+  if (chart) {
+    const instance = chart.getEchartsInstance()
+    instance.group = 'group'
+  }
+}
+
+const Connected = () => {
+  useEffect(() => { connect('group') }, [])
+  return (
+    <>
+      {Array(2).fill(undefined).map((_, i) => <MultiLineTimeSeriesChart
+        key={i}
+        chartRef={connectChart}
+        style={{ width: 504, height: 300 }}
+        data={getSeriesData(i)}
+        // eslint-disable-next-line no-console
+        onDataZoom={(range) => { console.log(range.map(r => new Date(r).toISOString())) }}
+      />)}
+    </>
+  )
+}
+
+const ConnectedBrush = () => {
   const [data, setData]= useState(getSeriesData())
-  const chartRef1 = useRef<ReactECharts>(null)
-  const chartRef2 = useRef<ReactECharts>(null)
-  const chartRefs = useMemo(() => [chartRef1, chartRef2],[])
   const n = data.length
-  const timeWindowInit = (data: {
-    name: string;
-    data: [TimeStamp, number][];
-}[]) => [data[0].data[0][0], data[n-1].data[n-1][0]]
+  const timeWindowInit = (data: TimeSeriesChartData[]) =>
+    [data[0].data[0][0], data[n-1].data[n-1][0]]
   const [timeWindow, setTimeWindow] = useState(timeWindowInit(data))
-
-  const connectRefs = useCallback(() => {
-    const validRefs = chartRefs.filter(ref => ref && ref.current)
-    validRefs.forEach(ref => {
-      let instance = ref.current!.getEchartsInstance()
-      instance.group = 'group1'
-    })
-    connect('group1')
-  }, [chartRefs])
-
-
-  useEffect(()=>{
-    connectRefs()
-  }, [connectRefs])
-
   const onBrushChangeCallback = useCallback((range: TimeStamp[]) => {
-    if (range[0] !== timeWindow[0]) {
+    if (range[0] !== timeWindow[0] || range[1] !== timeWindow[1]) {
       setTimeWindow(range)
-      connectRefs()
     }
-
-    if (range[1] !== timeWindow[1]) {
-      setTimeWindow(range)
-      connectRefs()
-    }
-  }, [timeWindow, connectRefs])
-
+  }, [timeWindow])
+  useEffect(() => { connect('group') }, [])
   return (
     <>
       <Button
@@ -86,15 +84,15 @@ const ConnectedCharts = () => {
         onClick={()=>{
           const copyData = getSeriesData()
           setData(copyData)
-          setTimeWindow(timeWindowInit(copyData))
-          connectRefs()
-        }}>Update Data</Button>
-      {chartRefs.map((ref, index) => <MultiLineTimeSeriesChart
-        key={index}
-        chartRef={ref}
+        }}
+      >Update Data</Button>
+      {Array(2).fill(undefined).map((_, i) => <MultiLineTimeSeriesChart
+        key={i}
+        chartRef={connectChart}
         style={{ width: 504, height: 300 }}
         data={data}
-        brush={timeWindow as [TimeStamp, TimeStamp]}
+        brush={timeWindow as TimeStampRange}
+        // eslint-disable-next-line no-console
         onBrushChange={onBrushChangeCallback}
       />)}
     </>
@@ -103,9 +101,12 @@ const ConnectedCharts = () => {
 
 storiesOf('MultiLineTimeSeriesChart', module)
   .addDecorator(withKnobs)
+
   .add('Chart View', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
+    // eslint-disable-next-line no-console
+    onDataZoom={(range) => { console.log(range.map(r => new Date(r).toISOString())) }}
   />)
   .add('With Formatters', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
@@ -130,23 +131,30 @@ storiesOf('MultiLineTimeSeriesChart', module)
     }, {
       startTime: +new Date('2020-11-20T00:00:00.000Z'),
       endTime: +new Date('2020-11-30T00:00:00.000Z'),
-      data: { id: 1 },
+      data: { id: 2 },
       itemStyle: { opacity: 0.2, color: '#0000FF' }
     }]}
     // eslint-disable-next-line no-console
     onMarkedAreaClick={(data) => { console.log(data) }}
   />)
+
   .add('With Brush', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
     brush={['2020-11-10', '2020-11-20']}
-    onBrushChange={range => {console.log(range.map(r=>new Date(r).toISOString()))}} // eslint-disable-line no-console
+    // eslint-disable-next-line no-console
+    onBrushChange={(range) => { console.log(range.map(r => new Date(r).toISOString())) }}
   />)
-  .add('Connected Chart', () => <ConnectedCharts />)
+
+  .add('Connected', () => <Connected />)
+
+  .add('Connected With Brush', () => <ConnectedBrush />)
+
   .add('With Knobs', () =>
-    <div style={{ width: 504, height: 278, padding: 10, border: '1px solid lightgray' }}>
+    <div style={{ width: 480, height: 250, padding: 10, border: '1px solid lightgray' }}>
       <MultiLineTimeSeriesChart
-        style={{ height: 190 }}
+        style={{ width: 460, height: 230 }}
         data={object('data', getSeriesData())}
       />
-    </div>)
+    </div>
+  )
