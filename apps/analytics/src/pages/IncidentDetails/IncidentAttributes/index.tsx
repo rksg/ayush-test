@@ -44,15 +44,13 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
 }) => {
   const intl = useIntl()
   const { visible, onOpen, onClose } = useDrawer(false)
-  const scope = formattedPath(incident.path, incident.sliceValue)
-  const area = impactedArea(incident.path, incident.sliceValue)
   const fields = {
     [Attributes.ClientImpactCount]: {
       key: 'clientImpactCount',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Client Impact Count' }),
         children: impactValues('client', incident).clientImpactDescription,
-        onClick: () => onOpen('client')
+        ...(incident.impactedClientCount || -1 > 0 ? { onClick: () => onOpen('client') } : {})
       })
     },
     [Attributes.ApImpactCount]: {
@@ -60,7 +58,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'AP Impact Count' }),
         children: impactValues('ap', incident).apImpactDescription,
-        onClick: () => onOpen('ap')
+        ...(incident.impactedApCount || -1 > 0 ? { onClick: () => onOpen('ap') } : {})
       })
     },
     [Attributes.IncidentCategory]: {
@@ -94,8 +92,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           defaultMessage: 'Scope',
           description: 'Incident impacted scope'
         }),
-        children: area,
-        tooltip: scope
+        children: impactedArea(incident.path, incident.sliceValue),
+        tooltip: formattedPath(incident.path, incident.sliceValue)
       })
     },
     [Attributes.Duration]: {

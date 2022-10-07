@@ -1,9 +1,9 @@
 import { capitalize } from 'lodash'
 
-import { intlFormats, PathNode, NodeType, getIntl, formatter } from '@acx-ui/utils'
+import { formatter, intlFormats, getIntl, PathNode, NodeType } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
-import { kpiConfig }           from './HealthKPIConfig'
+import { kpiConfig }           from './healthKPIConfig'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
 
@@ -13,6 +13,7 @@ import type {
   SeverityRange,
   Incident
 } from './types/incidents'
+
 
 /**
  * Uses to transform incident record loaded from API and
@@ -138,7 +139,7 @@ export function incidentScope (incident: Incident) {
 export const getThreshold = (incident: Incident) => {
   const { code } = incident
   if (code === 'ttc') {
-    return String(formatter('durationFormat')(kpiConfig.timeToConnect.histogram.initialThreshold))
+    return kpiConfig.timeToConnect.histogram.initialThreshold
   } else {
     return undefined
   }
@@ -148,6 +149,8 @@ export const shortDescription = (incident: Incident) => {
   const { $t } = getIntl()
   const scope = incidentScope(incident)
   const threshold = getThreshold(incident)
+    ? formatter('longDurationFormat')(getThreshold(incident))
+    : undefined
   return $t(incident.shortDescription, { scope, threshold })
 }
 

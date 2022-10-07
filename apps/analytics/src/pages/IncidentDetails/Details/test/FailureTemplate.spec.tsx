@@ -2,7 +2,7 @@ import { fakeIncident1 }                from '@acx-ui/analytics/utils'
 import { Provider }                     from '@acx-ui/store'
 import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
-import { IncidentDetailsTemplate } from '../FailureTemplate'
+import { FailureTemplate } from '../FailureTemplate'
 
 jest.mock('../../IncidentDetails/IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
@@ -24,7 +24,7 @@ describe('IncidentDetailsTemplate', () => {
     }
 
     const { asFragment } = render(<Provider>
-      <IncidentDetailsTemplate {...fakeIncident1} />
+      <FailureTemplate {...fakeIncident1} />
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()

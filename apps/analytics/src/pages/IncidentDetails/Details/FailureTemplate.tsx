@@ -16,7 +16,7 @@ import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (incident: Incident) => {
+export const FailureTemplate = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     Attributes.ClientImpactCount,
@@ -71,5 +71,3 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
     </>
   )
 }
-
-export default IncidentDetailsTemplate

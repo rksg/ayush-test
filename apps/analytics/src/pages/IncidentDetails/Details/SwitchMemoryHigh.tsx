@@ -55,5 +55,3 @@ export const SwitchMemoryHigh = (incident: Incident) => {
     </>
   )
 }
-
-export default SwitchMemoryHigh

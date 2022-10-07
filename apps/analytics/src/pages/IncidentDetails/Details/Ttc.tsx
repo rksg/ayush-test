@@ -70,5 +70,3 @@ export const Ttc = (incident: Incident) => {
     </>
   )
 }
-
-export default Ttc

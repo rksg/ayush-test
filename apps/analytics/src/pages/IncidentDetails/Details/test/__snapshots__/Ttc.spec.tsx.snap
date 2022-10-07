@@ -71,7 +71,7 @@ exports[`ttc should render correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Time to connect is greater than 2 s in Venue: EDU-MeshZone_orig
+          Time to connect is greater than 2 seconds in Venue: EDU-MeshZone_orig
         </span>
       </div>
     </div>
