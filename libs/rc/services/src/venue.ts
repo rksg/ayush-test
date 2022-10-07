@@ -125,10 +125,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'VenueFP', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, 
-            ['DeleteFloorPlan'], () => {
-              api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFP', id: 'DETAIL' }]))
-            })
+          showActivityMessage(msg, ['AddFloorPlan', 'UpdateFloorPlan', 'DeleteFloorPlan'], () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFP', id: 'DETAIL' }]))
+          })
         })
       }
     }),
