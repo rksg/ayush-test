@@ -2,7 +2,6 @@ import { Badge as AntBadge } from 'antd'
 import styled                from 'styled-components/macro'
 
 export const TooltipWrapper = styled.div`
-  z-index: 999999
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
   color: var(--acx-primary-white);
