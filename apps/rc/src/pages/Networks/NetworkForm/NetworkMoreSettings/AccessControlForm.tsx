@@ -330,7 +330,6 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableUploadLimit'),
     useWatch<boolean>('enableClientRateLimit')
   ]
-  const form = Form.useFormInstance()
 
   const { layer2SelectOptions } = useL2AclPolicyListQuery({
     params: useParams(),
