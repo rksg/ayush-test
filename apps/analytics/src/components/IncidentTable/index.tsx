@@ -243,7 +243,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {
-            setSelectedRowData([{
+            row && setSelectedRowData([{
               id: row.id,
               code: row.code,
               severityLabel: row.severityLabel,
