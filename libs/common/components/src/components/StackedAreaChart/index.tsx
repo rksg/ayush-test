@@ -1,4 +1,5 @@
 import ReactECharts from 'echarts-for-react'
+import { isEmpty }  from 'lodash'
 
 import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import { formatter }           from '@acx-ui/utils'
@@ -60,7 +61,7 @@ export function StackedAreaChart <
   ...props
 }: StackedAreaChartProps<TChartData>) {
 
-  const data = tooltipTotalTitle
+  const data = tooltipTotalTitle && !isEmpty(initalData.length)
     ? initalData.concat(getSeriesTotal<TChartData>(initalData, tooltipTotalTitle))
     : initalData
 
