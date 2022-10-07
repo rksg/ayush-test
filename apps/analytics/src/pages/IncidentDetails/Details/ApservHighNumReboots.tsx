@@ -57,5 +57,3 @@ export const ApservHighNumReboots = (incident: Incident) => {
     </>
   )
 }
-
-export default ApservHighNumReboots
