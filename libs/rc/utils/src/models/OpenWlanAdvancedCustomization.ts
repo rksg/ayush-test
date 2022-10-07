@@ -8,7 +8,7 @@ export class OpenWlanAdvancedCustomization {
 
   clientIsolation?: boolean
 
-  devicePolicyId?: string
+  devicePolicyId?: string | null
 
   l2AclPolicyId?: string
 
@@ -91,7 +91,7 @@ export class OpenWlanAdvancedCustomization {
   joinWaitThreshold: number
 
   enableOptimizedConnectivityExperience?: boolean
-  
+
   broadcastProbeResponseDelay: number
 
   rssiAssociationRejectionThreshold: number

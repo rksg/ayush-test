@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react'
 
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
-import { VenueLed }                           from '@acx-ui/rc/utils'
+import { VenueLed, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 import { getIntl }                            from '@acx-ui/utils'
 
@@ -16,29 +16,31 @@ const tabs = {
   switch: SwitchConfigTab
 }
 
-export interface AdvancedSettingContext {
+export interface EditContext {
   tabTitle: string,
   tabKey?: string,
   isDirty: boolean,
   hasError?: boolean,
-  oldData: VenueLed[],
-  newData: VenueLed[],
+  oldData: unknown,
+  newData: unknown,
   updateChanges: () => void,
-  setData: (data: VenueLed[]) => void,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setData: (data: any) => void,
   tempData?: {
-    settings?: VenueLed[]
+    settings?: VenueLed[],
+    general?: VenueSwitchConfiguration
   }
 }
 
 export const VenueEditContext = createContext({} as {
-  editContextData: AdvancedSettingContext,
-  setEditContextData: (data: AdvancedSettingContext) => void
+  editContextData: EditContext,
+  setEditContextData: (data: EditContext) => void
 })
 
 export function VenueEdit () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
-  const [editContextData, setEditContextData] = useState({} as AdvancedSettingContext)
+  const [editContextData, setEditContextData] = useState({} as EditContext)
 
   return (
     <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
@@ -49,8 +51,8 @@ export function VenueEdit () {
 }
 
 export function showUnsavedModal (
-  editContextData: AdvancedSettingContext,
-  setEditContextData: (data: AdvancedSettingContext) => void,
+  editContextData: EditContext,
+  setEditContextData: (data: EditContext) => void,
   callback?: () => void
 ) {
   const { $t } = getIntl()
@@ -75,9 +77,11 @@ export function showUnsavedModal (
       setEditContextData({
         ...editContextData,
         isDirty: false,
+        newData: undefined,
+        oldData: undefined,
         tempData: {
           ...editContextData.tempData,
-          [tabKey as keyof AdvancedSettingContext]: oldData
+          [tabKey as keyof EditContext]: oldData
         }
       })
       setData(oldData)
@@ -109,5 +113,5 @@ export function showUnsavedModal (
       action: 'CUSTOM_BUTTONS',
       buttons: (hasError ? btns.slice(0, 2) : btns) as CustomButtonProps[]
     }
-  })  
+  })
 }

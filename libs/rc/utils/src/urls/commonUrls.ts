@@ -79,13 +79,33 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/venue'
   },
+  updateVenue: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/venue/:venueId'
+  },
   getVenue: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId'
   },
+  deleteVenue: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue/:venueId'
+  },
+  deleteVenues: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue'
+  },
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getService: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/service/:serviceId'
+  },
+  saveDHCPService: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
   },
   getVenueFloorplans: {
     method: 'get',
@@ -126,5 +146,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   validateRadius: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
+  },
+  getConfigProfiles: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profiles/query'
+  },
+  getVenueSwitchSetting: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venue/:venueId'
+  },
+  updateVenueSwitchSetting: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/venue'
+  },
+  getSwitchConfigProfile: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId'
   }
 }

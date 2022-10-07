@@ -5,7 +5,7 @@ import { FloorPlanDto } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
-export default function Thumbnail (props: { 
+export default function Thumbnail (props: {
     floorPlan: FloorPlanDto,
     active: number,
     onFloorPlanSelection: CallableFunction }) {

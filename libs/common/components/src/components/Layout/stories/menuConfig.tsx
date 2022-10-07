@@ -1,24 +1,51 @@
-import { uniqueId } from 'lodash'
+import styled from 'styled-components/macro'
 
-import * as UI from './styledComponents'
+import {
+  AIOutlined as AIOutlinedBase,
+  AISolid as AISolidBase,
+  AccountCircleOutlined,
+  AccountCircleSolid,
+  AdminOutlined,
+  AdminSolid as AdminSolidBase,
+  CalendarDateOutlined,
+  CalendarDateSolid,
+  DevicesOutlined,
+  DevicesSolid,
+  LocationOutlined,
+  LocationSolid,
+  NetworksOutlined,
+  NetworksSolid,
+  PoliciesOutlined,
+  PoliciesSolid as PoliciesSolidBase,
+  ReportsOutlined,
+  ReportsSolid,
+  ServicesOutlined,
+  ServicesSolid as ServicesSolidBase,
+  SpeedIndicatorOutlined,
+  SpeedIndicatorSolid
+} from '@acx-ui/icons'
 
-const genPlaceholder = () => ({
-  path: `/${uniqueId()}/placeholder`,
-  name: ' '
-})
+import { genPlaceholder, LayoutProps } from '..'
+import { LayoutUI }                    from '../styledComponents'
 
-const config = [
+const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
+const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
+const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
+const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
+const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
+
+const config: LayoutProps['menuConfig'] = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    disableIcon: UI.SpeedIndicatorIcon,
-    enableIcon: UI.EnabledSpeedIndicatorIcon
+    inactiveIcon: SpeedIndicatorOutlined,
+    activeIcon: SpeedIndicatorSolid
   },
   {
     path: '/analytics',
     name: 'AI Analytics',
-    disableIcon: UI.AIAnalyticsIcon,
-    enableIcon: UI.AIAnalyticsIcon,
+    inactiveIcon: AIOutlined,
+    activeIcon: AISolid,
     routes: [
       {
         path: '/analytics/incidents',
@@ -45,58 +72,58 @@ const config = [
   {
     path: '/timeline',
     name: 'Timeline',
-    disableIcon: UI.CalendarIcon,
-    enableIcon: UI.EnabledCalendarIcon
+    inactiveIcon: CalendarDateOutlined,
+    activeIcon: CalendarDateSolid
   },
   {
     path: '/reports',
     name: 'Reports',
-    disableIcon: UI.ReportsIcon,
-    enableIcon: UI.EnabledReportsIcon
+    inactiveIcon: ReportsOutlined,
+    activeIcon: ReportsSolid
   },
   genPlaceholder(),
   {
     path: '/venues',
     name: 'Venues',
-    disableIcon: UI.LocationIcon,
-    enableIcon: UI.EnabledLocationIcon
+    inactiveIcon: LocationOutlined,
+    activeIcon: LocationSolid
   },
   {
     path: '/devices',
-    name: 'Devices',
-    disableIcon: UI.DevicesIcon,
-    enableIcon: UI.EnabledDevicesIcon
+    name: 'Device Inventory',
+    inactiveIcon: DevicesOutlined,
+    activeIcon: DevicesSolid
   },
   {
     path: '/networks',
     name: 'Networks',
-    disableIcon: UI.NetworksIcon,
-    enableIcon: UI.EnabledNetworksIcon
+    inactiveIcon: NetworksOutlined,
+    activeIcon: NetworksSolid
   },
   {
     path: '/services',
     name: 'Services',
-    disableIcon: UI.ServicesIcon,
-    enableIcon: UI.EnabledServicesIcon
+    inactiveIcon: ServicesOutlined,
+    activeIcon: ServicesSolid
   },
   {
     path: '/policies',
     name: 'Policies',
-    disableIcon: UI.ServicesIcon,
-    enableIcon: UI.EnabledServicesIcon
+    inactiveIcon: PoliciesOutlined,
+    activeIcon: PoliciesSolid
   },
   {
     path: '/users',
     name: 'Users',
-    disableIcon: UI.AccountIcon,
-    enableIcon: UI.EnabledAccountIcon
+    inactiveIcon: AccountCircleOutlined,
+    activeIcon: AccountCircleSolid
   },
   genPlaceholder(),
   {
     path: '/administration',
     name: 'Administration',
-    disableIcon: UI.ConfigurationIcon,
-    enableIcon: UI.EnabledConfigurationIcon
+    inactiveIcon: AdminOutlined,
+    activeIcon: AdminSolid
   }
 ]
 

@@ -4,13 +4,18 @@ import { dataApiURL }                                  from '@acx-ui/analytics/s
 import { Provider }                                    from '@acx-ui/store'
 import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
+import { networkHierarchy } from '../../components/NetworkFilter/__tests__/fixtures'
+
 import Incidents from '.'
 
 jest.mock('../../components/NetworkHistory', () => () => <div>Network</div>)
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({
-    filters: { path: [{ type: 'network', name: 'Network' }] }
+    filters: { path: [{ type: 'network', name: 'Network' }] },
+    getNetworkFilter: jest
+      .fn()
+      .mockReturnValueOnce({ path: [{ type: 'network', name: 'Network' }] })
   })
 }))
 jest.mock('../../components/IncidentBySeverity', () => () => <div>IncidentBySeverity</div>)
@@ -37,7 +42,15 @@ describe('Incidents Page', () => {
     activeTab: 'overview',
     tenantId: 'tenant-id'
   }
-  beforeEach(() => mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', { data: queryResult }))
+  beforeEach(() => {
+    mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', { data: queryResult })
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: [] } } }
+    })
+  })
   it('should render page header and grid layout', async () => {
     render(
       <Provider>

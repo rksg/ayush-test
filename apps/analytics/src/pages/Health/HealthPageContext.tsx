@@ -28,7 +28,7 @@ export const formatTimeWindow = (window: TimeWindow, defaultWindow: TimeWindow) 
   if (typeof window[1] === 'number') {
     window[1] = moment(window[1]).format()
   }
-  
+
   if (isBefore(window[0], defaultWindow[0])) {
     window[0] = defaultWindow[0]
   }

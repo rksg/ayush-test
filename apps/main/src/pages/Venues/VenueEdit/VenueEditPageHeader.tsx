@@ -28,7 +28,7 @@ function VenueEditPageHeader () {
         <Button
           key='back'
           type='primary'
-          onClick={() => 
+          onClick={() =>
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/overview`
