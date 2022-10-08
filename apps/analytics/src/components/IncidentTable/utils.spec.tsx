@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { 
+import {
   noDataSymbol,
   fakeIncident,
   NodeType,
@@ -73,20 +73,19 @@ describe('IncidentTable: utils', () => {
     slaThreshold: null,
     currentSlaThreshold: null
   }
-  
+
   const sampleIncident = fakeIncident(incidentValues)
 
   describe('getIncidentBySeverity', () => {
     const testSeverityArr = [
-      { value: 0.001, label: 'P4' }, 
-      { value: 0.65, label: 'P3' }, 
+      { value: 0.001, label: 'P4' },
+      { value: 0.65, label: 'P3' },
       { value: 0.8, label: 'P2' },
-      { value: 1, label: 'P1' },
-      { value: undefined, label: noDataSymbol }
+      { value: 1, label: 'P1' }
     ]
-    
+
     it.each(testSeverityArr)(
-      'should show correct label: %s for value %n', 
+      'should show correct label: %s for value %n',
       async ({ label, value }) => {
         render(<Provider>
           <GetIncidentBySeverity value={value as unknown as number} id={'test'}/>
@@ -209,21 +208,21 @@ describe('IncidentTable: utils', () => {
       await screen.findByText('test')
       expect(screen.getByText('test').textContent).toBe('test')
     })
-  
+
     it('should render scoped', async () => {
       const scopeMsg = defineMessage({ defaultMessage: 'test {scope}' })
       render(<RenderDummyString message={scopeMsg} scope='scope'/>)
       await screen.findByText('test scope')
       expect(screen.getByText('test scope').textContent).toBe('test scope')
     })
-  
+
     it('should render threshold', async () => {
       const scopeMsg = defineMessage({ defaultMessage: 'test: {threshold}' })
       render(<RenderDummyString message={scopeMsg} threshold='threshold'/>)
       await screen.findByText('test: threshold')
       expect(screen.getByText('test: threshold').textContent).toBe('test: threshold')
     })
-  
+
     it('should render threshold & scope', async () => {
       const scopeMsg = defineMessage({ defaultMessage: 'test: {threshold} & {scope}' })
       render(<RenderDummyString message={scopeMsg} threshold='threshold' scope='scope'/>)
@@ -233,11 +232,11 @@ describe('IncidentTable: utils', () => {
     })
   })
 
-  describe('ShortIncidentDescription', () => {  
+  describe('ShortIncidentDescription', () => {
     const RenderShortDescription = (props: IncidentTableComponentProps) => {
       return <Provider><ShortIncidentDescription onClickDesc={jest.fn()} {...props}/></Provider>
     }
-  
+
     it('ShortIncidentDescription: it renders on valid incident', async () => {
       render(<RenderShortDescription incident={sampleIncident}/>)
       // eslint-disable-next-line max-len

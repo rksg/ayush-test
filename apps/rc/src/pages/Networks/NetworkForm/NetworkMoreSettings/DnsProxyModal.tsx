@@ -137,7 +137,7 @@ export function MultiSelectTable (props: {
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
   const { modalState, setModalState } = props
 
-  const actions: TableProps<(typeof dnsProxyList)[0]>['actions'] = [
+  const rowActions: TableProps<(typeof dnsProxyList)[0]>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
       onClick: (row: DnsProxyRule[], clearSelection) => {
@@ -179,7 +179,7 @@ export function MultiSelectTable (props: {
     <Table
       columns={useColumns()}
       dataSource={dnsProxyList}
-      actions={actions}
+      rowActions={rowActions}
       rowKey='domainName'
       rowSelection={{ type: 'checkbox' }}
     />
@@ -279,13 +279,13 @@ export function DnsProxyModalRuleModal (props: {
           const editRowKey = modalState?.editRow?.key
           const domainList = dnsProxyList.filter(list => list.key !== editRowKey)
             .map(list => list.domainName)
-          return checkObjectNotExists(intl, domainList, value,
+          return checkObjectNotExists(domainList, value,
             intl.$t({ defaultMessage: 'Domain Name' }), 'domainName')
         } },
-        { validator: (_, value) => domainNameRegExp(intl, value) },
+        { validator: (_, value) => domainNameRegExp(value) },
         { validator: (_, value) => {
           const excludedDomain = ['my.ruckus', 'scg.ruckuswireless.com']
-          return checkItemNotIncluded(intl, excludedDomain, value.toLowerCase(),
+          return checkItemNotIncluded(excludedDomain, value.toLowerCase(),
             intl.$t({ defaultMessage: 'Domain Name' }),
             excludedDomain.map(item => `"${item}"`).join(' or '))
         } }
@@ -297,8 +297,9 @@ export function DnsProxyModalRuleModal (props: {
       name='ip'
       rules={[
         { required: true },
-        { validator: (_, value) => networkWifiIpRegExp(intl, value) }
+        { validator: (_, value) => networkWifiIpRegExp(value) }
       ]}
+      validateFirst
       children={<Input />}
     />
     <Button

@@ -2,27 +2,31 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   fireEvent,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
   venuesResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse
+  cloudpathResponse,
+  networkDeepResponse,
+  venueListResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
 describe('NetworkForm', () => {
 
   beforeEach(() => {
+    networkDeepResponse.name = 'open network test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -30,10 +34,14 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse)))
+        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
     )
   })
 
@@ -46,7 +54,7 @@ describe('NetworkForm', () => {
 
     expect(asFragment()).toMatchSnapshot()
 
-    const insertInput = screen.getByLabelText('Network Name')
+    const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
 
@@ -72,7 +80,7 @@ describe('NetworkForm', () => {
 
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
 
-    const insertInput = screen.getByLabelText('Network Name')
+    const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
     const validating = await screen.findByRole('img', { name: 'loading' })
@@ -87,7 +95,8 @@ describe('NetworkForm', () => {
     await userEvent.click(useCloudpathOption)
 
     const cloudpathServer = screen.getByRole('combobox')
-    fireEvent.mouseDown(cloudpathServer)
+    userEvent.click(cloudpathServer)
+    await waitFor(() => screen.findByText('cloud_01'))
     const option = screen.getByText('cloud_01')
     await userEvent.click(option)
 

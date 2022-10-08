@@ -36,8 +36,8 @@ export const api = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query TopSSIDsByClientWidget($path: [HierarchyNodeInput],
-          $start: DateTime, $end: DateTime, $n: Int!, $granularity: String!) {
-          network(end: $end, start: $start) {
+          $start: DateTime, $end: DateTime, $n: Int!, $granularity: String!, $filter: FilterInput) {
+          network(end: $end, start: $start,filter : $filter) {
             hierarchyNode(path: $path) {
               totalUserTraffic: userTraffic
               topNSSIDByClient: topNSSIDByClient(n: $n) {
@@ -57,7 +57,8 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: getSparklineGranularity(payload.startDate, payload.endDate),
-          n: 5
+          n: 5,
+          filter: payload.filter
         }
       }),
       transformResponse: (response: Response<HierarchyNodeData>) =>

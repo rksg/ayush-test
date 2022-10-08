@@ -1,9 +1,11 @@
+import { ReactElement } from 'react'
+
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { NodeType, nodeTypes, useAnalyticsFilter }          from '@acx-ui/analytics/utils'
+import { nodeTypes, useAnalyticsFilter }                    from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps, Loader, RangePicker } from '@acx-ui/components'
-import { useDateFilter, dateRangeForLast }                  from '@acx-ui/utils'
+import { useDateFilter, dateRangeForLast, NodeType }        from '@acx-ui/utils'
 
 import NetworkFilter from '../NetworkFilter'
 
@@ -29,64 +31,68 @@ export type SubTitle = {
 }
 
 export type HeaderData = {
-  title: string
+  name?: string
   subTitle: SubTitle[]
 }
 
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
-  data: HeaderData
-  replaceTitle: boolean
+  data: HeaderData,
+  shouldQuerySwitch: boolean
 }
 
-export const useSubTitle = (subTitles: SubTitle[]) => {
+export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement => {
   const { $t } = useIntl()
-  return (
-    <>
-      {subTitles.map(({ key, value }, index) => {
-        const labelKey = key as keyof typeof labelMap
-        const content = key === 'type'
-          ? $t(nodeTypes(value[0] as NodeType))
-          : value.length > 1
-            ? `${value[0]} (${value.length})`
-            : `${value[0]}`
-        return (
-          <span key={key} title={key === 'type' ? content : value.join(', ')}>
-            {$t(labelMap[labelKey])} {content}
-            {index < subTitles.length - 1 && <Divider key={key} type='vertical' />}
-          </span>
-        )
-      })}
-    </>
-  )
+  const subs = [{ key: 'type', value: [nodeTypes(type)] }, ...subTitles]
+  return <>
+    {subs.map(({ key, value }, index) => {
+      const labelKey = key as keyof typeof labelMap
+      const content = value.length > 1 ? `${value[0]} (${value.length})` : `${value[0]}`
+      return (
+        <span key={key} title={value.join(', ')}>
+          {$t(labelMap[labelKey])} {content}
+          {index < subs.length - 1 && <Divider key={key} type='vertical' />}
+        </span>
+      )
+    })}
+  </>
 }
 
-export const Header = ({ data, replaceTitle, ...props }: HeaderProps) => {
+export const Header = ({ data, shouldQuerySwitch, ...props }: HeaderProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-
-  const { title, subTitle } = data
-  if (replaceTitle) props.title = title
+  const { filters, getNetworkFilter } = useAnalyticsFilter()
+  const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
+  const { path } = getNetworkFilter()
+  const { name, type } = (filter || path).slice(-1)[0]
   return (
     <PageHeader
       {...props}
+      subTitle={useSubTitle(data.subTitle, type)}
+      title={filter || path.length > 1 ?
+        (data.name || name) // ap/switch name from data || venue name from filter
+        : props.title // displays Incidents at root level
+      }
       extra={[
-        <NetworkFilter key='network-filter' />,
+        <NetworkFilter
+          key='network-filter'
+          shouldQuerySwitch={shouldQuerySwitch}
+        />,
         <RangePicker
           key='range-picker'
           selectedRange={{
             startDate: moment(startDate),
             endDate: moment(endDate)
           }}
-          enableDates={dateRangeForLast(3,'months')}
+          enableDates={dateRangeForLast(3, 'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
         />
       ]}
-    >{useSubTitle(subTitle)}</PageHeader>
+    />
   )
 }
 
-const ConnectedHeader = (props: PageHeaderProps) => {
+const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean }) => {
   const { filters } = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
   return (
@@ -94,8 +100,8 @@ const ConnectedHeader = (props: PageHeaderProps) => {
       <Loader states={[queryResults]}>
         <Header
           {...props}
+          shouldQuerySwitch={props.shouldQuerySwitch}
           data={queryResults.data as HeaderData}
-          replaceTitle={filters.path.length > 1}
         />
       </Loader>
     </ConnectedHeaderWrapper>

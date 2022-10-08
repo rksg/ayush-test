@@ -10,6 +10,7 @@ import { ImpactedAP, impactedApi, ImpactedClient } from './services'
 import {
   durationOf,
   IncidentAttributes,
+  Attributes,
   useDrawer
 } from '.'
 
@@ -56,15 +57,15 @@ describe('IncidentAttributes', () => {
     moment.tz.setDefault(moment.tz.guess())
   })
   const attributeList = [
-    'clientImpactCount',
-    'apImpactCount',
-    'incidentCategory',
-    'incidentSubCategory',
-    'type',
-    'scope',
-    'duration',
-    'eventStartTime',
-    'eventEndTime'
+    Attributes.ClientImpactCount,
+    Attributes.ApImpactCount,
+    Attributes.IncidentCategory,
+    Attributes.IncidentSubCategory,
+    Attributes.Type,
+    Attributes.Scope,
+    Attributes.Duration,
+    Attributes.EventStartTime,
+    Attributes.EventEndTime
   ]
   const incident = fakeIncident({
     id: 'id',
@@ -102,20 +103,47 @@ describe('IncidentAttributes', () => {
     </Provider>)
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should trigger onOpen/onClose of implactedClientsDrawer', async () => {
+  it('should trigger onOpen/onClose of impactedClientsDrawer', async () => {
     render(<Provider>
       <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
-    const component = await screen.findByText('5 of 27 clients (18.52%)')
-    fireEvent.click(component) // trigger onOpen
+    const trigger = await screen.findByText('5 of 27 clients (18.52%)')
+    fireEvent.click(trigger) // trigger onOpen
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
-  it('should trigger onOpen/onClose of implactedAPsDrawer', async () => {
+  it('should trigger onOpen/onClose of impactedAPsDrawer', async () => {
     render(<Provider>
       <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
-    const component = await screen.findByText('1 of 1 AP (100%)')
-    fireEvent.click(component) // trigger onOpen
+    const trigger = await screen.findByText('1 of 1 AP (100%)')
+    fireEvent.click(trigger) // trigger onOpen
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+  })
+  it('should not trigger onOpen/onClose if there are no impacted clients/APs', async () => {
+    const incident = fakeIncident({
+      id: 'id',
+      code: 'eap-failure',
+      apCount: 1,
+      impactedApCount: 0,
+      clientCount: 27,
+      impactedClientCount: 0,
+      path: [
+        { type: 'zone', name: 'Edu2-611-Mesh' },
+        { type: 'apGroup', name: '255_Edu2-611-group' },
+        { type: 'ap', name: '70:CA:97:01:A0:C0' }
+      ],
+      startTime: '2022-07-19T05:15:00.000Z',
+      endTime: '2022-07-20T02:42:00.000Z',
+      sliceValue: 'RuckusAP'
+    })
+    render(<Provider>
+      <IncidentAttributes incident={incident} visibleFields={attributeList} />
+    </Provider>)
+    const clientImpactTrigger = (await screen.findAllByText('-'))[0]
+    fireEvent.click(clientImpactTrigger) // trigger onOpen
+    expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    const apImpactTrigger = (await screen.findAllByText('-'))[1]
+    fireEvent.click(apImpactTrigger) // trigger onOpen
+    expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
   })
 })

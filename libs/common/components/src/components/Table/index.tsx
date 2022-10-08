@@ -1,12 +1,14 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Divider, Button }                      from 'antd'
+import { Space }                                       from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
+
+import { Button } from '../Button'
 
 import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
 import { ResizableColumn }                                          from './ResizableColumn'
@@ -20,6 +22,7 @@ import type {
   TableProps as AntTableProps,
   TablePaginationConfig
 } from 'antd'
+import type { RowSelectMethod } from 'antd/lib/table/interface'
 
 export type {
   ColumnType,
@@ -38,11 +41,17 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip'
+    type?: 'tall' | 'compact' | 'tooltip' | 'form'
+    ellipsis?: boolean
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
-      label: string,
+      label: string
+      onClick: () => void
+    }>
+    rowActions?: Array<{
+      label: string
+      visible?: boolean | ((selectedItems: RecordType[]) => boolean)
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
@@ -140,21 +149,29 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
 
   const onRowClick = (record: RecordType) => {
     if (!props.rowSelection) return
+    if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
 
     const key = record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)
 
+    let newKeys: Key[] | undefined
+    let type: RowSelectMethod
     if (props.rowSelection.type === 'radio') {
+      type = 'single'
       if (!isSelected) {
-        setSelectedRowKeys([key])
+        newKeys = [key]
       }
     } else {
-      setSelectedRowKeys(isSelected
+      type = 'multiple'
+      newKeys = isSelected
         // remove if selected
         ? selectedRowKeys.filter(k => k !== key)
         // add into collection if not selected
-        : [...selectedRowKeys, key])
+        : [...selectedRowKeys, key]
     }
+    if (!newKeys) return
+    setSelectedRowKeys(newKeys)
+    props.rowSelection?.onChange?.(newKeys, getSelectedRows(newKeys), { type })
   }
   columns = columns.map(column => column.searchable && searchValue
     ? {
@@ -209,13 +226,27 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
       width: colWidth[column.key],
       onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
-    })
+    }),
+    ...((props.ellipsis && col.key !== settingsKey) && { ellipsis: true })
   })
 
   return <UI.Wrapper
     $type={type}
     $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
   >
+    <UI.TableSettingsGlobalOverride />
+    {props.actions && <Space
+      size={0}
+      split={<UI.Divider type='vertical' />}
+      style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      {props.actions?.map((action, index) => <Button
+        key={index}
+        type='link'
+        size='small'
+        onClick={action.onClick}
+        children={action.label}
+      />)}
+    </Space>}
     {hasHeader && (
       <UI.Header>
         <div>
@@ -240,7 +271,6 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
         </UI.HeaderRight>
       </UI.Header>
     )}
-    <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
       dataSource={getFilteredData<RecordType>(
@@ -255,7 +285,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
-      scroll={props.scroll ? props.scroll : { x: 'max-content' }}
+      scroll={props.ellipsis ? {} : { x: 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
@@ -275,15 +305,21 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
               title={$t({ defaultMessage: 'Clear selection' })}
             />
           </Space>
-          <Space size={0} split={<Divider type='vertical' />}>
-            {props.actions?.map((option) =>
-              <UI.ActionButton
+          <Space size={0} split={<UI.Divider type='vertical' />}>
+            {props.rowActions?.map((option) => {
+              const rows = getSelectedRows(selectedRowKeys)
+              let visible = typeof option.visible === 'function'
+                ? option.visible(rows)
+                : option.visible ?? true
+
+              if (!visible) return null
+
+              return <UI.ActionButton
                 key={option.label}
-                onClick={() =>
-                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
+                onClick={() => option.onClick(rows, () => { onCleanSelected() })}
                 children={option.label}
               />
-            )}
+            })}
           </Space>
         </Space>
       )}

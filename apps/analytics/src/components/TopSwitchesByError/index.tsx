@@ -71,12 +71,16 @@ export default function TopSwitchesByErrorWidget ({
 
   const { data } = queryResults
 
-  const topSwitchesByErrorTable = 
-  data && data.topNSwitchesByErrors && data.topNSwitchesByErrors.length ? <CustomTable><Table
-    columns={columns}
-    dataSource={getDataSource(data.topNSwitchesByErrors)}
-    type={'compact'}
-    pagination={false} /></CustomTable> : <NoData/>
+  const topSwitchesByErrorTable =
+  data && data.topNSwitchesByErrors && data.topNSwitchesByErrors.length ? <CustomTable>
+    <Table
+      columns={columns}
+      dataSource={getDataSource(data.topNSwitchesByErrors)}
+      type='compact'
+      pagination={false}
+      rowKey='mac'
+    />
+  </CustomTable> : <NoData/>
 
   return (
     <Loader states={[queryResults]}>

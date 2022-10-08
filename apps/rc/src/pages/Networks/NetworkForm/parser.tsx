@@ -279,20 +279,40 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   if (get(data, 'wlan.advancedCustomization.dnsProxyEnabled')) {
     advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
   }
-  
-  
-  if (get(data, 'wlan.advancedCustomization.radioCustomization')) {
-    advancedCustomization.radioCustomization = {
-      ...advancedCustomization.radioCustomization,
-      rfBandUsage: RfBandUsageEnum.BOTH,
-      bssMinimumPhyRate: get(data, 'wlan.bssMinimumPhyRate'),
-      phyTypeConstraint: get(data, 'wlan.enableOfdmOnly') ? 
-        PhyTypeConstraintEnum.OFDM: PhyTypeConstraintEnum.NONE,
-      managementFrameMinimumPhyRate: get(data, 'wlan.managementFrameMinimumPhyRate')
-    }
-  }
- 
 
+  // radioCustomization
+  advancedCustomization.radioCustomization = {
+    ...advancedCustomization.radioCustomization,
+    rfBandUsage: RfBandUsageEnum.BOTH,
+    bssMinimumPhyRate: get(data, 'bssMinimumPhyRate'),
+    phyTypeConstraint: get(data, 'enableOfdmOnly') ?
+      PhyTypeConstraintEnum.OFDM : PhyTypeConstraintEnum.NONE,
+    managementFrameMinimumPhyRate: get(data, 'managementFrameMinimumPhyRate')
+  }
+
+  // loadControlForm
+  if(get(data, 'totalUplinkLimited') === false) {
+    advancedCustomization.totalUplinkRateLimiting = 0
+  }
+
+  if(get(data, 'totalDownlinkLimited') === false) {
+    advancedCustomization.totalDownlinkRateLimiting = 0
+  }
+  // accessControlForm
+  if (!get(data, 'wlan.advancedCustomization.devicePolicyId')) {
+    advancedCustomization.devicePolicyId = null
+  }
+
+  if (get(data, 'wlan.advancedCustomization.vlanPool')) {
+    advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
+  }
+  // accessControlForm
+  if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
+    advancedCustomization.userUplinkRateLimiting = 0
+  }
+  if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userDownlinkRateLimiting'))) {
+    advancedCustomization.userDownlinkRateLimiting = 0
+  }
 
   let saveData:NetworkSaveData = {
     ...originalData,

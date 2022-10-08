@@ -6,6 +6,8 @@ import {
   IntlShape
 } from 'react-intl'
 
+import { getIntl } from './intlUtil'
+
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
 
@@ -33,32 +35,57 @@ const txpowerMapping = {
   _10DB: '-10dB',
   _MIN: 'Min'
 }
-const durations = {
-  years: 'y',
-  months: 'mo',
-  days: 'd',
-  hours: 'h',
-  minutes: 'm',
-  seconds: 's',
-  milliseconds: 'ms'
-}
+const durations = [
+  'years',
+  'months',
+  'days',
+  'hours',
+  'minutes',
+  'seconds',
+  'milliseconds'
+] as const
 
 const shorten = (value: number) => {
   return parseFloat(value.toPrecision(3)).toString()
 }
 
-function durationFormat (milliseconds: number) {
-  const results = []
+const durationMapping = {
+  years: defineMessage({ defaultMessage: '{years} y' }),
+  months: defineMessage({ defaultMessage: '{months} mo' }),
+  days: defineMessage({ defaultMessage: '{days} d' }),
+  hours: defineMessage({ defaultMessage: '{hours} h' }),
+  minutes: defineMessage({ defaultMessage: '{minutes} m' }),
+  seconds: defineMessage({ defaultMessage: '{seconds} s' }),
+  milliseconds: defineMessage({ defaultMessage: '{milliseconds} ms' })
+}
+const longDurationMapping = {
+  years: defineMessage({ defaultMessage: '{years} {years, plural, one {year} other {years}}' }),
+  months: defineMessage({ defaultMessage: '{months} {months, plural, one {month} other {months}}' }), // eslint-disable-line max-len
+  days: defineMessage({ defaultMessage: '{days} {days, plural, one {day} other {days}}' }),
+  hours: defineMessage({ defaultMessage: '{hours} {hours, plural, one {hour} other {hours}}' }),
+  minutes: defineMessage({ defaultMessage: '{minutes} {minutes, plural, one {minute} other {minutes}}' }), // eslint-disable-line max-len
+  seconds: defineMessage({ defaultMessage: '{seconds} {seconds, plural, one {second} other {seconds}}' }), // eslint-disable-line max-len
+  milliseconds: defineMessage({ defaultMessage: '{milliseconds} {milliseconds, plural, one {millisecond} other {milliseconds}}' }) // eslint-disable-line max-len
+}
+const combineDuration = defineMessage({
+  defaultMessage: '{duration1} {duration2}',
+  description: 'e.g. duration1 = 3 mo, duration2 = 2 d, result = 3 mo 2 d'
+})
+function durationFormat (milliseconds: number, format: 'short' | 'long', { $t }: IntlShape) {
+  const mapping = format === 'short' ? durationMapping : longDurationMapping
+  let results: Partial<Record<typeof durations[number], number>> = {}
   let significance = 0
-  for (let scale in durations) {
+
+  for (let i = 0; i < durations.length; i++) {
+    const scale = durations[i]
     const value = moment.duration(milliseconds).get(scale as moment.unitOfTime.Base)
     if (value > 0) {
+      // to show decimal on seconds only
       if (scale === 'seconds' && significance === 0) {
-        // to show decimal on seconds only
-        results.push(shorten(milliseconds / 1000) + durations[scale])
+        results[scale] = parseFloat((milliseconds / 1000).toPrecision(3))
         break
       }
-      results.push(shorten(value) + durations[scale as keyof typeof durations])
+      results[scale] = parseFloat(value.toPrecision(3))
       if (++significance === 2) {
         break
       }
@@ -66,7 +93,15 @@ function durationFormat (milliseconds: number) {
       break
     }
   }
-  return results.length ? results.join(' ') : '0'
+  const [
+    duration1,
+    duration2 = ''
+  ] = (Object.entries(results) as [typeof durations[number], number][])
+    .map(([key, value]) => $t(mapping[key], { [key]: value }))
+
+  return duration1
+    ? $t(combineDuration, { duration1, duration2 }).trim()
+    : '0'
 }
 
 function numberFormat (base: number, units: string[], value: number) {
@@ -101,8 +136,9 @@ function calendarFormat (number: number, intl: IntlShape) {
   })
 }
 
-const formats = {
-  durationFormat,
+export const formats = {
+  durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
+  longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
   calendarFormat: (number: number, intl: IntlShape) => calendarFormat(number, intl),
   decibelFormat: (number: number) => Math.round(number) + ' dB',
   decibelMilliWattsFormat: (number: number) => Math.round(number) + ' dBm',
@@ -115,7 +151,7 @@ const formats = {
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value)
-} as Record<string, (value: unknown, intl?: IntlShape)=> string>
+} as const
 
 export const dateTimeFormats = {
   yearFormat: 'YYYY',
@@ -128,24 +164,7 @@ export const dateTimeFormats = {
   hourFormat: 'HH',
   timeFormat: 'HH:mm',
   secondFormat: 'HH:mm:ss'
-}
-
-export function formatter (
-  name: keyof typeof formats | keyof typeof dateTimeFormats,
-  intl?: IntlShape
-) {
-  return function formatter (value: unknown, tz?: string) {
-    if (value === null || value === '-') {
-      return value
-    }
-
-    if (dateTimeFormats[name as keyof typeof dateTimeFormats]) {
-      return dateTimeFormatter(value, dateTimeFormats[name as keyof typeof dateTimeFormats], tz)
-    } else {
-      return formats[name as keyof typeof formats](value, intl)
-    }
-  }
-}
+} as const
 
 const countFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::K .##/@##r}'
@@ -160,4 +179,38 @@ export const intlFormats = {
   countFormat,
   percentFormat,
   percentFormatRound
+} as const
+
+export function formatter (
+  name: keyof typeof formats | keyof typeof dateTimeFormats | keyof typeof intlFormats
+) {
+  return function formatter (value: unknown, tz?: string): string | null {
+    const intl = getIntl()
+    if (value === null || value === '-') {
+      return value as null | '-'
+    }
+    if (isIntlFormat(name)) {
+      return intl.$t(intlFormats[name], { value: value as number | string | Date })
+    }
+    if (isDateTimeFormat(name)) {
+      return dateTimeFormatter(value, dateTimeFormats[name], tz)
+    }
+    if (isFormat(name)) {
+      const formatter = formats[name] as (value: unknown, intl: IntlShape) => string
+      return formatter(value, intl)
+    }
+    return null
+  }
+}
+
+function isIntlFormat (name: string): name is keyof typeof intlFormats {
+  return name in intlFormats
+}
+
+function isDateTimeFormat (name: string): name is keyof typeof dateTimeFormats {
+  return name in dateTimeFormats
+}
+
+function isFormat (name: string): name is keyof typeof formats {
+  return name in formats
 }

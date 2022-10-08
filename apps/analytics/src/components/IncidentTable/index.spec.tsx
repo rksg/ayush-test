@@ -12,7 +12,7 @@ import {
   waitForElementToBeRemoved,
   cleanup
 } from '@acx-ui/test-utils'
-import { DateRange, setUpIntl } from '@acx-ui/utils'
+import { DateRange } from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -124,18 +124,15 @@ const filters : IncidentFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
-  range: DateRange.last24Hours
+  range: DateRange.last24Hours,
+  filter: {}
 }
 describe('IncidentTableWidget', () => {
 
   beforeEach(() => {
-    setUpIntl({
-      locale: 'en-US',
-      messages: {}
-    })
     store.dispatch(api.util.resetApiState())
   })
-  
+
   afterEach(() => cleanup())
 
   it('should render loader', () => {
@@ -352,7 +349,7 @@ describe('IncidentTableWidget', () => {
       await screen.findByText(
         'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
       )
-    ) 
+    )
     expect(await screen.findByText('Root cause:')).toBeVisible()
   })
   it('should render drawer when click on description & show impacted clients', async () => {
@@ -373,14 +370,14 @@ describe('IncidentTableWidget', () => {
       await screen.findByText(
         'RADIUS failures are unusually high in Access Point: r710_!21690 (60:D0:2C:22:6B:90)'
       )
-    ) 
+    )
     expect(await screen.findByText('Root cause:')).toBeVisible()
   })
   it('should close drawer when click on drawer close button', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-  
+
     render(<Provider><IncidentTableWidget filters={filters}/></Provider>,{
       route: {
         path: '/t/tenantId/analytics/incidents',
@@ -394,7 +391,7 @@ describe('IncidentTableWidget', () => {
       await screen.findByText(
         'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
       )
-    ) 
+    )
     fireEvent.click(await screen.findByRole('button', { name: /close/i }))
     expect(screen.queryByText('Root cause:')).toBeNull()
   })

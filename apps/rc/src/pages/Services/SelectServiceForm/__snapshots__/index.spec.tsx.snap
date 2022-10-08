@@ -3,7 +3,7 @@
 exports[`Select Service Form should render form 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -278,7 +278,7 @@ exports[`Select Service Form should render form 1`] = `
                                       <input
                                         class="ant-radio-input"
                                         type="radio"
-                                        value="WIFI_CALLING"
+                                        value="Wi-Fi Calling"
                                       />
                                       <span
                                         class="ant-radio-inner"

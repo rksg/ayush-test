@@ -3,29 +3,41 @@ import { useIntl } from 'react-intl'
 import {
   calculateSeverity,
   Incident,
-  useShortDescription
+  shortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes } from '../IncidentAttributes'
-import { Insights }           from '../Insights'
-import { NetworkImpact }      from '../NetworkImpact'
+import { IncidentAttributes, Attributes } from '../IncidentAttributes'
+import { Insights }                       from '../Insights'
+import { NetworkImpact }                  from '../NetworkImpact'
+import { NetworkImpactChartTypes }        from '../NetworkImpact/config'
+import { TimeSeries }                     from '../TimeSeries'
+import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (incident: Incident) => {
-  const networkImpactCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
-
+export const FailureTemplate = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
-    'clientImpactCount',
-    'incidentCategory',
-    'incidentSubCategory',
-    'type',
-    'scope',
-    'duration',
-    'eventStartTime',
-    'eventEndTime'
+    Attributes.ClientImpactCount,
+    Attributes.IncidentCategory,
+    Attributes.IncidentSubCategory,
+    Attributes.Type,
+    Attributes.Scope,
+    Attributes.Duration,
+    Attributes.EventStartTime,
+    Attributes.EventEndTime
+  ]
+  const networkImpactCharts: NetworkImpactChartTypes[] = [
+    NetworkImpactChartTypes.WLAN,
+    NetworkImpactChartTypes.Radio,
+    NetworkImpactChartTypes.Reason,
+    NetworkImpactChartTypes.ClientManufacturer
+  ]
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.FailureChart,
+    TimeSeriesChartTypes.ClientCountChart,
+    TimeSeriesChartTypes.AttemptAndFailureChart
   ]
 
   return (
@@ -36,7 +48,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={useShortDescription(incident)}
+        subTitle={shortDescription(incident)}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
@@ -50,14 +62,16 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <NetworkImpact incident={incident} charts={networkImpactCharts}/>
+          <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>time series section</div>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+          />
         </GridCol>
       </GridRow>
     </>
   )
 }
-
-export default IncidentDetailsTemplate

@@ -3,7 +3,6 @@ import React from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilterProvider, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Button,
   GridRow,
@@ -14,11 +13,11 @@ import {
   ContentSwitcherProps
 } from '@acx-ui/components'
 import {
-  ArrowExpand,
-  DownloadOutlined,
-  BulbOutlined
+  DownloadOutlined
 } from '@acx-ui/icons'
-import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
+import { useDateFilter, dateRangeForLast, DashboardFilterProvider, useDashboardFilter } from '@acx-ui/utils'
+
+import VenueFilter from '../../components/VenueFilter'
 
 const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
@@ -38,11 +37,11 @@ export default function Dashboard () {
     }
   ]
   return (
-    <AnalyticsFilterProvider>
+    <DashboardFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
       <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
-    </AnalyticsFilterProvider>
+    </DashboardFilterProvider>
   )
 }
 
@@ -54,13 +53,7 @@ function DashboardPageHeader () {
     <PageHeader
       title={$t({ defaultMessage: 'Dashboard' })}
       extra={[
-        <Button key='add' type='primary'>
-          {$t({ defaultMessage: 'Add...' })}
-        </Button>,
-        <Button key='hierarchy-filter'>
-          {$t({ defaultMessage: 'Entire Organization' })}
-          <ArrowExpand />
-        </Button>,
+        <VenueFilter key='hierarchy-filter'/>,
         <RangePicker
           key='range-picker'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -69,16 +62,14 @@ function DashboardPageHeader () {
           showTimePicker
           selectionType={range}
         />,
-        <Button key='download' icon={<DownloadOutlined />} />,
-        <Button key='insight' icon={<BulbOutlined />} />
+        <Button key='download' icon={<DownloadOutlined />} />
       ]}
     />
   )
 }
 
 function ApWidgets () {
-  const { filters } = useAnalyticsFilter()
-
+  const { filters } = useDashboardFilter()
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
@@ -104,7 +95,7 @@ function ApWidgets () {
 }
 
 function SwitchWidgets () {
-  const { filters } = useAnalyticsFilter()
+  const { filters } = useDashboardFilter()
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
@@ -127,7 +118,7 @@ function SwitchWidgets () {
 }
 
 function CommonDashboardWidgets () {
-  const { filters } = useAnalyticsFilter()
+  const { filters } = useDashboardFilter()
 
   return (
     <GridRow>
