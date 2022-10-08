@@ -1,4 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import {
+  createApi,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
@@ -7,6 +12,8 @@ import {
   TableResult,
   Service,
   CommonResult,
+  DHCPSaveData,
+  DHCPDetailInstances,
   WifiCallingUrls,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -17,9 +24,7 @@ import {
   L3AclPolicy,
   ApplicationPolicy,
   VlanPool,
-  AccessControlProfile,
-  DHCPDetailInstances,
-  DHCPSaveData
+  AccessControlProfile
 } from '@acx-ui/rc/utils'
 
 
@@ -151,6 +156,32 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getDHCP: build.query<DHCPSaveData | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
+        if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        return result as QueryReturnValue<DHCPSaveData,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    saveDHCP: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload }) => {
+
+        const createDHCPReq = createHttpRequest(CommonUrlsInfo.saveDHCPService, params)
+        return {
+          ...createDHCPReq,
+          body: payload
+        }
+
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     })
   })
 })
@@ -163,6 +194,8 @@ export const {
   useApplicationPolicyListQuery,
   useDevicePolicyListQuery,
   useServiceListQuery,
+  useGetDHCPQuery,
+  useSaveDHCPMutation,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
   useDhcpVenueInstancesQuery,

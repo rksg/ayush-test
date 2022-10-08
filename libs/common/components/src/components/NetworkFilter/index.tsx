@@ -55,7 +55,6 @@ export function NetworkFilter (props: CascaderProps) {
 
     const withFooter = (menus: JSX.Element) => <>
       {menus}
-      <UI.Divider />
       <UI.ButtonDiv>
         <Button size='small' onClick={onCancel}>
           {$t({ defaultMessage: 'Cancel' })}

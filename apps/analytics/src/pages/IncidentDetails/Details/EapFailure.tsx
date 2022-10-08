@@ -1,0 +1,1 @@
+export { FailureTemplate as EapFailure } from './FailureTemplate'

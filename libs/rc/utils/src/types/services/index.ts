@@ -1,6 +1,5 @@
 export * from './dhcpService'
 
-
 export enum AccessEnum {
   ALLOW = 'Allow',
   BLOCK = 'Block'
@@ -88,13 +87,8 @@ export interface CloudpathServer {
     primary: RadiusService
   }
 }
-
-
-
 export interface RadiusService {
   ip: string
   port: number
   sharedSecret: string
 }
-
-
