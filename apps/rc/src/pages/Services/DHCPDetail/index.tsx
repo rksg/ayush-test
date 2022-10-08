@@ -34,7 +34,7 @@ export default function DHCPServiceDetail () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'DHCP Service' })+data?.name}
+        title={$t({ defaultMessage: 'DHCP Service' })+' '+data?.name}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}

@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import {
   mockServer,
@@ -85,7 +85,12 @@ const list = {
 }
 const detailResult = {
   id: 1,
-  dhcpPools: [1,2,3,4]
+  name: 'test',
+  dhcpPools: [1,2,3,4],
+  tags: [],
+  createType: ServiceTechnology.WIFI,
+  dhcpConfig: DHCPConfigTypeEnum.SIMPLE,
+  venues: []
 }
 
 
@@ -117,11 +122,9 @@ describe('DHCP Detail Page', () => {
         route: { params, path: '/:tenantId/services/dhcp/:serviceId/detail' }
       })
 
-    expect(asFragment()).toMatchSnapshot()
-
     await screen.findByRole('heading', { level: 3, name: `Instances (${list.data.length})` })
     await screen.findByRole('heading', { level: 3, name: 'Number of Pools' })
-
+    expect(asFragment()).toMatchSnapshot()
   })
 
 })
