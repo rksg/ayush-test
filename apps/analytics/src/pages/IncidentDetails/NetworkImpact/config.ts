@@ -191,11 +191,11 @@ export const networkImpactCharts = {
     summary: {
       dominance: defineMessage({
         defaultMessage:
-          '{percentage} of failures impacted {dominant} Operating System' }),
+          '{percentage} of failures impacted {dominant} operating system' }),
       broad: defineMessage({
         defaultMessage: `This incident impacted {count} {count, plural,
-          one {Operating System}
-          other {Operating Systems}
+          one {operating system}
+          other {operating systems}
         }`
       })
     },
