@@ -52,5 +52,3 @@ export const SwitchVlanMismatch = (incident: Incident) => {
     </>
   )
 }
-
-export default SwitchVlanMismatch

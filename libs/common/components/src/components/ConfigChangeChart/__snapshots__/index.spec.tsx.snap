@@ -6,6 +6,6 @@ exports[`ConfigChangeChart getSymbol should return correct symbol which matchs s
 
 exports[`ConfigChangeChart getSymbol should return correct symbol which matchs snapshot 2`] = `"circle"`;
 
-exports[`ConfigChangeChart tooltipFormatter should return correct Html string for multiple value 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><time dateTime=\\"2020-11-17T16:00:00.000Z\\">Nov 17 2020 16:00</time></div>"`;
+exports[`ConfigChangeChart tooltipFormatter should return correct Html string for multiple value 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 dBFrws\\"><time dateTime=\\"2020-11-17T16:00:00.000Z\\">Nov 17 2020 16:00</time></div>"`;
 
-exports[`ConfigChangeChart tooltipFormatter should return correct Html string for single value 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><time dateTime=\\"2020-11-17T16:00:00.000Z\\">Nov 17 2020 16:00</time></div>"`;
+exports[`ConfigChangeChart tooltipFormatter should return correct Html string for single value 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 dBFrws\\"><time dateTime=\\"2020-11-17T16:00:00.000Z\\">Nov 17 2020 16:00</time></div>"`;

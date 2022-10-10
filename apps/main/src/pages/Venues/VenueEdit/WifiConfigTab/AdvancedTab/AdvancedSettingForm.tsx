@@ -25,7 +25,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext, AdvancedSettingContext } from '../../index'
+import { VenueEditContext, EditContext } from '../../index'
 
 export interface ModelOption {
   label: string
@@ -52,8 +52,8 @@ export function AdvancedSettingForm () {
 
   useEffect(() => {
     // set default data when switching sub tab
-    const tab = activeSubTab as keyof AdvancedSettingContext['tempData']
-    const data = editContextData?.tempData?.[tab] || []
+    const tab = activeSubTab as keyof EditContext['tempData']
+    const data = editContextData?.tempData?.[tab] || undefined
     setEditContextData({
       ...editContextData,
       tabTitle: $t({ defaultMessage: 'Advanced Settings' }),

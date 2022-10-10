@@ -12,7 +12,7 @@ import { Insights }                       from '../Insights'
 
 import * as UI from './styledComponents'
 
-export const ApifraPoeLow = (incident: Incident) => {
+export const ApinfraPoeLow = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     Attributes.ApImpactCount,
@@ -59,5 +59,3 @@ export const ApifraPoeLow = (incident: Incident) => {
     </>
   )
 }
-
-export default ApifraPoeLow

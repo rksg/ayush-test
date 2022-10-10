@@ -8,7 +8,7 @@ export class OpenWlanAdvancedCustomization {
 
   clientIsolation?: boolean
 
-  devicePolicyId?: string
+  devicePolicyId?: string | null
 
   l2AclPolicyId?: string
 

@@ -6,7 +6,7 @@ import {
 import { cssStr }                 from '@acx-ui/components'
 import { NavigateFunction, Path } from '@acx-ui/react-router-dom'
 
-export const onMarkedAreaClick = (
+export const onMarkAreaClick = (
   navigate: NavigateFunction,
   basePath: Path,
   incident: Incident

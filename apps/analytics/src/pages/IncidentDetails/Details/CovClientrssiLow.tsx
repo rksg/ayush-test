@@ -67,5 +67,3 @@ export const CovClientrssiLow = (incident: Incident) => {
     </>
   )
 }
-
-export default CovClientrssiLow

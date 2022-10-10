@@ -8,7 +8,6 @@ import { mockGraphqlQuery } from '@acx-ui/test-utils'
 import { TimeSeriesChartTypes } from './config'
 import {
   Api,
-  calcGranularity,
   getIncidentTimeSeriesPeriods,
   getBuffer,
   BufferConfig
@@ -81,7 +80,30 @@ describe('chartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts
+        charts,
+        minGranularity: 'PT180S'
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
+    expect(error).toBe(undefined)
+  })
+  it('should return correct data when relatedIncidents is not requested', async () => {
+    const expectedResult = {
+      network: {
+        hierarchyNode: {
+          ...expectedQueryResults
+        }
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
+      data: expectedResult
+    })
+    const { status, data, error } = await store.dispatch(
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts,
+        minGranularity: 'PT180S'
       })
     )
     expect(status).toBe('fulfilled')
@@ -93,26 +115,15 @@ describe('chartQuery', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      Api.endpoints.Charts.initiate({ incident: fakeIncident1, charts })
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts,
+        minGranularity: 'PT180S'
+      })
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
-  })
-  it('should return correct granularity', () => {
-    const data = [{
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-02T00:00:00+08:00' },
-      output: 'PT30M'
-    }, {
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-02-02T00:00:00+08:00' },
-      output: 'PT1H'
-    }, {
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
-      output: 'PT180S'
-    }]
-    data.forEach(({ input, output }) =>
-      expect(calcGranularity(input.start, input.end)).toStrictEqual(output)
-    )
   })
   it('should getIncidentTimeSeriesPeriods', () => {
     expect(getIncidentTimeSeriesPeriods(fakeIncident1).start).toEqual(

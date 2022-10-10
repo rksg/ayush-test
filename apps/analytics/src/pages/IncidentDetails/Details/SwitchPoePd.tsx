@@ -52,5 +52,3 @@ export const SwitchPoePd = (incident: Incident) => {
     </>
   )
 }
-
-export default SwitchPoePd

@@ -2,9 +2,9 @@
 
 import { jest } from '@jest/globals'
 
-import { NetworkImpact }        from '../../../NetworkImpact'
-import { TimeSeries }           from '../../../TimeSeries'
-import { TimeSeriesChartTypes } from '../../../TimeSeries/config'
+import { NetworkImpact }        from '../../NetworkImpact'
+import { TimeSeries }           from '../../TimeSeries'
+import { TimeSeriesChartTypes } from '../../TimeSeries/config'
 
 export function mockNetworkImpact () {
   jest.mocked(NetworkImpact).mockImplementation((props) => <div data-testid='networkImpact'>

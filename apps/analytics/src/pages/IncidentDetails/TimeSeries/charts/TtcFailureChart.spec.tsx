@@ -12,9 +12,11 @@ import {
 }                             from '@acx-ui/test-utils'
 
 import { TimeSeriesChartTypes } from '../config'
-import { Api, ChartsData }      from '../services'
+import { Api }                  from '../services'
 
 import { TtcFailureChart, aggregateTTC } from './TtcFailureChart'
+
+import type { TimeSeriesChartResponse } from '../types'
 
 const time = [
   '2022-04-07T09:15:00.000Z',
@@ -27,7 +29,7 @@ const ttc = [1, 2, 3, 4, null]
 const ttcCounts = [[1, 1], [1, 2], [1, 3], [1, 4], null] as [number, number][]
 const expectedResult = {
   ttcFailureChart: { time, ttc }
-} as unknown as ChartsData
+} as unknown as TimeSeriesChartResponse
 
 afterEach(() => store.dispatch(Api.util.resetApiState()))
 
@@ -51,7 +53,7 @@ describe('TtcFailureChart', () => {
     const { asFragment } = render(
       <Provider>
         <BrowserRouter>
-          <TtcFailureChart incident={fakeIncident1} data={expectedResult}/>
+          <TtcFailureChart chartRef={()=>{}} incident={fakeIncident1} data={expectedResult}/>
         </BrowserRouter>
       </Provider>
     )
@@ -68,7 +70,8 @@ describe('ttcFailureChartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts: [TimeSeriesChartTypes.TtcFailureChart]
+        charts: [TimeSeriesChartTypes.TtcFailureChart],
+        minGranularity: 'PT180S'
       })
     )
     expect(status).toBe('fulfilled')
