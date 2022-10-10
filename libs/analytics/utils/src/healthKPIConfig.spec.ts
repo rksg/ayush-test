@@ -1,4 +1,4 @@
-import { kpiConfig } from './HealthKPIConfig'
+import { kpiConfig } from './healthKPIConfig'
 
 describe('Health KPI', () => {
   it('should format correctly', () => {

@@ -9,7 +9,7 @@ import { mockDOMWidth, render } from '@acx-ui/test-utils'
 
 import { Api } from '../services'
 
-import { FailureChart, onMarkedAreaClick, getMarkers } from './FailureChart'
+import { FailureChart, onMarkAreaClick, getMarkers } from './FailureChart'
 
 import type { TimeSeriesChartResponse } from '../types'
 
@@ -56,13 +56,13 @@ describe('FailureChart', () => {
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
 
-  describe('onMarkedAreaClick', () => {
+  describe('onMarkAreaClick', () => {
     it('navigate to clicked incident', () => {
       const navigate = jest.fn()
       const [incident, relatedIncident] = expectedResult.relatedIncidents!
       const basePath = { pathname: '/analytics/incidents/' }
 
-      onMarkedAreaClick(navigate, basePath as Path, incident)(relatedIncident)
+      onMarkAreaClick(navigate, basePath as Path, incident)(relatedIncident)
 
       expect(navigate).toBeCalledTimes(1)
       expect(navigate).toBeCalledWith({
@@ -76,7 +76,7 @@ describe('FailureChart', () => {
       const [incident] = expectedResult.relatedIncidents!
       const basePath = { pathname: '/analytics/incidents/' }
 
-      onMarkedAreaClick(navigate, basePath as Path, incident)(incident)
+      onMarkAreaClick(navigate, basePath as Path, incident)(incident)
 
       expect(navigate).not.toBeCalled()
     })
