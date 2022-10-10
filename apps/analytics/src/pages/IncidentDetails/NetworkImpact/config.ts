@@ -72,8 +72,8 @@ const highlights = {
   clients: defineMessage({
     defaultMessage: `{name}<br></br>
     <space><b>{formattedValue} {value, plural,
-      one {Client}
-      other {Clients}
+      one {client}
+      other {clients}
     }</b></space>`
   }),
   aps: defineMessage({
@@ -86,74 +86,51 @@ const highlights = {
 }
 
 export enum NetworkImpactChartTypes {
-  WLAN = 'WLAN',
+  APFwVersionByAP = 'apFwVersionByAP',
+  APModel = 'apModel',
+  APModelByAP = 'apModelByAP',
+  APVersion = 'apVersion',
+  ClientManufacturer = 'clientManufacturer',
+  EventTypeByAP = 'eventTypeByAP',
+  OS = 'os',
   Radio = 'radio',
   Reason = 'reason',
-  ClientManufacturer = 'clientManufacturer',
-  APModelByAP = 'apModelByAP',
-  APFwVersionByAP = 'apFwVersionByAP',
-  EventTypeByAP = 'eventTypeByAP',
-  ReasonByAP = 'reasonByAP'
+  ReasonByAP = 'reasonByAP',
+  WLAN = 'WLAN',
 }
 
 export const networkImpactChartConfigs: Readonly<Record<
   NetworkImpactChartTypes,
   NetworkImpactChart
 >> = {
-  [NetworkImpactChartTypes.WLAN]: {
-    title: defineMessage({ defaultMessage: 'WLAN' }),
-    highlight: highlights.clients,
-    dominanceFn: getWLANDominance,
+  [NetworkImpactChartTypes.APFwVersionByAP]: {
+    title: defineMessage({ defaultMessage: 'AP Firmware' }),
+    highlight: highlights.aps,
     summary: {
       dominance: defineMessage({
-        defaultMessage: '{percentage} of failures impacted {dominant} WLAN' }),
+        defaultMessage: '{percentage} of failures impacted {dominant} AP firmware'
+      }),
       broad: defineMessage({
         defaultMessage: `This incident impacted {count} {count, plural,
-          one {WLAN}
-          other {WLANs}
-        }` })
+          one {AP firmware}
+          other {AP firmwares}
+        }`
+      })
     }
   },
-  [NetworkImpactChartTypes.Radio]: {
-    title: defineMessage({ defaultMessage: 'Radio' }),
-    transformKeyFn: (val: string) => formatter('radioFormat')(val) as string,
+  [NetworkImpactChartTypes.APModel]: {
+    title: defineMessage({ defaultMessage: 'AP Model' }),
     highlight: highlights.clients,
     summary: {
       dominance: defineMessage({
-        defaultMessage: '{percentage} of failures impacted {dominant} band' }),
+        defaultMessage: '{percentage} of failures impacted {dominant} AP model'
+      }),
       broad: defineMessage({
         defaultMessage: `This incident impacted {count} {count, plural,
-          one {band}
-          other {bands}
-        }` })
-    }
-  },
-  [NetworkImpactChartTypes.Reason]: {
-    title: defineMessage({ defaultMessage: 'Reason' }),
-    transformKeyFn: mapCodeToReason,
-    highlight: highlights.clients,
-    summary: {
-      dominance: defineMessage({
-        defaultMessage: "{percentage} of failures caused by ''{dominant}''" }),
-      broad: defineMessage({
-        defaultMessage: `{count} {count, plural,
-          one {reason}
-          other {reasons}
-        } contributed to this incident` })
-    }
-  },
-  [NetworkImpactChartTypes.ClientManufacturer]: {
-    title: defineMessage({ defaultMessage: 'Client Manufacturers' }),
-    highlight: highlights.clients,
-    summary: {
-      dominance: defineMessage({
-        defaultMessage:
-          '{percentage} of failures impacted {dominant} client manufacturer' }),
-      broad: defineMessage({
-        defaultMessage: `This incident impacted {count} {count, plural,
-          one {client manufacturer}
-          other {client manufacturers}
-        }` })
+          one {AP model}
+          other {AP models}
+        }`
+      })
     }
   },
   [NetworkImpactChartTypes.APModelByAP]: {
@@ -171,9 +148,9 @@ export const networkImpactChartConfigs: Readonly<Record<
       })
     }
   },
-  [NetworkImpactChartTypes.APFwVersionByAP]: {
-    title: defineMessage({ defaultMessage: 'AP Firmware' }),
-    highlight: highlights.aps,
+  [NetworkImpactChartTypes.APVersion]: {
+    title: defineMessage({ defaultMessage: 'AP Version' }),
+    highlight: highlights.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures impacted {dominant} AP firmware'
@@ -184,6 +161,20 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {AP firmwares}
         }`
       })
+    }
+  },
+  [NetworkImpactChartTypes.ClientManufacturer]: {
+    title: defineMessage({ defaultMessage: 'Client Manufacturer' }),
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage:
+          '{percentage} of failures impacted {dominant} client manufacturer' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {client manufacturer}
+          other {client manufacturers}
+        }` })
     }
   },
   [NetworkImpactChartTypes.EventTypeByAP]: {
@@ -201,6 +192,49 @@ export const networkImpactChartConfigs: Readonly<Record<
       })
     }
   },
+  [NetworkImpactChartTypes.OS]: {
+    title: defineMessage({ defaultMessage: 'OS' }),
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage:
+          '{percentage} of failures impacted {dominant} operating system' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {operating system}
+          other {operating systems}
+        }`
+      })
+    }
+  },
+  [NetworkImpactChartTypes.Radio]: {
+    title: defineMessage({ defaultMessage: 'Radio' }),
+    transformKeyFn: (val: string) => formatter('radioFormat')(val) as string,
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage: '{percentage} of failures impacted {dominant} radio' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {radio}
+          other {radios}
+        }` })
+    }
+  },
+  [NetworkImpactChartTypes.Reason]: {
+    title: defineMessage({ defaultMessage: 'Reason' }),
+    transformKeyFn: mapCodeToReason,
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage: "{percentage} of failures caused by ''{dominant}''" }),
+      broad: defineMessage({
+        defaultMessage: `{count} {count, plural,
+          one {reason}
+          other {reasons}
+        } contributed to this incident` })
+    }
+  },
   [NetworkImpactChartTypes.ReasonByAP]: {
     title: defineMessage({ defaultMessage: 'Reason' }),
     highlight: highlights.aps,
@@ -215,6 +249,20 @@ export const networkImpactChartConfigs: Readonly<Record<
           other {reasons}
         } contributed to this incident`
       })
+    }
+  },
+  [NetworkImpactChartTypes.WLAN]: {
+    title: defineMessage({ defaultMessage: 'WLAN' }),
+    highlight: highlights.clients,
+    dominanceFn: getWLANDominance,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage: '{percentage} of failures impacted {dominant} WLAN' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {WLAN}
+          other {WLANs}
+        }` })
     }
   }
 }

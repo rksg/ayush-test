@@ -31,6 +31,18 @@ export const CovClientrssiLow = (incident: Incident) => {
     type: 'client',
     dimension: 'ssids'
   }, {
+    chart: NetworkImpactChartTypes.OS,
+    type: 'client',
+    dimension: 'osType'
+  }, {
+    chart: NetworkImpactChartTypes.APModel,
+    type: 'client',
+    dimension: 'apModels'
+  }, {
+    chart: NetworkImpactChartTypes.APVersion,
+    type: 'client',
+    dimension: 'apFwVersions'
+  }, {
     chart: NetworkImpactChartTypes.Radio,
     type: 'client',
     dimension: 'radios'

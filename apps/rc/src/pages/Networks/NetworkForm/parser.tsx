@@ -306,6 +306,13 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   if (get(data, 'wlan.advancedCustomization.vlanPool')) {
     advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
   }
+  // accessControlForm
+  if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
+    advancedCustomization.userUplinkRateLimiting = 0
+  }
+  if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userDownlinkRateLimiting'))) {
+    advancedCustomization.userDownlinkRateLimiting = 0
+  }
 
   let saveData:NetworkSaveData = {
     ...originalData,
