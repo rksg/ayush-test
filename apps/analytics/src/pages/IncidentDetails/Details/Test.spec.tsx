@@ -74,7 +74,7 @@ describe('Test', () => {
       {
         component: ApservHighNumReboots,
         fakeIncident: fakeIncidentHighReboot,
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: false
       },
       {

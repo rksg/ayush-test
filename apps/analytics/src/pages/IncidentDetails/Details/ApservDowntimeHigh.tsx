@@ -28,6 +28,7 @@ export const ApservDowntimeHigh = (incident: Incident) => {
     Attributes.EventStartTime,
     Attributes.EventEndTime
   ]
+
   const networkImpactCharts: NetworkImpactProps['charts'] = [{
     chart: NetworkImpactChartTypes.APModelByAP,
     type: 'apDowntime',
@@ -45,6 +46,7 @@ export const ApservDowntimeHigh = (incident: Incident) => {
     type: 'apDowntime',
     dimension: 'reason'
   }]
+
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
     TimeSeriesChartTypes.ApDisconnectionCountChart,
     TimeSeriesChartTypes.DowntimeEventTypeDistributionChart

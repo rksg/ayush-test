@@ -26,6 +26,7 @@ export const CovClientrssiLow = (incident: Incident) => {
     Attributes.EventStartTime,
     Attributes.EventEndTime
   ]
+
   const networkImpactCharts: NetworkImpactProps['charts'] = [{
     chart: NetworkImpactChartTypes.WLAN,
     type: 'client',
