@@ -49,25 +49,18 @@ exports[`Health Widget should render KPI widgets 1`] = `
               <div
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
-                <span
-                  class="styledComponents__Title-sc-1xkko34-0 fQrHK"
-                >
-                  Client Experience
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
-              style="padding: 10px 10px 10px 10px;"
-            >
-              <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
-              >
                 <div
-                  data-name="connectionSuccess"
-                  data-testid="kpiWidget"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1xkko34-1 iDiVcM"
                 >
-                  Kpi Widget
+                  <div
+                    class="ant-space-item"
+                  >
+                    <span
+                      class="styledComponents__Title-sc-1xkko34-0 hSQWii"
+                    >
+                      Client Experience
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -79,11 +72,18 @@ exports[`Health Widget should render KPI widgets 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  data-name="timeToConnect"
-                  data-testid="kpiWidget"
-                  data-threshold="1000"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1xkko34-1 iDiVcM"
                 >
-                  Kpi Widget
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="connectionSuccess"
+                      data-testid="kpiWidget"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -95,11 +95,43 @@ exports[`Health Widget should render KPI widgets 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  data-name="clientThroughput"
-                  data-testid="kpiWidget"
-                  data-threshold="5000"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1xkko34-1 iDiVcM"
                 >
-                  Kpi Widget
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="timeToConnect"
+                      data-testid="kpiWidget"
+                      data-threshold="1000"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1xkko34-1 iDiVcM"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="clientThroughput"
+                      data-testid="kpiWidget"
+                      data-threshold="5000"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -160,25 +192,18 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
               <div
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
-                <span
-                  class="styledComponents__Title-sc-1xkko34-0 fQrHK"
-                >
-                  Client Experience
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
-              style="padding: 10px 10px 10px 10px;"
-            >
-              <div
-                class="Grid__Container-sc-5irhjd-1 zzbxI"
-              >
                 <div
-                  data-name="connectionSuccess"
-                  data-testid="kpiWidget"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1xkko34-1 iDiVcM"
                 >
-                  Kpi Widget
+                  <div
+                    class="ant-space-item"
+                  >
+                    <span
+                      class="styledComponents__Title-sc-1xkko34-0 hSQWii"
+                    >
+                      Client Experience
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -190,10 +215,18 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  data-name="timeToConnect"
-                  data-testid="kpiWidget"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1xkko34-1 iDiVcM"
                 >
-                  Kpi Widget
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="connectionSuccess"
+                      data-testid="kpiWidget"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -205,10 +238,41 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  data-name="clientThroughput"
-                  data-testid="kpiWidget"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1xkko34-1 iDiVcM"
                 >
-                  Kpi Widget
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="timeToConnect"
+                      data-testid="kpiWidget"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1xkko34-1 iDiVcM"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="clientThroughput"
+                      data-testid="kpiWidget"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
