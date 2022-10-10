@@ -29,7 +29,7 @@ describe('chartQuery', () => {
     TimeSeriesChartTypes.ClientCountChart,
     TimeSeriesChartTypes.AttemptAndFailureChart
   ]
-  const buffer = 3
+  const buffer = 6
 
   const expectedQueryResults = {
     network: {
