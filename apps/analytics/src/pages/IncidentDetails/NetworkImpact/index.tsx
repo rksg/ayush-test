@@ -81,7 +81,7 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
                     style={{ width, height }}
                     title={$t(config.title)}
                     subTitle={transformSummary(config, chartData, incident)}
-                    tooltipFormat={config.highlight}
+                    tooltipFormat={config.tooltipFormat}
                     dataFormatter={formatter('countFormat')}
                     data={transformData(config, chartData)}
                   />

@@ -24,7 +24,7 @@ export type NetworkImpactChartConfig = {
 
 export interface NetworkImpactChart {
   title: MessageDescriptor
-  highlight: MessageDescriptor
+  tooltipFormat: MessageDescriptor
   dominanceFn?: (data: NetworkImpactChartData['data'], incident: Incident) => {
     key: string
     value: number
@@ -68,7 +68,7 @@ export const getWLANDominance = (
   return _.pickBy(percentage, p => p.key === dominant)[1] || null
 }
 
-const highlights = {
+const tooltipFormats = {
   clients: defineMessage({
     defaultMessage: `{name}<br></br>
     <space><b>{formattedValue} {value, plural,
@@ -105,7 +105,7 @@ export const networkImpactChartConfigs: Readonly<Record<
 >> = {
   [NetworkImpactChartTypes.APFwVersionByAP]: {
     title: defineMessage({ defaultMessage: 'AP Firmware' }),
-    highlight: highlights.aps,
+    tooltipFormat: tooltipFormats.aps,
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures impacted {dominant} AP firmware'
@@ -120,7 +120,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   },
   [NetworkImpactChartTypes.APModel]: {
     title: defineMessage({ defaultMessage: 'AP Model' }),
-    highlight: highlights.clients,
+    tooltipFormat: tooltipFormats.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures impacted {dominant} AP model'
@@ -135,7 +135,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   },
   [NetworkImpactChartTypes.APModelByAP]: {
     title: defineMessage({ defaultMessage: 'AP Model' }),
-    highlight: highlights.aps,
+    tooltipFormat: tooltipFormats.aps,
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures impacted {dominant} AP model'
@@ -150,7 +150,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   },
   [NetworkImpactChartTypes.APVersion]: {
     title: defineMessage({ defaultMessage: 'AP Version' }),
-    highlight: highlights.clients,
+    tooltipFormat: tooltipFormats.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures impacted {dominant} AP firmware'
@@ -165,7 +165,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   },
   [NetworkImpactChartTypes.ClientManufacturer]: {
     title: defineMessage({ defaultMessage: 'Client Manufacturer' }),
-    highlight: highlights.clients,
+    tooltipFormat: tooltipFormats.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage:
@@ -179,7 +179,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   },
   [NetworkImpactChartTypes.EventTypeByAP]: {
     title: defineMessage({ defaultMessage: 'Event Type' }),
-    highlight: highlights.aps,
+    tooltipFormat: tooltipFormats.aps,
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures caused by {dominant}'
@@ -194,7 +194,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   },
   [NetworkImpactChartTypes.OS]: {
     title: defineMessage({ defaultMessage: 'OS' }),
-    highlight: highlights.clients,
+    tooltipFormat: tooltipFormats.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage:
@@ -210,7 +210,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   [NetworkImpactChartTypes.Radio]: {
     title: defineMessage({ defaultMessage: 'Radio' }),
     transformKeyFn: (val: string) => formatter('radioFormat')(val) as string,
-    highlight: highlights.clients,
+    tooltipFormat: tooltipFormats.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures impacted {dominant} radio' }),
@@ -224,7 +224,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   [NetworkImpactChartTypes.Reason]: {
     title: defineMessage({ defaultMessage: 'Reason' }),
     transformKeyFn: mapCodeToReason,
-    highlight: highlights.clients,
+    tooltipFormat: tooltipFormats.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage: "{percentage} of failures caused by ''{dominant}''" }),
@@ -237,7 +237,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   },
   [NetworkImpactChartTypes.ReasonByAP]: {
     title: defineMessage({ defaultMessage: 'Reason' }),
-    highlight: highlights.aps,
+    tooltipFormat: tooltipFormats.aps,
     transformKeyFn: getAPRebootReason,
     summary: {
       dominance: defineMessage({
@@ -253,7 +253,7 @@ export const networkImpactChartConfigs: Readonly<Record<
   },
   [NetworkImpactChartTypes.WLAN]: {
     title: defineMessage({ defaultMessage: 'WLAN' }),
-    highlight: highlights.clients,
+    tooltipFormat: tooltipFormats.clients,
     dominanceFn: getWLANDominance,
     summary: {
       dominance: defineMessage({
