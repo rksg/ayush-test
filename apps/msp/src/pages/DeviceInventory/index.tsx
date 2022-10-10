@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 
-import { SortOrder } from 'antd/lib/table/interface'
-import { useIntl }   from 'react-intl'
+import { SortOrder }          from 'antd/lib/table/interface'
+import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -33,8 +33,7 @@ const transformDeviceTypeString = (row: EcDeviceInventory) => {
   return ''
 }
 
-function TransformDeviceOperStatus (row: EcDeviceInventory) {
-  const intl = useIntl()
+function TransformDeviceOperStatus (row: EcDeviceInventory, intl: IntlShape) {
   switch (row.deviceType) {
     case EntitlementNetworkDeviceType.WIFI:
       const apStatus =
@@ -67,12 +66,12 @@ const transformSwitchStatus = (switchStatus: SwitchStatusEnum) => {
 }
 
 export function DeviceInventory () {
-  const { $t } = useIntl()
+  const intl = useIntl()
   // const [ search, setSearch ] = useState('')
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [
     {
-      title: $t({ defaultMessage: 'MAC Address' }),
+      title: intl.$t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'apMac',
       sorter: true,
       searchable: true,
@@ -80,14 +79,14 @@ export function DeviceInventory () {
       defaultSortOrder: 'ascend' as SortOrder
     },
     {
-      title: $t({ defaultMessage: 'Serial Number' }),
+      title: intl.$t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'serialNumber',
       sorter: true,
       searchable: true,
       key: 'serialNumber'
     },
     {
-      title: $t({ defaultMessage: 'Device Type' }),
+      title: intl.$t({ defaultMessage: 'Device Type' }),
       dataIndex: 'deviceType',
       sorter: true,
       filterable: true,
@@ -97,49 +96,49 @@ export function DeviceInventory () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Device Model' }),
+      title: intl.$t({ defaultMessage: 'Device Model' }),
       dataIndex: 'model',
       sorter: true,
       filterable: true,
       key: 'model'
     },
     {
-      title: $t({ defaultMessage: 'Device Name' }),
+      title: intl.$t({ defaultMessage: 'Device Name' }),
       dataIndex: 'name',
       sorter: true,
       key: 'name'
     },
     {
-      title: $t({ defaultMessage: 'Customer Name' }),
+      title: intl.$t({ defaultMessage: 'Customer Name' }),
       dataIndex: 'customerName',
       sorter: true,
       filterable: true,
       key: 'customerName'
     },
     {
-      title: $t({ defaultMessage: 'Operational Status' }),
+      title: intl.$t({ defaultMessage: 'Operational Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
       key: 'deviceStatus',
       render: function (data, row) {
-        return TransformDeviceOperStatus(row)
+        return TransformDeviceOperStatus(row, intl)
       }
     },
     {
-      title: $t({ defaultMessage: "Customer'sVenue" }),
+      title: intl.$t({ defaultMessage: "Customer'sVenue" }),
       dataIndex: 'venueName',
       sorter: true,
       filterable: true,
       key: 'venueName'
     },
     {
-      title: $t({ defaultMessage: 'Managed as' }),
+      title: intl.$t({ defaultMessage: 'Managed as' }),
       dataIndex: 'managedAs',
       sorter: true,
       key: 'managedAs'
     },
     {
-      title: $t({ defaultMessage: 'Tenant Id' }),
+      title: intl.$t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'tenantId',
       sorter: true,
       key: 'tenantId'
@@ -183,10 +182,10 @@ export function DeviceInventory () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Device Inventory' })}
+        title={intl.$t({ defaultMessage: 'Device Inventory' })}
         extra={[
           <TenantLink to='/dashboard' key='ownAccount'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{intl.$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
           <Button key='download' icon={<DownloadOutlined />}></Button>
         ]}

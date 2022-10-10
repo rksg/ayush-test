@@ -6,11 +6,11 @@ import { useIntl }   from 'react-intl'
 
 import {
   Button,
-  cssStr,
-  deviceStatusColors,
+  // cssStr,
+  // deviceStatusColors,
   Loader,
   PageHeader,
-  StackedBarChart,
+  // StackedBarChart,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -71,20 +71,21 @@ function useCustomerColumns () {
       key: 'activeIncindents',
       sorter: true,
       render: function () {
-        return <StackedBarChart
-          style={{ height: 10, width: 100 }}
-          data={[{
-            category: 'emptyStatus',
-            series: [{
-              name: '',
-              value: 1
-            }]
-          }]}
-          showTooltip={false}
-          showLabels={false}
-          showTotal={false}
-          barColors={[cssStr(deviceStatusColors.empty)]}
-        />
+        return 0
+        // return <StackedBarChart
+        //   style={{ height: 10, width: 100 }}
+        //   data={[{
+        //     category: 'emptyStatus',
+        //     series: [{
+        //       name: '',
+        //       value: 1
+        //     }]
+        //   }]}
+        //   showTooltip={false}
+        //   showLabels={false}
+        //   showTotal={false}
+        //   barColors={[cssStr(deviceStatusColors.empty)]}
+        // />
       }
     },
     {

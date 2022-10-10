@@ -831,67 +831,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                <div
-                                  _echarts_instance_="ec_1665171004447"
-                                  class="echarts-for-react "
-                                  size-sensor-id="1"
-                                  style="height: 10px; width: 100px; position: relative;"
-                                >
-                                  <div
-                                    style="position: relative; overflow: hidden; width: 100px; height: 10px;"
-                                  >
-                                    <svg
-                                      baseProfile="full"
-                                      height="10"
-                                      style="position:absolute;left:0;top:0;user-select:none"
-                                      version="1.1"
-                                      width="100"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    >
-                                      <rect
-                                        fill="none"
-                                        fill-opacity="1"
-                                        height="10"
-                                        id="0"
-                                        width="100"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <g>
-                                        <path
-                                          d="M-75 -0.5l75 0l0 1l-75 0Z"
-                                          fill="none"
-                                          transform="translate(-8 5)"
-                                        />
-                                        <text
-                                          dominant-baseline="central"
-                                          fill="#333333"
-                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                                          text-anchor="start"
-                                          transform="translate(-8 5)"
-                                          x="-75"
-                                        >
-                                          emptyStatus
-                                        </text>
-                                        <path
-                                          d="M0 1L0 9L0 1"
-                                          fill="#EBEDEE"
-                                        />
-                                      </g>
-                                    </svg>
-                                  </div>
-                                  <div
-                                    class=""
-                                  />
-                                  <object
-                                    class="size-sensor-object"
-                                    data="about:blank"
-                                    style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                                    tabindex="-1"
-                                    type="text/html"
-                                  />
-                                </div>
+                                0
                               </td>
                               <td
                                 class="ant-table-cell"

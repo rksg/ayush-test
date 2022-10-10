@@ -5,13 +5,13 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
-  cssStr,
-  deviceStatusColors,
+  // cssStr,
+  // deviceStatusColors,
   Loader,
   PageHeader,
   showActionModal,
   showToast,
-  StackedBarChart,
+  // StackedBarChart,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -79,7 +79,8 @@ function useColumns () {
       key: 'activeIncindents',
       sorter: true,
       render: function () {
-        return getEmptyStatusChart()
+        return 0
+        // return getEmptyStatusChart()
       }
     },
     {
@@ -214,22 +215,22 @@ const transformExpirationDate = (row: MspEc) => {
   return expirationDate
 }
 
-function getEmptyStatusChart () {
-  return <StackedBarChart
-    style={{ height: 10, width: 100 }}
-    data={[{
-      category: 'emptyStatus',
-      series: [{
-        name: '',
-        value: 1
-      }]
-    }]}
-    showTooltip={false}
-    showLabels={false}
-    showTotal={false}
-    barColors={[cssStr(deviceStatusColors.empty)]}
-  />
-}
+// function getEmptyStatusChart () {
+//   return <StackedBarChart
+//     style={{ height: 10, width: 100 }}
+//     data={[{
+//       category: 'emptyStatus',
+//       series: [{
+//         name: '',
+//         value: 1
+//       }]
+//     }]}
+//     showTooltip={false}
+//     showLabels={false}
+//     showTotal={false}
+//     barColors={[cssStr(deviceStatusColors.empty)]}
+//   />
+// }
 
 const defaultPayload = {
   searchString: '',
