@@ -103,7 +103,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       },
       sorter: {
         compare: (a, b) => dateSort(a.endTime, b.endTime),
-        multiple: 2
+        multiple: 1
       },
       fixed: 'left'
     },
@@ -115,7 +115,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       render: (_, value) => formatter('durationFormat')(value.duration),
       sorter: {
         compare: (a, b) => defaultSort(b.duration, a.duration),
-        multiple: 3
+        multiple: 1
       }
     },
     {
@@ -131,7 +131,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       ),
       sorter: {
         compare: (a, b) => defaultSort(a.description, b.description),
-        multiple: 4
+        multiple: 1
       },
       searchable: true
     },
@@ -142,7 +142,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       key: 'category',
       sorter: {
         compare: (a, b) => defaultSort(a.category as string, b.category as string),
-        multiple: 5
+        multiple: 1
       },
       filterable: true
     },
@@ -153,7 +153,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       key: 'subCategory',
       sorter: {
         compare: (a, b) => defaultSort(a.subCategory as string, b.subCategory as string),
-        multiple: 6
+        multiple: 1
       },
       show: false
     },
@@ -164,7 +164,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       key: 'clientImpact',
       sorter: {
         compare: (a, b) => clientImpactSort(a.clientImpact, b.clientImpact),
-        multiple: 7
+        multiple: 1
       }
     },
     {
@@ -174,7 +174,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       key: 'impactedClients',
       sorter: {
         compare: (a, b) => clientImpactSort(a.impactedClients, b.impactedClients),
-        multiple: 8
+        multiple: 1
       },
       align: 'center'
     },
@@ -190,7 +190,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       },
       sorter: {
         compare: (a, b) => defaultSort(a.scope, b.scope),
-        multiple: 9
+        multiple: 1
       },
       searchable: true
     },
@@ -201,7 +201,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       key: 'type',
       sorter: {
         compare: (a, b) => defaultSort(a.type, b.type),
-        multiple: 10
+        multiple: 1
       },
       show: false,
       filterable: true
