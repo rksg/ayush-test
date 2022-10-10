@@ -52,6 +52,7 @@ export function renderPendoAnalyticsTag () {
     /* eslint-disable */  // Disables everything from this point down
     console.log('Failed to load pendo api key from env', event)
   }
+  // Installing Pendo snippet
   const scriptText = `(function(apiKey){
                       (function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=[];
                         v=['initialize','identify','updateOptions','pageLoad'];for(w=0,x=v.length;w<x;++w)(function(m){
@@ -85,10 +86,12 @@ export function pendoInitalization (): void {
     }
   }
 
+  // Setting up metadata for Pendo
   async function pendoInit () {
     let user = await getUsers()
     if (window.pendo) {
-      window.pendo.initialize = {
+      // @ts-ignore
+      window.pendo.initialize({
         visitor: {
           id: user.externalId,
           full_name: `${user.firstName} ${user.lastName}`,
@@ -106,9 +109,7 @@ export function pendoInitalization (): void {
           id: user.tenantId,
           name: user.companyName
         }
-      }
-      /* eslint-disable no-console */
-      console.log('Pendo initialize !! ', window.pendo.initialize)
+      })
     }
   }
   pendoInit()
@@ -123,7 +124,7 @@ export async function init () {
 
   // Pendo initialization
   if ( get('DISABLE_PENDO') === 'false' ) {
-    renderPendoAnalyticsTag()
+    await renderPendoAnalyticsTag()
   }
 
   root.render(
