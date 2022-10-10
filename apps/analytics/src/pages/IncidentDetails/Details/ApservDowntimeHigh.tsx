@@ -56,5 +56,3 @@ export const ApservDowntimeHigh = (incident: Incident) => {
     </>
   )
 }
-
-export default ApservDowntimeHigh

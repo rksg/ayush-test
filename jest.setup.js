@@ -11,6 +11,14 @@ const { mockInstances } = require('@googlemaps/jest-mocks')
 const { Loader } = require('@googlemaps/js-api-loader')
 const { rest } = require('msw')
 
+jest.mock('socket.io-client', () => ({
+  connect: jest.fn().mockImplementation(() => ({
+    hasListeners: jest.fn().mockReturnValue(true),
+    on: jest.fn(),
+    send: jest.fn()
+  }))
+}))
+
 beforeAll(() => {
   mockServer.listen()
   setUpIntl({

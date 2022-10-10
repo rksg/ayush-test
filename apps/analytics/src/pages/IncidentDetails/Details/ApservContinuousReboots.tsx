@@ -57,5 +57,3 @@ export const ApservContinuousReboots = (incident: Incident) => {
     </>
   )
 }
-
-export default ApservContinuousReboots

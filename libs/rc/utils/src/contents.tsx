@@ -18,7 +18,7 @@ export enum SecurityOptionsDescription {
   WPA2_DESCRIPTION_WARNING = 'Security protocols other than WPA3 are not be supported in 6 GHz radio.'
   /* eslint-enable */
 }
-  
+
 export enum SecurityOptionsPassphraseLabel {
   WPA2Personal = 'Passphrase',
   WPA3 = 'SAE Passphrase',
@@ -26,13 +26,13 @@ export enum SecurityOptionsPassphraseLabel {
   WPAPersonal = 'Passphrase',
   WEP = 'Hex Key'
 }
-  
+
 export enum ManagementFrameProtectionEnum {
   Disabled = 'Disabled',
   Optional = 'Optional',
   Required = 'Required',
 }
-  
+
 export enum MacAuthMacFormatEnum {
   Lower = 'Lower',
   UpperDash = 'UpperDash',
@@ -41,7 +41,7 @@ export enum MacAuthMacFormatEnum {
   LowerDash = 'LowerDash',
   LowerColon = 'LowerColon',
 }
-  
+
 export enum macAuthMacFormatOptions {
   UpperDash = 'AA-BB-CC-DD-EE-FF',
   UpperColon = 'AA:BB:CC:DD:EE:FF',
@@ -50,7 +50,7 @@ export enum macAuthMacFormatOptions {
   LowerColon = 'aa:bb:cc:dd:ee:ff',
   Lower = 'aabbccddeeff',
 }
-  
+
 
 /* eslint-disable max-len */
 export const WifiNetworkMessages = {
@@ -78,20 +78,32 @@ export const WifiNetworkMessages = {
       </ul>`
   })
 }
+
+export const VenueMessages = {
+  MODEL_OVERLAPPING_TOOLTIP: defineMessage({
+    defaultMessage: 'You selected CLI profiles with overlapping switch models. Please correct your selection'
+  }),
+  CLI_PROFILE_NOTIFICATION: defineMessage({
+    defaultMessage: `<ul>
+      <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li>
+      <li>The selected CLI profiles cannot contain overlapping switch models</li>
+    </ul>`
+  })
+}
 /* eslint-enable */
-  
+
 export enum IsolatePacketsTypeEnum {
   UNICAST = 'UNICAST',
   MULTICAST = 'MULTICAST',
   UNICAST_MULTICAST = 'UNICAST_MULTICAST',
 }
-  
+
 export enum RfBandUsageEnum {
   _2_4GHZ = '2.4GHZ',
   _5_0GHZ = '5.0GHZ',
   BOTH = 'BOTH',
 }
-  
+
 export enum BssMinimumPhyRateEnum {
   _1 = '1',
   _2 = '2',
@@ -100,7 +112,7 @@ export enum BssMinimumPhyRateEnum {
   _24 = '24',
   _default = 'default',
 }
-  
+
 export enum BssMinimumPhyRateEnum6G {
   _6 = '6',
   _9 = '9',
@@ -113,7 +125,7 @@ export enum PhyTypeConstraintEnum {
   OFDM = 'OFDM',
   NONE = 'NONE',
 }
-  
+
 export enum ManagementFrameMinimumPhyRateEnum {
   _1 = '1',
   _2 = '2',
@@ -125,7 +137,7 @@ export enum ManagementFrameMinimumPhyRateEnum {
   _18 = '18',
   _24 = '24',
 }
-  
+
 export enum ManagementFrameMinimumPhyRateEnum6G {
   _6 = '6',
   _9 = '9',
@@ -133,13 +145,13 @@ export enum ManagementFrameMinimumPhyRateEnum6G {
   _18 = '18',
   _24 = '24',
 }
-  
+
 export enum RadioTypeEnum {
   _2_4_GHz = '2.4-GHz',
   _5_GHz = '5-GHz',
   _6_GHz = '6-GHz',
 }
-  
+
 export enum RadioEnum {
   Both = 'Both',
   _2_4_GHz = '2.4-GHz',
