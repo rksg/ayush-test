@@ -55,8 +55,8 @@ const highlights = {
   clients: defineMessage({
     defaultMessage: `{name}<br></br>
     <space><b>{formattedValue} {value, plural,
-      one {Client}
-      other {Clients}
+      one {client}
+      other {clients}
     }</b></space>`
   })
 }
