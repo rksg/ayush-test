@@ -92,8 +92,6 @@ export function StackedAreaChart <
     }))
   }
 
-  if (option && disableLegend === true) { delete(option.legend) }
-
   return (
     <ReactECharts
       {...props}
