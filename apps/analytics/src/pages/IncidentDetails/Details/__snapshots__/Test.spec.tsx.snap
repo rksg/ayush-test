@@ -970,6 +970,21 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
             data-type="client"
           />
           <div
+            data-dimension="osType"
+            data-testid="network-impact-os"
+            data-type="client"
+          />
+          <div
+            data-dimension="apModels"
+            data-testid="network-impact-apModel"
+            data-type="client"
+          />
+          <div
+            data-dimension="apFwVersions"
+            data-testid="network-impact-apVersion"
+            data-type="client"
+          />
+          <div
             data-dimension="radios"
             data-testid="network-impact-radio"
             data-type="client"
