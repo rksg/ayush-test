@@ -54,7 +54,7 @@ export const api = dataApi.injectEndpoints({
       query: (payload) => {
         const kpiName = kpiMetricMap[payload.name].name
         const threshold = getThresholdParam(payload.threshold ??
-           kpiMetricMap[payload.name].defaultThreshold)
+          kpiMetricMap[payload.name].defaultThreshold)
         return {
           document: gql`
           query KpiWidget(
@@ -65,7 +65,7 @@ export const api = dataApi.injectEndpoints({
               timeSeries(start: $start, end: $end, granularity: $granularity, path: $path) {
                 data: ${kpiName}${threshold}
               }
-            }          
+            }
           `,
           variables: {
             path: payload.filters.path,

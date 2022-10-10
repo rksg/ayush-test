@@ -99,21 +99,23 @@ export function KpiWidget ({
     <Loader states={[queryResults]}>
       <GridRow>
         <GridCol col={{ span: 7 }}>
-          <UI.KpiTitle>
-            {kpiInfoText[name].title}
-          </UI.KpiTitle>
+          <UI.Wrapper>
+            <UI.KpiTitle>
+              {kpiInfoText[name].title}
+            </UI.KpiTitle>
+          </UI.Wrapper>
           <UI.KpiShortText>
             {kpiInfoText[name].shortText}
           </UI.KpiShortText>
         </GridCol>
         <GridCol col={{ span: 6 }}>
           <Tooltip title={kpiInfoText[name].tooltip}>
-            <Space style={{ marginTop: '22px', textAlign: 'left' }}>
+            <UI.Wrapper>
               {percentIcon}
               <UI.Percent>
                 {intl.$t(intlFormats.percentFormatRound, { value: percent })}
               </UI.Percent>
-            </Space>
+            </UI.Wrapper>
           </Tooltip>
         </GridCol>
         <GridCol col={{ span: 11 }}>

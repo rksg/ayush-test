@@ -1,8 +1,17 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
 
 export const Title = styled.span`
-  margin-top: 15px;
-  font-weight: var(--acx-subtitle-5-font-weight);
-  font-size: 18px;
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+`
+
+export const Wrapper = styled(Space)`
+  justify-content: left;
+  width: 100%;
+  height: 100%;
 `
 

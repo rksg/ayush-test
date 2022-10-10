@@ -8,7 +8,6 @@ import { KpiWidget } from '../KpiWidget'
 import { useFetchKpiThresholdsQuery } from './services'
 import * as UI                        from './styledComponents'
 
-
 export default function VenueHealthWidget ({
   filters
 }: {
@@ -23,22 +22,30 @@ export default function VenueHealthWidget ({
       <Card>
         <GridRow style={{ width: '100%' }}>
           <GridCol col={{ span: 3 }}>
-            <UI.Title>
-              {$t({ defaultMessage: 'Client Experience' })}
-            </UI.Title>
+            <UI.Wrapper>
+              <UI.Title>
+                {$t({ defaultMessage: 'Client Experience' })}
+              </UI.Title>
+            </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>
-            <KpiWidget filters={filters} name='connectionSuccess'/>
+            <UI.Wrapper>
+              <KpiWidget filters={filters} name='connectionSuccess'/>
+            </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>
-            <KpiWidget filters={filters}
-              name='timeToConnect'
-              threshold={data?.timeToConnectThreshold.value}/>
+            <UI.Wrapper>
+              <KpiWidget filters={filters}
+                name='timeToConnect'
+                threshold={data?.timeToConnectThreshold.value}/>
+            </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>
-            <KpiWidget filters={filters}
-              name='clientThroughput'
-              threshold={data?.clientThroughputThreshold.value}/>
+            <UI.Wrapper>
+              <KpiWidget filters={filters}
+                name='clientThroughput'
+                threshold={data?.clientThroughputThreshold.value}/>
+            </UI.Wrapper>
           </GridCol>
         </GridRow>
       </Card>
