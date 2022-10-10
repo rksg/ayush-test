@@ -128,7 +128,7 @@ export const networkImpactCharts = {
   },
   [NetworkImpactChartTypes.ClientManufacturer]: {
     key: 'clientManufacturer',
-    title: defineMessage({ defaultMessage: 'Client Manufacturers' }),
+    title: defineMessage({ defaultMessage: 'Client Manufacturer' }),
     dimension: 'manufacturer',
     type: 'client',
     highlight: highlights.clients,
