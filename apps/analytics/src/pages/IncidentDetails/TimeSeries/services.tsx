@@ -20,6 +20,7 @@ interface ChartIncident extends Incident {
 export interface ChartDataProps {
   charts: TimeSeriesChartTypes[]
   incident: ChartIncident
+  buffer: BufferType
 }
 
 interface Response <ChartsData> {
@@ -39,30 +40,16 @@ export const calcGranularity = (start: string, end: string): string => {
   return 'PT180S'
 }
 
-export function getBuffer (chartBuffer: ChartIncident['buffer']) {
+export function getIncidentTimeSeriesPeriods (incident: ChartIncident, incidentBuffer: BufferType) {
+  const { startTime, endTime } = incident
   const buffer = {
     front: { value: 6, unit: 'hours' },
     back: { value: 6, unit: 'hours' }
   }
-
-  if (chartBuffer === undefined) return buffer
-
-  if (_.isNumber(chartBuffer)) {
-    buffer.front.value = chartBuffer
-    buffer.back.value = chartBuffer
-    return buffer
+  if (_.isNumber(incidentBuffer)) {
+    buffer.front.value = incidentBuffer
+    buffer.back.value = incidentBuffer
   }
-
-  (chartBuffer.hasOwnProperty('front')) && (buffer.front = chartBuffer.front);
-  (chartBuffer.hasOwnProperty('back')) && (buffer.back = chartBuffer.back)
-
-  return buffer
-}
-
-export function getIncidentTimeSeriesPeriods (incident: ChartIncident) {
-  const { startTime, endTime } = incident
-  const buffer = getBuffer(incident.buffer)
-
   return {
     start: moment(startTime).subtract(
       buffer.front.value, buffer.front.unit as unitOfTime.DurationConstructor),
@@ -100,7 +87,7 @@ export const Api = dataApi.injectEndpoints({
           variables: {
             code: payload.incident.code,
             codeMap: [payload.incident.code],
-            ...getIncidentTimeSeriesPeriods(payload.incident),
+            ...getIncidentTimeSeriesPeriods(payload.incident, payload.buffer),
             path: payload.incident.path,
             granularity: calcGranularity(payload.incident.startTime, payload.incident.endTime)
           }

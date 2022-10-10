@@ -1,4 +1,5 @@
-import { useIntl } from 'react-intl'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
 import {
   calculateSeverity,
@@ -39,7 +40,10 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
     TimeSeriesChartTypes.ClientCountChart,
     TimeSeriesChartTypes.AttemptAndFailureChart
   ]
-
+  const buffer = {
+    front: { value: 6, unit: 'hours' as unitOfTime.Base },
+    back: { value: 6, unit: 'hours' as unitOfTime.Base }
+  }
   return (
     <>
       <PageHeader
@@ -65,7 +69,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <TimeSeries incident={incident} charts={timeSeriesCharts} />
+          <TimeSeries incident={incident} charts={timeSeriesCharts} buffer={buffer}/>
         </GridCol>
       </GridRow>
     </>

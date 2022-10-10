@@ -4,12 +4,11 @@ import attemptAndFailureChart   from './charts/AttemptAndFailureChart'
 import clientCountChart         from './charts/ClientCountChart'
 import failureChart             from './charts/FailureChart'
 import rssQualityByClientsChart from './charts/RssQualityByClientsChart'
-import { BufferType, ChartsData }           from './services'
+import { ChartsData }           from './services'
 
 interface TimeSeriesChart {
   query: (incident: Incident) => string,
-  chart?: ({ incident, data }: { incident: Incident, data: ChartsData }) => JSX.Element,
-  buffer?: BufferType
+  chart?: ({ incident, data }: { incident: Incident, data: ChartsData }) => JSX.Element
 }
 
 export enum TimeSeriesChartTypes {

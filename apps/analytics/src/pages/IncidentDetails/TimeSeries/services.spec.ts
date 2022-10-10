@@ -5,13 +5,11 @@ import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { fakeIncident1 }       from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
-import { TimeSeriesChartTypes } from './config'
+import { TimeSeriesChartTypes }  from './config'
 import {
   Api,
   calcGranularity,
-  getIncidentTimeSeriesPeriods,
-  getBuffer,
-  BufferType
+  getIncidentTimeSeriesPeriods
 } from './services'
 
 describe('chartQuery', () => {
@@ -31,6 +29,7 @@ describe('chartQuery', () => {
     TimeSeriesChartTypes.ClientCountChart,
     TimeSeriesChartTypes.AttemptAndFailureChart
   ]
+  const buffer = 3
 
   const expectedQueryResults = {
     network: {
@@ -88,7 +87,8 @@ describe('chartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts
+        charts,
+        buffer
       })
     )
     expect(status).toBe('fulfilled')
@@ -109,7 +109,8 @@ describe('chartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts
+        charts,
+        buffer
       })
     )
     expect(status).toBe('fulfilled')
@@ -121,7 +122,7 @@ describe('chartQuery', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      Api.endpoints.Charts.initiate({ incident: fakeIncident1, charts })
+      Api.endpoints.Charts.initiate({ incident: fakeIncident1, charts, buffer })
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
@@ -143,27 +144,9 @@ describe('chartQuery', () => {
     )
   })
   it('should getIncidentTimeSeriesPeriods', () => {
-    expect(getIncidentTimeSeriesPeriods(fakeIncident1).start).toEqual(
+    expect(getIncidentTimeSeriesPeriods(fakeIncident1, buffer).start).toEqual(
       moment(fakeIncident1.startTime).subtract(6, 'hours'))
-    expect(getIncidentTimeSeriesPeriods(fakeIncident1).end).toEqual(
+    expect(getIncidentTimeSeriesPeriods(fakeIncident1, buffer).end).toEqual(
       moment(fakeIncident1.endTime).add(6, 'hours'))
-  })
-  it('should getBuffer', () => {
-    const sampleBuffer = {
-      front: {
-        value: 1,
-        unit: 'hour'
-      },
-      back: {
-        value: 10,
-        unit: 'minutes'
-      }
-    } as BufferType
-    expect(getBuffer(undefined)).toEqual(
-      { back: { unit: 'hours', value: 6 }, front: { unit: 'hours', value: 6 } })
-    expect(getBuffer(10)).toEqual(
-      { back: { unit: 'hours', value: 10 }, front: { unit: 'hours', value: 10 } })
-    expect(getBuffer(sampleBuffer)).toEqual(
-      { back: { unit: 'minutes', value: 10 }, front: { unit: 'hour', value: 1 } })
   })
 })

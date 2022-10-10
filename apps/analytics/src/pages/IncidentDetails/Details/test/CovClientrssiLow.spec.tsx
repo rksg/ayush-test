@@ -3,6 +3,7 @@ import { Provider }                        from '@acx-ui/store'
 import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
 import { CovClientrssiLow } from '../CovClientrssiLow'
+
 import { mockTimeSeries } from './__tests__/fixtures'
 
 jest.mock('../../NetworkImpact', () => ({

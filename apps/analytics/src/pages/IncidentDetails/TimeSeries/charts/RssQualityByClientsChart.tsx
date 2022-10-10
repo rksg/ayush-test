@@ -37,8 +37,6 @@ const lineColors = [
   cssStr('--acx-semantics-red-50')
 ]
 
-const buffer = 0
-
 export const RssQualityByClientsChart = ({ data }: { data: ChartsData }) => {
   const { rssQualityByClientsChart } = data
   const { $t } = useIntl()
@@ -66,5 +64,5 @@ export const RssQualityByClientsChart = ({ data }: { data: ChartsData }) => {
   </Card>
 }
 
-const chartConfig = { chart: RssQualityByClientsChart, query: rssQualityByClientsChartQuery, buffer: buffer }
+const chartConfig = { chart: RssQualityByClientsChart, query: rssQualityByClientsChartQuery }
 export default chartConfig
