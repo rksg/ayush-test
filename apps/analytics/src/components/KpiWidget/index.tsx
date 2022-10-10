@@ -1,4 +1,4 @@
-import { Space, Tooltip }     from 'antd'
+import { Tooltip }            from 'antd'
 import { useIntl, IntlShape } from 'react-intl'
 
 import { AnalyticsFilter }                          from '@acx-ui/analytics/utils'
