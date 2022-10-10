@@ -17,8 +17,8 @@ const extractRows = (doc:DocumentFragment)=>{
   doc.querySelectorAll('table > tbody > tr').forEach((row) => {
     const columns = row.querySelectorAll('td')
     const extractedColumns: ColumnElements = []
-    columns.forEach((column,colIndex)=>{
-      if(colIndex === 3){
+    columns.forEach((column, colIndex)=>{
+      if(colIndex === 2){
         const svgElement = column.querySelector('svg')
         if(svgElement)
           extractedColumns.push(svgElement)
