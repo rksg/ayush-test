@@ -79,6 +79,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/venue'
   },
+  updateVenue: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/venue/:venueId'
+  },
   getVenue: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId'
