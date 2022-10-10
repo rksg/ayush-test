@@ -27,7 +27,7 @@ const supportedLocales = {
 declare global {
   /* eslint-disable no-var */
   var pendo: {
-    'initialize': { };
+    initialize(init: Record<string, Record<string, string | boolean>>): void
   }
   function pendoInitalization (): void
 }
@@ -39,7 +39,7 @@ export function loadMessages (locales: readonly string[]): string {
 
 function getTenantId () {
   /* eslint-disable */
-  const chunks = location.pathname.split('/')
+  const chunks = window.location.pathname.split('/')
   for (const c in chunks) {
     if (['v', 't'].includes(chunks[c])) { return chunks[Number(c) + 1] }
   }
@@ -90,7 +90,6 @@ export function pendoInitalization (): void {
   async function pendoInit () {
     let user = await getUsers()
     if (window.pendo) {
-      // @ts-ignore
       window.pendo.initialize({
         visitor: {
           id: user.externalId,
@@ -124,7 +123,7 @@ export async function init () {
 
   // Pendo initialization
   if ( get('DISABLE_PENDO') === 'false' ) {
-    await renderPendoAnalyticsTag()
+    renderPendoAnalyticsTag()
   }
 
   root.render(
