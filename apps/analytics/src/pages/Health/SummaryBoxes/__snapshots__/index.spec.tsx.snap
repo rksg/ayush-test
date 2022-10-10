@@ -141,7 +141,7 @@ exports[`Incidents Page should match snapshot 1`] = `
               <div
                 class="ant-statistic-title"
               >
-                Avg. Time to Connect
+                Avg. Time To Connect
               </div>
               <div
                 class="ant-statistic-content"
@@ -305,7 +305,7 @@ exports[`Incidents Page should show - when no data 1`] = `
               <div
                 class="ant-statistic-title"
               >
-                Avg. Time to Connect
+                Avg. Time To Connect
               </div>
               <div
                 class="ant-statistic-content"

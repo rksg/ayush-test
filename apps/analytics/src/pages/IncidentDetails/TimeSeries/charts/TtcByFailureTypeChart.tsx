@@ -51,7 +51,7 @@ export const TtcByFailureTypeChart = ({ chartRef, data }: TimeSeriesChartProps) 
     ...ttcByFailureTypes
   } as TimeSeriesData, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'Time to Connect (By Stage)' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'Time To Connect (By Stage)' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         <StackedAreaChart
@@ -60,7 +60,7 @@ export const TtcByFailureTypeChart = ({ chartRef, data }: TimeSeriesChartProps) 
           stackColors={stackColors}
           data={chartResults}
           dataFormatter={formatter('durationFormat')}
-          tooltipTotalTitle={$t({ defaultMessage: 'Total Time to Connect' })}
+          tooltipTotalTitle={$t({ defaultMessage: 'Total Time To Connect' })}
         />
       )}
     </AutoSizer>

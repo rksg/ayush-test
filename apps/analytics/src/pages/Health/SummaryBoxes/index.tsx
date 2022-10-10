@@ -108,7 +108,7 @@ export const SummaryBoxes = () => {
     },
     {
       type: 'averageTtc',
-      title: defineMessage({ defaultMessage: 'Avg. Time to Connect' }),
+      title: defineMessage({ defaultMessage: 'Avg. Time To Connect' }),
       isOpen: openType === 'ttc',
       onClick: toggleTtc,
       value: queryResults.data.averageTtc
