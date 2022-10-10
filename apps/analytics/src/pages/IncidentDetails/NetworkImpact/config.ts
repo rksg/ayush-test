@@ -99,11 +99,11 @@ export const networkImpactCharts = {
     highlight: highlights.clients,
     summary: {
       dominance: defineMessage({
-        defaultMessage: '{percentage} of failures impacted {dominant} band' }),
+        defaultMessage: '{percentage} of failures impacted {dominant} radio' }),
       broad: defineMessage({
         defaultMessage: `This incident impacted {count} {count, plural,
-          one {band}
-          other {bands}
+          one {radio}
+          other {radios}
         }` })
     },
     order: 5
