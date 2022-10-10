@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext } from 'react'
+import React, { ReactNode, useCallback, useContext, useMemo } from 'react'
 
 import { Buffer } from 'buffer'
 
@@ -48,40 +48,40 @@ export function useAnalyticsFilter () {
     setNetworkPath,
     getNetworkFilter,
     raw
-  }
+  } as const
 }
 
 export function AnalyticsFilterProvider (props: { children: ReactNode }) {
   const [search, setSearch] = useSearchParams()
   const { pathname } = useLocation()
   const sublocation = pathname.substring(pathname.lastIndexOf('/') + 1)
-  const getNetworkFilter = () => {
-    let networkFilter = search.has('analyticsNetworkFilter')
+  const getNetworkFilter = useCallback(() => {
+    const networkFilter = search.has('analyticsNetworkFilter')
       ? JSON.parse(
         Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
       )
       : { path: defaultNetworkPath, raw: [] }
     const { path } = networkFilter
-    if(sublocation === 'health' &&
+    if (sublocation === 'health' &&
     path.length > 1 &&
-    path[1]?.type === 'switchGroup'){
-      networkFilter = { path: defaultNetworkPath, raw: [] }
+    path[1]?.type === 'switchGroup') {
+      return { path: defaultNetworkPath, raw: [] }
     }
     return networkFilter
-  }
-  const setNetworkPath = (path: NetworkPath, raw: object) => {
+  }, [search, sublocation])
+  const setNetworkPath = useCallback((path: NetworkPath, raw: object) => {
     search.set(
       'analyticsNetworkFilter',
       Buffer.from(JSON.stringify({ path, raw })).toString('base64')
     )
     setSearch(search, { replace: true })
-  }
+  }, [search, setSearch])
   const { path } = getNetworkFilter()
-  const providerValue = {
+  const providerValue = useMemo(() => ({
     path: path,
     setNetworkPath,
     getNetworkFilter
-  }
+  }), [getNetworkFilter, path, setNetworkPath])
   return (
     <AnalyticsFilterContext.Provider
       {...props}

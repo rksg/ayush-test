@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
@@ -20,9 +22,10 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = { shouldQuerySwitch : boolean }
 const getSeverityFromIncidents = (
-  incidentsList: Incident[]
-): VenuesWithSeverityNodes =>
-  groupBy(
+  incidentsList?: Incident[]
+): VenuesWithSeverityNodes | undefined => {
+  if (!incidentsList) return
+  return groupBy(
     incidentsList.map((incident: Incident) => ({
       ...pick(incident, ['sliceType', 'path']),
       severity: {
@@ -36,6 +39,7 @@ const getSeverityFromIncidents = (
     })),
     'venueName'
   )
+}
 const getSeverityCircles = (
   nodes: ApOrSwitch[],
   venueWiseSeverities: NodesWithSeverity[],
@@ -72,10 +76,11 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
   }, [] )
 
 const getFilterData = (
-  data: Child[],
+  data: Child[] | undefined,
   $t: CallableFunction,
   nodesWithSeverities: VenuesWithSeverityNodes
-): Option[] => {
+): Option[] | undefined => {
+  if (!data) return
   const venues: { [key: string]: Option } = {}
   for (const { name, path, aps, switches } of data) {
     if (!venues[name]) {
@@ -176,6 +181,7 @@ const search = (input: string, path: DefaultOptionType[]): boolean => {
     ? false
     : (item?.displayLabel as string)?.toLowerCase().includes(input.toLowerCase())
 }
+// eslint-disable-next-line no-empty-pattern
 export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
   selectedOptions?.map((option) => option?.displayLabel || option?.label).join(' / ')
 export const onApply = (
@@ -186,41 +192,54 @@ export const onApply = (
   setNetworkPath(path, value || [])
 }
 
+const emptyArrayVenue = [] as unknown as VenuesWithSeverityNodes
+const emptyArrayFilter = [] as unknown as Option[]
+
 function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterProps) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const incidentsList = useIncidentsListQuery(
     omit({ ...filters, path: defaultNetworkPath }, 'filter'),
     {
-      selectFromResult: ({ data }) => ({
-        data: data ? getSeverityFromIncidents(data) : []
+      selectFromResult: ({ data, ...rest }) => ({
+        data: getSeverityFromIncidents(data) ?? emptyArrayVenue,
+        ...rest
       })
     }
   )
   const networkFilter = { ...filters, shouldQuerySwitch }
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
-      data: data ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) : [],
+      data:
+        getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) ?? emptyArrayFilter,
       ...rest
     })
   })
-  return (
-    <UI.Container>
-      <Loader states={[queryResults]}>
-        <NetworkFilter
-          placeholder={$t({ defaultMessage: 'Entire Organization' })}
-          multiple={false}
-          defaultValue={raw}
-          value={raw}
-          options={queryResults.data}
-          onApply={(value) => onApply(value, setNetworkPath)}
-          placement='bottomRight'
-          displayRender={displayRender}
-          showSearch={{ filter: search }}
-        />
-      </Loader>
-    </UI.Container>
-  )
+
+  return useMemo(() => {
+    const onApplyCallback = (value: SingleValueType | SingleValueType[] | undefined) => {
+      const path = !value ? defaultNetworkPath : JSON.parse(value?.slice(-1)[0] as string)
+      setNetworkPath(path, value ?? emptyArrayVenue)
+    }
+    const showSearchCallback = { filter: search }
+
+    return (
+      <UI.Container>
+        <Loader states={[queryResults, incidentsList]}>
+          <NetworkFilter
+            placeholder={$t({ defaultMessage: 'Entire Organization' })}
+            multiple={false}
+            defaultValue={raw}
+            value={raw}
+            options={queryResults.data}
+            onApply={onApplyCallback}
+            placement='bottomRight'
+            displayRender={displayRender}
+            showSearch={showSearchCallback}
+          />
+        </Loader>
+      </UI.Container>
+    )}, [$t, incidentsList, queryResults, raw, setNetworkPath])
 }
 
 export default ConnectedNetworkFilter
