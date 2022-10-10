@@ -8,7 +8,7 @@ import {
   noDataSymbol,
   IncidentFilter,
   getRootCauseAndRecommendations,
-  useShortDescription,
+  shortDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer } from '@acx-ui/components'
@@ -47,7 +47,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   const wlanInfo = (dominant && dominant.ssid)
     ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
     : ''
-  const desc = useShortDescription(props.selectedIncidentToShowDescription)
+  const desc = shortDescription(props.selectedIncidentToShowDescription)
   return (
     <UI.IncidentDrawerContent>
       <UI.IncidentCause>{desc}</UI.IncidentCause>
@@ -207,7 +207,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'scope',
       key: 'scope',
       render: (_, value ) => {
-        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue, intl)}>
+        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue)}>
           {value.scope}
         </Tooltip>
       },
