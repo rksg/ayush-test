@@ -50,19 +50,19 @@ describe('Test', () => {
       {
         component: ApinfraPoeLow,
         fakeIncident: fakeIncidentPoeLow,
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: false
       },
       {
         component: ApinfraWanthroughputLow,
         fakeIncident: fakeIncidentApInfraWanthroughput,
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: false
       },
       {
         component: ApservContinuousReboots,
         fakeIncident: fakeIncidentContReboot,
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: false
       },
       {

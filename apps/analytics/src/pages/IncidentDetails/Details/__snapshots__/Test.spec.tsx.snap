@@ -134,8 +134,19 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModels"
+            data-testid="network-impact-apModelByAP"
+            data-type="apInfra"
+          />
+          <div
+            data-dimension="apFwVersions"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apInfra"
+          />
         </div>
       </div>
     </div>
@@ -301,8 +312,19 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModels"
+            data-testid="network-impact-apModelByAP"
+            data-type="apInfra"
+          />
+          <div
+            data-dimension="apFwVersions"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apInfra"
+          />
         </div>
       </div>
     </div>
@@ -468,8 +490,29 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModel"
+            data-testid="network-impact-apModelByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="apFwVersion"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonsByEvent"
+            data-type="apRebootEvent"
+          />
         </div>
       </div>
     </div>

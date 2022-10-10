@@ -7,8 +7,8 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
+import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
+import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
 

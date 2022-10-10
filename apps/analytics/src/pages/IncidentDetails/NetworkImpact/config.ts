@@ -12,8 +12,6 @@ export type NetworkImpactType = 'ap'
 | 'apDowntime'
 | 'apReboot'
 | 'apRebootEvent'
-| 'ctrlApplication'
-| 'ctrlApplicationGroup'
 | 'apInfra'
 
 export type NetworkImpactChartConfig = {
@@ -82,6 +80,13 @@ const tooltipFormats = {
       one {AP}
       other {APs}
     }</b></space>`
+  }),
+  events: defineMessage({
+    defaultMessage: `{name}<br></br>
+    <space><b>{formattedValue} {value, plural,
+      one {event}
+      other {events}
+    }</b></space>`
   })
 }
 
@@ -94,6 +99,8 @@ export enum NetworkImpactChartTypes {
   EventTypeByAP = 'eventTypeByAP',
   OS = 'os',
   Radio = 'radio',
+  RebootReasonByAP = 'rebootReasonByAP',
+  RebootReasonsByEvent = 'rebootReasonsByEvent',
   Reason = 'reason',
   ReasonByAP = 'reasonByAP',
   WLAN = 'WLAN',
@@ -237,6 +244,38 @@ export const networkImpactChartConfigs: Readonly<Record<
   },
   [NetworkImpactChartTypes.ReasonByAP]: {
     title: defineMessage({ defaultMessage: 'Reason' }),
+    tooltipFormat: tooltipFormats.aps,
+    transformKeyFn: getAPRebootReason,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage: '{percentage} of failures caused by {dominant}'
+      }),
+      broad: defineMessage({
+        defaultMessage: `{count} {count, plural,
+          one {reason}
+          other {reasons}
+        } contributed to this incident`
+      })
+    }
+  },
+  [NetworkImpactChartTypes.RebootReasonByAP]: {
+    title: defineMessage({ defaultMessage: 'Reason by AP' }),
+    tooltipFormat: tooltipFormats.aps,
+    transformKeyFn: getAPRebootReason,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage: '{percentage} of failures caused by {dominant}'
+      }),
+      broad: defineMessage({
+        defaultMessage: `{count} {count, plural,
+          one {reason}
+          other {reasons}
+        } contributed to this incident`
+      })
+    }
+  },
+  [NetworkImpactChartTypes.RebootReasonsByEvent]: {
+    title: defineMessage({ defaultMessage: 'Reason by Event' }),
     tooltipFormat: tooltipFormats.aps,
     transformKeyFn: getAPRebootReason,
     summary: {
