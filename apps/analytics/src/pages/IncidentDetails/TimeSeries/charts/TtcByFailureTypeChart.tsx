@@ -24,7 +24,7 @@ const ttcByFailureTypeChartQuery = () => gql`
   }
   `
 
-export const TtcByFailureTypeChart = ({ data }: TimeSeriesChartProps) => {
+export const TtcByFailureTypeChart = ({ chartRef, data }: TimeSeriesChartProps) => {
   const { ttcByFailureTypeChart: { time, ttcByFailureTypes } } = data
   const intl = useIntl()
   const { $t } = intl
@@ -55,6 +55,7 @@ export const TtcByFailureTypeChart = ({ data }: TimeSeriesChartProps) => {
     <AutoSizer>
       {({ height, width }) => (
         <StackedAreaChart
+          chartRef={chartRef}
           style={{ height, width }}
           stackColors={stackColors}
           data={chartResults}

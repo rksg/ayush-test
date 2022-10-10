@@ -1,6 +1,9 @@
-import { render } from '@testing-library/react'
+import React, { RefObject } from 'react'
 
-import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import ReactECharts from 'echarts-for-react'
+
+import { TimeSeriesChartData }     from '@acx-ui/analytics/utils'
+import { render, waitFor, screen } from '@acx-ui/test-utils'
 
 import { cssStr } from '../../theme/helper'
 
@@ -35,6 +38,23 @@ describe('getSeriesTotal',() => {
 })
 
 describe('StackedAreaChart',() => {
+  it('should use imperative handle', async () => {
+    const mockCallbackRef = jest.fn()
+    let createHandleCallback: () => RefObject<ReactECharts>
+    jest.spyOn(React, 'useImperativeHandle').mockImplementation((ref, callback) => {
+      expect(ref).toEqual(mockCallbackRef)
+      createHandleCallback = callback as () => RefObject<ReactECharts>
+    })
+    render(<StackedAreaChart
+      data={data}
+      chartRef={mockCallbackRef}
+    />)
+    await waitFor(() => {
+      expect(createHandleCallback()).not.toBeNull()
+    })
+    jest.restoreAllMocks()
+  })
+
   it('should call formatter for yAxis', () => {
     const formatter = jest.fn()
     render(<StackedAreaChart
@@ -43,6 +63,7 @@ describe('StackedAreaChart',() => {
     />)
     expect(formatter).toBeCalled()
   })
+
   it('should not show total series in chart', () => {
     const formatter = jest.fn()
     const { asFragment } = render(<StackedAreaChart
@@ -59,5 +80,23 @@ describe('StackedAreaChart',() => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-50')}"]`))
       .toBeNull()
+  })
+
+  it('should not render legend if disabled', () => {
+    render(<StackedAreaChart
+      data={data}
+      disableLegend
+    />)
+    expect(screen.queryByText('2.4 GHz')).toBeNull()
+  })
+
+  it('should render reset button after zoom', async () => {
+    const mockSetCanResetZoom = jest.fn()
+    const useStateSpy = jest.spyOn(React, 'useState')
+    useStateSpy.mockImplementation(() => [true, mockSetCanResetZoom])
+    render(<StackedAreaChart
+      data={data}
+    />)
+    expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
   })
 })

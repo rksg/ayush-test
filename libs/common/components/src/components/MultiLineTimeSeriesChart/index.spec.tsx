@@ -102,17 +102,6 @@ describe('MultiLineTimeSeriesChart', () => {
     expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
   })
 
-  it('should render reset button after zoom and legend is disabled', async () => {
-    const mockSetCanResetZoom = jest.fn()
-    const useStateSpy = jest.spyOn(React, 'useState')
-    useStateSpy.mockImplementation(() => [true, mockSetCanResetZoom])
-    render(<MultiLineTimeSeriesChart
-      data={getSeriesData()}
-      disableLegend
-    />)
-    expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
-  })
-
   it('should render mark area if enabled', async () => {
     const { asFragment } = render(<MultiLineTimeSeriesChart
       data={getSeriesData()}
