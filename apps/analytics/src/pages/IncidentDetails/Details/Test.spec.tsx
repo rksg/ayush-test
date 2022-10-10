@@ -13,6 +13,7 @@ import {
 import { Provider }                     from '@acx-ui/store'
 import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
+import { mockTimeSeries }          from './__tests__/fixtures'
 import { ApinfraPoeLow }           from './ApinfraPoeLow'
 import { ApinfraWanthroughputLow } from './ApinfraWanthroughputLow'
 import { ApservContinuousReboots } from './ApservContinuousReboots'
@@ -39,12 +40,12 @@ jest.mock('../Insights', () => ({
 jest.mock('../NetworkImpact', () => ({
   NetworkImpact: () => <div data-testid='networkImpact' />
 }))
-jest.mock('../IncidentDetails/TimeSeries', () => ({
-  TimeSeries: () => <div data-testid='timeSeries' />
-}))
+jest.mock('../IncidentDetails/TimeSeries')
 
 describe('Test', () => {
   mockDOMWidth()
+  mockTimeSeries()
+
   describe('Details', () => {
     [
       {
@@ -154,10 +155,10 @@ describe('Test', () => {
         }
         if (test.hasTimeSeries) {
           // eslint-disable-next-line jest/no-conditional-expect
-          expect(screen.getByTestId('timeSeries')).toBeVisible()
+          expect(screen.getByTestId('timeseries')).toBeVisible()
         } else {
           // eslint-disable-next-line jest/no-conditional-expect
-          expect(screen.queryByTestId('timeSeries')).toBeNull()
+          expect(screen.queryByTestId('timeseries')).toBeNull()
         }
         expect(asFragment()).toMatchSnapshot()
       })

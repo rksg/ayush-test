@@ -1101,8 +1101,18 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1256,8 +1266,18 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1411,8 +1431,18 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1566,8 +1596,18 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1721,8 +1761,18 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -2317,8 +2367,18 @@ exports[`Test Details should render Ttc correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-TtcFailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-TtcByFailureTypeChart"
+          />
+        </div>
       </div>
     </div>
   </div>
