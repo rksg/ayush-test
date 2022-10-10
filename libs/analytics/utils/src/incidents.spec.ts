@@ -4,6 +4,7 @@ import { renderHook }         from '@acx-ui/test-utils'
 import { PathNode, NodeType } from '@acx-ui/utils'
 
 import { fakeIncident, fakeIncident1, fakeIncidentTtc, fakeIncidentApInfraWanthroughput } from './fakeIncident'
+import { kpiConfig }                                                                      from './healthKPIConfig'
 import {
   calculateSeverity,
   impactValues,
@@ -78,7 +79,7 @@ describe('shortDescription', () => {
       sliceValue: 'Venue 1'
     })
     expect(shortDescription(incident))
-      .toEqual('Time to connect is greater than 2s in Venue: Venue 1')
+      .toEqual('Time to connect is greater than 2 seconds in Venue: Venue 1')
   })
 })
 
@@ -202,9 +203,10 @@ describe('impactValues', () => {
   })
 })
 
-describe('useGetThreshold', () => {
+describe('getThreshold', () => {
   it('should return the correct result for ttc', () => {
-    expect(getThreshold(fakeIncidentTtc)).toEqual('2s')
+    expect(getThreshold(fakeIncidentTtc))
+      .toEqual(kpiConfig.timeToConnect.histogram.initialThreshold)
   })
   it('should return undefined when code does not match', () => {
     expect(getThreshold(fakeIncidentApInfraWanthroughput)).toEqual(undefined)

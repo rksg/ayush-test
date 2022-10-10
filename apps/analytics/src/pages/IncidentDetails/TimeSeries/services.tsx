@@ -5,7 +5,11 @@ import moment, { unitOfTime } from 'moment-timezone'
 import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
 
+import { calculateGranularity } from '../../../utils'
+
 import { timeSeriesCharts, TimeSeriesChartTypes } from './config'
+
+import type { TimeSeriesChartResponse } from './types'
 
 export type BufferConfig = {
   value: number;
@@ -17,24 +21,14 @@ interface ChartIncident extends Incident {
 }
 export interface ChartDataProps {
   charts: TimeSeriesChartTypes[]
-  incident: ChartIncident
+  incident: ChartIncident,
+  minGranularity: string
 }
 
-interface Response <ChartsData> {
+interface Response <TimeSeriesChartResponse> {
   network: {
-    hierarchyNode: ChartsData
+    hierarchyNode: TimeSeriesChartResponse
   }
-}
-
-export type ChartsData = {
-  relatedIncidents: Incident[],
-} & Record<string, Record<string, number[] | string[] | Record<string, number[] | string[]>>>
-
-export const calcGranularity = (start: string, end: string): string => {
-  const duration = moment.duration(moment(end).diff(moment(start))).asHours()
-  if (duration > 24 * 7) return 'PT1H' // 1 hour if duration > 7 days
-  if (duration > 1) return 'PT30M'
-  return 'PT180S'
 }
 
 export function getBuffer (chartBuffer: ChartIncident['buffer']) {
@@ -73,7 +67,7 @@ export function getIncidentTimeSeriesPeriods (incident: ChartIncident) {
 export const Api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     Charts: build.query<
-      ChartsData,
+      TimeSeriesChartResponse,
       ChartDataProps
     >({
       query: (payload) => {
@@ -101,11 +95,16 @@ export const Api = dataApi.injectEndpoints({
             codeMap: [payload.incident.code],
             ...getIncidentTimeSeriesPeriods(payload.incident),
             path: payload.incident.path,
-            granularity: calcGranularity(payload.incident.startTime, payload.incident.endTime)
+            granularity: calculateGranularity(
+              payload.incident.startTime,
+              payload.incident.endTime,
+              payload.minGranularity
+            )
           }
         }
       },
-      transformResponse: (response: Response<ChartsData>) => response.network.hierarchyNode
+      transformResponse: (response: Response<TimeSeriesChartResponse>) =>
+        response.network.hierarchyNode
     })
   })
 })

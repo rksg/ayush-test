@@ -2,9 +2,10 @@ import type { TimeStamp } from '@acx-ui/types'
 
 import type { TimeSeriesChartData } from './types/timeseries'
 
-export type TimeSeriesData = {
-  [key: string]: (TimeStamp | number | null)[]
-}
+export type TimeSeriesData = Record<
+  string,
+  (TimeStamp | number | null | ( Record<string, (TimeStamp | number | null)[]>))[]
+>
 
 export function getSeriesData (
   data: TimeSeriesData | null,

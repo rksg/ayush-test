@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, websocketServerUrl }             from '@acx-ui/rc/utils'
+import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { generatePath }                                   from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
@@ -27,9 +27,7 @@ describe('NetworkTabs', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(url, (_, res, ctx) => res(ctx.json(networkDetailHeaderData))),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json([])))
+      rest.get(url, (_, res, ctx) => res(ctx.json(networkDetailHeaderData)))
     )
   })
 

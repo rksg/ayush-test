@@ -2,9 +2,9 @@ import { Path } from 'react-router-dom'
 
 import { fakeIncident } from '@acx-ui/analytics/utils'
 
-import { onMarkedAreaClick, getMarkers } from './incidentTimeSeriesMarker'
+import { onMarkAreaClick, getMarkers } from './incidentTimeSeriesMarker'
 
-const incidnets = [
+const incidents = [
   fakeIncident({
     id: 'df5339ba-da3b-4110-a291-7f8993a274f3',
     severity: 0.5,
@@ -26,9 +26,9 @@ const incidnets = [
 describe('onMarkedAreaClick', () => {
   it('navigate to clicked incident', () => {
     const navigate = jest.fn()
-    const [incident, relatedIncident] = incidnets
+    const [incident, relatedIncident] = incidents
     const basePath = { pathname: '/analytics/incidents/' }
-    onMarkedAreaClick(navigate, basePath as Path, incident)(relatedIncident)
+    onMarkAreaClick(navigate, basePath as Path, incident)(relatedIncident)
     expect(navigate).toBeCalledTimes(1)
     expect(navigate).toBeCalledWith({
       ...basePath,
@@ -37,15 +37,15 @@ describe('onMarkedAreaClick', () => {
   })
   it('does not navigate to same incident', () => {
     const navigate = jest.fn()
-    const [incident] = incidnets
+    const [incident] = incidents
     const basePath = { pathname: '/analytics/incidents/' }
-    onMarkedAreaClick(navigate, basePath as Path, incident)(incident)
+    onMarkAreaClick(navigate, basePath as Path, incident)(incident)
     expect(navigate).not.toBeCalled()
   })
 })
 
 describe('getMarkers', () => {
   it('should handle markAreaProps', () => {
-    expect(getMarkers(incidnets, incidnets[0])).toMatchSnapshot()
+    expect(getMarkers(incidents, incidents[0])).toMatchSnapshot()
   })
 })

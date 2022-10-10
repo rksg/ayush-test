@@ -6,9 +6,11 @@ import { store }                                  from '@acx-ui/store'
 import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
 import { TimeSeriesChartTypes } from '../config'
-import { Api, ChartsData }      from '../services'
+import { Api }                  from '../services'
 
 import { TtcByFailureTypeChart } from './TtcByFailureTypeChart'
+
+import type { TimeSeriesChartResponse } from '../types'
 
 const expectedResult = {
   ttcByFailureTypeChart: {
@@ -27,7 +29,7 @@ const expectedResult = {
       ttcByRadius: [21, 22, 23, 24, 25]
     }
   }
-} as unknown as ChartsData
+} as unknown as TimeSeriesChartResponse
 
 afterEach(() => store.dispatch(Api.util.resetApiState()))
 
@@ -36,7 +38,7 @@ describe('TtcByFailureTypeChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <TtcByFailureTypeChart data={expectedResult}/>
+        <TtcByFailureTypeChart chartRef={()=>{}} incident={fakeIncident1} data={expectedResult}/>
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -51,7 +53,8 @@ describe('ttcByFailureTypeChartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts: [TimeSeriesChartTypes.TtcByFailureTypeChart]
+        charts: [TimeSeriesChartTypes.TtcByFailureTypeChart],
+        minGranularity: 'PT180S'
       })
     )
     expect(status).toBe('fulfilled')

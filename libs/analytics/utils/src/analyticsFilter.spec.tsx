@@ -83,4 +83,107 @@ describe('AnalyticsFilterProvider', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should set filter with switches when search parameters has switches', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'switchGroup', name: 'switchGroup' },
+        { type: 'switch', name: 'D8:38:FC:36:78:D0' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/incidents',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <AnalyticsFilterProvider>
+          <Component />
+        </AnalyticsFilterProvider>
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set filter with switchGroup & zone', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/incidents',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <AnalyticsFilterProvider>
+          <Component />
+        </AnalyticsFilterProvider>
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should set filter to default when select path does not have switch or AP', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'someType', name: 'someValue' },
+        { type: 'randomType', name: 'randomValue' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/incidents',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <AnalyticsFilterProvider>
+          <Component />
+        </AnalyticsFilterProvider>
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set path to default when path is health and selected node is switch', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <AnalyticsFilterProvider>
+          <Component />
+        </AnalyticsFilterProvider>
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
