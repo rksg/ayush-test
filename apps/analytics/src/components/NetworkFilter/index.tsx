@@ -22,9 +22,8 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = { shouldQuerySwitch : boolean }
 const getSeverityFromIncidents = (
-  incidentsList?: Incident[]
-): VenuesWithSeverityNodes | undefined => {
-  if (!incidentsList) return
+  incidentsList: Incident[]
+): VenuesWithSeverityNodes => {
   return groupBy(
     incidentsList.map((incident: Incident) => ({
       ...pick(incident, ['sliceType', 'path']),
@@ -76,11 +75,10 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
   }, [] )
 
 const getFilterData = (
-  data: Child[] | undefined,
+  data: Child[],
   $t: CallableFunction,
   nodesWithSeverities: VenuesWithSeverityNodes
-): Option[] | undefined => {
-  if (!data) return
+): Option[] => {
   const venues: { [key: string]: Option } = {}
   for (const { name, path, aps, switches } of data) {
     if (!venues[name]) {
@@ -202,7 +200,7 @@ function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterP
     omit({ ...filters, path: defaultNetworkPath }, 'filter'),
     {
       selectFromResult: ({ data, ...rest }) => ({
-        data: getSeverityFromIncidents(data) ?? emptyArrayVenue,
+        data: data ? getSeverityFromIncidents(data) : emptyArrayVenue,
         ...rest
       })
     }
@@ -210,8 +208,9 @@ function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterP
   const networkFilter = { ...filters, shouldQuerySwitch }
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
-      data:
-        getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) ?? emptyArrayFilter,
+      data: data
+        ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes)
+        : emptyArrayFilter,
       ...rest
     })
   })

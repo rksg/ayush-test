@@ -64,8 +64,9 @@ export const Header = ({ data, shouldQuerySwitch, ...props }: HeaderProps) => {
   const { path } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
   const title = useMemo(() => (filter || path.length > 1)
-    ? (data.name ?? name) // ap/switch name from data || venue name from filter
-    : props.title, [data.name, filter, name, path.length, props.title]) // displays Incidents at root level)
+    ? (data.name || name) // ap/switch name from data || venue name from filter
+    : props.title,
+  [data.name, filter, name, path.length, props.title]) // displays Incidents at root level
   const selectedRange = {
     startDate: moment(startDate),
     endDate: moment(endDate)
