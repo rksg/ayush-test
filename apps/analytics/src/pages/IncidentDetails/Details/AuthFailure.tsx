@@ -1,2 +1,1 @@
-import { IncidentDetailsTemplate } from './FailureTemplate'
-export default IncidentDetailsTemplate
+export { FailureTemplate as AuthFailure } from './FailureTemplate'
