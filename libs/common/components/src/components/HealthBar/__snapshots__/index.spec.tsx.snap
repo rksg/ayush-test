@@ -1,43 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Grid should render grid col 1`] = `
-<DocumentFragment>
-  <div
-    title="0"
-  >
-    <div
-      class="styledComponents__DivContainer-sc-1ds8per-0 iMXxkL"
-    >
-      <div
-        class="styledComponents__HealthContentPoor-sc-1ds8per-3 gsOGHY"
-      />
-      <div
-        class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-      />
-      <div
-        class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-      />
-      <div
-        class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-      />
-      <div
-        class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-      />
-      <div
-        class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-      />
-      <div
-        class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-      />
-      <div
-        class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-      />
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`Grid should render grid row 1`] = `
+exports[`HealthBar should render HealthBar 1`] = `
 <DocumentFragment>
   <div
     title="0.8"
@@ -62,6 +25,28 @@ exports[`Grid should render grid row 1`] = `
       />
       <div
         class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+      />
+      <div
+        class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+      />
+      <div
+        class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`HealthBar should render HealthBar with blockNumber 1`] = `
+<DocumentFragment>
+  <div
+    title="0"
+  >
+    <div
+      class="styledComponents__DivContainer-sc-1ds8per-0 iMXxkL"
+    >
+      <div
+        class="styledComponents__HealthContentModerate-sc-1ds8per-2 eocMlx"
       />
       <div
         class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
