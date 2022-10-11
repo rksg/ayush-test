@@ -1,6 +1,8 @@
 import { Badge as AntBadge } from 'antd'
 import styled                from 'styled-components/macro'
 
+import { Button } from '../Button'
+
 export const TooltipWrapper = styled.div`
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
@@ -45,4 +47,18 @@ export const Badge = styled(AntBadge)`
       }
     }
   }
+`
+
+export const ResetWrapper = styled.div`
+  position: relative;
+  width: fit-content;
+`
+
+interface ResetButtonProps {
+  $disableLegend: boolean
+}
+export const ResetButton = styled(Button)<ResetButtonProps>`
+  position: absolute;
+  top: ${props => props.$disableLegend ? '6px' : '15%'};
+  right: 0;
 `

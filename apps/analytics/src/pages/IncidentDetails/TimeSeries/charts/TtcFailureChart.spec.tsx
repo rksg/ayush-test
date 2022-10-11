@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 
 import { dataApiURL }         from '@acx-ui/analytics/services'
-import { fakeIncident1 }      from '@acx-ui/analytics/utils'
+import { fakeIncidentTtc }    from '@acx-ui/analytics/utils'
 import { Provider, store }    from '@acx-ui/store'
 import {
   screen,
@@ -14,7 +14,7 @@ import {
 import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
 
-import { TtcFailureChart, aggregateTTC } from './TtcFailureChart'
+import { TtcFailureChart, aggregateTtc } from './TtcFailureChart'
 
 import type { TimeSeriesChartResponse } from '../types'
 
@@ -33,9 +33,9 @@ const expectedResult = {
 
 afterEach(() => store.dispatch(Api.util.resetApiState()))
 
-describe('aggregateTTC', () => {
+describe('aggregateTtc', () => {
   it('should return correct data',() => {
-    expect(aggregateTTC(time, ttc, ttcCounts)).toEqual({
+    expect(aggregateTtc(time, ttc, ttcCounts)).toEqual({
       time,
       ttc,
       slowConnections: [0, 1, 2, 3, null],
@@ -53,7 +53,7 @@ describe('TtcFailureChart', () => {
     const { asFragment } = render(
       <Provider>
         <BrowserRouter>
-          <TtcFailureChart chartRef={()=>{}} incident={fakeIncident1} data={expectedResult}/>
+          <TtcFailureChart chartRef={()=>{}} incident={fakeIncidentTtc} data={expectedResult}/>
         </BrowserRouter>
       </Provider>
     )
@@ -66,10 +66,10 @@ describe('ttcFailureChartQuery', () => {
   it('should call corresponding api', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: { network: { hierarchyNode: expectedResult } }
-    })
+    }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
-        incident: fakeIncident1,
+        incident: fakeIncidentTtc,
         charts: [TimeSeriesChartTypes.TtcFailureChart],
         minGranularity: 'PT180S'
       })
