@@ -4,8 +4,8 @@ import {
   fakeIncident1,
   fakeIncident
 } from '@acx-ui/analytics/utils'
-import { store }                from '@acx-ui/store'
-import { mockDOMWidth, render } from '@acx-ui/test-utils'
+import { store }  from '@acx-ui/store'
+import { render } from '@acx-ui/test-utils'
 
 import { ChartsData, Api } from '../services'
 
@@ -42,7 +42,6 @@ const expectedResult = {
 beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('FailureChart', () => {
-  mockDOMWidth()
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>

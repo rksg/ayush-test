@@ -7,7 +7,6 @@ import { AnalyticsFilter }    from '@acx-ui/analytics/utils'
 import { Provider, store }    from '@acx-ui/store'
 import {
   render,
-  mockDOMWidth,
   cleanup,
   mockGraphqlQuery,
   screen,
@@ -20,28 +19,7 @@ import { HealthPageContext, TimeWindow } from '../HealthPageContext'
 
 import ConnectedClientsOverTime from '.'
 
-function mockGetClientSize (width = 280, height = 280) {
-  const originalHeight = Object.getOwnPropertyDescriptor(Element.prototype, 'clientHeight')
-  const originalWidth = Object.getOwnPropertyDescriptor(Element.prototype, 'clientWidth')
-
-  beforeAll(() => {
-    Object.defineProperty(Element.prototype, 'clientHeight',
-      { configurable: true, writable: true, value: height }
-    )
-    Object.defineProperty(Element.prototype, 'clientWidth',
-      { configurable: true, writable: true, value: width }
-    )
-  })
-
-  afterAll(() => {
-    Object.defineProperty(Element.prototype, 'clientHeight', originalHeight as PropertyDescriptor)
-    Object.defineProperty(Element.prototype, 'clientWidth', originalWidth as PropertyDescriptor)
-  })
-}
-
 describe('HealthConnectedClientsOverTime', () => {
-  mockDOMWidth()
-  mockGetClientSize(280, 200)
 
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 
@@ -93,8 +71,8 @@ describe('HealthConnectedClientsOverTime', () => {
     expect(chartComponent()).not.toBeNull()
 
     const rect = chartComponent().querySelector('rect') as SVGRectElement
-    expect(rect.clientHeight).toBe(200)
-    expect(rect.clientWidth).toBe(280)
+    expect(rect.clientHeight).toBe(800)
+    expect(rect.clientWidth).toBe(1280)
 
     const instance = ref.current!.getEchartsInstance()
     instance.dispatchAction({

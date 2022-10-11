@@ -15,177 +15,182 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
       </a>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 hDbAGt"
+      style="overflow: visible; height: 0px; width: 0px;"
     >
       <div
-        class="ant-pro-table"
+        class="styledComponents__Wrapper-sc-1abm7iv-12 hDbAGt"
+        style="width: 1250px;"
       >
         <div
-          class="ant-pro-card"
+          class="ant-pro-table"
         >
           <div
-            class="ant-pro-card-body"
-            style="padding-top: 0px;"
+            class="ant-pro-card"
           >
             <div
-              class="ant-pro-table-list-toolbar"
-            />
-            <div
-              class="ant-table-wrapper"
+              class="ant-pro-card-body"
+              style="padding-top: 0px;"
             >
               <div
-                class="ant-spin-nested-loading"
+                class="ant-pro-table-list-toolbar"
+              />
+              <div
+                class="ant-table-wrapper"
               >
                 <div
-                  class="ant-spin-container"
+                  class="ant-spin-nested-loading"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                    class="ant-spin-container"
                   >
                     <div
-                      class="ant-table-container"
+                      class="ant-table ant-table-middle ant-table-scroll-horizontal"
                     >
                       <div
-                        class="ant-table-content"
-                        style="overflow-x: auto; overflow-y: hidden;"
+                        class="ant-table-container"
                       >
-                        <table
-                          style="min-width: 100%; table-layout: auto;"
+                        <div
+                          class="ant-table-content"
+                          style="overflow-x: auto; overflow-y: hidden;"
                         >
-                          <colgroup>
-                            <col
-                              style="width: 50px;"
-                            />
-                          </colgroup>
-                          <thead
-                            class="ant-table-thead"
+                          <table
+                            style="width: 100%; min-width: 100%; table-layout: auto;"
                           >
-                            <tr>
-                              <th
-                                class="ant-table-cell"
+                            <colgroup>
+                              <col
+                                style="width: 50px;"
                               />
-                              <th
-                                class="ant-table-cell"
-                              >
-                                Networking Devices
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                              >
-                                Clients
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody
-                            class="ant-table-tbody"
-                          >
-                            <tr
-                              aria-hidden="true"
-                              class="ant-table-measure-row"
-                              style="height: 0px; font-size: 0px;"
+                            </colgroup>
+                            <thead
+                              class="ant-table-thead"
                             >
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
+                              <tr>
+                                <th
+                                  class="ant-table-cell"
+                                />
+                                <th
+                                  class="ant-table-cell"
                                 >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
+                                  Networking Devices
+                                </th>
+                                <th
+                                  class="ant-table-cell"
                                 >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="1"
+                                  Clients
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody
+                              class="ant-table-tbody"
                             >
-                              <td
-                                class="ant-table-cell"
+                              <tr
+                                aria-hidden="true"
+                                class="ant-table-measure-row"
+                                style="height: 0px; font-size: 0px;"
                               >
-                                Wi-Fi
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                <td
+                                  style="padding: 0px; border: 0px; height: 0px;"
                                 >
                                   <div
-                                    class="ant-space-item"
+                                    style="height: 0px; overflow: hidden;"
                                   >
-                                    No APs
+                                     
                                   </div>
-                                </div>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                </td>
+                                <td
+                                  style="padding: 0px; border: 0px; height: 0px;"
                                 >
                                   <div
-                                    class="ant-space-item"
+                                    style="height: 0px; overflow: hidden;"
                                   >
-                                    No AP Clients
+                                     
                                   </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="2"
-                            >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Switch
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                </td>
+                                <td
+                                  style="padding: 0px; border: 0px; height: 0px;"
                                 >
                                   <div
-                                    class="ant-space-item"
+                                    style="height: 0px; overflow: hidden;"
                                   >
-                                    No Switches
+                                     
                                   </div>
-                                </div>
-                              </td>
-                              <td
-                                class="ant-table-cell"
+                                </td>
+                              </tr>
+                              <tr
+                                class="ant-table-row ant-table-row-level-0"
+                                data-row-key="1"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  Wi-Fi
+                                </td>
+                                <td
+                                  class="ant-table-cell"
                                 >
                                   <div
-                                    class="ant-space-item"
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
                                   >
-                                    No Switch Clients
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      No APs
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                                </td>
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  <div
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                  >
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      No AP Clients
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr
+                                class="ant-table-row ant-table-row-level-0"
+                                data-row-key="2"
+                              >
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  Switch
+                                </td>
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  <div
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                  >
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      No Switches
+                                    </div>
+                                  </div>
+                                </td>
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  <div
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                  >
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      No Switch Clients
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -195,6 +200,20 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
           </div>
         </div>
       </div>
+    </div>
+    <div
+      class="resize-triggers"
+    >
+      <div
+        class="expand-trigger"
+      >
+        <div
+          style="width: 1281px; height: 801px;"
+        />
+      </div>
+      <div
+        class="contract-trigger"
+      />
     </div>
   </div>
 </DocumentFragment>
@@ -215,177 +234,182 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
       </a>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 hDbAGt"
+      style="overflow: visible; height: 0px; width: 0px;"
     >
       <div
-        class="ant-pro-table"
+        class="styledComponents__Wrapper-sc-1abm7iv-12 hDbAGt"
+        style="width: 1280px;"
       >
         <div
-          class="ant-pro-card"
+          class="ant-pro-table"
         >
           <div
-            class="ant-pro-card-body"
-            style="padding-top: 0px;"
+            class="ant-pro-card"
           >
             <div
-              class="ant-pro-table-list-toolbar"
-            />
-            <div
-              class="ant-table-wrapper"
+              class="ant-pro-card-body"
+              style="padding-top: 0px;"
             >
               <div
-                class="ant-spin-nested-loading"
+                class="ant-pro-table-list-toolbar"
+              />
+              <div
+                class="ant-table-wrapper"
               >
                 <div
-                  class="ant-spin-container"
+                  class="ant-spin-nested-loading"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                    class="ant-spin-container"
                   >
                     <div
-                      class="ant-table-container"
+                      class="ant-table ant-table-middle ant-table-scroll-horizontal"
                     >
                       <div
-                        class="ant-table-content"
-                        style="overflow-x: auto; overflow-y: hidden;"
+                        class="ant-table-container"
                       >
-                        <table
-                          style="min-width: 100%; table-layout: auto;"
+                        <div
+                          class="ant-table-content"
+                          style="overflow-x: auto; overflow-y: hidden;"
                         >
-                          <colgroup>
-                            <col
-                              style="width: 50px;"
-                            />
-                          </colgroup>
-                          <thead
-                            class="ant-table-thead"
+                          <table
+                            style="width: 100%; min-width: 100%; table-layout: auto;"
                           >
-                            <tr>
-                              <th
-                                class="ant-table-cell"
+                            <colgroup>
+                              <col
+                                style="width: 50px;"
                               />
-                              <th
-                                class="ant-table-cell"
-                              >
-                                Networking Devices
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                              >
-                                Clients
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody
-                            class="ant-table-tbody"
-                          >
-                            <tr
-                              aria-hidden="true"
-                              class="ant-table-measure-row"
-                              style="height: 0px; font-size: 0px;"
+                            </colgroup>
+                            <thead
+                              class="ant-table-thead"
                             >
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
+                              <tr>
+                                <th
+                                  class="ant-table-cell"
+                                />
+                                <th
+                                  class="ant-table-cell"
                                 >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
+                                  Networking Devices
+                                </th>
+                                <th
+                                  class="ant-table-cell"
                                 >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="1"
+                                  Clients
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody
+                              class="ant-table-tbody"
                             >
-                              <td
-                                class="ant-table-cell"
+                              <tr
+                                aria-hidden="true"
+                                class="ant-table-measure-row"
+                                style="height: 0px; font-size: 0px;"
                               >
-                                Wi-Fi
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                <td
+                                  style="padding: 0px; border: 0px; height: 0px;"
                                 >
                                   <div
-                                    class="ant-space-item"
+                                    style="height: 0px; overflow: hidden;"
                                   >
-                                    No APs
+                                     
                                   </div>
-                                </div>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                </td>
+                                <td
+                                  style="padding: 0px; border: 0px; height: 0px;"
                                 >
                                   <div
-                                    class="ant-space-item"
+                                    style="height: 0px; overflow: hidden;"
                                   >
-                                    No AP Clients
+                                     
                                   </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="2"
-                            >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Switch
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                </td>
+                                <td
+                                  style="padding: 0px; border: 0px; height: 0px;"
                                 >
                                   <div
-                                    class="ant-space-item"
+                                    style="height: 0px; overflow: hidden;"
                                   >
-                                    No Switches
+                                     
                                   </div>
-                                </div>
-                              </td>
-                              <td
-                                class="ant-table-cell"
+                                </td>
+                              </tr>
+                              <tr
+                                class="ant-table-row ant-table-row-level-0"
+                                data-row-key="1"
                               >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  Wi-Fi
+                                </td>
+                                <td
+                                  class="ant-table-cell"
                                 >
                                   <div
-                                    class="ant-space-item"
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
                                   >
-                                    No Switch Clients
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      No APs
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                                </td>
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  <div
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                  >
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      No AP Clients
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr
+                                class="ant-table-row ant-table-row-level-0"
+                                data-row-key="2"
+                              >
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  Switch
+                                </td>
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  <div
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                  >
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      No Switches
+                                    </div>
+                                  </div>
+                                </td>
+                                <td
+                                  class="ant-table-cell"
+                                >
+                                  <div
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-hcbyx3-13 bzmfDv"
+                                  >
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      No Switch Clients
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -395,6 +419,20 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
           </div>
         </div>
       </div>
+    </div>
+    <div
+      class="resize-triggers"
+    >
+      <div
+        class="expand-trigger"
+      >
+        <div
+          style="width: 1281px; height: 801px;"
+        />
+      </div>
+      <div
+        class="contract-trigger"
+      />
     </div>
   </div>
 </DocumentFragment>

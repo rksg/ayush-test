@@ -76,7 +76,7 @@ exports[`Alarm widget should render "No active alarms" when no alarms exist 1`] 
               class="expand-trigger"
             >
               <div
-                style="width: 281px; height: 281px;"
+                style="width: 1281px; height: 801px;"
               />
             </div>
             <div

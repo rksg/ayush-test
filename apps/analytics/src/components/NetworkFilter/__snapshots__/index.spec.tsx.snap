@@ -69,7 +69,7 @@ exports[`Network Filter with incident severity should not show any severity circ
           <div>
             <div
               class="ant-select-dropdown ant-cascader-dropdown ant-select-dropdown-empty"
-              style="opacity: 0; min-width: 0;"
+              style="opacity: 0; min-width: 1280px;"
             >
               <div>
                 <div
@@ -217,7 +217,7 @@ exports[`Network Filter with incident severity should show only venue severities
           <div>
             <div
               class="ant-select-dropdown ant-cascader-dropdown ant-select-dropdown-empty"
-              style="opacity: 0; min-width: 0;"
+              style="opacity: 0; min-width: 1280px;"
             >
               <div>
                 <div
@@ -365,7 +365,7 @@ exports[`Network Filter with incident severity should show severity only once on
           <div>
             <div
               class="ant-select-dropdown ant-cascader-dropdown ant-select-dropdown-empty"
-              style="opacity: 0; min-width: 0;"
+              style="opacity: 0; min-width: 1280px;"
             >
               <div>
                 <div

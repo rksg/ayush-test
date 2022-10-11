@@ -75,7 +75,7 @@ describe('Timeseries component', () => {
     )
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.getByText(/eap failures/i).textContent).toEqual('EAP Failures')
-    expect(screen.getByText(/clients/i).textContent).toEqual('Clients')
+    expect(screen.getAllByText(/eap failures/i)[0].textContent).toEqual('EAP Failures')
+    expect(screen.getAllByText(/clients/i)[0].textContent).toEqual('Clients')
   })
 })

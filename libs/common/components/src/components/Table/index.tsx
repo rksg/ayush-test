@@ -5,6 +5,7 @@ import { Space }                                       from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
+import AutoSizer                                       from 'react-virtualized-auto-sizer'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
@@ -42,7 +43,6 @@ export interface TableProps <RecordType>
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip' | 'form'
-    ellipsis?: boolean
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
@@ -226,11 +226,11 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
       width: colWidth[column.key],
       onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
-    }),
-    ...((props.ellipsis && col.key !== settingsKey) && { ellipsis: true })
+    })
   })
 
-  return <UI.Wrapper
+  return <AutoSizer>{({ width }) => (<UI.Wrapper
+    style={{ width }}
     $type={type}
     $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
   >
@@ -285,7 +285,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
-      scroll={props.ellipsis ? {} : { x: 'max-content' }}
+      scroll={{ x: '100%' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
@@ -324,7 +324,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
         </Space>
       )}
     />
-  </UI.Wrapper>
+  </UI.Wrapper>)}</AutoSizer>
 }
 
 Table.SubTitle = UI.SubTitle

@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { dataApiURL }                                                                            from '@acx-ui/analytics/services'
-import { Incident }                                                                              from '@acx-ui/analytics/utils'
-import { Provider, store }                                                                       from '@acx-ui/store'
-import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, renderHook, mockDOMWidth } from '@acx-ui/test-utils'
+import { dataApiURL }                                                              from '@acx-ui/analytics/services'
+import { Incident }                                                                from '@acx-ui/analytics/utils'
+import { Provider, store }                                                         from '@acx-ui/store'
+import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, renderHook } from '@acx-ui/test-utils'
 
 import { NetworkImpactChartTypes } from './config'
 import { networkImpactChartsApi }  from './services'
@@ -93,7 +93,6 @@ describe('transformSummary', () => {
 })
 
 describe('NetworkImpact', () => {
-  mockDOMWidth()
   const props ={
     incident: { id: 'id', metadata: { dominant: { } } } as Incident,
     charts: [

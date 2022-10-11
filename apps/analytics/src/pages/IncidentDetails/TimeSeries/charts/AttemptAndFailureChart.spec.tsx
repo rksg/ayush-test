@@ -1,9 +1,9 @@
 
 import { BrowserRouter } from 'react-router-dom'
 
-import { fakeIncident1 }        from '@acx-ui/analytics/utils'
-import { store }                from '@acx-ui/store'
-import { mockDOMWidth, render } from '@acx-ui/test-utils'
+import { fakeIncident1 } from '@acx-ui/analytics/utils'
+import { store }         from '@acx-ui/store'
+import { render }        from '@acx-ui/test-utils'
 
 import { ChartsData } from '../services'
 import { Api }        from '../services'
@@ -25,7 +25,6 @@ const expectedResult = {
 beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('AttemptAndFailureChart', () => {
-  mockDOMWidth()
   it('should render chart', async () => {
     const { asFragment } = render(
       <BrowserRouter>

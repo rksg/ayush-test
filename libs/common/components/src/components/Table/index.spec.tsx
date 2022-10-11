@@ -281,43 +281,9 @@ describe('Table component', () => {
     expect(onChange).toBeCalledTimes(2)
   })
 
-  it('should handle ellipsis', () => {
-    const basicColumns = [
-      { title: 'Name', key: 'name', dataIndex: 'name', width: 1 },
-      { title: 'Age', key: 'age', dataIndex: 'age' },
-      { title: 'Address', key: 'address', dataIndex: 'name' }
-    ]
-    const basicData = [
-      {
-        key: '1',
-        name: 'John Doe',
-        age: 32,
-        address: 'sample address'
-      },
-      {
-        key: '2',
-        name: 'Jane Doe',
-        age: 33,
-        address: 'new address'
-      },
-      {
-        key: '3',
-        name: 'Will Smith',
-        age: 45,
-        address: 'address'
-      }
-    ]
-    const { asFragment } = render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
-      ellipsis={true}
-    />)
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   describe('resize', () => {
-    mockDOMWidth(99)
     it('should allow column resizing', async () => {
+      mockDOMWidth(99)
       const { asFragment } = render(<Table
         columns={basicColumns}
         dataSource={basicData}

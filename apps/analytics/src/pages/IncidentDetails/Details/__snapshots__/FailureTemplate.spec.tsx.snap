@@ -92,7 +92,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -106,7 +106,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div

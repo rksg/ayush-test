@@ -1,24 +1,13 @@
-function descriptor (property: string) {
-  return Object.getOwnPropertyDescriptor(HTMLElement.prototype, property)
-}
-
-export function mockDOMWidth (width = 280, height = 280) {
+export function mockDOMWidth (width = 1280, height = 800) {
   const props = Object.entries({
-    offsetWidth: { descriptor: descriptor('offsetWidth'), value: width },
-    clientWidth: { descriptor: descriptor('clientWidth'), value: width },
-    offsetHeight: { descriptor: descriptor('offsetHeight'), value: height },
-    clientHeight: { descriptor: descriptor('clientHeight'), value: height }
+    offsetWidth: { value: width },
+    clientWidth: { value: width },
+    offsetHeight: { value: height },
+    clientHeight: { value: height }
   })
-
-  beforeAll(() => {
-    for (const [property, { value }] of props) {
-      Object.defineProperty(HTMLElement.prototype, property, { configurable: true, value })
-    }
-  })
-  afterAll(() => {
-    const defaultDescriptor = { configurable: true, value: 0 }
-    for (const [property, { descriptor }] of props) {
-      Object.defineProperty(HTMLElement.prototype, property, descriptor ?? defaultDescriptor)
-    }
-  })
+  for (const [name, { value }] of props) {
+    Object.defineProperty(Element.prototype, name, { configurable: true, writable: true, value })
+    Object
+      .defineProperty(HTMLElement.prototype, name, { configurable: true, writable: true, value })
+  }
 }

@@ -4,8 +4,8 @@ import { ECharts }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
 
-import { mockDOMWidth, render, renderHook } from '@acx-ui/test-utils'
-import { TimeStamp }                        from '@acx-ui/types'
+import { render, renderHook } from '@acx-ui/test-utils'
+import { TimeStamp }          from '@acx-ui/types'
 
 import { getSeriesData } from './stories'
 
@@ -17,7 +17,6 @@ import {
 } from '.'
 
 describe('MultiLineTimeSeriesChart', () => {
-  mockDOMWidth()
 
   it('should call formatter for yAxis', () => {
     const formatter = jest.fn()
