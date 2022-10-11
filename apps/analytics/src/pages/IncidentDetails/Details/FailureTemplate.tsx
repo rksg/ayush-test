@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import {
   calculateSeverity,
   Incident,
-  useShortDescription
+  shortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
@@ -16,7 +16,7 @@ import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (incident: Incident) => {
+export const FailureTemplate = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     Attributes.ClientImpactCount,
@@ -48,7 +48,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={useShortDescription(incident)}
+        subTitle={shortDescription(incident)}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
@@ -65,11 +65,13 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <TimeSeries incident={incident} charts={timeSeriesCharts} />
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+          />
         </GridCol>
       </GridRow>
     </>
   )
 }
-
-export default IncidentDetailsTemplate

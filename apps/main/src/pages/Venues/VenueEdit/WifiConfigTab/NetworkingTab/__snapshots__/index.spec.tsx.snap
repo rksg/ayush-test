@@ -88,7 +88,6 @@ exports[`MeshNetwork should render correctly 1`] = `
                   >
                     <div
                       class="Grid__Container-sc-5irhjd-1 zzbxI"
-                      style="position: fixed;"
                     >
                       <div>
                         <div

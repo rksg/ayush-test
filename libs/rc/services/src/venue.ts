@@ -9,6 +9,7 @@ import {
   showActivityMessage,
   TableResult,
   Venue,
+  VenueExtended,
   VenueDetailHeader,
   VenueCapabilities,
   VenueLed,
@@ -16,7 +17,9 @@ import {
   VenueSettings,
   VenueDosProtection,
   VenueRogueAp,
-  RogueClassificationPolicy
+  RogueClassificationPolicy,
+  VenueSwitchConfiguration,
+  ConfigurationProfile
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -40,20 +43,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          const activities = [
             'AddVenue',
+            'UpdateVenue',
             'DeleteVenue',
+            'DeleteVenues',
             'UpdateVenueRogueAp',
             'AddRoguePolicy',
             'UpdateRoguePolicy',
             'UpdateDenialOfServiceProtection'
-          ], () => {
+          ]
+          showActivityMessage(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
       }
     }),
-    addVenue: build.mutation<Venue, RequestPayload>({
+    addVenue: build.mutation<VenueExtended, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addVenue, params)
         return {
@@ -63,7 +69,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
-    getVenue: build.query<Venue, RequestPayload>({
+    getVenue: build.query<VenueExtended, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
         return{
@@ -71,6 +77,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
+    }),
+    updateVenue: build.mutation<VenueExtended, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenue, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
     venueDetailsHeader: build.query<VenueDetailHeader, RequestPayload>({
       query: ({ params }) => {
@@ -164,6 +180,43 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    configProfiles: build.query<ConfigurationProfile[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getConfigProfiles, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: { data: ConfigurationProfile[] }) {
+        return result?.data
+      }
+    }),
+    venueSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
+        return{
+          ...req
+        }
+      }
+    }),
     getDenialOfServiceProtection: build.query<VenueDosProtection, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getDenialOfServiceProtection, params)
@@ -216,6 +269,7 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
+  useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
   useDeleteVenueMutation,
   useFloorPlanListQuery,
@@ -229,5 +283,9 @@ export const {
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
-  useGetRoguePoliciesQuery
+  useGetRoguePoliciesQuery,
+  useConfigProfilesQuery,
+  useVenueSwitchSettingQuery,
+  useUpdateVenueSwitchSettingMutation,
+  useSwitchConfigProfileQuery
 } = venueApi

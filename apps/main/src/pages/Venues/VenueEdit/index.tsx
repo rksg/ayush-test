@@ -3,7 +3,7 @@ import { createContext, useState } from 'react'
 import { IntlShape } from 'react-intl'
 
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
-import { VenueLed }                           from '@acx-ui/rc/utils'
+import { VenueLed, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 import { getIntl }                            from '@acx-ui/utils'
 
@@ -20,24 +20,26 @@ const tabs = {
   switch: SwitchConfigTab
 }
 
-export interface AdvancedSettingContext {
+export interface EditContext {
   tabTitle: string,
   tabKey?: string,
   unsavedTabKey?: string,
   isDirty: boolean,
   hasError?: boolean,
-  oldData?: VenueLed[],
-  newData?: VenueLed[],
-  updateChanges: (() => void),
-  setData?: (data: VenueLed[]) => void,
+  oldData: unknown,
+  newData: unknown,
+  updateChanges: () => void,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setData: (data: any) => void,
   tempData?: {
-    settings?: VenueLed[]
+    settings?: VenueLed[],
+    general?: VenueSwitchConfiguration
   }
 }
 
 export const VenueEditContext = createContext({} as {
-  editContextData: AdvancedSettingContext,
-  setEditContextData: (data: AdvancedSettingContext) => void,
+  editContextData: EditContext,
+  setEditContextData: (data: EditContext) => void
 
   editNetworkingContextData: NetworkingSettingContext,
   setEditNetworkingContextData: (data: NetworkingSettingContext) => void
@@ -49,7 +51,7 @@ export const VenueEditContext = createContext({} as {
 export function VenueEdit () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
-  const [editContextData, setEditContextData] = useState({} as AdvancedSettingContext)
+  const [editContextData, setEditContextData] = useState({} as EditContext)
   const [
     editNetworkingContextData, setEditNetworkingContextData
   ] = useState({} as NetworkingSettingContext)
@@ -73,8 +75,8 @@ export function VenueEdit () {
 }
 
 export function showUnsavedModal (
-  editContextData: AdvancedSettingContext,
-  setEditContextData: (data: AdvancedSettingContext) => void,
+  editContextData: EditContext,
+  setEditContextData: (data: EditContext) => void,
   editNetworkingContextData: NetworkingSettingContext,
   editSecurityContextData: SecuritySettingContext,
   intl: IntlShape,
@@ -102,9 +104,11 @@ export function showUnsavedModal (
       setEditContextData({
         ...editContextData,
         isDirty: false,
+        newData: undefined,
+        oldData: undefined,
         tempData: {
           ...editContextData.tempData,
-          [tabKey as keyof AdvancedSettingContext]: oldData
+          [tabKey as keyof EditContext]: oldData
         }
       })
       setData && oldData && setData(oldData)

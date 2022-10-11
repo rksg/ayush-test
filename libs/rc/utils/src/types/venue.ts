@@ -1,5 +1,7 @@
 
 
+import { Key } from 'react'
+
 import { BandBalancing }             from '../models/BandBalancing'
 import { DenialOfServiceProtection } from '../models/DenialOfServiceProtection'
 import { LteBandLockChannel }        from '../models/LteBandLockChannel'
@@ -165,4 +167,76 @@ export interface VenueDosProtection {
   checkPeriod: number
   enabled: boolean
   failThreshold: number
+}
+
+export interface VenueSwitchConfiguration {
+	cliApplied?: boolean,
+	id?: string,
+	name?: string,
+	profileId: Key[],
+	dns?: string[],
+	switchLoginPassword?: string,
+	switchLoginUsername?: string,
+	syslogEnabled: boolean,
+	syslogPrimaryServer?: string,
+  syslogSecondaryServer?: string
+}
+
+export interface AclRule {
+	id: string,
+	source: string,
+	destination: string,
+	sequence: number
+	action: 'permit' | 'deny',
+	protocol: 'ip' | 'tcp' | 'udp'
+}
+
+export interface Acl {
+	aclType: 'standard' | 'extended'
+	id: string,
+	name: string,
+	aclRules: AclRule[]
+}
+
+export interface SwitchModelSlot {
+	slotNumber: number,
+	enable: boolean,
+	option?: string
+}
+
+export interface SwitchModel {
+	id: string,
+	model: string,
+	slots: SwitchModelSlot[],
+  taggedPorts?: string,
+  untaggedPorts?: string
+}
+
+export interface Vlan {
+	arpInspection: boolean,
+	id: string,
+	igmpSnooping: 'active' | 'passive' | 'none'
+	ipv4DhcpSnooping: boolean,
+	multicastVersion: number,
+	spanningTreePriority: number,
+	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
+	switchFamilyModels?: SwitchModel[]
+	vlanId: number,
+	vlanName?: string
+}
+
+export interface ConfigurationProfile {
+	id: string,
+	name: string,
+	profileType: 'Regular' | 'CLI',
+	venueCliTemplate?: {
+		cli: string,
+		id: string,
+		name: string,
+		overwrite: boolean
+		switchModels?: string
+	}
+	vlans?: Vlan[],
+	acls?: Acl[],
+	venues?: string[]
 }

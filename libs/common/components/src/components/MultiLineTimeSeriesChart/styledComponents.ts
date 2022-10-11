@@ -16,8 +16,11 @@ export const Wrapper = styled.div`
   }
 `
 
-export const ResetButton = styled(Button)`
+interface ResetButtonProps {
+  $disableLegend: boolean
+}
+export const ResetButton = styled(Button)<ResetButtonProps>`
   position: absolute;
-  top: 15%;
+  top: ${props => props.$disableLegend ? '3%' : '15%'};
   right: 0;
 `
