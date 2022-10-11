@@ -5,11 +5,15 @@ import moment, { unitOfTime } from 'moment-timezone'
 import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
 
+import { calculateGranularity } from '../../../utils'
+
 import { timeSeriesCharts, TimeSeriesChartTypes } from './config'
 
-type BufferConfig = {
-  value: number
-  unit: unitOfTime.Base
+import type { TimeSeriesChartResponse } from './types'
+
+export type BufferConfig = {
+  value: number;
+  unit: unitOfTime.Base;
 }
 
 export type BufferType = number | { front: BufferConfig, back: BufferConfig }
@@ -20,12 +24,13 @@ interface ChartIncident extends Incident {
 export interface ChartDataProps {
   charts: TimeSeriesChartTypes[]
   incident: ChartIncident
-  buffer: BufferType
+  buffer: BufferType,
+  minGranularity: string
 }
 
-interface Response <ChartsData> {
+interface Response <TimeSeriesChartResponse> {
   network: {
-    hierarchyNode: ChartsData
+    hierarchyNode: TimeSeriesChartResponse
   }
 }
 
@@ -61,7 +66,7 @@ export function getIncidentTimeSeriesPeriods (incident: ChartIncident, incidentB
 export const Api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     Charts: build.query<
-      ChartsData,
+      TimeSeriesChartResponse,
       ChartDataProps
     >({
       query: (payload) => {
@@ -89,11 +94,16 @@ export const Api = dataApi.injectEndpoints({
             codeMap: [payload.incident.code],
             ...getIncidentTimeSeriesPeriods(payload.incident, payload.buffer),
             path: payload.incident.path,
-            granularity: calcGranularity(payload.incident.startTime, payload.incident.endTime)
+            granularity: calculateGranularity(
+              payload.incident.startTime,
+              payload.incident.endTime,
+              payload.minGranularity
+            )
           }
         }
       },
-      transformResponse: (response: Response<ChartsData>) => response.network.hierarchyNode
+      transformResponse: (response: Response<TimeSeriesChartResponse>) =>
+        response.network.hierarchyNode
     })
   })
 })

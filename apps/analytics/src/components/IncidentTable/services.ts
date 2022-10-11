@@ -8,7 +8,7 @@ import {
   Incident,
   transformIncidentQueryResult,
   shortDescription,
-  formattedNodeType,
+  nodeTypes,
   impactValues,
   impactedArea,
   calculateSeverity,
@@ -68,7 +68,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
     const childClientCount = impactValueObj['clientImpactCountFormatted']
     const childDescription = shortDescription(childIncident)
     const childScope = impactedArea(child.path, child.sliceValue)!
-    const childType = formattedNodeType(child.sliceType)
+    const childType = nodeTypes(child.sliceType)
     const childSeverityLabel = calculateSeverity(child.severity) ?? noDataSymbol
 
     return {
@@ -93,7 +93,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
   const impactedClients = impactValueObj['clientImpactCountFormatted']
   const description = shortDescription(incidentInfo)
   const scope = impactedArea(incident.path, incident.sliceValue)!
-  const type = formattedNodeType(incident.sliceType)
+  const type = nodeTypes(incident.sliceType)
   const severityLabel = calculateSeverity(incident.severity) ?? noDataSymbol
 
   return {

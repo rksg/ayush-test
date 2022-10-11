@@ -12,10 +12,12 @@ import Header from '../../components/Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
 import { HealthPageContextProvider } from './HealthPageContext'
+import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
+import { SummaryBoxes }              from './SummaryBoxes'
 
 const healthTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
-type HealthTab = 'overview' | 'connection' | 'performance' | 'infrastructure'
+export type HealthTab = 'overview' | 'connection' | 'performance' | 'infrastructure'
 
 const tabsMap : Record<HealthTab, MessageDescriptor> = {
   overview: defineMessage({
@@ -32,18 +34,7 @@ const tabsMap : Record<HealthTab, MessageDescriptor> = {
   })
 }
 
-const HealthTabContent = (props: { tabSelection: HealthTab }) => {
-  return (
-    <GridRow>
-      <GridCol col={{ span: 16 }} >
-        <div>{props.tabSelection}</div>
-      </GridCol>
-      <GridCol col={{ span: 8 }} >
-        <div>Threshold Content</div>
-      </GridCol>
-    </GridRow>
-  )
-}
+
 
 export default function HealthPage () {
   const { $t } = useIntl()
@@ -60,10 +51,10 @@ export default function HealthPage () {
 
   return (
     <>
-      <Header title={$t({ defaultMessage: 'Health' })} />
+      <Header title={$t({ defaultMessage: 'Health' })} shouldQuerySwitch={false}/>
       <GridRow>
-        <GridCol col={{ span: 24 }} style={{ height: '105px' }}>
-          <div>Summary Boxes</div>
+        <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
+          <SummaryBoxes/>
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
@@ -85,7 +76,7 @@ export default function HealthPage () {
             </UI.ThresholdTitle>
           </GridCol>
           <GridCol col={{ span: 24 }}>
-            <HealthTabContent tabSelection={activeTab as HealthTab} />
+            <Kpis tab={activeTab as HealthTab} />
           </GridCol>
         </HealthPageContextProvider>
       </GridRow>

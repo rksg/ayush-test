@@ -83,8 +83,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       key: 'severity',
       render: (_, value) => <GetIncidentBySeverity value={value.severity} id={value.id}/>,
       sorter: {
-        compare: (a, b) => severitySort(a.severity, b.severity),
-        multiple: 1
+        compare: (a, b) => severitySort(a.severity, b.severity)
       },
       defaultSortOrder: 'descend',
       fixed: 'left',
@@ -102,8 +101,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         </Link>
       },
       sorter: {
-        compare: (a, b) => dateSort(a.endTime, b.endTime),
-        multiple: 2
+        compare: (a, b) => dateSort(a.endTime, b.endTime)
       },
       fixed: 'left'
     },
@@ -112,10 +110,9 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       width: 100,
       dataIndex: 'duration',
       key: 'duration',
-      render: (_, value) => formatter('durationFormat')(value.duration) as string,
+      render: (_, value) => formatter('durationFormat')(value.duration),
       sorter: {
-        compare: (a, b) => defaultSort(b.duration, a.duration),
-        multiple: 3
+        compare: (a, b) => defaultSort(b.duration, a.duration)
       }
     },
     {
@@ -130,8 +127,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         />
       ),
       sorter: {
-        compare: (a, b) => defaultSort(a.description, b.description),
-        multiple: 4
+        compare: (a, b) => defaultSort(a.description, b.description)
       },
       searchable: true
     },
@@ -141,8 +137,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'category',
       key: 'category',
       sorter: {
-        compare: (a, b) => defaultSort(a.category as string, b.category as string),
-        multiple: 5
+        compare: (a, b) => defaultSort(a.category as string, b.category as string)
       },
       filterable: true
     },
@@ -152,8 +147,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: {
-        compare: (a, b) => defaultSort(a.subCategory as string, b.subCategory as string),
-        multiple: 6
+        compare: (a, b) => defaultSort(a.subCategory as string, b.subCategory as string)
       },
       show: false
     },
@@ -163,8 +157,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'clientImpact',
       key: 'clientImpact',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.clientImpact, b.clientImpact),
-        multiple: 7
+        compare: (a, b) => clientImpactSort(a.clientImpact, b.clientImpact)
       }
     },
     {
@@ -173,8 +166,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'impactedClients',
       key: 'impactedClients',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.impactedClients, b.impactedClients),
-        multiple: 8
+        compare: (a, b) => clientImpactSort(a.impactedClients, b.impactedClients)
       },
       align: 'center'
     },
@@ -189,8 +181,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         </Tooltip>
       },
       sorter: {
-        compare: (a, b) => defaultSort(a.scope, b.scope),
-        multiple: 9
+        compare: (a, b) => defaultSort(a.scope, b.scope)
       },
       searchable: true
     },
@@ -200,8 +191,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'type',
       key: 'type',
       sorter: {
-        compare: (a, b) => defaultSort(a.type, b.type),
-        multiple: 10
+        compare: (a, b) => defaultSort(a.type, b.type)
       },
       show: false,
       filterable: true

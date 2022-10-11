@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEventHandler } from 'react'
+import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
 import { Row, Col, Form, Input, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
@@ -11,10 +11,15 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { get }                                          from '@acx-ui/config'
-import { useSplitTreatment }                            from '@acx-ui/feature-toggle'
-import { SearchOutlined }                               from '@acx-ui/icons'
-import { useAddVenueMutation, useLazyVenuesListQuery }  from '@acx-ui/rc/services'
+import { get }               from '@acx-ui/config'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
+import { SearchOutlined }    from '@acx-ui/icons'
+import {
+  useAddVenueMutation,
+  useLazyVenuesListQuery,
+  useGetVenueQuery,
+  useUpdateVenueMutation
+} from '@acx-ui/rc/services'
 import { Address, VenueSaveData, checkObjectNotExists } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -122,6 +127,7 @@ export function VenuesForm () {
 
   const linkToVenues = useTenantLink('/venues')
   const [addVenue] = useAddVenueMutation()
+  const [updateVenue] = useUpdateVenueMutation()
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -129,6 +135,30 @@ export function VenuesForm () {
   })
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+
+  const { tenantId, venueId, action } = useParams()
+  const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
+
+  useEffect(() => {
+    if(data){
+      formRef.current?.setFieldsValue({
+        name: data?.name,
+        description: data?.description,
+        address: data?.address
+      })
+      updateAddress(data?.address as Address)
+
+      if(isMapEnabled){
+        const latlng = new google.maps.LatLng({
+          lat: Number(data?.address?.latitude),
+          lng: Number(data?.address?.longitude)
+        })
+        setMarker(latlng)
+        setCenter(latlng.toJSON())
+        setZoom(16)
+      }
+    }
+  }, [data])
 
   const venuesListPayload = {
     searchString: '',
@@ -141,7 +171,7 @@ export function VenuesForm () {
   const nameValidator = async (value: string) => {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
-      .unwrap()).data.map(n => ({ name: n.name }))
+      .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
 
@@ -187,19 +217,37 @@ export function VenuesForm () {
     }
   }
 
+  const handleEditVenue = async (values: VenueSaveData) => {
+    try {
+      const formData = { ...values }
+      formData.address = address
+      await updateVenue({ params, payload: formData }).unwrap()
+      navigate(linkToVenues, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: intl.$t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
   return (
     <>
       <PageHeader
-        title={intl.$t({ defaultMessage: 'Add New Venue' })}
+        title={action === 'edit' ?
+          intl.$t({ defaultMessage: 'Edit New Venue' }):
+          intl.$t({ defaultMessage: 'Add New Venue' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
       />
       <StepsForm
         formRef={formRef}
-        onFinish={handleAddVenue}
+        onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
         onCancel={() => navigate(linkToVenues)}
-        buttonLabel={{ submit: intl.$t({ defaultMessage: 'Add' }) }}
+        buttonLabel={{ submit: action === 'edit' ?
+          intl.$t({ defaultMessage: 'Save' }):
+          intl.$t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>

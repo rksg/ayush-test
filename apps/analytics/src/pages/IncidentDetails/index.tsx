@@ -2,22 +2,22 @@ import React from 'react'
 
 import { Loader } from '@acx-ui/components'
 
-import ApifraPoeLow            from './Details/ApifraPoeLow'
-import ApinfraWanthroughputLow from './Details/ApinfraWanthroughputLow'
-import ApservContinuousReboots from './Details/ApservContinuousReboots'
-import ApservDowntimeHigh      from './Details/ApservDowntimeHigh'
-import ApservHighNumReboots    from './Details/ApservHighNumReboots'
-import AssocFailure            from './Details/AssocFailure'
-import AuthFailure             from './Details/AuthFailure'
-import CovClientrssiLow        from './Details/CovClientrssiLow'
-import DhcpFailure             from './Details/DhcpFailure'
-import EapFailure              from './Details/EapFailure'
-import RadiusFailure           from './Details/RadiusFailure'
-import SwitchMemoryHigh        from './Details/SwitchMemoryHigh'
-import SwitchPoePd             from './Details/SwitchPoePd'
-import SwitchVlanMismatch      from './Details/SwitchVlanMismatch'
-import Ttc                     from './Details/Ttc'
-import { useIncident }         from './services'
+import { ApinfraPoeLow }           from './Details/ApinfraPoeLow'
+import { ApinfraWanthroughputLow } from './Details/ApinfraWanthroughputLow'
+import { ApservContinuousReboots } from './Details/ApservContinuousReboots'
+import { ApservDowntimeHigh }      from './Details/ApservDowntimeHigh'
+import { ApservHighNumReboots }    from './Details/ApservHighNumReboots'
+import { AssocFailure }            from './Details/AssocFailure'
+import { AuthFailure }             from './Details/AuthFailure'
+import { CovClientrssiLow }        from './Details/CovClientrssiLow'
+import { DhcpFailure }             from './Details/DhcpFailure'
+import { EapFailure }              from './Details/EapFailure'
+import { RadiusFailure }           from './Details/RadiusFailure'
+import { SwitchMemoryHigh }        from './Details/SwitchMemoryHigh'
+import { SwitchPoePd }             from './Details/SwitchPoePd'
+import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
+import { Ttc }                     from './Details/Ttc'
+import { useIncident }             from './services'
 
 export const incidentDetailsMap = {
   'radius-failure': RadiusFailure,
@@ -28,13 +28,13 @@ export const incidentDetailsMap = {
   'ttc': Ttc,
   'p-cov-clientrssi-low': CovClientrssiLow,
   'p-switch-memory-high': SwitchMemoryHigh,
-  'i-apserv-high-num-reboots': ApservHighNumReboots,
+  'i-apinfra-poe-low': ApinfraPoeLow,
+  'i-apinfra-wanthroughput-low': ApinfraWanthroughputLow,
   'i-apserv-continuous-reboots': ApservContinuousReboots,
   'i-apserv-downtime-high': ApservDowntimeHigh,
-  'i-switch-vlan-mismatch': SwitchVlanMismatch,
+  'i-apserv-high-num-reboots': ApservHighNumReboots,
   'i-switch-poe-pd': SwitchPoePd,
-  'i-apinfra-poe-low': ApifraPoeLow,
-  'i-apinfra-wanthroughput-low': ApinfraWanthroughputLow
+  'i-switch-vlan-mismatch': SwitchVlanMismatch
 }
 
 function IncidentDetailsPage () {
