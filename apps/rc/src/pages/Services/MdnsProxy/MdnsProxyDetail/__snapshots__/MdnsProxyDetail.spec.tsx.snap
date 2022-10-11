@@ -17,7 +17,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/__Tenant_ID__/services"
+                href="/t/15320bc221d94d2cb537fa0189fee742/services"
               >
                 Services
               </a>
@@ -83,14 +83,18 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
             <div
               class="ant-space-item"
             >
-              <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <a
+                href="/t/15320bc221d94d2cb537fa0189fee742/services/mdnsProxy/4b76b1952c80401b8500b00d68106576/edit"
               >
-                <span>
-                  Configure
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  type="button"
+                >
+                  <span>
+                    Configure
+                  </span>
+                </button>
+              </a>
             </div>
           </div>
         </span>
@@ -879,7 +883,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           class="ant-table-cell"
                                         >
                                           <a
-                                            href="/t/__Tenant_ID__/venues/__VENUE_ID__1/venue-details/overview"
+                                            href="/t/15320bc221d94d2cb537fa0189fee742/venues/__VENUE_ID__1/venue-details/overview"
                                           >
                                             Venue 1
                                           </a>
@@ -937,7 +941,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           class="ant-table-cell"
                                         >
                                           <a
-                                            href="/t/__Tenant_ID__/venues/__VENUE_ID__2/venue-details/overview"
+                                            href="/t/15320bc221d94d2cb537fa0189fee742/venues/__VENUE_ID__2/venue-details/overview"
                                           >
                                             Venue 2
                                           </a>
@@ -995,7 +999,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           class="ant-table-cell"
                                         >
                                           <a
-                                            href="/t/__Tenant_ID__/venues/__VENUE_ID__3/venue-details/overview"
+                                            href="/t/15320bc221d94d2cb537fa0189fee742/venues/__VENUE_ID__3/venue-details/overview"
                                           >
                                             Venue 3
                                           </a>
