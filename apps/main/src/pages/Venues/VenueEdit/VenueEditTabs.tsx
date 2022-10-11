@@ -10,7 +10,7 @@ import {
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext, showUnsavedModal } from './index'
+import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
 import type { History, Transition } from 'history'
 
@@ -19,10 +19,16 @@ function VenueEditTabs () {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const {
+    editContextData,
+    setEditContextData,
+    editNetworkingContextData
+  } = useContext(VenueEditContext)
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
     if (tab === 'switch') tab = `${tab}/general`
+
+    setEditContextData({} as EditContext)
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
@@ -44,6 +50,7 @@ function VenueEditTabs () {
         showUnsavedModal(
           editContextData,
           setEditContextData,
+          editNetworkingContextData,
           tx.retry
         )
       })

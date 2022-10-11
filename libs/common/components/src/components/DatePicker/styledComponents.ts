@@ -3,8 +3,6 @@ import styled                from 'styled-components/macro'
 
 import { DateRange, defaultRanges } from '@acx-ui/utils'
 
-import { cssNumber } from '../../theme/helper'
-
 type WrapperProps = {
   rangeOptions?: DateRange[];
   selectionType: DateRange;
@@ -205,9 +203,8 @@ export const SelectedRange = styled.div`
   font-size: var(--acx-subtitle-5-font-size);
   font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
 `
-export const Buttons = styled(Space).attrs({
-  size: cssNumber('--acx-modal-footer-small-button-space')
-})`
+export const Buttons = styled(Space)`
+  gap: var(--acx-modal-footer-small-button-space) !important;
   .ant-space-item {
     line-height: normal;
   }

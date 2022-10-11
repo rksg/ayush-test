@@ -137,5 +137,50 @@ export enum RadiusErrorsType {
 export enum ApLanPortTypeEnum {
   ACCESS = 'ACCESS',
   GENERAL = 'GENERAL',
-  TRUNK = 'TRUNK',
+  TRUNK = 'TRUNK'
+}
+
+export enum ProfileTypeEnum {
+  REGULAR = 'Regular',
+  CLI = 'CLI'
+}
+
+export enum IgmpSnoopingEnum {
+  ACTIVE = 'active',
+  PASSIVE = 'passive',
+  NONE = 'none'
+}
+
+export enum SpanningTreeProtocolEnum {
+  RSTP = 'rstp',
+  STP = 'stp',
+  NONE = 'none'
+}
+
+export enum SpanningTreeProtocolName {
+  rstp = 'RSTP',
+  stp = 'STP',
+  none = 'None'
+}
+
+export enum AclRuleProtocolEnum {
+  IP = 'ip',
+  TCP = 'tcp',
+  UDP = 'udp'
+}
+
+export enum AclTypeEnum {
+  STANDARD = 'standard',
+  EXTENDED = 'extended'
+}
+
+export enum AclRuleActionEnum {
+  PERMIT = 'permit',
+  DENY = 'deny'
+}
+
+export enum TrustedPortTypeEnum {
+  ALL = 'all',
+  DHCP = 'dhcp',
+  ARP = 'arp'
 }

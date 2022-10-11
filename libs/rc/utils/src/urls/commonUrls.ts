@@ -79,6 +79,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/venue'
   },
+  updateVenue: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/venue/:venueId'
+  },
   getVenue: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId'
@@ -94,6 +98,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getVenueSettings: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId'
+  },
+  updateVenueMesh: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh'
   },
   getService: {
     method: 'get',
@@ -150,5 +162,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   validateRadius: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
+  },
+  getConfigProfiles: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profiles/query'
+  },
+  getVenueSwitchSetting: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venue/:venueId'
+  },
+  updateVenueSwitchSetting: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/venue'
+  },
+  getSwitchConfigProfile: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId'
   }
 }

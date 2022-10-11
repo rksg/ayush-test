@@ -87,6 +87,18 @@ export const WifiNetworkMessages = {
     defaultMessage: 'Can be a single VLAN ID, a VLAN ID range or a combination of both, separated with commas e.g. 1,3,5-7'
   })
 }
+
+export const VenueMessages = {
+  MODEL_OVERLAPPING_TOOLTIP: defineMessage({
+    defaultMessage: 'You selected CLI profiles with overlapping switch models. Please correct your selection'
+  }),
+  CLI_PROFILE_NOTIFICATION: defineMessage({
+    defaultMessage: `<ul>
+      <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li>
+      <li>The selected CLI profiles cannot contain overlapping switch models</li>
+    </ul>`
+  })
+}
 /* eslint-enable */
 
 export enum IsolatePacketsTypeEnum {
