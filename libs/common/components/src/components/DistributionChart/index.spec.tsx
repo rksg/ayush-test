@@ -1,0 +1,25 @@
+import {  mockDOMWidth, render, screen } from '@acx-ui/test-utils'
+
+import { data } from './stories'
+
+import { DistributionChart } from '.'
+
+describe('DistributionChart',()=>{
+  mockDOMWidth()
+  it('should renderer correctly', () => {
+    const { asFragment } = render(<DistributionChart
+      data={data}
+      title={'DistributionChartTest'}
+    />)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(screen.getAllByText('DistributionChartTest')).toHaveLength(1)
+  })
+  it('should renderer correctly without title', () => {
+    const { asFragment } = render(<DistributionChart
+      data={data}
+    />)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+})
