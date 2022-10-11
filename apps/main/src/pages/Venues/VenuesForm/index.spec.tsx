@@ -3,7 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
 import { useSplitTreatment }  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { CommonUrlsInfo  }    from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
@@ -21,6 +21,22 @@ import {
 } from '../__tests__/fixtures'
 
 import { VenuesForm, addressParser } from '.'
+
+const venueResponse = {
+  id: '2c16284692364ab6a01f4c60f5941836',
+  createdDate: '2022-09-06T09:41:27.550+00:00',
+  updatedDate: '2022-09-22T10:36:28.113+00:00',
+  name: 'My-Venue',
+  description: 'My-Venue',
+  address: {
+    country: 'New York',
+    city: 'United States',
+    addressLine: 'New York, NY, USA',
+    latitude: 40.7127753,
+    longitude: -74.0059728,
+    timezone: 'America/New_York'
+  }
+}
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -42,6 +58,14 @@ describe('Venues Form', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venuelist))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (req, res, ctx) => res(ctx.json(venueResponse))
+      ),
+      rest.put(
+        CommonUrlsInfo.updateVenue.url,
+        (req, res, ctx) => res(ctx.json(successResponse))
       ),
       rest.get(
         'https://maps.googleapis.com/maps/api/timezone/*',
@@ -108,14 +132,12 @@ describe('Venues Form', () => {
   })
   it('google map is not enabled', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(false)
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenuesForm />
       </Provider>, {
         route: { params, path: '/:tenantId/venues/add' }
       })
-
-    expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('Map is not enabled')
   })
@@ -134,5 +156,29 @@ describe('Venues Form', () => {
       hash: '',
       search: ''
     })
+  })
+  it('should edit venue successfully', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(true)
+
+    const params = {
+      venueId: '2c16284692364ab6a01f4c60f5941836',
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params }
+      })
+
+    const venueInput = screen.getByLabelText('Venue Name')
+    fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
+    fireEvent.blur(venueInput)
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
+    fireEvent.click(screen.getByText('Save'))
   })
 })

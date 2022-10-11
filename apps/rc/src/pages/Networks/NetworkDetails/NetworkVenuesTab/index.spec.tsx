@@ -2,6 +2,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+
 import * as config                      from '@acx-ui/config'
 import { networkApi }                   from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -18,6 +19,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import { NetworkVenuesTab } from './index'
+
+jest.mock('socket.io-client')
 
 const network = {
   type: 'aaa',

@@ -1,14 +1,14 @@
-
 import { BrowserRouter } from 'react-router-dom'
 
 import { fakeIncident1 }        from '@acx-ui/analytics/utils'
 import { store }                from '@acx-ui/store'
 import { mockDOMWidth, render } from '@acx-ui/test-utils'
 
-import { ChartsData } from '../services'
-import { Api }        from '../services'
+import { Api } from '../services'
 
 import { AttemptAndFailureChart } from './AttemptAndFailureChart'
+
+import type { TimeSeriesChartResponse } from '../types'
 
 const expectedResult = {
   attemptAndFailureChart: {
@@ -20,7 +20,7 @@ const expectedResult = {
     totalFailureCount: [1, 2],
     attemptCount: [1, 2]
   }
-} as unknown as ChartsData
+} as unknown as TimeSeriesChartResponse
 
 beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
@@ -29,7 +29,7 @@ describe('AttemptAndFailureChart', () => {
   it('should render chart', async () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <AttemptAndFailureChart incident={fakeIncident1} data={expectedResult}/>
+        <AttemptAndFailureChart chartRef={()=>{}} incident={fakeIncident1} data={expectedResult}/>
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
