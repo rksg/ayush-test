@@ -6,7 +6,7 @@ import { getSeriesData }                  from '@acx-ui/analytics/utils'
 import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/utils'
 
-import { ChartsData } from '../services'
+import type { TimeSeriesChartProps } from '../types'
 
 const rssGroups = {
   good: { lower: -74 },
@@ -37,7 +37,7 @@ const lineColors = [
   cssStr('--acx-semantics-red-50')
 ]
 
-export const RssQualityByClientsChart = ({ data }: { data: ChartsData }) => {
+export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
   const { rssQualityByClientsChart } = data
   const { $t } = useIntl()
 

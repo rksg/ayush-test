@@ -5,9 +5,9 @@ import { storiesOf }        from '@storybook/react'
 import { connect }          from 'echarts'
 import ReactECharts         from 'echarts-for-react'
 
-import { incidentSeverities }                from '@acx-ui/analytics/utils'
-import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStamp, TimeStampRange }    from '@acx-ui/types'
+import { incidentSeverities }             from '@acx-ui/analytics/utils'
+import type { SeriesChartData }           from '@acx-ui/analytics/utils'
+import type { TimeStamp, TimeStampRange } from '@acx-ui/types'
 
 import { cssStr } from '../../theme/helper'
 import { Button } from '../Button'
@@ -67,7 +67,7 @@ const Connected = () => {
 const ConnectedBrush = () => {
   const [data, setData]= useState(getSeriesData())
   const n = data.length
-  const timeWindowInit = (data: MultiLineTimeSeriesChartData[]) =>
+  const timeWindowInit = (data: SeriesChartData[]) =>
     [data[0].data[0][0], data[n-1].data[n-1][0]]
   const [timeWindow, setTimeWindow] = useState(timeWindowInit(data))
   const onBrushChangeCallback = useCallback((range: TimeStamp[]) => {

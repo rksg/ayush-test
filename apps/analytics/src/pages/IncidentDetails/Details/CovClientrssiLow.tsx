@@ -64,7 +64,12 @@ export const CovClientrssiLow = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts}/>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <TimeSeries incident={incident} charts={timeSeriesCharts} buffer={buffer}/>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+            buffer={buffer}
+          />
         </GridCol>
       </GridRow>
     </>

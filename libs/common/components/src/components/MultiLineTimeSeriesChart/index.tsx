@@ -12,7 +12,7 @@ import { isEmpty }  from 'lodash'
 import { useIntl }  from 'react-intl'
 
 import type { SeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStampRange }               from '@acx-ui/types'
+import type { TimeStampRange }  from '@acx-ui/types'
 
 import { cssStr }              from '../../theme/helper'
 import {

@@ -18,12 +18,9 @@ export type BufferConfig = {
 
 export type BufferType = number | { front: BufferConfig, back: BufferConfig }
 
-interface ChartIncident extends Incident {
-  buffer?: BufferType
-}
 export interface ChartDataProps {
   charts: TimeSeriesChartTypes[]
-  incident: ChartIncident
+  incident: Incident
   buffer: BufferType,
   minGranularity: string
 }
@@ -45,7 +42,7 @@ export const calcGranularity = (start: string, end: string): string => {
   return 'PT180S'
 }
 
-export function getIncidentTimeSeriesPeriods (incident: ChartIncident, incidentBuffer: BufferType) {
+export function getIncidentTimeSeriesPeriods (incident: Incident, incidentBuffer: BufferType) {
   const { startTime, endTime } = incident
   const buffer = {
     front: { value: 6, unit: 'hours' },

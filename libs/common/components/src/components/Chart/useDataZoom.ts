@@ -5,8 +5,8 @@ import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
 import moment       from 'moment-timezone'
 
-import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStampRange }               from '@acx-ui/types'
+import type { SeriesChartData } from '@acx-ui/analytics/utils'
+import type { TimeStampRange }  from '@acx-ui/types'
 
 import type { ECharts } from 'echarts'
 
@@ -18,7 +18,7 @@ type OnDatazoomEvent = {
   end?: number
 }
 
-export function useDataZoom<TChartData extends MultiLineTimeSeriesChartData> (
+export function useDataZoom<TChartData extends SeriesChartData> (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
   data: TChartData[],
