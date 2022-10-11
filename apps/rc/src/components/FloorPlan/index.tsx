@@ -23,7 +23,7 @@ export default function FloorPlan () {
 
   const [floorPlans, setFloorPlans] = useState<FloorPlanDto[]>()
   const [selectedFloorPlan, setSelectedFloorPlan] = useState({} as FloorPlanDto)
-  
+
   useEffect(() => {
     setFloorPlans([])
     if(floorPlanQuery?.data){
@@ -37,10 +37,6 @@ export default function FloorPlan () {
     { isLoading: isDeleteFloorPlanUpdating }
   ] = useDeleteFloorPlanMutation()
 
-  const expandClickHandler = () => {
-    // TODO: Expand to Fullscreen
-  }
-
   const galleryViewHandler = () => {
     setShowGalleryView(true)
   }
@@ -50,18 +46,15 @@ export default function FloorPlan () {
     setShowGalleryView(false)
   }
 
-  const onDeleteFloorPlan = (floorPlanId: string) => {
+  const onDeleteFloorPlan = (floorPlanId: string, floorPlanName: string) => {
     showActionModal({
       type: 'confirm',
       customContent: {
         action: 'DELETE',
         entityName: $t({ defaultMessage: 'Floor Plan' }),
-        entityValue: 'test'+floorPlanId
+        entityValue: floorPlanName
       },
       onOk: () => deleteFloorPlan({ params: { ...params, floorPlanId } })
-        .then((res) => {
-          // TODO:
-        })
     })
   }
 
@@ -89,7 +82,6 @@ export default function FloorPlan () {
               key={'expand-btn'}
               title={$t({ defaultMessage: 'Expand' })}
               icon={<UI.ArrowOutIcon />}
-              onClick={expandClickHandler}
             />
           </UI.StyledSpace>
         </UI.FloorPlanContainer>

@@ -22,7 +22,7 @@ import {
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'VenueFP'],
+  tagTypes: ['Venue', 'VenueFloorPlan'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -122,11 +122,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...floorPlansReq
         }
       },
-      providesTags: [{ type: 'VenueFP', id: 'DETAIL' }],
+      providesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, ['AddFloorPlan', 'UpdateFloorPlan', 'DeleteFloorPlan'], () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFP', id: 'DETAIL' }]))
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DETAIL' }]))
           })
         })
       }
@@ -138,7 +138,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'VenueFP', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
     }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {

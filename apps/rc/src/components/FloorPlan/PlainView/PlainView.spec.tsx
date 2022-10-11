@@ -41,23 +41,27 @@ describe('Floor Plan Plain View', () => {
 
     const { asFragment } = render(<Provider><PlainView floorPlans={list}
       toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}/></Provider>)
+      defaultFloorPlan={list[0]}
+      deleteFloorPlan={jest.fn()}/></Provider>)
     expect(screen.queryByTestId('floorPlanImage')).toHaveAttribute('alt', list[0]?.name)
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('should trigger onFloorPlanSelectionHandler', async () => {
-    const onClick = jest.fn()
-    render(<Thumbnail floorPlan={list[1]} active={0} onFloorPlanSelection={onClick}/>)
-    const component = await screen.findByTestId('thumbnailBg')
+    const onFloorPlanSelectionHandler = jest.fn()
+    await render(<Thumbnail floorPlan={list[1]}
+      active={0}
+      onFloorPlanSelection={onFloorPlanSelectionHandler}/>)
+    const component = screen.getByTestId('thumbnailBg')
     fireEvent.click(component)
-    expect(onClick).toBeCalledTimes(1)
-    expect(onClick).toHaveBeenCalledWith(list[1])
+    expect(onFloorPlanSelectionHandler).toBeCalledTimes(1)
+    expect(onFloorPlanSelectionHandler).toHaveBeenCalledWith(list[1])
   })
   it('test zoom-in button', async () => {
     const { asFragment } = await render(<Provider><PlainView floorPlans={list}
       toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}/></Provider>)
+      defaultFloorPlan={list[0]}
+      deleteFloorPlan={jest.fn()}/></Provider>)
     const component = await screen.findByTestId('image-zoom-in')
     const floorPlanContainer = await screen.findByTestId('image-container')
     const actualWidth = window.getComputedStyle(floorPlanContainer).width
@@ -71,7 +75,8 @@ describe('Floor Plan Plain View', () => {
   it('test zoom-out button', async () => {
     const { asFragment } = await render(<Provider><PlainView floorPlans={list}
       toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}/></Provider>)
+      defaultFloorPlan={list[0]}
+      deleteFloorPlan={jest.fn()}/></Provider>)
     const component = await screen.findByTestId('image-zoom-out')
     const floorPlanContainer = await screen.findByTestId('image-container')
     const actualWidth = window.getComputedStyle(floorPlanContainer).width
@@ -85,7 +90,8 @@ describe('Floor Plan Plain View', () => {
   it('test zoom original button', async () => {
     const { asFragment } = await render(<Provider><PlainView floorPlans={list}
       toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}/></Provider>)
+      defaultFloorPlan={list[0]}
+      deleteFloorPlan={jest.fn()}/></Provider>)
     const component = await screen.findByTestId('image-zoom-original')
     const floorPlanContainer = await screen.findByTestId('image-container')
     window.getComputedStyle(floorPlanContainer).width = 'calc(75%)'
@@ -98,7 +104,8 @@ describe('Floor Plan Plain View', () => {
   it('test zoom fit button', async () => {
     const { asFragment } = await render(<Provider><PlainView floorPlans={list}
       toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}/></Provider>)
+      defaultFloorPlan={list[0]}
+      deleteFloorPlan={jest.fn()}/></Provider>)
     const component = await screen.findByTestId('image-zoom-fit')
     const floorPlanContainer = await screen.findByTestId('image-container')
     window.getComputedStyle(floorPlanContainer).width = 'calc(120%)'
@@ -113,4 +120,42 @@ describe('Floor Plan Plain View', () => {
     expect(getImageFitPercentage(400, 600, 700, 800)).toBe(0)
   })
 
+  it('Should click delete button', async () => {
+    const deleteHandler = jest.fn(() => jest.fn())
+
+    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
+      toggleGalleryView={() => {}}
+      defaultFloorPlan={list[0]}
+      deleteFloorPlan={deleteHandler}/></Provider>)
+    const component = await screen.findByRole('button', { name: /Delete/i })
+    fireEvent.click(component)
+    expect(deleteHandler).toBeCalledTimes(1)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('Should load image', async () => {
+    const onImageLoad = jest.fn()
+    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
+      toggleGalleryView={() => {}}
+      defaultFloorPlan={list[0]}
+      deleteFloorPlan={jest.fn()}/></Provider>)
+    const component = screen.getByRole('img', { name: 'TEST_2' })
+    component.onload = onImageLoad
+    fireEvent.load(component)
+    await expect(onImageLoad).toBeCalledTimes(1)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should open gallery view', async () => {
+
+    const { asFragment } = render(<Provider><PlainView floorPlans={list}
+      toggleGalleryView={jest.fn()}
+      defaultFloorPlan={list[0]}
+      deleteFloorPlan={jest.fn()} /></Provider>)
+    const button = screen.getByRole('button', { name: /ApplicationsSolid.svg/i })
+    fireEvent.click(button)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
 })
+

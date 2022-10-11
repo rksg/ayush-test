@@ -150,7 +150,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   }
 
   const deleteHandler = function () {
-    deleteFloorPlan(selectedFloorPlan?.id)
+    deleteFloorPlan(selectedFloorPlan?.id, selectedFloorPlan?.name)
   }
 
   return (
@@ -166,7 +166,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
             <Button key='editBtn' type='link'>
               {$t({ defaultMessage: 'Edit' })}
             </Button>
-            <Button key='deleteBtn' type='link'onClick={deleteHandler} >
+            <Button key='deleteBtn' type='link' onClick={deleteHandler} >
               {$t({ defaultMessage: 'Delete' })}
             </Button>
           </Space>

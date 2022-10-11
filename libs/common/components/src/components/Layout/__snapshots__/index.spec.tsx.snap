@@ -613,6 +613,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
               >
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
+                  data-menu-id="rc-menu-uuid-test-/v/undefined/dashboard"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
