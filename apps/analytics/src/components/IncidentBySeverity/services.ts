@@ -52,7 +52,8 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<IncidentsBySeverityData>) =>
-        response.network.hierarchyNode
+        response.network.hierarchyNode,
+      providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
     })
   })
 })
