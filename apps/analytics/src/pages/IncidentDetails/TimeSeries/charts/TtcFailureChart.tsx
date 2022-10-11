@@ -24,7 +24,7 @@ const ttcFailureChartQuery = () => gql`
   }
   `
 
-export const aggregateTTC = (
+export const aggregateTtc = (
   time:string[],
   ttc: (number|null)[],
   ttcCounts: ([number, number]|null)[]
@@ -60,7 +60,7 @@ export const TtcFailureChart = ({ chartRef, data, incident }: TimeSeriesChartPro
       const time = ttcFailureChart.time as string[]
       const ttc = ttcFailureChart.ttc as (number|null)[]
       const ttcCounts = connectionData?.data as ([number, number]|null)[]
-      return { data: aggregateTTC(time, ttc, ttcCounts), ...rest } }
+      return { data: aggregateTtc(time, ttc, ttcCounts), ...rest } }
   })
 
   const seriesMapping = [

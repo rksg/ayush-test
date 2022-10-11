@@ -125,7 +125,7 @@ export function MultiLineTimeSeriesChart <
 ({
   data,
   legendProp = 'name' as keyof TChartData,
-  dataFormatter,
+  dataFormatter = formatter('countFormat'),
   seriesFormatters,
   yAxisProps,
   disableLegend,

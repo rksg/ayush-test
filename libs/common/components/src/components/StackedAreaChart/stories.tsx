@@ -13,7 +13,8 @@ const getData = () => {
   for (let i = 1; i < 37; i++) {
     data.push([base + oneDay * i, Math.round((Math.random() - 0.5) * 25 + data[i - 1][1])])
   }
-  return data as [TimeStamp, number][]
+  return data
+    .map(([time, value]) => [time, (Math.random() > 0.20) ? value : null]) as [TimeStamp, number][]
 }
 
 export const data = [

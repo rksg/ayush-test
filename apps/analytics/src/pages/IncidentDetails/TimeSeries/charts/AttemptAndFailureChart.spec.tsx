@@ -42,7 +42,7 @@ describe('attemptAndFailureChartQuery', () => {
   it('should call corresponding api', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: { network: { hierarchyNode: expectedResult } }
-    })
+    }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,

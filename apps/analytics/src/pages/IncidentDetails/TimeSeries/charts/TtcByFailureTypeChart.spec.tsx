@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 
 import { dataApiURL }                             from '@acx-ui/analytics/services'
-import { fakeIncident1 }                          from '@acx-ui/analytics/utils'
+import { fakeIncidentTtc }                        from '@acx-ui/analytics/utils'
 import { store }                                  from '@acx-ui/store'
 import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
@@ -38,7 +38,7 @@ describe('TtcByFailureTypeChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <TtcByFailureTypeChart chartRef={()=>{}} incident={fakeIncident1} data={expectedResult}/>
+        <TtcByFailureTypeChart chartRef={()=>{}} incident={fakeIncidentTtc} data={expectedResult}/>
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -49,10 +49,10 @@ describe('ttcByFailureTypeChartQuery', () => {
   it('should call corresponding api', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: { network: { hierarchyNode: expectedResult } }
-    })
+    }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
-        incident: fakeIncident1,
+        incident: fakeIncidentTtc,
         charts: [TimeSeriesChartTypes.TtcByFailureTypeChart],
         minGranularity: 'PT180S'
       })

@@ -55,7 +55,7 @@ export function StackedAreaChart <
 > ({
   data: initalData,
   legendProp = 'name' as keyof TChartData,
-  dataFormatter,
+  dataFormatter = formatter('countFormat'),
   seriesFormatters,
   tooltipTotalTitle,
   ...props
@@ -105,7 +105,8 @@ export function StackedAreaChart <
     },
     series: initalData.map(datum => ({
       name: datum[legendProp] as unknown as string,
-      data: datum.data,
+      data: datum.data.map(([time, value]) =>
+        [time, (value === '-' || value === null) ? 0 : value]),
       type: 'line',
       silent: true,
       stack: 'Total',
