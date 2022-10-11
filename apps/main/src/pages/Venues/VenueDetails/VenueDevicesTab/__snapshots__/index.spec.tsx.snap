@@ -431,7 +431,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
               type="button"
             >
               <svg
-                class="styledComponents__LineChartIcon-sc-12uzynx-3 gVvwTr"
+                class="styledComponents__LineChartIcon-sc-12uzynx-3 hUtzfY"
               >
                 LineChartOutline.svg
               </svg>
@@ -441,7 +441,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
               type="button"
             >
               <svg
-                class="styledComponents__ListIcon-sc-12uzynx-1 ldZrMV"
+                class="styledComponents__ListIcon-sc-12uzynx-1 eqfHgC"
               >
                 ListSolid.svg
               </svg>
@@ -452,7 +452,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
               type="button"
             >
               <svg
-                class="styledComponents__MeshIcon-sc-12uzynx-5 cLzwtN"
+                class="styledComponents__MeshIcon-sc-12uzynx-5 kthAiW"
               >
                 MeshSolid.svg
               </svg>
