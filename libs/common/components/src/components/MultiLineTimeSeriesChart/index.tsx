@@ -42,6 +42,14 @@ type Marker <MarkerData> = {
   itemStyle?: MarkAreaOption['itemStyle']
 }
 
+type LegendEventData = {
+  type: string,
+  name: string
+  selected: {
+      [name: string]: boolean
+  }
+}
+
 export interface MultiLineTimeSeriesChartProps <
   TChartData extends MultiLineTimeSeriesChartData,
   MarkerData
@@ -63,8 +71,6 @@ export interface MultiLineTimeSeriesChartProps <
     onBrushChange?: (range: TimeStamp[]) => void
     chartRef?: RefObject<ReactECharts>
   }
-
-
 
 export function useBrush<T> (
   eChartsRef: RefObject<ReactECharts>,
@@ -107,6 +113,23 @@ export function useOnMarkedAreaClick <MarkerData> (
   }, [eChartsRef, onMarkedAreaClick])
 }
 
+export function useLegendSelectChanged (
+  eChartsRef: RefObject<ReactECharts>
+) {
+  useEffect(() => {
+    if (!eChartsRef || !eChartsRef.current) return
+    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
+    echartInstance.on('legendselectchanged', function (params: unknown) {
+      const { selected } = params as unknown as LegendEventData
+      const areFalsy = Object.values(selected).every(value => !value)
+      if (areFalsy)
+        echartInstance.dispatchAction({
+          type: 'legendAllSelect'
+        })
+    })
+  }, [eChartsRef])
+}
+
 export function MultiLineTimeSeriesChart <
   TChartData extends MultiLineTimeSeriesChartData,
   MarkerData
@@ -126,6 +149,7 @@ export function MultiLineTimeSeriesChart <
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
   useBrush(eChartsRef, props.brush, data)
   useOnMarkedAreaClick(eChartsRef, onMarkedAreaClick)
+  useLegendSelectChanged(eChartsRef)
 
   const option: EChartsOption = {
     color: props.lineColors || [
