@@ -36,8 +36,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
           </GridCol>
           <GridCol col={{ span: 19 }}>
             <KpiTimeseries
-              filters={filters} 
-              kpi={kpi} 
+              filters={filters}
+              kpi={kpi}
               chartRef={connectChart}
               setTimeWindow={setTimeWindow}
               timeWindow={timeWindow}

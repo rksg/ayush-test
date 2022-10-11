@@ -1,13 +1,13 @@
-import { useEffect, RefCallback } from 'react'
-
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { RefCallback } from 'react'
 
 import ReactECharts from 'echarts-for-react'
+import { useIntl }  from 'react-intl'
+import AutoSizer    from 'react-virtualized-auto-sizer'
+
 
 import { AnalyticsFilter, kpiConfig }                       from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, cssStr, NoData } from '@acx-ui/components'
-import type { TimeStamp, TimeStampRange }                                   from '@acx-ui/types'
+import type { TimeStamp, TimeStampRange }                   from '@acx-ui/types'
 import { formatter }                                        from '@acx-ui/utils'
 
 import { KPITimeseriesResponse, useKpiTimeseriesQuery } from './services'
@@ -20,12 +20,12 @@ const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
     datum && datum.length && (datum[0] !== null && datum[1] !== null)
       ? datum[1] === 0 ? 0 : (datum[0] / datum[1])
       : null
-])) as [TimeStamp, number][]
+  ])) as [TimeStamp, number][]
 
 export const formatYDataPoint = (data: number | unknown) =>
   data !== null ? formatter('percentFormat')(data) : '-'
 
-function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: { 
+function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: {
   filters: AnalyticsFilter,
   kpi: string,
   chartRef: RefCallback<ReactECharts>,

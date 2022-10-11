@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { ProgressPill, Loader }       from '@acx-ui/components'
 import { InformationOutlined }        from '@acx-ui/icons'
+import { TimeStampRange }             from '@acx-ui/types'
 import { formatter }                  from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
@@ -16,7 +17,6 @@ import {
   KPITimeseriesResponse,
   KPIHistogramResponse
 } from './services'
-import { TimeStampRange } from '@acx-ui/types'
 
 type PillData = { success: number, total: number }
 

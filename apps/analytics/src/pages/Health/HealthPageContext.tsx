@@ -21,7 +21,7 @@ export const isAfter = (a: TimeStamp, b: TimeStamp) => moment(a).isAfter(b)
 
 let maxWindow: TimeStampRange = ['', '']
 
-export const formatTimeWindow = (window: TimeStampRange, defaultWindow: TimeStampRange, isReset: boolean) : TimeStampRange => {
+export const formatTimeWindow = (window: TimeStampRange, isReset: boolean) : TimeStampRange => {
   const newWindow = window
     .sort((a, b) => +isBefore(a, b))
     .map(t => moment(t).utc().toISOString()) as TimeStampRange
@@ -43,7 +43,7 @@ export function HealthPageContextProvider (props: { children: ReactNode }) {
     moment(endDate).utc().toISOString()
   ])
   const setTimeWindowCallback = useCallback((window: TimeStampRange, isReset?: boolean) => {
-    const formattedWindow = formatTimeWindow(window, timeWindow, isReset || false)
+    const formattedWindow = formatTimeWindow(window, isReset || false)
     setTimeWindow(formattedWindow)
   }, [startDate, endDate])
 
