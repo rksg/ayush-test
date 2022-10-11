@@ -68,7 +68,7 @@ describe('transformSummary', () => {
       NetworkImpactData.incident.WLAN,
       incident
     )
-    expect(result).toEqual('33% of failures impacted ssid2 WLAN')
+    expect(result).toEqual('33% of failures impacted ssid2')
   })
 })
 
