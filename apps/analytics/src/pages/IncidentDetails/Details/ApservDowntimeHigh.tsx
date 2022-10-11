@@ -56,7 +56,7 @@ export const ApservDowntimeHigh = (incident: Incident) => {
           <div>Network Impact</div>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <TimeSeries incident={incident} charts={timeSeriesCharts} />
+          <TimeSeries incident={incident} charts={timeSeriesCharts} minGranularity='PT180S' />
         </GridCol>
       </GridRow>
     </>

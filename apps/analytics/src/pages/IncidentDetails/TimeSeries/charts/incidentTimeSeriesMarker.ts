@@ -23,7 +23,7 @@ export const onMarkAreaClick = (
 }
 
 export const getMarkers = (
-  relatedIncidents: Incident[],
+  relatedIncidents: Incident[] | undefined,
   incident: Incident
 ) => relatedIncidents?.map(related => ({
   data: related,
