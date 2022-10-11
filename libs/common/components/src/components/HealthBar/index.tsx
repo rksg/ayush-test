@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 import { DivContainer, HealthContentExcellent, HealthContentModerate, HealthContentPoor, ProgressEmptyContent } from './styledComponents'
 
-export default function HealthBar (props:{ blockNumber?:number, value:number }) {
+export function HealthBar (props:{ blockNumber?:number, value:number }) {
   const slices = props.blockNumber || 8
   const coloured = Math.max(Number((slices * props.value).toFixed(0)),1)
 

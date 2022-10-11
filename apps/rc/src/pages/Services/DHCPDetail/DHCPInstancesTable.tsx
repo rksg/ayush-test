@@ -4,11 +4,9 @@ import React from 'react'
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { Table, TableProps, Card } from '@acx-ui/components'
-import { DHCPDetailInstances }     from '@acx-ui/rc/utils'
-import { TenantLink }              from '@acx-ui/react-router-dom'
-
-import HealthBar from './HealthBar'
+import { Table, TableProps, Card, HealthBar } from '@acx-ui/components'
+import { DHCPDetailInstances }                from '@acx-ui/rc/utils'
+import { TenantLink }                         from '@acx-ui/react-router-dom'
 
 
 export default function DHCPInstancesTable (
