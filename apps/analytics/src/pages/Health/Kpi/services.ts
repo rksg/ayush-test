@@ -39,10 +39,7 @@ const getGranularity = (start: string, end: string, kpi: string) => {
 }
 export const timeseriesApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    kpiTimeseries: build.query<
-    KPITimeseriesResponse,
-    KpiPayload
-    >({
+    kpiTimeseries: build.query<KPITimeseriesResponse, KpiPayload>({
       query: (payload) => ({
         document: gql`
         query timeseriesKPI(
@@ -63,12 +60,15 @@ export const timeseriesApi = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: getGranularity(payload.startDate, payload.endDate, payload.kpi)
+          granularity: payload.granularity
+            ? payload.granularity
+            : getGranularity(payload.startDate, payload.endDate, payload.kpi)
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
-      transformResponse: (response: TimeseriesResponse<KPITimeseriesResponse>) =>
-        response.timeSeries
+      transformResponse: (
+        response: TimeseriesResponse<KPITimeseriesResponse>
+      ) => response.timeSeries
     })
   })
 })

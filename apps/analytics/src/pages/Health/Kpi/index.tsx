@@ -6,6 +6,7 @@ import { GridCol, GridRow }               from '@acx-ui/components'
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
 import { KpiRow }            from '../styledComponents'
+import SLAThreshold          from '../Threshold'
 
 import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
@@ -26,7 +27,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
         </GridRow>
       </GridCol>
       <GridCol col={{ span: 8 }}>
-        <div>Threshold Content</div>
+        <SLAThreshold filters={filters} kpi={kpi}/>
       </GridCol>
     </KpiRow>))
   }</>)

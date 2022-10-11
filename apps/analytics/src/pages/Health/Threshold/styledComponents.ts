@@ -13,5 +13,9 @@ export const StyledSlider = styled(Slider)`
     content: none !important;
   }
 }
+.ant-slider-mark{
+  display: none;
+}
+
 `
 
