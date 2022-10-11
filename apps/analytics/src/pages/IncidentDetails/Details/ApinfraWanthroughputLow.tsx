@@ -59,5 +59,3 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
     </>
   )
 }
-
-export default ApinfraWanthroughputLow

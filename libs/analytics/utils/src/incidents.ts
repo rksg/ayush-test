@@ -1,12 +1,11 @@
-import { capitalize }                       from 'lodash'
-import { defineMessage, MessageDescriptor } from 'react-intl'
+import { capitalize } from 'lodash'
 
 import { formatter, intlFormats, getIntl, PathNode, NodeType } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
+import { kpiConfig }           from './healthKPIConfig'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
-import kpiThreshold            from './kpiThreshold'
 
 import type { IncidentInformation } from './incidentInformation'
 import type {
@@ -69,33 +68,19 @@ export function normalizeNodeType (nodeType: NodeType): NormalizedNodeType {
   }
 }
 
-/**
- * Returns message descriptor to the matching `nodeType`
- */
-export function nodeTypes (nodeType: NodeType): MessageDescriptor {
-  switch (normalizeNodeType(nodeType)) {
-    case 'network': return defineMessage({ defaultMessage: 'Organization' })
-    case 'apGroup': return defineMessage({ defaultMessage: 'AP Group' })
-    case 'zone': return defineMessage({ defaultMessage: 'Venue' })
-    case 'switchGroup': return defineMessage({ defaultMessage: 'Venue' })
-    case 'switch': return defineMessage({ defaultMessage: 'Switch' })
-    case 'AP': return defineMessage({ defaultMessage: 'Access Point' })
-    default:
-      return defineMessage({ defaultMessage: 'Unknown' })
-  }
-}
-
-export function formattedNodeType (nodeType: NodeType) {
+export function nodeTypes (nodeType: NodeType): string {
   const { $t } = getIntl()
-  return $t(nodeTypes(nodeType))
-}
-
-export const useImpactValues =
-  <Type extends 'ap' | 'client'> (type: Type, incident: Incident):
-  Record<string, string | number | null | {}> => {
-    const values = impactValues(type, incident)
-    return values
+  switch (normalizeNodeType(nodeType)) {
+    case 'network': return $t({ defaultMessage: 'Organization' })
+    case 'apGroup': return $t({ defaultMessage: 'AP Group' })
+    case 'zone': return $t({ defaultMessage: 'Venue' })
+    case 'switchGroup': return $t({ defaultMessage: 'Venue' })
+    case 'switch': return $t({ defaultMessage: 'Switch' })
+    case 'AP': return $t({ defaultMessage: 'Access Point' })
+    default:
+      return $t({ defaultMessage: 'Unknown' })
   }
+}
 
 function formattedNodeName (
   node: PathNode,
@@ -120,7 +105,7 @@ export function formattedPath (path: PathNode[], sliceValue: string) {
     .filter(node => node.type !== 'network')
     .map(node => ({
       nodeName: formattedNodeName(node, sliceValue),
-      nodeType: $t(nodeTypes(node.type))
+      nodeType: nodeTypes(node.type)
     }))
     .map(node => $t({
       defaultMessage: '{nodeName} ({nodeType})',
@@ -145,29 +130,16 @@ export function incidentScope (incident: Incident) {
     defaultMessage: '{nodeType}: {nodeName}',
     description: 'Uses to generate incident impacted scope for various incident descriptions'
   }, {
-    nodeType: formattedNodeType(incident.sliceType),
+    nodeType: nodeTypes(incident.sliceType),
     nodeName: impactedArea(incident.path, incident.sliceValue)
   })
   return scope
 }
 
-const thresholdMapping = {
-  ttc: 'timeToConnect'
-}
-
 export const getThreshold = (incident: Incident) => {
-  const { $t } = getIntl()
   const { code } = incident
   if (code === 'ttc') {
-    const codeMap = thresholdMapping[code]
-    const value = formatter('durationFormat')(
-      kpiThreshold[codeMap as keyof typeof kpiThreshold]) as string
-    const threshold = $t({
-      defaultMessage: '{threshold}'
-    }, {
-      threshold: value
-    })
-    return threshold
+    return kpiConfig.timeToConnect.histogram.initialThreshold
   } else {
     return undefined
   }
@@ -177,7 +149,9 @@ export const shortDescription = (incident: Incident) => {
   const { $t } = getIntl()
   const scope = incidentScope(incident)
   const threshold = getThreshold(incident)
-  return $t(incident.shortDescription, { scope, ...threshold && { threshold } })
+    ? formatter('longDurationFormat')(getThreshold(incident))
+    : undefined
+  return $t(incident.shortDescription, { scope, threshold })
 }
 
 export const impactValues = <Type extends 'ap' | 'client'> (
