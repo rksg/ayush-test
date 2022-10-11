@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react'
 
 import { act, renderHook }              from '@acx-ui/test-utils'
+import { TimeStampRange }               from '@acx-ui/types'
 import { DateFilterContext, DateRange } from '@acx-ui/utils'
 
 import {
-  TimeWindow,
   HealthPageContext,
   HealthPageContextProvider,
   formatTimeWindow
@@ -14,16 +14,16 @@ describe('HealthPageContextProvider', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
-
+  const expectedTimeWindow: TimeStampRange = [
+    '2021-12-31T00:00:00.000Z',
+    '2022-01-01T00:00:00.000Z'
+  ]
   it('load analytics filter context with timeWindow set to start/end of filter', async () => {
     const { result } = renderHook(() => useContext(HealthPageContext), {
       wrapper: ({ children }) => <HealthPageContextProvider children={children} />
     })
 
-    expect(result.current.timeWindow).toEqual([
-      result.current.startDate,
-      result.current.endDate
-    ])
+    expect(result.current.timeWindow).toEqual(expectedTimeWindow)
   })
 
   it('update timeWindow when setTimeWindow called', async () => {
@@ -31,12 +31,9 @@ describe('HealthPageContextProvider', () => {
       wrapper: ({ children }) => <HealthPageContextProvider children={children} />
     })
 
-    expect(result.current.timeWindow).toEqual([
-      result.current.startDate,
-      result.current.endDate
-    ])
+    expect(result.current.timeWindow).toEqual(expectedTimeWindow)
 
-    const nextTimeWindow: TimeWindow = [
+    const nextTimeWindow: TimeStampRange = [
       '2022-01-01T01:00:00.000Z',
       '2022-01-01T02:00:00.000Z'
     ]
@@ -91,57 +88,39 @@ describe('HealthPageContextProvider', () => {
 
 describe('formatTimeWindow', () => {
   it('should convert numeric window to valid date', () => {
-    const stringTimeWindow: TimeWindow = [
-      '2022-09-25T12:15:57+00:00',
-      '2022-09-26T09:00:00+00:00'
+    const stringTimeWindow: TimeStampRange = [
+      '2022-09-25T12:15:57.462Z',
+      '2022-09-26T09:00:00.000Z'
     ]
 
-    const numericTimeWindow: TimeWindow = [
+    const numericTimeWindow: TimeStampRange = [
       1664108157462,
       1664182800000
     ]
 
-    const formattedWindow = formatTimeWindow(numericTimeWindow, stringTimeWindow)
+    const formattedWindow = formatTimeWindow(numericTimeWindow, false)
     expect(formattedWindow).toMatchObject(stringTimeWindow)
   })
 
-  it('should restrict time window to start date', () => {
-    const startDateOverWindow: TimeWindow = [
-      '2022-09-22T12:15:57+00:00',
-      '2022-09-26T09:00:00+00:00'
+  it('should return correct time window when reset is true', () => {
+    const initialWindow: TimeStampRange = [
+      '2022-09-22T09:15:57.000Z',
+      '2022-09-26T09:00:00.000Z'
     ]
 
-    const restrictedStartDate: TimeWindow = [
-      '2022-09-23T12:15:57+00:00',
-      '2022-09-27T09:00:00+00:00'
+    const smallWindow:TimeStampRange= [
+      '2022-09-22T09:16:57.000Z',
+      '2022-09-26T08:00:00.000Z'
     ]
 
-    const expectedWindow: TimeWindow = [
-      '2022-09-23T12:15:57+00:00',
-      '2022-09-26T09:00:00+00:00'
+    const bigWindow:TimeStampRange= [
+      '2022-09-22T08:15:56.000Z',
+      '2022-09-26T10:00:00.000Z'
     ]
 
-    const formattedWindow = formatTimeWindow(startDateOverWindow, restrictedStartDate)
-    expect(formattedWindow).toMatchObject(expectedWindow)
-  })
-
-  it('should restrict time window to end date', () => {
-    const endDateOverWindow: TimeWindow = [
-      '2022-09-24T12:15:57+00:00',
-      '2022-09-26T09:00:00+00:00'
-    ]
-
-    const restrictedEndDate: TimeWindow = [
-      '2022-09-23T12:15:57+00:00',
-      '2022-09-25T09:00:00+00:00'
-    ]
-
-    const expectedWindow: TimeWindow = [
-      '2022-09-24T12:15:57+00:00',
-      '2022-09-25T09:00:00+00:00'
-    ]
-
-    const formattedWindow = formatTimeWindow(endDateOverWindow, restrictedEndDate)
-    expect(formattedWindow).toMatchObject(expectedWindow)
+    const formattedWindow = formatTimeWindow(initialWindow, true)
+    expect(formattedWindow).toMatchObject(initialWindow)
+    expect(formatTimeWindow(smallWindow, true)).toEqual(initialWindow)
+    expect(formatTimeWindow(bigWindow, true)).toEqual(bigWindow)
   })
 })

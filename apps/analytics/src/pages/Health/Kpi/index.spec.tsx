@@ -1,10 +1,11 @@
-import { dataApiURL }                       from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import { DateRange }                        from '@acx-ui/utils'
+import { dataApiURL }                                     from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                                from '@acx-ui/analytics/utils'
+import { Provider, store }                                from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, mockDOMWidth } from '@acx-ui/test-utils'
+import { TimeStampRange }                                 from '@acx-ui/types'
+import { DateRange }                                      from '@acx-ui/utils'
 
-import { HealthPageContext, TimeWindow } from '../HealthPageContext'
+import { HealthPageContext } from '../HealthPageContext'
 
 import { timeseriesApi, histogramApi } from './services'
 
@@ -12,6 +13,7 @@ import KpiSection from '.'
 
 
 describe('Kpi Section', () => {
+  mockDOMWidth()
   beforeEach(() => {
     store.dispatch(histogramApi.util.resetApiState())
     store.dispatch(timeseriesApi.util.resetApiState())
@@ -34,7 +36,7 @@ describe('Kpi Section', () => {
   } as AnalyticsFilter
   const healthContext = {
     ...filters,
-    timeWindow: ['2022-04-07T09:30:00.000Z', '2022-04-07T09:45:00.000Z'] as TimeWindow,
+    timeWindow: ['2022-04-07T09:30:00.000Z', '2022-04-07T09:45:00.000Z'] as TimeStampRange,
     setTimeWindow: jest.fn()
   }
   it('should render kpis for tab', async () => {
