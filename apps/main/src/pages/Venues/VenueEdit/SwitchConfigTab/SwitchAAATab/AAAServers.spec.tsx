@@ -132,7 +132,7 @@ describe('AAAServers', () => {
         res(ctx.json({}))
       )
     )
-    const { asFragment } = render(
+    render(
       <Provider>
         <AAAServers />
       </Provider>,
@@ -157,7 +157,6 @@ describe('AAAServers', () => {
 
     const saveButton = screen.getByRole('button', { name: /save/i })
     fireEvent.click(saveButton)
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render RADIUS list correctly and edit row data', async () => {
