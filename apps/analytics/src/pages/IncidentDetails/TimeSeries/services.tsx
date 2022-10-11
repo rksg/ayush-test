@@ -35,13 +35,6 @@ export type ChartsData = {
   relatedIncidents: Incident[]
 } & Record<string, Record<string, number[] | string[]>>
 
-export const calcGranularity = (start: string, end: string): string => {
-  const duration = moment.duration(moment(end).diff(moment(start))).asHours()
-  if (duration > 24 * 7) return 'PT1H' // 1 hour if duration > 7 days
-  if (duration > 1) return 'PT30M'
-  return 'PT180S'
-}
-
 export function getIncidentTimeSeriesPeriods (incident: Incident, incidentBuffer: BufferType) {
   const { startTime, endTime } = incident
   const buffer = {
