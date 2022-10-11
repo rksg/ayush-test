@@ -69,7 +69,7 @@ export function StackedAreaChart <
   TChartData extends TimeSeriesChartData,
 > ({
   type = 'smooth',
-  data: initalData,
+  data: initialData,
   legendProp = 'name' as keyof TChartData,
   yAxisProps,
   dataFormatter = formatter('countFormat'),

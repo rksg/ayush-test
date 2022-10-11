@@ -6,7 +6,7 @@ import { TimeSeriesData, getSeriesData }      from '@acx-ui/analytics/utils'
 import { Card, cssStr, StepStackedAreaChart } from '@acx-ui/components'
 import { formatter }                          from '@acx-ui/utils'
 
-import { ChartsData } from '../services'
+import { TimeSeriesChartProps } from '../types'
 
 const downtimeEventTypeDistributionChartQuery = () => gql`
   downtimeEventTypeDistributionChart: timeSeries(granularity: $granularity) {
@@ -20,7 +20,9 @@ const downtimeEventTypeDistributionChartQuery = () => gql`
   }
   `
 
-export const DowntimeEventTypeDistributionChart = ({ data }: { data: ChartsData }) => {
+export const DowntimeEventTypeDistributionChart = (
+  { data }: { data: TimeSeriesChartProps['data'] }
+) => {
   const { downtimeEventTypeDistributionChart: { time, apDisconnectionEvents } } = data
   const { $t } = useIntl()
 
