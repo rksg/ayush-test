@@ -162,5 +162,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchConfigProfile: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/profile/:profileId'
+  },
+  getUserProfile: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/user-profile'
   }
 }

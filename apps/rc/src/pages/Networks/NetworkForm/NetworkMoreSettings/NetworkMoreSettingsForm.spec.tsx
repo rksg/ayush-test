@@ -200,6 +200,7 @@ describe('NetworkMoreSettingsForm', () => {
     fireEvent.click(enableFastRoamingCheckbox)
     expect(screen.getByText(/mobility domain id/i)).toBeVisible()
   })
+
   it('Adjust BBS Min Rate value', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(

@@ -250,7 +250,7 @@ describe('IncidentTableWidget', () => {
 
       fireEvent.click(await screen.findByText(header))
       const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
-      expect(caretDown).toHaveLength(2)
+      expect(caretDown).toHaveLength(1)
 
       fireEvent.click(await screen.findByText(header))
     }
@@ -325,7 +325,7 @@ describe('IncidentTableWidget', () => {
 
       act(() => titleElem.click())
       expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-down' }))
-        .toHaveLength(2)
+        .toHaveLength(1)
 
       act(() => titleElem.click())
     }
