@@ -55,8 +55,8 @@ const highlights = {
   clients: defineMessage({
     defaultMessage: `{name}<br></br>
     <space><b>{formattedValue} {value, plural,
-      one {Client}
-      other {Clients}
+      one {client}
+      other {clients}
     }</b></space>`
   })
 }
@@ -65,7 +65,10 @@ export enum NetworkImpactChartTypes {
   WLAN,
   Radio,
   Reason,
-  ClientManufacturer
+  ClientManufacturer,
+  APModel,
+  APVersion,
+  OS
 }
 
 export const networkImpactCharts = {
@@ -96,11 +99,11 @@ export const networkImpactCharts = {
     highlight: highlights.clients,
     summary: {
       dominance: defineMessage({
-        defaultMessage: '{percentage} of failures impacted {dominant} band' }),
+        defaultMessage: '{percentage} of failures impacted {dominant} radio' }),
       broad: defineMessage({
         defaultMessage: `This incident impacted {count} {count, plural,
-          one {band}
-          other {bands}
+          one {radio}
+          other {radios}
         }` })
     },
     order: 5
@@ -125,7 +128,7 @@ export const networkImpactCharts = {
   },
   [NetworkImpactChartTypes.ClientManufacturer]: {
     key: 'clientManufacturer',
-    title: defineMessage({ defaultMessage: 'Client Manufacturers' }),
+    title: defineMessage({ defaultMessage: 'Client Manufacturer' }),
     dimension: 'manufacturer',
     type: 'client',
     highlight: highlights.clients,
@@ -138,6 +141,63 @@ export const networkImpactCharts = {
           one {client manufacturer}
           other {client manufacturers}
         }` })
+    },
+    order: 2
+  },
+  [NetworkImpactChartTypes.APModel]: {
+    key: 'apModel',
+    title: defineMessage({ defaultMessage: 'AP Model' }),
+    dimension: 'apModels',
+    type: 'client',
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage:
+          '{percentage} of failures impacted {dominant} AP model' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {AP model}
+          other {AP models}
+        }`
+      })
+    },
+    order: 3
+  },
+  [NetworkImpactChartTypes.APVersion]: {
+    key: 'apVersion',
+    title: defineMessage({ defaultMessage: 'AP Version' }),
+    dimension: 'apFwVersions',
+    type: 'client',
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage:
+          '{percentage} of failures impacted {dominant} AP firmware' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {AP firmware}
+          other {AP firmwares}
+        }`
+      })
+    },
+    order: 4
+  },
+  [NetworkImpactChartTypes.OS]: {
+    key: 'os',
+    title: defineMessage({ defaultMessage: 'OS' }),
+    dimension: 'osType',
+    type: 'client',
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage:
+          '{percentage} of failures impacted {dominant} operating system' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {operating system}
+          other {operating systems}
+        }`
+      })
     },
     order: 2
   }
