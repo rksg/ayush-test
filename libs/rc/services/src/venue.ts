@@ -12,7 +12,8 @@ import {
   VenueDetailHeader,
   VenueCapabilities,
   VenueLed,
-  VenueApModels
+  VenueApModels,
+  VenueLanPorts
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -135,6 +136,31 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getVenueSettings: build.query<any, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSettings, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueLanPorts, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueLanPorts: build.mutation<VenueLanPorts[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueLanPorts, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -150,5 +176,8 @@ export const {
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
-  useUpdateVenueLedOnMutation
+  useUpdateVenueLedOnMutation,
+  useGetVenueSettingsQuery,
+  useGetVenueLanPortsQuery,
+  useUpdateVenueLanPortsMutation
 } = venueApi

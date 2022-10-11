@@ -763,7 +763,7 @@
     }
 
     &.ant-tabs-card {
-      .ant-tabs-nav {
+      > .ant-tabs-nav {
         padding-left: 15px;
         &:before {
           border-bottom: 1px solid var(--acx-accents-orange-50);
@@ -785,6 +785,34 @@
               color: var(--acx-accents-orange-50);
               text-shadow: none;
             }
+          }
+        }
+      }
+
+      .ant-tabs:first-child {
+        margin-top: 16px;
+        .ant-tabs-tab {
+          padding: 6px 30px;
+          background: var(--acx-neutrals-20);
+          & + .ant-tabs-tab {
+            margin-left: 12px;
+          }
+          &.ant-tabs-tab-active {
+            background: transparent;
+            color: var(--acx-primary-black);
+          }
+          .ant-tabs-tab-btn {
+            font-size: var(--acx-body-4-font-size);
+            text-shadow: none;
+          }
+        }
+        .ant-tabs-nav {
+          border: 0;
+          .ant-tabs-ink-bar {
+            top: 0;
+          }
+          &:before {
+            border: 0;
           }
         }
       }

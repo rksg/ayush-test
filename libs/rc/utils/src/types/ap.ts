@@ -46,7 +46,10 @@ export interface LanPort {
 	supportDisable: boolean
 	trunkPortOnly: boolean
 	untagId: number
-	vlanMembers: string
+	vlanMembers: string,
+	enabled?: boolean,
+	portId?: string,
+	type?: 'ACCESS' | 'GENERAL' | 'TRUNK'
 }
 
 export interface ApModel {
@@ -67,6 +70,8 @@ export interface ApModel {
 	lldpMgmtEnable: boolean,
 	model: string,
 	pictureDownloadUrl: string,
+	poeModeCapabilities?: string[],
+	trunkPortOnly?: boolean,
 	requireOneEnabledTrunkPort: boolean,
 	simCardPrimaryEnabled: boolean,
 	simCardPrimaryRoaming: boolean,

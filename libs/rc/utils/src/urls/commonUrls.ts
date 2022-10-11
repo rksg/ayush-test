@@ -123,6 +123,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/led'
   },
+  getVenueSettings: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId'
+  },
+  getVenueLanPorts: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lan-port'
+  },
+  updateVenueLanPorts: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lan-port'
+  },
   getVenueNetworkList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'

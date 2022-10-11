@@ -1,4 +1,4 @@
-import { ApStatusDetails, ApModel } from './ap'
+import { ApStatusDetails, ApModel, LanPort } from './ap'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
@@ -81,4 +81,11 @@ export interface VenueLed {
 
 export interface VenueApModels {
 	models: string[]
+}
+
+export interface VenueLanPorts {
+	model: string,
+	lanPorts: LanPort[],
+	poeMode?: string,
+	poeOut?: boolean
 }
