@@ -262,7 +262,7 @@ describe('AAAServers', () => {
         res(ctx.json({}))
       )
     )
-    const { asFragment } = render(
+    render(
       <Provider>
         <AAAServers />
       </Provider>,
@@ -275,8 +275,8 @@ describe('AAAServers', () => {
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
 
-    await screen.findByText(/prioritized/i)
-    expect(asFragment()).toMatchSnapshot()
+    const warningText = await screen.findByText(/prioritized/i)
+    expect(warningText).toBeVisible()
   })
 
 })
