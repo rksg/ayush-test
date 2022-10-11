@@ -27,8 +27,9 @@ import {
   user,
   list,
   timezoneRes,
-  params
-} from './NetworkVenueTestData'
+  params,
+  networkVenue_apgroup
+} from '../../../../components/NetworkApGroupDialog/__tests__/NetworkVenueTestData'
 
 import { NetworkVenuesTab } from './index'
 
@@ -537,6 +538,13 @@ describe('NetworkVenuesTab', () => {
       rest.put(
         WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(networkVenue_apgroup))
       )
     )
 

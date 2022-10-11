@@ -12,7 +12,8 @@ import {
   VenueDetailHeader,
   VenueCapabilities,
   VenueLed,
-  VenueApModels
+  VenueApModels,
+  NetworkVenue
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -95,6 +96,20 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
+    getNetworkApGroups: build.query<NetworkVenue[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params)
+        return {
+          ...req,
+          body: payload
+          // networkList.map(item => ({
+          //   networkId: item.id,
+          //   ssids: [item.ssid],
+          //   venueId: payload.venueId
+          // }))
+        }
+      }
+    }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
       query: ({ params }) => {
         const floorPlansReq = createHttpRequest(CommonUrlsInfo.getVenueFloorplans, params)
@@ -146,6 +161,7 @@ export const {
   useGetVenueQuery,
   useVenueDetailsHeaderQuery,
   useDeleteVenueMutation,
+  useGetNetworkApGroupsQuery,
   useFloorPlanListQuery,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,

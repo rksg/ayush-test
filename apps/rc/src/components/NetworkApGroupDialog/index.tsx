@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 
 import {
-  ModalProps as AntdModalProps,
   SelectProps,
   Checkbox,
   Col,
@@ -24,18 +23,18 @@ import {
 } from '@acx-ui/components'
 import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
+  useGetNetworkApGroupsQuery
+} from '@acx-ui/rc/services'
+import {
   RadioEnum,
   RadioTypeEnum,
   VLAN_PREFIX,
-  NetworkVenue,
   NetworkApGroup,
-  NetworkSaveData,
   VlanPool,
   VlanType,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  ApGroupModalWidgetProps
 } from '@acx-ui/rc/utils'
-
-import { RadioDescription } from '../../NetworkForm/styledComponents'
 
 import * as UI       from './styledComponents'
 import { VlanInput } from './VlanInput'
@@ -69,13 +68,6 @@ const radioTypeEnumToString = (radioType: RadioTypeEnum) => {
   return radioType.replace(/-/g, ' ') //FIXME: useIntl
 }
 
-interface ApGroupModalProps extends AntdModalProps {
-  networkVenue?: NetworkVenue
-  venueName?: string
-  network?: NetworkSaveData | null
-  formName: string
-}
-
 export interface VlanDate {
   vlanId?: number,
   vlanPool?: VlanPool | null,
@@ -96,11 +88,11 @@ const defaultAG: NetworkApGroupWithSelected = {
   vlanId: 1
 }
 
-export function NetworkApGroupDialog (props: ApGroupModalProps) {
+export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
 
-  const { networkVenue, venueName, network, formName } = props
+  const { networkVenue, venueName, wlan, formName, tenantId } = props
 
   const [form] = Form.useForm()
 
@@ -120,7 +112,15 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
     }
   }, [form, prevOpen, open])
 
-  const defaultVlanString = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
+  const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
+
+  const networkApGroupsQuery = useGetNetworkApGroupsQuery({ params: { tenantId },
+    payload: [{
+      networkId: networkVenue?.networkId,
+      ssids: [wlan?.ssid],
+      venueId: networkVenue?.venueId
+    }]
+  })
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
@@ -135,7 +135,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
       apgroups: apGroups,
       apTags: []
     }
-  }, [networkVenue])
+  }, [networkVenue, networkApGroupsQuery.data])
 
   useEffect(() => {
     form.setFieldsValue(formInitData)
@@ -145,7 +145,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
 
 
   const RadioSelect = (props: SelectProps) => {
-    const isWPA3 = network?.wlan?.wlanSecurity === WlanSecurityEnum.WPA3
+    const isWPA3 = wlan?.wlanSecurity === WlanSecurityEnum.WPA3
     const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
     if (!triBandRadioFeatureFlag || !isWPA3) {
       _.remove(props.value, (v) => v === RadioTypeEnum._6_GHz)
@@ -172,12 +172,12 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
   const ApGroupItem = ({ apgroup, name }: { apgroup: NetworkApGroup, name: number }) => {
     const apGroupName = apgroup?.isDefault ? $t({ defaultMessage: 'APs not assigned to any group' }) : apgroup?.apGroupName
 
-    const apGroupVlanId = apgroup?.vlanId || network?.wlan?.vlanId
+    const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
     const apGroupVlanPool = apgroup?.vlanPoolId ? {
       name: apgroup.vlanPoolName || '',
       id: apgroup.vlanPoolId || '',
       vlanMembers: []
-    } : network?.wlan?.advancedCustomization?.vlanPool
+    } : wlan?.advancedCustomization?.vlanPool
     const apGroupVlanType = apGroupVlanPool ? VlanType.Pool : VlanType.VLAN
 
     const handleVlanInputChange = (value: VlanDate) => {
@@ -228,7 +228,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
         </Col>
         <Col span={8}>
           <UI.FormItemRounded>
-            { selected && (<VlanInput apgroup={apgroup} network={network} onChange={handleVlanInputChange}/>) }
+            { selected && (<VlanInput apgroup={apgroup} wlan={wlan} onChange={handleVlanInputChange}/>) }
           </UI.FormItemRounded>
         </Col>
         <Col span={8}>
@@ -274,7 +274,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
           <Radio.Group>
             <Space direction='vertical' size='middle'>
               <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{$t({ defaultMessage: 'All APs' })}
-                <RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this venue in the future.' })}</RadioDescription>
+                <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this venue in the future.' })}</UI.RadioDescription>
               </Radio>
               <Form.Item noStyle
                 shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
@@ -293,7 +293,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
               </Form.Item>
 
               <Radio value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
-                <RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to a selected AP group in the future.' })}</RadioDescription>
+                <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to a selected AP group in the future.' })}</UI.RadioDescription>
               </Radio>
               <Form.List name='apgroups'>
                 { (fields) => (
@@ -320,7 +320,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
               </Form.List>
 
               <Radio value={2}>{$t({ defaultMessage: 'Select APs by tag' })}
-                <RadioDescription>{$t({ defaultMessage: 'This network will be only applied to APs with the tags.' })}</RadioDescription>
+                <UI.RadioDescription>{$t({ defaultMessage: 'This network will be only applied to APs with the tags.' })}</UI.RadioDescription>
               </Radio>
               <Form.Item noStyle
                 shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
@@ -343,3 +343,5 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
     </Modal>
   )
 }
+
+export default NetworkApGroupDialog

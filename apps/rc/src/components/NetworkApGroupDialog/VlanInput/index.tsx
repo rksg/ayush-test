@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { EditOutlined, ReloadOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import {
@@ -23,24 +23,24 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { getVlanString, VlanDate } from './NetworkApGroupDialog'
+import { getVlanString, VlanDate } from '../index'
 
-export function VlanInput ({ apgroup, network, onChange }: { apgroup: NetworkApGroup, network?:NetworkSaveData|null , onChange: (data: VlanDate) => void }) {
+export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGroup, wlan?:NetworkSaveData['wlan'], onChange: (data: VlanDate) => void }) {
   const { $t } = useIntl()
 
   const [isEditMode, setEditMode] = useState(false)
   const [isDirty, setDirty] = useState(false)
 
-  const apGroupVlanId = apgroup?.vlanId || network?.wlan?.vlanId
+  const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
   const apGroupVlanPool = apgroup?.vlanPoolId ? {
     name: apgroup.vlanPoolName || '',
     id: apgroup.vlanPoolId || '',
     vlanMembers: []
-  } : network?.wlan?.advancedCustomization?.vlanPool
+  } : wlan?.advancedCustomization?.vlanPool
 
   const apGroupVlanType = apGroupVlanPool ? VlanType.Pool : VlanType.VLAN
 
-  const defaultVlanString = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
+  const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
 
   const initVlanData = { vlanId: apGroupVlanId, vlanPool: apGroupVlanPool, vlanType: apGroupVlanType }
 

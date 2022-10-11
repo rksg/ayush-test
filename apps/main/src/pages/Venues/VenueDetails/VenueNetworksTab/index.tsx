@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+/* eslint-disable max-len */
+import React, { useEffect, useState } from 'react'
 
-import { Switch }  from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Switch } from 'antd'
+import _                from 'lodash'
+import { useIntl }      from 'react-intl'
 
 import {
   Loader,
@@ -11,11 +13,44 @@ import {
 import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
+  useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useVenueNetworkListQuery
+  useVenueNetworkListQuery,
+  useVenueDetailsHeaderQuery
 } from '@acx-ui/rc/services'
-import { useTableQuery, NetworkType, NetworkTypeEnum, RadioTypeEnum, WlanSecurityEnum, generateDefaultNetworkVenue, Network } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                              from '@acx-ui/react-router-dom'
+import {
+  useTableQuery,
+  NetworkType,
+  NetworkTypeEnum,
+  RadioTypeEnum,
+  WlanSecurityEnum,
+  generateDefaultNetworkVenue,
+  useScheduleSlotIndexMap,
+  aggregateApGroupPayload,
+  Network,
+  NetworkSaveData,
+  NetworkVenue,
+  ApGroupModalWidgetProps,
+  transformVLAN,
+  transformAps,
+  transformRadios,
+  transformScheduling
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
+
+
+type LazyComponentType = React.LazyExoticComponent<React.ComponentType<ApGroupModalWidgetProps>>
+const WifiWidgets: LazyComponentType = React.lazy(() => import('rc/Widgets'))
+
+interface ApGroupModalState { // subset of ApGroupModalWidgetProps
+  visible: boolean,
+  wlan?: NetworkSaveData['wlan'],
+  networkVenue?: NetworkVenue,
+  tenantId?: string,
+  venueName?: string
+}
 
 const defaultPayload = {
   searchString: '',
@@ -36,7 +71,22 @@ const defaultPayload = {
   ]
 }
 
-const defaultArray: Network[] = []
+interface NetworkExtended extends Network {
+  deepVenue?: NetworkVenue,
+  latitude?: string,
+  longitude?: string
+}
+
+const getCurrentVenue = (row: Network) => {
+  if (!row.activated.isActivated) {
+    return
+  }
+  const networkId = row.id
+  const deepNetworkVenues = row.deepNetwork?.venues || []
+  return deepNetworkVenues.find(v => v.networkId === networkId)
+}
+
+const defaultArray: NetworkExtended[] = []
 
 export function VenueNetworksTab () {
   const { $t } = useIntl()
@@ -45,8 +95,15 @@ export function VenueNetworksTab () {
     defaultPayload
   })
   const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+
   const [tableData, setTableData] = useState(defaultArray)
+  const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
+    visible: false
+  })
+
   const params = useParams()
+  const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
+  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
 
   const [
     addNetworkVenue,
@@ -59,9 +116,21 @@ export function VenueNetworksTab () {
 
   useEffect(()=>{
     if (tableQuery.data) {
-      setTableData(tableQuery.data.data)
+      const data: React.SetStateAction<NetworkExtended[]> = []
+      tableQuery.data.data.forEach(item => {
+        const activatedVenue = getCurrentVenue(item)
+        data.push({
+          ...item,
+          deepVenue: activatedVenue,
+          latitude: venueDetailsQuery.data?.venue.latitude,
+          longitude: venueDetailsQuery.data?.venue.longitude
+        })
+      })
+      setTableData(data)
     }
-  }, [tableQuery.data])
+  }, [tableQuery.data, venueDetailsQuery.data])
+
+  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
 
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {
@@ -155,7 +224,7 @@ export function VenueNetworksTab () {
       dataIndex: 'vlan',
       width: 80,
       render: function (data, row) {
-        return row.activated.isActivated ? 'All APs' : ''
+        return transformVLAN(getCurrentVenue(row), row.deepNetwork?.wlan, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -164,7 +233,7 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (data, row) {
-        return row.activated.isActivated ? 'All APs' : ''
+        return transformAps(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -173,7 +242,7 @@ export function VenueNetworksTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (data, row) {
-        return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
+        return transformRadios(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -181,10 +250,47 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {
-        return row.activated.isActivated ? '24/7' : ''
+        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
       }
     }
   ]
+
+  const handleClickScheduling = (row: Network, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.preventDefault()
+  }
+
+  const handleClickApGroups = (row: Network, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.preventDefault()
+    setApGroupModalState({
+      visible: true,
+      venueName: row.name,
+      tenantId: params.tenantId,
+      wlan: row.deepNetwork?.wlan,
+      networkVenue: getCurrentVenue(row)
+    })
+  }
+
+  const handleCancel = () => {
+    setApGroupModalState({
+      visible: false
+    })
+  }
+
+  const handleFormFinish = (name: string, newData: FormFinishInfo) => {
+    if (name === 'networkApGroupForm') {
+      let oldData = _.cloneDeep(apGroupModalState.networkVenue)
+      const payload = aggregateApGroupPayload(newData, oldData)
+
+      updateNetworkVenue({ params: {
+        tenantId: params.tenantId,
+        networkVenueId: payload.id
+      }, payload: payload }).then(()=>{
+        setApGroupModalState({
+          visible: false
+        })
+      })
+    }
+  }
 
   return (
     <Loader states={[
@@ -206,6 +312,16 @@ export function VenueNetworksTab () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
       />
+      <Form.Provider
+        onFormFinish={handleFormFinish}
+      >
+        <WifiWidgets name='networkApGroupDialog'
+          {...apGroupModalState}
+          formName='networkApGroupForm'
+          onCancel={handleCancel}
+          // onOk={handleOk}
+        />
+      </Form.Provider>
     </Loader>
   )
 }

@@ -88,7 +88,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
                               <span>
                                 All APs
                                 <div
-                                  class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                  class="styledComponents__RadioDescription-sc-brjq13-1 gDbjvR"
                                 >
                                   Including any AP that will be added to this venue in the future.
                                 </div>
@@ -100,7 +100,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
                             style="margin-bottom: 16px;"
                           >
                             <div
-                              class="ant-form-item styledComponents__FormItemRounded-sc-1y3m4a1-0 cDUtLW"
+                              class="ant-form-item styledComponents__FormItemRounded-sc-brjq13-0 mfbXB"
                             >
                               <div
                                 class="ant-row ant-form-item-row"
@@ -333,7 +333,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
                               <span>
                                 Select specific AP groups
                                 <div
-                                  class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                  class="styledComponents__RadioDescription-sc-brjq13-1 gDbjvR"
                                 >
                                   Including any AP that will be added to a selected AP group in the future.
                                 </div>
@@ -366,7 +366,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
                               <span>
                                 Select APs by tag
                                 <div
-                                  class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                  class="styledComponents__RadioDescription-sc-brjq13-1 gDbjvR"
                                 >
                                   This network will be only applied to APs with the tags.
                                 </div>

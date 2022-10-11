@@ -23,12 +23,13 @@ import {
   network,
   networkVenue_apgroup,
   params
-} from './NetworkVenueTestData'
-import { VlanInput } from './VlanInput'
+} from '../__tests__/NetworkVenueTestData'
+
+import { VlanInput } from './index'
 
 
 const vlanPoolList = [{
-  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  tenantId: params.tenantId,
   name: 'pool1',
   vlanMembers: ['123'],
   id: '1c061cf2649344adaf1e79a9d624a451'
@@ -62,7 +63,7 @@ describe('VlanInput', () => {
 
     const { asFragment } = render(<Provider><VlanInput
       apgroup={defaultAG}
-      network={network}
+      wlan={network.wlan}
       onChange={()=>void 0}
     /></Provider>, { route: { params } })
 
@@ -86,7 +87,7 @@ describe('VlanInput', () => {
 
     render(<Provider><VlanInput
       apgroup={networkVenue_apgroup.apGroups[0]}
-      network={network}
+      wlan={network.wlan}
       onChange={callbackFn}
     /></Provider>, { route: { params } })
 
