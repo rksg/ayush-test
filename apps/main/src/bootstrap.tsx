@@ -47,6 +47,7 @@ function getTenantId () {
 }
 export function renderPendoAnalyticsTag () {
   const script = document.createElement('script')
+  // @ts-ignore
   const key = get('PENDO_API_KEY')
   script.onerror = event => {
     /* eslint-disable */  // Disables everything from this point down
@@ -67,51 +68,41 @@ export function renderPendoAnalyticsTag () {
   document.body.appendChild(script)
 }
 
-export function pendoInitalization (): void {
+export async function pendoInitalization (): Promise<void> {
   const tenantId = getTenantId()
   const param = { tenantId }
-  const userUrl = createHttpRequest(
+  const userUrl = createHttpRequest (
     CommonUrlsInfo.getUserProfile,
     param
   )
 
-  async function getUsers () {
-    let url = userUrl.url
-    try {
-      let res = await fetch(url)
-      return await res.json()
-    } catch (error) {
-      /* eslint-disable no-console */
-      console.log(error)
-    }
+  const url = userUrl.url
+  try {
+    const res = await fetch(url)
+    const user = await res.json()
+    window.pendo.initialize({
+      visitor: {
+        id: user.externalId,
+        full_name: `${user.firstName} ${user.lastName}`,
+        role: user.role,
+        version: user.pver,
+        var: user.var,
+        varTenantId: user.varTenantId,
+        support: user.support,
+        dogfood: user.dogfood,
+        region: user.region,
+        username: user.username,
+        delegated: user.tenantId !== user.varTenantId
+      },
+      account: {
+        id: user.tenantId,
+        name: user.companyName
+      }
+    })
+  } catch (error) {
+    /* eslint-disable no-console */
+    console.log(error)
   }
-
-  // Setting up metadata for Pendo
-  async function pendoInit () {
-    let user = await getUsers()
-    if (window.pendo) {
-      window.pendo.initialize({
-        visitor: {
-          id: user.externalId,
-          full_name: `${user.firstName} ${user.lastName}`,
-          role: user.role,
-          version: user.pver,
-          var: user.var,
-          varTenantId: user.varTenantId,
-          support: user.support,
-          dogfood: user.dogfood,
-          region: user.region,
-          username: user.username,
-          delegated: user.tenantId !== user.varTenantId
-        },
-        account: {
-          id: user.tenantId,
-          name: user.companyName
-        }
-      })
-    }
-  }
-  pendoInit()
 }
 
 export async function init () {
@@ -122,6 +113,7 @@ export async function init () {
   const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
 
   // Pendo initialization
+  // @ts-ignore
   if ( get('DISABLE_PENDO') === 'false' ) {
     renderPendoAnalyticsTag()
   }
