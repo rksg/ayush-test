@@ -1,11 +1,8 @@
 import styled from 'styled-components/macro'
 
-import { Button } from '../Button'
+import { ResetWrapper } from '../Chart/styledComponents'
 
-export const Wrapper = styled.div`
-  position: relative;
-  width: fit-content;
-
+export const Wrapper = styled(ResetWrapper)`
   svg {
     // special color code to target path of brush
     path[stroke="#123456"] {
@@ -14,13 +11,4 @@ export const Wrapper = styled.div`
       clip-path: inset(0 round 5px);
     }
   }
-`
-
-interface ResetButtonProps {
-  $disableLegend: boolean
-}
-export const ResetButton = styled(Button)<ResetButtonProps>`
-  position: absolute;
-  top: ${props => props.$disableLegend ? '3%' : '15%'};
-  right: 0;
 `

@@ -28,6 +28,7 @@ import {
   timeSeriesTooltipFormatter,
   getTimeSeriesSymbol
 }                       from '../Chart/helper'
+import { ResetButton } from '../Chart/styledComponents'
 import { useDataZoom } from '../Chart/useDataZoom'
 
 import * as UI from './styledComponents'
@@ -54,9 +55,9 @@ export interface MultiLineTimeSeriesChartProps <
   MarkerData
 >
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
-    data: TChartData[],
-    legendProp?: keyof TChartData,  /** @default 'name' */
-    lineColors?: string[],
+    data: TChartData[]
+    legendProp?: keyof TChartData /** @default 'name' */
+    lineColors?: string[]
     dataFormatter?: ReturnType<typeof formatter>
     seriesFormatters?: Record<string, ReturnType<typeof formatter>>
     yAxisProps?: {
@@ -126,7 +127,7 @@ export function MultiLineTimeSeriesChart <
 ({
   data,
   legendProp = 'name' as keyof TChartData,
-  dataFormatter,
+  dataFormatter = formatter('countFormat'),
   seriesFormatters,
   yAxisProps,
   disableLegend,
@@ -152,10 +153,7 @@ export function MultiLineTimeSeriesChart <
       cssStr('--acx-accents-orange-50'),
       cssStr('--acx-semantics-yellow-40')
     ],
-    grid: {
-      ...gridOptions(),
-      ...(disableLegend ? { top: '6px' } : {})
-    },
+    grid: { ...gridOptions(disableLegend) },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),
@@ -254,7 +252,7 @@ export function MultiLineTimeSeriesChart <
           brushend: onBrushendCallback
         }}
       />
-      {canResetZoom && <UI.ResetButton
+      {canResetZoom && <ResetButton
         size='small'
         onClick={resetZoomCallback}
         children={$t({ defaultMessage: 'Reset Zoom' })}

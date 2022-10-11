@@ -2,14 +2,14 @@ import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Incident, getSeriesData, TimeSeriesData } from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart }          from '@acx-ui/components'
-import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
-import { formatter }                               from '@acx-ui/utils'
+import { getSeriesData, TimeSeriesData }  from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
+import { formatter }                      from '@acx-ui/utils'
 
-import { ChartsData } from '../services'
+import { TimeSeriesChartProps } from '../types'
 
-import { onMarkedAreaClick, getMarkers } from './incidentTimeSeriesMarker'
+import { onMarkAreaClick, getMarkers } from './incidentTimeSeriesMarker'
 
 const apDisconnectionCountChartQuery = () => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {
@@ -21,7 +21,7 @@ const apDisconnectionCountChartQuery = () => gql`
   }
   `
 export const ApDisconnectionCountChart = (
-  { incident, data }: { incident: Incident, data: ChartsData }
+  { incident, data }: TimeSeriesChartProps
 ) => {
   const { apDisconnectionCountChart, relatedIncidents } = data
   const { $t } = useIntl()
@@ -44,8 +44,8 @@ export const ApDisconnectionCountChart = (
           dataFormatter={formatter('countFormat')}
           yAxisProps={{ minInterval: 1 }}
           disableLegend={true}
-          onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
-          markers={getMarkers(relatedIncidents, incident)}
+          onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
+          markers={getMarkers(relatedIncidents!, incident)}
         />
       )}
     </AutoSizer>

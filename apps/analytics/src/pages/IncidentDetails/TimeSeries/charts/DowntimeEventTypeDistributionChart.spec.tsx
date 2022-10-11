@@ -5,8 +5,9 @@ import { fakeIncidentDowntimeHigh }               from '@acx-ui/analytics/utils'
 import { store }                                  from '@acx-ui/store'
 import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
-import { TimeSeriesChartTypes } from '../config'
-import { Api, ChartsData }      from '../services'
+import { TimeSeriesChartTypes }    from '../config'
+import { Api }                     from '../services'
+import { TimeSeriesChartResponse } from '../types'
 
 import { DowntimeEventTypeDistributionChart } from './DowntimeEventTypeDistributionChart'
 
@@ -26,7 +27,7 @@ const expectedResult = {
       apRebootByUser: [16, 17, 18, 19, 20]
     }
   }
-} as unknown as ChartsData
+} as unknown as TimeSeriesChartResponse
 
 afterEach(() => store.dispatch(Api.util.resetApiState()))
 
@@ -50,7 +51,8 @@ describe('downtimeEventTypeDistributionChartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentDowntimeHigh,
-        charts: [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart]
+        charts: [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart],
+        minGranularity: 'PT180S'
       })
     )
     expect(status).toBe('fulfilled')

@@ -635,8 +635,15 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApDisconnectionCountChart"
+          />
+          <div
+            data-testid="timeseries-DowntimeEventTypeDistributionChart"
+          />
         </div>
       </div>
     </div>

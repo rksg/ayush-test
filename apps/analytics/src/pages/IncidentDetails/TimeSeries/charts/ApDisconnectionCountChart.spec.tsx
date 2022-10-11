@@ -5,8 +5,9 @@ import { fakeIncidentDowntimeHigh, fakeIncident } from '@acx-ui/analytics/utils'
 import { store }                                  from '@acx-ui/store'
 import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
-import { TimeSeriesChartTypes } from '../config'
-import { ChartsData, Api }      from '../services'
+import { TimeSeriesChartTypes }    from '../config'
+import { Api }                     from '../services'
+import { TimeSeriesChartResponse } from '../types'
 
 import { ApDisconnectionCountChart } from './ApDisconnectionCountChart'
 
@@ -36,7 +37,7 @@ const expectedResult = {
       path: [{ type: 'zone', name: 'Zone' }]
     })
   ]
-} as unknown as ChartsData
+} as unknown as TimeSeriesChartResponse
 
 afterEach(() => store.dispatch(Api.util.resetApiState()))
 
@@ -45,7 +46,11 @@ describe('ApDisconnectionCountChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <ApDisconnectionCountChart incident={fakeIncidentDowntimeHigh} data={expectedResult}/>
+        <ApDisconnectionCountChart
+          chartRef={()=>{}}
+          incident={fakeIncidentDowntimeHigh}
+          data={expectedResult}
+        />
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -60,7 +65,8 @@ describe('apDisconnectionCountChartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentDowntimeHigh,
-        charts: [TimeSeriesChartTypes.ApDisconnectionCountChart]
+        charts: [TimeSeriesChartTypes.ApDisconnectionCountChart],
+        minGranularity: 'PT180S'
       })
     )
     expect(status).toBe('fulfilled')
