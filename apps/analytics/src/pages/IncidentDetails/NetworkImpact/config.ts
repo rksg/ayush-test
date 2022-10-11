@@ -45,7 +45,7 @@ export const getDominance = (data: NetworkImpactChartData['data']) =>
   _.maxBy(getDataWithPercentage(data), 'percentage')
 
 export const getAPRebootReason = (key: string, { $t }: IntlShape) => {
-  const content = _.get(apRebootReasonMap, key)
+  const content = _.get(apRebootReasonMap, key.replace(/cubic/ig, 'cia'))
   return content ? $t(content) : key
 }
 
