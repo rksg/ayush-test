@@ -290,8 +290,28 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     managementFrameMinimumPhyRate: get(data, 'managementFrameMinimumPhyRate')
   }
 
+  // loadControlForm
+  if(get(data, 'totalUplinkLimited') === false) {
+    advancedCustomization.totalUplinkRateLimiting = 0
+  }
+
+  if(get(data, 'totalDownlinkLimited') === false) {
+    advancedCustomization.totalDownlinkRateLimiting = 0
+  }
+  // accessControlForm
+  if (!get(data, 'wlan.advancedCustomization.devicePolicyId')) {
+    advancedCustomization.devicePolicyId = null
+  }
+
   if (get(data, 'wlan.advancedCustomization.vlanPool')) {
     advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
+  }
+  // accessControlForm
+  if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
+    advancedCustomization.userUplinkRateLimiting = 0
+  }
+  if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userDownlinkRateLimiting'))) {
+    advancedCustomization.userDownlinkRateLimiting = 0
   }
 
   let saveData:NetworkSaveData = {

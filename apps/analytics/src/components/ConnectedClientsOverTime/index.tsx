@@ -21,7 +21,7 @@ const lineColors = [
 function ConnectedClientsOverTimeWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
   const seriesMapping = [
-    { key: 'uniqueUsers_all', name: $t({ defaultMessage: 'All Radios' }) },
+    { key: 'uniqueUsers_all', name: $t({ defaultMessage: 'All Bands' }) },
     { key: 'uniqueUsers_24', name: formatter('radioFormat')('2.4') },
     { key: 'uniqueUsers_5', name: formatter('radioFormat')('5') },
     { key: 'uniqueUsers_6', name: formatter('radioFormat')('6') }
