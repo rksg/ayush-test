@@ -25,7 +25,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
       >
         Select APs
         <div
-          class="styledComponents__SubTitleWrapper-sc-k3durc-0 flbRHt"
+          class="styledComponents__SubTitleWrapper-sc-k3durc-0 kpjPwS"
         >
           Define how this network will be activated on venue "My-Venue"
         </div>
