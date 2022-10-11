@@ -11,7 +11,7 @@ import { TimeStamp, TimeStampRange } from '@acx-ui/types'
 
 export interface HealthFilter extends AnalyticsFilter {
   timeWindow: TimeStampRange
-  setTimeWindow: (timeWindow: TimeStampRange) => void
+  setTimeWindow: (timeWindow: TimeStampRange, isReset?: boolean) => void
 }
 
 export const HealthPageContext = createContext(null as unknown as HealthFilter)
@@ -19,38 +19,36 @@ export const HealthPageContext = createContext(null as unknown as HealthFilter)
 export const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
 export const isAfter = (a: TimeStamp, b: TimeStamp) => moment(a).isAfter(b)
 
-export const formatTimeWindow = (window: TimeStampRange, defaultWindow: TimeStampRange) => {
-  if (typeof window[0] === 'number') {
-    window[0] = moment(window[0]).format()
-  }
+let maxWindow: TimeStampRange = ['', '']
 
-  if (typeof window[1] === 'number') {
-    window[1] = moment(window[1]).format()
+export const formatTimeWindow = (window: TimeStampRange, defaultWindow: TimeStampRange, isReset: boolean) : TimeStampRange => {
+  const newWindow = window
+    .sort((a, b) => +isBefore(a, b))
+    .map(t => moment(t).utc().toISOString()) as TimeStampRange
+  if (isReset) {
+    maxWindow = [
+      isBefore(maxWindow[0], newWindow[0]) ? maxWindow[0] : newWindow[0],
+      isAfter(maxWindow[1], newWindow[1]) ? maxWindow[1] : newWindow[1]
+    ]
+    return maxWindow
   }
-
-  if (isBefore(window[0], defaultWindow[0])) {
-    window[0] = defaultWindow[0]
-  }
-
-  if (isAfter(window[1], defaultWindow[1])) {
-    window[1] = defaultWindow[1]
-  }
-
-  return window
+  return newWindow
 }
 
 export function HealthPageContextProvider (props: { children: ReactNode }) {
   const analyticsFilter = useAnalyticsFilter()
   const { startDate, endDate } = analyticsFilter.filters
-  const [timeWindow, setTimeWindow] = useState<TimeStampRange>([startDate, endDate])
-
-  const setTimeWindowCallback = useCallback((window: TimeStampRange) => {
-    const formattedWindow = formatTimeWindow(window, [startDate, endDate])
+  const [timeWindow, setTimeWindow] = useState<TimeStampRange>([
+    moment(startDate).utc().toISOString(),
+    moment(endDate).utc().toISOString()
+  ])
+  const setTimeWindowCallback = useCallback((window: TimeStampRange, isReset?: boolean) => {
+    const formattedWindow = formatTimeWindow(window, timeWindow, isReset || false)
     setTimeWindow(formattedWindow)
   }, [startDate, endDate])
 
   useEffect(() => {
-    setTimeWindowCallback([startDate, endDate])
+    setTimeWindowCallback([startDate, endDate], false)
   }, [startDate, endDate, setTimeWindowCallback])
 
   const context = useMemo(() => ({

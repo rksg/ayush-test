@@ -27,9 +27,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
   }
 
   useEffect(() => { connect('timeSeriesGroup') }, [])
-  
   return (<>{
-    kpis.map((kpi, index) => (<KpiRow key={kpi}>
+    kpis.map((kpi) => (<KpiRow key={kpi}>
       <GridCol col={{ span: 16 }}>
         <GridRow style={{ height: '150px' }}>
           <GridCol col={{ span: 5 }}>
@@ -40,7 +39,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
               filters={filters} 
               kpi={kpi} 
               chartRef={connectChart}
-              setTimeWindow={index < 1 ? setTimeWindow : undefined}
+              setTimeWindow={setTimeWindow}
               timeWindow={timeWindow}
             />
           </GridCol>

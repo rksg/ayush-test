@@ -3,8 +3,6 @@ import { useEffect, RefCallback } from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import moment      from 'moment-timezone'
-
 import ReactECharts from 'echarts-for-react'
 
 import { AnalyticsFilter, kpiConfig }                       from '@acx-ui/analytics/utils'
@@ -31,7 +29,7 @@ function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: {
   filters: AnalyticsFilter,
   kpi: string,
   chartRef: RefCallback<ReactECharts>,
-  setTimeWindow: { (timeWidow: TimeStampRange): void } | undefined,
+  setTimeWindow: { (timeWidow: TimeStampRange, isReset: boolean): void },
   timeWindow: TimeStampRange
 }) {
   const { $t } = useIntl()

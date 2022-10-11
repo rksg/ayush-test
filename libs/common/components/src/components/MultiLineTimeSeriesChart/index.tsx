@@ -63,7 +63,7 @@ export interface MultiLineTimeSeriesChartProps <
     disableLegend?: boolean
     chartRef?: RefCallback<ReactECharts>
     zoom?: TimeStampRange
-    onDataZoom?: (range: TimeStampRange) => void
+    onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
     brush?: TimeStampRange
     onBrushChange?: (range: TimeStampRange) => void
     markers?: Marker<MarkerData>[]
