@@ -182,7 +182,3 @@ export function StackedAreaChart <
     </ResetWrapper>
   )
 }
-
-export function StepStackedAreaChart <TChartData extends TimeSeriesChartData> (
-  props : StackedAreaChartProps<TChartData>
-) { return <StackedAreaChart {...props} type={'step'}/> }

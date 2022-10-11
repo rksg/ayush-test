@@ -2,13 +2,15 @@ import type { TimeStamp } from '@acx-ui/types'
 
 import type { TimeSeriesChartData } from './types/timeseries'
 
+export type TimeSeriesDataType = TimeStamp | number | null
+
 export type TimeSeriesData = Record<
   string,
-  (TimeStamp | number | null | ( Record<string, (TimeStamp | number | null)[]>))[]
+  (TimeSeriesDataType[] | ( Record<string, TimeSeriesDataType[]>))
 >
 
 export function getSeriesData (
-  data: TimeSeriesData | null,
+  data: Record<string, TimeSeriesDataType[]> | null,
   seriesMapping: Array<{ key: string, name: string, show?: boolean }>
 ): TimeSeriesChartData[] {
   if (checkNoData(data)) return []
@@ -21,7 +23,9 @@ export function getSeriesData (
   }))
 }
 
-export function checkNoData (data: TimeSeriesData | null): boolean {
+export function checkNoData (
+  data: Record<string, TimeSeriesDataType[]> | null
+): boolean {
   if (!data) return true
   let isNoData = false
   for (let [key, value] of Object.entries(data)) {

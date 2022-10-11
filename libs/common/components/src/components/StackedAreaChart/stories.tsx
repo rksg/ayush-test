@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react'
 import { TimeStamp } from '@acx-ui/types'
 import { formatter } from '@acx-ui/utils'
 
-import { StackedAreaChart, StepStackedAreaChart } from '.'
+import { StackedAreaChart } from '.'
 
 const getData = () => {
   const base = +new Date(2020, 9, 29)
@@ -27,7 +27,8 @@ storiesOf('StackedAreaChart', module)
     data={data}
     style={{ width: 500 }}
   />)
-  .add('StepChart View', () => <StepStackedAreaChart
+  .add('StepChart View', () => <StackedAreaChart
+    type='step'
     data={data}
     style={{ width: 500 }}
   />)

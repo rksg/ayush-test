@@ -2,9 +2,9 @@ import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesData, getSeriesData }      from '@acx-ui/analytics/utils'
-import { Card, cssStr, StepStackedAreaChart } from '@acx-ui/components'
-import { formatter }                          from '@acx-ui/utils'
+import { getSeriesData, TimeSeriesDataType } from '@acx-ui/analytics/utils'
+import { Card, cssStr, StackedAreaChart }    from '@acx-ui/components'
+import { formatter }                         from '@acx-ui/utils'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -44,12 +44,12 @@ export const DowntimeEventTypeDistributionChart = (
   const chartResults = getSeriesData({
     time,
     ...apDisconnectionEvents
-  } as TimeSeriesData, seriesMapping)
+  } as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
   return <Card title={$t({ defaultMessage: 'Events' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <StepStackedAreaChart
+        <StackedAreaChart
           type='step'
           style={{ height, width }}
           stackColors={stackColors}
