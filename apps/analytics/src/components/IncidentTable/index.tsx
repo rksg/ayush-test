@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 
-import { Tooltip }                                  from 'antd'
+import { Checkbox, Tooltip }                        from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
@@ -11,12 +11,16 @@ import {
   shortDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
-import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
-import { formatter }                         from '@acx-ui/utils'
+import { Loader, TableProps, Drawer } from '@acx-ui/components'
+import { useTenantLink, Link }        from '@acx-ui/react-router-dom'
+import { formatter }                  from '@acx-ui/utils'
 
-import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
-import * as UI                                                       from './styledComponents'
+import {
+  useIncidentsListQuery,
+  useMuteIncidentsMutation,
+  IncidentTableRow
+} from './services'
+import * as UI           from './styledComponents'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -24,8 +28,11 @@ import {
   ShortIncidentDescription,
   severitySort,
   dateSort,
-  defaultSort
+  defaultSort,
+  filterMutedIncidents
 } from './utils'
+
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
   const { $t } = useIntl()
@@ -61,27 +68,43 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const queryResults = useIncidentsListQuery(filters)
   const basePath = useTenantLink('/analytics/incidents/')
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
+  const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
-  const mutedKeysFilter = (data: IncidentNodeData) => {
-    return data.filter((row) => row.isMuted === true).map((row) => row.id)
-  }
+  const [muteIncident] = useMuteIncidentsMutation()
+  const [selectedRowData, setSelectedRowData] = useState<{
+    id: string,
+    code: string,
+    severityLabel: string,
+    isMuted: boolean
+  }[]>([])
 
-  const rowActions: TableProps<Incident>['rowActions'] = [
+  const selectedIncident = selectedRowData[0]
+  const data = (showMuted)
+    ? queryResults.data
+    : filterMutedIncidents(queryResults.data)
+
+  const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
-      label: $t(defineMessage({ defaultMessage: 'Mute' })),
-      onClick: () => {
-        // TODO: to be updated for muting
+      label: $t(selectedIncident?.isMuted
+        ? defineMessage({ defaultMessage: 'Unmute' })
+        : defineMessage({ defaultMessage: 'Mute' })
+      ),
+      onClick: async () => {
+        const { id, code, severityLabel, isMuted } = selectedIncident
+        await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
+        setSelectedRowData([])
       }
     }
   ]
 
-  const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = [
+  const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = useMemo(() => [
     {
       title: $t(defineMessage({ defaultMessage: 'Severity' })),
       width: 80,
       dataIndex: 'severityLabel',
       key: 'severity',
-      render: (_, value) => <GetIncidentBySeverity value={value.severity} id={value.id}/>,
+      render: (_, value) =>
+        <GetIncidentBySeverity severityLabel={value.severityLabel} id={value.id}/>,
       sorter: {
         compare: (a, b) => severitySort(a.severity, b.severity)
       },
@@ -196,26 +219,45 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       show: false,
       filterable: true
     }
-  ]
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], []) // '$t' 'basePath' 'intl' are not changing
 
   return (
     <Loader states={[queryResults]}>
-      <Table
+      <UI.IncidentTableWrapper
         type='tall'
-        dataSource={queryResults?.data}
+        dataSource={data}
         columns={ColumnHeaders}
         rowActions={rowActions}
         rowSelection={{
           type: 'radio',
-          defaultSelectedRowKeys: queryResults.data
-            ? mutedKeysFilter(queryResults.data)
-            : undefined
+          selectedRowKeys: selectedRowData.map(val => val.id),
+          onChange: (_, [row]) => {
+            row && setSelectedRowData([{
+              id: row.id,
+              code: row.code,
+              severityLabel: row.severityLabel,
+              isMuted: row.isMuted
+            }])
+          }
         }}
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
         ellipsis={true}
         indentSize={6}
+        onResetState={() => {
+          setShowMuted(false)
+          setSelectedRowData([])
+        }}
+        extraSettings={[
+          <Checkbox
+            onChange={(e: CheckboxChangeEvent) => setShowMuted(e.target.checked)}
+            checked={showMuted}
+            children={$t({ defaultMessage: 'Show Muted Incidents' })}
+          />
+        ]}
+        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
       />
       {drawerSelection &&
       <Drawer
