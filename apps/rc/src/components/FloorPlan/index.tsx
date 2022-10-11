@@ -90,6 +90,7 @@ export default function FloorPlan () {
           <Space><BulbOutlined />
             {$t({
               defaultMessage:
+                // eslint-disable-next-line max-len
                 'You can place your devices on floor plans or map to view their geographical distribution'
             })}
           </Space>}>

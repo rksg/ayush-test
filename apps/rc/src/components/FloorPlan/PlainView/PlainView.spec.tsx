@@ -5,7 +5,6 @@ import { Provider }                           from '@acx-ui/store'
 import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
 
 import PlainView, { getImageFitPercentage } from './PlainView'
-import Thumbnail                            from './Thumbnail'
 
 const list: FloorPlanDto[] = [
   {
@@ -48,14 +47,13 @@ describe('Floor Plan Plain View', () => {
   })
 
   it('should trigger onFloorPlanSelectionHandler', async () => {
-    const onFloorPlanSelectionHandler = jest.fn()
-    await render(<Thumbnail floorPlan={list[1]}
-      active={0}
-      onFloorPlanSelection={onFloorPlanSelectionHandler}/>)
-    const component = screen.getByTestId('thumbnailBg')
-    fireEvent.click(component)
-    expect(onFloorPlanSelectionHandler).toBeCalledTimes(1)
-    expect(onFloorPlanSelectionHandler).toHaveBeenCalledWith(list[1])
+    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
+      toggleGalleryView={() => {}}
+      defaultFloorPlan={list[0]}
+      deleteFloorPlan={jest.fn()}/></Provider>)
+    const component = await screen.findAllByTestId('thumbnailBg')
+    fireEvent.click(component[0])
+    expect(asFragment()).toMatchSnapshot()
   })
   it('test zoom-in button', async () => {
     const { asFragment } = await render(<Provider><PlainView floorPlans={list}
