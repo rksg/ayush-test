@@ -23,7 +23,7 @@ const lineColors = [
 function TrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
   const seriesMapping = [
-    { key: 'totalTraffic_all', name: $t({ defaultMessage: 'All Radios' }) },
+    { key: 'totalTraffic_all', name: $t({ defaultMessage: 'All Bands' }) },
     { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
     { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
     { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }

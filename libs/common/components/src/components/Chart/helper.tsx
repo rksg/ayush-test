@@ -33,11 +33,11 @@ export type TooltipFormatterParams = Exclude<
   Array<unknown>
 >
 
-export const gridOptions = () => ({
+export const gridOptions = (disableLegend = false) => ({
   left: '0%',
   right: '0%',
   bottom: '0%',
-  top: '15%',
+  top: disableLegend ? '6px': '15%',
   containLabel: true
 })
 
