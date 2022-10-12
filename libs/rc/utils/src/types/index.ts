@@ -6,7 +6,9 @@ import {
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  PolicyType,
+  PolicyTechnology
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
@@ -345,4 +347,13 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+}
+
+export interface Policy {
+  id: string
+  name: string
+  type: PolicyType
+  technology: PolicyTechnology
+  scope: number
+  tags: string[]
 }

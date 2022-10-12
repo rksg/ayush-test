@@ -1,11 +1,18 @@
-import { ConfigProvider }    from '@acx-ui/components'
-import { ServiceType }       from '@acx-ui/rc/utils'
-import { rootRoutes, Route } from '@acx-ui/react-router-dom'
-import { Provider }          from '@acx-ui/store'
+import { ConfigProvider }          from '@acx-ui/components'
+import { PolicyType, ServiceType } from '@acx-ui/rc/utils'
+import { rootRoutes, Route }       from '@acx-ui/react-router-dom'
+import { Provider }                from '@acx-ui/store'
 
-import { NetworkDetails }                        from './pages/Networks/NetworkDetails/NetworkDetails'
-import { NetworkForm }                           from './pages/Networks/NetworkForm/NetworkForm'
-import { NetworksTable }                         from './pages/Networks/NetworksTable'
+import { NetworkDetails } from './pages/Networks/NetworkDetails/NetworkDetails'
+import { NetworkForm }    from './pages/Networks/NetworkForm/NetworkForm'
+import { NetworksTable }  from './pages/Networks/NetworksTable'
+import { PoliciesTable }  from './pages/Policies/PoliciesTable'
+import {
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  getSelectPolicyRoutePath,
+  PolicyOperation
+} from './pages/Policies/policyRouteUtils'
 import { DHCPForm }                              from './pages/Services/DHCPForm/DHCPForm'
 import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
 import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
@@ -16,6 +23,7 @@ export default function RcRoutes () {
     <Route path='t/:tenantId'>
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
+      <Route path='policies/*' element={<PolicyRoutes />} />
     </Route>
   )
   return (
@@ -84,6 +92,30 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<h1>DHCP details page</h1>}
+      />
+    </Route>
+  )
+}
+
+function PolicyRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path={getPolicyListRoutePath()} element={<PoliciesTable />} />
+      <Route path={getSelectPolicyRoutePath()} element={<h1>Select Policy</h1>} />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
+        element={<h1>Rogue AP detection create page</h1>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })}
+        element={<h1>Rogue AP detection edit page</h1>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
+        element={<h1>Rogue AP detection details page</h1>}
       />
     </Route>
   )

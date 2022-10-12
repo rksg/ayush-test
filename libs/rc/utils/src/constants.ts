@@ -178,3 +178,17 @@ export enum TrustedPortTypeEnum {
   DHCP = 'dhcp',
   ARP = 'arp'
 }
+
+export enum PolicyType {
+  ACCESS_CONTROL = 'Access Control',
+  VLAN_POOL = 'VLAN Pool',
+  ROGUE_AP_DETECTION = 'Rouge AP detection',
+  SYSLOG = 'Syslog',
+  AAA = 'AAA',
+  CLIENT_ISOLATION = 'Client Isolation'
+}
+
+export enum PolicyTechnology {
+  WIFI = 'WI-FI',
+  SWITCH = 'SWITCH'
+}
