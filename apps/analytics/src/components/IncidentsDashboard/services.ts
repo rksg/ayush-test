@@ -110,7 +110,8 @@ export const api = dataApi.injectEndpoints({
           }
         }
         return severities
-      }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
     })
   })
 })
