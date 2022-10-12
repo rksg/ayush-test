@@ -18,7 +18,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
       style="overflow: visible; height: 0px; width: 0px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-13 lfafro"
+        class="styledComponents__Wrapper-sc-1abm7iv-13 RarQS"
         style="width: 1250px;"
       >
         <div
@@ -237,7 +237,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
       style="overflow: visible; height: 0px; width: 0px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-13 lfafro"
+        class="styledComponents__Wrapper-sc-1abm7iv-13 RarQS"
         style="width: 1280px;"
       >
         <div

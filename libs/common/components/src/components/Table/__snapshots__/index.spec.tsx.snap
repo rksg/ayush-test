@@ -6,7 +6,7 @@ exports[`Table component renders compact table 1`] = `
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 gJHxFg"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 bzjxMS"
       style="width: 1280px;"
     >
       <div
@@ -205,7 +205,7 @@ exports[`Table component renders form table 1`] = `
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 bhrDYh"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 kDcXQr"
       style="width: 1280px;"
     >
       <div
@@ -404,7 +404,7 @@ exports[`Table component should render correctly 1`] = `
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
       style="width: 1280px;"
     >
       <div
@@ -763,7 +763,7 @@ exports[`Table component should render multi select table and render action butt
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
       style="width: 1280px;"
     >
       <div
@@ -1222,7 +1222,7 @@ exports[`Table component should render multi select table and render action butt
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
       style="width: 1280px;"
     >
       <div
@@ -1780,7 +1780,7 @@ exports[`Table component should render multi select table and render action butt
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
       style="width: 1280px;"
     >
       <div

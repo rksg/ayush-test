@@ -58,7 +58,7 @@ exports[`Services Table should delete selected row 1`] = `
       style="overflow: visible; height: 0px; width: 0px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
+        class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
         style="width: 1280px;"
       >
         <div
@@ -911,7 +911,7 @@ exports[`Services Table should render table 1`] = `
       style="overflow: visible; height: 0px; width: 0px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
+        class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
         style="width: 1280px;"
       >
         <div

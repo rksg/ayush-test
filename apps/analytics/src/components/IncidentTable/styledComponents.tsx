@@ -110,13 +110,8 @@ styled((props: TableProps<IncidentTableRow>) => <Table {...props} />)`
 
   .ant-table-cell {
     color: unset;
-
-    &-fix-left, 
-    &-fix-right {
-      background: unset;
-    }
   }
-  
+
   .ant-radio-inner {
     background-color: var(--acx-primary-white);
   }
