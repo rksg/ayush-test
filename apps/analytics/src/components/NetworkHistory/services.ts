@@ -4,8 +4,6 @@ import moment  from 'moment'
 import { dataApi }                        from '@acx-ui/analytics/services'
 import {  incidentCodes, IncidentFilter } from '@acx-ui/analytics/utils'
 
-import { calculateGranularity } from '../../utils'
-
 
 export type NetworkHistoryData = {
   connectedClientCount: number[]
@@ -31,9 +29,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkHistory: build.query<
       NetworkHistoryData,
-      IncidentFilter & {
-        hideIncidents?: boolean
-      }
+      IncidentFilter
     >({
       // todo: Skipping the filter for impactedClientCount
       query: (payload) => ({
@@ -65,9 +61,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: (payload.hideIncidents)
-            ? calculateGranularity(payload.startDate, payload.endDate)
-            : calcGranularity(payload.startDate, payload.endDate),
+          granularity: calcGranularity(payload.startDate, payload.endDate),
           severity: [{ gt: 0, lte: 1 }], // all severities
           code: payload.code ?? incidentCodes,
           filter: payload.filter
