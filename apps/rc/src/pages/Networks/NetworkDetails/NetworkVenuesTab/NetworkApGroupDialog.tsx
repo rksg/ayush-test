@@ -303,10 +303,10 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
                       <Row gutter={[4, 0]} style={{ width: '750px' }}>
                         <Col span={8}></Col>
                         <Col span={8}>
-                          <Typography.Title level={5}>{$t({ defaultMessage: 'VLAN' })}</Typography.Title>
+                          <UI.verticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.verticalLabel>
                         </Col>
                         <Col span={8}>
-                          <Typography.Title level={5}>{$t({ defaultMessage: 'Radio Band' })}</Typography.Title>
+                          <UI.verticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.verticalLabel>
                         </Col>
                         { fields.map((field, index) => (
                           <Form.Item key={field.key} noStyle>
