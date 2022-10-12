@@ -2,7 +2,6 @@ import { Key } from 'react'
 
 import { BandBalancing }             from '../models/BandBalancing'
 import { DenialOfServiceProtection } from '../models/DenialOfServiceProtection'
-import { LteBandLockChannel }        from '../models/LteBandLockChannel'
 import { Mesh }                      from '../models/Mesh'
 import { VenueDhcpServiceSetting }   from '../models/VenueDhcpServiceSetting'
 import { VenueRadioCustomization }   from '../models/VenueRadioCustomization'
