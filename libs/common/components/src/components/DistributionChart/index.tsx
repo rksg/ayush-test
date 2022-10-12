@@ -3,14 +3,14 @@ import { GridOption, TooltipFormatterCallback } from 'echarts/types/dist/shared'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 
-import { cssStr } from '../../theme/helper'
+import { cssStr }    from '../../theme/helper'
 import {
   gridOptions,
   barChartAxisLabelOptions,
-  legendTextStyleOptions,
   tooltipOptions,
   yAxisOptions,
-  xAxisOptions
+  xAxisOptions,
+  xAxisNameOptions
 } from '../Chart/helper'
 
 import type { EChartsOption, TooltipComponentFormatterCallbackParams } from 'echarts'
@@ -38,12 +38,6 @@ export function DistributionChart<TChartData extends BarChartData>
   ...props
 }: DistributionChartProps<TChartData>) {
   const option: EChartsOption = {
-    title: title ? {
-      textStyle: legendTextStyleOptions(),
-      left: 'center',
-      top: 'bottom',
-      text: title
-    } : {},
     grid: { ...gridOptions(), ...gridProps },
     dataset: {
       dimensions: data.dimensions,
@@ -62,13 +56,15 @@ export function DistributionChart<TChartData extends BarChartData>
     },
     xAxis: {
       ...xAxisOptions(),
+      ...(title ? xAxisNameOptions(title) : {}),
       type: 'category',
       axisLabel: {
         ...barChartAxisLabelOptions(),
         formatter: function (value: string) {
           return value.trim()
         }
-      }
+      },
+      nameLocation: 'middle' // will have type error if nameLocation is set in xAxisNameOptions
     },
     yAxis: {
       ...yAxisOptions(),

@@ -6,7 +6,7 @@ import { DistributionChart } from '.'
 
 describe('DistributionChart',()=>{
   mockDOMWidth()
-  it('should renderer correctly', () => {
+  it('should render correctly', () => {
     const { asFragment } = render(<DistributionChart
       data={data}
       title={'DistributionChartTest'}
@@ -15,7 +15,7 @@ describe('DistributionChart',()=>{
     expect(asFragment().querySelector('svg')).toBeDefined()
     expect(screen.getAllByText('DistributionChartTest')).toHaveLength(1)
   })
-  it('should renderer correctly without title', () => {
+  it('should render correctly without title', () => {
     const { asFragment } = render(<DistributionChart
       data={data}
     />)
