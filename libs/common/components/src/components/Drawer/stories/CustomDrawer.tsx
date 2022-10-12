@@ -1,18 +1,11 @@
 import { useState } from 'react'
 
 import { Form, Input, Space } from 'antd'
-import styled                 from 'styled-components'
 
 import { BulbOutlined } from '@acx-ui/icons'
 
 import { Drawer } from '..'
 import { Button } from '../../Button'
-
-const FooterBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-`
 
 export function CustomDrawer () {
   const [visible, setVisible] = useState(false)
@@ -33,6 +26,7 @@ export function CustomDrawer () {
     setResetField(true)
     onClose()
   }
+
   const onOpenWithAddAnother = () => {
     setVisible(true)
     setResetField(false)
@@ -54,18 +48,10 @@ export function CustomDrawer () {
     />
   </Form>
 
-  const footer = (
-    <FooterBar>
-      <Button onClick={resetFields}>Reset</Button>
-      <Button onClick={() => form.submit()} type={'secondary'}>Save</Button>
-    </FooterBar>
-  )
-
   const footerWithAddAnoter = (
     <Drawer.FormFooter
-      showAddAnother={true}
-      addAnotherChecked={false}
-      onCancel={onClose}
+      showAddAnother={showAddAnother}
+      onCancel={resetFields}
       onSave={() => form.submit()}
     />
   )
@@ -84,7 +70,7 @@ export function CustomDrawer () {
         visible={visible}
         onClose={onClose}
         children={content}
-        footer={showAddAnother ? footerWithAddAnoter : footer}
+        footer={footerWithAddAnoter}
         destroyOnClose={resetField}
         width={'600px'}
       />

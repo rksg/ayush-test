@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { DrawerProps as AntDrawerProps } from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }                       from 'react-intl'
@@ -50,10 +52,8 @@ export const Drawer = (props: DrawerProps) => {
 
 interface FormFooterProps {
   showAddAnother?: boolean
-  addAnotherChecked?: boolean
-  onAddAnotherChange?: (e: CheckboxChangeEvent) => void
-  onCancel: () => void
-  onSave: () => void
+  onCancel: (checked: boolean) => void
+  onSave: (checked: boolean) => void
   buttonLabel?: {
     addAnother?: string
     cancel?: string
@@ -66,8 +66,6 @@ const FormFooter = (props: FormFooterProps) => {
 
   const {
     showAddAnother = false,
-    addAnotherChecked = false,
-    onAddAnotherChange,
     onCancel,
     onSave
   } = props
@@ -81,12 +79,18 @@ const FormFooter = (props: FormFooterProps) => {
     ...props.buttonLabel
   }
 
+  const [checked, setChecked] = useState(false)
+
+  const reset = () => {
+    setChecked(false)
+  }
+
   return (
     <UI.FooterBar>
       <div>
         {showAddAnother && <Checkbox
-          onChange={onAddAnotherChange}
-          checked={addAnotherChecked}
+          onChange={(e: CheckboxChangeEvent) => setChecked(e.target.checked)}
+          checked={checked}
           children={buttonLabel.addAnother}
         />}
       </div>
@@ -94,7 +98,8 @@ const FormFooter = (props: FormFooterProps) => {
         <Button
           key='cancelBtn'
           onClick={() => {
-            onCancel()
+            reset()
+            onCancel(checked)
           }}
         >
           {buttonLabel.cancel}
@@ -102,7 +107,8 @@ const FormFooter = (props: FormFooterProps) => {
         <Button
           key='saveBtn'
           onClick={() => {
-            onSave()
+            reset()
+            onSave(checked)
           }}
           type={'secondary'}
         >

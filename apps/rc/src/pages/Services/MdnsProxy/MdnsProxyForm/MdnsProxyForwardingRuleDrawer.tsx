@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Form, Input, Select } from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }             from 'react-intl'
 
 import { Drawer }                                                   from '@acx-ui/components'
@@ -19,7 +18,6 @@ export interface MdnsProxyForwardingRuleDrawerProps {
 
 export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDrawerProps) {
   const { $t } = useIntl()
-  const [ addAnotherRuleChecked, setAddAnotherRuleChecked ] = useState(false)
   const { rule = {}, setRule, visible, setVisible, editMode } = props
   const [ form ] = Form.useForm<MdnsProxyForwardingRule>()
   const { Option } = Select
@@ -34,23 +32,13 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
 
   const onClose = () => {
     setVisible(false)
-    setAddAnotherRuleChecked(false)
-  }
-
-  const onAddAnotherRuleChange = (e: CheckboxChangeEvent) => {
-    setAddAnotherRuleChecked(e.target.checked)
   }
 
   const content = <Form layout='vertical'
     form={form}
     onFinish={(data: MdnsProxyForwardingRule) => {
       setRule(data)
-
-      if (addAnotherRuleChecked) {
-        form.resetFields()
-      } else {
-        onClose()
-      }
+      form.resetFields()
     }}>
     <Form.Item
       label={$t({ defaultMessage: 'Type' })}
@@ -103,14 +91,18 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
       footer={
         <Drawer.FormFooter
           showAddAnother={!editMode}
-          addAnotherChecked={addAnotherRuleChecked}
           buttonLabel={({
             addAnother: $t({ defaultMessage: 'Add another rule' }),
             save: editMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
           })}
-          onAddAnotherChange={onAddAnotherRuleChange}
           onCancel={onClose}
-          onSave={() => form.submit()}
+          onSave={(addAnotherRuleChecked: boolean) => {
+            form.submit()
+
+            if (!addAnotherRuleChecked) {
+              onClose()
+            }
+          }}
         />
       }
       width={'400px'}
