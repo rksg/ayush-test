@@ -38,8 +38,7 @@ export function ProgressBar ({
     percent={normalizePercent(percent)}
     steps={5}
     showInfo={false}
-    trailColor={'#D4D4D4'}
+    trailColor={cssStr('--acx-neutrals-30')}
     strokeWidth={10}
-    strokeLinecap={'butt'}
     strokeColor={strokeColorsByPercent(percent)} />
 }
