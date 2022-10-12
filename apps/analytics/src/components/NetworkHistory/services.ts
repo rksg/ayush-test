@@ -67,7 +67,10 @@ export const api = dataApi.injectEndpoints({
           filter: payload.filter
         }
       }),
-      providesTags: [{ type: 'Monitoring', id: 'NETWORK_HISTORY' }],
+      providesTags: [
+        { type: 'Monitoring', id: 'NETWORK_HISTORY' },
+        { type: 'Monitoring', id: 'INCIDENTS_LIST' }
+      ],
       transformResponse: (response: Response<NetworkHistoryData>) =>
         response.network.hierarchyNode.timeSeries
     })
