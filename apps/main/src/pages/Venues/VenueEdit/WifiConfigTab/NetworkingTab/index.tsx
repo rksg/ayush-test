@@ -9,11 +9,12 @@ import { VenueEditContext } from '../../index'
 import { MeshNetwork } from './MeshNetwork'
 
 import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
+import { VenueApModelCellular } from '@acx-ui/rc/utils'
 
 export interface NetworkingSettingContext {
-  cellularData: unknown,
+  cellularData: VenueApModelCellular,
   meshData: { mesh: boolean },
-  updateCellular: (() => void),
+  updateCellular: ((cellularData: VenueApModelCellular) => void),
   updateMesh: ((check: boolean) => void)
 }
 
@@ -31,7 +32,7 @@ export function NetworkingTab () {
   //   content: 'LAN Ports Content'
   // }, {
     title: $t({ defaultMessage: 'Cellular Options' }),
-    content: (<CellularOptionsForm></CellularOptionsForm>)
+    content: (<CellularOptionsForm />)
   }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
     content: (<MeshNetwork />)
@@ -42,7 +43,7 @@ export function NetworkingTab () {
 
   const handleUpdateAllSettings = async () => {
     try {
-      editNetworkingContextData?.updateCellular?.()
+      editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       setEditContextData({
         ...editContextData,

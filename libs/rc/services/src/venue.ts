@@ -119,6 +119,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueCellularSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
         if(payload){ //delete multiple rows
@@ -242,6 +251,7 @@ export const {
   useVenueDetailsHeaderQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
+  useUpdateVenueCellularSettingsMutation,
   useDeleteVenueMutation,
   useFloorPlanListQuery,
   useGetVenueCapabilitiesQuery,

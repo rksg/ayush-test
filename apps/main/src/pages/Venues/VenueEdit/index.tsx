@@ -114,7 +114,7 @@ export function showUnsavedModal (
         }
       }else if(editContextData?.unsavedTabKey === 'networking'){
         if(editNetworkingContextData?.updateCellular){
-          editNetworkingContextData?.updateCellular?.()
+          editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
         }
         if(editNetworkingContextData?.updateMesh){
           editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)

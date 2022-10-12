@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 
 import {
   Select,
@@ -9,11 +9,12 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { StepsForm, StepsFormInstance, Subtitle }                                                                from '@acx-ui/components'
-import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery }                       from '@acx-ui/rc/services'
+import { showToast, StepsForm, StepsFormInstance, Subtitle }                                                                from '@acx-ui/components'
+import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation }                       from '@acx-ui/rc/services'
 import { AvailableLteBands, CountryIsoDisctionary, LteBandLockChannel, LteBandRegionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
+import { VenueEditContext } from '../../..'
 
 export interface ModelOption {
   label: string
@@ -32,7 +33,15 @@ export enum WanConnectionEnum {
 
 export function CellularOptionsForm () {
   const { $t } = useIntl()
+  const params = useParams()
   const { tenantId, venueId } = useParams()
+
+  const {
+    editContextData,
+    setEditContextData,
+    editNetworkingContextData,
+    setEditNetworkingContextData
+  } = useContext(VenueEditContext)
 
   const LteBandLockCountriesJson = {
     [LteBandRegionEnum.DOMAIN_1]: {
@@ -173,6 +182,34 @@ export function CellularOptionsForm () {
     }
 
   }, [availableLteBands.data, venueApModelCellular.data, form])
+  const onChange = (current: any) =>{
+    // setCurrent(current)
+    const filedsValue = formRef?.current?.getFieldsValue()
+    setEditContextData && setEditContextData({
+      ...editContextData,
+      unsavedTabKey: 'networking',
+      tabTitle: $t({ defaultMessage: 'Networking' }),
+      isDirty: true
+    })
+    setEditNetworkingContextData && setEditNetworkingContextData({
+      ...editNetworkingContextData,
+      meshData: { mesh: true },
+      updateCellular: handleVenueCellularSettings
+    })
+}
+const [updateVenueCellularSettings] = useUpdateVenueCellularSettingsMutation()
+
+const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
+  try {
+    await updateVenueCellularSettings({ params, 
+      payload: { ...payload, ...formRef?.current?.getFieldsValue().editData } })
+  } catch {
+    showToast({
+      type: 'error',
+      content: $t({ defaultMessage: 'An error occurred' })
+    })
+  }
+}
 
   return (
     <>
@@ -181,7 +218,8 @@ export function CellularOptionsForm () {
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm
-          formRef={formRef}>
+          formRef={formRef}
+          onChange={onChange}>
           <CellularRadioSimSettings
             editData={editData}
             simCardNumber={1}
