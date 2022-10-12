@@ -1,4 +1,5 @@
 import { BrowserRouter } from 'react-router-dom'
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
 
 import { fakeIncidentRss }      from '@acx-ui/analytics/utils'
 import { store }                from '@acx-ui/store'
@@ -7,7 +8,7 @@ import { mockDOMWidth, render } from '@acx-ui/test-utils'
 import { Api }                     from '../services'
 import { TimeSeriesChartResponse } from '../types'
 
-import { RssDistributionChart } from './RssDistributionChart'
+import { RssDistributionChart, tooltipFormatter } from './RssDistributionChart'
 
 const data = {
   rssDistribution: [
@@ -42,5 +43,12 @@ describe('RssQualityByClientsChart', () => {
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+  it('should return correct Html string for the tooltip', async () => {
+    const singleParameters = [{
+      data: [-30, -70],
+      dimensionNames: ['Rss Distribution', 'Samples']
+    }] as TooltipComponentFormatterCallbackParams
+    expect(tooltipFormatter(singleParameters)).toMatchSnapshot()
   })
 })
