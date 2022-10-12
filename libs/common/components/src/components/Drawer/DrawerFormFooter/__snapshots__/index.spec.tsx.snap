@@ -8,7 +8,7 @@ exports[`DrawerFormFooter should render footer 1`] = `
     <div />
     <div>
       <button
-        class="ant-btn ant-btn-default"
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
         type="button"
       >
         <span>
@@ -16,7 +16,7 @@ exports[`DrawerFormFooter should render footer 1`] = `
         </span>
       </button>
       <button
-        class="ant-btn ant-btn-primary"
+        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
         type="button"
       >
         <span>

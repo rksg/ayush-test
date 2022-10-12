@@ -1,5 +1,6 @@
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }                       from 'react-intl'
+
 import { Button } from '../../Button'
 
 import * as UI from './styledComponents'
