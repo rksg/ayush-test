@@ -39,7 +39,7 @@ import {
 import * as UI       from './styledComponents'
 import { VlanInput } from './VlanInput'
 
-export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number) => {
+export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number) => { // TODO: move to apGroupDialog.utils.tsx
   let vlanPrefix = ''
   let vlanString
   let vlanType
@@ -120,19 +120,25 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       ssids: [wlan?.ssid],
       venueId: networkVenue?.venueId
     }]
-  })
+  }, { skip: !networkVenue || !wlan })
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
-    let apGroups: NetworkApGroupWithSelected[] = (networkVenue?.apGroups || []).map(ag => ({ ...ag, selected: true }))
-    apGroups = _.isEmpty(apGroups) ? [defaultAG] : apGroups
+
+    let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsQuery.data || [])
+      .map(nv => nv.apGroups || []).flat()
+      .map(allAg => {
+        const apGroup = _.find(networkVenue?.apGroups, ['apGroupId', allAg.apGroupId])
+        return { ...allAg, ...apGroup, selected: !!apGroup }
+      })
+    allApGroups = _.isEmpty(allApGroups) ? [defaultAG] : allApGroups
 
     return {
       selectionType: isAllAps ? 0 : 1,
       allApGroupsRadioTypes: networkVenue?.allApGroupsRadioTypes || [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz, RadioTypeEnum._6_GHz],
-      apgroups: apGroups,
+      apgroups: allApGroups,
       apTags: []
     }
   }, [networkVenue, networkApGroupsQuery.data])

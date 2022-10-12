@@ -2,10 +2,17 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useSplitTreatment }                                                    from '@acx-ui/feature-toggle'
-import { networkApi }                                                           from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { Provider, store }                                                      from '@acx-ui/store'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
+import { networkApi }        from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  WifiUrlsInfo,
+  GuestNetworkTypeEnum,
+  WlanSecurityEnum,
+  RadioEnum,
+  RadioTypeEnum
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -13,10 +20,17 @@ import {
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 
 import { VenueNetworksTab } from './index'
+
+jest.mock(
+  'rc/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`dialog-${name}`} title={name} />,
+  { virtual: true })
+
 
 const networks = {
   response: [
@@ -163,7 +177,12 @@ const networks = {
       id: 'd556bb683e4248b7a911fdb40c307aa5',
       venues: [{
         venueId: '3b2ffa31093f41648ed38ed122510029',
-        id: '3b2ffa31093f41648ed38ed122510029'
+        id: '3b2ffa31093f41648ed38ed122510029',
+        tripleBandEnabled: false,
+        networkId: 'd556bb683e4248b7a911fdb40c307aa5',
+        allApGroupsRadio: RadioEnum.Both,
+        isAllApGroups: true,
+        allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz]
       }]
     }
   ]
@@ -266,6 +285,10 @@ describe('VenueNetworksTab', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(apGroup))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueDetailsHeader.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
 
@@ -297,6 +320,10 @@ describe('VenueNetworksTab', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(apGroup))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueDetailsHeader.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
 
@@ -347,6 +374,10 @@ describe('VenueNetworksTab', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(apGroup))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueDetailsHeader.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
 
@@ -361,6 +392,8 @@ describe('VenueNetworksTab', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
+    const requestSpy = jest.fn()
+
     const newApGroup = JSON.parse(JSON.stringify(apGroup))
     newApGroup.response[0].apGroups[0].id = ''
     mockServer.use(
@@ -370,7 +403,10 @@ describe('VenueNetworksTab', () => {
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.json({ requestId: '456' }))
+        }
       )
     )
 
@@ -382,5 +418,47 @@ describe('VenueNetworksTab', () => {
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
+
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('click VLAN, APs, Radios', async () => {
+    const params = {
+      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      venueId: '3b2ffa31093f41648ed38ed122510029'
+    }
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenueNetworkList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json(networks))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(apGroup))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueDetailsHeader.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /test_1/i })
+
+    fireEvent.click(within(row).getByText('VLAN-1 (Default)'))
+    fireEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
+    fireEvent.click(within(row).getByText('All APs'))
+
+    const dialog = await waitFor(async () => screen.findByTestId(/^dialog/))
+
+    expect(dialog).toBeVisible()
   })
 })

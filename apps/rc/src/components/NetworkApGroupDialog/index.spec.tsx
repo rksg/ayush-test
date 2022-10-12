@@ -31,21 +31,21 @@ import { NetworkApGroupDialog } from './index'
 const venueName = 'My-Venue'
 
 describe('NetworkApGroupDialog', () => {
-  beforeAll(async () => {
+  beforeEach(() => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(networkVenue_apgroup))
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
       )
     )
   })
 
   it('should render correctly', async () => {
-
     const props = {
       name: 'xxx',
       formName: 'networkApGroupForm',
       venueName: venueName,
+      tenantId: params.tenantId,
       networkVenue: networkVenue_allAps,
       wlan: network.wlan
     }
@@ -77,12 +77,12 @@ describe('NetworkApGroupDialog', () => {
   })
 
   it('should select specific AP groups', async () => {
-
     render(<Provider><NetworkApGroupDialog
       name='xxx'
       visible={true}
       formName={'networkApGroupForm'}
       venueName={venueName}
+      tenantId={params.tenantId}
       networkVenue={networkVenue_apgroup}
       wlan={network.wlan}
     /></Provider>, { route: { params } })
@@ -105,6 +105,7 @@ describe('NetworkApGroupDialog', () => {
       visible={true}
       formName={'networkApGroupForm'}
       venueName={venueName}
+      tenantId={params.tenantId}
       networkVenue={{ ...networkVenue_allAps, allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz, RadioTypeEnum._6_GHz] }}
       wlan={wlanWPA3}
     /></Provider>, { route: { params } })
@@ -118,7 +119,7 @@ describe('NetworkApGroupDialog', () => {
 
     const checkbox = within(dialog).getByLabelText('APs not assigned to any group')
     expect(checkbox).toBeVisible()
-    expect(checkbox).toBeChecked()
+    expect(checkbox).not.toBeChecked()
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
     // eslint-disable-next-line testing-library/no-node-access

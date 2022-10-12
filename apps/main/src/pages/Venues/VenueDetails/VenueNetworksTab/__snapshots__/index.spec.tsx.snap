@@ -99,12 +99,9 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                             <tr>
                               <th
                                 aria-sort="ascending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -160,17 +157,11 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -226,88 +217,42 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell react-resizable"
+                                class="ant-table-cell"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 Health
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell react-resizable"
+                                class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 Activated
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell react-resizable"
+                                class="ant-table-cell"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 VLAN
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell react-resizable"
+                                class="ant-table-cell"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 APs
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell react-resizable"
+                                class="ant-table-cell"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 Radios
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell react-resizable"
+                                class="ant-table-cell"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 Scheduling
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody
@@ -442,22 +387,72 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                All APs
+                                <button
+                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                  type="button"
+                                >
+                                  <span>
+                                    VLAN-1 (Default)
+                                  </span>
+                                </button>
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                All APs
+                                <button
+                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                  type="button"
+                                >
+                                  <span>
+                                    All APs
+                                  </span>
+                                </button>
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                2.4 GHz / 5 GHz
+                                <button
+                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                  type="button"
+                                >
+                                  <span>
+                                    2.4 GHz, 5 GHz
+                                  </span>
+                                </button>
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                24/7
+                                <button
+                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                  type="button"
+                                >
+                                  <span>
+                                    24/7 
+                                  </span>
+                                  <span
+                                    aria-label="clock-circle"
+                                    class="anticon anticon-clock-circle"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="clock-circle"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"
+                                      />
+                                      <path
+                                        d="M686.7 638.6L544.1 535.5V288c0-4.4-3.6-8-8-8H488c-4.4 0-8 3.6-8 8v275.4c0 2.6 1.2 5 3.3 6.5l165.4 120.6c3.6 2.6 8.6 1.8 11.2-1.7l28.6-39c2.6-3.7 1.8-8.7-1.8-11.2z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </button>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -612,6 +607,10 @@ exports[`VenueNetworksTab should render correctly 1`] = `
         </div>
       </div>
     </div>
+    <div
+      data-testid="dialog-networkApGroupDialog"
+      title="networkApGroupDialog"
+    />
   </div>
 </DocumentFragment>
 `;

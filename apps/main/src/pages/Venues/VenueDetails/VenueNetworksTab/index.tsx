@@ -48,7 +48,6 @@ interface ApGroupModalState { // subset of ApGroupModalWidgetProps
   visible: boolean,
   wlan?: NetworkSaveData['wlan'],
   networkVenue?: NetworkVenue,
-  tenantId?: string,
   venueName?: string
 }
 
@@ -264,7 +263,6 @@ export function VenueNetworksTab () {
     setApGroupModalState({
       visible: true,
       venueName: row.name,
-      tenantId: params.tenantId,
       wlan: row.deepNetwork?.wlan,
       networkVenue: getCurrentVenue(row)
     })
@@ -318,6 +316,7 @@ export function VenueNetworksTab () {
         <WifiWidgets name='networkApGroupDialog'
           {...apGroupModalState}
           formName='networkApGroupForm'
+          tenantId={params.tenantId}
           onCancel={handleCancel}
           // onOk={handleOk}
         />

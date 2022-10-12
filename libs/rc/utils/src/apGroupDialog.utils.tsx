@@ -16,7 +16,6 @@ import {
   NetworkSaveData,
   NetworkVenue,
   VLAN_PREFIX,
-  VlanType,
   ISlotIndex,
   getSchedulingCustomTooltip,
   NetworkVenueScheduler,
@@ -200,7 +199,7 @@ export const radioTypeEnumToRadioEnum = (radioTypes: RadioTypeEnum[]) => {
   }
 }
 
-export const aggregateApGroupPayload = (info: FormFinishInfo, data?: NetworkVenue) => {
+export const aggregateApGroupPayload = (info: FormFinishInfo, oldData?: NetworkVenue) => {
   const { selectionType, allApGroupsRadioTypes, apgroups } = info.values
 
   let newData = {
@@ -215,25 +214,23 @@ export const aggregateApGroupPayload = (info: FormFinishInfo, data?: NetworkVenu
     })
   } else {
     _.assign(newData, {
-      apGroups: (data?.apGroups || []).map((apGroup) => {
-        const editedApGroup = apgroups.find((a:{ selected: boolean, apGroupId: string }) => (a.apGroupId === apGroup.apGroupId && a.selected))
-        if (editedApGroup) {
-          let ret: NetworkApGroup = { ...apGroup }
+      apGroups: (apgroups || []).filter((ag:{ selected: boolean }) => ag.selected).map((editedApGroup: NetworkApGroup) => {
+        const currentApGroup = (oldData?.apGroups || []).find((ag) => ag.apGroupId === editedApGroup.apGroupId)
+        let ret = { ...currentApGroup }
 
-          ret.radioTypes = editedApGroup.radioTypes
-          ret.radio = radioTypeEnumToRadioEnum(editedApGroup.radioTypes) || RadioEnum.Both
-          if (editedApGroup.vlanType === VlanType.Pool) {
-            ret.vlanPoolId = editedApGroup.vlanPoolId
-            ret.vlanPoolName = editedApGroup.vlanPoolName
-          } else {
-            ret.vlanId = editedApGroup.vlanId
-          }
-          return ret
+        ret.apGroupId = editedApGroup.apGroupId
+        ret.radioTypes = editedApGroup.radioTypes
+        ret.radio = editedApGroup.radioTypes ? radioTypeEnumToRadioEnum(editedApGroup.radioTypes) : RadioEnum.Both
+        if (editedApGroup.vlanPoolName) {
+          ret.vlanPoolId = editedApGroup.vlanPoolId
+          ret.vlanPoolName = editedApGroup.vlanPoolName
+        } else {
+          ret.vlanId = editedApGroup.vlanId
         }
-        return null
-      }).filter(x => x) // filter out empty
+        return ret
+      })
     })
   }
 
-  return { ...data, ...newData }
+  return { ...oldData, ...newData }
 }

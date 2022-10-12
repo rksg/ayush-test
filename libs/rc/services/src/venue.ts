@@ -13,7 +13,8 @@ import {
   VenueCapabilities,
   VenueLed,
   VenueApModels,
-  NetworkVenue
+  NetworkVenue,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -102,12 +103,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...req,
           body: payload
-          // networkList.map(item => ({
-          //   networkId: item.id,
-          //   ssids: [item.ssid],
-          //   venueId: payload.venueId
-          // }))
         }
+      },
+      transformResponse: (result: CommonResult) => {
+        return result.response as NetworkVenue[]
       }
     }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
