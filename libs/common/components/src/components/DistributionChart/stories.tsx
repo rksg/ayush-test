@@ -1,14 +1,17 @@
 import { ReactNode } from 'react'
 
-import { withKnobs } from '@storybook/addon-knobs'
-import { storiesOf } from '@storybook/react'
+import { withKnobs }      from '@storybook/addon-knobs'
+import { storiesOf }      from '@storybook/react'
+import { renderToString } from 'react-dom/server'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 
-import { cssStr } from '../../theme/helper'
-import { Card }   from '../Card'
+import { Card }           from '../Card'
+import { TooltipWrapper } from '../Chart/styledComponents'
 
 import { DistributionChart } from '.'
+
+import type { TooltipComponentFormatterCallbackParams } from 'echarts'
 
 export const data: BarChartData = {
   dimensions: ['Rss Distribution', 'Samples'],
@@ -40,12 +43,23 @@ export const data: BarChartData = {
   ]
 }
 
-export const barColors = [
-  cssStr('--acx-semantics-yellow-40')
-]
+export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+  const rss = Array.isArray(params)
+    && Array.isArray(params[0].data) ? params[0].data[1] : ''
+  const name = Array.isArray(params)
+    && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
+  return renderToString(
+    <TooltipWrapper>
+      <div>
+        {name}:
+        <b> {rss as string}</b>
+      </div>
+    </TooltipWrapper>
+  )
+}
 
 export const wrapInsideCard = (title: string, children: ReactNode) => (
-  <div style={{ width: 496, height: 280 }}>
+  <div style={{ width: 600, height: 280 }}>
     <Card title={title}>
       {children}
     </Card>
@@ -58,7 +72,7 @@ storiesOf('DistributionChart', module)
       <DistributionChart
         style={{ width: '100%', height: '100%' }}
         data={data}
-        barColors={barColors}
         grid={{ bottom: '10%', top: '5%' }}
         title={'RSS (in dBm)'}
+        tooltipFormatter={tooltipFormatter}
       />))

@@ -70,6 +70,22 @@ export const xAxisOptions = () => ({
   }
 } as XAXisComponentOption)
 
+export const xAxisNameOptions = (title: string) => ({
+  name: title,
+  nameGap: 30,
+  ...axisNameTextStyleOptions()
+})
+
+export const axisNameTextStyleOptions = () => ({
+  nameTextStyle: {
+    color: cssStr('--acx-neutrals-50'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-body-5-font-size'),
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-font-weight-bold')
+  }
+})
+
 export const barChartAxisLabelOptions = () => ({
   color: cssStr('--acx-primary-black'),
   fontFamily: cssStr('--acx-neutral-brand-font'),
@@ -136,7 +152,7 @@ export const tooltipOptions = () => ({
   borderWidth: 0,
   padding: 8,
   confine: true,
-  extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08);'
+  extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08); z-index: 4;'
 } as TooltipComponentOption)
 
 export const timeSeriesTooltipFormatter = (

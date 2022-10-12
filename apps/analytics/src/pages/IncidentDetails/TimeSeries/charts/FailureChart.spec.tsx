@@ -7,9 +7,11 @@ import {
 import { store }                from '@acx-ui/store'
 import { mockDOMWidth, render } from '@acx-ui/test-utils'
 
-import { ChartsData, Api } from '../services'
+import { Api } from '../services'
 
-import { FailureChart, onMarkedAreaClick, getMarkers } from './FailureChart'
+import { FailureChart, onMarkAreaClick, getMarkers } from './FailureChart'
+
+import type { TimeSeriesChartResponse } from '../types'
 
 const expectedResult = {
   failureChart: {
@@ -37,28 +39,30 @@ const expectedResult = {
       path: [{ type: 'zone', name: 'Zone' }]
     })
   ]
-} as unknown as ChartsData
+} as unknown as TimeSeriesChartResponse
 
 beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('FailureChart', () => {
   mockDOMWidth()
+
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <FailureChart incident={fakeIncident1} data={expectedResult}/>
+        <FailureChart chartRef={()=>{}} incident={fakeIncident1} data={expectedResult}/>
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
-  describe('onMarkedAreaClick', () => {
+
+  describe('onMarkAreaClick', () => {
     it('navigate to clicked incident', () => {
       const navigate = jest.fn()
-      const [incident, relatedIncident] = expectedResult.relatedIncidents
+      const [incident, relatedIncident] = expectedResult.relatedIncidents!
       const basePath = { pathname: '/analytics/incidents/' }
 
-      onMarkedAreaClick(navigate, basePath as Path, incident)(relatedIncident)
+      onMarkAreaClick(navigate, basePath as Path, incident)(relatedIncident)
 
       expect(navigate).toBeCalledTimes(1)
       expect(navigate).toBeCalledWith({
@@ -69,10 +73,10 @@ describe('FailureChart', () => {
 
     it('does not navigate to same incident', () => {
       const navigate = jest.fn()
-      const [incident] = expectedResult.relatedIncidents
+      const [incident] = expectedResult.relatedIncidents!
       const basePath = { pathname: '/analytics/incidents/' }
 
-      onMarkedAreaClick(navigate, basePath as Path, incident)(incident)
+      onMarkAreaClick(navigate, basePath as Path, incident)(incident)
 
       expect(navigate).not.toBeCalled()
     })
@@ -80,6 +84,6 @@ describe('FailureChart', () => {
 
   it('should handle markAreaProps', () => {
     const { relatedIncidents } = expectedResult
-    expect(getMarkers(relatedIncidents, relatedIncidents[0])).toMatchSnapshot()
+    expect(getMarkers(relatedIncidents!, relatedIncidents![0])).toMatchSnapshot()
   })
 })

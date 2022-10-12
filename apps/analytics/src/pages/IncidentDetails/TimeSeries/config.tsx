@@ -3,11 +3,12 @@ import { Incident } from '@acx-ui/analytics/utils'
 import attemptAndFailureChart from './charts/AttemptAndFailureChart'
 import clientCountChart       from './charts/ClientCountChart'
 import failureChart           from './charts/FailureChart'
-import { ChartsData }         from './services'
+
+import type { TimeSeriesChartProps } from './types'
 
 interface TimeSeriesChart {
   query: (incident: Incident) => string,
-  chart?: ({ incident, data }: { incident: Incident, data: ChartsData }) => JSX.Element
+  chart: (props: TimeSeriesChartProps) => JSX.Element
 }
 
 export enum TimeSeriesChartTypes {

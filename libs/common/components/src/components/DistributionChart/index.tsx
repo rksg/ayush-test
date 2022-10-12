@@ -1,29 +1,30 @@
-import ReactECharts               from 'echarts-for-react'
-import { GridOption }             from 'echarts/types/dist/shared'
+import ReactECharts                             from 'echarts-for-react'
+import { GridOption, TooltipFormatterCallback } from 'echarts/types/dist/shared'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 
+import { cssStr }    from '../../theme/helper'
 import {
   gridOptions,
   barChartAxisLabelOptions,
-  legendOptions,
-  legendTextStyleOptions,
-  EventParams,
-  tooltipOptions
+  tooltipOptions,
+  yAxisOptions,
+  xAxisOptions,
+  xAxisNameOptions
 } from '../Chart/helper'
 
-import type { EChartsOption }     from 'echarts'
-import type { EChartsReactProps } from 'echarts-for-react'
+import type { EChartsOption, TooltipComponentFormatterCallbackParams } from 'echarts'
+import type { EChartsReactProps }                                      from 'echarts-for-react'
 
 export interface DistributionChartProps
   <TChartData extends BarChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: TChartData,
   grid?: GridOption,
-  barColors: string[]
+  barColors?: string[]
   barWidth?: number
-  onClick?: (params: EventParams) => void,
   title?: string
+  tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
 }
 
 export function DistributionChart<TChartData extends BarChartData>
@@ -32,49 +33,41 @@ export function DistributionChart<TChartData extends BarChartData>
   grid: gridProps,
   barColors,
   barWidth,
-  onClick,
   title,
+  tooltipFormatter,
   ...props
 }: DistributionChartProps<TChartData>) {
-  console.log('props', props)
   const option: EChartsOption = {
-    title: title ? {
-      textStyle: legendTextStyleOptions(),
-      left: 'center',
-      top: 'bottom',
-      text: title
-    } : {},
     grid: { ...gridOptions(), ...gridProps },
     dataset: {
       dimensions: data.dimensions,
       source: data.source
     },
-    barWidth: barWidth || 12,
-    color: barColors,
+    barWidth: barWidth || 20,
+    color: barColors || cssStr('--acx-accents-blue-50'),
     tooltip: {
-      ...tooltipOptions()
-    },
-    legend: {
-      ...legendOptions(),
-      textStyle: legendTextStyleOptions()
+      show: tooltipFormatter !== undefined,
+      ...tooltipOptions(),
+      trigger: 'axis',
+      axisPointer: {
+        type: 'none'
+      },
+      formatter: tooltipFormatter
     },
     xAxis: {
+      ...xAxisOptions(),
+      ...(title ? xAxisNameOptions(title) : {}),
       type: 'category',
-      axisLine: {
-        show: false
-      },
-      splitLine: {
-        show: false
-      },
       axisLabel: {
         ...barChartAxisLabelOptions(),
         formatter: function (value: string) {
           return value.trim()
         }
-      }
-
+      },
+      nameLocation: 'middle' // will have type error if nameLocation is set in xAxisNameOptions
     },
     yAxis: {
+      ...yAxisOptions(),
       type: 'value'
     },
     series: data?.seriesEncode.map(encode => ({
