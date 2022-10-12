@@ -4,7 +4,7 @@ import { Col, Form, Input, Row } from 'antd'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Modal, Button }      from '@acx-ui/components'
+import { Modal }              from '@acx-ui/components'
 import { DHCPOption }         from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
