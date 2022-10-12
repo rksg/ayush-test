@@ -1,5 +1,3 @@
-import { MutableRefObject, useRef } from 'react'
-
 import { DrawerProps as AntDrawerProps } from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }                       from 'react-intl'
@@ -54,7 +52,7 @@ interface FormFooterProps {
   showAddAnother?: boolean
   addAnotherChecked?: boolean
   onAddAnotherChange?: (e: CheckboxChangeEvent) => void
-  onCancel: (ref: MutableRefObject<null>) => void
+  onCancel: () => void
   onSave: () => void
   buttonLabel?: {
     addAnother?: string
@@ -65,7 +63,6 @@ interface FormFooterProps {
 
 const FormFooter = (props: FormFooterProps) => {
   const { $t } = useIntl()
-  const addAnotherRef = useRef(null)
 
   const {
     showAddAnother = false,
@@ -88,7 +85,6 @@ const FormFooter = (props: FormFooterProps) => {
     <UI.FooterBar>
       <div>
         {showAddAnother && <Checkbox
-          ref={addAnotherRef}
           onChange={onAddAnotherChange}
           checked={addAnotherChecked}
           children={buttonLabel.addAnother}
@@ -98,14 +94,16 @@ const FormFooter = (props: FormFooterProps) => {
         <Button
           key='cancelBtn'
           onClick={() => {
-            onCancel(addAnotherRef)
+            onCancel()
           }}
         >
           {buttonLabel.cancel}
         </Button>
         <Button
           key='saveBtn'
-          onClick={onSave}
+          onClick={() => {
+            onSave()
+          }}
           type={'secondary'}
         >
           {buttonLabel.save}
