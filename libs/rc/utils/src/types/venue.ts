@@ -84,7 +84,21 @@ export interface VenueApModels {
 }
 
 export interface VenueExternalAntenna {
+	model: string
 	enable24G: boolean
   enable50G: boolean
-  model: string
+	gain24G: number
+	gain50G: number
+}
+
+export interface VenueApCapability {
+	version: string
+	lanPortPictureDownloadUrl: string
+	apModels: {
+		model:string
+		externalAntenna: {
+			gain24G: number
+			gain50G: number
+		}
+	}[]
 }

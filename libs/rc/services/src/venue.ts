@@ -14,7 +14,8 @@ import {
   VenueCapabilities,
   VenueLed,
   VenueApModels,
-  VenueExternalAntenna
+  VenueExternalAntenna,
+  VenueApCapability
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -146,6 +147,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApCapabilities: build.query<VenueApCapability, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.GetVenueApCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    })
   })
 })
 
@@ -162,4 +171,5 @@ export const {
   useGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
   useGetVenueExternalAntennaQuery,
+  useGetVenueApCapabilitiesQuery
 } = venueApi
