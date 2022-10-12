@@ -37,6 +37,14 @@ const list: FloorPlanDto[] = [
 
 describe('Floor Plan Plain View', () => {
 
+  beforeEach(() => {
+    // TODO cover fitFloorplanImage with different offsets
+    Object.defineProperty(Element.prototype, 'offsetWidth', { value: undefined })
+    Object.defineProperty(Element.prototype, 'offsetHeight', { value: undefined })
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { value: undefined })
+    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', { value: undefined })
+  })
+
   it('should render correctly Plain View', async () => {
 
     const { asFragment } = render(<Provider><PlainView floorPlans={list}
