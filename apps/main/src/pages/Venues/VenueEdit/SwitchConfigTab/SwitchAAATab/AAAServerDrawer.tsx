@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Input, Select, Tooltip } from 'antd'
-import { useIntl }                      from 'react-intl'
+import { FormattedMessage, useIntl }    from 'react-intl'
 
 import { Button, Drawer }                                                                                                                                                                                                                                           from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                                                                                                                                                                                                                               from '@acx-ui/icons'
@@ -9,7 +9,7 @@ import { useAddAAAServerMutation, useUpdateAAAServerMutation }                  
 import { AAAServerTypeEnum, excludeExclamationRegExp, excludeQuoteRegExp, excludeSpaceExclamationRegExp, excludeSpaceRegExp, LocalUser, notAllDigitsRegExp, portRegExp, RadiusServer, serverIpAddressRegExp, TacacsServer, validateUsername, validateUserPassword } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                                                                                                                                from '@acx-ui/react-router-dom'
 
-import { serversDisplayText, AAA_Purpose_Type, purposeDisplayText, AAA_Level_Type, levelDisplayText, LOCAL_USER_PASSWORD_TOOLTIP_1, LOCAL_USER_PASSWORD_TOOLTIP_2, LOCAL_USER_PASSWORD_TOOLTIP_3, LOCAL_USER_PASSWORD_TOOLTIP_4, LOCAL_USER_PASSWORD_TOOLTIP_5, LOCAL_USER_PASSWORD_TOOLTIP_6, LOCAL_USER_PASSWORD_TOOLTIP_7 } from './contentsMap'
+import { serversDisplayText, AAA_Purpose_Type, purposeDisplayText, AAA_Level_Type, levelDisplayText, LOCAL_USER_PASSWORD_TOOLTIP } from './contentsMap'
 const { Option } = Select
 
 interface AAAServerDrawerProps {
@@ -194,7 +194,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     </Form.Item>
   </Form>
 
-  const localUserForm = <Form layout='vertical'form={form} onFinish={onSumbit}>
+  const localUserForm = <Form layout='vertical' form={form} onFinish={onSumbit}>
     <Form.Item
       name='username'
       label={$t({ defaultMessage: 'Username' })}
@@ -212,15 +212,14 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       label={<>
         { $t({ defaultMessage: 'Password' }) }
         <Tooltip
-          title={<>
-            { $t(LOCAL_USER_PASSWORD_TOOLTIP_1) } <br/>
-          - { $t(LOCAL_USER_PASSWORD_TOOLTIP_2) } <br/>
-          - { $t(LOCAL_USER_PASSWORD_TOOLTIP_3) } <br/>
-          - { $t(LOCAL_USER_PASSWORD_TOOLTIP_4) } <br/>
-          - { $t(LOCAL_USER_PASSWORD_TOOLTIP_5) } <br/>
-            { $t(LOCAL_USER_PASSWORD_TOOLTIP_6) } <br/>
-          - { $t(LOCAL_USER_PASSWORD_TOOLTIP_7) }
-          </>}
+          title={<FormattedMessage
+            {...LOCAL_USER_PASSWORD_TOOLTIP}
+            values={{
+              br: () => <br />,
+              ul: (contents) => <ul>{contents}</ul>,
+              li: (contents) => <li>{contents}</li>
+            }}
+          />}
           placement='bottom'
         >
           <QuestionMarkCircleOutlined />

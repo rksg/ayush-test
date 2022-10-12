@@ -46,10 +46,18 @@ export const levelDisplayText = {
   [AAA_Level_Type.READ_WRITE]: defineMessage({ defaultMessage: 'Read Write' })
 }
 
-export const LOCAL_USER_PASSWORD_TOOLTIP_1 = defineMessage({ defaultMessage: 'The password needs to:' })
-export const LOCAL_USER_PASSWORD_TOOLTIP_2 = defineMessage({ defaultMessage: 'Be 8 to 64 characters long' })
-export const LOCAL_USER_PASSWORD_TOOLTIP_3 = defineMessage({ defaultMessage: 'Include both uppercase and lowercase characters (ABC, xyz)' })
-export const LOCAL_USER_PASSWORD_TOOLTIP_4 = defineMessage({ defaultMessage: 'Include at least one number (0-9)' })
-export const LOCAL_USER_PASSWORD_TOOLTIP_5 = defineMessage({ defaultMessage: 'Include at least one symbol (@, #, $, %, etc. use of "!" is not allowed)' })
-export const LOCAL_USER_PASSWORD_TOOLTIP_6 = defineMessage({ defaultMessage: 'Password cannot:' })
-export const LOCAL_USER_PASSWORD_TOOLTIP_7 = defineMessage({ defaultMessage: 'Contain spaces' })
+export const LOCAL_USER_PASSWORD_TOOLTIP = defineMessage({
+  defaultMessage: `
+    The password needs to:<br></br>
+    <ul>
+    <li>Be 8 to 64 characters long</li>
+    <li>Include both uppercase and lowercase characters (ABC, xyz)</li>
+    <li>Include at least one number (0-9)</li>
+    <li>Include at least one symbol (@, #, $, %, etc. use of "!" is not allowed)</li>
+    </ul>
+    Password cannot:
+    <ul>
+    <li>Contain spaces</li>
+    </ul>
+  `
+})
