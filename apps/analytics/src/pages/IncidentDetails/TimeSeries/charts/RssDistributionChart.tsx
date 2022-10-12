@@ -53,7 +53,7 @@ export const RssDistributionChart = ({ data }: TimeSeriesChartProps) => {
           data={expectedResult}
           style={{ height, width }}
           grid={{ bottom: '10%', top: '5%' }}
-          title={$t({ defaultMessage: 'RSS (in dBm' })}
+          title={$t({ defaultMessage: 'RSS (in dBm)' })}
           tooltipFormatter={tooltipFormatter}
         />
       )}
