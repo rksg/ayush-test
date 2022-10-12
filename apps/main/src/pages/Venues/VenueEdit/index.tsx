@@ -74,6 +74,25 @@ export function VenueEdit () {
   )
 }
 
+function processWifiTab (
+  editContextData: EditContext,
+  editNetworkingContextData: NetworkingSettingContext,
+  editSecurityContextData: SecuritySettingContext
+){
+  switch(editContextData?.unsavedTabKey){
+    case 'settings':
+      editContextData?.updateChanges?.()
+      break
+    case 'networking':
+      editNetworkingContextData?.updateCellular?.()
+      editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
+      break
+    case 'security':
+      editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
+      break
+  }
+}
+
 export function showUnsavedModal (
   editContextData: EditContext,
   setEditContextData: (data: EditContext) => void,
@@ -120,21 +139,12 @@ export function showUnsavedModal (
     key: 'save',
     closeAfterAction: true,
     handler: async () => {
-      if(editContextData?.unsavedTabKey === 'settings'){
-        if(editContextData?.updateChanges){
-          editContextData?.updateChanges?.()
-        }
-      }else if(editContextData?.unsavedTabKey === 'networking'){
-        if(editNetworkingContextData?.updateCellular){
-          editNetworkingContextData?.updateCellular?.()
-        }
-        if(editNetworkingContextData?.updateMesh){
-          editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
-        }
-      }else if(editContextData?.unsavedTabKey === 'security'){
-        if(editSecurityContextData?.updateSecurity){
-          editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
-        }
+      const wifiTab = ['radio', 'networking', 'security', 'services', 'settings']
+
+      if(wifiTab.includes(editContextData?.unsavedTabKey as string)){
+        processWifiTab(editContextData, editNetworkingContextData, editSecurityContextData)
+      }else{
+        editContextData?.updateChanges?.()
       }
       callback?.()
     }
