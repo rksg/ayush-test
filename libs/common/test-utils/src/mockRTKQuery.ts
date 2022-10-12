@@ -17,6 +17,21 @@ export const mockGraphqlQuery = (
   )
 }
 
+export const mockGraphqlMutation = (
+  url: string,
+  key: string,
+  result: { data?: any, error?: any } // eslint-disable-line @typescript-eslint/no-explicit-any
+) => {
+  const api = graphql.link(url)
+  mockServer.use(
+    api.mutation(key, (req, res, ctx) => {
+      return result.error
+        ? res(ctx.errors([result.error]))
+        : res(ctx.data(result.data ?? {}))
+    })
+  )
+}
+
 export const mockRestApiQuery = (
   url: string,
   type: 'get' | 'post',

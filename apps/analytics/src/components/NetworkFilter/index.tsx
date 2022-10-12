@@ -190,7 +190,9 @@ function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterP
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const incidentsList = useIncidentsListQuery(
-    omit({ ...filters, path: defaultNetworkPath }, 'filter'),
+    omit({
+      ...filters, path: defaultNetworkPath, includeMuted: false
+    }, 'filter'),
     {
       selectFromResult: ({ data }) => ({
         data: data ? getSeverityFromIncidents(data) : []
