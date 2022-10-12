@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMWidth } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 jest.mock('@acx-ui/icons', ()=> ({
@@ -297,7 +297,7 @@ describe('Table component', () => {
 
   describe('resize', () => {
     it('should allow column resizing', async () => {
-      mockDOMWidth(99)
+      mockDOMSize(99, 800)
       const { asFragment } = render(<Table
         columns={basicColumns}
         dataSource={basicData}

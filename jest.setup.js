@@ -4,7 +4,7 @@ require('@testing-library/jest-dom')
 const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
-const { mockServer, mockDOMWidth, mockLightTheme } = require('@acx-ui/test-utils')
+const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
 const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
 const { mockInstances } = require('@googlemaps/jest-mocks')
@@ -27,7 +27,7 @@ beforeAll(() => {
   })
 })
 beforeEach(async () => {
-  mockDOMWidth()
+  mockDOMSize(1280, 800)
   const env = require('./apps/main/src/env.json')
   mockServer.use(rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))))
   await config.initialize()
