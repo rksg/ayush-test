@@ -13,8 +13,7 @@ import {
   Space,
   Spin,
   Select,
-  Tooltip,
-  Typography
+  Tooltip
 } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
