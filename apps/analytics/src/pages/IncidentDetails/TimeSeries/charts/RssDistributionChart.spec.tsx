@@ -1,5 +1,5 @@
-import { BrowserRouter } from 'react-router-dom'
 import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import { BrowserRouter }                           from 'react-router-dom'
 
 import { fakeIncidentRss }      from '@acx-ui/analytics/utils'
 import { store }                from '@acx-ui/store'

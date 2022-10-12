@@ -37,8 +37,8 @@ export const RssDistributionChart = ({ data }: TimeSeriesChartProps) => {
   const { rssDistribution } = data
   const { $t } = useIntl()
 
-  const xValue = 'Rss Distribution'
-  const yValue = 'Samples'
+  const xValue = $t({ defaultMessage: 'RSS Distribution' })
+  const yValue = $t({ defaultMessage: 'Samples' })
 
   const expectedResult = {
     dimensions: [xValue, yValue],
