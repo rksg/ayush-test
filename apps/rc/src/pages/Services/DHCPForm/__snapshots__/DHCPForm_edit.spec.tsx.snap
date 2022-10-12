@@ -531,7 +531,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                 style="overflow: visible; height: 0px; width: 0px;"
                               >
                                 <div
-                                  class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                                  class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
                                   style="width: 1280px;"
                                 >
                                   <div
@@ -639,7 +639,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                             class="ant-table-cell ant-table-selection-column react-resizable"
                                                           >
                                                             <div
-                                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                             />
                                                             <div
                                                               class="ant-table-selection"
@@ -663,7 +663,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                               </label>
                                                             </div>
                                                             <div
-                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                             />
                                                           </th>
                                                           <th
@@ -671,7 +671,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                             tabindex="0"
                                                           >
                                                             <div
-                                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                             />
                                                             <div
                                                               class="ant-table-column-sorters"
@@ -729,7 +729,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                               </span>
                                                             </div>
                                                             <div
-                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                             />
                                                           </th>
                                                           <th
@@ -737,7 +737,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                             tabindex="0"
                                                           >
                                                             <div
-                                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                             />
                                                             <div
                                                               class="ant-table-column-sorters"
@@ -795,7 +795,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                               </span>
                                                             </div>
                                                             <div
-                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                             />
                                                           </th>
                                                           <th
@@ -803,7 +803,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                             tabindex="0"
                                                           >
                                                             <div
-                                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                             />
                                                             <div
                                                               class="ant-table-column-sorters"
@@ -861,40 +861,40 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                               </span>
                                                             </div>
                                                             <div
-                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                             />
                                                           </th>
                                                           <th
                                                             class="ant-table-cell react-resizable"
                                                           >
                                                             <div
-                                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                             />
                                                             Lease Time
                                                             <div
-                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                             />
                                                           </th>
                                                           <th
                                                             class="ant-table-cell react-resizable"
                                                           >
                                                             <div
-                                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                             />
                                                             Vlan
                                                             <div
-                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                             />
                                                           </th>
                                                           <th
                                                             class="ant-table-cell react-resizable"
                                                           >
                                                             <div
-                                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                             />
                                                             Number of hosts
                                                             <div
-                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                             />
                                                           </th>
                                                           <th
@@ -902,10 +902,10 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                             style="position: sticky; right: 0px;"
                                                           >
                                                             <div
-                                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                             />
                                                             <div
-                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                             />
                                                           </th>
                                                         </tr>

@@ -1,6 +1,4 @@
-import { createRef } from 'react'
-
-import EChartsReact from 'echarts-for-react'
+import ReactECharts from 'echarts-for-react'
 
 import { dataApiURL }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter }    from '@acx-ui/analytics/utils'
@@ -55,11 +53,27 @@ describe('HealthConnectedClientsOverTime', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    const ref = createRef<EChartsReact>()
+
+    const callbackRef = (chart: ReactECharts) => {
+      if (chart) {
+        const instance = chart.getEchartsInstance()
+        instance.dispatchAction({
+          type: 'brush',
+          areas: [{
+            brushType: 'lineX',
+            coordRange: ['2022-04-07T09:30:00.000Z', '2022-04-07T10:00:00.000Z'],
+            xAxisIndex: 0
+          }]
+        }, {
+          silent: false,
+          flush: true
+        })
+      }
+    }
     const { asFragment } = render(
       <Provider>
         <HealthPageContext.Provider value={healthContext}>
-          <ConnectedClientsOverTime ref={ref}/>
+          <ConnectedClientsOverTime ref={callbackRef}/>
         </HealthPageContext.Provider>
       </Provider>
     )
@@ -73,19 +87,6 @@ describe('HealthConnectedClientsOverTime', () => {
     const rect = chartComponent().querySelector('rect') as SVGRectElement
     expect(rect.clientHeight).toBe(800)
     expect(rect.clientWidth).toBe(1280)
-
-    const instance = ref.current!.getEchartsInstance()
-    instance.dispatchAction({
-      type: 'brush',
-      areas: [{
-        brushType: 'lineX',
-        coordRange: ['2022-04-07T09:30:00.000Z', '2022-04-07T10:00:00.000Z'],
-        xAxisIndex: 0
-      }]
-    }, {
-      silent: false,
-      flush: true
-    })
 
     const chartSvgs = [...chartComponent().querySelectorAll('svg > g > path')]
 

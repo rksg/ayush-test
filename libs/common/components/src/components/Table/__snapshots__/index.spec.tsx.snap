@@ -6,7 +6,7 @@ exports[`Table component renders compact table 1`] = `
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 hGynsR"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 gJHxFg"
       style="width: 1280px;"
     >
       <div
@@ -205,7 +205,7 @@ exports[`Table component renders form table 1`] = `
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 eqaCKo"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 bhrDYh"
       style="width: 1280px;"
     >
       <div
@@ -404,7 +404,7 @@ exports[`Table component should render correctly 1`] = `
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
       style="width: 1280px;"
     >
       <div
@@ -490,7 +490,7 @@ exports[`Table component should render correctly 1`] = `
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 Name
                               </th>
@@ -499,7 +499,7 @@ exports[`Table component should render correctly 1`] = `
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 <span
                                   class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
@@ -515,7 +515,7 @@ exports[`Table component should render correctly 1`] = `
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 Address
                               </th>
@@ -525,7 +525,7 @@ exports[`Table component should render correctly 1`] = `
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                               </th>
                             </tr>
@@ -763,7 +763,7 @@ exports[`Table component should render multi select table and render action butt
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
       style="width: 1280px;"
     >
       <div
@@ -852,7 +852,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 <div
                                   class="ant-table-selection"
@@ -880,7 +880,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 Name
                               </th>
@@ -889,7 +889,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 <span
                                   class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
@@ -905,7 +905,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 Address
                               </th>
@@ -915,7 +915,7 @@ exports[`Table component should render multi select table and render action butt
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                               </th>
                             </tr>
@@ -1222,7 +1222,7 @@ exports[`Table component should render multi select table and render action butt
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
       style="width: 1280px;"
     >
       <div
@@ -1344,7 +1344,7 @@ exports[`Table component should render multi select table and render action butt
                                 style="margin-right: 0px;"
                               >
                                 <div
-                                  class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-13 fsVtFP"
+                                  class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-14 jcXayc"
                                   role="separator"
                                 />
                               </span>
@@ -1409,7 +1409,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 <div
                                   class="ant-table-selection"
@@ -1438,7 +1438,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 Name
                               </th>
@@ -1447,7 +1447,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 <span
                                   class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
@@ -1463,7 +1463,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 Address
                               </th>
@@ -1473,7 +1473,7 @@ exports[`Table component should render multi select table and render action butt
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                               </th>
                             </tr>
@@ -1780,7 +1780,7 @@ exports[`Table component should render multi select table and render action butt
     style="overflow: visible; height: 0px; width: 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
       style="width: 1280px;"
     >
       <div
@@ -1869,7 +1869,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 <div
                                   class="ant-table-selection"
@@ -1897,7 +1897,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 Name
                               </th>
@@ -1906,7 +1906,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 <span
                                   class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
@@ -1922,7 +1922,7 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                                 Address
                               </th>
@@ -1932,7 +1932,7 @@ exports[`Table component should render multi select table and render action butt
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                 />
                               </th>
                             </tr>

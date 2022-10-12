@@ -1,12 +1,14 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { store }  from '@acx-ui/store'
-import { render } from '@acx-ui/test-utils'
+import { fakeIncident1 } from '@acx-ui/analytics/utils'
+import { store }         from '@acx-ui/store'
+import { render }        from '@acx-ui/test-utils'
 
-import { ChartsData } from '../services'
-import { Api }        from '../services'
+import { Api } from '../services'
 
 import { ClientCountChart } from './ClientCountChart'
+
+import type { TimeSeriesChartResponse } from '../types'
 
 const expectedResult = {
   clientCountChart: {
@@ -21,7 +23,7 @@ const expectedResult = {
     impactedClientCount: [6, 7, 8, 9, 10],
     connectedClientCount: [11, 12, 13, 14, 15]
   }
-} as unknown as ChartsData
+} as unknown as TimeSeriesChartResponse
 
 beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
@@ -29,7 +31,7 @@ describe('ClientCountChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <ClientCountChart data={expectedResult}/>
+        <ClientCountChart chartRef={()=>{}} incident={fakeIncident1} data={expectedResult}/>
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
