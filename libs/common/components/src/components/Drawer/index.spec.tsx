@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
-import { BulbOutlined } from '@acx-ui/icons'
+import { BulbOutlined }           from '@acx-ui/icons'
+import { render as customRender } from '@acx-ui/test-utils'
 
 import { Drawer } from '.'
+
 
 
 jest.mock('@acx-ui/icons', ()=> ({
@@ -99,5 +101,26 @@ describe('Drawer', () => {
 
     fireEvent.click(backButton)
     expect(handleBackClick).toBeCalled()
+  })
+
+  it('should render form footer', async () => {
+    const { asFragment, rerender } = customRender(
+      <Drawer.FormFooter
+        onCancel={jest.fn()}
+        onSave={jest.fn()} />
+    )
+
+    expect(asFragment()).toMatchSnapshot()
+
+    rerender(
+      <Drawer.FormFooter
+        showAddAnother={true}
+        onCancel={jest.fn()}
+        onSave={jest.fn()} />
+    )
+
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: /Add another/i })).toBeInTheDocument()
+    })
   })
 })

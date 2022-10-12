@@ -1,6 +1,12 @@
+import { MutableRefObject, useRef } from 'react'
+
 import { DrawerProps as AntDrawerProps } from 'antd'
+import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { useIntl }                       from 'react-intl'
 
 import { CloseSymbol, ArrowBack } from '@acx-ui/icons'
+
+import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 
@@ -43,3 +49,70 @@ export const Drawer = (props: DrawerProps) => {
     />
   )
 }
+
+interface FormFooterProps {
+  showAddAnother?: boolean
+  addAnotherChecked?: boolean
+  onAddAnotherChange?: (e: CheckboxChangeEvent) => void
+  onCancel: (ref: MutableRefObject<null>) => void
+  onSave: () => void
+  buttonLabel?: {
+    addAnother?: string
+    cancel?: string
+    save?: string
+  }
+}
+
+const FormFooter = (props: FormFooterProps) => {
+  const { $t } = useIntl()
+  const addAnotherRef = useRef(null)
+
+  const {
+    showAddAnother = false,
+    addAnotherChecked = false,
+    onAddAnotherChange,
+    onCancel,
+    onSave
+  } = props
+
+  const buttonLabel = {
+    ...{
+      addAnother: $t({ defaultMessage: 'Add another' }),
+      cancel: $t({ defaultMessage: 'Cancel' }),
+      save: $t({ defaultMessage: 'Save' })
+    },
+    ...props.buttonLabel
+  }
+
+  return (
+    <UI.FooterBar>
+      <div>
+        {showAddAnother && <Checkbox
+          ref={addAnotherRef}
+          onChange={onAddAnotherChange}
+          checked={addAnotherChecked}
+          children={buttonLabel.addAnother}
+        />}
+      </div>
+      <div>
+        <Button
+          key='cancelBtn'
+          onClick={() => {
+            onCancel(addAnotherRef)
+          }}
+        >
+          {buttonLabel.cancel}
+        </Button>
+        <Button
+          key='saveBtn'
+          onClick={onSave}
+          type={'secondary'}
+        >
+          {buttonLabel.save}
+        </Button>
+      </div>
+    </UI.FooterBar>
+  )
+}
+
+Drawer.FormFooter = FormFooter

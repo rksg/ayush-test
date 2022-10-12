@@ -4,7 +4,7 @@ import { Form, Input, Select } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, DrawerFormFooter }                                 from '@acx-ui/components'
+import { Drawer }                                                   from '@acx-ui/components'
 import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
 
 import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
@@ -101,7 +101,7 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
       children={content}
       forceRender // Avoid the form (in children prop) not been rendered when operating
       footer={
-        <DrawerFormFooter
+        <Drawer.FormFooter
           showAddAnother={!editMode}
           addAnotherChecked={addAnotherRuleChecked}
           buttonLabel={({
