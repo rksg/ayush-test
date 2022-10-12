@@ -25,12 +25,12 @@ export function useDataZoom<TChartData extends MultiLineTimeSeriesChartData> (
   zoom?: TimeStampRange,
   onDataZoom?: (range: TimeStampRange) => void
 ): [boolean, (event: OnDatazoomEvent) => void, () => void] {
-  function firstLastTimeStamp (data: TChartData[]) {
+  const firstLastTimeStamp = useCallback((data: TChartData[]) => {
     const firstSeries = data[0].data
     const firstTimeStamp = firstSeries[0][0]
     const lastTimeStamp = firstSeries[firstSeries.length - 1][0]
     return [firstTimeStamp, lastTimeStamp]
-  }
+  }, [])
 
   useEffect(() => {
     if (!eChartsRef?.current || !zoomEnabled) return
