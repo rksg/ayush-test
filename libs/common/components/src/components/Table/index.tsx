@@ -216,7 +216,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
-
+  const hasEllipsisColumn = columns.some(column => column.ellipsis)
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
     const defaultOnRow = props.onRow?.(record)
     return {
@@ -295,7 +295,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
-      scroll={{ x: '100%' }}
+      scroll={{ x: hasEllipsisColumn ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig

@@ -42,7 +42,7 @@ exports[`Table component renders compact table 1`] = `
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 100%; min-width: 100%; table-layout: auto;"
+                          style="min-width: 100%; table-layout: auto;"
                         >
                           <colgroup />
                           <thead
@@ -241,7 +241,7 @@ exports[`Table component renders form table 1`] = `
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 100%; min-width: 100%; table-layout: auto;"
+                          style="min-width: 100%; table-layout: auto;"
                         >
                           <colgroup />
                           <thead
@@ -471,7 +471,7 @@ exports[`Table component should render correctly 1`] = `
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 100%; min-width: 100%; table-layout: fixed;"
+                          style="min-width: 100%; table-layout: auto;"
                         >
                           <colgroup>
                             <col />
@@ -830,7 +830,7 @@ exports[`Table component should render multi select table and render action butt
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 100%; min-width: 100%; table-layout: fixed;"
+                          style="min-width: 100%; table-layout: auto;"
                         >
                           <colgroup>
                             <col
@@ -1387,7 +1387,7 @@ exports[`Table component should render multi select table and render action butt
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 100%; min-width: 100%; table-layout: fixed;"
+                          style="min-width: 100%; table-layout: auto;"
                         >
                           <colgroup>
                             <col
@@ -1847,7 +1847,7 @@ exports[`Table component should render multi select table and render action butt
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="width: 100%; min-width: 100%; table-layout: fixed;"
+                          style="min-width: 100%; table-layout: auto;"
                         >
                           <colgroup>
                             <col

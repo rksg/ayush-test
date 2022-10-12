@@ -272,7 +272,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
                           style="overflow-x: auto; overflow-y: hidden;"
                         >
                           <table
-                            style="width: 100%; min-width: 100%; table-layout: fixed;"
+                            style="min-width: 100%; table-layout: auto;"
                           >
                             <colgroup>
                               <col />
