@@ -10,7 +10,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { StepsForm, StepsFormInstance, Subtitle }                                                                from '@acx-ui/components'
-import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueQuery }                       from '@acx-ui/rc/services'
+import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery }                       from '@acx-ui/rc/services'
 import { AvailableLteBands, CountryIsoDisctionary, LteBandLockChannel, LteBandRegionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
@@ -33,7 +33,6 @@ export enum WanConnectionEnum {
 export function CellularOptionsForm () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
-  const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { tenantId, venueId } })
 
   const LteBandLockCountriesJson = {
     [LteBandRegionEnum.DOMAIN_1]: {
@@ -61,17 +60,18 @@ export function CellularOptionsForm () {
     primaryWanRecoveryTimer: 0
   }
   let regionCountriesMap = _.cloneDeep(LteBandLockCountriesJson)
-  let currentRegion = '', currentCountryName = ''
-  const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
-  const venueData = useGetVenueQuery({ params: { tenantId, venueId } })
 
+  const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { tenantId, venueId } })
+  const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
+  const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
+  const [currentRegion, setCurrentRegion] = useState('');
+  const [currentCountryName, setCurrentCountryName] = useState('');
   const [availableLteBandsArray, setAvailableLteBandsArray] =
     useState(defaultAvailableLteBandsArray)
-
-  const [editData, setEditData] =
-    useState(defaultEditData)
+  const [editData, setEditData] = useState(defaultEditData)
   const formRef = useRef<StepsFormInstance>()
   const form = Form.useFormInstance()
+
   const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
     if (!_.isEmpty(currentRegion)) {
       const index = lteBands.findIndex(item => item.region === currentRegion)
@@ -120,14 +120,15 @@ export function CellularOptionsForm () {
       //setCurrentCountry
       Object.keys(regionCountriesMap).map(function (objectKey) {
         const value = _.get(regionCountriesMap, objectKey)
-        if (value.countryCodes.indexOf(countryCode) > -1) { currentRegion = objectKey }
+        if (value.countryCodes.indexOf(countryCode) > -1) { 
+          setCurrentRegion(objectKey) }
       })
 
       //setCurrentCountryName
       const currentCountry = getCurrentCountryName(countryCode)
 
       if (currentCountry) {
-        currentCountryName = _.keys(currentCountry)[0]
+        setCurrentCountryName( _.keys(currentCountry)[0])
       }
 
       // this.getCellularSupportedModels$(); 

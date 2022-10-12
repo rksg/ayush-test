@@ -88,7 +88,7 @@ export function LteBandChannels (
     <>
       {props.isCurrent &&
         <UI.CurrentCountryLabel>{$t({ defaultMessage: 'Bands for current country' })}
-          {' (' + props.regionCountries + ')'}
+          {' (' + props.countryName + ')'}
         </UI.CurrentCountryLabel>
       }
       {(!props.isCurrent && props.isShowOtherLteBands) &&
