@@ -3,175 +3,170 @@
 exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    style="overflow: visible; height: 0px; width: 0px;"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 bzjxMS"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 bzjxMS"
-      style="width: 1280px;"
+      class="ant-pro-table"
     >
       <div
-        class="ant-pro-table"
+        class="ant-pro-card"
       >
         <div
-          class="ant-pro-card"
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
         >
           <div
-            class="ant-pro-card-body"
-            style="padding-top: 0px;"
+            class="ant-pro-table-list-toolbar"
+          />
+          <div
+            class="ant-table-wrapper"
           >
             <div
-              class="ant-pro-table-list-toolbar"
-            />
-            <div
-              class="ant-table-wrapper"
+              class="ant-spin-nested-loading"
             >
               <div
-                class="ant-spin-nested-loading"
+                class="ant-spin-container"
               >
                 <div
-                  class="ant-spin-container"
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                    class="ant-table-container"
                   >
                     <div
-                      class="ant-table-container"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
-                      <div
-                        class="ant-table-content"
-                        style="overflow-x: auto; overflow-y: hidden;"
+                      <table
+                        style="min-width: 100%; table-layout: auto;"
                       >
-                        <table
-                          style="min-width: 100%; table-layout: auto;"
+                        <colgroup />
+                        <thead
+                          class="ant-table-thead"
                         >
-                          <colgroup />
-                          <thead
-                            class="ant-table-thead"
+                          <tr>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
                           >
-                            <tr>
-                              <th
-                                class="ant-table-cell"
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
                               >
-                                Name
-                              </th>
-                              <th
-                                class="ant-table-cell"
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
                               >
-                                <span
-                                  class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
-                                >
-                                  Age
-                                  <div
-                                    data-testid="information-outlined"
-                                  />
-                                </span>
-                              </th>
-                              <th
-                                class="ant-table-cell"
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
                               >
-                                Address
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody
-                            class="ant-table-tbody"
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="1"
                           >
-                            <tr
-                              aria-hidden="true"
-                              class="ant-table-measure-row"
-                              style="height: 0px; font-size: 0px;"
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="1"
+                              John Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                John Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                32
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                sample address
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="2"
+                              32
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Jane Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                33
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                new address
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="3"
+                              sample address
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="2"
+                          >
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Will Smith
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                45
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                address
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                              Jane Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              33
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              new address
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Will Smith
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              45
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              address
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
@@ -181,20 +176,6 @@ exports[`Table component renders compact table 1`] = `
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="resize-triggers"
-  >
-    <div
-      class="expand-trigger"
-    >
-      <div
-        style="width: 1281px; height: 801px;"
-      />
-    </div>
-    <div
-      class="contract-trigger"
-    />
   </div>
 </DocumentFragment>
 `;
@@ -202,175 +183,170 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component renders form table 1`] = `
 <DocumentFragment>
   <div
-    style="overflow: visible; height: 0px; width: 0px;"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 kDcXQr"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 kDcXQr"
-      style="width: 1280px;"
+      class="ant-pro-table"
     >
       <div
-        class="ant-pro-table"
+        class="ant-pro-card"
       >
         <div
-          class="ant-pro-card"
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
         >
           <div
-            class="ant-pro-card-body"
-            style="padding-top: 0px;"
+            class="ant-pro-table-list-toolbar"
+          />
+          <div
+            class="ant-table-wrapper"
           >
             <div
-              class="ant-pro-table-list-toolbar"
-            />
-            <div
-              class="ant-table-wrapper"
+              class="ant-spin-nested-loading"
             >
               <div
-                class="ant-spin-nested-loading"
+                class="ant-spin-container"
               >
                 <div
-                  class="ant-spin-container"
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                    class="ant-table-container"
                   >
                     <div
-                      class="ant-table-container"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
-                      <div
-                        class="ant-table-content"
-                        style="overflow-x: auto; overflow-y: hidden;"
+                      <table
+                        style="min-width: 100%; table-layout: auto;"
                       >
-                        <table
-                          style="min-width: 100%; table-layout: auto;"
+                        <colgroup />
+                        <thead
+                          class="ant-table-thead"
                         >
-                          <colgroup />
-                          <thead
-                            class="ant-table-thead"
+                          <tr>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
                           >
-                            <tr>
-                              <th
-                                class="ant-table-cell"
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
                               >
-                                Name
-                              </th>
-                              <th
-                                class="ant-table-cell"
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
                               >
-                                <span
-                                  class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
-                                >
-                                  Age
-                                  <div
-                                    data-testid="information-outlined"
-                                  />
-                                </span>
-                              </th>
-                              <th
-                                class="ant-table-cell"
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
                               >
-                                Address
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody
-                            class="ant-table-tbody"
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="1"
                           >
-                            <tr
-                              aria-hidden="true"
-                              class="ant-table-measure-row"
-                              style="height: 0px; font-size: 0px;"
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="1"
+                              John Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                John Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                32
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                sample address
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="2"
+                              32
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Jane Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                33
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                new address
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="3"
+                              sample address
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="2"
+                          >
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Will Smith
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                45
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                address
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                              Jane Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              33
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              new address
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Will Smith
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              45
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              address
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
@@ -380,20 +356,6 @@ exports[`Table component renders form table 1`] = `
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="resize-triggers"
-  >
-    <div
-      class="expand-trigger"
-    >
-      <div
-        style="width: 1281px; height: 801px;"
-      />
-    </div>
-    <div
-      class="contract-trigger"
-    />
   </div>
 </DocumentFragment>
 `;
@@ -401,358 +363,339 @@ exports[`Table component renders form table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    style="overflow: visible; height: 0px; width: 0px;"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
-      style="width: 1280px;"
+      class="ant-pro-table"
     >
       <div
-        class="ant-pro-table"
+        class="ant-pro-card"
       >
         <div
-          class="ant-pro-card"
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
         >
           <div
-            class="ant-pro-card-body"
-            style="padding-top: 0px;"
+            class="ant-pro-table-list-toolbar"
           >
             <div
-              class="ant-pro-table-list-toolbar"
+              class="ant-pro-table-list-toolbar-container"
             >
               <div
-                class="ant-pro-table-list-toolbar-container"
+                class="ant-pro-table-list-toolbar-left"
+              />
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
               >
                 <div
-                  class="ant-pro-table-list-toolbar-left"
-                />
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                  class="ant-space-item"
                 >
                   <div
-                    class="ant-space-item"
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                      class="ant-space-item"
                     >
                       <div
-                        class="ant-space-item"
+                        class="ant-pro-table-list-toolbar-setting-item"
                       >
                         <div
-                          class="ant-pro-table-list-toolbar-setting-item"
-                        >
-                          <div
-                            data-testid="settings-outlined"
-                          />
-                        </div>
+                          data-testid="settings-outlined"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div
+            class="ant-table-wrapper"
+          >
             <div
-              class="ant-table-wrapper"
+              class="ant-spin-nested-loading"
             >
               <div
-                class="ant-spin-nested-loading"
+                class="ant-spin-container"
               >
                 <div
-                  class="ant-spin-container"
+                  class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table-container"
                   >
                     <div
-                      class="ant-table-container"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
-                      <div
-                        class="ant-table-content"
-                        style="overflow-x: auto; overflow-y: hidden;"
+                      <table
+                        style="min-width: 100%; table-layout: auto;"
                       >
-                        <table
-                          style="min-width: 100%; table-layout: auto;"
+                        <colgroup>
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
+                          />
+                        </colgroup>
+                        <thead
+                          class="ant-table-thead"
                         >
-                          <colgroup>
-                            <col />
-                            <col />
-                            <col />
-                            <col
-                              style="width: 32px;"
+                          <tr>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              Address
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
+                              style="position: sticky; right: 0px;"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="1"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            >
+                              John Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              32
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              sample address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
                             />
-                          </colgroup>
-                          <thead
-                            class="ant-table-thead"
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="2"
                           >
-                            <tr>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                Name
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                <span
-                                  class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
-                                >
-                                  Age
-                                  <div
-                                    data-testid="information-outlined"
-                                  />
-                                </span>
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                Address
-                              </th>
-                              <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                data-testid="react-resizable"
-                                style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody
-                            class="ant-table-tbody"
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Jane Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              33
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              new address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
                           >
-                            <tr
-                              aria-hidden="true"
-                              class="ant-table-measure-row"
-                              style="height: 0px; font-size: 0px;"
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="1"
+                              Will Smith
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                John Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                32
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                sample address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="2"
+                              45
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Jane Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                33
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                new address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="3"
-                            >
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Will Smith
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                45
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                              address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                  <ul
-                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
-                    unselectable="unselectable"
-                  >
-                    <li
-                      aria-disabled="true"
-                      class="ant-pagination-prev ant-pagination-disabled"
-                      title="Previous Page"
-                    >
-                      <button
-                        class="ant-pagination-item-link"
-                        disabled=""
-                        tabindex="-1"
-                        type="button"
-                      >
-                        <span
-                          aria-label="left"
-                          class="anticon anticon-left"
-                          role="img"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            data-icon="left"
-                            fill="currentColor"
-                            focusable="false"
-                            height="1em"
-                            viewBox="64 64 896 896"
-                            width="1em"
-                          >
-                            <path
-                              d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </li>
-                    <li
-                      class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
-                      tabindex="0"
-                      title="1"
-                    >
-                      <a
-                        rel="nofollow"
-                      >
-                        1
-                      </a>
-                    </li>
-                    <li
-                      aria-disabled="true"
-                      class="ant-pagination-next ant-pagination-disabled"
-                      title="Next Page"
-                    >
-                      <button
-                        class="ant-pagination-item-link"
-                        disabled=""
-                        tabindex="-1"
-                        type="button"
-                      >
-                        <span
-                          aria-label="right"
-                          class="anticon anticon-right"
-                          role="img"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            data-icon="right"
-                            fill="currentColor"
-                            focusable="false"
-                            height="1em"
-                            viewBox="64 64 896 896"
-                            width="1em"
-                          >
-                            <path
-                              d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </li>
-                  </ul>
                 </div>
+                <ul
+                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
+                  unselectable="unselectable"
+                >
+                  <li
+                    aria-disabled="true"
+                    class="ant-pagination-prev ant-pagination-disabled"
+                    title="Previous Page"
+                  >
+                    <button
+                      class="ant-pagination-item-link"
+                      disabled=""
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <span
+                        aria-label="left"
+                        class="anticon anticon-left"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="left"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                  <li
+                    class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
+                    tabindex="0"
+                    title="1"
+                  >
+                    <a
+                      rel="nofollow"
+                    >
+                      1
+                    </a>
+                  </li>
+                  <li
+                    aria-disabled="true"
+                    class="ant-pagination-next ant-pagination-disabled"
+                    title="Next Page"
+                  >
+                    <button
+                      class="ant-pagination-item-link"
+                      disabled=""
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <span
+                        aria-label="right"
+                        class="anticon anticon-right"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="right"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="resize-triggers"
-  >
-    <div
-      class="expand-trigger"
-    >
-      <div
-        style="width: 1281px; height: 801px;"
-      />
-    </div>
-    <div
-      class="contract-trigger"
-    />
   </div>
 </DocumentFragment>
 `;
@@ -760,458 +703,439 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    style="overflow: visible; height: 0px; width: 0px;"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
-      style="width: 1280px;"
+      class="ant-pro-table"
     >
       <div
-        class="ant-pro-table"
+        class="ant-pro-card"
       >
         <div
-          class="ant-pro-card"
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
         >
           <div
-            class="ant-pro-card-body"
-            style="padding-top: 0px;"
+            class="ant-pro-table-list-toolbar"
           >
             <div
-              class="ant-pro-table-list-toolbar"
+              class="ant-pro-table-list-toolbar-container"
             >
               <div
-                class="ant-pro-table-list-toolbar-container"
+                class="ant-pro-table-list-toolbar-left"
+              />
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
               >
                 <div
-                  class="ant-pro-table-list-toolbar-left"
-                />
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                  class="ant-space-item"
                 >
                   <div
-                    class="ant-space-item"
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                      class="ant-space-item"
                     >
                       <div
-                        class="ant-space-item"
+                        class="ant-pro-table-list-toolbar-setting-item"
                       >
                         <div
-                          class="ant-pro-table-list-toolbar-setting-item"
-                        >
-                          <div
-                            data-testid="settings-outlined"
-                          />
-                        </div>
+                          data-testid="settings-outlined"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div
+            class="ant-table-wrapper"
+          >
             <div
-              class="ant-table-wrapper"
+              class="ant-spin-nested-loading"
             >
               <div
-                class="ant-spin-nested-loading"
+                class="ant-spin-container"
               >
                 <div
-                  class="ant-spin-container"
+                  class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table-container"
                   >
                     <div
-                      class="ant-table-container"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
-                      <div
-                        class="ant-table-content"
-                        style="overflow-x: auto; overflow-y: hidden;"
+                      <table
+                        style="min-width: 100%; table-layout: auto;"
                       >
-                        <table
-                          style="min-width: 100%; table-layout: auto;"
+                        <colgroup>
+                          <col
+                            class="ant-table-selection-col"
+                          />
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
+                          />
+                        </colgroup>
+                        <thead
+                          class="ant-table-thead"
                         >
-                          <colgroup>
-                            <col
-                              class="ant-table-selection-col"
-                            />
-                            <col />
-                            <col />
-                            <col />
-                            <col
-                              style="width: 32px;"
-                            />
-                          </colgroup>
-                          <thead
-                            class="ant-table-thead"
-                          >
-                            <tr>
-                              <th
-                                class="ant-table-cell ant-table-selection-column"
-                                data-testid="react-resizable"
+                          <tr>
+                            <th
+                              class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              <div
+                                class="ant-table-selection"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                <div
-                                  class="ant-table-selection"
+                                <label
+                                  class="ant-checkbox-wrapper"
                                 >
-                                  <label
-                                    class="ant-checkbox-wrapper"
+                                  <span
+                                    class="ant-checkbox"
                                   >
+                                    <input
+                                      class="ant-checkbox-input"
+                                      type="checkbox"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-checkbox"
-                                    >
-                                      <input
-                                        class="ant-checkbox-input"
-                                        type="checkbox"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-checkbox-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </div>
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
+                                      class="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </div>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
+                                Age
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  data-testid="information-outlined"
                                 />
-                                Name
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
+                              </span>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              Address
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
+                              style="position: sticky; right: 0px;"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="1"
+                          >
+                            <td
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <label
+                                class="ant-checkbox-wrapper"
+                              >
                                 <span
-                                  class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                                  class="ant-checkbox"
                                 >
-                                  Age
-                                  <div
-                                    data-testid="information-outlined"
+                                  <input
+                                    class="ant-checkbox-input"
+                                    type="checkbox"
+                                    value=""
+                                  />
+                                  <span
+                                    class="ant-checkbox-inner"
                                   />
                                 </span>
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                Address
-                              </th>
-                              <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                data-testid="react-resizable"
-                                style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody
-                            class="ant-table-tbody"
+                              </label>
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              John Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              32
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              sample address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="2"
                           >
-                            <tr
-                              aria-hidden="true"
-                              class="ant-table-measure-row"
-                              style="height: 0px; font-size: 0px;"
+                            <td
+                              class="ant-table-cell ant-table-selection-column"
                             >
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
+                              <label
+                                class="ant-checkbox-wrapper"
                               >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
+                                <span
+                                  class="ant-checkbox"
                                 >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="1"
-                            >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper"
-                                >
+                                  <input
+                                    class="ant-checkbox-input"
+                                    type="checkbox"
+                                    value=""
+                                  />
                                   <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                John Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                32
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                sample address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="2"
+                                    class="ant-checkbox-inner"
+                                  />
+                                </span>
+                              </label>
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper"
-                                >
-                                  <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Jane Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                33
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                new address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="3"
+                              Jane Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
+                              33
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              new address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
+                          >
+                            <td
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <label
+                                class="ant-checkbox-wrapper"
                               >
-                                <label
-                                  class="ant-checkbox-wrapper"
+                                <span
+                                  class="ant-checkbox"
                                 >
+                                  <input
+                                    class="ant-checkbox-input"
+                                    type="checkbox"
+                                    value=""
+                                  />
                                   <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Will Smith
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                45
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                                    class="ant-checkbox-inner"
+                                  />
+                                </span>
+                              </label>
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Will Smith
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              45
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                  <ul
-                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
-                    unselectable="unselectable"
-                  >
-                    <li
-                      aria-disabled="true"
-                      class="ant-pagination-prev ant-pagination-disabled"
-                      title="Previous Page"
-                    >
-                      <button
-                        class="ant-pagination-item-link"
-                        disabled=""
-                        tabindex="-1"
-                        type="button"
-                      >
-                        <span
-                          aria-label="left"
-                          class="anticon anticon-left"
-                          role="img"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            data-icon="left"
-                            fill="currentColor"
-                            focusable="false"
-                            height="1em"
-                            viewBox="64 64 896 896"
-                            width="1em"
-                          >
-                            <path
-                              d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </li>
-                    <li
-                      class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
-                      tabindex="0"
-                      title="1"
-                    >
-                      <a
-                        rel="nofollow"
-                      >
-                        1
-                      </a>
-                    </li>
-                    <li
-                      aria-disabled="true"
-                      class="ant-pagination-next ant-pagination-disabled"
-                      title="Next Page"
-                    >
-                      <button
-                        class="ant-pagination-item-link"
-                        disabled=""
-                        tabindex="-1"
-                        type="button"
-                      >
-                        <span
-                          aria-label="right"
-                          class="anticon anticon-right"
-                          role="img"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            data-icon="right"
-                            fill="currentColor"
-                            focusable="false"
-                            height="1em"
-                            viewBox="64 64 896 896"
-                            width="1em"
-                          >
-                            <path
-                              d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </li>
-                  </ul>
                 </div>
+                <ul
+                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
+                  unselectable="unselectable"
+                >
+                  <li
+                    aria-disabled="true"
+                    class="ant-pagination-prev ant-pagination-disabled"
+                    title="Previous Page"
+                  >
+                    <button
+                      class="ant-pagination-item-link"
+                      disabled=""
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <span
+                        aria-label="left"
+                        class="anticon anticon-left"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="left"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                  <li
+                    class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
+                    tabindex="0"
+                    title="1"
+                  >
+                    <a
+                      rel="nofollow"
+                    >
+                      1
+                    </a>
+                  </li>
+                  <li
+                    aria-disabled="true"
+                    class="ant-pagination-next ant-pagination-disabled"
+                    title="Next Page"
+                  >
+                    <button
+                      class="ant-pagination-item-link"
+                      disabled=""
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <span
+                        aria-label="right"
+                        class="anticon anticon-right"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="right"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="resize-triggers"
-  >
-    <div
-      class="expand-trigger"
-    >
-      <div
-        style="width: 1281px; height: 801px;"
-      />
-    </div>
-    <div
-      class="contract-trigger"
-    />
   </div>
 </DocumentFragment>
 `;
@@ -1219,145 +1143,140 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    style="overflow: visible; height: 0px; width: 0px;"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
-      style="width: 1280px;"
+      class="ant-pro-table"
     >
       <div
-        class="ant-pro-table"
+        class="ant-pro-card"
       >
         <div
-          class="ant-pro-card"
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
         >
           <div
-            class="ant-pro-card-body"
-            style="padding-top: 0px;"
+            class="ant-pro-table-list-toolbar"
           >
             <div
-              class="ant-pro-table-list-toolbar"
+              class="ant-pro-table-list-toolbar-container"
             >
               <div
-                class="ant-pro-table-list-toolbar-container"
+                class="ant-pro-table-list-toolbar-left"
+              />
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
               >
                 <div
-                  class="ant-pro-table-list-toolbar-left"
-                />
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                  class="ant-space-item"
                 >
                   <div
-                    class="ant-space-item"
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                      class="ant-space-item"
                     >
                       <div
-                        class="ant-space-item"
+                        class="ant-pro-table-list-toolbar-setting-item"
                       >
                         <div
-                          class="ant-pro-table-list-toolbar-setting-item"
-                        >
-                          <div
-                            data-testid="settings-outlined"
-                          />
-                        </div>
+                          data-testid="settings-outlined"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div
+            class="ant-pro-table-alert"
+          >
             <div
-              class="ant-pro-table-alert"
+              class="ant-alert ant-alert-info ant-alert-no-icon"
+              data-show="true"
+              role="alert"
             >
               <div
-                class="ant-alert ant-alert-info ant-alert-no-icon"
-                data-show="true"
-                role="alert"
+                class="ant-alert-content"
               >
                 <div
-                  class="ant-alert-content"
+                  class="ant-alert-message"
                 >
                   <div
-                    class="ant-alert-message"
+                    class="ant-pro-table-alert-info"
                   >
                     <div
-                      class="ant-pro-table-alert-info"
+                      class="ant-pro-table-alert-info-content"
                     >
                       <div
-                        class="ant-pro-table-alert-info-content"
+                        class="ant-space ant-space-horizontal ant-space-align-center"
                       >
                         <div
-                          class="ant-space ant-space-horizontal ant-space-align-center"
+                          class="ant-space-item"
+                          style="margin-right: 32px;"
                         >
                           <div
-                            class="ant-space-item"
-                            style="margin-right: 32px;"
+                            class="ant-space ant-space-horizontal ant-space-align-center"
                           >
                             <div
-                              class="ant-space ant-space-horizontal ant-space-align-center"
+                              class="ant-space-item"
+                              style="margin-right: 6px;"
                             >
-                              <div
-                                class="ant-space-item"
-                                style="margin-right: 6px;"
-                              >
-                                <span>
-                                  2 selected
-                                </span>
-                              </div>
-                              <div
-                                class="ant-space-item"
-                              >
-                                <button
-                                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 dRUGlG"
-                                  title="Clear selection"
-                                  type="button"
-                                >
-                                  <div
-                                    data-testid="cancel-circle"
-                                  />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            class="ant-space-item"
-                          >
-                            <div
-                              class="ant-space ant-space-horizontal ant-space-align-center"
-                            >
-                              <div
-                                class="ant-space-item"
-                                style="margin-right: 0px;"
-                              >
-                                <button
-                                  class="styledComponents__ActionButton-sc-1abm7iv-6 LSICL"
-                                  type="button"
-                                >
-                                  Edit
-                                </button>
-                              </div>
-                              <span
-                                class="ant-space-item-split"
-                                style="margin-right: 0px;"
-                              >
-                                <div
-                                  class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-14 jcXayc"
-                                  role="separator"
-                                />
+                              <span>
+                                2 selected
                               </span>
-                              <div
-                                class="ant-space-item"
+                            </div>
+                            <div
+                              class="ant-space-item"
+                            >
+                              <button
+                                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 dRUGlG"
+                                title="Clear selection"
+                                type="button"
                               >
-                                <button
-                                  class="styledComponents__ActionButton-sc-1abm7iv-6 LSICL"
-                                  type="button"
-                                >
-                                  Delete
-                                </button>
-                              </div>
+                                <div
+                                  data-testid="cancel-circle"
+                                />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="ant-space ant-space-horizontal ant-space-align-center"
+                          >
+                            <div
+                              class="ant-space-item"
+                              style="margin-right: 0px;"
+                            >
+                              <button
+                                class="styledComponents__ActionButton-sc-1abm7iv-6 LSICL"
+                                type="button"
+                              >
+                                Edit
+                              </button>
+                            </div>
+                            <span
+                              class="ant-space-item-split"
+                              style="margin-right: 0px;"
+                            >
+                              <div
+                                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-14 jcXayc"
+                                role="separator"
+                              />
+                            </span>
+                            <div
+                              class="ant-space-item"
+                            >
+                              <button
+                                class="styledComponents__ActionButton-sc-1abm7iv-6 LSICL"
+                                type="button"
+                              >
+                                Delete
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -1367,273 +1286,62 @@ exports[`Table component should render multi select table and render action butt
                 </div>
               </div>
             </div>
+          </div>
+          <div
+            class="ant-table-wrapper"
+          >
             <div
-              class="ant-table-wrapper"
+              class="ant-spin-nested-loading"
             >
               <div
-                class="ant-spin-nested-loading"
+                class="ant-spin-container"
               >
                 <div
-                  class="ant-spin-container"
+                  class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table-container"
                   >
                     <div
-                      class="ant-table-container"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
-                      <div
-                        class="ant-table-content"
-                        style="overflow-x: auto; overflow-y: hidden;"
+                      <table
+                        style="min-width: 100%; table-layout: auto;"
                       >
-                        <table
-                          style="min-width: 100%; table-layout: auto;"
+                        <colgroup>
+                          <col
+                            class="ant-table-selection-col"
+                          />
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
+                          />
+                        </colgroup>
+                        <thead
+                          class="ant-table-thead"
                         >
-                          <colgroup>
-                            <col
-                              class="ant-table-selection-col"
-                            />
-                            <col />
-                            <col />
-                            <col />
-                            <col
-                              style="width: 32px;"
-                            />
-                          </colgroup>
-                          <thead
-                            class="ant-table-thead"
-                          >
-                            <tr>
-                              <th
-                                class="ant-table-cell ant-table-selection-column"
-                                data-testid="react-resizable"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                <div
-                                  class="ant-table-selection"
-                                >
-                                  <label
-                                    class="ant-checkbox-wrapper"
-                                  >
-                                    <span
-                                      class="ant-checkbox ant-checkbox-indeterminate"
-                                    >
-                                      <input
-                                        aria-checked="mixed"
-                                        class="ant-checkbox-input"
-                                        type="checkbox"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-checkbox-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </div>
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                Name
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                <span
-                                  class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
-                                >
-                                  Age
-                                  <div
-                                    data-testid="information-outlined"
-                                  />
-                                </span>
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                Address
-                              </th>
-                              <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                data-testid="react-resizable"
-                                style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody
-                            class="ant-table-tbody"
-                          >
-                            <tr
-                              aria-hidden="true"
-                              class="ant-table-measure-row"
-                              style="height: 0px; font-size: 0px;"
+                          <tr>
+                            <th
+                              class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0 ant-table-row-selected"
-                              data-row-key="1"
-                            >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-checked"
-                                >
-                                  <span
-                                    class="ant-checkbox ant-checkbox-checked"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                John Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                32
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                sample address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
                               />
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0 ant-table-row-selected"
-                              data-row-key="2"
-                            >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-checked"
-                                >
-                                  <span
-                                    class="ant-checkbox ant-checkbox-checked"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Jane Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                33
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                new address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="3"
-                            >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
+                              <div
+                                class="ant-table-selection"
                               >
                                 <label
                                   class="ant-checkbox-wrapper"
                                 >
                                   <span
-                                    class="ant-checkbox"
+                                    class="ant-checkbox ant-checkbox-indeterminate"
                                   >
                                     <input
+                                      aria-checked="mixed"
                                       class="ant-checkbox-input"
                                       type="checkbox"
                                       value=""
@@ -1643,133 +1351,330 @@ exports[`Table component should render multi select table and render action butt
                                     />
                                   </span>
                                 </label>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Will Smith
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                45
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
+                              </div>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
                               />
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              Address
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
+                              style="position: sticky; right: 0px;"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0 ant-table-row-selected"
+                            data-row-key="1"
+                          >
+                            <td
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <label
+                                class="ant-checkbox-wrapper ant-checkbox-wrapper-checked"
+                              >
+                                <span
+                                  class="ant-checkbox ant-checkbox-checked"
+                                >
+                                  <input
+                                    class="ant-checkbox-input"
+                                    type="checkbox"
+                                    value=""
+                                  />
+                                  <span
+                                    class="ant-checkbox-inner"
+                                  />
+                                </span>
+                              </label>
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              John Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              32
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              sample address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0 ant-table-row-selected"
+                            data-row-key="2"
+                          >
+                            <td
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <label
+                                class="ant-checkbox-wrapper ant-checkbox-wrapper-checked"
+                              >
+                                <span
+                                  class="ant-checkbox ant-checkbox-checked"
+                                >
+                                  <input
+                                    class="ant-checkbox-input"
+                                    type="checkbox"
+                                    value=""
+                                  />
+                                  <span
+                                    class="ant-checkbox-inner"
+                                  />
+                                </span>
+                              </label>
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Jane Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              33
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              new address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
+                          >
+                            <td
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <label
+                                class="ant-checkbox-wrapper"
+                              >
+                                <span
+                                  class="ant-checkbox"
+                                >
+                                  <input
+                                    class="ant-checkbox-input"
+                                    type="checkbox"
+                                    value=""
+                                  />
+                                  <span
+                                    class="ant-checkbox-inner"
+                                  />
+                                </span>
+                              </label>
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Will Smith
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              45
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                  <ul
-                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
-                    unselectable="unselectable"
-                  >
-                    <li
-                      aria-disabled="true"
-                      class="ant-pagination-prev ant-pagination-disabled"
-                      title="Previous Page"
-                    >
-                      <button
-                        class="ant-pagination-item-link"
-                        disabled=""
-                        tabindex="-1"
-                        type="button"
-                      >
-                        <span
-                          aria-label="left"
-                          class="anticon anticon-left"
-                          role="img"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            data-icon="left"
-                            fill="currentColor"
-                            focusable="false"
-                            height="1em"
-                            viewBox="64 64 896 896"
-                            width="1em"
-                          >
-                            <path
-                              d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </li>
-                    <li
-                      class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
-                      tabindex="0"
-                      title="1"
-                    >
-                      <a
-                        rel="nofollow"
-                      >
-                        1
-                      </a>
-                    </li>
-                    <li
-                      aria-disabled="true"
-                      class="ant-pagination-next ant-pagination-disabled"
-                      title="Next Page"
-                    >
-                      <button
-                        class="ant-pagination-item-link"
-                        disabled=""
-                        tabindex="-1"
-                        type="button"
-                      >
-                        <span
-                          aria-label="right"
-                          class="anticon anticon-right"
-                          role="img"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            data-icon="right"
-                            fill="currentColor"
-                            focusable="false"
-                            height="1em"
-                            viewBox="64 64 896 896"
-                            width="1em"
-                          >
-                            <path
-                              d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </li>
-                  </ul>
                 </div>
+                <ul
+                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
+                  unselectable="unselectable"
+                >
+                  <li
+                    aria-disabled="true"
+                    class="ant-pagination-prev ant-pagination-disabled"
+                    title="Previous Page"
+                  >
+                    <button
+                      class="ant-pagination-item-link"
+                      disabled=""
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <span
+                        aria-label="left"
+                        class="anticon anticon-left"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="left"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                  <li
+                    class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
+                    tabindex="0"
+                    title="1"
+                  >
+                    <a
+                      rel="nofollow"
+                    >
+                      1
+                    </a>
+                  </li>
+                  <li
+                    aria-disabled="true"
+                    class="ant-pagination-next ant-pagination-disabled"
+                    title="Next Page"
+                  >
+                    <button
+                      class="ant-pagination-item-link"
+                      disabled=""
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <span
+                        aria-label="right"
+                        class="anticon anticon-right"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="right"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="resize-triggers"
-  >
-    <div
-      class="expand-trigger"
-    >
-      <div
-        style="width: 1281px; height: 801px;"
-      />
-    </div>
-    <div
-      class="contract-trigger"
-    />
   </div>
 </DocumentFragment>
 `;
@@ -1777,458 +1682,439 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    style="overflow: visible; height: 0px; width: 0px;"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
-      style="width: 1280px;"
+      class="ant-pro-table"
     >
       <div
-        class="ant-pro-table"
+        class="ant-pro-card"
       >
         <div
-          class="ant-pro-card"
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
         >
           <div
-            class="ant-pro-card-body"
-            style="padding-top: 0px;"
+            class="ant-pro-table-list-toolbar"
           >
             <div
-              class="ant-pro-table-list-toolbar"
+              class="ant-pro-table-list-toolbar-container"
             >
               <div
-                class="ant-pro-table-list-toolbar-container"
+                class="ant-pro-table-list-toolbar-left"
+              />
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
               >
                 <div
-                  class="ant-pro-table-list-toolbar-left"
-                />
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                  class="ant-space-item"
                 >
                   <div
-                    class="ant-space-item"
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                      class="ant-space-item"
                     >
                       <div
-                        class="ant-space-item"
+                        class="ant-pro-table-list-toolbar-setting-item"
                       >
                         <div
-                          class="ant-pro-table-list-toolbar-setting-item"
-                        >
-                          <div
-                            data-testid="settings-outlined"
-                          />
-                        </div>
+                          data-testid="settings-outlined"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div
+            class="ant-table-wrapper"
+          >
             <div
-              class="ant-table-wrapper"
+              class="ant-spin-nested-loading"
             >
               <div
-                class="ant-spin-nested-loading"
+                class="ant-spin-container"
               >
                 <div
-                  class="ant-spin-container"
+                  class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table-container"
                   >
                     <div
-                      class="ant-table-container"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
-                      <div
-                        class="ant-table-content"
-                        style="overflow-x: auto; overflow-y: hidden;"
+                      <table
+                        style="min-width: 100%; table-layout: auto;"
                       >
-                        <table
-                          style="min-width: 100%; table-layout: auto;"
+                        <colgroup>
+                          <col
+                            class="ant-table-selection-col"
+                          />
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
+                          />
+                        </colgroup>
+                        <thead
+                          class="ant-table-thead"
                         >
-                          <colgroup>
-                            <col
-                              class="ant-table-selection-col"
-                            />
-                            <col />
-                            <col />
-                            <col />
-                            <col
-                              style="width: 32px;"
-                            />
-                          </colgroup>
-                          <thead
-                            class="ant-table-thead"
-                          >
-                            <tr>
-                              <th
-                                class="ant-table-cell ant-table-selection-column"
-                                data-testid="react-resizable"
+                          <tr>
+                            <th
+                              class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              <div
+                                class="ant-table-selection"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                <div
-                                  class="ant-table-selection"
+                                <label
+                                  class="ant-checkbox-wrapper"
                                 >
-                                  <label
-                                    class="ant-checkbox-wrapper"
+                                  <span
+                                    class="ant-checkbox"
                                   >
+                                    <input
+                                      class="ant-checkbox-input"
+                                      type="checkbox"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-checkbox"
-                                    >
-                                      <input
-                                        class="ant-checkbox-input"
-                                        type="checkbox"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-checkbox-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </div>
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
+                                      class="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </div>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
+                                Age
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  data-testid="information-outlined"
                                 />
-                                Name
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
+                              </span>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                              Address
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
+                              style="position: sticky; right: 0px;"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="1"
+                          >
+                            <td
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <label
+                                class="ant-checkbox-wrapper"
+                              >
                                 <span
-                                  class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                                  class="ant-checkbox"
                                 >
-                                  Age
-                                  <div
-                                    data-testid="information-outlined"
+                                  <input
+                                    class="ant-checkbox-input"
+                                    type="checkbox"
+                                    value=""
+                                  />
+                                  <span
+                                    class="ant-checkbox-inner"
                                   />
                                 </span>
-                              </th>
-                              <th
-                                class="ant-table-cell"
-                                data-testid="react-resizable"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                                Address
-                              </th>
-                              <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                data-testid="react-resizable"
-                                style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
-                                />
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody
-                            class="ant-table-tbody"
+                              </label>
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              John Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              32
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              sample address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="2"
                           >
-                            <tr
-                              aria-hidden="true"
-                              class="ant-table-measure-row"
-                              style="height: 0px; font-size: 0px;"
+                            <td
+                              class="ant-table-cell ant-table-selection-column"
                             >
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
+                              <label
+                                class="ant-checkbox-wrapper"
                               >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
+                                <span
+                                  class="ant-checkbox"
                                 >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="1"
-                            >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper"
-                                >
+                                  <input
+                                    class="ant-checkbox-input"
+                                    type="checkbox"
+                                    value=""
+                                  />
                                   <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                John Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                32
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                sample address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="2"
+                                    class="ant-checkbox-inner"
+                                  />
+                                </span>
+                              </label>
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper"
-                                >
-                                  <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Jane Doe
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                33
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                new address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="3"
+                              Jane Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
                             >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
+                              33
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              new address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
+                          >
+                            <td
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <label
+                                class="ant-checkbox-wrapper"
                               >
-                                <label
-                                  class="ant-checkbox-wrapper"
+                                <span
+                                  class="ant-checkbox"
                                 >
+                                  <input
+                                    class="ant-checkbox-input"
+                                    type="checkbox"
+                                    value=""
+                                  />
                                   <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Will Smith
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                45
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                address
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                                    class="ant-checkbox-inner"
+                                  />
+                                </span>
+                              </label>
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Will Smith
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              45
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              address
+                            </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                  <ul
-                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
-                    unselectable="unselectable"
-                  >
-                    <li
-                      aria-disabled="true"
-                      class="ant-pagination-prev ant-pagination-disabled"
-                      title="Previous Page"
-                    >
-                      <button
-                        class="ant-pagination-item-link"
-                        disabled=""
-                        tabindex="-1"
-                        type="button"
-                      >
-                        <span
-                          aria-label="left"
-                          class="anticon anticon-left"
-                          role="img"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            data-icon="left"
-                            fill="currentColor"
-                            focusable="false"
-                            height="1em"
-                            viewBox="64 64 896 896"
-                            width="1em"
-                          >
-                            <path
-                              d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </li>
-                    <li
-                      class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
-                      tabindex="0"
-                      title="1"
-                    >
-                      <a
-                        rel="nofollow"
-                      >
-                        1
-                      </a>
-                    </li>
-                    <li
-                      aria-disabled="true"
-                      class="ant-pagination-next ant-pagination-disabled"
-                      title="Next Page"
-                    >
-                      <button
-                        class="ant-pagination-item-link"
-                        disabled=""
-                        tabindex="-1"
-                        type="button"
-                      >
-                        <span
-                          aria-label="right"
-                          class="anticon anticon-right"
-                          role="img"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            data-icon="right"
-                            fill="currentColor"
-                            focusable="false"
-                            height="1em"
-                            viewBox="64 64 896 896"
-                            width="1em"
-                          >
-                            <path
-                              d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </li>
-                  </ul>
                 </div>
+                <ul
+                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
+                  unselectable="unselectable"
+                >
+                  <li
+                    aria-disabled="true"
+                    class="ant-pagination-prev ant-pagination-disabled"
+                    title="Previous Page"
+                  >
+                    <button
+                      class="ant-pagination-item-link"
+                      disabled=""
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <span
+                        aria-label="left"
+                        class="anticon anticon-left"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="left"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                  <li
+                    class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
+                    tabindex="0"
+                    title="1"
+                  >
+                    <a
+                      rel="nofollow"
+                    >
+                      1
+                    </a>
+                  </li>
+                  <li
+                    aria-disabled="true"
+                    class="ant-pagination-next ant-pagination-disabled"
+                    title="Next Page"
+                  >
+                    <button
+                      class="ant-pagination-item-link"
+                      disabled=""
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <span
+                        aria-label="right"
+                        class="anticon anticon-right"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="right"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="resize-triggers"
-  >
-    <div
-      class="expand-trigger"
-    >
-      <div
-        style="width: 1281px; height: 801px;"
-      />
-    </div>
-    <div
-      class="contract-trigger"
-    />
   </div>
 </DocumentFragment>
 `;

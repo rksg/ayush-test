@@ -239,8 +239,8 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     })
   })
 
-  return <AutoSizer>{({ width }) => (<UI.Wrapper
-    style={{ width }}
+  const WrappedTable = (style: { width?: number }) => <UI.Wrapper
+    style={style}
     $type={type}
     $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
   >
@@ -334,7 +334,12 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
         </Space>
       )}
     />
-  </UI.Wrapper>)}</AutoSizer>
+  </UI.Wrapper>
+  if (hasEllipsisColumn) {
+    return <AutoSizer>{({ width }) => WrappedTable({ width })}</AutoSizer>
+  } else {
+    return WrappedTable({})
+  }
 }
 
 Table.SubTitle = UI.SubTitle
