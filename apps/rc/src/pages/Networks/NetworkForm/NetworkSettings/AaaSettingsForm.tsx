@@ -142,7 +142,7 @@ function SettingsForm () {
       WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006.
       WPA2 should be selected unless you have a specific reason to choose otherwise.
       <highlight>
-        Security protocols other than WPA3 are not be supported in 6 GHz radio.
+        6GHz radios are only supported with WPA3.
       </highlight>
     `}
     /* eslint-enable */
