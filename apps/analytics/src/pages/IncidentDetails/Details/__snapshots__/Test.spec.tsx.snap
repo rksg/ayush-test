@@ -945,9 +945,9 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Chart
-        </div>
+        <div
+          data-testid="timeSeries"
+        />
       </div>
     </div>
   </div>
