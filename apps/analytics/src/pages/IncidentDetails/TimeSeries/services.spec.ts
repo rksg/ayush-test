@@ -1,27 +1,19 @@
-import { configureStore } from '@reduxjs/toolkit'
-import moment             from 'moment-timezone'
+import moment from 'moment-timezone'
 
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { fakeIncident1 }       from '@acx-ui/analytics/utils'
-import { mockGraphqlQuery }    from '@acx-ui/test-utils'
+import { dataApiURL }       from '@acx-ui/analytics/services'
+import { fakeIncident1 }    from '@acx-ui/analytics/utils'
+import { store }            from '@acx-ui/store'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { TimeSeriesChartTypes } from './config'
 import {
   Api,
-  calcGranularity,
   getIncidentTimeSeriesPeriods,
   getBuffer,
   BufferConfig
 } from './services'
 
 describe('chartQuery', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataApi.middleware])
-  })
   afterEach(() =>
     store.dispatch(Api.util.resetApiState())
   )
@@ -88,7 +80,8 @@ describe('chartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts
+        charts,
+        minGranularity: 'PT180S'
       })
     )
     expect(status).toBe('fulfilled')
@@ -109,7 +102,8 @@ describe('chartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts
+        charts,
+        minGranularity: 'PT180S'
       })
     )
     expect(status).toBe('fulfilled')
@@ -121,26 +115,15 @@ describe('chartQuery', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      Api.endpoints.Charts.initiate({ incident: fakeIncident1, charts })
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts,
+        minGranularity: 'PT180S'
+      })
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
-  })
-  it('should return correct granularity', () => {
-    const data = [{
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-02T00:00:00+08:00' },
-      output: 'PT30M'
-    }, {
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-02-02T00:00:00+08:00' },
-      output: 'PT1H'
-    }, {
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
-      output: 'PT180S'
-    }]
-    data.forEach(({ input, output }) =>
-      expect(calcGranularity(input.start, input.end)).toStrictEqual(output)
-    )
   })
   it('should getIncidentTimeSeriesPeriods', () => {
     expect(getIncidentTimeSeriesPeriods(fakeIncident1).start).toEqual(

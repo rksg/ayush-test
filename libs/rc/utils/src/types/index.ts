@@ -21,6 +21,7 @@ export * from './venue'
 export * from './network'
 export * from './user'
 export * from './service'
+export * from './msp'
 
 export interface CommonResult {
   requestId: string
@@ -170,11 +171,7 @@ export interface NetworkDetailHeader {
   activeVenueCount: number,
   aps: {
     summary?: {
-      [ApVenueStatusEnum.IN_SETUP_PHASE]?: number
-      [ApVenueStatusEnum.OFFLINE]?: number
-      [ApVenueStatusEnum.OPERATIONAL]?: number
-      [ApVenueStatusEnum.REQUIRES_ATTENTION]?: number
-      [ApVenueStatusEnum.TRANSIENT_ISSUE]?: number
+      [key in ApVenueStatusEnum]?: number
     },
     totalApCount: number
   },
@@ -203,13 +200,13 @@ export interface Dashboard {
     },
     aps?: {
       summary: {
-        [prop: string]: number;
+        [key in ApVenueStatusEnum]?: number
       },
       totalCount: number;
     },
     switches?: {
       summary: {
-        [prop: string]: string;
+        [key in SwitchStatusEnum]?: string
       },
       totalCount: number;
     },
@@ -300,7 +297,7 @@ export interface CloudpathServer {
     id: string
     primary: RadiusService
   }
-  accountingRadiu?: {
+  accountingRadius?: {
     id: string
     primary: RadiusService
   }

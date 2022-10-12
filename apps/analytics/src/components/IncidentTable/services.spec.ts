@@ -1,33 +1,28 @@
 import '@testing-library/jest-dom'
-import { configureStore } from '@reduxjs/toolkit'
-
-import { dataApi, dataApiURL }   from '@acx-ui/analytics/services'
+import { dataApiURL }            from '@acx-ui/analytics/services'
 import {
   fakeIncident,
-  NetworkPath,
-  NodeType,
-  PathNode,
   transformIncidentQueryResult
 } from '@acx-ui/analytics/utils'
-import { mockGraphqlQuery }     from '@acx-ui/test-utils'
-import { DateRange, setUpIntl } from '@acx-ui/utils'
+import { store }            from '@acx-ui/store'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import {
+  DateRange,
+  setUpIntl,
+  NetworkPath,
+  NodeType,
+  PathNode
+} from '@acx-ui/utils'
 
 import { api, transformData } from './services'
 
 describe('IncidentTable: services', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataApi.middleware])
-  })
-
   const props = {
     startDate: '2022-08-15T00:00:00+08:00',
     endDate: '2022-08-16T00:00:00+08:00',
     range: DateRange.last24Hours,
-    path: [{ type: 'network', name: 'Network' }] as NetworkPath
+    path: [{ type: 'network', name: 'Network' }] as NetworkPath,
+    filter: {}
   } as const
 
   const expectedResult = {
@@ -125,7 +120,7 @@ describe('IncidentTable: services', () => {
     severity: 0.3813119146230035,
     startTime: '2022-07-21T01:15:00.000Z',
     endTime: '2022-07-21T01:18:00.000Z',
-    code: 'auth-failure',
+    code: 'auth-failure' as IncidentCode,
     sliceType: 'zone' as NodeType,
     sliceValue: 'Venue-3-US',
     id: '268a443a-e079-4633-9491-536543066e7d',

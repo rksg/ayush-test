@@ -77,8 +77,9 @@ export default function TopSSIDsByClientWidget ({
   const ssidTable = data && data.topNSSIDByClient && data.topNSSIDByClient.length ? <Table
     columns={columns}
     dataSource={getDataSource(data.topNSSIDByClient, data.totalUserTraffic)}
-    type={'compact'}
+    type='compact'
     pagination={false}
+    rowKey='name'
   /> : <NoData/>
 
 

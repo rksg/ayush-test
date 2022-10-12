@@ -122,12 +122,62 @@ export enum ServiceAdminState {
   DISABLED = 'DISABLED'
 }
 
+export enum DHCPConfigTypeEnum {
+  SIMPLE = 'SIMPLE',
+  MULTIPLE = 'MULTIPLE',
+  HIERARCHICAL = 'HIERARCHICAL'
+}
+
 export enum RadiusErrorsType {
   AUTH_AND_ACC = 'AUTH_AND_ACC',
   AUTH = 'AUTH',
   ACCOUNTING = 'ACCOUNTING'
 }
 
+export enum ProfileTypeEnum {
+  REGULAR = 'Regular',
+  CLI = 'CLI'
+}
+
+export enum IgmpSnoopingEnum {
+  ACTIVE = 'active',
+  PASSIVE = 'passive',
+  NONE = 'none'
+}
+
+export enum SpanningTreeProtocolEnum {
+  RSTP = 'rstp',
+  STP = 'stp',
+  NONE = 'none'
+}
+
+export enum SpanningTreeProtocolName {
+  rstp = 'RSTP',
+  stp = 'STP',
+  none = 'None'
+}
+
+export enum AclRuleProtocolEnum {
+  IP = 'ip',
+  TCP = 'tcp',
+  UDP = 'udp'
+}
+
+export enum AclTypeEnum {
+  STANDARD = 'standard',
+  EXTENDED = 'extended'
+}
+
+export enum AclRuleActionEnum {
+  PERMIT = 'permit',
+  DENY = 'deny'
+}
+
+export enum TrustedPortTypeEnum {
+  ALL = 'all',
+  DHCP = 'dhcp',
+  ARP = 'arp'
+}
 export enum WanConnectionEnum {
   ETH_WITH_CELLULAR_FAILOVER = 'ETH_WITH_CELLULAR_FAILOVER',
   CELLULAR_WITH_ETH_FAILOVER = 'CELLULAR_WITH_ETH_FAILOVER',

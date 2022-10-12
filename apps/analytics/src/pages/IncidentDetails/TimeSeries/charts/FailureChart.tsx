@@ -14,9 +14,9 @@ import { Card, cssStr, MultiLineTimeSeriesChart }             from '@acx-ui/comp
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { formatter }                                          from '@acx-ui/utils'
 
-import { ChartsData } from '../services'
+import type { TimeSeriesChartProps } from '../types'
 
-export const onMarkedAreaClick = (
+export const onMarkAreaClick = (
   navigate: NavigateFunction,
   basePath: Path,
   incident: Incident
@@ -57,7 +57,7 @@ const failureChartQuery = (incident: Incident) => gql`
   }
   `
 
-export const FailureChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
+export const FailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps) => {
   const { failureChart, relatedIncidents } = data
   const intl = useIntl()
   const navigate = useNavigate()
@@ -75,13 +75,14 @@ export const FailureChart = ({ incident, data }: { incident: Incident, data: Cha
     <AutoSizer>
       {({ height, width }) => (
         <MultiLineTimeSeriesChart
+          chartRef={chartRef}
           style={{ height, width }}
           data={chartResults}
           dataFormatter={formatter('countFormat')}
           yAxisProps={{ max: 1, min: 0 }}
           disableLegend={true}
-          onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
-          markers={getMarkers(relatedIncidents, incident)}
+          onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
+          markers={getMarkers(relatedIncidents!, incident)}
         />
       )}
     </AutoSizer>

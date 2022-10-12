@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1ik4x5l-0 iIIFGQ"
+    class="styledComponents__Wrapper-sc-iwostn-0 dUXfAk"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -54,9 +54,13 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/dashboard"
                     >
-                      <div
-                        data-testid="speed-indicator-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="speed-indicator-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
@@ -86,11 +90,15 @@ exports[`Layout should render correctly 1`] = `
                     >
                       <a
                         class=""
-                        href="/t/undefined/analytics/incidents"
+                        href="/t/undefined/analytics"
                       >
-                        <div
-                          data-testid="ai"
-                        />
+                        <span
+                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        >
+                          <div
+                            data-testid="ai-outlined"
+                          />
+                        </span>
                         <span
                           class="ant-pro-menu-item"
                           title="AI Analytics"
@@ -118,9 +126,13 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/timeline"
                     >
-                      <div
-                        data-testid="calendar-date-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="calendar-date-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
@@ -147,9 +159,13 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/reports"
                     >
-                      <div
-                        data-testid="reports-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="reports-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
@@ -202,9 +218,13 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/venues"
                     >
-                      <div
-                        data-testid="location-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="location-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
@@ -222,7 +242,7 @@ exports[`Layout should render correctly 1`] = `
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
-                  title="Devices"
+                  title="Device Inventory"
                 >
                   <span
                     class="ant-menu-title-content"
@@ -231,16 +251,20 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/devices"
                     >
-                      <div
-                        data-testid="devices-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="devices-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
                         <span
                           class="ant-pro-menu-item-title"
                         >
-                          Devices
+                          Device Inventory
                         </span>
                       </span>
                     </a>
@@ -260,9 +284,13 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/networks"
                     >
-                      <div
-                        data-testid="networks-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="networks-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
@@ -289,9 +317,13 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/services"
                     >
-                      <div
-                        data-testid="services-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="services-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
@@ -318,9 +350,13 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/policies"
                     >
-                      <div
-                        data-testid="services-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="policies-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
@@ -347,9 +383,13 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/users"
                     >
-                      <div
-                        data-testid="acccount-circle-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="account-circle-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
@@ -402,9 +442,13 @@ exports[`Layout should render correctly 1`] = `
                       class=""
                       href="/t/undefined/administration"
                     >
-                      <div
-                        data-testid="configuration-outlined"
-                      />
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="admin-outlined"
+                        />
+                      </span>
                       <span
                         class="ant-pro-menu-item"
                       >
@@ -446,7 +490,7 @@ exports[`Layout should render correctly 1`] = `
                       data-testid="arrow-left"
                     />
                     <div
-                      class="styledComponents__TextWrapper-sc-1ik4x5l-4 hOfIlg ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-10 keaIHZ ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -478,12 +522,34 @@ exports[`Layout should render correctly 1`] = `
               <div
                 style="flex: 1;"
               >
-                <div>
-                  Left header
+                <div
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-2 bUJFbQ"
+                >
+                  <div
+                    class="ant-divider ant-divider-vertical styledComponents__LogoDivider-sc-iwostn-3 gZTkFG"
+                    role="separator"
+                  />
+                  <span
+                    class="styledComponents__DropdownText-sc-iwostn-13 hwKuhP"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        Left header
+                      </div>
+                    </div>
+                  </span>
                 </div>
               </div>
-              <div>
-                Right header
+              <div
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 espNOG"
+              >
+                <div>
+                  Right header
+                </div>
               </div>
             </div>
           </header>
@@ -491,7 +557,180 @@ exports[`Layout should render correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-1ik4x5l-1 cYEdcy"
+              class="styledComponents__Content-sc-iwostn-1 fUEvKU"
+            >
+              <div>
+                content
+              </div>
+            </div>
+          </main>
+        </div>
+      </section>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Layout should render with custom tenant type correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-iwostn-0 dUXfAk"
+  >
+    <div
+      class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
+    >
+      <section
+        class="ant-layout ant-layout-has-sider"
+        style="min-height: 100%;"
+      >
+        <div
+          style="width: 208px; overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; transition: background-color 0.3s, min-width 0.3s, max-width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);"
+        />
+        <aside
+          class="ant-layout-sider ant-layout-sider-dark ant-pro-sider ant-pro-sider-fixed ant-pro-sider-layout-side"
+          style="overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; width: 208px;"
+        >
+          <div
+            class="ant-layout-sider-children"
+          >
+            <div
+              class="ant-pro-sider-logo"
+              id="logo"
+            >
+              <div
+                data-testid="logo"
+              />
+            </div>
+            <div
+              style="flex: 1; overflow-y: auto; overflow-x: hidden;"
+            >
+              <ul
+                class="ant-menu ant-menu-root ant-menu-inline ant-menu-dark ant-pro-sider-menu"
+                data-menu-list="true"
+                role="menu"
+                style="width: 100%;"
+                tabindex="0"
+              >
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Dashboard"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/v/undefined/dashboard"
+                    >
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                      >
+                        <div
+                          data-testid="speed-indicator-outlined"
+                        />
+                      </span>
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Dashboard
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+              </ul>
+              <div
+                aria-hidden="true"
+                style="display: none;"
+              />
+            </div>
+            <div
+              class="ant-pro-sider-links"
+            >
+              <ul
+                class="ant-menu ant-menu-root ant-menu-inline ant-menu-dark ant-pro-sider-link-menu"
+                data-menu-list="true"
+                role="menu"
+                tabindex="0"
+              >
+                <li
+                  class="ant-menu-item ant-pro-sider-collapsed-button"
+                  data-menu-id="rc-menu-uuid-test-collapsed"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <div
+                      data-testid="arrow-left"
+                    />
+                    <div
+                      class="styledComponents__CollapseText-sc-iwostn-10 keaIHZ ant-pro-menu-item-title"
+                    >
+                      Collapse
+                    </div>
+                  </span>
+                </li>
+              </ul>
+              <div
+                aria-hidden="true"
+                style="display: none;"
+              />
+            </div>
+          </div>
+        </aside>
+        <div
+          class="ant-layout"
+          style="position: relative;"
+        >
+          <header
+            class="ant-layout-header"
+            style="height: 48px; line-height: 48px; background: transparent;"
+          />
+          <header
+            class="ant-layout-header ant-pro-fixed-header ant-pro-fixed-header-action ant-pro-header-dark"
+            style="padding: 0px; height: 48px; line-height: 48px; width: calc(100% - 208px); z-index: 19; right: 0px;"
+          >
+            <div
+              class="ant-pro-global-header ant-pro-global-header-layout-side"
+            >
+              <div
+                style="flex: 1;"
+              >
+                <div
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-2 bUJFbQ"
+                >
+                  <div
+                    class="ant-divider ant-divider-vertical styledComponents__LogoDivider-sc-iwostn-3 gZTkFG"
+                    role="separator"
+                  />
+                  <div>
+                    Left header
+                  </div>
+                </div>
+              </div>
+              <div
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 espNOG"
+              >
+                <div>
+                  Right header
+                </div>
+              </div>
+            </div>
+          </header>
+          <main
+            class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
+          >
+            <div
+              class="styledComponents__Content-sc-iwostn-1 fUEvKU"
             >
               <div>
                 content

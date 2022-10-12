@@ -28,10 +28,10 @@ function NetworkTabs () {
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'APs ({apsCount})' }, { apsCount })} key='aps' />
-      <Tabs.TabPane 
+      <Tabs.TabPane
         tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
         key='venues' />
-      <Tabs.TabPane 
+      <Tabs.TabPane
         tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
         key='services' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Events' })} key='events' />

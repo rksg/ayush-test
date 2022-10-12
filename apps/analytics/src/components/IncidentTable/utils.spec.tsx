@@ -2,15 +2,16 @@ import '@testing-library/jest-dom'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { 
+import {
   noDataSymbol,
   fakeIncident,
-  NodeType,
-  PathNode
+  Incident
 } from '@acx-ui/analytics/utils'
-import { Provider }                from '@acx-ui/store'
-import { render, screen, cleanup } from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
+import { incidentTests } from './__tests__/fixtures'
+import { transformData } from './services'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -21,7 +22,8 @@ import {
   IncidentTableComponentProps,
   dateSort,
   defaultSort,
-  ShortIncidentDescription
+  ShortIncidentDescription,
+  filterMutedIncidents
 } from './utils'
 
 describe('IncidentTable: utils', () => {
@@ -31,14 +33,12 @@ describe('IncidentTable: utils', () => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
 
-  afterEach(() => cleanup())
-
   const incidentValues = {
     severity: 0.3813119146230035,
     startTime: '2022-07-21T01:15:00.000Z',
     endTime: '2022-07-21T01:18:00.000Z',
     code: 'auth-failure',
-    sliceType: 'zone' as NodeType,
+    sliceType: 'zone',
     sliceValue: 'Venue-3-US',
     id: '268a443a-e079-4633-9491-536543066e7d',
     path: [
@@ -46,7 +46,7 @@ describe('IncidentTable: utils', () => {
         type: 'zone',
         name: 'Venue-3-US'
       }
-    ] as PathNode[],
+    ],
     metadata: {
       dominant: {
         ssid: 'qa-eric-acx-R760-psk'
@@ -73,22 +73,22 @@ describe('IncidentTable: utils', () => {
     slaThreshold: null,
     currentSlaThreshold: null
   }
-  
-  const sampleIncident = fakeIncident(incidentValues)
+
+  const sampleIncident = fakeIncident(incidentValues as unknown as Incident)
 
   describe('getIncidentBySeverity', () => {
     const testSeverityArr = [
-      { value: 0.001, label: 'P4' }, 
-      { value: 0.65, label: 'P3' }, 
-      { value: 0.8, label: 'P2' },
-      { value: 1, label: 'P1' }
+      { label: 'P4' },
+      { label: 'P3' },
+      { label: 'P2' },
+      { label: 'P1' }
     ]
-    
+
     it.each(testSeverityArr)(
-      'should show correct label: %s for value %n', 
-      async ({ label, value }) => {
+      'should show correct label: %s',
+      async ({ label }) => {
         render(<Provider>
-          <GetIncidentBySeverity value={value as unknown as number} id={'test'}/>
+          <GetIncidentBySeverity severityLabel={label} id={'test'}/>
         </Provider>, {
           route: {
             path: '/t/tenantId/analytics/incidents',
@@ -208,21 +208,21 @@ describe('IncidentTable: utils', () => {
       await screen.findByText('test')
       expect(screen.getByText('test').textContent).toBe('test')
     })
-  
+
     it('should render scoped', async () => {
       const scopeMsg = defineMessage({ defaultMessage: 'test {scope}' })
       render(<RenderDummyString message={scopeMsg} scope='scope'/>)
       await screen.findByText('test scope')
       expect(screen.getByText('test scope').textContent).toBe('test scope')
     })
-  
+
     it('should render threshold', async () => {
       const scopeMsg = defineMessage({ defaultMessage: 'test: {threshold}' })
       render(<RenderDummyString message={scopeMsg} threshold='threshold'/>)
       await screen.findByText('test: threshold')
       expect(screen.getByText('test: threshold').textContent).toBe('test: threshold')
     })
-  
+
     it('should render threshold & scope', async () => {
       const scopeMsg = defineMessage({ defaultMessage: 'test: {threshold} & {scope}' })
       render(<RenderDummyString message={scopeMsg} threshold='threshold' scope='scope'/>)
@@ -232,11 +232,11 @@ describe('IncidentTable: utils', () => {
     })
   })
 
-  describe('ShortIncidentDescription', () => {  
+  describe('ShortIncidentDescription', () => {
     const RenderShortDescription = (props: IncidentTableComponentProps) => {
       return <Provider><ShortIncidentDescription onClickDesc={jest.fn()} {...props}/></Provider>
     }
-  
+
     it('ShortIncidentDescription: it renders on valid incident', async () => {
       render(<RenderShortDescription incident={sampleIncident}/>)
       // eslint-disable-next-line max-len
@@ -301,6 +301,28 @@ describe('IncidentTable: utils', () => {
     it('should sort 0 string', () => {
       const zero = defaultSort(textA, textA)
       expect(zero).toBe(0)
+    })
+  })
+
+  describe('filterMutedIncidents', () => {
+    it('should filter child & parent muted incidents', () => {
+      const sampleIncidents =
+        incidentTests.map(incident => transformData(incident as unknown as Incident))
+      const unmutedIncidents = sampleIncidents
+        .filter(incident => !incident.isMuted)
+        .map(datum => ({
+          ...datum,
+          // eslint-disable-next-line testing-library/no-node-access
+          children: datum.children?.filter(child => !child.isMuted)
+        }))
+
+      const filteredIncidents = filterMutedIncidents(sampleIncidents)
+      expect(filteredIncidents).toHaveLength(unmutedIncidents.length)
+    })
+
+    it('should return empty table on undefined', () => {
+      const undefinedTest = filterMutedIncidents()
+      expect(undefinedTest).toMatchObject([])
     })
   })
 
