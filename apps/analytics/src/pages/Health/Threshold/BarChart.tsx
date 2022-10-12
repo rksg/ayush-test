@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 
-import ReactECharts from 'echarts-for-react'
-import moment       from 'moment-timezone'
-import { useIntl }  from 'react-intl'
-import AutoSizer    from 'react-virtualized-auto-sizer'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { Loader, cssStr }             from '@acx-ui/components'
+import { AnalyticsFilter, kpiConfig }        from '@acx-ui/analytics/utils'
+import { Loader, cssStr, DistributionChart } from '@acx-ui/components'
 
 import { KPITimeseriesResponse, useKpiTimeseriesQuery } from '../Kpi/services'
-
 const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
   return data.map((datum, index) => ([
     moment(time[index], 'YYYY/MM/DD').date(),
@@ -49,51 +47,25 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
   )
 
 
-  const optionForBarChart = {
-    dataset: {
-      dimensions: ['Switch Name', 'PoE Usage'],
-      source: queryResults?.data?.[0]?.data ?? []
-    },
-    grid: {
-      left: '0%',
-      right: '0%',
-      bottom: '0%',
-      top: '15%',
-      containLabel: true
-    },
-
-    color: strokeColor,
-    tooltip: {},
-    barWidth: 20,
-    barGap: '10%',
-    xAxis: {
-      type: 'category',
-      axisLine: {
-        show: false
-      },
-      splitLine: {
-        show: false
-      },
-      axisTick: {
-        show: false },
-      axisLabel: {
-        show: true,
-        fontSize: 12
+  const data = {
+    dimensions: ['', ''],
+    source: queryResults?.data?.[0]?.data ?? [],
+    seriesEncode: [
+      {
+        x: 'Rss Distribution',
+        y: 'Samples'
       }
-    },
-    yAxis: {},
-    series: [{
-      name: 'Test',
-      type: 'bar'
-    }]
+    ]
   }
   return (
     <Loader states={[queryResults]} key={kpi}>
       <AutoSizer>
         {({ width, height }) => (
-          <ReactECharts
-            option={optionForBarChart}
+          <DistributionChart
             style={{ height, width }}
+            data={data}
+            grid={{ bottom: '10%', top: '5%' }}
+            title={histogram?.xUnit}
           />
         )}
       </AutoSizer>

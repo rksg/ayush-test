@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
 
-import ReactECharts from 'echarts-for-react'
-import { sum }      from 'lodash'
-import { useIntl }  from 'react-intl'
-import AutoSizer    from 'react-virtualized-auto-sizer'
+import { sum }     from 'lodash'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }           from '@acx-ui/components'
-import { Loader, cssStr }             from '@acx-ui/components'
-import type { TimeStamp }             from '@acx-ui/types'
-import { formatter }                  from '@acx-ui/utils'
+import { AnalyticsFilter, kpiConfig }        from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }                  from '@acx-ui/components'
+import { Loader, cssStr, DistributionChart } from '@acx-ui/components'
+import type { TimeStamp }                    from '@acx-ui/types'
+import { formatter }                         from '@acx-ui/utils'
 
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
@@ -65,43 +64,15 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
       })
     })
 
-  const optionForHistogramChart = {
-
-    dataset: {
-      dimensions: ['Switch Name', 'PoE Usage'],
-      source: queryResults?.data?.[0]?.data ?? []
-    },
-    grid: {
-      left: '0%',
-      right: '0%',
-      bottom: '0%',
-      top: '15%',
-      containLabel: true
-    },
-    color: strokeColor,
-    tooltip: {},
-    barWidth: 20,
-    barGap: '10%',
-    xAxis: {
-      type: 'category',
-      axisLine: {
-        show: false
-      },
-      splitLine: {
-        show: false
-      },
-      axisTick: {
-        show: false },
-      axisLabel: {
-        show: true,
-        fontSize: 12
+  const data = {
+    dimensions: ['', ''],
+    source: queryResults?.data?.[0]?.data ?? [],
+    seriesEncode: [
+      {
+        x: 'Rss Distribution',
+        y: 'Samples'
       }
-    },
-    yAxis: {},
-    series: [{
-      name: 'Test',
-      type: 'bar'
-    }]
+    ]
   }
 
   const percent: number = queryResults?.data?.[0]?.rawData
@@ -114,9 +85,11 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
           <AutoSizer>
             {({ width, height }) => (
               <>
-                <ReactECharts
-                  option={optionForHistogramChart}
+                <DistributionChart
                   style={{ height, width }}
+                  data={data}
+                  grid={{ bottom: '10%', top: '5%' }}
+                  title={histogram?.xUnit}
                 />
                 <UI.StyledSlider
                   min={0}
