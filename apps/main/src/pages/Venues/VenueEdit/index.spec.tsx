@@ -9,10 +9,11 @@ import { render, screen, fireEvent, mockServer, waitForElementToBeRemoved } from
 import {
   venueData,
   venueCaps,
-  venueLed
+  venueLed,
+  venueApModels
 } from '../__tests__/fixtures'
 
-import { VenueEdit } from './index'
+import { VenueEdit, showUnsavedModal } from './index'
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()
@@ -32,7 +33,9 @@ describe('VenueEdit', () => {
         CommonUrlsInfo.getVenueCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(CommonUrlsInfo.getVenueLedOn.url,
-        (_, res, ctx) => res(ctx.json(venueLed)))
+        (_, res, ctx) => res(ctx.json(venueLed))),
+      rest.get(CommonUrlsInfo.getVenueApModels.url,
+        (_, res, ctx) => res(ctx.json(venueApModels)))
     )
   })
 
@@ -112,4 +115,17 @@ describe('VenueEdit', () => {
     // fireEvent.click(await screen.findByRole('button', { name: 'Save Changes' }))
   })
 
+  it('should call unsaved changes modal', async () => {
+    const editContextData = {
+      isDirty: true,
+      tabTitle: 'Networking'
+    }
+    const editNetworkingContextData = {
+      meshData: {
+        mesh: true
+      },
+      updateMesh: jest.fn()
+    }
+    showUnsavedModal(editContextData, jest.fn(), editNetworkingContextData)
+  })
 })

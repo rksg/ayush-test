@@ -8,8 +8,8 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { VenueEditContext, EditContext } from '../index'
 
 import { AdvancedSettingForm } from './AdvancedTab/AdvancedSettingForm'
-import { RadioTab }            from './RadioTab/RadioTab'
 import { NetworkingTab }       from './NetworkingTab'
+import { RadioTab }            from './RadioTab/RadioTab'
 
 export function WifiConfigTab () {
   const { $t } = useIntl()

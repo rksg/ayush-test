@@ -8,11 +8,12 @@ import {
   showActivityMessage,
   TableResult,
   Venue,
-  VenueSaveData,
+  VenueExtended,
   VenueDetailHeader,
   VenueCapabilities,
   VenueLed,
   VenueApModels,
+  VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile,
   CommonUrlsInfo,
@@ -55,7 +56,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    addVenue: build.mutation<VenueSaveData, RequestPayload>({
+    addVenue: build.mutation<VenueExtended, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addVenue, params)
         return {
@@ -65,7 +66,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
-    getVenue: build.query<VenueSaveData, RequestPayload>({
+    getVenue: build.query<VenueExtended, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
         return{
@@ -74,7 +75,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
     }),
-    updateVenue: build.mutation<VenueSaveData, RequestPayload>({
+    updateVenue: build.mutation<VenueExtended, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenue, params)
         return {
@@ -99,6 +100,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
               api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
             })
         })
+      }
+    }),
+    getVenueSettings: build.query<VenueSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSettings, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
@@ -222,6 +240,8 @@ export const {
   useGetVenueQuery,
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
+  useGetVenueSettingsQuery,
+  useUpdateVenueMeshMutation,
   useDeleteVenueMutation,
   useFloorPlanListQuery,
   useGetVenueCapabilitiesQuery,
