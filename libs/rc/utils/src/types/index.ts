@@ -22,6 +22,7 @@ export * from './network'
 export * from './user'
 export * from './service'
 export * from './msp'
+export * from './device'
 
 export interface CommonResult {
   requestId: string
