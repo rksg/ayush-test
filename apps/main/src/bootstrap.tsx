@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client'
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { BrowserRouter }                       from '@acx-ui/react-router-dom'
 import { Provider }                            from '@acx-ui/store'
+import { getJwtTokenPayload } from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
 
@@ -31,6 +32,12 @@ export async function init () {
   const browserLang = loadMessages(navigator.languages)
   const queryParams = new URLSearchParams(window.location.search)
   const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
+  const jwtPayload = getJwtTokenPayload()
+  console.log('JWT Payload :', jwtPayload)
+  console.log('JWT Payload :', jwtPayload.acx_account_tier)
+  console.log('JWT Payload :', jwtPayload.acx_account_regions[2])
+  console.log('JWT Payload :', jwtPayload.region)
+  console.log('JWT Payload :', jwtPayload.acx_account_vertical)
 
   root.render(
     <React.StrictMode>

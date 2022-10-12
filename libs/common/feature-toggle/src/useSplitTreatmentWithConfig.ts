@@ -3,22 +3,21 @@ import { useContext, useDebugValue } from 'react'
 import { SplitContext } from '@splitsoftware/splitio-react'
 
 import { useParams } from '@acx-ui/react-router-dom'
-
+import { getJwtTokenPayload } from '@acx-ui/utils'
 import { Region, Tier, Vertical } from './types'
 
-// TODO: Need to integrate with userProfile service later once it's added into the project,
-// for now using static values for tier, region & vertical
 // For MSP flows will be handled in separate jira - ACX-7910
 
 export function useFFList (): { featureList?: string[], betaList?: string[] } {
   const { isReady, client } = useContext(SplitContext)
+  const jwtPayload = getJwtTokenPayload()
   const { tenantId } = useParams()
-  const splitName = 'Sara-ACX-PLM' // This value mostly will be onetime as defined by PLM (need to confirm)
+  const splitName = 'ACX-PLM-FF' // This value mostly will be onetime as defined by PLM (need to confirm)
   const attributes = {
     tenantId: tenantId,
-    tier: Tier.TIER_GOLD, //userProfile.tier, TODO: Need backend support
-    region: Region.REGION_NA, //userProfile.region, TODO: Need backend support
-    vertical: Vertical.VERTICAL_DEFAULT //userProfile.vertical, TODO: Need backend support
+    tier: jwtPayload.acx_account_tier,
+    region: jwtPayload.acx_account_regions[2],
+    vertical: jwtPayload.acx_account_vertical
   }
 
   let userFFConfig = []
@@ -34,7 +33,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
   }
 }
 
-export function useEvaluateFeature (featureId: string) {
+export function useSplitTreatmentWithConfig (featureId: string): object {
   const {
     featureList = [],
     betaList = []

@@ -2,6 +2,7 @@ import React from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
+import { useSplitTreatmentWithConfig } from '@acx-ui/feature-toggle'
 
 import {
   Button,
@@ -24,6 +25,8 @@ const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 export default function Dashboard () {
   const { $t } = useIntl()
+  console.log('PLM FF', useSplitTreatmentWithConfig('ADMIN-BASE'))
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
