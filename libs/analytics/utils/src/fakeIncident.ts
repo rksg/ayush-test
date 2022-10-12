@@ -38,7 +38,7 @@ export function fakeIncident (props: FakeIncidentProps): Incident {
   } as Incident)
 }
 
-export const mockFakeIncident = fakeIncident({
+export const fakeIncident1 = fakeIncident({
   id: 'df5339ba-da3b-4110-a291-7f8993a274f3',
   code: 'eap-failure',
   path: [
