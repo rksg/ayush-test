@@ -33,7 +33,7 @@ export function MdnsProxySettingsForm () {
 
   return (
     <Row>
-      <Col span={8}>
+      <Col span={9}>
         <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
           name='name'

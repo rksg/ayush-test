@@ -99,14 +99,16 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
       visible={visible}
       onClose={onClose}
       children={content}
-      forceRender // Avoid the form (in childre prop) not been rendered when operating
+      forceRender // Avoid the form (in children prop) not been rendered when operating
       footer={
         <DrawerFormFooter
           showAddAnother={!editMode}
           addAnotherChecked={addAnotherRuleChecked}
-          addAnotherText={$t({ defaultMessage: 'Add another rule' })}
+          buttonLabel={({
+            addAnother: $t({ defaultMessage: 'Add another rule' }),
+            save: editMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
+          })}
           onAddAnotherChange={onAddAnotherRuleChange}
-          saveText={editMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })}
           onCancel={onClose}
           onSave={() => form.submit()}
         />

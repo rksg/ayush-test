@@ -1,18 +1,20 @@
-import { Button }                        from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }                       from 'react-intl'
+import { Button } from '../../Button'
 
 import * as UI from './styledComponents'
 
 export interface DrawerFormFooterProps {
-  showAddAnother?: boolean;
-  addAnotherChecked?: boolean;
-  addAnotherText?: string;
-  onAddAnotherChange?: (e: CheckboxChangeEvent) => void;
-  cancelText?: string;
-  saveText?: string;
-  onCancel: () => void;
-  onSave: () => void;
+  showAddAnother?: boolean
+  addAnotherChecked?: boolean
+  onAddAnotherChange?: (e: CheckboxChangeEvent) => void
+  onCancel: () => void
+  onSave: () => void
+  buttonLabel?: {
+    addAnother?: string
+    cancel?: string
+    save?: string
+  }
 }
 
 export const DrawerFormFooter = (props: DrawerFormFooterProps) => {
@@ -21,14 +23,19 @@ export const DrawerFormFooter = (props: DrawerFormFooterProps) => {
   const {
     showAddAnother = false,
     addAnotherChecked = false,
-    addAnotherText = $t({ defaultMessage: 'Add another' }),
     onAddAnotherChange,
-    cancelText = $t({ defaultMessage: 'Cancel' }),
-    saveText = $t({ defaultMessage: 'Save' }),
     onCancel,
     onSave
   } = props
 
+  const buttonLabel = {
+    ...{
+      addAnother: $t({ defaultMessage: 'Add another' }),
+      cancel: $t({ defaultMessage: 'Cancel' }),
+      save: $t({ defaultMessage: 'Save' })
+    },
+    ...props.buttonLabel
+  }
 
   return (
     <UI.FooterBar>
@@ -36,20 +43,22 @@ export const DrawerFormFooter = (props: DrawerFormFooterProps) => {
         {showAddAnother && <Checkbox
           onChange={onAddAnotherChange}
           checked={addAnotherChecked}
-          children={addAnotherText}
+          children={buttonLabel.addAnother}
         />}
       </div>
       <div>
         <Button
           key='cancelBtn'
-          onClick={onCancel}>
-          {cancelText}
+          onClick={onCancel}
+        >
+          {buttonLabel.cancel}
         </Button>
         <Button
           key='saveBtn'
           onClick={onSave}
-          type={'primary'}>
-          {saveText}
+          type={'secondary'}
+        >
+          {buttonLabel.save}
         </Button>
       </div>
     </UI.FooterBar>
