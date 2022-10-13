@@ -44,10 +44,12 @@ describe('MeshNetwork', () => {
     await waitFor(() => screen.findByText('Mesh Network'))
 
     expect(asFragment()).toMatchSnapshot()
+    await userEvent.click(await screen.findByRole('switch')) // disable
+
     await userEvent.click(await screen.findByRole('switch'))
     await userEvent.click(await screen.findByRole('button', { name: 'Enable Mesh' }))
 
-    await userEvent.click(await screen.findByRole('switch'))
+    await userEvent.click(await screen.findByRole('switch')) // disable
 
     await userEvent.click(await screen.findByRole('switch'))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))

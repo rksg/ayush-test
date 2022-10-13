@@ -283,7 +283,7 @@ export const venueSetting = {
   wifiFirmwareVersion: '6.2.0.103.486',
   countryCode: 'US',
   mesh: {
-    enabled: false
+    enabled: true
   },
   bandBalancing: {
     enabled: false,
