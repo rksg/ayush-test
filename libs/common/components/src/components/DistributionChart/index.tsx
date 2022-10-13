@@ -23,7 +23,7 @@ export interface DistributionChartProps
   grid?: GridOption,
   barColors?: string[]
   barWidth?: number
-  title?: string
+  xAxisName?: string
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
 }
 
@@ -33,7 +33,7 @@ export function DistributionChart<TChartData extends BarChartData>
   grid: gridProps,
   barColors,
   barWidth,
-  title,
+  xAxisName,
   tooltipFormatter,
   ...props
 }: DistributionChartProps<TChartData>) {
@@ -44,7 +44,6 @@ export function DistributionChart<TChartData extends BarChartData>
       source: data.source
     },
     barWidth: barWidth || 20,
-    color: barColors || cssStr('--acx-accents-blue-50'),
     tooltip: {
       show: tooltipFormatter !== undefined,
       ...tooltipOptions(),
@@ -56,7 +55,7 @@ export function DistributionChart<TChartData extends BarChartData>
     },
     xAxis: {
       ...xAxisOptions(),
-      ...(title ? xAxisNameOptions(title) : {}),
+      ...(xAxisName ? xAxisNameOptions(xAxisName) : {}),
       type: 'category',
       axisLabel: {
         ...barChartAxisLabelOptions(),
@@ -74,7 +73,8 @@ export function DistributionChart<TChartData extends BarChartData>
       type: 'bar',
       silent: false,
       cursor: 'auto',
-      color: barColors,
+      colorBy: 'data',
+      color: barColors || cssStr('--acx-accents-blue-50'),
       encode: encode
     }))
   }

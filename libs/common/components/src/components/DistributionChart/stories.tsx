@@ -16,11 +16,11 @@ import type { TooltipComponentFormatterCallbackParams } from 'echarts'
 export const data: BarChartData = {
   dimensions: ['Rss Distribution', 'Samples'],
   source: [
-    ['-30', 0],
-    ['-35', 0],
-    ['-40', 0],
-    ['-45', 0],
-    ['-50', 0],
+    ['-30', 20],
+    ['-35', 25],
+    ['-40', 10],
+    ['-45', 30],
+    ['-50', 42],
     ['-55', 35],
     ['-60', 50],
     ['-65', 73],
@@ -30,10 +30,10 @@ export const data: BarChartData = {
     ['-85', 68],
     ['-90', 53],
     ['-95', 28],
-    ['-100', 0],
-    ['-105', 0],
-    ['-110', 0],
-    ['-115', 0]
+    ['-100', 35],
+    ['-105', 15],
+    ['-110', 27],
+    ['-115', 8]
   ],
   seriesEncode: [
     {
@@ -65,6 +65,21 @@ export const wrapInsideCard = (title: string, children: ReactNode) => (
     </Card>
   </div>)
 
+const colors: string[] = [
+  'yellow',
+  'yellow',
+  'red',
+  'blue',
+  'red',
+  'blue',
+  'red',
+  'blue',
+  'green',
+  'green',
+  'green'
+]
+// if colors array length is less than data, the colors will loop
+
 storiesOf('DistributionChart', module)
   .addDecorator(withKnobs)
   .add('Chart View', () =>
@@ -73,6 +88,7 @@ storiesOf('DistributionChart', module)
         style={{ width: '100%', height: '100%' }}
         data={data}
         grid={{ bottom: '10%', top: '5%' }}
-        title={'RSS (in dBm)'}
+        xAxisName={'RSS (in dBm)'}
         tooltipFormatter={tooltipFormatter}
+        barColors={colors}
       />))
