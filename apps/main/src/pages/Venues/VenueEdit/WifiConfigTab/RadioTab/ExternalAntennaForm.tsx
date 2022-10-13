@@ -2,12 +2,13 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Input, Switch, Tooltip } from 'antd'
-// import { useWatch }                     from 'antd/lib/form/Form'
 import { useIntl } from 'react-intl'
 
 import { StepsForm }                            from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }           from '@acx-ui/icons'
 import { ExternalAntenna, CapabilitiesApModel } from '@acx-ui/rc/utils'
+
+const { useWatch } = Form
 
 export function ExternalAntennaForm (props:{
   model: string
@@ -20,11 +21,15 @@ export function ExternalAntennaForm (props:{
   const ANTENNA_TOOLTIP = $t({ defaultMessage: 'Please input in as specified in your antenna data sheet' })
   const { model, selectedApExternalAntenna, selectedApCapabilities, readOnly } = props
   const form = Form.useFormInstance()
-  // const [
-  //   enable24G
-  // ] = [
-  //   useWatch<boolean>(['external', 'apModel', model, 'enable24G'])
-  // ]
+  const [
+    coupled,
+    enable24G,
+    enable50G
+  ] = [
+    useWatch<boolean>(['external', 'apModel', model, 'coupled']),
+    useWatch<boolean>(['external', 'apModel', model, 'enable24G']),
+    useWatch<boolean>(['external', 'apModel', model, 'enable50G'])
+  ]
   const [formSettings, setFormSettings] = useState({} as {
     has24G: boolean
     has50G: boolean
@@ -36,21 +41,27 @@ export function ExternalAntennaForm (props:{
   })
 
   useEffect(() => {
+    const formValues = form.getFieldsValue()
+    let currentValue
+    if(formValues.external.apModel?.[model]){
+      currentValue = formValues.external.apModel?.[model]
+    }
     if (selectedApExternalAntenna) {
       const has24G = (selectedApExternalAntenna.enable24G !== undefined)
       const has50G = (selectedApExternalAntenna.enable50G !== undefined)
       const currentExtAnt = combinExternalAntennaData(selectedApExternalAntenna, selectedApCapabilities)
       const singleToggle = checkIsSingleToggleAndEnable(currentExtAnt)
+      const initialValue = {
+        coupled: singleToggle.enable,
+        enable24G: has24G ? currentExtAnt.enable24G : null,
+        enable50G: has50G ? currentExtAnt.enable50G : null,
+        gain24G: has24G ? currentExtAnt.gain24G : null,
+        gain50G: has50G ? currentExtAnt.gain50G : null
+      }
       form.setFieldsValue({
         external: {
           apModel: {
-            [model]: {
-              coupled: singleToggle.enable,
-              enable24G: has24G ? currentExtAnt.enable24G : null,
-              enable50G: has50G ? currentExtAnt.enable50G : null,
-              gain24G: has24G ? currentExtAnt.gain24G : null,
-              gain50G: has50G ? currentExtAnt.gain50G : null
-            }
+            [model]: currentValue || initialValue
           }
         }
       })
@@ -234,7 +245,7 @@ export function ExternalAntennaForm (props:{
         </StepsForm.FieldLabel>
       }
       {
-        formSettings.currentExtAnt?.enable24G &&
+        enable24G &&
         <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
           <StepsForm.LabelOfInput>
             { $t({ defaultMessage: 'dBi' }) }
@@ -276,7 +287,7 @@ export function ExternalAntennaForm (props:{
         </StepsForm.FieldLabel>
       }
       {
-        formSettings.currentExtAnt?.enable50G &&
+        (formSettings.has50G && (enable50G || coupled)) &&
         <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
           <StepsForm.LabelOfInput>
             { $t({ defaultMessage: 'dBi' }) }
