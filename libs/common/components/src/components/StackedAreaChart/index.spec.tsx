@@ -9,7 +9,7 @@ import { cssStr } from '../../theme/helper'
 
 import { data } from './stories'
 
-import { StackedAreaChart, StepStackedAreaChart, getSeriesTotal } from '.'
+import { StackedAreaChart, getSeriesTotal } from '.'
 
 describe('getSeriesTotal',() => {
   it('should return correct total series', () => {
@@ -105,15 +105,5 @@ describe('StackedAreaChart',() => {
       data={data}
     />)
     expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
-  })
-})
-
-describe('StepStackedAreaChart',() => {
-  it('should render StackedAreaChart', () => {
-    const { asFragment } = render(<StepStackedAreaChart data={data} />)
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('svg')).toBeDefined()
   })
 })

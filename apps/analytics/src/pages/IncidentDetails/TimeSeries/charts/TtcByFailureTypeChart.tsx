@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import {
-  TimeSeriesData,
-  getSeriesData
+  getSeriesData,
+  TimeSeriesDataType
 }                                         from '@acx-ui/analytics/utils'
 import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/utils'
@@ -49,7 +49,7 @@ export const TtcByFailureTypeChart = ({ chartRef, data }: TimeSeriesChartProps) 
   const chartResults = getSeriesData({
     time,
     ...ttcByFailureTypes
-  } as TimeSeriesData, seriesMapping)
+  } as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
   return <Card title={$t({ defaultMessage: 'Time To Connect (By Stage)' })} type='no-border'>
     <AutoSizer>

@@ -2,9 +2,9 @@ import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, TimeSeriesData }  from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { formatter }                      from '@acx-ui/utils'
+import { getSeriesData, TimeSeriesDataType } from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart }    from '@acx-ui/components'
+import { formatter }                         from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -28,7 +28,8 @@ export const ClientCountChart = ({ chartRef, data }: TimeSeriesChartProps) => {
     { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
   ]
 
-  const chartResults = getSeriesData(clientCountChart as TimeSeriesData, seriesMapping)
+  const chartResults = getSeriesData(
+    clientCountChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
   return <Card title={$t({ defaultMessage: 'Clients' })} type='no-border'>
     <AutoSizer>
