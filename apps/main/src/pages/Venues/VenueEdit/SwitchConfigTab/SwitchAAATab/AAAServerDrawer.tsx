@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input, Select, Tooltip } from 'antd'
 import { FormattedMessage, useIntl }    from 'react-intl'
 
-import { Button, Drawer }                                                                                                                                                                                                                                           from '@acx-ui/components'
+import { Button, Drawer, showToast }                                                                                                                                                                                                                                from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                                                                                                                                                                                                                               from '@acx-ui/icons'
 import { useAddAAAServerMutation, useUpdateAAAServerMutation }                                                                                                                                                                                                      from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, excludeExclamationRegExp, excludeQuoteRegExp, excludeSpaceExclamationRegExp, excludeSpaceRegExp, LocalUser, notAllDigitsRegExp, portRegExp, RadiusServer, serverIpAddressRegExp, TacacsServer, validateUsername, validateUserPassword } from '@acx-ui/rc/utils'
@@ -57,27 +57,34 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
 
   const onSumbit = async (data:RadiusServer | TacacsServer | LocalUser) => {
     setLoading(true)
-    if (!isEditMode) {
-      const payload = {
-        ...data,
-        serverType
+    try {
+      if (!isEditMode) {
+        const payload = {
+          ...data,
+          serverType
+        }
+        await addAAAServer({
+          params,
+          payload
+        }).unwrap()
+      } else {
+        const payload = {
+          ...editData,
+          ...data
+        }
+        await updateAAAServer({
+          params,
+          payload
+        }).unwrap()
       }
-      await addAAAServer({
-        params,
-        payload
-      }).unwrap()
-      setLoading(false)
-    } else {
-      const payload = {
-        ...editData,
-        ...data
-      }
-      await updateAAAServer({
-        params,
-        payload
-      }).unwrap()
-      setLoading(false)
     }
+    catch {
+      showToast({
+        type: 'error',
+        content: 'An error occurred'
+      })
+    }
+    setLoading(false)
     onClose()
     const clearButton = document?.querySelector('button[title="Clear selection"]')
     if (clearButton) {

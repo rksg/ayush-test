@@ -232,6 +232,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg,
+            ['AddAaaServer', 'UpdateAaaServer', 'DeleteAaaServer'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
+            })
+        })
       }
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
