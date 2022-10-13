@@ -7,7 +7,7 @@ export const FormItemRounded = styled(Form.Item)`
 	border-radius: 4px;
 `
 
-export const verticalLabel = styled.div`
+export const VerticalLabel = styled.div`
 	padding: 5px;
 	font-size: var(--acx-body-5-font-size);
 	line-height: var(--acx-body-5-line-height);

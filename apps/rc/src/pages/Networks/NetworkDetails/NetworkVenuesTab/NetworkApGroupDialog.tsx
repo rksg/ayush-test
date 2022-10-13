@@ -302,10 +302,10 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
                       <Row gutter={[4, 0]} style={{ width: '750px' }}>
                         <Col span={8}></Col>
                         <Col span={8}>
-                          <UI.verticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.verticalLabel>
+                          <UI.VerticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
                         </Col>
                         <Col span={8}>
-                          <UI.verticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.verticalLabel>
+                          <UI.VerticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
                         </Col>
                         { fields.map((field, index) => (
                           <Form.Item key={field.key} noStyle>
