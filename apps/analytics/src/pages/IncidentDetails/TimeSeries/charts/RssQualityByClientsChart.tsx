@@ -32,22 +32,44 @@ const rssQualityByClientsChartQuery = () => gql`
 `
 
 const lineColors = [
-  cssStr('--acx-semantics-green-50'),
+  cssStr('--acx-semantics-red-50'),
   cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-semantics-red-50')
+  cssStr('--acx-semantics-green-50')
 ]
 
 export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
   const { rssQualityByClientsChart } = data
   const { $t } = useIntl()
 
+  const Total: number[] = []
+  const good = rssQualityByClientsChart.good as number[]
+  const average = rssQualityByClientsChart.average as number[]
+  const bad = rssQualityByClientsChart.bad as number[]
+
+  for(let i = 0; i < good.length; i++) {
+    Total.push(good[i] + average[i] + bad[i])
+  }
+
+  const rssQualityPercentFormat = {
+    ...rssQualityByClientsChart,
+    good: good.map((x, index) => {
+      return x/Total[index]
+    }),
+    average: average.map((x, index) => {
+      return x/Total[index]
+    }),
+    bad: bad.map((x, index) => {
+      return x/Total[index]
+    })
+  }
+
   const seriesMapping = [
-    { key: 'good', name: $t({ defaultMessage: 'Good' }) },
+    { key: 'bad', name: $t({ defaultMessage: 'Bad' }) },
     { key: 'average', name: $t({ defaultMessage: 'Average' }) },
-    { key: 'bad', name: $t({ defaultMessage: 'Bad' }) }
+    { key: 'good', name: $t({ defaultMessage: 'Good' }) }
   ]
 
-  const chartResults = getSeriesData(rssQualityByClientsChart, seriesMapping)
+  const chartResults = getSeriesData(rssQualityPercentFormat, seriesMapping)
 
   return <Card title={$t({ defaultMessage: 'RSS Quality By Clients' })} type='no-border'>
     <AutoSizer>
