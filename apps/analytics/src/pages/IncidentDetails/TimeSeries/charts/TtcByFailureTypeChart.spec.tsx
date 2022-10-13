@@ -54,6 +54,7 @@ describe('ttcByFailureTypeChartQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentTtc,
         charts: [TimeSeriesChartTypes.TtcByFailureTypeChart],
+        buffer: 6,
         minGranularity: 'PT180S'
       })
     )

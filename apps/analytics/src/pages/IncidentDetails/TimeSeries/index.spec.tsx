@@ -64,6 +64,7 @@ describe('Timeseries component', () => {
           incident={fakeIncident1}
           charts={charts}
           minGranularity='PT180S'
+          buffer={6}
         />
       </Provider>
     </BrowserRouter>
@@ -78,7 +79,9 @@ describe('Timeseries component', () => {
     ]
     const rssProps = {
       incident: fakeIncident1,
-      charts: rssCharts
+      charts: rssCharts,
+      buffer: 0,
+      minGranularity: 'PT180S'
     }
     const rssDistributionResult = {
       network: {

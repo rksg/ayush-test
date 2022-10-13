@@ -47,7 +47,8 @@ export const TtcFailureChart = ({ chartRef, data, incident }: TimeSeriesChartPro
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
-  const { start, end } = getIncidentTimeSeriesPeriods(incident)
+  const buffer = 6
+  const { start, end } = getIncidentTimeSeriesPeriods(incident, buffer)
   const queryResults = useKpiTimeseriesQuery({
     path: incident.path,
     startDate: start.toISOString(),
