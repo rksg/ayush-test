@@ -9,6 +9,8 @@ import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
+import { TimeSeries }                     from '../TimeSeries'
+import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -23,6 +25,10 @@ export const ApservDowntimeHigh = (incident: Incident) => {
     Attributes.Duration,
     Attributes.EventStartTime,
     Attributes.EventEndTime
+  ]
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.ApDisconnectionCountChart,
+    TimeSeriesChartTypes.DowntimeEventTypeDistributionChart
   ]
 
   return (
@@ -50,7 +56,7 @@ export const ApservDowntimeHigh = (incident: Incident) => {
           <div>Network Impact</div>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Chart</div>
+          <TimeSeries incident={incident} charts={timeSeriesCharts} minGranularity='PT180S' />
         </GridCol>
       </GridRow>
     </>

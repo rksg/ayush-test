@@ -4,11 +4,11 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import {
   Incident,
-  TimeSeriesData,
   getSeriesData,
   mapCodeToReason,
   mapCodeToAttempt,
-  codeToFailureTypeMap
+  codeToFailureTypeMap,
+  TimeSeriesDataType
 } from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/utils'
@@ -39,7 +39,8 @@ export const AttemptAndFailureChart = ({ chartRef, data, incident }: TimeSeriesC
     { key: 'attemptCount', name: attempt }
   ]
 
-  const chartResults = getSeriesData(attemptAndFailureChart as TimeSeriesData, seriesMapping)
+  const chartResults = getSeriesData(
+    attemptAndFailureChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
   return <Card title={$t({ defaultMessage: 'Failures' })} type='no-border'>
     <AutoSizer>

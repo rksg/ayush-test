@@ -3,10 +3,10 @@ import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import AutoSizer       from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesData, getSeriesData, kpiConfig } from '@acx-ui/analytics/utils'
-import { Card, Loader, MultiLineTimeSeriesChart }   from '@acx-ui/components'
-import { useTenantLink }                            from '@acx-ui/react-router-dom'
-import { formatter }                                from '@acx-ui/utils'
+import { getSeriesData, kpiConfig }               from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { useTenantLink }                          from '@acx-ui/react-router-dom'
+import { formatter }                              from '@acx-ui/utils'
 
 import { useKpiTimeseriesQuery, KpiPayload } from '../../../Health/Kpi/services'
 import { getIncidentTimeSeriesPeriods }      from '../services'
@@ -74,7 +74,7 @@ export const TtcFailureChart = ({ chartRef, data, incident }: TimeSeriesChartPro
     ttc: formatter('durationFormat')
   }
 
-  const chartResults = getSeriesData(queryResults.data as TimeSeriesData, seriesMapping)
+  const chartResults = getSeriesData(queryResults.data, seriesMapping)
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Connection Events' })} type='no-border'>

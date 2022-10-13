@@ -27,6 +27,11 @@ storiesOf('StackedAreaChart', module)
     data={data}
     style={{ width: 500 }}
   />)
+  .add('StepChart View', () => <StackedAreaChart
+    type='step'
+    data={data}
+    style={{ width: 500 }}
+  />)
   .add('With Formatter', () => <StackedAreaChart
     data={[
       { key: 'count', name: 'Count Sample', data: getData() },
