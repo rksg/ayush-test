@@ -100,6 +100,7 @@ export function NetworkForm () {
       if (cloneMode) {
         formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
+      setNetworkType(data.type)
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
   }, [data])
