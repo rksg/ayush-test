@@ -5,8 +5,10 @@ import {
   IncidentSeverities,
   incidentSeverities
 } from '@acx-ui/analytics/utils'
-import { cssStr } from '@acx-ui/components'
-import { Link }   from '@acx-ui/react-router-dom'
+import { cssStr, Table, TableProps } from '@acx-ui/components'
+import { Link }                      from '@acx-ui/react-router-dom'
+
+import { IncidentTableRow } from './services'
 
 
 export type IncidentImpactedClientProps = {
@@ -74,4 +76,52 @@ export const DrawerList = styled.li`
 `
 export const DrawerOrderList = styled.ol`
   padding-inline-start: 30px;
+`
+
+export const IncidentTableWrapper =
+styled((props: TableProps<IncidentTableRow>) => <Table {...props} />)`
+  --incident-table-muted-row-font-color: var(--acx-neutrals-40);
+  --incident-table-muted-row-background-color: var(--acx-neutrals-20);
+
+  .table-row-muted {
+    color: var(--incident-table-muted-row-font-color);
+    background-color: var(--incident-table-muted-row-background-color);
+  }
+
+  && tbody > tr.table-row-muted:hover > td {
+    background: var(--incident-table-muted-row-background-color);
+  }
+
+  .ant-table-row-selected.table-row-muted {
+    background-color: var(--incident-table-muted-row-background-color);
+  }
+
+  .table-row-muted .ant-table-cell {
+    background-color: var(--incident-table-muted-row-background-color);
+  }
+
+  .ant-table-row.table-row-muted:hover {
+    background-color: var(--incident-table-muted-row-background-color);
+  }
+
+  .table-row-muted .ant-table-cell-row-hover {
+    background-color: var(--incident-table-muted-row-background-color);
+  }
+
+  .ant-table-cell {
+    color: unset;
+
+    &-fix-left, 
+    &-fix-right {
+      background: unset;
+    }
+  }
+  
+  .ant-radio-inner {
+    background-color: var(--acx-primary-white);
+  }
+
+  .ant-typography {
+    color: unset;
+  }
 `
