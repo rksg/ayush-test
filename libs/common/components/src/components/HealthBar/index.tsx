@@ -9,7 +9,7 @@ export function HealthBar (props:{ blockNumber?:number, value:number }) {
 
   const HealthBar =
     props.value > 0.5? HealthContentExcellent :
-      coloured>0.125*slices ? HealthContentModerate : HealthContentPoor
+      coloured>0.25*slices ? HealthContentModerate : HealthContentPoor
 
   return (
     <div title={String(props.value)}>
