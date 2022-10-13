@@ -363,6 +363,7 @@ export function MoreSettingsForm (props: {
             style={{ marginBottom: '15px' }}
             children={
               <Select
+                data-testid='mgmtTxRateSelect'
                 disabled={enableOfdmOnly ||
                   (bssMinimumPhyRate !== BssMinRateEnum.VALUE_NONE)}
                 defaultValue={MgmtTxRateEnum.VALUE_1}
@@ -402,7 +403,7 @@ export function MoreSettingsForm (props: {
           name={['wlan','advancedCustomization','enableNeighborReport']}
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
-          initialValue={false}
+          initialValue={true}
           children={
             <Checkbox children={$t({ defaultMessage: 'Enable 802.11k neighbor reports' })} />
           }

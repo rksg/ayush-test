@@ -1,0 +1,2326 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              type="P3"
+            >
+              P3
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          AP(s) operating in Low Power Mode: Access Point: Phong_Vegas1 (20:58:69:08:37:10)
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Network Impact
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Charts
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Impacted Entities Section
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              type="P3"
+            >
+              P3
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          Sub-optimal WAN throughput - speed mismatch between AP and peer device: Venue: AlphaNet_5_1
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Network Impact
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Charts
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Impacted Entities Section
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 fA-dLEH"
+              type="P2"
+            >
+              P2
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          AP service is affected due to high number of AP reboots
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Network Impact
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Chart
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
+              type="P1"
+            >
+              P1
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          High AP-RUCKUS Cloud connection failures in Venue: Default Zone
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Network Impact
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Chart
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 fA-dLEH"
+              type="P2"
+            >
+              P2
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          AP service is affected due to high number of AP reboots
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Network Impact
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Chart
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render CovClientrssiLow correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 jWXhBJ"
+              type="P4"
+            >
+              P4
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          Clients with low RSS are unusually high in AP Group: Outdoor
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="networkImpact"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Chart
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render FailureTemplate correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              type="P3"
+            >
+              P3
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="networkImpact"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="timeSeries"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render FailureTemplate correctly 2`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              type="P3"
+            >
+              P3
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="networkImpact"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="timeSeries"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render FailureTemplate correctly 3`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              type="P3"
+            >
+              P3
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="networkImpact"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="timeSeries"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render FailureTemplate correctly 4`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              type="P3"
+            >
+              P3
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="networkImpact"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="timeSeries"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render FailureTemplate correctly 5`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
+              type="P3"
+            >
+              P3
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="networkImpact"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="timeSeries"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 fA-dLEH"
+              type="P2"
+            >
+              P2
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          High memory utilization detected in Switch: ICX8200-24 Router (38:45:3B:3C:EC:70)
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Impacted Entities
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Detail Chart
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render SwitchPoePd correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
+              type="P1"
+            >
+              P1
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          PoE power denied in Venue: Unknown
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Impacted Entities
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
+              type="P1"
+            >
+              P1
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          PoE power denied in Venue: Unknown
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Impacted Entities Section
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test Details should render Ttc correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/analytics/incidents"
+              >
+                Incidents
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Incident Details
+            </h1>
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 jWXhBJ"
+              type="P4"
+            >
+              P4
+            </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          Time to connect is greater than 2 seconds in Venue: EDU-MeshZone_orig
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="networkImpact"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="timeSeries"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

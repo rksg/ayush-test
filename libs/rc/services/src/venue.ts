@@ -10,18 +10,22 @@ import {
   showActivityMessage,
   TableResult,
   Venue,
+  VenueSaveData,
   VenueDetailHeader,
   VenueCapabilities,
   VenueLed,
   VenueApModels,
   VenueExternalAntenna,
-  VenueApCapability
+  VenueApCapability,
+  CommonResult,
+  VenueSwitchConfiguration,
+  ConfigurationProfile
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue'],
+  tagTypes: ['Venue', 'VenueFloorPlan'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -39,13 +43,19 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddVenue', 'DeleteVenue', 'DeleteVenues'], () => {
+          const activities = [
+            'AddVenue',
+            'UpdateVenue',
+            'DeleteVenue',
+            'DeleteVenues'
+          ]
+          showActivityMessage(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
       }
     }),
-    addVenue: build.mutation<Venue, RequestPayload>({
+    addVenue: build.mutation<VenueSaveData, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addVenue, params)
         return {
@@ -55,7 +65,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
-    getVenue: build.query<Venue, RequestPayload>({
+    getVenue: build.query<VenueSaveData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
         return{
@@ -63,6 +73,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
+    }),
+    updateVenue: build.mutation<VenueSaveData, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenue, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
     venueDetailsHeader: build.query<VenueDetailHeader, RequestPayload>({
       query: ({ params }) => {
@@ -104,7 +124,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...floorPlansReq
         }
+      },
+      providesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, ['AddFloorPlan', 'UpdateFloorPlan', 'DeleteFloorPlan'], () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DETAIL' }]))
+          })
+        })
       }
+    }),
+    deleteFloorPlan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteFloorPlan, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
     }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
@@ -142,6 +179,26 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getVenueExternalAntenna: build.query<VenueExternalAntenna[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.GetVenueExternalAntenna, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    configProfiles: build.query<ConfigurationProfile[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getConfigProfiles, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: { data: ConfigurationProfile[] }) {
+        return result?.data
+      }
+    }),
+    venueSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params)
         return{
           ...req
         }
@@ -149,7 +206,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueApCapabilities: build.query<VenueApCapability, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.GetVenueApCapabilities, params)
+        const req = createHttpRequest(WifiUrlsInfo.GetVenueApCapabilities, params)     
+        return {
+          ...req
+        }
+      }
+    }),
+    updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
         return{
           ...req
         }
@@ -163,13 +237,19 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
+  useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
   useDeleteVenueMutation,
   useFloorPlanListQuery,
+  useDeleteFloorPlanMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
   useGetVenueExternalAntennaQuery,
-  useGetVenueApCapabilitiesQuery
+  useGetVenueApCapabilitiesQuery,
+  useConfigProfilesQuery,
+  useVenueSwitchSettingQuery,
+  useUpdateVenueSwitchSettingMutation,
+  useSwitchConfigProfileQuery
 } = venueApi

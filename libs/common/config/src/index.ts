@@ -12,6 +12,8 @@ import { trimEnd } from 'lodash'
 export interface EnvironmentConfig {
   GOOGLE_MAPS_KEY: string
   SPLIT_IO_KEY: string
+  PENDO_API_KEY: string
+  DISABLE_PENDO: string
 }
 
 const config: { value?: EnvironmentConfig } = {}

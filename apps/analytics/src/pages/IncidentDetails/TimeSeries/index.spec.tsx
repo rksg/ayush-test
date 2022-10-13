@@ -60,7 +60,11 @@ describe('Timeseries component', () => {
     })
     const { asFragment } = render(<BrowserRouter>
       <Provider>
-        <TimeSeries incident={fakeIncident1} charts={charts} />
+        <TimeSeries
+          incident={fakeIncident1}
+          charts={charts}
+          minGranularity='PT180S'
+        />
       </Provider>
     </BrowserRouter>
     )

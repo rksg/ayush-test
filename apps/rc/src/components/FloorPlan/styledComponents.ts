@@ -21,3 +21,7 @@ export const Button = styled(acxButton)`
     height: 16px;
   }
 `
+export const FloorPlanContainer = styled('div')`
+  overflow: overlay;
+  max-height: 460px
+`

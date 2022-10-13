@@ -12,3 +12,9 @@ data:
       - configmap: configmap-acx-ui
         key: split.io.key
         name: SPLIT_IO_KEY
+      - configmap: configmap-acx-ui
+        key: pendo.api.key
+        name: PENDO_API_KEY
+      - configmap: configmap-acx-ui
+        key: disable.pendo
+        name: DISABLE_PENDO
