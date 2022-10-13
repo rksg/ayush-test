@@ -21,7 +21,7 @@ import {
 
 import { VenueEdit } from './index'
 
-async function showInvalidChangesModal (tabKey, discard: boolean) {
+async function showInvalidChangesModal (tabKey, discard) {
   const dialog = await screen.findByRole('dialog')
   await screen.findByText('You Have Invalid Changes')
   await screen.findByText(`Do you want to discard your changes in "${tabKey}"?`)
@@ -30,17 +30,17 @@ async function showInvalidChangesModal (tabKey, discard: boolean) {
   )
 }
 
-async function showUnsavedChangesModal (tabKey, discard: boolean) {
+async function showUnsavedChangesModal (tabKey, discard) {
   await screen.findByRole('dialog')
   await screen.findByText('You Have Unsaved Changes')
   await screen.findByText
-    (`Do you want to save your changes in "${tabKey}", or discard all changes?`)
+  (`Do you want to save your changes in "${tabKey}", or discard all changes?`)
   fireEvent.click(
     await screen.findByRole('button', { name: discard ? 'Discard Changes' : 'Save Changes' })
   )
 }
 
-async function updateAdvancedSettings (selectModel: boolean) {
+async function updateAdvancedSettings (selectModel) {
   await screen.findByText('E510')
   fireEvent.click( screen.getByRole('button', { name: 'Add Model' }))
   if (selectModel) {
@@ -101,7 +101,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     }
     afterEach(() => Modal.destroyAll())
 
-    it('should open invalid changes modal', async () => {
+    it('should open unsaved changes modal', async () => {
       jest.mock('react', () => ({
         ...jest.requireActual('react'),
         useRef: jest.fn(() => ({
@@ -191,7 +191,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       render(<Provider><VenueEdit /></Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
-      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await waitFor(() => screen.findByText('AP Model'))
       await updateNetworking()
       fireEvent.click(await screen.findByText('Back to venue details'))
@@ -201,7 +201,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       render(<Provider><VenueEdit /></Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
-      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await waitFor(() => screen.findByText('AP Model'))
       await updateNetworking()
       fireEvent.click(await screen.findByText('Back to venue details'))

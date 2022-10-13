@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
   venueData,
@@ -41,6 +41,7 @@ describe('MeshNetwork', () => {
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><MeshNetwork /></Provider>, { route: { params } })
+    await waitFor(() => screen.findByText('Mesh Network'))
 
     expect(asFragment()).toMatchSnapshot()
     await userEvent.click(await screen.findByRole('switch'))
@@ -54,6 +55,7 @@ describe('MeshNetwork', () => {
   it('should render disabled switch button correctly', async () => {
     venueSetting.dhcpServiceSetting.enabled = true
     const { asFragment } = render(<Provider><MeshNetwork /></Provider>, { route: { params } })
+    await waitFor(() => screen.findByText('Mesh Network'))
 
     expect(asFragment()).toMatchSnapshot()
     await userEvent.click(await screen.findByRole('switch'))

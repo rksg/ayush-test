@@ -56,14 +56,14 @@ describe('NetworkingTab', () => {
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><NetworkingTab /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should handle update setting', async () => {
     render(<Provider><NetworkingTab /></Provider>
       , { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
 
     // update LAN ports
@@ -89,6 +89,9 @@ describe('NetworkingTab', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => screen.findByText('AP Model'))
+
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/overview`,

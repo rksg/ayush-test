@@ -4,7 +4,7 @@ import { Switch, Tooltip } from 'antd'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { showActionModal, showToast } from '@acx-ui/components'
+import { showActionModal, showToast, Loader } from '@acx-ui/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -132,7 +132,7 @@ export function MeshNetwork () {
     }
   }
 
-  return (
+  return (<Loader states={[{ isLoading: !data }]}>
     <UI.FieldLabel width='125px'>
       {$t({ defaultMessage: 'Mesh Network' })}
       <UI.FieldLabel width='30px'>
@@ -146,5 +146,6 @@ export function MeshNetwork () {
         </Tooltip>
       </UI.FieldLabel>
     </UI.FieldLabel>
+  </Loader>
   )
 }
