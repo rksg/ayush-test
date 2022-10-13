@@ -1,5 +1,6 @@
 import { dataApiURL }                                     from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                                from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router }                        from '@acx-ui/react-router-dom'
 import { Provider, store }                                from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, mockDOMWidth } from '@acx-ui/test-utils'
 import { TimeStampRange }                                 from '@acx-ui/types'
@@ -46,11 +47,11 @@ describe('Kpi Section', () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleTS }
     })
-    render(<Provider>
+    render(<Router><Provider>
       <HealthPageContext.Provider value={healthContext}>
         <KpiSection tab={'overview'} />
       </HealthPageContext.Provider>
-    </Provider>)
+    </Provider></Router>)
     await screen.findByText('Time to Connect')
     expect(screen.getByText('20% meets goal')).toBeVisible()
   })

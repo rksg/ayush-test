@@ -1,5 +1,8 @@
 import { useContext, useState } from 'react'
 
+import { useSearchParams } from 'react-router-dom'
+
+import { BrowserRouter as Router }      from '@acx-ui/react-router-dom'
 import { act, renderHook }              from '@acx-ui/test-utils'
 import { TimeStampRange }               from '@acx-ui/types'
 import { DateFilterContext, DateRange } from '@acx-ui/utils'
@@ -20,7 +23,7 @@ describe('HealthPageContextProvider', () => {
   ]
   it('load analytics filter context with timeWindow set to start/end of filter', async () => {
     const { result } = renderHook(() => useContext(HealthPageContext), {
-      wrapper: ({ children }) => <HealthPageContextProvider children={children} />
+      wrapper: ({ children }) => <Router><HealthPageContextProvider children={children} /></Router>
     })
 
     expect(result.current.timeWindow).toEqual(expectedTimeWindow)
@@ -28,7 +31,7 @@ describe('HealthPageContextProvider', () => {
 
   it('update timeWindow when setTimeWindow called', async () => {
     const { result, rerender } = renderHook(() => useContext(HealthPageContext), {
-      wrapper: ({ children }) => <HealthPageContextProvider children={children} />
+      wrapper: ({ children }) => <Router><HealthPageContextProvider children={children} /></Router>
     })
 
     expect(result.current.timeWindow).toEqual(expectedTimeWindow)
@@ -47,11 +50,17 @@ describe('HealthPageContextProvider', () => {
 
   it('update timeWindow when analytic filter start/end changed', () => {
     const Wrapper = ({ children }: { children: JSX.Element }) => {
-      const [dateFilter, setDateFilter] = useState({
+      const [search, setSearch] = useSearchParams()
+      const [dateFilter, setDate] = useState({
         range: DateRange.custom,
         startDate: '2022-01-01T00:00:00.000Z',
         endDate: '2022-01-02T00:00:00.000Z'
       })
+      const setDateFilter = (date: { range: DateRange, startDate: string, endDate: string }) => {
+        search.set('some', 'param')
+        setSearch(search)
+        setDate(date)
+      }
       return <DateFilterContext.Provider value={{ dateFilter, setDateFilter }}>
         <HealthPageContextProvider children={children} />
       </DateFilterContext.Provider>
@@ -61,7 +70,7 @@ describe('HealthPageContextProvider', () => {
       const { setDateFilter } = useContext(DateFilterContext)
       return { ...useContext(HealthPageContext), setDateFilter }
     }, {
-      wrapper: ({ children }) => <Wrapper children={children} />
+      wrapper: ({ children }) => <Router><Wrapper children={children} /></Router>
     })
 
     expect(result.current.timeWindow).toEqual([

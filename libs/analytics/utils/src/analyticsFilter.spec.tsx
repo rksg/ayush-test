@@ -12,7 +12,9 @@ describe('useAnalyticsFilter', () => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
   it('should return correct value', () => {
-    const { result } = renderHook(useAnalyticsFilter)
+    const { result } = renderHook(useAnalyticsFilter, {
+      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>
+    })
     let isCallableFn = false
     if (typeof result.current.setNetworkPath === 'function') {
       result.current.setNetworkPath()
