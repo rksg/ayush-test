@@ -36,9 +36,3 @@ export const SubTitle = styled.div`
   color: var(--acx-neutrals-60);
   font-weight: var(--acx-headline-5-font-weight);
 `
-
-export const FooterBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`

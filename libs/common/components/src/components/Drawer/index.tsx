@@ -86,7 +86,7 @@ const FormFooter = (props: FormFooterProps) => {
   }
 
   return (
-    <UI.FooterBar>
+    <>
       <div>
         {showAddAnother && <Checkbox
           onChange={(e: CheckboxChangeEvent) => setChecked(e.target.checked)}
@@ -115,7 +115,7 @@ const FormFooter = (props: FormFooterProps) => {
           {buttonLabel.save}
         </Button>
       </div>
-    </UI.FooterBar>
+    </>
   )
 }
 
