@@ -1,0 +1,64 @@
+import { gql } from 'graphql-request'
+
+
+import { dataApi }         from '@acx-ui/analytics/services'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+
+export type HierarchyNodeData = {
+  health: HealthData[]
+}
+
+export type HealthData = {
+    systemId: string
+    zoneName: string
+    timeToConnectSLA: [number, number]
+    timeToConnectThreshold: string
+    clientThroughputSLA: [number, number]
+    clientThroughputThreshold: string
+    connectionSuccessSLA: [number, number]
+}
+
+interface Response <T> {
+  network: {
+    hierarchyNode: T
+  }
+}
+
+export const api = dataApi.injectEndpoints({
+  endpoints: (build) => ({
+    health: build.query<
+      HierarchyNodeData,
+      AnalyticsFilter
+    >({
+      query: (payload) => ({
+        document: gql`
+        query HealthWidget($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
+            network(start: $start, end: $end) {
+              hierarchyNode(path: $path) {
+                health{
+                    systemId,
+                    zoneName,
+                    timeToConnectSLA
+                    timeToConnectThreshold
+                    clientThroughputSLA
+                    clientThroughputThreshold
+                    connectionSuccessSLA
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          path: payload.path,
+          start: payload.startDate,
+          end: payload.endDate,
+          filter: payload.filter
+        }
+      }),
+      transformResponse: (response: Response<HierarchyNodeData>) =>
+        response.network.hierarchyNode
+    })
+  })
+})
+
+export const { useHealthQuery } = api
