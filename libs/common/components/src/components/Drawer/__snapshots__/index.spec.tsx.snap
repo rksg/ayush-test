@@ -1,5 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Drawer FormFooter should render form footer 1`] = `
+<DocumentFragment>
+  <div />
+  <div>
+    <button
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+      type="button"
+    >
+      <span>
+        Cancel
+      </span>
+    </button>
+    <button
+      class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+      type="button"
+    >
+      <span>
+        Save
+      </span>
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`Drawer should match snapshot for basic drawer 1`] = `
 Array [
   <div
@@ -110,32 +134,4 @@ Array [
     </div>
   </div>,
 ]
-`;
-
-exports[`Drawer should render form footer 1`] = `
-<DocumentFragment>
-  <div
-    class="sc-eCYdqJ fzrjjp"
-  >
-    <div />
-    <div>
-      <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-        type="button"
-      >
-        <span>
-          Cancel
-        </span>
-      </button>
-      <button
-        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
-        type="button"
-      >
-        <span>
-          Save
-        </span>
-      </button>
-    </div>
-  </div>
-</DocumentFragment>
 `;

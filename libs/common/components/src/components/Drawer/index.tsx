@@ -96,7 +96,6 @@ const FormFooter = (props: FormFooterProps) => {
       </div>
       <div>
         <Button
-          key='cancelBtn'
           onClick={() => {
             reset()
             onCancel(checked)
@@ -105,7 +104,6 @@ const FormFooter = (props: FormFooterProps) => {
           {buttonLabel.cancel}
         </Button>
         <Button
-          key='saveBtn'
           onClick={() => {
             reset()
             onSave(checked)
