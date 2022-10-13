@@ -1215,11 +1215,6 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
             data-type="client"
           />
           <div
-            data-dimension="radios"
-            data-testid="network-impact-radio"
-            data-type="client"
-          />
-          <div
             data-dimension="reasonCodes"
             data-testid="network-impact-reason"
             data-type="client"
@@ -1227,6 +1222,11 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
           <div
             data-dimension="manufacturer"
             data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
             data-type="client"
           />
         </div>
@@ -1401,11 +1401,6 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
             data-type="client"
           />
           <div
-            data-dimension="radios"
-            data-testid="network-impact-radio"
-            data-type="client"
-          />
-          <div
             data-dimension="reasonCodes"
             data-testid="network-impact-reason"
             data-type="client"
@@ -1413,6 +1408,11 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
           <div
             data-dimension="manufacturer"
             data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
             data-type="client"
           />
         </div>
@@ -1587,11 +1587,6 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
             data-type="client"
           />
           <div
-            data-dimension="radios"
-            data-testid="network-impact-radio"
-            data-type="client"
-          />
-          <div
             data-dimension="reasonCodes"
             data-testid="network-impact-reason"
             data-type="client"
@@ -1599,6 +1594,11 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
           <div
             data-dimension="manufacturer"
             data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
             data-type="client"
           />
         </div>
@@ -1773,11 +1773,6 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
             data-type="client"
           />
           <div
-            data-dimension="radios"
-            data-testid="network-impact-radio"
-            data-type="client"
-          />
-          <div
             data-dimension="reasonCodes"
             data-testid="network-impact-reason"
             data-type="client"
@@ -1785,6 +1780,11 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
           <div
             data-dimension="manufacturer"
             data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
             data-type="client"
           />
         </div>
@@ -1959,11 +1959,6 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
             data-type="client"
           />
           <div
-            data-dimension="radios"
-            data-testid="network-impact-radio"
-            data-type="client"
-          />
-          <div
             data-dimension="reasonCodes"
             data-testid="network-impact-reason"
             data-type="client"
@@ -1971,6 +1966,11 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
           <div
             data-dimension="manufacturer"
             data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
             data-type="client"
           />
         </div>
@@ -2586,13 +2586,13 @@ exports[`Test Details should render Ttc correctly 1`] = `
             data-type="client"
           />
           <div
-            data-dimension="radios"
-            data-testid="network-impact-radio"
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
             data-type="client"
           />
           <div
-            data-dimension="manufacturer"
-            data-testid="network-impact-clientManufacturer"
+            data-dimension="radios"
+            data-testid="network-impact-radio"
             data-type="client"
           />
         </div>

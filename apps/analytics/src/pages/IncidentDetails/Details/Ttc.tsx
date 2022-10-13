@@ -33,13 +33,13 @@ export const Ttc = (incident: Incident) => {
     type: 'client',
     dimension: 'ssids'
   }, {
-    chart: NetworkImpactChartTypes.Radio,
-    type: 'client',
-    dimension: 'radios'
-  }, {
     chart: NetworkImpactChartTypes.ClientManufacturer,
     type: 'client',
     dimension: 'manufacturer'
+  }, {
+    chart: NetworkImpactChartTypes.Radio,
+    type: 'client',
+    dimension: 'radios'
   }]
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
     TimeSeriesChartTypes.TtcFailureChart,
