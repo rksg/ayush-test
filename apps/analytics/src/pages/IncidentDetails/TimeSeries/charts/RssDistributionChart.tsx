@@ -1,13 +1,13 @@
-import { gql }     from 'graphql-request'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { gql }            from 'graphql-request'
+import { renderToString } from 'react-dom/server'
+import { useIntl }        from 'react-intl'
+import AutoSizer          from 'react-virtualized-auto-sizer'
 
-import { BarChartData }            from '@acx-ui/analytics/utils'
+import { BarChartData }                            from '@acx-ui/analytics/utils'
 import { Card, DistributionChart, TooltipWrapper } from '@acx-ui/components'
 
-import type { TimeSeriesChartProps } from '../types'
+import type { TimeSeriesChartProps }                    from '../types'
 import type { TooltipComponentFormatterCallbackParams } from 'echarts'
-import { renderToString } from 'react-dom/server'
 
 export const rssDistributionScale = 5
 
@@ -42,7 +42,7 @@ export const RssDistributionChart = ({ data }: TimeSeriesChartProps) => {
 
   const expectedResult = {
     dimensions: [xValue, yValue],
-    source: rssDistribution!.map(({ rss, count }) => [rss, count]),
+    source: rssDistribution!.map(({ rss, count }) => [rss, count]).reverse(),
     seriesEncode: [{ x: xValue, y: yValue }]
   } as BarChartData
 
