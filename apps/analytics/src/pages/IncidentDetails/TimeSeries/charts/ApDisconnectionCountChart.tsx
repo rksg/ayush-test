@@ -21,7 +21,7 @@ const apDisconnectionCountChartQuery = () => gql`
   }
   `
 export const ApDisconnectionCountChart = (
-  { incident, data }: TimeSeriesChartProps
+  { chartRef, incident, data }: TimeSeriesChartProps
 ) => {
   const { apDisconnectionCountChart, relatedIncidents } = data
   const { $t } = useIntl()
@@ -40,6 +40,7 @@ export const ApDisconnectionCountChart = (
     <AutoSizer>
       {({ height, width }) => (
         <MultiLineTimeSeriesChart
+          chartRef={chartRef}
           style={{ height, width }}
           data={chartResults}
           dataFormatter={formatter('countFormat')}

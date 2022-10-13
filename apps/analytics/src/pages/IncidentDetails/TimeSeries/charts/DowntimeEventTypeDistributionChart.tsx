@@ -21,7 +21,7 @@ const downtimeEventTypeDistributionChartQuery = () => gql`
   `
 
 export const DowntimeEventTypeDistributionChart = (
-  { data }: { data: TimeSeriesChartProps['data'] }
+  { chartRef, data }: TimeSeriesChartProps
 ) => {
   const { downtimeEventTypeDistributionChart: { time, apDisconnectionEvents } } = data
   const { $t } = useIntl()
@@ -50,6 +50,7 @@ export const DowntimeEventTypeDistributionChart = (
     <AutoSizer>
       {({ height, width }) => (
         <StackedAreaChart
+          chartRef={chartRef}
           type='step'
           style={{ height, width }}
           stackColors={stackColors}
