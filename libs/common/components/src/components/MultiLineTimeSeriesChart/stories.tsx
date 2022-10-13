@@ -110,7 +110,6 @@ storiesOf('MultiLineTimeSeriesChart', module)
     // eslint-disable-next-line no-console
     onDataZoom={(range) => { console.log(range.map(r => new Date(r).toISOString())) }}
   />)
-
   .add('With Formatters', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={[

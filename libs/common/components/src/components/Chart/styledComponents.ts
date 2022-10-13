@@ -7,6 +7,9 @@ export const TooltipWrapper = styled.div`
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
   color: var(--acx-primary-white);
+  max-width: 200px;
+  white-space: normal;
+  word-wrap: break-word;
 
   time { font-weight: var(--acx-body-font-weight-bold); }
 
