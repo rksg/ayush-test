@@ -86,7 +86,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     }
     setLoading(false)
     onClose()
-    const clearButton = document?.querySelector('button[title="Clear selection"]')
+    const clearButton = document?.querySelector('button[data-id="table-clear-btn"]')
     if (clearButton) {
       // @ts-ignore
       clearButton.click()

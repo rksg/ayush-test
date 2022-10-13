@@ -315,6 +315,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
             <UI.CloseButton
               onClick={onCleanSelected}
               title={$t({ defaultMessage: 'Clear selection' })}
+              data-id='table-clear-btn'
             />
           </Space>
           <Space size={0} split={<UI.Divider type='vertical' />}>
