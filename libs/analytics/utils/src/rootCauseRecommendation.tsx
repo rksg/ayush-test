@@ -598,7 +598,7 @@ export const rootCauseRecommendationMap = {
   },
   'ttc': {
     DEFAULT: {
-      rootCauses: `
+      rootCauses: defineMessage({ defaultMessage: `
         <p>Users are experiencing a higher time to connect compared to the configured SLA goal. User's Wi-Fi connection process goes through several stages. Delays in any of the stages will result in a higher time to connect for the user.</p>
         <ol>
           <li>802.11 authentication, association.</li>
@@ -606,8 +606,8 @@ export const rootCauseRecommendationMap = {
           <li>L2/L3 authentication - Typical with 802.1x WLAN when RADIUS server is configured</li>
           <li>DHCP</li>
         </ol>
-      `,
-      recommendations: `
+      ` }),
+      recommendations: defineMessage({ defaultMessage: `
         <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
         <ol>
           <li>This stage typically does not contribute to delays. Delays in this stage might indicates RF issues. Try changing channel or band.</li>
@@ -615,10 +615,10 @@ export const rootCauseRecommendationMap = {
           <li>(Typical) Delays in this stage might indicate high latency to the RADIUS server or an overloaded RADIUS server. Inspect RADIUS server configuration, isolate the component with high network latency or try dedicating CPU, memory, and disk to the RADIUS server if it is hosted on a shared VM.</li>
           <li>(Typical) If there is high latency in receiving the DHCP response or if the DHCP response is not received it can add significant delays to the connection process. Common causes are overloaded DHCP server - DHCP server IP pool exhaustion or DHCP server not able to keep up with the rate of incoming DHCP requests. Inspect DHCP server configuration and assign dedicated CPU, memory, disk space to the DHCP server.</li>
         </ol>
-      `
+      ` })
     },
     VARIOUS_REASONS: {
-      rootCauses: `
+      rootCauses: defineMessage({ defaultMessage: `
         <p>Users are experiencing a higher time to connect compared to the configured SLA goal. User's Wi-Fi connection process goes through several stages. Delays in any of the stages will result in a higher time to connect for the user.</p>
         <ol>
           <li>802.11 authentication, association.</li>
@@ -626,8 +626,8 @@ export const rootCauseRecommendationMap = {
           <li>L2/L3 authentication - Typical with 802.1x WLAN when RADIUS server is configured</li>
           <li>DHCP</li>
         </ol>
-      `,
-      recommendations: `
+      ` }),
+      recommendations: defineMessage({ defaultMessage: `
         <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
         <ol>
           <li>This stage typically does not contribute to delays. Delays in this stage might indicates RF issues. Try changing channel or band.</li>
@@ -635,7 +635,7 @@ export const rootCauseRecommendationMap = {
           <li>(Typical) Delays in this stage might indicate high latency to the RADIUS server or an overloaded RADIUS server. Inspect RADIUS server configuration, isolate the component with high network latency or try dedicating CPU, memory, and disk to the RADIUS server if it is hosted on a shared VM.</li>
           <li>(Typical) If there is high latency in receiving the DHCP response or if the DHCP response is not received it can add significant delays to the connection process. Common causes are overloaded DHCP server - DHCP server IP pool exhaustion or DHCP server not able to keep up with the rate of incoming DHCP requests. Inspect DHCP server configuration and assign dedicated CPU, memory, disk space to the DHCP server.</li>
         </ol>
-      `
+      ` })
     }
   },
   'rss': {
