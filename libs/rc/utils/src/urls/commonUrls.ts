@@ -135,10 +135,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/led'
   },
-  getVenueSettings: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId'
-  },
   getVenueLanPorts: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/lan-port'

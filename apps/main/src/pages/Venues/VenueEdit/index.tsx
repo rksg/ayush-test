@@ -89,17 +89,21 @@ export function showUnsavedModal (
     closeAfterAction: true,
     handler: async () => {
       const { setData, oldData, tabKey } = editContextData
-      setEditContextData({
-        ...editContextData,
-        isDirty: false,
-        newData: undefined,
-        oldData: undefined,
-        tempData: {
-          ...editContextData.tempData,
-          [tabKey as keyof EditContext]: oldData
-        }
-      })
-      setData && oldData && setData(oldData)
+      if(editContextData?.unsavedTabKey === 'networking'){
+        editNetworkingContextData?.discardLanPorts?.()
+      } else {
+        setEditContextData({
+          ...editContextData,
+          isDirty: false,
+          newData: undefined,
+          oldData: undefined,
+          tempData: {
+            ...editContextData.tempData,
+            [tabKey as keyof EditContext]: oldData
+          }
+        })
+        setData && oldData && setData(oldData)
+      }
       callback?.()
     }
   }, {
@@ -113,6 +117,7 @@ export function showUnsavedModal (
           editContextData?.updateChanges?.()
         }
       }else if(editContextData?.unsavedTabKey === 'networking'){
+        editNetworkingContextData?.updateLanPorts?.()
         if(editNetworkingContextData?.updateCellular){
           editNetworkingContextData?.updateCellular?.()
         }

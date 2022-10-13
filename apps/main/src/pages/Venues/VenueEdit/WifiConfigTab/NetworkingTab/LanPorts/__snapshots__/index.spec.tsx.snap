@@ -5,11 +5,6 @@ exports[`LanPortsForm should render correctly 1`] = `
   <form
     class="ant-form ant-form-horizontal"
   >
-    <h3
-      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-    >
-      LAN Ports
-    </h3>
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
     >
@@ -119,7 +114,7 @@ exports[`LanPortsForm should render correctly 1`] = `
         style="margin-left: -12px; margin-right: -12px;"
       >
         <div
-          class="ant-col ant-col-24"
+          class="ant-col ant-col-12"
           style="padding-left: 12px; padding-right: 12px;"
         >
             

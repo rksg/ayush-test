@@ -6,14 +6,16 @@ import { AnchorLayout, showToast, StepsForm } from '@acx-ui/components'
 
 import { VenueEditContext } from '../../index'
 
+import { LanPorts }    from './LanPorts'
 import { MeshNetwork } from './MeshNetwork'
-import { LanPorts } from './LanPorts'
 
 export interface NetworkingSettingContext {
   cellularData: unknown,
   meshData: { mesh: boolean },
   updateCellular: (() => void),
-  updateMesh: ((check: boolean) => void)
+  updateMesh: ((check: boolean) => void),
+  updateLanPorts: (() => void),
+  discardLanPorts?: (() => void)
 }
 
 export function NetworkingTab () {
@@ -27,7 +29,12 @@ export function NetworkingTab () {
 
   const items = [{
     title: $t({ defaultMessage: 'LAN Ports' }),
-    content: <LanPorts />
+    content: <>
+      <StepsForm.SectionTitle id='lan-ports'>
+        { $t({ defaultMessage: 'LAN Ports' }) }
+      </StepsForm.SectionTitle>
+      <LanPorts />
+    </>
   }, {
   //   title: $t({ defaultMessage: 'Cellular Options' }),
   //   content: (<CellularOptionsForm></CellularOptionsForm>)
@@ -42,6 +49,7 @@ export function NetworkingTab () {
   const handleUpdateAllSettings = async () => {
     try {
       editNetworkingContextData?.updateCellular?.()
+      await editNetworkingContextData?.updateLanPorts?.()
       editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       setEditContextData({
         ...editContextData,

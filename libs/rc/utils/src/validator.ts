@@ -118,7 +118,7 @@ export function subnetMaskIpRegExp (value: string) {
 
 export function checkVlanMember (value: string) {
   const { $t } = getIntl()
-  const items = value.split(',')
+  const items = value.toString().split(',')
   const isValid = items.map((item: string) => {
     const num = item.includes('-') ? item : Number(item)
     if (item.includes('-')) {

@@ -273,7 +273,9 @@ export const venueLanPorts = [{
     { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '2', enabled: true },
     { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
   ],
-  model: 'T750'
+  model: 'T750',
+  poeMode: 'Auto',
+  poeOut: false
 }]
 
 export const venueSetting = {

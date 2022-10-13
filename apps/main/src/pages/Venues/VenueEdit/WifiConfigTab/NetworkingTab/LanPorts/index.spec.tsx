@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                                                    from '@acx-ui/rc/utils'
-import { Provider, store }                                                                   from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { venueApi }                                                                               from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                                                         from '@acx-ui/rc/utils'
+import { Provider, store }                                                                        from '@acx-ui/store'
+import { act, fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueData,
@@ -45,22 +45,19 @@ describe('LanPortsForm', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(
       <Provider>
-        {/* <VenueEditContext.Provider value={{ editContextData, setEditContextData }}> */}
         <Form>
           <LanPorts />
         </Form>
-        {/* </VenueEditContext.Provider> */}
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    await waitFor(() => screen.findByText('LAN Ports'))
     await waitFor(() => screen.findByText('AP Model'))
     expect(await screen.findByAltText(/default image/)).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should handle model changed', async () => {
+  it('should handle tab and model changed', async () => {
     render(
       <Provider>
         <Form>
@@ -76,14 +73,14 @@ describe('LanPortsForm', () => {
     const option = screen.getByText('H320')
     await userEvent.click(option)
 
+    const tabs = await screen.findAllByRole('tab')
+    expect(tabs).toHaveLength(3)
+
     const tabPanel = screen.getByRole('tabpanel', { hidden: false })
     expect(within(tabPanel).getByLabelText(/Enable port/)).not.toBeChecked()
     expect(within(tabPanel).getByLabelText(/Port type/)).toBeDisabled()
     expect(within(tabPanel).getByLabelText(/VLAN untag ID/)).toBeDisabled()
     expect(within(tabPanel).getByLabelText(/VLAN member/)).toBeDisabled()
-
-    const tabs = await screen.findAllByRole('tab')
-    expect(tabs).toHaveLength(3)
 
     await fireEvent.click(await screen.findByRole('tab', { name: 'LAN 2' }))
     const tabPanel2 = screen.getByRole('tabpanel', { hidden: false })
@@ -99,7 +96,10 @@ describe('LanPortsForm', () => {
     fireEvent.mouseDown(within(tabPanel2).getByLabelText(/Port type/))
     await userEvent.click(await screen.getAllByText('GENERAL')[1])
     expect(within(tabPanel2).getByLabelText(/VLAN member/)).not.toBeDisabled()
-    fireEvent.change(within(tabPanel2).getByLabelText(/VLAN member/), { target: { value: '2' } })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => {
+      fireEvent.change(within(tabPanel2).getByLabelText(/VLAN member/), { target: { value: '2' } })
+    })
     expect(within(tabPanel2).getByLabelText(/VLAN member/)).toHaveValue('2')
 
     await fireEvent.click(await screen.findByRole('tab', { name: 'LAN 3' }))
@@ -107,7 +107,7 @@ describe('LanPortsForm', () => {
     expect(within(tabPanel3).getByLabelText(/Enable port/)).toBeDisabled()
   })
 
-  it('should handle model, PoE Mode and PoE Out changed', async () => {
+  it('should handle Port type, PoE Mode and PoE Out changed', async () => {
     render(
       <Provider>
         <Form>
@@ -124,9 +124,18 @@ describe('LanPortsForm', () => {
     await userEvent.click(option)
     expect(await screen.findByAltText(/AP Lan port image - T750/)).toBeVisible()
 
+    fireEvent.mouseDown(screen.getByLabelText('PoE Operating Mode'))
+    await userEvent.click(await screen.getAllByText('802.3at')[1])
+
     const tabPanel = screen.getByRole('tabpanel', { hidden: false })
+    expect(within(tabPanel).getByLabelText('Enable PoE Out')).not.toBeChecked()
+
     fireEvent.mouseDown(within(tabPanel).getByLabelText(/Port type/))
     await userEvent.click(await screen.getAllByText('ACCESS')[1])
-    expect(within(tabPanel).getByLabelText(/VLAN untag ID/)).not.toBeDisabled()
+
+    const untagInput = within(tabPanel).getByLabelText(/VLAN untag ID/)
+    expect(untagInput).not.toBeDisabled()
+    fireEvent.change(untagInput, { target: { value: 2 } })
+    expect(within(tabPanel).getByLabelText(/VLAN member/)).toHaveValue('2')
   })
 })

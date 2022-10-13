@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tabs } from 'antd'
 import { isEqual, replace }                           from 'lodash'
 import { useIntl }                                    from 'react-intl'
 
-import { Loader, Subtitle }                                      from '@acx-ui/components'
+import { Loader, showToast }       from '@acx-ui/components'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueSettingsQuery,
-  useGetVenueLanPortsQuery
-  // useUpdateVenueLanPortsMutation
+  useGetVenueLanPortsQuery,
+  useUpdateVenueLanPortsMutation
 } from '@acx-ui/rc/services'
 import {
   ApModel,
@@ -21,6 +21,7 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import DefaultApModelDiagram from '../../../../../../assets/images/aps/ap-model-placeholder.png'
+import { VenueEditContext }  from '../../../index'
 
 import { LanPortSettings } from './LanPortSettings'
 
@@ -29,21 +30,30 @@ const { useWatch } = Form
 export function LanPorts () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
+
+  const {
+    editContextData,
+    setEditContextData,
+    editNetworkingContextData,
+    setEditNetworkingContextData
+  } = useContext(VenueEditContext)
+
   const venueSettings = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
   const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
   const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
-  //const [updateVenueLanPorts] = useUpdateVenueLanPortsMutation()
+  const [updateVenueLanPorts] = useUpdateVenueLanPortsMutation()
 
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
   const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)
-  // const [useVenueSettings, setUseVenueSettings] = useState(false)
+  const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const [lanPortOrinData, setLanPortOrinData] = useState(venueLanPorts?.data)
   const [lanPortData, setLanPortData] = useState(venueLanPorts?.data)
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as ApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
 
   const form = Form.useFormInstance()
-  const [apModel, poeMode, poeOut, lanPorts] = [
+  const [apModel, poeMode, lanPoeOut, lanPorts] = [
     useWatch('model'),
     useWatch('poeMode'),
     useWatch('poeOut'),
@@ -53,16 +63,16 @@ export function LanPorts () {
   useEffect(() => {
     if (venueLanPorts?.data?.length) {
       setLanPortData(venueLanPorts?.data)
+      setLanPortOrinData(venueLanPorts?.data)
     }
   }, [venueLanPorts?.data])
 
   useEffect(() => {
     if (!venueSettings?.isLoading) {
       const { data } = venueSettings
-      setIsDhcpEnabled(data?.dhcpServiceSetting?.enabled)
+      setIsDhcpEnabled(data?.dhcpServiceSetting?.enabled || false)
     }
   }, [venueSettings?.data])
-
 
   useEffect(() => {
     const { model, lan, poeOut } = form?.getFieldsValue()
@@ -72,114 +82,160 @@ export function LanPorts () {
           ? {
             ...item,
             lanPorts: lanPorts,
-            ...(poeMode && { poeMode: poeMode }),
-            ...(poeOut && { poeOut: poeOut.includes(true) })
+            ...(poeMode && item.poeMode && { poeMode: poeMode }),
+            ...(poeOut && { poeOut: poeOut[activeTabIndex] })
           } : item
+      }) as VenueLanPorts[]
+
+      setEditContextData && setEditContextData({
+        ...editContextData,
+        unsavedTabKey: 'networking',
+        tabTitle: $t({ defaultMessage: 'Networking' }),
+        isDirty: !isEqual(landata, lanPortOrinData),
+        hasError: form.getFieldsError().map(item => item.errors).flat().length > 0
       })
 
-      // console.log('isEqual: ', isEqual(landata, venueLanPorts?.data))
-      // console.log(landata, venueLanPorts?.data, selectedModel)
+      setEditNetworkingContextData && setEditNetworkingContextData({
+        ...editNetworkingContextData,
+        updateLanPorts: () => handleUpdateLanPorts(landata),
+        discardLanPorts: () => handleDiscardLanPorts(lanPortOrinData)
+      })
 
       setLanPortData(landata)
-      setSelectedModel(landata?.filter(item => item.model === apModel)[0] as VenueLanPorts)
+      setSelectedModel(getSelectedModelData(landata, apModel))
     }
-  }, [poeMode, poeOut, lanPorts]) //apModel
+  }, [poeMode, lanPoeOut, lanPorts])
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
+    setActiveTabIndex(tabIndex)
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
   }
 
   const handleModelChange = (value: string) => {
     const modelCaps = venueCaps?.data?.apModels?.filter(item => item.model === value)[0]
-    setSelectedModel(lanPortData?.filter(item => item.model === value)[0] as VenueLanPorts)
+    const selected = getSelectedModelData(lanPortData as VenueLanPorts[], value)
+    const tabIndex = (modelCaps?.lanPorts?.length ?? 0) <= activeTabIndex ? 0 : activeTabIndex
+    setActiveTabIndex(tabIndex)
+    setSelectedModel(selected)
     setSelectedModelCaps(modelCaps as ApModel)
-    setSelectedPortCaps(modelCaps?.lanPorts?.[0] as LanPort)
+    setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
 
-    form?.setFieldValue('lan', lanPortData?.filter(item => item.model === value)[0]?.lanPorts)
+    form?.setFieldsValue({
+      ...selected,
+      poeOut: Array(form.getFieldValue('poeOut')?.length).fill(selected?.poeOut),
+      lan: selected?.lanPorts
+    })
   }
 
-  return (<>
-    <Subtitle level={3}>{$t({ defaultMessage: 'LAN Ports' })}</Subtitle>
-    <Loader states={[{ isLoading: venueLanPorts.isLoading || venueCaps.isLoading }]}>
-      <Row gutter={24}>
+  const handleDiscardLanPorts = async (orinData?: VenueLanPorts[]) => {
+    const data = (orinData ?? lanPortOrinData) as VenueLanPorts[]
+    const selected = getSelectedModelData(data, apModel)
+    setLanPortData(data)
+    setLanPortOrinData(data)
+
+    form?.setFieldsValue({
+      ...selected,
+      poeOut: Array(form.getFieldValue('poeOut')?.length).fill(selected?.poeOut),
+      lan: selected?.lanPorts
+    })
+
+    setEditContextData({
+      ...editContextData,
+      isDirty: false,
+      hasError: false
+    })
+  }
+
+  const handleUpdateLanPorts = async (data?: VenueLanPorts[]) => {
+    try {
+      setEditContextData({
+        ...editContextData,
+        isDirty: false,
+        hasError: false
+      })
+      await updateVenueLanPorts({
+        params: { tenantId, venueId },
+        payload: data ?? lanPortData
+      }).unwrap()
+      setLanPortData(data ?? lanPortData)
+      setLanPortOrinData(data ?? lanPortData)
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
+  return (<Loader states={[{ isLoading: venueLanPorts.isLoading || venueCaps.isLoading }]}>
+    <Row gutter={24}>
+      <Col span={8}>
+        <Form.Item
+          name='model'
+          label={$t({ defaultMessage: 'AP Model' })}
+          initialValue={null}
+          children={<Select
+            options={[
+              { label: $t({ defaultMessage: 'No model selected' }), value: null },
+              ...apModelsOptions
+            ]}
+            onChange={handleModelChange}
+          />}
+        />
+        { selectedModelCaps?.canSupportPoeMode && <Form.Item
+          name='poeMode'
+          label={$t({ defaultMessage: 'PoE Operating Mode' })}
+          initialValue={selectedModel?.poeMode}
+          children={<Select
+            options={selectedModelCaps?.poeModeCapabilities?.map(item => ({
+              label: toReadablePoeMode(item), value: item
+            }))}
+          />}
+        /> }
+      </Col>
+    </Row>
+    <Row gutter={24}>
+      <Col span={12}> {
+        selectedModel?.lanPorts && <Tabs
+          onChange={onTabChange}
+        	animated={true}
+        >
+          { selectedModel?.lanPorts?.map((lan, index) =>
+            <Tabs.TabPane tab={`LAN ${index+1}`} key={`lan-${index+1}`} forceRender={true}>
+              <Col span={16}>
+                <LanPortSettings
+                  selectedPortCaps={selectedPortCaps}
+                  selectedModel={selectedModel}
+                  setSelectedPortCaps={setSelectedPortCaps}
+                  selectedModelCaps={selectedModelCaps}
+                  isDhcpEnabled={isDhcpEnabled}
+                  index={index}
+                />
+              </Col>
+            </Tabs.TabPane>
+          ) }
+        </Tabs>
+      } </Col>
+      <Col span={24}>
         <Col span={8}>
-          <Form.Item
-            name='model'
-            label={$t({ defaultMessage: 'AP Model' })}
-            initialValue={null}
-            children={<Select
-              options={[
-                { label: 'No model selected', value: null },
-                ...apModelsOptions
-              ]}
-              onChange={handleModelChange}
-            />}
-          />
-          { selectedModelCaps?.canSupportPoeMode && <Form.Item
-            name='poeMode'
-            label={$t({ defaultMessage: 'PoE Operating Mode' })}
-            initialValue={selectedModel?.poeMode}
-            children={<Select
-              options={selectedModelCaps?.poeModeCapabilities?.map(item => ({
-                label: toReadablePoeMode(item), value: item
-              }))}
-            />}
-          /> }
+          <Space style={{ padding: '16px 0' }}>
+            <Image
+              alt={selectedModelCaps?.lanPortPictureDownloadUrl
+                ? `${$t({ defaultMessage: 'AP Lan port image' })} - ${selectedModelCaps?.model}`
+                : $t({ defaultMessage: 'AP Lan port default image' })}
+              preview={false}
+              src={selectedModelCaps?.lanPortPictureDownloadUrl || DefaultApModelDiagram}
+            />
+          </Space>
         </Col>
-      </Row>
-      <Row gutter={24}>
-        <Col span={24}> {
-          selectedModel?.lanPorts && <Tabs
-            onChange={onTabChange}
-          // animated={true}
-          >
-            { selectedModel?.lanPorts?.map((lan, index) =>
-              <Tabs.TabPane tab={`LAN ${index+1}`} key={`lan-${index+1}`} forceRender={true}>
-                <Col span={8}>
-                  <LanPortSettings
-                    form={form}
-                    selectedPortCaps={selectedPortCaps}
-                    selectedModel={selectedModel}
-                    setSelectedPortCaps={setSelectedPortCaps}
-                    selectedModelCaps={selectedModelCaps}
-                    isDhcpEnabled={isDhcpEnabled}
-                    // useVenueSettings={useVenueSettings}
-                    lan={lan}
-                    index={index}
-                  />
-                </Col>
-              </Tabs.TabPane>
-            ) }
-          </Tabs>
-        } </Col>
-        <Col span={24}>
-          <Col span={8}>
-            {/* <Button onClick={async () => {
-								try {
-									await updateVenueLanPorts({ params: { tenantId, venueId }, payload: lanPortData }).unwrap()
-									// navigate(linkToNetworks, { replace: true })
-								} catch {
-									showToast({
-										type: 'error',
-										content: 'An error occurred'
-									})
-								}
-						}}>OK</Button> */}
-            <Space style={{ padding: '16px 0' }}>
-              <Image
-                alt={selectedModelCaps?.lanPortPictureDownloadUrl
-                  ? `AP Lan port image - ${selectedModelCaps?.model}`
-                  : 'AP Lan port default image'}
-                preview={false}
-                src={selectedModelCaps?.lanPortPictureDownloadUrl || DefaultApModelDiagram}
-              />
-            </Space>
-          </Col>
-        </Col>
-      </Row>
-    </Loader>
-  </>)
+      </Col>
+    </Row>
+  </Loader>)
+}
+
+function getSelectedModelData (list: VenueLanPorts[], model: string) {
+  return list?.filter(item => item.model === model)?.[0]
 }
 
 export function toReadablePoeMode (poeMode:string) {

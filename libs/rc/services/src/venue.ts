@@ -186,7 +186,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueLanPorts, params)
         return{
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
