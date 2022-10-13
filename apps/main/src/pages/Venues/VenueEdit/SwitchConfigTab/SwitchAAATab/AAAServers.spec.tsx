@@ -240,10 +240,18 @@ describe('AAAServers', () => {
     fireEvent.click(deleteNetworkButton)
   })
 
-  it('should render RADIUS list correctly and show delete warning', async () => {
+  it('should render RADIUS list correctly and show delete warning: Log-in Authentication', async () => {
     const aaaSettings = {
       ...settings,
-      authnFirstPref: AAAServerTypeEnum.RADIUS
+      authnFirstPref: AAAServerTypeEnum.RADIUS,
+      authzCommonsFirstServer: AAAServerTypeEnum.RADIUS,
+      authzExecFirstServer: AAAServerTypeEnum.RADIUS,
+      acctCommonsFirstServer: AAAServerTypeEnum.RADIUS,
+      acctExecFirstServer: AAAServerTypeEnum.RADIUS,
+      authzEnabledCommand: true,
+      authzEnabledExec: true,
+      acctEnabledCommand: true,
+      acctEnabledExec: true
     }
     mockServer.use(
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
@@ -275,7 +283,7 @@ describe('AAAServers', () => {
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
 
-    const warningText = await screen.findByText(/prioritized/i)
+    const warningText = await screen.findByText(/authentication/i)
     expect(warningText).toBeVisible()
   })
 
