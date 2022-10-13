@@ -34,7 +34,9 @@ export const Ttc = (incident: Incident) => {
     NetworkImpactChartTypes.ClientManufacturer
   ]
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.ClientCountChart
+    TimeSeriesChartTypes.TtcFailureChart,
+    TimeSeriesChartTypes.ClientCountChart,
+    TimeSeriesChartTypes.TtcByFailureTypeChart
   ]
 
   return (
