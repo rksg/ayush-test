@@ -99,6 +99,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
   },
+  getMeshAps: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/aps/mesh'
+  },
   getService: {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
