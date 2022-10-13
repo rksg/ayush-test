@@ -1,12 +1,32 @@
+import { useEffect, useState } from 'react'
+
 import { Form, Input, Select, Tooltip } from 'antd'
 import TextArea                         from 'antd/lib/input/TextArea'
 import { useIntl }                      from 'react-intl'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
+// will remove when api is ready
+interface Option {
+  label: string
+  value: string
+}
+
 const EdgeSettingForm = () => {
 
   const { $t } = useIntl()
+  const [venues, setVenues] = useState<Option[]>([])
+  const [edgeGroups, setEdgeGroups] = useState<Option[]>([])
+
+  useEffect(() => {
+    // should call api here
+    setVenues([{ label: 'Mock Venue 1', value: 'mock_venue_1' }
+      , { label: 'Mock Venue 2', value: 'mock_venue_2' }
+      , { label: 'Mock Venue 3', value: 'mock_venue_3' }])
+    setEdgeGroups([{ label: 'Mock Group 1', value: 'mock_group_1' }
+      , { label: 'Mock Group 2', value: 'mock_group_2' }
+      , { label: 'Mock Group 3', value: 'mock_group_3' }])
+  }, [])
 
   return (
     <>
@@ -18,9 +38,12 @@ const EdgeSettingForm = () => {
         }]}
       >
         <Select>
-          <Select.Option value='mock_venue_1'> Mock Venue 1 </Select.Option>
-          <Select.Option value='mock_venue_2'> Mock Venue 2 </Select.Option>
-          <Select.Option value='mock_venue_3'> Mock Venue 3 </Select.Option>
+          {
+            venues.map(venue =>
+              <Select.Option key={venue.value} value={venue.value}> {
+                venue.label}
+              </Select.Option>)
+          }
         </Select>
       </Form.Item>
       <Form.Item
@@ -28,9 +51,12 @@ const EdgeSettingForm = () => {
         label={$t({ defaultMessage: 'SmartEdge Group' })}
       >
         <Select>
-          <Select.Option value='mock_group_1'> Mock Group 1 </Select.Option>
-          <Select.Option value='mock_group_2'> Mock Group 2 </Select.Option>
-          <Select.Option value='mock_group_3'> Mock Group 3 </Select.Option>
+          {
+            edgeGroups.map(edgeGroup =>
+              <Select.Option key={edgeGroup.value} value={edgeGroup.value}>
+                {edgeGroup.label}
+              </Select.Option>)
+          }
         </Select>
       </Form.Item>
       <Form.Item
