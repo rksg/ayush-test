@@ -9,7 +9,7 @@ describe('DistributionChart',()=>{
   it('should render correctly', () => {
     const { asFragment } = render(<DistributionChart
       data={data}
-      title={'DistributionChartTest'}
+      xAxisName={'DistributionChartTest'}
     />)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
