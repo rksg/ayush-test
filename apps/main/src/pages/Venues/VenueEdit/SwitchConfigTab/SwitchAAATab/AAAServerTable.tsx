@@ -158,7 +158,7 @@ export const AAAServerTable = (props: {
     setVisible(true)
   }
   const actions: TableProps<RadiusServer | TacacsServer | LocalUser>['actions'] = [{
-    label: $t({ defaultMessage: 'Add' }) + ' ' +　$t(serversDisplayText[type]),
+    label: $t({ defaultMessage: 'Add {serverType}' }, { serverType: $t(serversDisplayText[type]) }),
     onClick: handleAddAction
   }]
 
@@ -237,22 +237,23 @@ export const AAAServerTable = (props: {
         if (disableDeleteList.length) {
           showActionModal({
             type: 'info',
-            title: $t(serversTypeDisplayText[type]) + ' '
-                   + $t({ defaultMessage: 'Server Required' }),
-            content: (<div>
-              {$t(serversTypeDisplayText[type])} <span> </span>
-              {$t({ defaultMessage: 'servers are prioritized for the following:' })} <br/>
-              {disableDeleteList.join(', ')}. <br/>
-              {$t(
-                { defaultMessage: 'In order to delete {these} ' },
-                { these: rows.length > 1 ? 'these': 'this' }
-              )} <span> </span>
-              {$t(serversTypeDisplayText[type])} <span> </span>
-              {$t(
-                { defaultMessage: 'server{s} you must define a different method.' },
-                { s: rows.length > 1 ? 's': '' }
-              )}
-            </div>)
+            title: $t({ defaultMessage: '{serverType} Server Required' },
+              { serverType: $t(serversTypeDisplayText[type]) }),
+            content: (<FormattedMessage
+              defaultMessage={`
+                  {serverType} servers are prioritized for the following: <br></br>
+                  {disabledList}. <br></br>
+                  In order to delete {count, plural, one {this} other {these}}
+                  {serverType} {count, plural, one {server} other {servers}}
+                  you must define a different method.
+                `}
+              values={{
+                serverType: $t(serversTypeDisplayText[type]),
+                disabledList: disableDeleteList.join($t({ defaultMessage: ', ' })),
+                count: rows.length,
+                br: () => <br />
+              }}
+            />)
           })
         } else {
           showActionModal({

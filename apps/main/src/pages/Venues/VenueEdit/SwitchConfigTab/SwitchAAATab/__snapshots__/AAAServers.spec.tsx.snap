@@ -163,6 +163,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                         >
                                           <button
                                             class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 dRUGlG"
+                                            data-id="table-clear-btn"
                                             title="Clear selection"
                                             type="button"
                                           >

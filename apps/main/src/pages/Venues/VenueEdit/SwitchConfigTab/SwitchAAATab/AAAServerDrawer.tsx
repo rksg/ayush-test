@@ -38,11 +38,15 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   }, [editData, visible])
 
   const getTitle = () => {
-    const action = isEditMode
-      ? $t({ defaultMessage: 'Edit' })
-      : $t({ defaultMessage: 'Add' })
+    const title = isEditMode
+      ? $t({ defaultMessage: 'Edit {serverType}' },
+        { serverType: $t(serversDisplayText[serverType]) }
+      )
+      : $t({ defaultMessage: 'Add {serverType}' },
+        { serverType: $t(serversDisplayText[serverType]) }
+      )
 
-    return action + ' ' +　$t(serversDisplayText[serverType])
+    return title
   }
 
   const onClose = () => {
