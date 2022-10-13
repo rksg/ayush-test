@@ -240,7 +240,7 @@ describe('AAAServers', () => {
     fireEvent.click(deleteNetworkButton)
   })
 
-  it('should render RADIUS list correctly and show delete warning: Log-in Authentication', async () => {
+  it('should render RADIUS list correctly and show delete warning', async () => {
     const aaaSettings = {
       ...settings,
       authnFirstPref: AAAServerTypeEnum.RADIUS,
