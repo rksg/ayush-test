@@ -51,9 +51,8 @@ export function HealthPageContextProvider (props: { children: ReactNode }) {
   }, [startDate, endDate])
 
   useEffect(() => {
-    const formattedWindow = formatTimeWindow([startDate, endDate], [startDate, endDate])
-    setTimeWindow(formattedWindow)
-  }, [startDate, endDate])
+    setTimeWindowCallback([startDate, endDate])
+  }, [startDate, endDate, setTimeWindowCallback])
 
   const context = useMemo(() => ({
     ...analyticsFilter.filters,
