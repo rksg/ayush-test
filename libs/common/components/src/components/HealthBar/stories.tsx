@@ -46,7 +46,10 @@ storiesOf('HealthBar', module)
           <HealthBar value={0.1} blockNumber={40} />
         </p>
         <p>
-          <HealthBar value={0.3} blockNumber={4} />
+          <HealthBar value={0.3} blockNumber={5} />
+        </p>
+        <p>
+          <HealthBar value={0.2} blockNumber={5} />
         </p>
       </div>
     </FlexLayout>

@@ -740,10 +740,10 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                               class="styledComponents__DivContainer-sc-1ds8per-0 iMXxkL"
                                             >
                                               <div
-                                                class="styledComponents__HealthContentModerate-sc-1ds8per-2 eocMlx"
+                                                class="styledComponents__HealthContentPoor-sc-1ds8per-3 gsOGHY"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentModerate-sc-1ds8per-2 eocMlx"
+                                                class="styledComponents__HealthContentPoor-sc-1ds8per-3 gsOGHY"
                                               />
                                               <div
                                                 class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
