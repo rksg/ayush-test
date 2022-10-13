@@ -9,6 +9,7 @@ import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
 
 import { RssQualityByClientsChart } from './RssQualityByClientsChart'
+
 import type { TimeSeriesChartResponse } from '../types'
 
 const expectedResult = {
