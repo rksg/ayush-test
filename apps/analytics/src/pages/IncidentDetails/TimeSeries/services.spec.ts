@@ -59,7 +59,7 @@ describe('chartQuery', () => {
     }
   }
 
-  it('should return correct data when relatedIncidents is requested', async () => {
+  it('should return correct data', async () => {
     const expectedResult = {
       network: {
         hierarchyNode: {

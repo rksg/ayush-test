@@ -5,7 +5,9 @@ import ReactECharts from 'echarts-for-react'
 
 import { mockDOMWidth, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
-import { getSeriesData } from './stories'
+import { cssStr } from '../../theme/helper'
+
+import { getData, getSeriesData } from './stories'
 
 import {
   useBrush,
@@ -57,6 +59,29 @@ describe('MultiLineTimeSeriesChart', () => {
     expect(screen.queryByText('New Clients')).toBeNull()
   })
 
+  it('should not show series if show is false', () => {
+    const formatter = jest.fn()
+    const { asFragment } = render(<MultiLineTimeSeriesChart
+      data={[ ...getSeriesData(), {
+        key: 'series-hide',
+        name: 'seriesNames',
+        show: false,
+        data: getData()
+      }]}
+      dataFormatter={formatter}
+      disableLegend={true}
+    />)
+
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-30')}"]`))
+      .not.toBeNull()
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-50')}"]`))
+      .not.toBeNull()
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-orange-50')}"]`))
+      .not.toBeNull()
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-semantics-yellow-40')}"]`))
+      .toBeNull()
+  })
+
   it('should render brush if enabled', async () => {
     const { asFragment } = render(<MultiLineTimeSeriesChart
       data={getSeriesData()}
@@ -73,17 +98,6 @@ describe('MultiLineTimeSeriesChart', () => {
     useStateSpy.mockImplementation(() => [true, mockSetCanResetZoom])
     render(<MultiLineTimeSeriesChart
       data={getSeriesData()}
-    />)
-    expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
-  })
-
-  it('should render reset button after zoom and legend is disabled', async () => {
-    const mockSetCanResetZoom = jest.fn()
-    const useStateSpy = jest.spyOn(React, 'useState')
-    useStateSpy.mockImplementation(() => [true, mockSetCanResetZoom])
-    render(<MultiLineTimeSeriesChart
-      data={getSeriesData()}
-      disableLegend
     />)
     expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
   })
