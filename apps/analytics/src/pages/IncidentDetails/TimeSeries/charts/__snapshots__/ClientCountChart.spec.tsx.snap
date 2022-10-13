@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`failureChartQuery should call corresponding api 1`] = `
+exports[`clientCountChartQuery should call corresponding api 1`] = `
 "
             query IncidentTimeSeries(
               $path: [HierarchyNodeInput],
@@ -12,23 +12,20 @@ exports[`failureChartQuery should call corresponding api 1`] = `
               network(start: $start, end: $end) {
                 hierarchyNode(path: $path) {
                   
-  relatedIncidents: incidents(filter: {code: [$code]}) {
-    id severity code startTime endTime
-  }
-  failureChart: timeSeries(granularity: $granularity) {
+  clientCountChart: timeSeries(granularity: $granularity) {
     time
-    eap:
-      apConnectionFailureRatio(
-        metric: \\"eap\\")
+    newClientCount: connectionAttemptCount
+    impactedClientCount: impactedClientCountByCode(filter: {code: $code})
+    connectedClientCount
   }
-  
+
                 }
               }
             }
           "
 `;
 
-exports[`failureChartQuery should call corresponding api 2`] = `
+exports[`clientCountChartQuery should call corresponding api 2`] = `
 Object {
   "code": "eap-failure",
   "codeMap": Array [
