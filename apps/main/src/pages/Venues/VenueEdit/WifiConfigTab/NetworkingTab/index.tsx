@@ -3,6 +3,11 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm } from '@acx-ui/components'
+import {
+  useNavigate,
+  useTenantLink,
+  useParams
+} from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
@@ -20,6 +25,9 @@ export interface NetworkingSettingContext {
 
 export function NetworkingTab () {
   const { $t } = useIntl()
+  const { venueId } = useParams()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/venues/')
 
   const {
     editContextData,
@@ -40,7 +48,12 @@ export function NetworkingTab () {
   //   content: (<CellularOptionsForm></CellularOptionsForm>)
   // }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
-    content: (<MeshNetwork />)
+    content: <>
+      <StepsForm.SectionTitle id='mesh-network'>
+        { $t({ defaultMessage: 'Mesh Network' }) }
+      </StepsForm.SectionTitle>
+      <MeshNetwork />
+    </>
   // }, {
   //   title: $t({ defaultMessage: 'Client Isolation Allowlist' }),
   //   content: 'Client Isolation Allowlist Content'
@@ -67,6 +80,10 @@ export function NetworkingTab () {
   return (
     <StepsForm
       onFinish={handleUpdateAllSettings}
+      onCancel={() => navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
+      })}
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>

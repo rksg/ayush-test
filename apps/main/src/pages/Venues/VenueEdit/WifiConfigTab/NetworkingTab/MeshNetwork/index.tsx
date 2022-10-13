@@ -4,7 +4,7 @@ import { Switch, Tooltip } from 'antd'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { showActionModal, showToast, Subtitle } from '@acx-ui/components'
+import { showActionModal, showToast } from '@acx-ui/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -40,8 +40,8 @@ export function MeshNetwork () {
 
   useEffect(() => {
     if(data){
-      setMeshEnabled(data.mesh.enabled as boolean)
-      const enableDhcpSetting = data && data.dhcpServiceSetting && data.dhcpServiceSetting.enabled
+      setMeshEnabled(data.mesh?.enabled as boolean)
+      const enableDhcpSetting = data && data.dhcpServiceSetting && data.dhcpServiceSetting?.enabled
       if(enableDhcpSetting){
         // eslint-disable-next-line max-len
         setMeshToolTipDisabledText($t({ defaultMessage: 'You cannot activate the Mesh Network on this venue because it already has enable DHCP settings' }))
@@ -50,7 +50,7 @@ export function MeshNetwork () {
       }
       setIsAllowEnableMesh(!enableDhcpSetting as boolean) //TODO: this.rbacService.isRoleAllowed('UpdateMeshButton')
 
-      if(data.mesh.enabled){
+      if(data.mesh?.enabled){
         checkMeshAPs()
       }
     }
@@ -133,21 +133,18 @@ export function MeshNetwork () {
   }
 
   return (
-    <>
-      <Subtitle level={3}>{$t({ defaultMessage: 'Mesh Network' })}</Subtitle>
-      <UI.FieldLabel width='125px'>
-        {$t({ defaultMessage: 'Mesh Network' })}
-        <UI.FieldLabel width='30px'>
-          <Tooltip title={meshToolTipDisabledText}>
-            <Switch
-              checked={meshEnabled}
-              disabled={!isAllowEnableMesh}
-              onClick={toggleMesh}
-              style={{ marginTop: isAllowEnableMesh? '5px' : '0' }}
-            />
-          </Tooltip>
-        </UI.FieldLabel>
+    <UI.FieldLabel width='125px'>
+      {$t({ defaultMessage: 'Mesh Network' })}
+      <UI.FieldLabel width='30px'>
+        <Tooltip title={meshToolTipDisabledText}>
+          <Switch
+            checked={meshEnabled}
+            disabled={!isAllowEnableMesh}
+            onClick={toggleMesh}
+            style={{ marginTop: isAllowEnableMesh? '5px' : '0' }}
+          />
+        </Tooltip>
       </UI.FieldLabel>
-    </>
+    </UI.FieldLabel>
   )
 }

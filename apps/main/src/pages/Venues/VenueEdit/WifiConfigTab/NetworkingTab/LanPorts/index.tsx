@@ -139,12 +139,6 @@ export function LanPorts () {
       poeOut: Array(form.getFieldValue('poeOut')?.length).fill(selected?.poeOut),
       lan: selected?.lanPorts
     })
-
-    setEditContextData({
-      ...editContextData,
-      isDirty: false,
-      hasError: false
-    })
   }
 
   const handleUpdateLanPorts = async (data?: VenueLanPorts[]) => {
@@ -154,12 +148,12 @@ export function LanPorts () {
         isDirty: false,
         hasError: false
       })
+      setLanPortData(data ?? lanPortData)
+      setLanPortOrinData(data ?? lanPortData)
       await updateVenueLanPorts({
         params: { tenantId, venueId },
         payload: data ?? lanPortData
       }).unwrap()
-      setLanPortData(data ?? lanPortData)
-      setLanPortOrinData(data ?? lanPortData)
     } catch {
       showToast({
         type: 'error',

@@ -2,11 +2,6 @@
 
 exports[`MeshNetwork should render correctly 1`] = `
 <DocumentFragment>
-  <h3
-    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-  >
-    Mesh Network
-  </h3>
   <div
     class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
     width="125px"
@@ -37,11 +32,6 @@ exports[`MeshNetwork should render correctly 1`] = `
 
 exports[`MeshNetwork should render disabled switch button correctly 1`] = `
 <DocumentFragment>
-  <h3
-    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-  >
-    Mesh Network
-  </h3>
   <div
     class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
     width="125px"

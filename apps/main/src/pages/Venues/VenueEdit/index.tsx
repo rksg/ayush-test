@@ -107,6 +107,11 @@ export function showUnsavedModal (
       const { setData, oldData, tabKey } = editContextData
       if(editContextData?.unsavedTabKey === 'networking'){
         editNetworkingContextData?.discardLanPorts?.()
+        setEditContextData({
+          ...editContextData,
+          isDirty: false,
+          hasError: false
+        })
       } else {
         setEditContextData({
           ...editContextData,
