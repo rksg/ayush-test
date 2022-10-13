@@ -48,7 +48,7 @@ export function CustomDrawer () {
     />
   </Form>
 
-  const footerWithAddAnoter = (
+  const footerWithAddAnother = (
     <Drawer.FormFooter
       showAddAnother={showAddAnother}
       onCancel={resetFields}
@@ -70,7 +70,7 @@ export function CustomDrawer () {
         visible={visible}
         onClose={onClose}
         children={content}
-        footer={footerWithAddAnoter}
+        footer={footerWithAddAnother}
         destroyOnClose={resetField}
         width={'600px'}
       />
