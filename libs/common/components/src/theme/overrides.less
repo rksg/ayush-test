@@ -574,7 +574,7 @@
     }
   }
 
-  .ant-cascader-checkbox, .ant-checkbox {
+  .ant-tree-checkbox, .ant-cascader-checkbox, .ant-checkbox {
     &-inner {
       background-color: transparent;
       border-color: var(--acx-accents-blue-50);
@@ -586,27 +586,35 @@
         border-width: 1px;
       }
     }
-    &-checked .ant-cascader-checkbox-inner, &-checked .ant-checkbox-inner {
-      background-color: var(--acx-accents-blue-50);
-    }
-    &-indeterminate .ant-cascader-checkbox-inner, &-indeterminate .ant-checkbox-inner {
-      background-color: var(--acx-accents-blue-50);
-      &::after {
-        width: 8px;
-        height: 1px;
-        top: 50%;
-        left: 50%;
-        background-color: var(--acx-primary-white);
+    &-checked {
+     .ant-tree-checkbox-inner, .ant-cascader-checkbox-inner, .ant-checkbox-inner {
+        background-color: var(--acx-accents-blue-50);
       }
     }
-    &-disabled .ant-cascader-checkbox-inner, &-disabled .ant-checkbox-inner {
-      border-color: var(--acx-neutrals-40);
+    &-indeterminate {
+      .ant-tree-checkbox-inner, .ant-cascader-checkbox-inner, .ant-checkbox-inner {
+        background-color: var(--acx-accents-blue-50);
+        &::after {
+          width: 8px;
+          height: 1px;
+          top: 50%;
+          left: 50%;
+          background-color: var(--acx-primary-white);
+        }
+      }
     }
-    &-checked.ant-cascader-checkbox-disabled .ant-cascader-checkbox-inner, &-checked.ant-checkbox-disabled .ant-checkbox-inner {
-      border-color: var(--acx-neutrals-40);
-      background-color: var(--acx-neutrals-40);
-      &::after {
-        border-color: var(--acx-primary-white);
+    &-disabled {
+     .ant-tree-checkbox-inner,.ant-cascader-checkbox-inner, .ant-checkbox-inner {
+        border-color: var(--acx-neutrals-40);
+      }
+    }
+    &-checked.ant-tree-checkbox-disabled, &-checked.ant-cascader-checkbox-disabled, &-checked.ant-checkbox-disabled {
+      .ant-tree-checkbox-inner, .ant-cascader-checkbox-inner, .ant-checkbox-inner {
+        border-color: var(--acx-neutrals-40);
+        background-color: var(--acx-neutrals-40);
+        &::after {
+          border-color: var(--acx-primary-white);
+        }
       }
     }
   }
