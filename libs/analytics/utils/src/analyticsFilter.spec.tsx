@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
-
-import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 import { useAnalyticsFilter, AnalyticsFilterProvider } from './analyticsFilter'
 
@@ -19,7 +17,6 @@ describe('useAnalyticsFilter', () => {
       isCallableFn = true
     }
     expect(isCallableFn).toBeTruthy()
-    result.current.setNetworkPath()
     expect(result.current.filters).toEqual({
       path: [{ name: 'Network', type: 'network' }],
       startDate: '2021-12-31T00:00:00+00:00',
@@ -44,11 +41,14 @@ describe('AnalyticsFilterProvider', () => {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
     }
-    const { asFragment } = render(<BrowserRouter>
+    const { asFragment } = render(<MemoryRouter initialEntries={[{
+      pathname: '/analytics/incidents',
+      search: ''
+    }]}>
       <AnalyticsFilterProvider>
         <Component />
       </AnalyticsFilterProvider>
-    </BrowserRouter>)
+    </MemoryRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('changes filter value', () => {
@@ -59,11 +59,14 @@ describe('AnalyticsFilterProvider', () => {
       })
       return <div>{JSON.stringify(filters)}</div>
     }
-    const { asFragment } = render(<BrowserRouter>
+    const { asFragment } = render(<MemoryRouter initialEntries={[{
+      pathname: '/analytics/incidents',
+      search: ''
+    }]}>
       <AnalyticsFilterProvider>
         <Component />
       </AnalyticsFilterProvider>
-    </BrowserRouter>)
+    </MemoryRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('gets initial value from search parameters', () => {
@@ -73,7 +76,7 @@ describe('AnalyticsFilterProvider', () => {
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
-        pathname: '/incidents',
+        pathname: '/analytics/incidents',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
         <AnalyticsFilterProvider>
@@ -99,7 +102,7 @@ describe('AnalyticsFilterProvider', () => {
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
-        pathname: '/incidents',
+        pathname: '/analytics/incidents',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
         <AnalyticsFilterProvider>
@@ -124,7 +127,7 @@ describe('AnalyticsFilterProvider', () => {
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
-        pathname: '/incidents',
+        pathname: '/analytics/incidents',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
         <AnalyticsFilterProvider>
@@ -151,7 +154,7 @@ describe('AnalyticsFilterProvider', () => {
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
-        pathname: '/incidents',
+        pathname: '/analytics/incidents',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
         <AnalyticsFilterProvider>
@@ -176,7 +179,32 @@ describe('AnalyticsFilterProvider', () => {
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
-        pathname: '/health',
+        pathname: '/analytics/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <AnalyticsFilterProvider>
+          <Component />
+        </AnalyticsFilterProvider>
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set filters correctly path is health and selected node is zone', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'Zone' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/health',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
         <AnalyticsFilterProvider>

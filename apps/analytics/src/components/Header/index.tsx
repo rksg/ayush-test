@@ -61,7 +61,7 @@ export const Header = ({ data, shouldQuerySwitch, ...props }: HeaderProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { filters, getNetworkFilter } = useAnalyticsFilter()
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
-  const { path } = getNetworkFilter()
+  const { networkFilter: { path } } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
   return (
     <PageHeader
