@@ -72,34 +72,47 @@ export const ActionButton = styled.button.attrs({ type: 'button' })`
   }
 `
 
-export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })``
+export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })`
+  position: absolute;
+  left: 24px;
+  top: 16px;
+`
+export const SettingSection = styled.div`
+  border-top: 1px solid var(--acx-neutrals-20);
+  padding: 11px 16px 13px 16px;
+  > .ant-checkbox-wrapper {
+    padding: 0;
+  }
+`
 
 export const TableSettingsGlobalOverride = createGlobalStyle`
   .ant-pro-table-column-setting {
     &-overlay {
       .ant-popover-inner {
-        padding-bottom: 48px;
+        padding-top: 40px;
+        display: flex;
+        flex-direction: column-reverse;
       }
       .ant-popover-title {
         min-height: unset;
-        padding: 16px 24px;
-        padding-bottom: 8px;
         border-bottom: 0;
+        padding: 0;
       }
       .ant-popover-inner-content {
         padding-bottom: 8px;
-        border-bottom: 1px solid var(--acx-neutrals-20);
       }
       .ant-tree-switcher { display: none; }
       .ant-tree-treenode-disabled {
         .ant-tree-draggable-icon { visibility: hidden; }
       }
-      .ant-tree-treenode {
-        padding: 4px 0;
-        align-items: center;
+      .ant-tree-treenode, .ant-checkbox-wrapper {
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
         font-weight: var(--acx-body-font-weight);
+      }
+      .ant-tree-treenode {
+        padding: 4px 0;
+        align-items: center;
         &:hover { background-color: unset; }
         .ant-tree-checkbox { margin-left: 24px; }
         .ant-tree-draggable-icon ~ .ant-tree-checkbox { margin-left: 0; }
@@ -113,12 +126,8 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
 
     &-title {
       height: unset;
-      .ant-checkbox-wrapper { display: none; }
-      .ant-btn {
-        position: absolute;
-        left: 16px;
-        bottom: 13px;
-      }
+      > .ant-space, > .ant-space > .ant-space-item { width: 100%; }
+      > .ant-checkbox-wrapper { display: none; }
       h5${TableSettingTitle} {
         margin-bottom: 0;
       }

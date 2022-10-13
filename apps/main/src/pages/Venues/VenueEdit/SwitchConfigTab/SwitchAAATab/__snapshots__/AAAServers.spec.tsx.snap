@@ -57,7 +57,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
               class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
             >
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center"
@@ -195,7 +195,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                           style="margin-right: 0px;"
                                         >
                                           <div
-                                            class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-13 fsVtFP"
+                                            class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-14 jcXayc"
                                             role="separator"
                                           />
                                         </span>
@@ -261,7 +261,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                           class="ant-table-cell ant-table-selection-column react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
                                             class="ant-table-selection"
@@ -284,62 +284,62 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                             </label>
                                           </div>
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           Name
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           IP Address
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           Authentication Port
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           Accounting Port
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           Shared Secret
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
@@ -347,10 +347,10 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                           style="position: sticky; right: 0px;"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                       </tr>
@@ -665,7 +665,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
               class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
             >
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center"
@@ -779,7 +779,7 @@ to autofix this issue
               class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
             >
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center"
@@ -926,7 +926,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
               class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
             >
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1029,8 +1029,11 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                                     >
                                       <tr>
                                         <th
-                                          class="ant-table-cell ant-table-selection-column"
+                                          class="ant-table-cell ant-table-selection-column react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           <div
                                             class="ant-table-selection"
                                           >
@@ -1052,36 +1055,76 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                                               </span>
                                             </label>
                                           </div>
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell"
+                                          class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           Name
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell"
+                                          class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           IP Address
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell"
+                                          class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           Authentication Port
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell"
+                                          class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           Accounting Port
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell"
+                                          class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           Shared Secret
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                           style="position: sticky; right: 0px;"
-                                        />
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
                                       </tr>
                                     </thead>
                                     <tbody
@@ -1234,7 +1277,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
               class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
             >
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1542,7 +1585,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
               class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
             >
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
               >
                 <div
                   class="ant-space ant-space-horizontal ant-space-align-center"
