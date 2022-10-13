@@ -29,6 +29,7 @@ function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: strin
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
         data: data! && [{
+          key: kpi,
           name: $t(text),
           data: transformResponse(data)
         }]

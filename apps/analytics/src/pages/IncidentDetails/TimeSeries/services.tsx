@@ -80,7 +80,7 @@ export const Api = dataApi.injectEndpoints({
               $path: [HierarchyNodeInput],
               $start: DateTime,
               $end: DateTime,
-              $granularity: String,
+              ${(queries.includes('$granularity')) ? '$granularity: String,' : ''}
               $code: String
             ) {
               network(start: $start, end: $end) {
