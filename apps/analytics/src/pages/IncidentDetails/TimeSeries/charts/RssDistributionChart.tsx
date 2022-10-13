@@ -53,7 +53,6 @@ const barColors = (incident: Incident, data: TimeSeriesChartResponse) => {
 export const RssDistributionChart = ({ data, incident }: TimeSeriesChartProps) => {
   const { rssDistribution } = data
   const { $t } = useIntl()
-  const colors = barColors(incident, data)
 
   const xValue = $t({ defaultMessage: 'RSS Distribution' })
   const yValue = $t({ defaultMessage: 'Samples' })
@@ -73,7 +72,7 @@ export const RssDistributionChart = ({ data, incident }: TimeSeriesChartProps) =
           grid={{ bottom: '10%', top: '5%' }}
           xAxisName={$t({ defaultMessage: 'RSS (in dBm)' })}
           tooltipFormatter={tooltipFormatter}
-          barColors={colors}
+          barColors={barColors(incident, data)}
         />
       )}
     </AutoSizer>
