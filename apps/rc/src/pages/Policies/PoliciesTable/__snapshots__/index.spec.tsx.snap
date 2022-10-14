@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Services Table should render table 1`] = `
+exports[`PoliciesTable should render table 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
@@ -20,7 +20,7 @@ exports[`Services Table should render table 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              Services
+              Policies
             </h1>
           </span>
         </div>
@@ -34,14 +34,14 @@ exports[`Services Table should render table 1`] = `
               class="ant-space-item"
             >
               <a
-                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/select"
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/select"
               >
                 <button
                   class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                   type="button"
                 >
                   <span>
-                    Add Service
+                    Add Policy
                   </span>
                 </button>
               </a>
@@ -154,7 +154,7 @@ exports[`Services Table should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Service Name
+                                    Name
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -214,7 +214,7 @@ exports[`Services Table should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Service Type
+                                    Type
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -551,15 +551,15 @@ exports[`Services Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/wifiCalling/cc080e33-26a7-4d34-870f-b7f312fcfccb/detail"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/accessControl/cc080e33-26a7-4d34-870f-b7f312fcfccb/detail"
                                 >
-                                  Service 1
+                                  Policy 1
                                 </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                Wi-Fi Calling
+                                Access Control
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -608,15 +608,15 @@ exports[`Services Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/mdnsProxy/aa080e33-26a7-4d34-870f-b7f312fcfccb/detail"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/vlanPool/aa080e33-26a7-4d34-870f-b7f312fcfccb/detail"
                                 >
-                                  Service 2
+                                  Policy 2
                                 </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                mDNS Proxy
+                                VLAN Pools
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -639,7 +639,7 @@ exports[`Services Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="bb080e33-26a7-4d34-870f-b7f312fcfccb"
+                              data-row-key="aa080e33-26a7-4d34-870f-b7f312fcfccc"
                             >
                               <td
                                 class="ant-table-cell ant-table-selection-column"
@@ -665,15 +665,15 @@ exports[`Services Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/dhcp/bb080e33-26a7-4d34-870f-b7f312fcfccb/detail"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/rougeAp/aa080e33-26a7-4d34-870f-b7f312fcfccc/detail"
                                 >
-                                  Service 3
+                                  Policy 3
                                 </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                DHCP
+                                Rogue AP Detection
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -684,7 +684,7 @@ exports[`Services Table should render table 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                15
+                                8
                               </td>
                               <td
                                 class="ant-table-cell"
