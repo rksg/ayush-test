@@ -1,4 +1,4 @@
-import { GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, RadioEnum, RadioTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 export const successResponse = {
   requestId: 'request-id'
@@ -507,7 +507,12 @@ export const networkDeepList = {
       id: 'd556bb683e4248b7a911fdb40c307aa5',
       venues: [{
         venueId: '3b2ffa31093f41648ed38ed122510029',
-        id: '3b2ffa31093f41648ed38ed122510029'
+        id: '3b2ffa31093f41648ed38ed122510029',
+        tripleBandEnabled: false,
+        networkId: 'd556bb683e4248b7a911fdb40c307aa5',
+        allApGroupsRadio: RadioEnum.Both,
+        isAllApGroups: true,
+        allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz]
       }]
     }
   ]

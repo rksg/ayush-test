@@ -21,7 +21,9 @@ import {
   NetworkVenueScheduler,
   RadioEnum,
   RadioTypeEnum,
-  SchedulerTypeEnum
+  SchedulerTypeEnum,
+  VlanPool,
+  VlanType
 } from './index'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
@@ -36,6 +38,24 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
 }
 
 /* eslint-disable max-len */
+
+export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number) => { // TODO: move to apGroupDialog.utils.tsx
+  let vlanPrefix = ''
+  let vlanString
+  let vlanType
+
+  if (vlanPool) {
+    vlanString = vlanPool.name
+    vlanPrefix = VLAN_PREFIX.POOL
+    vlanType = VlanType.Pool
+  } else  {
+    vlanString = vlanId
+    vlanPrefix = VLAN_PREFIX.VLAN
+    vlanType = VlanType.VLAN
+  }
+
+  return { vlanPrefix, vlanString, vlanType }
+}
 
 export const transformVLAN = (currentVenue?: NetworkVenue, wlan?: NetworkSaveData['wlan'], callback?: React.MouseEventHandler<HTMLElement>) => {
   const { $t } = getIntl()
@@ -68,18 +88,14 @@ export const transformVLAN = (currentVenue?: NetworkVenue, wlan?: NetworkSaveDat
     else { //isAllApGroups
       valueSuffix = $t({ defaultMessage: '(Default)' })
 
-      if (wlan?.advancedCustomization?.vlanPool) {
-        vlanString = wlan.advancedCustomization.vlanPool.name
-        valuePrefix = VLAN_PREFIX.POOL
-      } else if (wlan?.vlanId) {
-        vlanString = wlan?.vlanId
-        valuePrefix = VLAN_PREFIX.VLAN
-      }
+      const vlanStringSet = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
+      valuePrefix = vlanStringSet.vlanPrefix
+      vlanString = vlanStringSet.vlanString
     }
     result = `${valuePrefix}${vlanString} ${valueSuffix}`
     return <Button type='link' onClick={callback}>{result}</Button>
   }
-  return result
+  return <>{result}</>
 }
 
 export const transformAps = (currentVenue?: NetworkVenue, callback?: React.MouseEventHandler<HTMLElement>) => {
@@ -101,7 +117,7 @@ export const transformAps = (currentVenue?: NetworkVenue, callback?: React.Mouse
     }
     return <Button type='link' onClick={callback}>{result}</Button>
   }
-  return result
+  return <>{result}</>
 }
 
 export const transformRadios = (currentVenue?: NetworkVenue, callback?: React.MouseEventHandler<HTMLElement>) => {
@@ -140,7 +156,7 @@ export const transformRadios = (currentVenue?: NetworkVenue, callback?: React.Mo
     }
     return <Button type='link' onClick={callback}>{result}</Button>
   }
-  return result
+  return <>{result}</>
 }
 
 export const transformScheduling = (currentVenue?: NetworkVenue, currentTimeIdx?: ISlotIndex, callback?: React.MouseEventHandler<HTMLElement>) => {
@@ -187,7 +203,7 @@ export const transformScheduling = (currentVenue?: NetworkVenue, currentTimeIdx?
       </Tooltip>
     )
   }
-  return result
+  return <>{result}</>
 }
 
 export const radioTypeEnumToRadioEnum = (radioTypes: RadioTypeEnum[]) => {

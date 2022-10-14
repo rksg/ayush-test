@@ -27,34 +27,16 @@ import {
 import {
   RadioEnum,
   RadioTypeEnum,
-  VLAN_PREFIX,
   NetworkApGroup,
   VlanPool,
   VlanType,
   WlanSecurityEnum,
-  ApGroupModalWidgetProps
+  ApGroupModalWidgetProps,
+  getVlanString
 } from '@acx-ui/rc/utils'
 
 import * as UI       from './styledComponents'
 import { VlanInput } from './VlanInput'
-
-export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number) => { // TODO: move to apGroupDialog.utils.tsx
-  let vlanPrefix = ''
-  let vlanString
-  let vlanType
-
-  if (vlanPool) {
-    vlanString = vlanPool.name
-    vlanPrefix = VLAN_PREFIX.POOL
-    vlanType = VlanType.Pool
-  } else  {
-    vlanString = vlanId
-    vlanPrefix = VLAN_PREFIX.VLAN
-    vlanType = VlanType.VLAN
-  }
-
-  return { vlanPrefix, vlanString, vlanType }
-}
 
 const isDisableAllAPs = (apGroups?: NetworkApGroup[]) => {
   if (!apGroups) {
