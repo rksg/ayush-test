@@ -1,4 +1,5 @@
 import { gql }         from 'graphql-request'
+import { unitOfTime }  from 'moment-timezone'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import AutoSizer       from 'react-virtualized-auto-sizer'
@@ -47,7 +48,10 @@ export const TtcFailureChart = ({ chartRef, data, incident }: TimeSeriesChartPro
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
-  const buffer = 6
+  const buffer = {
+    front: { value: 0, unit: 'hours' as unitOfTime.Base },
+    back: { value: 0, unit: 'hours' as unitOfTime.Base }
+  }
   const { start, end } = getIncidentTimeSeriesPeriods(incident, buffer)
   const queryResults = useKpiTimeseriesQuery({
     path: incident.path,

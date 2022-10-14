@@ -1,3 +1,4 @@
+import { unitOfTime }    from 'moment-timezone'
 import { BrowserRouter } from 'react-router-dom'
 
 import { dataApiURL }      from '@acx-ui/analytics/services'
@@ -58,13 +59,17 @@ describe('Timeseries component', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: queryResponse
     })
+    const buffer = {
+      front: { value: 6, unit: 'hours' as unitOfTime.Base },
+      back: { value: 6, unit: 'hours' as unitOfTime.Base }
+    }
     const { asFragment } = render(<BrowserRouter>
       <Provider>
         <TimeSeries
           incident={fakeIncident1}
           charts={charts}
           minGranularity='PT180S'
-          buffer={6}
+          buffer={buffer}
         />
       </Provider>
     </BrowserRouter>

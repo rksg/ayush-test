@@ -38,7 +38,10 @@ export const CovClientrssiLow = (incident: Incident) => {
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
     TimeSeriesChartTypes.RssQualityByClientsChart
   ]
-  const buffer = 0
+  const buffer = {
+    front: { value: 0, unit: 'hours' as unitOfTime.Base },
+    back: { value: 0, unit: 'hours' as unitOfTime.Base }
+  }
   return (
     <>
       <PageHeader
