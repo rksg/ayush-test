@@ -4,8 +4,10 @@ import attemptAndFailureChart   from './charts/AttemptAndFailureChart'
 import clientCountChart         from './charts/ClientCountChart'
 import failureChart             from './charts/FailureChart'
 import rssQualityByClientsChart from './charts/RssQualityByClientsChart'
-import ttcByFailureTypeChart    from './charts/TtcByFailureTypeChart'
-import ttcFailureChart          from './charts/TtcFailureChart'
+import apDisconnectionCountChart          from './charts/ApDisconnectionCountChart'
+import downtimeEventTypeDistributionChart from './charts/DowntimeEventTypeDistributionChart'
+import ttcByFailureTypeChart              from './charts/TtcByFailureTypeChart'
+import ttcFailureChart                    from './charts/TtcFailureChart'
 
 import type { TimeSeriesChartProps } from './types'
 
@@ -20,7 +22,9 @@ export enum TimeSeriesChartTypes {
   AttemptAndFailureChart,
   RssQualityByClientsChart,
   TtcFailureChart,
-  TtcByFailureTypeChart
+  TtcByFailureTypeChart,
+  ApDisconnectionCountChart,
+  DowntimeEventTypeDistributionChart
 }
 
 export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
@@ -29,5 +33,7 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.AttemptAndFailureChart]: attemptAndFailureChart,
   [TimeSeriesChartTypes.RssQualityByClientsChart]: rssQualityByClientsChart,
   [TimeSeriesChartTypes.TtcFailureChart]: ttcFailureChart,
-  [TimeSeriesChartTypes.TtcByFailureTypeChart]: ttcByFailureTypeChart
+  [TimeSeriesChartTypes.TtcByFailureTypeChart]: ttcByFailureTypeChart,
+  [TimeSeriesChartTypes.ApDisconnectionCountChart]: apDisconnectionCountChart,
+  [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart]: downtimeEventTypeDistributionChart
 }

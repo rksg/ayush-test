@@ -7,7 +7,7 @@ import {
   getSeriesData,
   mapCodeToReason,
   codeToFailureTypeMap,
-  TimeSeriesData
+  TimeSeriesDataType
 }                                         from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
@@ -41,7 +41,8 @@ export const FailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps)
     name: title
   }]
 
-  const chartResults = getSeriesData(failureChart as TimeSeriesData, seriesMapping)
+  const chartResults = getSeriesData(
+    failureChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
   return <Card title={title} type='no-border'>
     <AutoSizer>

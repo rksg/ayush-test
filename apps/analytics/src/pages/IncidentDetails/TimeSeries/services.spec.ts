@@ -1,4 +1,5 @@
 import moment from 'moment-timezone'
+import { unitOfTime } from 'moment-timezone'
 
 import { dataApiURL }       from '@acx-ui/analytics/services'
 import { fakeIncident1 }    from '@acx-ui/analytics/utils'
@@ -21,7 +22,10 @@ describe('chartQuery', () => {
     TimeSeriesChartTypes.ClientCountChart,
     TimeSeriesChartTypes.AttemptAndFailureChart
   ]
-  const buffer = 6
+  const buffer = {
+    front: { value: 6, unit: 'hours' as unitOfTime.Base },
+    back: { value: 6, unit: 'hours' as unitOfTime.Base }
+  }
 
   const expectedQueryResults = {
     network: {

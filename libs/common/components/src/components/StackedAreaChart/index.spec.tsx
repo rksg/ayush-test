@@ -38,6 +38,13 @@ describe('getSeriesTotal',() => {
 })
 
 describe('StackedAreaChart',() => {
+  it('should render StackedAreaChart', () => {
+    const { asFragment } = render(<StackedAreaChart data={data} />)
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('svg')).toBeDefined()
+  })
   it('should use imperative handle', async () => {
     const mockCallbackRef = jest.fn()
     let createHandleCallback: () => RefObject<ReactECharts>

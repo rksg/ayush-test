@@ -61,8 +61,9 @@ export interface MultiLineTimeSeriesChartProps <
     dataFormatter?: ReturnType<typeof formatter>
     seriesFormatters?: Record<string, ReturnType<typeof formatter>>
     yAxisProps?: {
-      max: number
-      min: number
+      max?: number
+      min?: number
+      minInterval?: number
     }
     disableLegend?: boolean
     chartRef?: RefCallback<ReactECharts>

@@ -33,8 +33,10 @@ import type { EChartsReactProps } from 'echarts-for-react'
 export interface StackedAreaChartProps
   <TChartData extends TimeSeriesChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
+    type?: 'smooth' | 'step'
     data: TChartData[]
     legendProp?: keyof TChartData /** @default 'name' */
+    yAxisProps?: { minInterval?: number }
     stackColors?: string[]
     dataFormatter?: ReturnType<typeof formatter>
     seriesFormatters?: Record<string, ReturnType<typeof formatter>>
@@ -66,8 +68,10 @@ export function getSeriesTotal <DataType extends TimeSeriesChartData> (
 export function StackedAreaChart <
   TChartData extends TimeSeriesChartData,
 > ({
+  type = 'smooth',
   data: initialData,
   legendProp = 'name' as keyof TChartData,
+  yAxisProps,
   dataFormatter = formatter('countFormat'),
   seriesFormatters,
   tooltipTotalTitle,
@@ -119,6 +123,7 @@ export function StackedAreaChart <
     },
     yAxis: {
       ...yAxisOptions(),
+      ...yAxisProps,
       type: 'value',
       axisLabel: {
         ...axisLabelOptions(),
@@ -135,6 +140,7 @@ export function StackedAreaChart <
       silent: true,
       stack: 'Total',
       smooth: true,
+      step: type === 'step' ? 'start' : false,
       symbol: 'none',
       lineStyle: { width: 0 },
       areaStyle: { opacity: 1 }
