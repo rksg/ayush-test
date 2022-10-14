@@ -1,5 +1,3 @@
-
-
 import { Key } from 'react'
 
 import { BandBalancing }             from '../models/BandBalancing'
@@ -170,15 +168,15 @@ export interface VenueDosProtection {
 }
 
 export interface VenueSwitchConfiguration {
-	cliApplied?: boolean,
-	id?: string,
-	name?: string,
-	profileId: Key[],
-	dns?: string[],
-	switchLoginPassword?: string,
-	switchLoginUsername?: string,
-	syslogEnabled: boolean,
-	syslogPrimaryServer?: string,
+  cliApplied?: boolean,
+  id?: string,
+  name?: string,
+  profileId: Key[],
+  dns?: string[],
+  switchLoginPassword?: string,
+  switchLoginUsername?: string,
+  syslogEnabled: boolean,
+  syslogPrimaryServer?: string,
   syslogSecondaryServer?: string
 }
 

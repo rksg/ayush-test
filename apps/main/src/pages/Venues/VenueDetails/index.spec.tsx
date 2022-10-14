@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi }                   from '@acx-ui/rc/services'
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, Dashboard }  from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -15,6 +15,18 @@ import {
 } from '../__tests__/fixtures'
 
 import { VenueDetails } from '.'
+
+const data: Dashboard = {
+  summary: {
+    alarms: {
+      summary: {
+        critical: 1,
+        major: 1
+      },
+      totalCount: 2
+    }
+  }
+}
 
 jest.mock(
   'analytics/Widgets',
@@ -34,6 +46,10 @@ describe('VenueDetails', () => {
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (req, res, ctx) => res(ctx.json(venueDetailHeaderData))
+      ),
+      rest.get(
+        CommonUrlsInfo.getDashboardOverview.url,
+        (req, res, ctx) => res(ctx.json(data))
       ),
       rest.post(
         CommonUrlsInfo.getVenueNetworkList.url,

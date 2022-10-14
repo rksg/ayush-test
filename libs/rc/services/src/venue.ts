@@ -11,14 +11,15 @@ import {
   Venue,
   VenueExtended,
   VenueDetailHeader,
+  APMesh,
   VenueCapabilities,
   VenueLed,
   VenueApModels,
-  VenueSettings,
   VenueDosProtection,
   VenueRogueAp,
   RogueClassificationPolicy,
   CommonResult,
+  VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile
 } from '@acx-ui/rc/utils'
@@ -26,7 +27,7 @@ import {
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'VenueFloorPlan'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -106,6 +107,33 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    getVenueSettings: build.query<VenueSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSettings, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    meshAps: build.query<TableResult<APMesh>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }]
+    }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
         if(payload){ //delete multiple rows
@@ -137,23 +165,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
             api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DETAIL' }]))
           })
         })
-      }
-    }),
-    getVenueSettings: build.query<VenueSettings, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueSettings, params)
-        return{
-          ...req
-        }
-      }
-    }),
-    updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
-        return {
-          ...req,
-          body: payload
-        }
       }
     }),
     deleteFloorPlan: build.mutation<CommonResult, RequestPayload>({
@@ -289,10 +300,11 @@ export const {
   useGetVenueQuery,
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
-  useDeleteVenueMutation,
-  useFloorPlanListQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
+  useMeshApsQuery,
+  useDeleteVenueMutation,
+  useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,

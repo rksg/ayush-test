@@ -44,7 +44,7 @@ export function NetworkingTab () {
       editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       setEditContextData({
         ...editContextData,
-        unsavedTabKey: 'settings',
+        unsavedTabKey: 'networking',
         isDirty: false
       })
     } catch {

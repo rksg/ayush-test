@@ -8,12 +8,23 @@ import { networkImpactChartsApi, RequestPayload  } from './services'
 describe('networkImpactChartsApi', () => {
   const payload = {
     incident: { id: 'id', metadata: { dominant: { } } },
-    charts: [
-      NetworkImpactChartTypes.WLAN,
-      NetworkImpactChartTypes.Radio,
-      NetworkImpactChartTypes.Reason,
-      NetworkImpactChartTypes.ClientManufacturer
-    ]
+    charts: [{
+      chart: NetworkImpactChartTypes.WLAN,
+      type: 'client',
+      dimension: 'ssids'
+    }, {
+      chart: NetworkImpactChartTypes.Radio,
+      type: 'client',
+      dimension: 'radios'
+    }, {
+      chart: NetworkImpactChartTypes.Reason,
+      type: 'client',
+      dimension: 'reasonCodes'
+    }, {
+      chart: NetworkImpactChartTypes.ClientManufacturer,
+      type: 'client',
+      dimension: 'manufacturer'
+    }]
   } as RequestPayload
   afterEach(() =>
     store.dispatch(networkImpactChartsApi.util.resetApiState())

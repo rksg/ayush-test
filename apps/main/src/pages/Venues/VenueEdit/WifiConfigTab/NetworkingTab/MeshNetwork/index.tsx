@@ -74,7 +74,7 @@ export function MeshNetwork () {
 
   const handleUpdateMeshSetting = async (check: boolean) => {
     try {
-      await updateVenueMesh({ params, payload: { mesh: check } })
+      await updateVenueMesh({ params, payload: { enabled: check } })
     } catch {
       showToast({
         type: 'error',
@@ -89,8 +89,8 @@ export function MeshNetwork () {
         type: 'confirm',
         content: $t({ defaultMessage:
               'If you have Mesh-APs, you will not be able to disable this option.' }),
-        okText: 'Enable Mesh',
-        cancelText: 'Cancel',
+        okText: $t({ defaultMessage: 'Enable Mesh' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
         onOk () {
           setMeshEnabled(true)
           setEditContextData && setEditContextData({
@@ -111,7 +111,7 @@ export function MeshNetwork () {
       if (hasMeshAPs) {
         showActionModal({
           type: 'error',
-          title: 'Error',
+          title: $t({ defaultMessage: 'Error' }),
           content:
               $t({ defaultMessage: 'You cannot set Mesh off because you have connected Mesh APs' })
         })
