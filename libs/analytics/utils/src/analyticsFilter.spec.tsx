@@ -11,7 +11,7 @@ describe('useAnalyticsFilter', () => {
   })
   it('should return correct value', () => {
     const { result } = renderHook(useAnalyticsFilter, {
-      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>
+      wrapper: ({ children }) => <MemoryRouter>{children}</MemoryRouter>
     })
     let isCallableFn = false
     if (typeof result.current.setNetworkPath === 'function') {
