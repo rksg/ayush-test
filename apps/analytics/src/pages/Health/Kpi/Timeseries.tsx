@@ -4,7 +4,6 @@ import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
-
 import { AnalyticsFilter, kpiConfig }                       from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, cssStr, NoData } from '@acx-ui/components'
 import type { TimeStamp, TimeStampRange }                   from '@acx-ui/types'
@@ -30,7 +29,7 @@ function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: {
   kpi: string,
   chartRef: RefCallback<ReactECharts>,
   setTimeWindow: { (timeWidow: TimeStampRange, isReset: boolean): void },
-  timeWindow: TimeStampRange
+  timeWindow?: TimeStampRange // no set if there is no zoom
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])

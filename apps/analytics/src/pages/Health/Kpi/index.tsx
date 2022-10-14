@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
+import moment       from 'moment-timezone'
 
 import { kpisForTab, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }               from '@acx-ui/components'
@@ -25,7 +26,10 @@ export default function KpiSection (props: { tab: HealthTab }) {
       instance.group = 'timeSeriesGroup'
     }
   }
-
+  const defaultZoom = (
+    moment(filters.startDate).isSame(timeWindow[0]) &&
+    moment(filters.endDate).isSame(timeWindow[1])
+  )
   useEffect(() => { connect('timeSeriesGroup') }, [])
   return (<>{
     kpis.map((kpi) => (<KpiRow key={kpi}>
@@ -40,7 +44,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
               kpi={kpi}
               chartRef={connectChart}
               setTimeWindow={setTimeWindow}
-              timeWindow={timeWindow}
+              {...(defaultZoom ? {} : { timeWindow })}
             />
           </GridCol>
         </GridRow>
