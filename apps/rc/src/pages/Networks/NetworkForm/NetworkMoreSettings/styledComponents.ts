@@ -19,21 +19,6 @@ export const Label = styled.span`
 `
 
 export const CollapsePanel = styled(Collapse)`
-  &.ant-collapse-icon-position-end
-    > .ant-collapse-item {
-      > .ant-collapse-header {
-        border-bottom: 1px solid var(--acx-neutrals-20);
-        padding: 15px 0px 5px 0px;
-        font-size: var(--acx-body-2-font-size);
-        font-weight: 600;
-        fontFamily: cssStr('--acx-neutral-brand-font');
-      }
-      & .ant-collapse-arrow {
-        right: 10px;
-        top: 65%;
-      }
-    }
-
    &.ant-collapse-ghost
      > .ant-collapse-item
        > .ant-collapse-content

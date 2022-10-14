@@ -67,14 +67,6 @@ export interface AccessControlProfile {
   }
 }
 
-export interface VlanPool {
-  name: string,
-  id: string,
-  tenantId: string,
-  vlanMembers: string[]
-}
-
-
 export interface CloudpathServer {
   id: string
   name: string
@@ -99,7 +91,10 @@ export interface RadiusService {
   sharedSecret: string
 }
 
-
+export enum VlanType {
+  VLAN = 'vlanId',
+  Pool = 'vlanPool'
+}
 
 export interface DHCPPool {
   id: number;

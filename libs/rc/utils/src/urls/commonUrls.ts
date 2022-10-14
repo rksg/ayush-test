@@ -99,6 +99,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
   },
+  getVenueSettings: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId'
+  },
+  updateVenueMesh: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh'
+  },
+  getMeshAps: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/aps/mesh'
+  },
   getService: {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
@@ -110,6 +122,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueFloorplans: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
+  },
+  deleteFloorPlan: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
   },
   getVenueCapabilities: {
     method: 'get',
@@ -162,5 +178,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getPoliciesList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/policies'
+  },
+  getUserProfile: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/user-profile'
   }
 }

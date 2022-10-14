@@ -20,7 +20,7 @@ import {
   useGetVenueQuery,
   useUpdateVenueMutation
 } from '@acx-ui/rc/services'
-import { Address, VenueSaveData, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { Address, VenueExtended, checkObjectNotExists } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -122,7 +122,7 @@ export function VenuesForm () {
   const intl = useIntl()
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<VenueSaveData>>()
+  const formRef = useRef<StepsFormInstance<VenueExtended>>()
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
@@ -203,7 +203,7 @@ export function VenuesForm () {
     })
   }
 
-  const handleAddVenue = async (values: VenueSaveData) => {
+  const handleAddVenue = async (values: VenueExtended) => {
     try {
       const formData = { ...values }
       formData.address = address
@@ -217,7 +217,7 @@ export function VenuesForm () {
     }
   }
 
-  const handleEditVenue = async (values: VenueSaveData) => {
+  const handleEditVenue = async (values: VenueExtended) => {
     try {
       const formData = { ...values }
       formData.address = address
