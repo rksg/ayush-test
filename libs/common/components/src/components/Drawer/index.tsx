@@ -91,10 +91,7 @@ const FormFooter = (props: FormFooterProps) => {
           {buttonLabel.cancel}
         </Button>
         <Button
-          onClick={() => {
-            onSave(checked)
-            setChecked(false)
-          }}
+          onClick={() => onSave(checked)}
           type={'secondary'}
         >
           {buttonLabel.save}
