@@ -1,10 +1,14 @@
-import { Incident } from '@acx-ui/analytics/utils'
+import { useIntl } from 'react-intl'
+
+import { Incident }   from '@acx-ui/analytics/utils'
+import { renderHook } from '@acx-ui/test-utils'
 
 import {
   getDataWithPercentage,
   getDominance,
   getWLANDominance,
-  getDominanceByThreshold
+  getDominanceByThreshold,
+  getAPRebootReason
 } from './config'
 
 describe('getDataWithPercentage', () => {
@@ -100,5 +104,18 @@ describe('getWLANDominance', () => {
       percentage: 0.3333333333333333,
       value: 1
     })
+  })
+})
+
+describe('getAPRebootReason', () => {
+  it('return key if no mapping', () => {
+    const key = 'random_key_123'
+    const { current } = renderHook(() => getAPRebootReason(key, useIntl())).result
+    expect(current).toEqual(key)
+  })
+  it('return value of given key', () => {
+    const key = 'system recovery by watchdog'
+    const { current } = renderHook(() => getAPRebootReason(key, useIntl())).result
+    expect(current).toEqual('system recovery by WatchDog')
   })
 })

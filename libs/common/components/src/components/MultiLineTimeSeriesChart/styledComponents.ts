@@ -1,11 +1,8 @@
 import styled from 'styled-components/macro'
 
-import { Button } from '../Button'
+import { ResetWrapper } from '../Chart/styledComponents'
 
-export const Wrapper = styled.div`
-  position: relative;
-  width: fit-content;
-
+export const Wrapper = styled(ResetWrapper)`
   svg {
     // special color code to target path of brush
     path[stroke="#123456"] {
@@ -14,10 +11,4 @@ export const Wrapper = styled.div`
       clip-path: inset(0 round 5px);
     }
   }
-`
-
-export const ResetButton = styled(Button)`
-  position: absolute;
-  top: 15%;
-  right: 0;
 `

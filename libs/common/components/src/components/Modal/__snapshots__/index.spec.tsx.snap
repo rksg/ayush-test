@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Modal should match snapshot 1`] = `
+exports[`Modal should render custom footer 1`] = `
 <div
   class="ant-modal-root"
   data-testid="basic-modal"
@@ -39,7 +39,17 @@ exports[`Modal should match snapshot 1`] = `
         </div>
         <div
           class="ant-modal-body"
-        />
+        >
+          <p>
+            Some contents...
+          </p>
+          <p>
+            Some contents...
+          </p>
+          <p>
+            Some contents...
+          </p>
+        </div>
         <div
           class="ant-modal-footer"
         >

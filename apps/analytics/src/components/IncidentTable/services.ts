@@ -1,18 +1,17 @@
 import { gql }               from 'graphql-request'
 import { MessageDescriptor } from 'react-intl'
 
-import { dataApi } from '@acx-ui/analytics/services'
+import { dataApi }    from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentCodes,
   Incident,
   transformIncidentQueryResult,
   shortDescription,
-  formattedNodeType,
+  nodeTypes,
   impactValues,
   impactedArea,
-  calculateSeverity,
-  noDataSymbol
+  calculateSeverity
 } from '@acx-ui/analytics/utils'
 import type { RecordWithChildren } from '@acx-ui/components'
 import { getIntl }                 from '@acx-ui/utils'
@@ -38,7 +37,7 @@ const listQueryProps = {
   `
 }
 
-export type AdditionalIncidentTableFields = {
+type AdditionalIncidentTableFields = {
   duration: number,
   description: string,
   category: string | MessageDescriptor,
@@ -63,13 +62,13 @@ export const transformData = (incident: Incident): IncidentTableRow => {
   && relatedIncidents.map((child) => {
     const childDuration = durationValue(child.startTime, child.endTime)
     const childIncident = transformIncidentQueryResult(child)
-    const impactValueObj = impactValues(intl, 'client', childIncident)
+    const impactValueObj = impactValues('client', childIncident)
     const childClientImpact = impactValueObj['clientImpactRatioFormatted']
     const childClientCount = impactValueObj['clientImpactCountFormatted']
-    const childDescription = shortDescription(childIncident, intl)
-    const childScope = impactedArea(child.path, child.sliceValue, intl)!
-    const childType = formattedNodeType(child.sliceType, intl)
-    const childSeverityLabel = calculateSeverity(child.severity) ?? noDataSymbol
+    const childDescription = shortDescription(childIncident)
+    const childScope = impactedArea(child.path, child.sliceValue)!
+    const childType = nodeTypes(child.sliceType)
+    const childSeverityLabel = calculateSeverity(child.severity)
 
     return {
       ...childIncident,
@@ -88,13 +87,13 @@ export const transformData = (incident: Incident): IncidentTableRow => {
 
   const incidentInfo = transformIncidentQueryResult(incident)
   const duration = durationValue(incident.startTime, incident.endTime)
-  const impactValueObj = impactValues(intl, 'client', incidentInfo)
+  const impactValueObj = impactValues('client', incidentInfo)
   const clientImpact = impactValueObj['clientImpactRatioFormatted']
   const impactedClients = impactValueObj['clientImpactCountFormatted']
-  const description = shortDescription(incidentInfo, intl)
-  const scope = impactedArea(incident.path, incident.sliceValue, intl)!
-  const type = formattedNodeType(incident.sliceType, intl)
-  const severityLabel = calculateSeverity(incident.severity) ?? noDataSymbol
+  const description = shortDescription(incidentInfo)
+  const scope = impactedArea(incident.path, incident.sliceValue)!
+  const type = nodeTypes(incident.sliceType)
+  const severityLabel = calculateSeverity(incident.severity)
 
   return {
     ...incidentInfo,
@@ -121,9 +120,28 @@ export interface Response<IncidentNodeData> {
   }
 }
 
+export interface MutationPayload {
+  id: string,
+  mute: boolean,
+  code: string,
+  priority: string,
+}
+
+export interface MutationResponse {
+  data: {
+    toogleMute: {
+      success: boolean,
+      errorMsg: string,
+      errorCode: string
+    }
+  }
+}
+
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentsList: build.query<IncidentNodeData, IncidentFilter>({
+    incidentsList: build.query<IncidentNodeData, IncidentFilter & {
+      includeMuted?: boolean
+    }>({
       query: (payload) => ({
         document: gql`
           query IncidentTableWidget(
@@ -157,7 +175,7 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           code: payload.code ?? incidentCodes,
-          includeMuted: true,
+          includeMuted: payload.includeMuted ?? true,
           severity: [{ gt: 0, lte: 1 }],
           filter: payload?.filter
         }
@@ -166,10 +184,37 @@ export const api = dataApi.injectEndpoints({
         const { incidents } = response.network.hierarchyNode
         if (typeof incidents === 'undefined') return []
         return incidents.map((incident) => transformData(incident))
-      }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
+    }),
+    muteIncidents: build.mutation<MutationResponse, MutationPayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation MutateIncident(
+            $id: String!,
+            $mute: Boolean!,
+            $code: String!,
+            $priority: String!
+          ){
+            toggleMute (mute: $mute, code: $code, priority: $priority, id: $id) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: {
+          id: payload.id,
+          mute: payload.mute,
+          code: payload.code,
+          priority: payload.priority
+        }
+      }),
+      transformResponse: (response: MutationResponse) => response,
+      invalidatesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
     })
   })
 })
 
 
-export const { useIncidentsListQuery } = api
+export const { useIncidentsListQuery, useMuteIncidentsMutation } = api

@@ -5,14 +5,34 @@ import { mockServer } from './mockServer'
 export const mockGraphqlQuery = (
   url: string,
   key: string,
-  result: { data?: any, error?: any } // eslint-disable-line @typescript-eslint/no-explicit-any
+  result: { data?: any, error?: any }, // eslint-disable-line @typescript-eslint/no-explicit-any
+  matchQuery: boolean = false
 ) => {
   const api = graphql.link(url)
   mockServer.use(
     api.query(key, (req, res, ctx) => {
+      if(matchQuery) {
+        expect(req.body?.query).toMatchSnapshot()
+        expect(req.body?.variables).toMatchSnapshot()
+      }
       return result.error
         ? res(ctx.errors([result.error]))
         : res(ctx.data(result.data||{}))
+    })
+  )
+}
+
+export const mockGraphqlMutation = (
+  url: string,
+  key: string,
+  result: { data?: any, error?: any } // eslint-disable-line @typescript-eslint/no-explicit-any
+) => {
+  const api = graphql.link(url)
+  mockServer.use(
+    api.mutation(key, (req, res, ctx) => {
+      return result.error
+        ? res(ctx.errors([result.error]))
+        : res(ctx.data(result.data ?? {}))
     })
   )
 }

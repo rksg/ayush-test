@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
+  SwitchUrlsInfo,
   createHttpRequest,
   FloorPlanDto,
   onSocketActivityChanged,
@@ -9,10 +10,18 @@ import {
   showActivityMessage,
   TableResult,
   Venue,
+  VenueExtended,
   VenueDetailHeader,
+  APMesh,
   VenueCapabilities,
   VenueLed,
   VenueApModels,
+  RadiusServer,
+  TacacsServer,
+  LocalUser,
+  AAASetting,
+  CommonResult,
+  VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile
 } from '@acx-ui/rc/utils'
@@ -20,7 +29,7 @@ import {
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -38,13 +47,19 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddVenue', 'DeleteVenue', 'DeleteVenues'], () => {
+          const activities = [
+            'AddVenue',
+            'UpdateVenue',
+            'DeleteVenue',
+            'DeleteVenues'
+          ]
+          showActivityMessage(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
       }
     }),
-    addVenue: build.mutation<Venue, RequestPayload>({
+    addVenue: build.mutation<VenueExtended, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addVenue, params)
         return {
@@ -54,7 +69,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
-    getVenue: build.query<Venue, RequestPayload>({
+    getVenue: build.query<VenueExtended, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
         return{
@@ -62,6 +77,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
+    }),
+    updateVenue: build.mutation<VenueExtended, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenue, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
     venueDetailsHeader: build.query<VenueDetailHeader, RequestPayload>({
       query: ({ params }) => {
@@ -79,6 +104,33 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })
         })
       }
+    }),
+    getVenueSettings: build.query<VenueSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSettings, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    meshAps: build.query<TableResult<APMesh>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }]
     }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
@@ -103,7 +155,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...floorPlansReq
         }
+      },
+      providesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, ['AddFloorPlan', 'UpdateFloorPlan', 'DeleteFloorPlan'], () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DETAIL' }]))
+          })
+        })
       }
+    }),
+    deleteFloorPlan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteFloorPlan, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
     }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
@@ -174,6 +243,72 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    venueSwitchAAAServerList: build.query<
+    TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const listReq = createHttpRequest(SwitchUrlsInfo.getAaaServerList, params)
+        return {
+          ...listReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    getAaaSetting: build.query<AAASetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getAaaSetting, params)
+        return{
+          ...req
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg,
+            ['AddAaaServer', 'UpdateAaaServer', 'DeleteAaaServer'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    updateAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateAaaServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    deleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteAaaServer, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    bulkDeleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.bulkDeleteAaaServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     })
   })
 })
@@ -183,13 +318,24 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
+  useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
+  useGetVenueSettingsQuery,
+  useUpdateVenueMeshMutation,
+  useMeshApsQuery,
   useDeleteVenueMutation,
   useFloorPlanListQuery,
+  useDeleteFloorPlanMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useVenueSwitchAAAServerListQuery,
+  useGetAaaSettingQuery,
+  useAddAAAServerMutation,
+  useUpdateAAAServerMutation,
+  useDeleteAAAServerMutation,
+  useBulkDeleteAAAServerMutation,
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
