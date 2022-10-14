@@ -46,7 +46,7 @@ export function useAnalyticsFilter () {
 export function AnalyticsFilterProvider (props: { children: ReactNode }) {
   const [search, setSearch] = useSearchParams()
   const { pathname } = useLocation()
-  const [, sublocation ] = pathname.split('/analytics')[1].split('/')
+  const isHealthPage = pathname.includes('/analytics/health')
   const getNetworkFilter = () => {
     let networkFilter = search.has('analyticsNetworkFilter')
       ? JSON.parse(
@@ -55,29 +55,27 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
       : { path: defaultNetworkPath, raw: [] }
     const { path: currentPath, raw: rawVal } = networkFilter
     let path, filter, raw
-    switch (sublocation) {
-      case 'health':
-        if (currentPath.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
-          path = defaultNetworkPath
-          raw = []
-        } else {
-          path = currentPath
-          raw = rawVal
-        }
-        break
-      default: // incident page, ...
-        if (currentPath.length === 2) { // venues
-          filter = {
-            networkNodes: [currentPath.slice(1)]
-              .map(([node]) => [{ type: 'zone', name: node.name }]),
-            switchNodes: [currentPath.slice(1)]
-              .map(([node]) => [{ type: 'switchGroup', name: node.name }])
-          } as pathFilter
-          path = defaultNetworkPath
-        } else {
-          path = currentPath
-        }
+    if (isHealthPage) {
+      if (currentPath.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
+        path = defaultNetworkPath
+        raw = []
+      } else {
+        path = currentPath
         raw = rawVal
+      }
+    } else { // incident page, ...
+      if (currentPath.length === 2) { // venues
+        filter = {
+          networkNodes: [currentPath.slice(1)]
+            .map(([node]) => [{ type: 'zone', name: node.name }]),
+          switchNodes: [currentPath.slice(1)]
+            .map(([node]) => [{ type: 'switchGroup', name: node.name }])
+        } as pathFilter
+        path = defaultNetworkPath
+      } else {
+        path = currentPath
+      }
+      raw = rawVal
     }
     return { networkFilter: { filter, path }, raw }
   }
