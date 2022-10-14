@@ -37,7 +37,8 @@ export type HeaderData = {
 
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
   data: HeaderData,
-  shouldQuerySwitch: boolean
+  shouldQuerySwitch: boolean,
+  withIncidents?: boolean
 }
 
 export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement => {
@@ -57,7 +58,7 @@ export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement
   </>
 }
 
-export const Header = ({ data, shouldQuerySwitch, ...props }: HeaderProps) => {
+export const Header = ({ data, shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { filters, getNetworkFilter } = useAnalyticsFilter()
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
@@ -75,6 +76,7 @@ export const Header = ({ data, shouldQuerySwitch, ...props }: HeaderProps) => {
         <NetworkFilter
           key='network-filter'
           shouldQuerySwitch={shouldQuerySwitch}
+          withIncidents={withIncidents}
         />,
         <RangePicker
           key='range-picker'
@@ -92,7 +94,9 @@ export const Header = ({ data, shouldQuerySwitch, ...props }: HeaderProps) => {
   )
 }
 
-const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean }) => {
+const ConnectedHeader = (
+  props: PageHeaderProps & { shouldQuerySwitch : boolean, withIncidents?: boolean }
+) => {
   const { filters } = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
   return (
@@ -100,7 +104,6 @@ const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean 
       <Loader states={[queryResults]}>
         <Header
           {...props}
-          shouldQuerySwitch={props.shouldQuerySwitch}
           data={queryResults.data as HeaderData}
         />
       </Loader>

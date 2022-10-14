@@ -51,7 +51,11 @@ export default function HealthPage () {
 
   return (
     <>
-      <Header title={$t({ defaultMessage: 'Health' })} shouldQuerySwitch={false}/>
+      <Header
+        title={$t({ defaultMessage: 'Health' })}
+        shouldQuerySwitch={false}
+        withIncidents={false}
+      />
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
           <SummaryBoxes/>
