@@ -1,12 +1,21 @@
+/* eslint-disable max-len */
 import { isEqual, includes } from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
-  // eslint-disable-next-line max-len
   const re = new RegExp('^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$')
   if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
+export function serverIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
+  if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))
   }
   return Promise.resolve()
@@ -106,6 +115,93 @@ export function hexRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function notAllDigitsRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^([0-9]+)$/)
+  if (value!=='' && re.test(value)) {
+    return Promise.reject($t(validationMessages.invalidNotAllDigits))
+  }
+  return Promise.resolve()
+}
+
+export function excludeExclamationRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(?:(?!")(?!!)(?!\s).)*$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.excludeExclamationRegExp))
+  }
+  return Promise.resolve()
+}
+
+export function excludeQuoteRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(?:(?!")(?!\s).)*$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.excludeQuoteRegExp))
+  }
+  return Promise.resolve()
+}
+
+export function excludeSpaceRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(?:(?!\s).)*$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.excludeSpaceRegExp))
+  }
+  return Promise.resolve()
+}
+
+export function excludeSpaceExclamationRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(?:(?!!)(?!\s).)*$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.excludeSpaceExclamationRegExp))
+  }
+  return Promise.resolve()
+}
+
+export function portRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.portRegExp))
+  }
+  return Promise.resolve()
+}
+
+export function validateUsername (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(?!admin$).*/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.validateUsername))
+  }
+  return Promise.resolve()
+}
+
+export function validateUserPassword (value: string) {
+  const { $t } = getIntl()
+  if (value && value.length >= 8) {
+    let restriction = 0
+    if (/[a-z]/.test(value)) { // lowercase
+      restriction++
+    }
+    if (/[A-Z]/.test(value)) { // uppercase
+      restriction++
+    }
+    if (/["#$%&'()*+,./:;<=>?@\^_`{|}~-]+/.test(value)) { // non-alphanumeric ASCII (Except ! and '')
+      restriction++
+    }
+    if (/[0-9]/.test(value)) { // ASCII digits (numeric)
+      restriction++
+    }
+    if (restriction !== 4) {
+      return Promise.reject($t(validationMessages.validateUserPassword))
+    }
+    return Promise.resolve()
+  } else {
+    return Promise.resolve()
+  }
+}
 export function subnetMaskIpRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
