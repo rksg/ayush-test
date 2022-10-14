@@ -46,7 +46,7 @@ export function useAnalyticsFilter () {
 export function AnalyticsFilterProvider (props: { children: ReactNode }) {
   const [search, setSearch] = useSearchParams()
   const { pathname } = useLocation()
-  const [ sublocation ] = pathname.split('/analytics/')[1].split('/')
+  const [, sublocation ] = pathname.split('/analytics')[1].split('/')
   const getNetworkFilter = () => {
     let networkFilter = search.has('analyticsNetworkFilter')
       ? JSON.parse(
