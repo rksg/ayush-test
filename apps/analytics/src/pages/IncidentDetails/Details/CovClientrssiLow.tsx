@@ -7,10 +7,10 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
-import { NetworkImpact }                  from '../NetworkImpact'
-import { NetworkImpactChartTypes }        from '../NetworkImpact/config'
+import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
+import { Insights }                          from '../Insights'
+import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
+import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
 
 import * as UI from './styledComponents'
 
@@ -26,13 +26,28 @@ export const CovClientrssiLow = (incident: Incident) => {
     Attributes.EventStartTime,
     Attributes.EventEndTime
   ]
-  const networkImpactCharts: NetworkImpactChartTypes[] = [
-    NetworkImpactChartTypes.WLAN,
-    NetworkImpactChartTypes.OS,
-    NetworkImpactChartTypes.APModel,
-    NetworkImpactChartTypes.APVersion,
-    NetworkImpactChartTypes.Radio
-  ]
+
+  const networkImpactCharts: NetworkImpactProps['charts'] = [{
+    chart: NetworkImpactChartTypes.WLAN,
+    type: 'client',
+    dimension: 'ssids'
+  }, {
+    chart: NetworkImpactChartTypes.OS,
+    type: 'client',
+    dimension: 'osType'
+  }, {
+    chart: NetworkImpactChartTypes.APModel,
+    type: 'client',
+    dimension: 'apModels'
+  }, {
+    chart: NetworkImpactChartTypes.APVersion,
+    type: 'client',
+    dimension: 'apFwVersions'
+  }, {
+    chart: NetworkImpactChartTypes.Radio,
+    type: 'client',
+    dimension: 'radios'
+  }]
 
   return (
     <>
