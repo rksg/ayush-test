@@ -28,11 +28,11 @@ export function MeshNetwork () {
   const [apList] = useLazyApListQuery()
   const [updateVenueMesh] = useUpdateVenueMeshMutation()
 
+  const defaultToolTip = $t({ defaultMessage: 'Not available' })
   const [isAllowEnableMesh, setIsAllowEnableMesh] = useState(true)
   const [hasMeshAPs, setHasMeshAPs] = useState(false)
   const [meshEnabled, setMeshEnabled] = useState(false)
-  const [meshToolTipDisabledText, setMeshToolTipDisabledText] =
-    useState($t({ defaultMessage: 'Not available' }))
+  const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
   const { data } = useGetVenueSettingsQuery({ params })
 
@@ -131,7 +131,7 @@ export function MeshNetwork () {
   }
 
   return (<Loader states={[{
-    isLoading: !data || meshToolTipDisabledText === 'Not available'
+    isLoading: !data || meshToolTipDisabledText === defaultToolTip
   }]}>
     <Form.Item
       label={$t({ defaultMessage: 'Mesh Network' })}
