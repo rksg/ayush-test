@@ -16,24 +16,11 @@ export interface HealthFilter extends AnalyticsFilter {
 
 export const HealthPageContext = createContext(null as unknown as HealthFilter)
 
-export const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
-export const isAfter = (a: TimeStamp, b: TimeStamp) => moment(a).isAfter(b)
+const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
 
-let maxWindow: TimeStampRange = ['', '']
-
-export const formatTimeWindow = (window: TimeStampRange, isReset: boolean) : TimeStampRange => {
-  const newWindow = window
-    .sort((a, b) => +isBefore(a, b))
-    .map(t => moment(t).utc().toISOString()) as TimeStampRange
-  if (isReset) {
-    maxWindow = [
-      isBefore(maxWindow[0], newWindow[0]) ? maxWindow[0] : newWindow[0],
-      isAfter(maxWindow[1], newWindow[1]) ? maxWindow[1] : newWindow[1]
-    ]
-    return maxWindow
-  }
-  return newWindow
-}
+export const formatTimeWindow = (window: TimeStampRange) : TimeStampRange => window
+  .sort((a, b) => +isBefore(a, b))
+  .map(t => moment(t).utc().toISOString()) as TimeStampRange
 
 export function HealthPageContextProvider (props: { children: ReactNode }) {
   const analyticsFilter = useAnalyticsFilter()
@@ -43,7 +30,7 @@ export function HealthPageContextProvider (props: { children: ReactNode }) {
     moment(endDate).utc().toISOString()
   ])
   const setTimeWindowCallback = useCallback((window: TimeStampRange, isReset?: boolean) => {
-    const formattedWindow = formatTimeWindow(window, isReset || false)
+    const formattedWindow = formatTimeWindow(isReset ? [startDate, endDate] : window)
     setTimeWindow(formattedWindow)
   }, [startDate, endDate])
 

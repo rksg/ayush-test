@@ -48,6 +48,25 @@ describe('HealthPageContextProvider', () => {
     expect(result.current.timeWindow).toEqual(nextTimeWindow)
   })
 
+  it('resets timeWindow', async () => {
+    const { result, rerender } = renderHook(() => useContext(HealthPageContext), {
+      wrapper: ({ children }) => <Router><HealthPageContextProvider children={children} /></Router>
+    })
+
+    expect(result.current.timeWindow).toEqual(expectedTimeWindow)
+
+    const nextTimeWindow: TimeStampRange = [
+      '2022-01-01T01:00:00.000Z',
+      '2022-01-01T02:00:00.000Z'
+    ]
+
+    act(() => result.current.setTimeWindow(nextTimeWindow, true))
+
+    rerender()
+
+    expect(result.current.timeWindow).toEqual(expectedTimeWindow)
+  })
+
   it('update timeWindow when analytic filter start/end changed', () => {
     const Wrapper = ({ children }: { children: JSX.Element }) => {
       const [search, setSearch] = useSearchParams()
@@ -107,29 +126,7 @@ describe('formatTimeWindow', () => {
       1664182800000
     ]
 
-    const formattedWindow = formatTimeWindow(numericTimeWindow, false)
+    const formattedWindow = formatTimeWindow(numericTimeWindow)
     expect(formattedWindow).toMatchObject(stringTimeWindow)
-  })
-
-  it('should return correct time window when reset is true', () => {
-    const initialWindow: TimeStampRange = [
-      '2022-09-22T09:15:57.000Z',
-      '2022-09-26T09:00:00.000Z'
-    ]
-
-    const smallWindow:TimeStampRange= [
-      '2022-09-22T09:16:57.000Z',
-      '2022-09-26T08:00:00.000Z'
-    ]
-
-    const bigWindow:TimeStampRange= [
-      '2022-09-22T08:15:56.000Z',
-      '2022-09-26T10:00:00.000Z'
-    ]
-
-    const formattedWindow = formatTimeWindow(initialWindow, true)
-    expect(formattedWindow).toMatchObject(initialWindow)
-    expect(formatTimeWindow(smallWindow, true)).toEqual(initialWindow)
-    expect(formatTimeWindow(bigWindow, true)).toEqual(bigWindow)
   })
 })
