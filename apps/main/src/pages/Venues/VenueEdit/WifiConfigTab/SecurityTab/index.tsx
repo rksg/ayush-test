@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Divider, Form, InputNumber, Row, Select, Switch, Tooltip } from 'antd'
-import { useIntl }                                                       from 'react-intl'
+import { FormattedMessage, useIntl }                                     from 'react-intl'
 
 import { showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
@@ -134,6 +134,7 @@ export function SecurityTab () {
       updateSecurity: handleUpdateSecuritySettings
     })
   }
+
   return (
     <StepsForm
       formRef={formRef}
@@ -164,69 +165,59 @@ export function SecurityTab () {
             </Form.Item>
           </div>
         </Divider>
-        { dosProtection &&
-        <div>
-          <div style={{
-            display: 'inline-block',
-            paddingTop: '5px',
-            paddingRight: '5px'
-          }}> {$t({ defaultMessage: 'Block a client for ' })} </div>
-          <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
-            <Form.Item
-              style={{
-                display: 'inline-block',
-                paddingRight: '5px'
-              }}
-              name='blockingPeriod'
-              rules={[
-                { required: true }
-              ]}
-              initialValue={60}
-              children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
-            />
-          </Tooltip>
-          <div style={{
-            display: 'inline-block',
-            paddingTop: '5px',
-            paddingRight: '5px'
-          }}> {$t({ defaultMessage: ' seconds after ' })} </div>
-          <Tooltip title={$t({ defaultMessage: 'Allowed values are 2-25' })}>
-            <Form.Item
-              style={{
-                display: 'inline-block',
-                paddingRight: '5px'
-              }}
-              rules={[
-                { required: true }
-              ]}
-              name='failThreshold'
-              initialValue={5}
-              children={<InputNumber min={2} max={25} style={{ width: '70px' }} />}
-            />
-          </Tooltip>
-          <div style={{
-            display: 'inline-block',
-            paddingTop: '5px',
-            paddingRight: '5px'
-          }}> {$t({ defaultMessage: '  repeat authentication failures within ' })} </div>
-          <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
-            <Form.Item
-              style={{
-                display: 'inline-block',
-                paddingRight: '5px'
-              }}
-              name='checkPeriod'
-              initialValue={30}
-              children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
-            />
-          </Tooltip>
-          <div style={{
-            display: 'inline-block',
-            paddingTop: '5px',
-            paddingRight: '5px'
-          }}> {$t({ defaultMessage: ' seconds' })} </div>
-        </div>
-        }
+        { dosProtection && <FormattedMessage
+          defaultMessage={`
+            Block a client for <blockingPeriod></blockingPeriod> seconds
+            after <failThreshold></failThreshold> repeat authentication failures
+            within <checkPeriod></checkPeriod> seconds
+          `}
+          values={{
+            blockingPeriod: () => (
+              <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
+                <Form.Item
+                  style={{
+                    display: 'inline-block',
+                    verticalAlign: 'baseline'
+                  }}
+                  name='blockingPeriod'
+                  rules={[
+                    { required: true }
+                  ]}
+                  initialValue={60}
+                  children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+                />
+              </Tooltip>),
+            failThreshold: () => (
+              <Tooltip title={$t({ defaultMessage: 'Allowed values are 2-25' })}>
+                <Form.Item
+                  style={{
+                    display: 'inline-block',
+                    verticalAlign: 'baseline'
+                  }}
+                  rules={[
+                    { required: true }
+                  ]}
+                  name='failThreshold'
+                  initialValue={5}
+                  children={<InputNumber min={2} max={25} style={{ width: '70px' }} />}
+                />
+              </Tooltip>
+            ),
+            checkPeriod: () => (
+              <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
+                <Form.Item
+                  style={{
+                    display: 'inline-block',
+                    verticalAlign: 'baseline'
+                  }}
+                  name='checkPeriod'
+                  initialValue={30}
+                  children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+                />
+              </Tooltip>
+            )
+          }}
+        />}
         <Divider orientation='left' plain>
           <div style={{
             display: 'grid', gridTemplateColumns: 'auto 100px', gridGap: '5px',
