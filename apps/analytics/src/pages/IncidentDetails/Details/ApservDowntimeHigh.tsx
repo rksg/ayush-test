@@ -1,5 +1,5 @@
 import { unitOfTime } from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import { useIntl }    from 'react-intl'
 
 import {
   calculateSeverity,

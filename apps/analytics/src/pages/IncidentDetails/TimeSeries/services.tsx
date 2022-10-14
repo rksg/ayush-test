@@ -1,5 +1,4 @@
 import { gql }                from 'graphql-request'
-import _                      from 'lodash'
 import moment, { unitOfTime } from 'moment-timezone'
 
 import { dataApi }  from '@acx-ui/analytics/services'
