@@ -10,3 +10,8 @@ export const RadioDescription = styled.div`
   color: var(--acx-neutrals-50);
   margin-top: 4px;
 `
+export const VerticalLabel = styled.div`
+  padding: 5px;
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+`

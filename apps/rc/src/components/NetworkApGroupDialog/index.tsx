@@ -12,8 +12,7 @@ import {
   Space,
   Spin,
   Select,
-  Tooltip,
-  Typography
+  Tooltip
 } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -309,10 +308,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                       <Row gutter={[4, 0]} style={{ width: '750px' }}>
                         <Col span={8}></Col>
                         <Col span={8}>
-                          <Typography.Title level={5}>{$t({ defaultMessage: 'VLAN' })}</Typography.Title>
+                          <UI.VerticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
                         </Col>
                         <Col span={8}>
-                          <Typography.Title level={5}>{$t({ defaultMessage: 'Radio Band' })}</Typography.Title>
+                          <UI.VerticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
                         </Col>
                         { fields.map((field, index) => (
                           <Form.Item key={field.key} noStyle>

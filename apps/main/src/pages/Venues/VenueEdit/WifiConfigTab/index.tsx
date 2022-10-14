@@ -5,9 +5,11 @@ import { useIntl } from 'react-intl'
 
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext, AdvancedSettingContext } from '../index'
+import { VenueEditContext, EditContext } from '../index'
 
-import { AdvancedSettingForm } from './AdvancedSettingForm'
+import { AdvancedSettingForm } from './AdvancedTab/AdvancedSettingForm'
+import { NetworkingTab }       from './NetworkingTab'
+import { RadioTab }            from './RadioTab/RadioTab'
 
 export function WifiConfigTab () {
   const { $t } = useIntl()
@@ -17,11 +19,14 @@ export function WifiConfigTab () {
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
   const onTabChange = (tab: string) => {
-    const activeSubTab = params?.activeSubTab as keyof AdvancedSettingContext['tempData']
+    const activeSubTab = params?.activeSubTab as keyof EditContext['tempData']
     setEditContextData({
       ...editContextData,
       tabKey: activeSubTab,
+      newData: undefined,
+      oldData: undefined,
       tempData: {
+        ...editContextData.tempData,
         [activeSubTab]: editContextData.newData
       }
     })
@@ -53,10 +58,11 @@ export function WifiConfigTab () {
       type='card'
     >
       <Tabs.TabPane tab={tabTitleMap('radio')} key='radio'>
-        {$t({ defaultMessage: 'Radio' })}
+        <RadioTab />
       </Tabs.TabPane>
       <Tabs.TabPane tab={tabTitleMap('networking')} key='networking'>
-        {$t({ defaultMessage: 'Networking' })}
+        {/* {$t({ defaultMessage: 'Networking' })} */}
+        <NetworkingTab></NetworkingTab>
       </Tabs.TabPane>
       <Tabs.TabPane tab={tabTitleMap('security')} key='security'>
         {$t({ defaultMessage: 'Security' })}

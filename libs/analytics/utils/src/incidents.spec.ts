@@ -1,22 +1,23 @@
 import { capitalize, omit } from 'lodash'
-import { useIntl }          from 'react-intl'
 
-import { renderHook } from '@acx-ui/test-utils'
+import { renderHook }         from '@acx-ui/test-utils'
+import { PathNode, NodeType } from '@acx-ui/utils'
 
-import { fakeIncident, fakeIncident1 } from './fakeIncident'
+import { fakeIncident, fakeIncident1, fakeIncidentTtc, fakeIncidentApInfraWanthroughput } from './fakeIncident'
+import { kpiConfig }                                                                      from './healthKPIConfig'
 import {
   calculateSeverity,
   impactValues,
   transformIncidentQueryResult,
-  useFormattedNodeType,
-  useFormattedPath,
-  useImpactedArea,
-  useImpactValues,
-  useShortDescription,
-  useIncidentScope
+  nodeTypes,
+  formattedPath,
+  impactedArea,
+  shortDescription,
+  incidentScope,
+  getThreshold
 } from './incidents'
 
-import type { Incident, NodeType, PathNode } from './types/incidents'
+import type { Incident } from './types/incidents'
 
 describe('calculateSeverity', () => {
   it('should return correct value', () => {
@@ -48,104 +49,107 @@ describe('transformIncidentQueryResult', () => {
   })
 })
 
-describe('useShortDescription', () => {
-  const incident = fakeIncident({
-    id: '1',
-    code: 'eap-failure',
-    startTime: '2022-08-12T00:00:00.000Z',
-    endTime: '2022-08-12T01:00:00.000Z',
-    path: [
-      { type: 'network', name: 'Network' },
-      { type: 'zone', name: 'Venue 1' }
-    ],
-    sliceType: 'zoneName',
-    sliceValue: 'Venue 1'
-  })
-  const renderShortDescription: typeof useShortDescription = (incident) =>
-    renderHook(() => useShortDescription(incident)).result.current
-
+describe('shortDescription', () => {
   it('should return correct value', () => {
-    expect(renderShortDescription(incident)).toContain('Venue: Venue 1')
+    const incident = fakeIncident({
+      id: '1',
+      code: 'eap-failure',
+      startTime: '2022-08-12T00:00:00.000Z',
+      endTime: '2022-08-12T01:00:00.000Z',
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'Venue 1' }
+      ],
+      sliceType: 'zoneName',
+      sliceValue: 'Venue 1'
+    })
+    expect(shortDescription(incident)).toEqual('EAP failures are unusually high in Venue: Venue 1')
+  })
+  it('should return correct value with threshold', () => {
+    const incident = fakeIncident({
+      id: '1',
+      code: 'ttc',
+      startTime: '2022-08-12T00:00:00.000Z',
+      endTime: '2022-08-12T01:00:00.000Z',
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'Venue 1' }
+      ],
+      sliceType: 'zoneName',
+      sliceValue: 'Venue 1'
+    })
+    expect(shortDescription(incident))
+      .toEqual('Time to connect is greater than 2 seconds in Venue: Venue 1')
   })
 })
 
-describe('useFormattedNodeType', () => {
-  const renderNodeType = (nodeType: NodeType) =>
-    renderHook(() => useFormattedNodeType(nodeType)).result.current
-
+describe('nodeTypes', () => {
   it('should return correct value', () => {
-    expect(renderNodeType('network')).toEqual('Organization')
-    expect(renderNodeType('apGroupName')).toEqual('AP Group')
-    expect(renderNodeType('apGroup')).toEqual('AP Group')
-    expect(renderNodeType('zoneName')).toEqual('Venue')
-    expect(renderNodeType('zone')).toEqual('Venue')
-    expect(renderNodeType('switchGroup')).toEqual('Venue')
-    expect(renderNodeType('switch')).toEqual('Switch')
-    expect(renderNodeType('apMac')).toEqual('Access Point')
-    expect(renderNodeType('ap')).toEqual('Access Point')
-    expect(renderNodeType('AP')).toEqual('Access Point')
-    expect(renderNodeType('other' as unknown as NodeType)).toEqual('Unknown')
+    expect(nodeTypes('network')).toEqual('Organization')
+    expect(nodeTypes('apGroupName')).toEqual('AP Group')
+    expect(nodeTypes('apGroup')).toEqual('AP Group')
+    expect(nodeTypes('zoneName')).toEqual('Venue')
+    expect(nodeTypes('zone')).toEqual('Venue')
+    expect(nodeTypes('switchGroup')).toEqual('Venue')
+    expect(nodeTypes('switch')).toEqual('Switch')
+    expect(nodeTypes('apMac')).toEqual('Access Point')
+    expect(nodeTypes('ap')).toEqual('Access Point')
+    expect(nodeTypes('AP')).toEqual('Access Point')
+    expect(nodeTypes('other' as unknown as NodeType)).toEqual('Unknown')
   })
 })
 
-describe('useFormattedPath', () => {
+describe('formattedPath', () => {
   it('returns path with correct format', () => {
-    const { result } = renderHook(() => useFormattedPath([
+    const path = [
       { type: 'network', name: 'N' },
       { type: 'zone', name: 'V' },
       { type: 'apGroup', name: 'AG' }
-    ], 'Name'))
-    expect(result.current).toEqual('V (Venue)\n> AG (AP Group)')
+    ]
+    const sliceValue = 'Name'
+    expect(formattedPath(path as PathNode[], sliceValue)).toEqual('V (Venue)\n> AG (AP Group)')
   })
   it('returns path which contains AP with correct format', () => {
-    const { result } = renderHook(() => useFormattedPath([
+    const path = [
       { type: 'network', name: 'N' },
       { type: 'zone', name: 'V' },
       { type: 'apGroup', name: 'AG' },
       { type: 'ap', name: 'IP' }
-    ], 'Name'))
-    expect(result.current).toEqual('V (Venue)\n> AG (AP Group)\n> Name (IP) (Access Point)')
+    ]
+    const sliceValue = 'Name'
+    expect(formattedPath(path as PathNode[], sliceValue))
+      .toEqual('V (Venue)\n> AG (AP Group)\n> Name (IP) (Access Point)')
   })
 })
 
-describe('useImpactedArea', () => {
-  const renderImpactedArea: typeof useImpactedArea = (path, sliceValue) =>
-    renderHook(() => useImpactedArea(path, sliceValue)).result.current
-
+describe('impactedArea', () => {
   const path = [{ type: 'zone', name: 'Venue' }] as PathNode[]
   it('return correct value for normal incident', () => {
     const sliceValue = 'Venue'
-    expect(renderImpactedArea(path, sliceValue)).toEqual(sliceValue)
+    expect(impactedArea(path, sliceValue)).toEqual(sliceValue)
   })
   it('return correct value for AP incident', () => {
     const apPath = [...path, { type: 'ap', name: 'IP' }] as PathNode[]
     const sliceValue = 'AP'
-    expect(renderImpactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (IP)`)
+    expect(impactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (IP)`)
   })
   it('returns sliceValue when node name same as sliceValue', () => {
     const sameNamePath = [...path, { type: 'ap', name: 'AP' }] as PathNode[]
     const sliceValue = 'AP'
-    expect(renderImpactedArea(sameNamePath, sliceValue)).toEqual(sliceValue)
+    expect(impactedArea(sameNamePath, sliceValue)).toEqual(sliceValue)
   })
   it('returns sliceValue when empty path', () => {
     const emptyPath = [] as PathNode[]
     const sliceValue = 'AP'
-    expect(renderImpactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
+    expect(impactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
   })
 
-
-  describe('useImpactValues', () => {
-
-    const renderImpactValues: typeof useImpactValues =
-    (type: 'ap' | 'client', incident: Incident) =>
-      renderHook(() => useImpactValues(type, incident)).result.current
-
+  describe('impactValues', () => {
     it('returns object for invalid count & impactArea', () => {
-      expect(renderImpactValues('client', fakeIncident1)).toMatchObject({
+      expect(impactValues('client', fakeIncident1)).toMatchObject({
         clientImpactDescription: '5 of 27 clients (18.52%)'
       })
     })
-
   })
 })
 
@@ -160,7 +164,6 @@ describe('impactValues', () => {
     count: number | null,
     impactedCount: number | null
   ) => renderHook(() => impactValues(
-    useIntl(),
     type,
     incident(type, count, impactedCount)
   )).result.current
@@ -193,23 +196,19 @@ describe('impactValues', () => {
     expect(renderImpactValues('ap', 1, 1)).toMatchSnapshot()
   })
 
-  describe('useIncidentScope', () => {
-    const renderUseIncidentScope = () => renderHook(
-      () => useIncidentScope(
-        fakeIncident({
-          id: '1',
-          code: 'dhcp-failure',
-          startTime: '2022-08-12T00:00:00.000Z',
-          endTime: '2022-08-12T01:00:00.000Z',
-          path: [
-            { type: 'network', name: 'Network' },
-            { type: 'zone', name: 'Venue 1' }
-          ]
-        })
-      )).result.current
-
+  describe('incidentScope', () => {
     it('formats correct incident scope', () => {
-      expect(renderUseIncidentScope()).toMatchSnapshot()
+      expect(incidentScope(fakeIncident1)).toEqual('Access Point: RuckusAP (70:CA:97:01:A0:C0)')
     })
+  })
+})
+
+describe('getThreshold', () => {
+  it('should return the correct result for ttc', () => {
+    expect(getThreshold(fakeIncidentTtc))
+      .toEqual(kpiConfig.timeToConnect.histogram.initialThreshold)
+  })
+  it('should return undefined when code does not match', () => {
+    expect(getThreshold(fakeIncidentApInfraWanthroughput)).toEqual(undefined)
   })
 })

@@ -6,7 +6,7 @@ exports[`VenueNetworksTab should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
     >
       <div
         class="ant-pro-table"
@@ -386,74 +386,16 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                              >
-                                <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  type="button"
-                                >
-                                  <span>
-                                    VLAN-1 (Default)
-                                  </span>
-                                </button>
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
-                              >
-                                <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  type="button"
-                                >
-                                  <span>
-                                    All APs
-                                  </span>
-                                </button>
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
-                              >
-                                <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  type="button"
-                                >
-                                  <span>
-                                    2.4 GHz, 5 GHz
-                                  </span>
-                                </button>
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
-                              >
-                                <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  type="button"
-                                >
-                                  <span>
-                                    24/7 
-                                  </span>
-                                  <span
-                                    aria-label="clock-circle"
-                                    class="anticon anticon-clock-circle"
-                                    role="img"
-                                  >
-                                    <svg
-                                      aria-hidden="true"
-                                      data-icon="clock-circle"
-                                      fill="currentColor"
-                                      focusable="false"
-                                      height="1em"
-                                      viewBox="64 64 896 896"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"
-                                      />
-                                      <path
-                                        d="M686.7 638.6L544.1 535.5V288c0-4.4-3.6-8-8-8H488c-4.4 0-8 3.6-8 8v275.4c0 2.6 1.2 5 3.3 6.5l165.4 120.6c3.6 2.6 8.6 1.8 11.2-1.7l28.6-39c2.6-3.7 1.8-8.7-1.8-11.2z"
-                                      />
-                                    </svg>
-                                  </span>
-                                </button>
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"

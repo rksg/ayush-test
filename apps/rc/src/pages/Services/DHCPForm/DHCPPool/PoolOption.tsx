@@ -4,7 +4,7 @@ import { Col, Form, Input, Row } from 'antd'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Modal, Button }      from '@acx-ui/components'
+import { Modal }              from '@acx-ui/components'
 import { DHCPOption }         from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -49,20 +49,6 @@ export function PoolOption (props:{
   const onClose = () => {
     setVisible(false)
   }
-  const footer = [
-    <Button
-      key='back'
-      type='link'
-      onClick={onClose}
-      children={$t({ defaultMessage: 'Cancel' })}
-    />,
-    <Button
-      key='forward'
-      type='secondary'
-      onClick={() => modalForm.submit()}
-      children={$t({ defaultMessage: 'Save' })}
-    />
-  ]
   const getContent = <Form
     form={modalForm}
     layout='vertical'
@@ -134,9 +120,10 @@ export function PoolOption (props:{
     <Modal
       title={$t({ defaultMessage: 'DHCP option' })}
       visible={visible}
-      onCancel={onClose}
       width={300}
-      footer={footer}
+      onCancel={onClose}
+      onOk={() => modalForm.submit()}
+      okText={$t({ defaultMessage: 'Save' })}
     >
       {getContent}
     </Modal>

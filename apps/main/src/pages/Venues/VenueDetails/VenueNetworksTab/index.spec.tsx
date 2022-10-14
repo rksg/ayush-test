@@ -24,6 +24,12 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import {
+  venueNetworkList,
+  networkDeepList,
+  venueNetworkApGroup
+} from '../../__tests__/fixtures'
+
 import { VenueNetworksTab } from './index'
 
 jest.mock(
@@ -276,11 +282,11 @@ describe('VenueNetworksTab', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(list))
+        (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networks))
+        (req, res, ctx) => res(ctx.json(networkDeepList))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
@@ -311,11 +317,11 @@ describe('VenueNetworksTab', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(list))
+        (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networks))
+        (req, res, ctx) => res(ctx.json(networkDeepList))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
@@ -338,7 +344,7 @@ describe('VenueNetworksTab', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const newApGroup = JSON.parse(JSON.stringify(apGroup))
+    const newApGroup = JSON.parse(JSON.stringify(venueNetworkApGroup))
     newApGroup.response[1].apGroups[0].id = 'test2'
     mockServer.use(
       rest.post(
@@ -365,11 +371,11 @@ describe('VenueNetworksTab', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(list))
+        (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networks))
+        (req, res, ctx) => res(ctx.json(networkDeepList))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,

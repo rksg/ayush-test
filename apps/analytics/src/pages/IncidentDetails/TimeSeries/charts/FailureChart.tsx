@@ -6,44 +6,16 @@ import {
   Incident,
   getSeriesData,
   mapCodeToReason,
-  incidentSeverities,
-  calculateSeverity,
-  codeToFailureTypeMap
-} from '@acx-ui/analytics/utils'
-import { Card, cssStr, MultiLineTimeSeriesChart }             from '@acx-ui/components'
-import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { formatter }                                          from '@acx-ui/utils'
+  codeToFailureTypeMap,
+  TimeSeriesDataType
+}                                         from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
+import { formatter }                      from '@acx-ui/utils'
+
+import { onMarkAreaClick, getMarkers } from './incidentTimeSeriesMarker'
 
 import type { TimeSeriesChartProps } from '../types'
-
-export const onMarkedAreaClick = (
-  navigate: NavigateFunction,
-  basePath: Path,
-  incident: Incident
-) => (
-  data: Incident
-) => {
-  // click on current incident marker
-  if (data.id === incident.id) return
-
-  navigate({
-    ...basePath,
-    pathname: `${basePath.pathname}/${data.id}`
-  })
-}
-
-export const getMarkers = (
-  relatedIncidents: Incident[],
-  incident: Incident
-) => relatedIncidents?.map(related => ({
-  data: related,
-  startTime: related.startTime,
-  endTime: related.endTime,
-  itemStyle: {
-    opacity: related.id === incident.id ? 1 : 0.3,
-    color: cssStr(incidentSeverities[calculateSeverity(incident.severity)].color)
-  }
-}))
 
 const failureChartQuery = (incident: Incident) => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {
@@ -69,7 +41,8 @@ export const FailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps)
     name: title
   }]
 
-  const chartResults = getSeriesData(failureChart, seriesMapping)
+  const chartResults = getSeriesData(
+    failureChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
   return <Card title={title} type='no-border'>
     <AutoSizer>
@@ -81,7 +54,7 @@ export const FailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps)
           dataFormatter={formatter('countFormat')}
           yAxisProps={{ max: 1, min: 0 }}
           disableLegend={true}
-          onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
+          onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
           markers={getMarkers(relatedIncidents!, incident)}
         />
       )}

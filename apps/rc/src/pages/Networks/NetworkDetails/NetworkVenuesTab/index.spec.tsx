@@ -66,14 +66,13 @@ describe('NetworkVenuesTab', () => {
       )
     )
 
-    const { asFragment } = render(<Provider><NetworkVenuesTab /></Provider>, {
+    render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
-    expect(asFragment()).toMatchSnapshot()
     expect(within(row1).queryAllByRole('button')).toHaveLength(4)
     expect(row1).toHaveTextContent('VLAN-1 (Default)')
     expect(row1).toHaveTextContent('All APs')
