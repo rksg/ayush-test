@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
+  SwitchUrlsInfo,
   createHttpRequest,
   FloorPlanDto,
   onSocketActivityChanged,
@@ -18,6 +19,10 @@ import {
   VenueDosProtection,
   VenueRogueAp,
   RogueClassificationPolicy,
+  RadiusServer,
+  TacacsServer,
+  LocalUser,
+  AAASetting,
   CommonResult,
   VenueSettings,
   VenueSwitchConfiguration,
@@ -27,7 +32,7 @@ import {
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'Device', 'VenueFloorPlan'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -246,6 +251,72 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    venueSwitchAAAServerList: build.query<
+    TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const listReq = createHttpRequest(SwitchUrlsInfo.getAaaServerList, params)
+        return {
+          ...listReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    getAaaSetting: build.query<AAASetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getAaaSetting, params)
+        return{
+          ...req
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg,
+            ['AddAaaServer', 'UpdateAaaServer', 'DeleteAaaServer'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    updateAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateAaaServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    deleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteAaaServer, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    bulkDeleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.bulkDeleteAaaServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
     getDenialOfServiceProtection: build.query<VenueDosProtection, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getDenialOfServiceProtection, params)
@@ -310,6 +381,12 @@ export const {
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useVenueSwitchAAAServerListQuery,
+  useGetAaaSettingQuery,
+  useAddAAAServerMutation,
+  useUpdateAAAServerMutation,
+  useDeleteAAAServerMutation,
+  useBulkDeleteAAAServerMutation,
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
