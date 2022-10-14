@@ -109,7 +109,7 @@ describe('Venues Form', () => {
 
     const addressResult = {
       addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-      city: 'Sunnyvale, California',
+      city: 'United States',
       country: 'United States',
       latitude: 37.4112751,
       longitude: -122.0191908,

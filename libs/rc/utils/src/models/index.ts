@@ -1,4 +1,6 @@
+export * from './VlanPool'
 export * from './NetworkVenue'
+export * from './NetworkApGroup'
 export * from './SchedulerTypeEnum'
 export * from './NetworkVenueScheduler'
 export * from './OpenWlanAdvancedCustomization'

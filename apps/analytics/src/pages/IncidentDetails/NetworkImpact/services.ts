@@ -3,14 +3,17 @@ import { gql } from 'graphql-request'
 import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
 
-import { networkImpactCharts, NetworkImpactChartTypes } from './config'
+import {
+  NetworkImpactChartConfig,
+  NetworkImpactChartTypes
+} from './config'
 
 export interface RequestPayload {
   incident: Incident,
-  charts: NetworkImpactChartTypes[]
+  charts: NetworkImpactChartConfig[]
 }
+
 export interface NetworkImpactChartData {
-  key: string
   count: number
   data: { key: string, name: string, value: number }[]
 }
@@ -18,45 +21,32 @@ export interface Response {
   incident: Record<string, Omit<NetworkImpactChartData, 'key'>>
 }
 
-const transformResponse = (response: Response, _: {}, payload: RequestPayload) => {
-  return payload.charts.map(chart => networkImpactCharts[chart])
-    .sort((a, b) => (a.order as number) - (b.order as number))
-    .reduce((agg, config) => {
-      agg[config.key] = {
-        ...response.incident[config.key],
-        key: config.key,
-        data: response.incident[config.key].data.map(item => ({ ...item, name: item.key }))
-      }
-      return agg
-    }, {} as Record<string, NetworkImpactChartData>)
+type ResultType = Partial<Record<NetworkImpactChartTypes, NetworkImpactChartData>>
+
+const transformResponse = ({ incident }: Response, _: {}, payload: RequestPayload) => {
+  return payload.charts.reduce((agg: ResultType, { chart }) => {
+    const result = incident[chart]
+    agg[chart] = {
+      ...result,
+      data: result.data.map(item => ({ ...item, name: item.key }))
+    }
+    return agg
+  }, {})
 }
 
 export const networkImpactChartsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    networkImpactCharts: build.query<
-      Record<string, NetworkImpactChartData>,
-      RequestPayload
-    >({
+    networkImpactCharts: build.query<ResultType, RequestPayload>({
       query: (payload) => {
-        const queries = payload.charts.map(
-          chart => gql`
-            ${networkImpactCharts[chart].key}: topN(
-              n: 10,
-              by: "${networkImpactCharts[chart].dimension}",
-              type: "${networkImpactCharts[chart].type}"
-            ) {
-              count
-              data {
-                key
-                value
-              }
-            }`)
+        const queries = payload.charts.map(({ chart, type, dimension }) => {
+          return gql`${chart}: topN(n: 10, by: "${dimension}", type: "${type}") {
+            count data { key value }
+          }`
+        })
         return {
           document: gql`
             query NetworkImpactCharts($id: String) {
-              incident(id: $id) {
-                ${queries.join('\n')}
-              }
+              incident(id: $id) { ${queries.join('\n')} }
             }
           `,
           variables: { id: payload.incident.id }

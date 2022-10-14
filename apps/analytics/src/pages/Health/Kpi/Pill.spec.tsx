@@ -32,7 +32,7 @@ describe('Pill with kpi threshold', () => {
         <HealthPill filters={filters} kpi={'timeToConnect'} timeWindow={timeWindow}/>
       </Provider>
     )
-    await screen.findByText('Time to Connect')
+    await screen.findByText('Time To Connect')
     expect(screen.getByText('20% meets goal')).toBeVisible()
   })
   it('should render pill with data (success above threshold)', async () => {
@@ -69,7 +69,7 @@ describe('Pill with kpi threshold', () => {
         <HealthPill filters={filters} kpi={'timeToConnect'} timeWindow={timeWindow}/>
       </Provider>
     )
-    await screen.findByText('Time to Connect')
+    await screen.findByText('Time To Connect')
     expect(screen.getByText('0% meets goal')).toBeVisible()
   })
 
