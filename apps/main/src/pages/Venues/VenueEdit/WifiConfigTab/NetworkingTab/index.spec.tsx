@@ -61,8 +61,7 @@ describe('NetworkingTab', () => {
     expect(asFragment()).toMatchSnapshot()
   })
   it('should handle update setting', async () => {
-    render(<Provider><NetworkingTab /></Provider>
-      , { route: { params } })
+    render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
 
@@ -77,18 +76,7 @@ describe('NetworkingTab', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
   it('should navigate to venue details page when clicking cancel button', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      venueId: 'venue-id',
-      activeTab: 'wifi',
-      activeSubTab: 'networking'
-    }
-    render(
-      <Provider>
-        <NetworkingTab />
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
-      })
+    render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
 

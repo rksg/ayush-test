@@ -77,7 +77,7 @@ export function LanPorts () {
   useEffect(() => {
     const { model, lan, poeOut } = form?.getFieldsValue()
     if (isEqual(model, apModel) && isEqual(lan, lanPorts)) {
-      const landata = lanPortData?.map((item) => {
+      const newData = lanPortData?.map((item) => {
         return item.model === apModel
           ? {
             ...item,
@@ -91,18 +91,18 @@ export function LanPorts () {
         ...editContextData,
         unsavedTabKey: 'networking',
         tabTitle: $t({ defaultMessage: 'Networking' }),
-        isDirty: !isEqual(landata, lanPortOrinData),
+        isDirty: !isEqual(newData, lanPortOrinData),
         hasError: form.getFieldsError().map(item => item.errors).flat().length > 0
       })
 
       setEditNetworkingContextData && setEditNetworkingContextData({
         ...editNetworkingContextData,
-        updateLanPorts: () => handleUpdateLanPorts(landata),
+        updateLanPorts: () => handleUpdateLanPorts(newData),
         discardLanPorts: () => handleDiscardLanPorts(lanPortOrinData)
       })
 
-      setLanPortData(landata)
-      setSelectedModel(getSelectedModelData(landata, apModel))
+      setLanPortData(newData)
+      setSelectedModel(getSelectedModelData(newData, apModel))
     }
   }, [poeMode, lanPoeOut, lanPorts])
 
@@ -196,7 +196,11 @@ export function LanPorts () {
         	animated={true}
         >
           { selectedModel?.lanPorts?.map((lan, index) =>
-            <Tabs.TabPane tab={`LAN ${index+1}`} key={`lan-${index+1}`} forceRender={true}>
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'LAN {index}' }, { index: index+1 })}
+              key={`lan-${index+1}`}
+              forceRender={true}
+            >
               <Col span={16}>
                 <LanPortSettings
                   selectedPortCaps={selectedPortCaps}

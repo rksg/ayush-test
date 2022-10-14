@@ -66,12 +66,12 @@ export function LanPortSettings (props: {
       style={{ marginBottom: '12px' }}
     >
       <Typography.Text>{
-        $t({ defaultMessage: `* The following LAN Port settings 
-          can't work because DHCP is enabled.` })
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: '* The following LAN Port settings can\'t work because DHCP is enabled.' })
       }</Typography.Text>
       <Typography.Text>{
-        $t({ defaultMessage: `You cannot edit LAN Port setting on this device because 
-       it has assigned to the venue which already has enabled DHCP service.` })
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'You cannot edit LAN Port setting on this device because it has assigned to the venue which already has enabled DHCP service.' })
       }</Typography.Text>
     </Space>}
 
