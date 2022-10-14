@@ -1,3 +1,4 @@
+import { unitOfTime } from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -51,7 +52,10 @@ export const ApservDowntimeHigh = (incident: Incident) => {
     TimeSeriesChartTypes.ApDisconnectionCountChart,
     TimeSeriesChartTypes.DowntimeEventTypeDistributionChart
   ]
-
+  const buffer = {
+    front: { value: 6, unit: 'hours' as unitOfTime.Base },
+    back: { value: 6, unit: 'hours' as unitOfTime.Base }
+  }
   return (
     <>
       <PageHeader
@@ -77,7 +81,12 @@ export const ApservDowntimeHigh = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <TimeSeries incident={incident} charts={timeSeriesCharts} minGranularity='PT180S' />
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+            buffer={buffer}
+          />
         </GridCol>
       </GridRow>
     </>

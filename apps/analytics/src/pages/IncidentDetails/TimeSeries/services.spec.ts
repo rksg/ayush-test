@@ -1,4 +1,4 @@
-import moment from 'moment-timezone'
+import moment         from 'moment-timezone'
 import { unitOfTime } from 'moment-timezone'
 
 import { dataApiURL }       from '@acx-ui/analytics/services'

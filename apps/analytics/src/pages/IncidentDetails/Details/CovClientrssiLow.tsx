@@ -1,5 +1,5 @@
-import { useIntl } from 'react-intl'
-import { unitOfTime }    from 'moment-timezone'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
 import {
   calculateSeverity,
@@ -8,12 +8,12 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
-import { TimeSeries }                     from '../TimeSeries'
-import { TimeSeriesChartTypes }           from '../TimeSeries/config'
+import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
+import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import { TimeSeries }                        from '../TimeSeries'
+import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 

@@ -16,7 +16,7 @@ export type BufferConfig = {
   unit: unitOfTime.Base;
 }
 
-export type BufferType = number | { front: BufferConfig, back: BufferConfig }
+export type BufferType = { front: BufferConfig, back: BufferConfig }
 
 export interface ChartDataProps {
   charts: TimeSeriesChartTypes[]
@@ -37,19 +37,11 @@ export type ChartsData = {
 
 export function getIncidentTimeSeriesPeriods (incident: Incident, incidentBuffer: BufferType) {
   const { startTime, endTime } = incident
-  const buffer = {
-    front: { value: 6, unit: 'hours' },
-    back: { value: 6, unit: 'hours' }
-  }
-  if (_.isNumber(incidentBuffer)) {
-    buffer.front.value = incidentBuffer
-    buffer.back.value = incidentBuffer
-  }
   return {
     start: moment(startTime).subtract(
-      buffer.front.value, buffer.front.unit as unitOfTime.DurationConstructor),
+      incidentBuffer.front.value, incidentBuffer.front.unit as unitOfTime.DurationConstructor),
     end: moment(endTime).add(
-      buffer.back.value, buffer.back.unit as unitOfTime.DurationConstructor)
+      incidentBuffer.back.value, incidentBuffer.back.unit as unitOfTime.DurationConstructor)
   }
 }
 

@@ -1,11 +1,11 @@
 import { Incident } from '@acx-ui/analytics/utils'
 
-import attemptAndFailureChart   from './charts/AttemptAndFailureChart'
-import clientCountChart         from './charts/ClientCountChart'
-import failureChart             from './charts/FailureChart'
-import rssQualityByClientsChart from './charts/RssQualityByClientsChart'
 import apDisconnectionCountChart          from './charts/ApDisconnectionCountChart'
+import attemptAndFailureChart             from './charts/AttemptAndFailureChart'
+import clientCountChart                   from './charts/ClientCountChart'
 import downtimeEventTypeDistributionChart from './charts/DowntimeEventTypeDistributionChart'
+import failureChart                       from './charts/FailureChart'
+import rssQualityByClientsChart           from './charts/RssQualityByClientsChart'
 import ttcByFailureTypeChart              from './charts/TtcByFailureTypeChart'
 import ttcFailureChart                    from './charts/TtcFailureChart'
 
