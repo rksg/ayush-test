@@ -86,8 +86,8 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
       }
       visible={visible}
       onClose={onClose}
+      destroyOnClose={true}
       children={content}
-      forceRender // Avoid the form (in children prop) not been rendered when operating
       footer={
         <Drawer.FormFooter
           showAddAnother={!editMode}

@@ -195,6 +195,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       title={venue.name + ': ' + $t({ defaultMessage: 'Select APs' })}
       visible={visible}
       onClose={onClose}
+      destroyOnClose={true}
       children={content}
       footer={footer}
       width={'750px'}
