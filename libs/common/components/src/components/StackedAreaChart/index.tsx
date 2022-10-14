@@ -36,7 +36,10 @@ export interface StackedAreaChartProps
     type?: 'smooth' | 'step'
     data: TChartData[]
     legendProp?: keyof TChartData /** @default 'name' */
-    yAxisProps?: { minInterval?: number }
+    yAxisProps?: {
+      max?: number
+      min?: number
+    }
     stackColors?: string[]
     dataFormatter?: ReturnType<typeof formatter>
     seriesFormatters?: Record<string, ReturnType<typeof formatter>>
@@ -123,7 +126,7 @@ export function StackedAreaChart <
     },
     yAxis: {
       ...yAxisOptions(),
-      ...yAxisProps,
+      ...(yAxisProps || { minInterval: 1 }),
       type: 'value',
       axisLabel: {
         ...axisLabelOptions(),

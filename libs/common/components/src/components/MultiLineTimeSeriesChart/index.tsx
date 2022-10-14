@@ -63,7 +63,6 @@ export interface MultiLineTimeSeriesChartProps <
     yAxisProps?: {
       max?: number
       min?: number
-      minInterval?: number
     }
     disableLegend?: boolean
     chartRef?: RefCallback<ReactECharts>
@@ -179,7 +178,7 @@ export function MultiLineTimeSeriesChart <
     },
     yAxis: {
       ...yAxisOptions(),
-      ...yAxisProps,
+      ...(yAxisProps || { minInterval: 1 }),
       type: 'value',
       axisLabel: {
         ...axisLabelOptions(),
