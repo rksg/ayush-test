@@ -52,7 +52,7 @@ export const Drawer = (props: DrawerProps) => {
 
 interface FormFooterProps {
   showAddAnother?: boolean
-  onCancel: (checked: boolean) => void
+  onCancel: () => void
   onSave: (checked: boolean) => void
   buttonLabel?: {
     addAnother?: string
@@ -63,13 +63,11 @@ interface FormFooterProps {
 
 const FormFooter = (props: FormFooterProps) => {
   const { $t } = useIntl()
-
   const {
     showAddAnother = false,
     onCancel,
     onSave
   } = props
-
   const buttonLabel = {
     ...{
       addAnother: $t({ defaultMessage: 'Add another' }),
@@ -78,13 +76,7 @@ const FormFooter = (props: FormFooterProps) => {
     },
     ...props.buttonLabel
   }
-
   const [checked, setChecked] = useState(false)
-
-  const reset = () => {
-    setChecked(false)
-  }
-
   return (
     <>
       <div>
@@ -95,18 +87,13 @@ const FormFooter = (props: FormFooterProps) => {
         />}
       </div>
       <div>
-        <Button
-          onClick={() => {
-            reset()
-            onCancel(checked)
-          }}
-        >
+        <Button onClick={onCancel}>
           {buttonLabel.cancel}
         </Button>
         <Button
           onClick={() => {
-            reset()
             onSave(checked)
+            setChecked(false)
           }}
           type={'secondary'}
         >

@@ -33,7 +33,7 @@ export function CustomDrawer () {
     setShowAddAnother(true)
   }
 
-  const content = <Form layout='vertical' form={form} onFinish={onClose}>
+  const content = <Form layout='vertical' form={form} onFinish={resetFields}>
     <Form.Item
       name='name'
       label='Name'

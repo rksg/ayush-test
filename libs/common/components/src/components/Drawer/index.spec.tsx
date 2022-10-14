@@ -116,7 +116,7 @@ describe('Drawer', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Save' }))
       expect(mockOnSave).toBeCalledWith(false)
       fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
-      expect(mockOnCancel).toBeCalledWith(false)
+      expect(mockOnCancel).toBeCalled()
     })
 
     it('should handle add another checkbox events', async () => {
@@ -141,7 +141,7 @@ describe('Drawer', () => {
       fireEvent.click(screen.getByRole('button', { name: 'OK' }))
       expect(mockOnSave).toBeCalledWith(true)
       fireEvent.click(screen.getByRole('button', { name: 'Back' }))
-      expect(mockOnCancel).toBeCalledWith(false)
+      expect(mockOnCancel).toBeCalled()
     })
   })
 })
