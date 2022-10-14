@@ -11,9 +11,11 @@ import {
   Venue,
   VenueSaveData,
   VenueDetailHeader,
+  APMesh,
   VenueCapabilities,
   VenueLed,
   VenueApModels,
+  CommonResult,
   VenueSwitchConfiguration,
   ConfigurationProfile
 } from '@acx-ui/rc/utils'
@@ -21,7 +23,7 @@ import {
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -97,6 +99,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    meshAps: build.query<TableResult<APMesh>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }]
+    }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
         if(payload){ //delete multiple rows
@@ -120,7 +132,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...floorPlansReq
         }
+      },
+      providesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, ['AddFloorPlan', 'UpdateFloorPlan', 'DeleteFloorPlan'], () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DETAIL' }]))
+          })
+        })
       }
+    }),
+    deleteFloorPlan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteFloorPlan, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
     }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
@@ -202,8 +231,10 @@ export const {
   useGetVenueQuery,
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
+  useMeshApsQuery,
   useDeleteVenueMutation,
   useFloorPlanListQuery,
+  useDeleteFloorPlanMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,

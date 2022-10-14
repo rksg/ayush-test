@@ -39,6 +39,7 @@ function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
         data: data! && [{
+          key: kpi,
           name: $t(text),
           data: transformResponse(data)
         }]

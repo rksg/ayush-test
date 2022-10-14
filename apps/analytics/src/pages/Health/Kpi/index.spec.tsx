@@ -52,7 +52,7 @@ describe('Kpi Section', () => {
         <KpiSection tab={'overview'} />
       </HealthPageContext.Provider>
     </Provider></Router>)
-    await screen.findByText('Time to Connect')
+    await screen.findByText('Time To Connect')
     expect(screen.getByText('20% meets goal')).toBeVisible()
   })
 })

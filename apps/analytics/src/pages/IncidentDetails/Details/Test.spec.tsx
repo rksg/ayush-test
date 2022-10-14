@@ -13,6 +13,7 @@ import {
 import { Provider }                     from '@acx-ui/store'
 import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
+import * as fixtures               from './__tests__/fixtures'
 import { ApinfraPoeLow }           from './ApinfraPoeLow'
 import { ApinfraWanthroughputLow } from './ApinfraWanthroughputLow'
 import { ApservContinuousReboots } from './ApservContinuousReboots'
@@ -36,45 +37,44 @@ jest.mock('../IncidentDetails/IncidentAttributes', () => ({
 jest.mock('../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
-jest.mock('../NetworkImpact', () => ({
-  NetworkImpact: () => <div data-testid='networkImpact' />
-}))
-jest.mock('../IncidentDetails/TimeSeries', () => ({
-  TimeSeries: () => <div data-testid='timeSeries' />
-}))
+jest.mock('../NetworkImpact')
+jest.mock('../IncidentDetails/TimeSeries')
 
 describe('Test', () => {
   mockDOMWidth()
+  fixtures.mockTimeSeries()
+  fixtures.mockNetworkImpact()
+
   describe('Details', () => {
     [
       {
         component: ApinfraPoeLow,
         fakeIncident: fakeIncidentPoeLow,
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: false
       },
       {
         component: ApinfraWanthroughputLow,
         fakeIncident: fakeIncidentApInfraWanthroughput,
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: false
       },
       {
         component: ApservContinuousReboots,
         fakeIncident: fakeIncidentContReboot,
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: false
       },
       {
         component: ApservDowntimeHigh,
         fakeIncident: fakeIncidentDowntimeHigh,
-        hasNetworkImpact: false,
-        hasTimeSeries: false
+        hasNetworkImpact: true,
+        hasTimeSeries: true
       },
       {
         component: ApservHighNumReboots,
         fakeIncident: fakeIncidentHighReboot,
-        hasNetworkImpact: false,
+        hasNetworkImpact: true,
         hasTimeSeries: false
       },
       {
@@ -154,10 +154,10 @@ describe('Test', () => {
         }
         if (test.hasTimeSeries) {
           // eslint-disable-next-line jest/no-conditional-expect
-          expect(screen.getByTestId('timeSeries')).toBeVisible()
+          expect(screen.getByTestId('timeseries')).toBeVisible()
         } else {
           // eslint-disable-next-line jest/no-conditional-expect
-          expect(screen.queryByTestId('timeSeries')).toBeNull()
+          expect(screen.queryByTestId('timeseries')).toBeNull()
         }
         expect(asFragment()).toMatchSnapshot()
       })
