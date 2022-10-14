@@ -20,7 +20,6 @@ export * from './models/PskWlanAdvancedCustomization'
 
 export * from './types/user'
 export * from './types/venue'
-export * from './types/venueForm'
 export * from './types'
 
 export * from './pipes/networkPipes'

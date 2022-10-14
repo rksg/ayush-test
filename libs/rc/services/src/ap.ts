@@ -37,7 +37,8 @@ export const apApi = baseApApi.injectEndpoints({
 })
 
 export const {
-  useApListQuery
+  useApListQuery,
+  useLazyApListQuery
 } = apApi
 
 

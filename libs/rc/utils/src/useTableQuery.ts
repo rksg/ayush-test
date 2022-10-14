@@ -29,7 +29,7 @@ export interface TABLE_QUERY <
     { params: Params<string>, payload: Payload }
   >
   apiParams?: Record<string, string>
-  pagination?: PAGINATION
+  pagination?: Partial<PAGINATION>
   sorter?: SORTER
   rowKey?: string
 }
