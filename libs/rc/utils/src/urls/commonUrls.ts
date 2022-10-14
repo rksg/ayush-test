@@ -107,6 +107,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh'
   },
+  getMeshAps: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/aps/mesh'
+  },
   getService: {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'

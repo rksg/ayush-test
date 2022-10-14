@@ -11,6 +11,7 @@ import {
   Venue,
   VenueExtended,
   VenueDetailHeader,
+  APMesh,
   VenueCapabilities,
   VenueLed,
   VenueApModels,
@@ -24,7 +25,7 @@ import {
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'VenueFloorPlan'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -116,6 +117,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    meshAps: build.query<TableResult<APMesh>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }]
     }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
@@ -258,6 +269,7 @@ export const {
   useVenueDetailsHeaderQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
+  useMeshApsQuery,
   useDeleteVenueMutation,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
