@@ -124,7 +124,7 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                   class="ant-form-item-control-input-content"
                 >
                   <div
-                    class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                    class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
                   >
                     <div
                       class="ant-space ant-space-horizontal ant-space-align-center"
@@ -228,10 +228,10 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                                               class="ant-table-cell ant-table-selection-column react-resizable"
                                             >
                                               <div
-                                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                               />
                                               <div
-                                                class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                               />
                                             </th>
                                             <th
@@ -239,7 +239,7 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                                               tabindex="0"
                                             >
                                               <div
-                                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                               />
                                               <div
                                                 class="ant-table-column-sorters"
@@ -297,7 +297,7 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                                                 </span>
                                               </div>
                                               <div
-                                                class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                               />
                                             </th>
                                             <th
@@ -305,7 +305,7 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                                               tabindex="0"
                                             >
                                               <div
-                                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                               />
                                               <div
                                                 class="ant-table-column-sorters"
@@ -363,7 +363,7 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                                                 </span>
                                               </div>
                                               <div
-                                                class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                               />
                                             </th>
                                             <th
@@ -371,7 +371,7 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                                               tabindex="0"
                                             >
                                               <div
-                                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                               />
                                               <div
                                                 class="ant-table-column-sorters"
@@ -429,7 +429,7 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                                                 </span>
                                               </div>
                                               <div
-                                                class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                               />
                                             </th>
                                             <th
@@ -437,10 +437,10 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                                               style="position: sticky; right: 0px;"
                                             >
                                               <div
-                                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                               />
                                               <div
-                                                class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                               />
                                             </th>
                                           </tr>
