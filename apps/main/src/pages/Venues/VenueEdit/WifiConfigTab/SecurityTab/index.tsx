@@ -87,30 +87,27 @@ export function SecurityTab () {
       })
 
       setDosProtection(dosProtectionEnabled)
-      rogueApEnabled && setRogueAp(rogueApEnabled)
+      setRogueAp(!!rogueApEnabled)
     }
   }, [dosProctectionData, venueRogueApData])
 
   const handleUpdateSecuritySettings = async (data?: SecuritySetting) => {
     try {
-      if(data?.dosProtectionEnabled){
-        const payload = {
-          enabled: data?.dosProtectionEnabled,
-          blockingPeriod: data?.blockingPeriod,
-          checkPeriod: data?.checkPeriod,
-          failThreshold: data?.failThreshold
-        }
-        await updateDenialOfServiceProtection({ params, payload })
+      const dosProtectionPayload = {
+        enabled: data?.dosProtectionEnabled,
+        blockingPeriod: data?.blockingPeriod,
+        checkPeriod: data?.checkPeriod,
+        failThreshold: data?.failThreshold
       }
+      await updateDenialOfServiceProtection({ params, payload: dosProtectionPayload })
 
-      if(data?.rogueApEnabled){
-        const payload = {
-          enabled: data?.rogueApEnabled,
-          reportThreshold: data?.reportThreshold,
-          roguePolicyId: data?.roguePolicyId
-        }
-        await updateVenueRogueAp({ params, payload })
+      const rogueApPayload = {
+        enabled: data?.rogueApEnabled,
+        reportThreshold: data?.reportThreshold,
+        roguePolicyId: data?.roguePolicyId
       }
+      await updateVenueRogueAp({ params, payload: rogueApPayload })
+
       setEditContextData({
         ...editContextData,
         isDirty: false
