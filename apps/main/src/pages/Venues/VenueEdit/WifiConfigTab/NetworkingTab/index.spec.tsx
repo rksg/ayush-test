@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                                                    from '@acx-ui/rc/utils'
-import { Provider, store }                                                                   from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { venueApi }                                                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                                 from '@acx-ui/rc/utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueApsList,
@@ -54,6 +55,8 @@ describe('NetworkingTab', () => {
         (_, res, ctx) => res(ctx.json(venueApsList)))
     )
   })
+  afterEach(() => Modal.destroyAll())
+
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
@@ -65,14 +68,7 @@ describe('NetworkingTab', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
 
-    // update LAN ports
-    fireEvent.mouseDown(screen.getByLabelText('AP Model'))
-    const option = screen.getByText('H320')
-    await userEvent.click(option)
-    const tabPanel = screen.getByRole('tabpanel', { hidden: false })
-    fireEvent.click(within(tabPanel).getByLabelText(/Enable port/))
-    expect(within(tabPanel).getByLabelText(/Enable port/)).toBeChecked()
-
+    await userEvent.click(screen.getByTestId('mesh-switch'))
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
   it('should navigate to venue details page when clicking cancel button', async () => {

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Switch, Tooltip } from 'antd'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Form, Switch, Tooltip } from 'antd'
+import { useIntl }               from 'react-intl'
+import { useParams }             from 'react-router-dom'
 
 import { showActionModal, showToast, Loader } from '@acx-ui/components'
 import {
@@ -13,8 +13,6 @@ import {
 import { APMeshRole } from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../../../index'
-
-import * as UI from './styledComponents'
 
 export function MeshNetwork () {
   const { $t } = useIntl()
@@ -132,20 +130,22 @@ export function MeshNetwork () {
     }
   }
 
-  return (<Loader states={[{ isLoading: !data }]}>
-    <UI.FieldLabel width='125px'>
-      {$t({ defaultMessage: 'Mesh Network' })}
-      <UI.FieldLabel width='30px'>
-        <Tooltip title={meshToolTipDisabledText}>
-          <Switch
-            checked={meshEnabled}
-            disabled={!isAllowEnableMesh}
-            onClick={toggleMesh}
-            style={{ marginTop: isAllowEnableMesh? '5px' : '0' }}
-          />
-        </Tooltip>
-      </UI.FieldLabel>
-    </UI.FieldLabel>
+  return (<Loader states={[{
+    isLoading: !data || meshToolTipDisabledText === 'Not available'
+  }]}>
+    <Form.Item
+      label={$t({ defaultMessage: 'Mesh Network' })}
+      valuePropName='checked'
+      initialValue={meshEnabled}
+      children={<Tooltip title={meshToolTipDisabledText}>
+        <Switch
+          data-testid='mesh-switch'
+          checked={meshEnabled}
+          disabled={!isAllowEnableMesh}
+          onClick={toggleMesh}
+        />
+      </Tooltip>}
+    />
   </Loader>
   )
 }

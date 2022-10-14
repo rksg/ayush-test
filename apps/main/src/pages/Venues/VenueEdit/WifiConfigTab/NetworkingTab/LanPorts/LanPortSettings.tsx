@@ -52,7 +52,6 @@ export function LanPortSettings (props: {
 
   return (<>
     {selectedPortCaps?.isPoeOutPort && <Form.Item
-      labelCol={{ span: 10 }}
       name={['poeOut', index]}
       label={$t({ defaultMessage: 'Enable PoE Out' })}
       initialValue={selectedModel.poeOut}
@@ -76,7 +75,6 @@ export function LanPortSettings (props: {
     </Space>}
 
     <Form.Item
-      labelCol={{ span: 10 }}
       name={['lan', index, 'enabled']}
       label={$t({ defaultMessage: 'Enable port' })}
       initialValue={lan?.enabled}
@@ -94,7 +92,6 @@ export function LanPortSettings (props: {
       children={<Input />}
     />
     <Form.Item
-      labelCol={{ span: 10 }}
       name={['lan', index, 'type']}
       label={<>
         {$t({ defaultMessage: 'Port type' })}
@@ -117,7 +114,6 @@ export function LanPortSettings (props: {
       />}
     />
     <Form.Item
-      labelCol={{ span: 10 }}
       name={['lan', index, 'untagId']}
       label={<>
         {$t({ defaultMessage: 'VLAN untag ID' })}
@@ -152,7 +148,6 @@ export function LanPortSettings (props: {
       />}
     />
     <Form.Item
-      labelCol={{ span: 10 }}
       name={['lan', index, 'vlanMembers']}
       label={<>
         {$t({ defaultMessage: 'VLAN member' })}

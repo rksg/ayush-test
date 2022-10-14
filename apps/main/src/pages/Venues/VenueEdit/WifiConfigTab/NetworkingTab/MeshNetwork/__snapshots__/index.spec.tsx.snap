@@ -6,28 +6,47 @@ exports[`MeshNetwork should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
-      width="125px"
+      class="ant-form-item"
     >
-      Mesh Network
       <div
-        class="styledComponents__FieldLabel-sc-cldbhn-0 bZxgmF"
-        width="30px"
+        class="ant-row ant-form-item-row"
       >
-        <button
-          aria-checked="false"
-          class="ant-switch"
-          role="switch"
-          style="margin-top: 5px;"
-          type="button"
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
+            title="Mesh Network"
+          >
+            Mesh Network
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
         >
           <div
-            class="ant-switch-handle"
-          />
-          <span
-            class="ant-switch-inner"
-          />
-        </button>
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              <button
+                aria-checked="true"
+                class="ant-switch ant-switch-checked"
+                data-testid="mesh-switch"
+                role="switch"
+                type="button"
+              >
+                <div
+                  class="ant-switch-handle"
+                />
+                <span
+                  class="ant-switch-inner"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -40,28 +59,54 @@ exports[`MeshNetwork should render disabled switch button correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
-      width="125px"
+      class="ant-form-item"
     >
-      Mesh Network
       <div
-        class="styledComponents__FieldLabel-sc-cldbhn-0 bZxgmF"
-        width="30px"
+        class="ant-row ant-form-item-row"
       >
-        <button
-          aria-checked="true"
-          class="ant-switch ant-switch-checked"
-          role="switch"
-          style="margin-top: 5px;"
-          type="button"
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
+            title="Mesh Network"
+          >
+            Mesh Network
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
         >
           <div
-            class="ant-switch-handle"
-          />
-          <span
-            class="ant-switch-inner"
-          />
-        </button>
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              <span
+                class="ant-tooltip-disabled-compatible-wrapper"
+                style="display: inline-block; cursor: not-allowed;"
+              >
+                <button
+                  aria-checked="false"
+                  class="ant-switch ant-switch-disabled"
+                  data-testid="mesh-switch"
+                  disabled=""
+                  role="switch"
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <div
+                    class="ant-switch-handle"
+                  />
+                  <span
+                    class="ant-switch-inner"
+                  />
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

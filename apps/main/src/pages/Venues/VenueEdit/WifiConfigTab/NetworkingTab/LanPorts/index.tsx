@@ -148,12 +148,15 @@ export function LanPorts () {
         isDirty: false,
         hasError: false
       })
-      setLanPortData(data ?? lanPortData)
-      setLanPortOrinData(data ?? lanPortData)
-      await updateVenueLanPorts({
-        params: { tenantId, venueId },
-        payload: data ?? lanPortData
-      }).unwrap()
+      const payload = data ?? lanPortData
+      if (payload) {
+        setLanPortData(payload)
+        setLanPortOrinData(payload)
+        await updateVenueLanPorts({
+          params: { tenantId, venueId },
+          payload
+        }).unwrap()
+      }
     } catch {
       showToast({
         type: 'error',

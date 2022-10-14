@@ -21,6 +21,8 @@ import {
 
 import { VenueEdit } from './index'
 
+window.scrollTo = jest.fn()
+
 async function showInvalidChangesModal (tabKey, discard) {
   const dialog = await screen.findByRole('dialog')
   await screen.findByText('You Have Invalid Changes')
@@ -52,7 +54,7 @@ async function updateAdvancedSettings (selectModel) {
   fireEvent.click(toggle[0])
 }
 
-async function updateNetworking () {
+async function updateLanPorts () {
   fireEvent.mouseDown(await screen.findByRole('combobox'))
   const option = screen.getByText('T750')
   await userEvent.click(option)
@@ -60,7 +62,11 @@ async function updateNetworking () {
 
   fireEvent.mouseDown(screen.getByLabelText('PoE Operating Mode'))
   await userEvent.click(await screen.getAllByText('802.3at')[1])
+}
+async function updateMeshNetwork () {
   fireEvent.click(await screen.getAllByText('Mesh Network')[0]) // anchor
+  await userEvent.click(screen.getByTestId('mesh-switch'))
+  await userEvent.click(await screen.findByRole('button', { name: 'Enable Mesh' }))
 }
 
 describe('VenueEdit - handle unsaved/invalid changes modal', () => {
@@ -79,6 +85,8 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         (_, res, ctx) => res(ctx.json(venueApModels))),
       rest.get(CommonUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.put(CommonUrlsInfo.updateVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.get(CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(CommonUrlsInfo.getConfigProfiles.url,
@@ -86,6 +94,8 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
         (_, res, ctx) => res(ctx.json(venueSwitchSetting[0]))),
       rest.put(CommonUrlsInfo.updateVenueSwitchSetting.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.put(CommonUrlsInfo.updateVenueMesh.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[0])))
@@ -185,15 +195,17 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         }))
       }))
     })
-    afterEach(() => Modal.destroyAll())
-
+    afterEach(() => {
+      Modal.destroyAll()
+    })
     it('should open unsaved changes modal and handle changes discarded', async () => {
       render(<Provider><VenueEdit /></Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await waitFor(() => screen.findByText('AP Model'))
-      await updateNetworking()
+      await updateLanPorts()
+      await updateMeshNetwork()
       fireEvent.click(await screen.findByText('Back to venue details'))
       await showUnsavedChangesModal('Networking', false)
     })
@@ -203,7 +215,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       })
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await waitFor(() => screen.findByText('AP Model'))
-      await updateNetworking()
+      await updateMeshNetwork()
       fireEvent.click(await screen.findByText('Back to venue details'))
       await showUnsavedChangesModal('Networking', true)
     })
