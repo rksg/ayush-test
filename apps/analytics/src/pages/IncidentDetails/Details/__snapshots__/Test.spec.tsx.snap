@@ -134,8 +134,19 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModels"
+            data-testid="network-impact-apModelByAP"
+            data-type="apInfra"
+          />
+          <div
+            data-dimension="apFwVersions"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apInfra"
+          />
         </div>
       </div>
     </div>
@@ -301,8 +312,19 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModels"
+            data-testid="network-impact-apModelByAP"
+            data-type="apInfra"
+          />
+          <div
+            data-dimension="apFwVersions"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apInfra"
+          />
         </div>
       </div>
     </div>
@@ -468,8 +490,29 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModel"
+            data-testid="network-impact-apModelByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="apFwVersion"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonsByEvent"
+            data-type="apRebootEvent"
+          />
         </div>
       </div>
     </div>
@@ -623,8 +666,29 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModel"
+            data-testid="network-impact-apModelByAP"
+            data-type="apDowntime"
+          />
+          <div
+            data-dimension="apFwVersion"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apDowntime"
+          />
+          <div
+            data-dimension="eventType"
+            data-testid="network-impact-eventTypeByAP"
+            data-type="apDowntime"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-reasonByAP"
+            data-type="apDowntime"
+          />
         </div>
       </div>
     </div>
@@ -635,8 +699,15 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApDisconnectionCountChart"
+          />
+          <div
+            data-testid="timeseries-DowntimeEventTypeDistributionChart"
+          />
         </div>
       </div>
     </div>
@@ -778,8 +849,29 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModel"
+            data-testid="network-impact-apModelByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="apFwVersion"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonsByEvent"
+            data-type="apRebootEvent"
+          />
         </div>
       </div>
     </div>
@@ -935,7 +1027,33 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="osType"
+            data-testid="network-impact-os"
+            data-type="client"
+          />
+          <div
+            data-dimension="apModels"
+            data-testid="network-impact-apModel"
+            data-type="client"
+          />
+          <div
+            data-dimension="apFwVersions"
+            data-testid="network-impact-apVersion"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1090,7 +1208,28 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1101,8 +1240,18 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1245,7 +1394,28 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1256,8 +1426,18 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1400,7 +1580,28 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1411,8 +1612,18 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1555,7 +1766,28 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1566,8 +1798,18 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1710,7 +1952,28 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1721,8 +1984,18 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -2306,7 +2579,23 @@ exports[`Test Details should render Ttc correctly 1`] = `
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -2317,8 +2606,18 @@ exports[`Test Details should render Ttc correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-TtcFailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-TtcByFailureTypeChart"
+          />
+        </div>
       </div>
     </div>
   </div>

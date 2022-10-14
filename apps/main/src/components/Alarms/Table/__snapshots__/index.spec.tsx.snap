@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AlarmsTable should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Alarms
+            </h1>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+  >
+    <div
+      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+    >
+      <span
+        aria-label="loader"
+        role="img"
+      >
+        <div
+          aria-busy="true"
+          aria-live="polite"
+          class="ant-spin ant-spin-lg ant-spin-spinning"
+        >
+          <span
+            class="ant-spin-dot ant-spin-dot-spin"
+          >
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;
