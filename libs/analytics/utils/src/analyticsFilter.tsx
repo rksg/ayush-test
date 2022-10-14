@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext } from 'react'
+import React, { useMemo, ReactNode, useContext } from 'react'
 
 import { Buffer } from 'buffer'
 
@@ -32,7 +32,8 @@ export function useAnalyticsFilter () {
   const { path, raw } = getNetworkFilter()
   const { dateFilter } = useContext(DateFilterContext)
   const { range, startDate, endDate } = dateFilter
-  return {
+  const [search] = useSearchParams()
+  return useMemo(() => ({
     filters: {
       ...getDateRangeFilter(range, startDate, endDate),
       ...(path.length === 2 ? { // venue level
@@ -48,7 +49,7 @@ export function useAnalyticsFilter () {
     setNetworkPath,
     getNetworkFilter,
     raw
-  }
+  }), [search]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 export function AnalyticsFilterProvider (props: { children: ReactNode }) {
