@@ -1,13 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { EdgeUrlsInfo }   from '@acx-ui/rc/utils'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen
 } from '@acx-ui/test-utils'
 
+import { mockVenueData } from '../../../../components/Edge/Form/EdgeSettingForm/__tests__/fixtures'
 
 import AddEdge from './index'
 
@@ -28,6 +30,10 @@ describe('AddEdge', () => {
       rest.post(
         EdgeUrlsInfo.addEdge.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockVenueData))
       )
     )
   })

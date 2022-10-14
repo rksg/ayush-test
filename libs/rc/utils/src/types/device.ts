@@ -1,6 +1,7 @@
 export interface EdgeSaveData {
-  serialNumber: string,
-  venueId: string,
+  description: string,
   edgeGroupId: string,
-  description: string
+  name: string,
+  serialNumber: string,
+  venueId: string
 }

@@ -5,6 +5,9 @@ import TextArea                         from 'antd/lib/input/TextArea'
 import { useIntl }                      from 'react-intl'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useVenuesListQuery }         from '@acx-ui/rc/services'
+import { Venue }                      from '@acx-ui/rc/utils'
+import { useParams }                  from '@acx-ui/react-router-dom'
 
 // will remove when api is ready
 interface Option {
@@ -12,17 +15,29 @@ interface Option {
   value: string
 }
 
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'id'
+  ]
+}
+
 const EdgeSettingForm = () => {
 
   const { $t } = useIntl()
-  const [venues, setVenues] = useState<Option[]>([])
+  const [venues, setVenues] = useState<Venue[]>([])
   const [edgeGroups, setEdgeGroups] = useState<Option[]>([])
+  const params = useParams()
+  const { data: venueData } = useVenuesListQuery({ params:
+    { tenantId: params.tenantId }, payload: defaultPayload })
 
   useEffect(() => {
-    // should call api here
-    setVenues([{ label: 'Mock Venue 1', value: 'mock_venue_1' }
-      , { label: 'Mock Venue 2', value: 'mock_venue_2' }
-      , { label: 'Mock Venue 3', value: 'mock_venue_3' }])
+    setVenues(venueData?.data || [])
+  }, [venueData])
+
+  useEffect(() => {
+    // TODO should call api to get edge group
     setEdgeGroups([{ label: 'Mock Group 1', value: 'mock_group_1' }
       , { label: 'Mock Group 2', value: 'mock_group_2' }
       , { label: 'Mock Group 3', value: 'mock_group_3' }])
@@ -40,8 +55,8 @@ const EdgeSettingForm = () => {
         <Select>
           {
             venues.map(venue =>
-              <Select.Option key={venue.value} value={venue.value}> {
-                venue.label}
+              <Select.Option key={venue.id} value={venue.id}>
+                {venue.name}
               </Select.Option>)
           }
         </Select>
