@@ -15,6 +15,7 @@ jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
     hasListeners: jest.fn().mockReturnValue(true),
     on: jest.fn(),
+    off: jest.fn(),
     send: jest.fn()
   }))
 }))

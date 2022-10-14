@@ -39,14 +39,17 @@ describe('getSeriesData', () => {
     expect(getSeriesData(sample, seriesMapping))
       .toEqual([
         {
+          key: 'newClientCount',
           name: 'New Clients',
           data: sample.time.map((t,index)=>[t, 1+index])
         },
         {
+          key: 'impactedClientCount',
           name: 'Impacted Clients',
           data: sample.time.map((t,index)=>[t, 6+index])
         },
         {
+          key: 'connectedClientCount',
           name: 'Connected Clients',
           data: sample.time.map((t,index)=>[t, 11+index])
         }

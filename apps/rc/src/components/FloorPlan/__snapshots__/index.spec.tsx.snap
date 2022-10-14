@@ -6,341 +6,376 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="ant-row ant-row-space-between"
+      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
     >
-      <div
-        class="ant-col"
-      >
-        <h4
-          class="ant-typography"
-          style="font-weight: bold; line-height: 2rem;"
-        >
-          TEST_2
-        </h4>
-      </div>
-      <div
-        class="ant-col"
+      <span
+        aria-label="loader"
+        role="img"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          aria-busy="true"
+          aria-live="polite"
+          class="ant-spin ant-spin-lg ant-spin-spinning"
         >
-          <div
-            class="ant-space-item"
-            style="margin-right: 4px;"
-          >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </div>
           <span
-            class="ant-space-item-split"
-            style="margin-right: 4px;"
+            class="ant-spin-dot ant-spin-dot-spin"
           >
-            <div
-              class="ant-divider ant-divider-vertical"
-              role="separator"
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
             />
           </span>
-          <div
-            class="ant-space-item"
-          >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              type="button"
-            >
-              <span>
-                Delete
-              </span>
-            </button>
-          </div>
         </div>
-      </div>
+      </span>
     </div>
     <div
-      class="ant-divider ant-divider-horizontal"
-      role="separator"
-      style="margin: 0px;"
-    />
-    <div
-      class="styledComponents__ImageContainerWrapper-rlzd0s-6 jcaOhg"
+      class="styledComponents__FloorPlanContainer-sc-1v7l7qr-3 bdQrqY"
     >
       <div
-        class="styledComponents__ImageContainer-rlzd0s-7 jWJHGm"
-        data-testid="image-container"
-      >
-        <img
-          alt="TEST_2"
-          data-testid="floorPlanImage"
-          src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
-          style="max-height: 100%; width: 100%;"
-        />
-      </div>
-      <div
-        class="styledComponents__ImageLoaderContainer-rlzd0s-8 kqlLvl"
+        class="ant-row ant-row-space-between"
       >
         <div
-          class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+          class="ant-col"
+        >
+          <h4
+            class="ant-typography"
+            style="font-weight: bold; line-height: 2rem;"
+          >
+            TEST_2
+          </h4>
+        </div>
+        <div
+          class="ant-col"
         >
           <div
-            class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
+            class="ant-space ant-space-horizontal ant-space-align-center"
           >
+            <div
+              class="ant-space-item"
+              style="margin-right: 4px;"
+            >
+              <button
+                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                type="button"
+              >
+                <span>
+                  Edit
+                </span>
+              </button>
+            </div>
             <span
-              aria-label="loader"
-              role="img"
+              class="ant-space-item-split"
+              style="margin-right: 4px;"
             >
               <div
-                aria-busy="true"
-                aria-live="polite"
-                class="ant-spin ant-spin-lg ant-spin-spinning"
-              >
-                <span
-                  class="ant-spin-dot ant-spin-dot-spin"
-                >
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                </span>
-              </div>
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
             </span>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                type="button"
+              >
+                <span>
+                  Delete
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      class="ant-space ant-space-vertical styledComponents__ImageButtonsContainer-rlzd0s-9 CXZsa"
-    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-in"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassPlusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="margin: 0px;"
+      />
+      <div
+        class="styledComponents__ImageContainerWrapper-rlzd0s-6 jcaOhg"
       >
         <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
-      <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-out"
-          type="button"
+          class="styledComponents__ImageContainer-rlzd0s-7 jWJHGm"
+          data-testid="image-container"
         >
-          <svg>
-            MagnifyingGlassMinusOutlined.svg
-          </svg>
-        </button>
+          <img
+            alt="TEST_2"
+            data-testid="floorPlanImage"
+            src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+            style="max-height: 100%; width: 100%;"
+          />
+        </div>
+        <div
+          class="styledComponents__ImageLoaderContainer-rlzd0s-8 kqlLvl"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+          >
+            <div
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
+            >
+              <span
+                aria-label="loader"
+                role="img"
+              >
+                <div
+                  aria-busy="true"
+                  aria-live="polite"
+                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                >
+                  <span
+                    class="ant-spin-dot ant-spin-dot-spin"
+                  >
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                  </span>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
+      <div
+        class="ant-space ant-space-vertical styledComponents__ImageButtonsContainer-rlzd0s-9 CXZsa"
       >
         <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
-      <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-original"
-          type="button"
+          class="ant-space-item"
+          style="margin-bottom: 0px;"
         >
-          <svg>
-            SearchFullOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
+          <button
+            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="image-zoom-in"
+            type="button"
+          >
+            <svg>
+              MagnifyingGlassPlusOutlined.svg
+            </svg>
+          </button>
+        </div>
+        <span
+          class="ant-space-item-split"
+          style="margin-bottom: 0px;"
+        >
+          <div
+            class="ant-divider ant-divider-horizontal"
+            role="separator"
+            style="line-height: 0px; margin: 0px;"
+          />
+        </span>
         <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
-      <div
-        class="ant-space-item"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-fit"
-          type="button"
+          class="ant-space-item"
+          style="margin-bottom: 0px;"
         >
-          <svg>
-            SearchFitOutlined.svg
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div
-      class="ant-row"
-    >
-      <div
-        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__GallaryWrapper-rlzd0s-2 rVQqg"
-      >
+          <button
+            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="image-zoom-out"
+            type="button"
+          >
+            <svg>
+              MagnifyingGlassMinusOutlined.svg
+            </svg>
+          </button>
+        </div>
+        <span
+          class="ant-space-item-split"
+          style="margin-bottom: 0px;"
+        >
+          <div
+            class="ant-divider ant-divider-horizontal"
+            role="separator"
+            style="line-height: 0px; margin: 0px;"
+          />
+        </span>
+        <div
+          class="ant-space-item"
+          style="margin-bottom: 0px;"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="image-zoom-original"
+            type="button"
+          >
+            <svg>
+              SearchFullOutlined.svg
+            </svg>
+          </button>
+        </div>
+        <span
+          class="ant-space-item-split"
+          style="margin-bottom: 0px;"
+        >
+          <div
+            class="ant-divider ant-divider-horizontal"
+            role="separator"
+            style="line-height: 0px; margin: 0px;"
+          />
+        </span>
         <div
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 jhcQlq"
-            data-testid="galleryIcon"
+            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="image-zoom-fit"
             type="button"
           >
             <svg>
-              ApplicationsSolid.svg
+              SearchFitOutlined.svg
             </svg>
           </button>
         </div>
       </div>
       <div
-        class="ant-col ant-col-23"
+        class="ant-row"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center styledComponents__StyledSpace-rlzd0s-0 fWBldc"
+          class="ant-space ant-space-horizontal ant-space-align-center styledComponents__GallaryWrapper-rlzd0s-2 rVQqg"
         >
           <div
             class="ant-space-item"
-            style="margin-right: 4px;"
+          >
+            <button
+              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 jhcQlq"
+              data-testid="galleryIcon"
+              type="button"
+            >
+              <svg>
+                ApplicationsSolid.svg
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-23"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__StyledSpace-rlzd0s-0 fWBldc"
           >
             <div
-              class="styledComponents__Thumbnail-rlzd0s-5 ceXyVJ"
+              class="ant-space-item"
+              style="margin-right: 4px;"
             >
               <div
-                active="1"
-                class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 eRPiEN"
-                data-testid="thumbnailBg"
+                class="styledComponents__Thumbnail-rlzd0s-5 ceXyVJ"
               >
                 <div
-                  class="ant-image"
+                  active="1"
+                  class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 eRPiEN"
+                  data-testid="thumbnailBg"
                 >
-                  <img
-                    alt="Thumbnail for TEST_2"
-                    class="ant-image-img"
-                    src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
-                    style="height: 53px; width: 78px;"
-                  />
+                  <div
+                    class="ant-image"
+                  >
+                    <img
+                      alt="Thumbnail for TEST_2"
+                      class="ant-image-img"
+                      src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                      style="height: 53px; width: 78px;"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div
-                class="styledComponents__ImageDesc-rlzd0s-4 jZeBiK"
-              >
-                TEST_2
+                <div
+                  class="styledComponents__ImageDesc-rlzd0s-4 jZeBiK"
+                >
+                  TEST_2
+                </div>
               </div>
             </div>
-          </div>
-          <div
-            class="ant-space-item"
-          >
             <div
-              class="styledComponents__Thumbnail-rlzd0s-5 ceXyVJ"
+              class="ant-space-item"
             >
               <div
-                active="0"
-                class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 dvsWPw"
-                data-testid="thumbnailBg"
+                class="styledComponents__Thumbnail-rlzd0s-5 ceXyVJ"
               >
                 <div
-                  class="ant-image"
+                  active="0"
+                  class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 dvsWPw"
+                  data-testid="thumbnailBg"
                 >
-                  <img
-                    alt="Thumbnail for dscx"
-                    class="ant-image-img"
-                    src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
-                    style="height: 53px; width: 78px;"
-                  />
+                  <div
+                    class="ant-image"
+                  >
+                    <img
+                      alt="Thumbnail for dscx"
+                      class="ant-image-img"
+                      src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                      style="height: 53px; width: 78px;"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div
-                class="styledComponents__ImageDesc-rlzd0s-4 gCVmfM"
-              >
-                dscx
+                <div
+                  class="styledComponents__ImageDesc-rlzd0s-4 gCVmfM"
+                >
+                  dscx
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__StyledSpace-sc-1v7l7qr-0 tkZRb"
-    >
       <div
-        class="ant-space-item"
-        style="margin-right: 24px;"
+        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__StyledSpace-sc-1v7l7qr-0 tkZRb"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          type="button"
+        <div
+          class="ant-space-item"
+          style="margin-right: 24px;"
         >
-          <span>
-            + Add Floor Plan
-          </span>
-        </button>
-      </div>
-      <div
-        class="ant-space-item"
-        style="margin-right: 24px;"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          type="button"
-        >
-          <span>
-            Unplaced Devices (0)
-          </span>
-        </button>
-      </div>
-      <div
-        class="ant-space-item"
-      >
-        <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-1v7l7qr-2 bnlKLs"
-          data-testid="expandIcon"
-          title="Expand"
-          type="button"
-        >
-          <svg
-            class="styledComponents__ArrowOutIcon-sc-1v7l7qr-1"
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            type="button"
           >
-            ArrowsOut.svg
-          </svg>
-        </button>
+            <span>
+              + Add Floor Plan
+            </span>
+          </button>
+        </div>
+        <div
+          class="ant-space-item"
+          style="margin-right: 24px;"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            type="button"
+          >
+            <span>
+              Unplaced Devices (0)
+            </span>
+          </button>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <button
+            class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-1v7l7qr-2 bnlKLs"
+            data-testid="expandIcon"
+            title="Expand"
+            type="button"
+          >
+            <svg
+              class="styledComponents__ArrowOutIcon-sc-1v7l7qr-1"
+            >
+              ArrowsOut.svg
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>
