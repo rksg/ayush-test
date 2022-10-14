@@ -1,10 +1,12 @@
 import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router }          from '@acx-ui/react-router-dom'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { TimeStampRange }                   from '@acx-ui/types'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { HealthPageContext, TimeWindow } from '../HealthPageContext'
+import { HealthPageContext } from '../HealthPageContext'
 
 import { timeseriesApi, histogramApi } from './services'
 
@@ -34,7 +36,7 @@ describe('Kpi Section', () => {
   } as AnalyticsFilter
   const healthContext = {
     ...filters,
-    timeWindow: ['2022-04-07T09:30:00.000Z', '2022-04-07T09:45:00.000Z'] as TimeWindow,
+    timeWindow: ['2022-04-07T09:30:00.000Z', '2022-04-07T09:45:00.000Z'] as TimeStampRange,
     setTimeWindow: jest.fn()
   }
   it('should render kpis for tab', async () => {
@@ -44,12 +46,12 @@ describe('Kpi Section', () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleTS }
     })
-    render(<Provider>
+    render(<Router><Provider>
       <HealthPageContext.Provider value={healthContext}>
         <KpiSection tab={'overview'} />
       </HealthPageContext.Provider>
-    </Provider>)
-    await screen.findByText('Time to Connect')
+    </Provider></Router>)
+    await screen.findByText('Time To Connect')
     expect(screen.getByText('20% meets goal')).toBeVisible()
   })
 })

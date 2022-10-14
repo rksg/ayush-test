@@ -382,6 +382,49 @@ describe('Table component', () => {
     expect(editButton).not.toBeVisible()
   })
 
+  it('disabled row action button and add tooltip', async () => {
+    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const rowActions: TableProps<typeof basicData[number]>['rowActions'] = [
+      { label: 'Edit', onClick: onEdit },
+      { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' }
+    ]
+
+    render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+      rowActions={rowActions}
+      rowSelection={{ }}
+    />)
+
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    expect(deleteButton).toBeDisabled()
+  })
+
+  it('add row action button tooltip', async () => {
+    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const rowActions: TableProps<typeof basicData[number]>['rowActions'] = [
+      { label: 'Edit', onClick: onEdit },
+      { label: 'Delete', onClick: onDelete, tooltip: 'test delete' }
+    ]
+
+    render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+      rowActions={rowActions}
+      rowSelection={{ }}
+    />)
+
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    expect(deleteButton).toBeVisible()
+    expect(rowActions[1].onClick).not.toBeCalled()
+    fireEvent.click(deleteButton)
+    expect(rowActions[1].onClick).toBeCalled()
+  })
+
   describe('search & filter', () => {
     const filteredColumns = [
       {

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space }                                       from 'antd'
+import { Space, Tooltip }                              from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
@@ -50,8 +50,10 @@ export interface TableProps <RecordType>
       onClick: () => void
     }>
     rowActions?: Array<{
-      label: string
-      visible?: boolean | ((selectedItems: RecordType[]) => boolean)
+      label: string,
+      disabled?: boolean,
+      tooltip?: string,
+      visible?: boolean | ((selectedItems: RecordType[]) => boolean),
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
@@ -313,22 +315,28 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
             <UI.CloseButton
               onClick={onCleanSelected}
               title={$t({ defaultMessage: 'Clear selection' })}
+              data-id='table-clear-btn'
             />
           </Space>
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) => {
               const rows = getSelectedRows(selectedRowKeys)
+              const label = option.tooltip
+                ? <Tooltip placement='top' title={option.tooltip}>{option.label}</Tooltip>
+                : option.label
               let visible = typeof option.visible === 'function'
                 ? option.visible(rows)
                 : option.visible ?? true
 
               if (!visible) return null
-
               return <UI.ActionButton
                 key={option.label}
-                onClick={() => option.onClick(rows, () => { onCleanSelected() })}
-                children={option.label}
-              />
+                disabled={option.disabled}
+                onClick={() =>
+                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
+              >
+                {label}
+              </UI.ActionButton>
             })}
           </Space>
         </Space>
