@@ -32,7 +32,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
   return (<>{
-    kpis.map((kpi) => (<KpiRow key={kpi}>
+    kpis.map((kpi) => (<KpiRow key={kpi + defaultZoom}>
       <GridCol col={{ span: 16 }}>
         <GridRow style={{ height: '150px' }}>
           <GridCol col={{ span: 5 }}>
