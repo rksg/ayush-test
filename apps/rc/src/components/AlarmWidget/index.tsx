@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
+import { useSplitTreatmentWithConfig } from '@acx-ui/feature-toggle'
 
 import { cssStr, Loader }            from '@acx-ui/components'
 import { Card }                      from '@acx-ui/components'
@@ -107,6 +108,8 @@ function AlarmWidget () {
   })
 
   const { data } = overviewQuery
+  const splitConfig = useSplitTreatmentWithConfig('ADMIN-BASE')
+  console.log('splitConfig widgets---> ', splitConfig)
   return (
     <Loader states={[overviewQuery, alarmQuery]}>
       <Card title={$t({ defaultMessage: 'Alarms' })}>

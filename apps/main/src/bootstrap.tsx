@@ -8,8 +8,8 @@ import {
   CommonUrlsInfo,
   createHttpRequest
 } from '@acx-ui/rc/utils'
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-import { Provider }      from '@acx-ui/store'
+import { BrowserRouter }      from '@acx-ui/react-router-dom'
+import { Provider }           from '@acx-ui/store'
 import { getJwtTokenPayload } from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
@@ -113,10 +113,6 @@ export async function init () {
   const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
   const jwtPayload = getJwtTokenPayload()
   console.log('JWT Payload :', jwtPayload)
-  console.log('JWT Payload :', jwtPayload.acx_account_tier)
-  console.log('JWT Payload :', jwtPayload.acx_account_regions[2])
-  console.log('JWT Payload :', jwtPayload.region)
-  console.log('JWT Payload :', jwtPayload.acx_account_vertical)
 
   // Pendo initialization
   // @ts-ignore

@@ -7,7 +7,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { FeatureFlag } from './types'
 
 export function useSplitTreatment (splitName: string): boolean {
-  const { isReady, client } = useContext(SplitContext)
+  const { client } = useContext(SplitContext)
+  const isReady = client.Event.SDK_READY
   const { tenantId } = useParams()
   const attributes = { tenantId }
   const treatment = isReady
