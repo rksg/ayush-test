@@ -757,16 +757,19 @@
   .ant-tabs {
     &:not(.ant-tabs-card) {
       .ant-tabs-tab {
-        padding: 4px 0 14px 0;
+        padding: 4px 8px 14px 8px;
         &.ant-tabs-tab-active .ant-tabs-tab-btn {
           font-weight: var(--acx-subtitle-4-font-weight);
         }
       }
       .ant-tabs-tab + .ant-tabs-tab {
-        margin-left: 30px;
+        margin-left: 20px;
       }
       .ant-tabs-nav {
         border-bottom: 1px solid var(--acx-neutrals-30);
+      }
+      .ant-tabs-ink-bar {
+        height: 3px;
       }
     }
 
@@ -797,11 +800,13 @@
         }
       }
 
-      .ant-tabs:first-child {
+      // 3-rd tab
+      .ant-tabs {
         margin-top: 16px;
         .ant-tabs-tab {
           padding: 6px 30px;
           background: var(--acx-neutrals-20);
+          user-select: none;
           & + .ant-tabs-tab {
             margin-left: 12px;
           }
@@ -817,6 +822,7 @@
         .ant-tabs-nav {
           border: 0;
           .ant-tabs-ink-bar {
+            height: 2px;
             top: 0;
           }
           &:before {
