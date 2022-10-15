@@ -26,7 +26,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
           <GridCol col={{ span: 19 }}><KpiTimeseries filters={filters} kpi={kpi} /></GridCol>
         </GridRow>
       </GridCol>
-      <GridCol col={{ span: 8 }}>
+      <GridCol col={{ span: 8 }} style={{ height: '150px' }}>
         <SLAThreshold filters={filters} kpi={kpi}/>
       </GridCol>
     </KpiRow>))

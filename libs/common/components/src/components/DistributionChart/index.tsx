@@ -24,7 +24,8 @@ export interface DistributionChartProps
   barColors?: string[]
   barWidth?: number
   title?: string
-  tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
+  tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>,
+  xAxisOffset: number
 }
 
 export function DistributionChart<TChartData extends BarChartData>
@@ -35,6 +36,7 @@ export function DistributionChart<TChartData extends BarChartData>
   barWidth,
   title,
   tooltipFormatter,
+  xAxisOffset,
   ...props
 }: DistributionChartProps<TChartData>) {
   const option: EChartsOption = {
@@ -58,6 +60,7 @@ export function DistributionChart<TChartData extends BarChartData>
       ...xAxisOptions(),
       ...(title ? xAxisNameOptions(title) : {}),
       type: 'category',
+      offset: xAxisOffset ? xAxisOffset : 0,
       axisLabel: {
         ...barChartAxisLabelOptions(),
         formatter: function (value: string) {

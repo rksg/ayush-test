@@ -21,7 +21,7 @@ const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
 const strokeColor=[cssStr('--acx-accents-blue-50')]
 function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
   const { $t } = useIntl()
-  const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { histogram, text, barChart } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
 
   const { endDate } = filters
   const startDate = moment(endDate).subtract(6, 'd').format()
@@ -66,6 +66,7 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
             data={data}
             grid={{ bottom: '10%', top: '5%' }}
             title={histogram?.xUnit}
+            barWidth={30}
           />
         )}
       </AutoSizer>

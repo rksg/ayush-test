@@ -46,7 +46,7 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
   const [thresholdValue, setThresholdValue] = useState(histogram?.initialThreshold)
 
   const onChange = (newValue: number) => {
-    if(newValue === 0 || newValue === 7)
+    if(newValue === 0 || newValue === 8)
       return
     setInputValue(newValue)
     setThresholdValue(histogram?.splits[newValue - 1])
@@ -86,14 +86,16 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
             {({ width, height }) => (
               <>
                 <DistributionChart
-                  style={{ height, width }}
+                  style={{ height: height * 0.75, width }}
                   data={data}
                   grid={{ bottom: '10%', top: '5%' }}
                   title={histogram?.xUnit}
+                  barWidth={30}
+                  xAxisOffset={10}
                 />
                 <UI.StyledSlider
                   min={0}
-                  max={7}
+                  max={8}
                   onChange={onChange}
                   marks={marks}
                   value={inputValue}
@@ -101,8 +103,8 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
                     height: 5,
                     width: width * 0.95,
                     position: 'absolute',
-                    top: height * 0.9,
-                    marginLeft: width * 0.05,
+                    top: height * 0.55,
+                    marginLeft: width * 0.08,
                     fontSize: 12
                   }}
                 />
@@ -112,15 +114,22 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
         </GridCol>
         <GridCol col={{ span: 6 }}>
           <UI.HistogramConfig>
-            <UI.HistogramInfo>
+            <UI.HistogramSpanContent>
               {'Goal'}
-              <UI.HistogramPercentageVal>
+              <UI.HistogramBoldContent>
                 {thresholdValue} {histogram?.xUnit}
-              </UI.HistogramPercentageVal>
-            </UI.HistogramInfo>
-            <UI.HistogramInfo>
-              {formatter('percentFormatRound')(percent / 100)} {'met goal'}
-            </UI.HistogramInfo>
+              </UI.HistogramBoldContent>
+            </UI.HistogramSpanContent>
+            <UI.HistogramGoalPercentage>
+              {formatter('percentFormatRound')(percent / 100)}
+              <UI.HistogramBoldContent>
+                {'met goal'}
+              </UI.HistogramBoldContent>
+            </UI.HistogramGoalPercentage>
+            <UI.BtnWrapper>
+              <UI.Button value={'Save'}></UI.Button>
+              <UI.Button value={'Reset'}></UI.Button>
+            </UI.BtnWrapper>
           </UI.HistogramConfig>
         </GridCol>
       </GridRow>
