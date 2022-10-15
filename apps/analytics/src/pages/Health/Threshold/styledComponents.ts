@@ -3,18 +3,26 @@ import styled      from 'styled-components/macro'
 
 
 export const StyledSlider = styled(Slider)`
-.ant-slider .ant-slider-rail {
-  background-color: #7a7474 !important;
-},
 .ant-slider-handle {
   min-width: 12px !important; 
   height: 12px !important;
   &:before {
     content: none !important;
   }
+  border: 1px solid  var(--acx-neutrals-20) !important;
 }
 .ant-slider-mark{
   display: none;
+}
+.ant-slider-rail,
+&:hover .ant-slider-rail {
+  height: 1.5px !important;
+  background-color: var(--acx-primary-black) !important;
+}
+.ant-slider-track,
+&:hover .ant-slider-track {
+  height: 1.5px !important;
+  background-color: var(--acx-primary-black) !important;
 }
 `
 const HistogramCommom = `
@@ -26,9 +34,9 @@ export const HistogramPercentageDesc = styled.span`${HistogramCommom}`
 
 export const HistogramGoalPercentage = styled.span`
   color: var(--acx-primary-black);
-  font-weight: var(--acx-body-font-weight-bold);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
   font-size: var(--acx-subtitle-5-font-size);
-  margin-bottom: 5px
+  margin-bottom: 20px
 `
 export const HistogramConfig = styled.div`
 font-size: 12px;
@@ -46,13 +54,13 @@ export const HistogramInfo = styled.span`
 export const HistogramBoldContent = styled.span`
   color: var(--acx-primary-black);
   padding-left: 2.5px;
-  font-weight: var(--acx-body-font-weight-bold);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
   font-size: var(--acx-subtitle-6-font-size);
 `
 export const HistogramSpanContent = styled.span`
   color: var(--acx-primary-black);
   font-size: var(--acx-subtitle-6-font-size);
-  margin-bottom: 5px
+  margin-bottom: 10px
 `
 
 export const Button = styled.input`
@@ -72,8 +80,8 @@ export const Button = styled.input`
   text-align : center;
   font-size: var(--acx-subtitle-6-font-size);
 `
-export const BtnWrapper = styled.span`
+export const BtnWrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  margin-bottom: 5px
+  flex-direction: column;
+  gap: 10px
 `

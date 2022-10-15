@@ -25,7 +25,7 @@ export interface DistributionChartProps
   barWidth?: number
   title?: string
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>,
-  xAxisOffset: number
+  xAxisOffset?: number
 }
 
 export function DistributionChart<TChartData extends BarChartData>

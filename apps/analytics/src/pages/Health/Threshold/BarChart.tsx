@@ -62,9 +62,9 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
       <AutoSizer>
         {({ width, height }) => (
           <DistributionChart
-            style={{ height, width }}
+            style={{ height , width }}
             data={data}
-            grid={{ bottom: '10%', top: '5%' }}
+            grid={{ top: '5%' }}
             title={histogram?.xUnit}
             barWidth={30}
           />

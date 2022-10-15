@@ -5,11 +5,10 @@ import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig }        from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                  from '@acx-ui/components'
-import { Loader, cssStr, DistributionChart } from '@acx-ui/components'
-import type { TimeStamp }                    from '@acx-ui/types'
-import { formatter }                         from '@acx-ui/utils'
+import { AnalyticsFilter, kpiConfig }                                  from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, cssStr, DistributionChart, Button } from '@acx-ui/components'
+import type { TimeStamp }                                              from '@acx-ui/types'
+import { formatter }                                                   from '@acx-ui/utils'
 
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
@@ -100,10 +99,9 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
                   marks={marks}
                   value={inputValue}
                   style={{
-                    height: 5,
                     width: width * 0.95,
                     position: 'absolute',
-                    top: height * 0.55,
+                    top: height * 0.53,
                     marginLeft: width * 0.08,
                     fontSize: 12
                   }}
@@ -127,8 +125,8 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
               </UI.HistogramBoldContent>
             </UI.HistogramGoalPercentage>
             <UI.BtnWrapper>
-              <UI.Button value={'Save'}></UI.Button>
-              <UI.Button value={'Reset'}></UI.Button>
+              <Button size='small' >Reset</Button>
+              <Button size='small' type='secondary'>Apply</Button>
             </UI.BtnWrapper>
           </UI.HistogramConfig>
         </GridCol>
