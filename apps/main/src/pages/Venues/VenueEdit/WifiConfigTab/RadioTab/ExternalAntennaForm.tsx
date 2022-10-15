@@ -1,25 +1,31 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { Form, Input, Switch, Tooltip } from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, InputNumber, Switch, Tooltip } from 'antd'
+import { useIntl }                            from 'react-intl'
 
-import { StepsForm }                            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }           from '@acx-ui/icons'
-import { ExternalAntenna, CapabilitiesApModel } from '@acx-ui/rc/utils'
+import { StepsForm }                  from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { ExternalAntenna }            from '@acx-ui/rc/utils'
+
+import { VenueEditContext } from '../..'
 
 const { useWatch } = Form
 
 export function ExternalAntennaForm (props:{
   model: string
+  apiSelectedApExternalAntenna: ExternalAntenna
   selectedApExternalAntenna: ExternalAntenna
-  selectedApCapabilities: CapabilitiesApModel | null
   readOnly: boolean
 }
 ) {
   const { $t } = useIntl()
   const ANTENNA_TOOLTIP = $t({ defaultMessage: 'Please input in as specified in your antenna data sheet' })
-  const { model, selectedApExternalAntenna, selectedApCapabilities, readOnly } = props
+  const { model, selectedApExternalAntenna, apiSelectedApExternalAntenna, readOnly } = props
+  const { editContextData,
+    setEditContextData,
+    editRadioContextData,
+    setEditRadioContextData } = useContext(VenueEditContext)
   const form = Form.useFormInstance()
   const [
     coupled,
@@ -41,17 +47,12 @@ export function ExternalAntennaForm (props:{
   })
 
   useEffect(() => {
-    const formValues = form.getFieldsValue()
-    let currentValue
-    if(formValues.external.apModel?.[model]){
-      currentValue = formValues.external.apModel?.[model]
-    }
     if (selectedApExternalAntenna) {
       const has24G = (selectedApExternalAntenna.enable24G !== undefined)
       const has50G = (selectedApExternalAntenna.enable50G !== undefined)
-      const currentExtAnt = combinExternalAntennaData(selectedApExternalAntenna, selectedApCapabilities)
+      const currentExtAnt = { ...selectedApExternalAntenna }
       const singleToggle = checkIsSingleToggleAndEnable(currentExtAnt)
-      const initialValue = {
+      const modelData = {
         coupled: singleToggle.enable,
         enable24G: has24G ? currentExtAnt.enable24G : null,
         enable50G: has50G ? currentExtAnt.enable50G : null,
@@ -61,7 +62,8 @@ export function ExternalAntennaForm (props:{
       form.setFieldsValue({
         external: {
           apModel: {
-            [model]: currentValue || initialValue
+            selected: model,
+            [model]: modelData
           }
         }
       })
@@ -72,12 +74,29 @@ export function ExternalAntennaForm (props:{
         singleToggle
       })
     }
-  }, [selectedApExternalAntenna, selectedApCapabilities])
+  }, [selectedApExternalAntenna])
 
-  const combinExternalAntennaData = (selectExtAnt: ExternalAntenna, capbilitiy: CapabilitiesApModel | null) => {
-    return Object.assign({}, selectExtAnt, {
-      supportDisable: capbilitiy?.externalAntenna?.supportDisable,
-      coupled: capbilitiy?.externalAntenna?.coupled || undefined
+  const onChangeGain = (field:string, value: number) => {
+    const updateState= {
+      ...formSettings.currentExtAnt,
+      [field]: value
+    }
+    setFormSettings({
+      ...formSettings,
+      currentExtAnt: updateState
+    })
+    setEditRadioContextData({
+      ...editRadioContextData,
+      apModels: {
+        ...editRadioContextData.apModels,
+        [model]: updateState
+      }
+    })
+    setEditContextData({
+      ...editContextData,
+      unsavedTabKey: 'radio',
+      tabTitle: $t({ defaultMessage: 'Radio' }),
+      isDirty: true
     })
   }
 
@@ -137,71 +156,74 @@ export function ExternalAntennaForm (props:{
       default:
         return
     }
-    setFormSettings({
-      ...formSettings,
-      currentExtAnt
-    })
-    // updateExternalAntenna(controlName);
 
     if (!checked) {
-      resetCurrentExternalAntennaGain(channel)
+      resetCurrentExternalAntennaGain(channel, currentExtAnt)
+    } else {
+      setFormSettings({
+        ...formSettings,
+        currentExtAnt
+      })
+      setEditRadioContextData({
+        ...editRadioContextData,
+        apModels: {
+          ...editRadioContextData.apModels,
+          [model]: currentExtAnt
+        }
+      })
+      setEditContextData({
+        ...editContextData,
+        unsavedTabKey: 'radio',
+        tabTitle: $t({ defaultMessage: 'Radio' }),
+        isDirty: true
+      })
     }
   }
 
-  const resetCurrentExternalAntennaGain = (channel: string) => {
+  const resetCurrentExternalAntennaGain = (channel: string, tempCurrentExtAnt:ExternalAntenna) => {
+    const currentExtAnt = { ...tempCurrentExtAnt }
     switch (channel) {
       case '24G' :
-        form.setFieldValue('gain24G', selectedApExternalAntenna.gain24G)
+        form.setFieldValue(['external', 'apModel', model, 'gain24G'], apiSelectedApExternalAntenna.gain24G)
+        if (apiSelectedApExternalAntenna.gain24G !== null) { // valid
+          currentExtAnt.gain24G = apiSelectedApExternalAntenna.gain24G
+        }
         break
       case '50G':
-        form.setFieldValue('gain50G', selectedApExternalAntenna.gain50G)
+        form.setFieldValue(['external', 'apModel', model, 'gain50G'], apiSelectedApExternalAntenna.gain50G)
+        if (apiSelectedApExternalAntenna.gain50G !== null) {
+          currentExtAnt.gain50G = apiSelectedApExternalAntenna.gain50G
+        }
         break
       case 'both':
         if (selectedApExternalAntenna.gain24G !== undefined) {
-          form.setFieldValue('gain24G', selectedApExternalAntenna.gain24G)
+          form.setFieldValue(['external', 'apModel', model, 'gain24G'], apiSelectedApExternalAntenna.gain24G)
+          currentExtAnt.gain24G = apiSelectedApExternalAntenna.gain24G
         }
         if (selectedApExternalAntenna.gain50G !== undefined) {
-          form.setFieldValue('gain50G', selectedApExternalAntenna.gain50G)
+          form.setFieldValue(['external', 'apModel', model, 'gain50G'], apiSelectedApExternalAntenna.gain50G)
+          currentExtAnt.gain50G = apiSelectedApExternalAntenna.gain50G
         }
         break
-    }
-
-    updateExternalAntennaDbi(channel)
-  }
-
-  const updateExternalAntennaDbi = (channel: string) => {
-    const controlName = []
-    const currentExtAnt = { ...formSettings.currentExtAnt }
-    switch (channel) {
-      case '24G':
-        controlName.push('gain24G')
-        if (form.getFieldValue('gain24G') !== null) { // valid
-          currentExtAnt.gain24G = form.getFieldValue('gain24G')
-        }
-        break
-      case '50G':
-        controlName.push('gain50G')
-        if (form.getFieldValue('gain50G') !== null) {
-          currentExtAnt.gain50G = form.getFieldValue('gain50G')
-        }
-        break
-      case 'both':
-        if (formSettings.has24G) {
-          controlName.push('gain24G')
-          currentExtAnt.gain24G = form.getFieldValue('gain24G')
-        }
-        if (formSettings.has50G) {
-          controlName.push('gain50G')
-          currentExtAnt.gain50G = form.getFieldValue('gain50G')
-        }
     }
     setFormSettings({
       ...formSettings,
       currentExtAnt
     })
-    // this.updateExternalAntenna(controlName);
+    setEditRadioContextData({
+      ...editRadioContextData,
+      apModels: {
+        ...editRadioContextData.apModels,
+        [model]: currentExtAnt
+      }
+    })
+    setEditContextData({
+      ...editContextData,
+      unsavedTabKey: 'radio',
+      tabTitle: $t({ defaultMessage: 'Radio' }),
+      isDirty: true
+    })
   }
-
 
   return (
     <>
@@ -245,7 +267,7 @@ export function ExternalAntennaForm (props:{
         </StepsForm.FieldLabel>
       }
       {
-        enable24G &&
+        (formSettings.has24G && (enable24G || coupled)) &&
         <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
           <StepsForm.LabelOfInput>
             { $t({ defaultMessage: 'dBi' }) }
@@ -262,7 +284,14 @@ export function ExternalAntennaForm (props:{
               </Tooltip>
             </>}
             style={{ marginBottom: '15px' }}
-            children={<Input style={{ width: '65px' }} disabled={readOnly}></Input>}
+            children={<InputNumber
+              onChange={value=>{onChangeGain('gain24G', value)}}
+              min={0}
+              max={60}
+              style={{ width: '65px' }}
+              disabled={readOnly}
+            />
+            }
           />
         </div>
       }
@@ -304,7 +333,14 @@ export function ExternalAntennaForm (props:{
               </Tooltip>
             </>}
             style={{ marginBottom: '15px' }}
-            children={<Input style={{ width: '65px' }} disabled={readOnly}></Input>}
+            children={<InputNumber
+              onChange={value=>{onChangeGain('gain50G', value)}}
+              min={0}
+              max={60}
+              style={{ width: '65px' }}
+              disabled={readOnly}
+            />
+            }
           />
         </div>
       }

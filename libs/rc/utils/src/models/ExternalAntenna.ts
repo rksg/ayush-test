@@ -1,4 +1,5 @@
 export class ExternalAntenna {
+  model: string
   // Enable 2.4 GHz external antenna
 
   enable24G?: boolean | null
@@ -24,6 +25,8 @@ export class ExternalAntenna {
   coupled?: boolean | null
 
   constructor () {
+    this.model = ''
+
     this.enable24G = null
 
     this.enable50G = null

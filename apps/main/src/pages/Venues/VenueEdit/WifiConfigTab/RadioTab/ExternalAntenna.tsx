@@ -1,28 +1,34 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Row, Select } from 'antd'
+import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
 import { useGetVenueApCapabilitiesQuery, useGetVenueExternalAntennaQuery } from '@acx-ui/rc/services'
-import { VenueExternalAntenna, CapabilitiesApModel }                       from '@acx-ui/rc/utils'
+import { CapabilitiesApModel, ExternalAntenna }                            from '@acx-ui/rc/utils'
 import { useParams }                                                       from '@acx-ui/react-router-dom'
 
-import ApModelPlaceholder from '../../../../../assets/images/ap-model-placeholder.png'
+import { VenueEditContext } from '../..'
+import ApModelPlaceholder   from '../../../../../assets/images/ap-model-placeholder.png'
 
 import { ExternalAntennaForm } from './ExternalAntennaForm'
 
 const { Option } = Select
 
-export function ExternalAntenna () {
+export function ExternalAntennaTab () {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
   const readOnly = false // TODO: !rbacService.isRoleAllowed('UpdateExternalAntennas')
   const imageTitle = $t({ defaultMessage: 'AP external Antenna image' })
   const params = useParams()
-  const [handledApExternalAntennas, setHandledApExternalAntennas] = useState([] as VenueExternalAntenna[])
+  const { editRadioContextData,
+    setEditRadioContextData } = useContext(VenueEditContext)
+  const [handledApExternalAntennas, setHandledApExternalAntennas] = useState([] as ExternalAntenna[])
   const [selectOptions, setSelectOptions] = useState([])
   const [selectedApCapabilities, setSelectedApCapabilities] = useState(null as CapabilitiesApModel | null)
-  const [selectedApExternalAntenna, setSelectedApExternalAntenna] = useState(null as VenueExternalAntenna | null)
+  const [apiSelectedApExternalAntenna, setApiSelectedApExternalAntenna] = useState(null as ExternalAntenna | null)
+  const [selectedApExternalAntenna, setSelectedApExternalAntenna] = useState(null as ExternalAntenna | null)
   const { allApModelCapabilities } = useGetVenueApCapabilitiesQuery({ params }, {
     selectFromResult ({ data }) {
       return {
@@ -30,50 +36,77 @@ export function ExternalAntenna () {
       }
     }
   })
-  const { allApExternalAntennas, selected } = useGetVenueExternalAntennaQuery({ params }, {
+  const { allApExternalAntennas } = useGetVenueExternalAntennaQuery({ params }, {
     selectFromResult ({ data }) {
       let selectoptions = data?.map(item => ({ label: item.model, value: item.model })) || []
       selectoptions.unshift({ label: $t({ defaultMessage: 'No model selected' }), value: '' })
       return {
-        allApExternalAntennas: data,
-        selected: ''
+        allApExternalAntennas: data
       }
     }
   })
-
-  useEffect(() => {
-    if (allApModelCapabilities && allApExternalAntennas) {
-      const apExternalAntennas = JSON.parse(JSON.stringify(allApExternalAntennas))
-      const extAntModels = allApExternalAntennas.map(i => i.model)
-      const apModelCapabilities = allApModelCapabilities.filter((ap) => {
-        return extAntModels.indexOf(ap.model) > -1
-      })
-
-      apExternalAntennas.forEach((data:VenueExternalAntenna) => {
-        if (data.enable24G === false && data.gain24G === undefined) {
-          data.gain24G = apModelCapabilities.filter(ap => ap.model === data.model)[0].externalAntenna.gain24G
-        }
-        if (data.enable50G === false && data.gain50G === undefined) {
-          data.gain50G = apModelCapabilities.filter(ap => ap.model === data.model)[0].externalAntenna.gain50G
-        }
-      })
-      setHandledApExternalAntennas(apExternalAntennas)
-      let selectItems = apExternalAntennas.map((item:VenueExternalAntenna) => ({ label: item.model, value: item.model })) || []
-      selectItems.unshift({ label: $t({ defaultMessage: 'No model selected' }), value: '' })
-      setSelectOptions(selectItems?.map((item:{ label: string, value:string }) =>
-        <Option key={item.value}>{item.label}</Option>) ?? [])
-    }
-  }, [allApModelCapabilities, allApExternalAntennas])
 
   const filterModelCapabilities = (model: string) => {
     return allApModelCapabilities?.find(modelCapabilities => modelCapabilities.model === model) as unknown as CapabilitiesApModel
   }
 
-  const onSelectModel = (value: string) => {
-    if (value && handledApExternalAntennas) {
-      const filteredModel = handledApExternalAntennas.filter(ap => ap.model === value)
-      setSelectedApExternalAntenna((filteredModel.length) ? filteredModel[0] : null)
-      setSelectedApCapabilities(filterModelCapabilities(value))
+  useEffect(() => {
+    if (allApModelCapabilities && allApExternalAntennas) {
+      const apExternalAntennas = JSON.parse(JSON.stringify(allApExternalAntennas))
+
+      apExternalAntennas.forEach((data:ExternalAntenna) => {
+        const modelCapabilities = filterModelCapabilities(data.model)
+        if (data.enable24G === false && data.gain24G === undefined) {
+          data.gain24G = modelCapabilities?.externalAntenna?.gain24G || null
+        }
+        if (data.enable50G === false && data.gain50G === undefined) {
+          data.gain50G = modelCapabilities?.externalAntenna?.gain50G || null
+        }
+        data.supportDisable = modelCapabilities.externalAntenna?.supportDisable
+        data.coupled = modelCapabilities.externalAntenna?.coupled || undefined
+      })
+      setHandledApExternalAntennas(apExternalAntennas)
+      let selectItems = apExternalAntennas.map((item:ExternalAntenna) => ({ label: item.model, value: item.model })) || []
+      selectItems.unshift({ label: $t({ defaultMessage: 'No model selected' }), value: '' })
+      setSelectOptions(selectItems?.map((item:{ label: string, value:string }) =>
+        <Option key={item.value} value={item.value}>{item.label}</Option>) ?? [])
+    }
+  }, [allApModelCapabilities, allApExternalAntennas])
+
+  useEffect(()=>{
+    if (handledApExternalAntennas.length) {
+      const apModelsMap = {} as { [index: string]: ExternalAntenna }
+      handledApExternalAntennas.forEach((item:ExternalAntenna) => {
+        apModelsMap[item.model] = item
+      })
+      setEditRadioContextData({
+        ...editRadioContextData,
+        apiApModels: apModelsMap,
+        apModels: apModelsMap
+      })
+      initForm()
+    }
+  }, [handledApExternalAntennas])
+
+  const initForm = () => {
+    setSelectedApExternalAntenna(null)
+    setSelectedApCapabilities(null)
+    form.setFieldsValue({
+      external: {
+        apModel: {
+          selected: ''
+        }
+      }
+    })
+  }
+
+  const onSelectModel = (currentModel: string) => {
+    if (currentModel) {
+      const apiModel = _.get(editRadioContextData?.apiApModels, currentModel) || null
+      const findModel = _.get(editRadioContextData?.apModels, currentModel) || null
+      setApiSelectedApExternalAntenna(apiModel)
+      setSelectedApExternalAntenna(findModel)
+      setSelectedApCapabilities(filterModelCapabilities(currentModel))
     } else {
       setSelectedApExternalAntenna(null)
       setSelectedApCapabilities(null)
@@ -81,20 +114,22 @@ export function ExternalAntenna () {
   }
 
   return (
-    <Form.Item
-      name={['external', 'apModel']}
-      label={$t({ defaultMessage: 'AP Model' })}
-    >
-      <Select
-        defaultValue={selected}
-        style={{ width: '280px', marginBottom: '15px' }}
-        onChange={onSelectModel}
-        children={selectOptions} />
+    <>
+      <Form.Item
+        label={$t({ defaultMessage: 'AP Model' })}
+        name={['external', 'apModel', 'selected']}
+      >
+        <Select
+          style={{ width: '280px', marginBottom: '15px' }}
+          onChange={onSelectModel}
+          children={selectOptions}
+        />
+      </Form.Item>
       {
-        selectedApExternalAntenna ?
+        selectedApExternalAntenna && apiSelectedApExternalAntenna ?
           <ExternalAntennaForm
             model={selectedApExternalAntenna.model}
-            selectedApCapabilities={selectedApCapabilities}
+            apiSelectedApExternalAntenna={apiSelectedApExternalAntenna}
             selectedApExternalAntenna={selectedApExternalAntenna}
             readOnly={readOnly}
           /> :
@@ -107,6 +142,7 @@ export function ExternalAntenna () {
             </Row>
           )
       }
-    </Form.Item>
+    </>
+
   )
 }

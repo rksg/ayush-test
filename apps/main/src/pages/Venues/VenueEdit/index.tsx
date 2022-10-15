@@ -1,9 +1,9 @@
 import { createContext, useState } from 'react'
 
-import { showActionModal, CustomButtonProps } from '@acx-ui/components'
-import { VenueLed, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { useParams }                          from '@acx-ui/react-router-dom'
-import { getIntl }                            from '@acx-ui/utils'
+import { showActionModal, CustomButtonProps }                  from '@acx-ui/components'
+import { VenueLed, VenueSwitchConfiguration, ExternalAntenna } from '@acx-ui/rc/utils'
+import { useParams }                                           from '@acx-ui/react-router-dom'
+import { getIntl }                                             from '@acx-ui/utils'
 
 import { SwitchConfigTab }          from './SwitchConfigTab'
 import { VenueDetailsTab }          from './VenueDetailsTab'
@@ -34,12 +34,21 @@ export interface EditContext {
   }
 }
 
+export interface RadioContext {
+  apiApModels?: { [index: string]: ExternalAntenna }
+  apModels?: { [index: string]: ExternalAntenna }
+  updateExternalAntenna: ((data: ExternalAntenna[]) => void)
+}
+
 export const VenueEditContext = createContext({} as {
   editContextData: EditContext,
   setEditContextData: (data: EditContext) => void
 
   editNetworkingContextData: NetworkingSettingContext,
   setEditNetworkingContextData: (data: NetworkingSettingContext) => void
+
+  editRadioContextData: RadioContext,
+  setEditRadioContextData: (data: RadioContext) => void
 })
 
 export function VenueEdit () {
@@ -51,12 +60,18 @@ export function VenueEdit () {
     editNetworkingContextData, setEditNetworkingContextData
   ] = useState({} as NetworkingSettingContext)
 
+  const [
+    editRadioContextData, setEditRadioContextData
+  ] = useState({} as RadioContext)
+
   return (
     <VenueEditContext.Provider value={{
       editContextData,
       setEditContextData,
       editNetworkingContextData,
-      setEditNetworkingContextData
+      setEditNetworkingContextData,
+      editRadioContextData,
+      setEditRadioContextData
     }}>
       <VenueEditPageHeader />
       { Tab && <Tab /> }
@@ -64,9 +79,30 @@ export function VenueEdit () {
   )
 }
 
+export function getExternalAntennaPayload (apModels: { [index: string]: ExternalAntenna }) {
+  function cleanExtModel (model: ExternalAntenna) {
+    let data = JSON.parse(JSON.stringify(model))
+
+    if (data.enable24G !== undefined && data.enable24G === false) {
+      delete data.gain24G
+    }
+    if (data.enable50G !== undefined && data.enable50G === false) {
+      delete data.gain50G
+    }
+    return data
+  }
+  const extPayload = [] as ExternalAntenna[]
+  Object.keys(apModels).map(key => {
+    const model = cleanExtModel(apModels[key] as ExternalAntenna)
+    extPayload.push(model)
+  })
+  return extPayload
+}
+
 function processWifiTab (
   editContextData: EditContext,
-  editNetworkingContextData: NetworkingSettingContext
+  editNetworkingContextData: NetworkingSettingContext,
+  editRadioContextData: RadioContext
 ){
   switch(editContextData?.unsavedTabKey){
     case 'settings':
@@ -76,6 +112,12 @@ function processWifiTab (
       editNetworkingContextData?.updateCellular?.()
       editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       break
+    case 'radio':
+      if (editRadioContextData.apModels) {
+        const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
+        editRadioContextData?.updateExternalAntenna?.(extPayload)
+      }
+      break
   }
 }
 
@@ -83,6 +125,7 @@ export function showUnsavedModal (
   editContextData: EditContext,
   setEditContextData: (data: EditContext) => void,
   editNetworkingContextData: NetworkingSettingContext,
+  editRadioContextData: RadioContext,
   callback?: () => void
 ) {
   const { $t } = getIntl()
@@ -126,7 +169,7 @@ export function showUnsavedModal (
       const wifiTab = ['radio', 'networking', 'security', 'services', 'settings']
 
       if(wifiTab.includes(editContextData?.unsavedTabKey as string)){
-        processWifiTab(editContextData, editNetworkingContextData)
+        processWifiTab(editContextData, editNetworkingContextData, editRadioContextData)
       }else{
         editContextData?.updateChanges?.()
       }

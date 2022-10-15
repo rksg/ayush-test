@@ -40,5 +40,9 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   GetVenueApCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
+  },
+  UpdateVenueExternalAntenna: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna'
   }
 }

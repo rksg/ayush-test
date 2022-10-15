@@ -1,21 +1,28 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
+import { useUpdateVenueExternalAntennaMutation } from '@acx-ui/rc/services'
+import { ExternalAntenna }                       from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../..'
+import { getExternalAntennaPayload, VenueEditContext } from '../..'
 
-import { ExternalAntenna } from './ExternalAntenna'
-import { RadioSettings }   from './RadioSettings'
+import { ExternalAntennaTab } from './ExternalAntenna'
+import { RadioSettings }      from './RadioSettings'
 
 export function RadioTab () {
   const { $t } = useIntl()
-  const { venueId } = useParams()
+  const params = useParams()
+  const { venueId } = params
   const navigate = useNavigate()
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const { editContextData,
+    setEditContextData,
+    editRadioContextData,
+    setEditRadioContextData } = useContext(VenueEditContext)
   const basePath = useTenantLink('/venues/')
+  const [updateVenueExternalAntenna ] = useUpdateVenueExternalAntennaMutation()
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const externalTitle = $t({ defaultMessage: 'External Antenna' })
   const anchorItems = [{
@@ -35,16 +42,38 @@ export function RadioTab () {
         <StepsForm.SectionTitle id='external-antenna'>
           { externalTitle }
         </StepsForm.SectionTitle>
-        <ExternalAntenna />
+        <ExternalAntennaTab />
       </>
     )
   }]
 
+  useEffect(() => {
+    setEditRadioContextData({
+      ...editRadioContextData,
+      updateExternalAntenna: handleUpdateExternalAntenna
+    })
+  }, [])
+
+  const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
+    try {
+      await updateVenueExternalAntenna({ params, payload: [ ...data ] })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
+      if (editRadioContextData.apModels) {
+        const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
+        await editRadioContextData?.updateExternalAntenna?.(extPayload)
+      }
       setEditContextData({
         ...editContextData,
-        oldData: editContextData?.newData,
+        unsavedTabKey: 'radio',
         isDirty: false
       })
       //  TODO: Call APIs
@@ -64,7 +93,7 @@ export function RadioTab () {
 
   return (
     <StepsForm
-      onFinish={() => handleUpdateSetting(true)}
+      onFinish={() => handleUpdateSetting(false)}
       onCancel={() => navigate({
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
