@@ -201,8 +201,29 @@ const [updateVenueCellularSettings] = useUpdateVenueCellularSettingsMutation()
 
 const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
   try {
+    let value;
+    if (formRef?.current?.getFieldsValue()) {
+      const lteBand = formRef?.current?.getFieldsValue().bandLteArray
+      const primaryLteBand = lteBand.primarySim
+      const secondLteBand = lteBand.secondarySim
+
+      const primaryLteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
+      Object.keys(primaryLteBand).forEach(region => {
+        primaryLteBandArray.push({ region, band3G: primaryLteBand[region].band3G, band4G: primaryLteBand[region].band4G })
+      })
+
+      const secLteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
+      Object.keys(secondLteBand).forEach(region => {
+        secLteBandArray.push({ region, band3G: secondLteBand[region].band3G, band4G: secondLteBand[region].band4G })
+      })
+
+      value = formRef.current.getFieldValue('editData');
+      value.primarySim.lteBands = primaryLteBandArray;
+      value.secondarySim.lteBands = secLteBandArray;
+    }
+
     await updateVenueCellularSettings({ params, 
-      payload: { ...payload, ...formRef?.current?.getFieldsValue().editData } })
+      payload: { ...payload, ...value } })
   } catch {
     showToast({
       type: 'error',
