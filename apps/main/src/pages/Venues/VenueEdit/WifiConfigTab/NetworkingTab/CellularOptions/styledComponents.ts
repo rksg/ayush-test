@@ -31,7 +31,7 @@ div.ant-checkbox-group {
     border: 1px solid rgb(217, 217, 217);
     border-right-width: 0;
 
-    border: 1px solid #333333;
+    border: 1px solid var(--acx-primary-black);
     border-radius: 4px;
     background-color: white;
 
@@ -41,9 +41,9 @@ div.ant-checkbox-group {
   }
 
   > label.ant-checkbox-wrapper-checked {
-    border: 1px solid #333333;
+    border: 1px solid var(--acx-primary-black);
     border-radius: 4px;
-    background-color: #333333;
+    background-color: var(--acx-primary-black);
     color: white;
   }
 

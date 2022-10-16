@@ -259,204 +259,206 @@ exports[`CellularRadioSimSettings should render CellularRadioSimSettings success
               <div
                 class="ant-form-item-control-input-content"
               >
-                <span
-                  class="styledComponents__CurrentCountryLabel-sc-nyixel-2 cLUVoM"
-                >
-                  Bands for current country (USA, Canada)
-                </span>
-                <div
-                  class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
-                  width="25px"
-                >
-                  3G:
-                  <div
-                    class="styledComponents__MultiSelect-sc-nyixel-3 iUGILQ"
+                <div>
+                  <span
+                    class="styledComponents__CurrentCountryLabel-sc-nyixel-2 cLUVoM"
                   >
-                    <div
-                      class="ant-form-item"
-                      style="margin-bottom: 0px;"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <div
-                                class="ant-checkbox-group"
-                                id="bandLteArray_primarySim_USA_CANADA_band3G"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                >
-                                  <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value="B2"
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    B2
-                                  </span>
-                                </label>
-                                <label
-                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                >
-                                  <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value="B4"
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    B4
-                                  </span>
-                                </label>
-                                <label
-                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                >
-                                  <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value="B5"
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    B5
-                                  </span>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
-                  width="25px"
-                >
-                  4G:
-                  <div
-                    class="styledComponents__MultiSelect-sc-nyixel-3 iUGILQ"
-                  >
-                    <div
-                      class="ant-form-item"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <div
-                                class="ant-checkbox-group"
-                                id="bandLteArray_primarySim_USA_CANADA_band4G"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                >
-                                  <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value="B2"
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    B2
-                                  </span>
-                                </label>
-                                <label
-                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                >
-                                  <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value="B4"
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    B4
-                                  </span>
-                                </label>
-                                <label
-                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                >
-                                  <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value="B12"
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    B12
-                                  </span>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  class="ant-btn ant-btn-link"
-                  type="button"
-                >
-                  <span>
-                    Show bands for other countries
+                    Bands for current country ()
                   </span>
-                </button>
+                  <div
+                    class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
+                    width="25px"
+                  >
+                    3G:
+                    <div
+                      class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
+                    >
+                      <div
+                        class="ant-form-item"
+                        style="margin-bottom: 0px;"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-checkbox-group"
+                                  id="bandLteArray_primarySim_USA_CANADA_band3G"
+                                >
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        type="checkbox"
+                                        value="B2"
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      B2
+                                    </span>
+                                  </label>
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        type="checkbox"
+                                        value="B4"
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      B4
+                                    </span>
+                                  </label>
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        type="checkbox"
+                                        value="B5"
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      B5
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
+                    width="25px"
+                  >
+                    4G:
+                    <div
+                      class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
+                    >
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-checkbox-group"
+                                  id="bandLteArray_primarySim_USA_CANADA_band4G"
+                                >
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        type="checkbox"
+                                        value="B2"
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      B2
+                                    </span>
+                                  </label>
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        type="checkbox"
+                                        value="B4"
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      B4
+                                    </span>
+                                  </label>
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        type="checkbox"
+                                        value="B12"
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      B12
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    class="ant-btn ant-btn-link"
+                    type="button"
+                  >
+                    <span>
+                      Show bands for other countries
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

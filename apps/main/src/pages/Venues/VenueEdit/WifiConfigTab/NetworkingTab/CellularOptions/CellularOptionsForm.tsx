@@ -241,6 +241,8 @@ const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
         <StepsForm.StepForm
           formRef={formRef}
           onChange={onChange}>
+            <div
+              data-testid='primarySettings'>
           <CellularRadioSimSettings
             editData={editData}
             simCardNumber={1}
@@ -250,6 +252,7 @@ const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
             currentCountryName={currentCountryName}
             availableLteBands={availableLteBandsArray}
             formControlName={'primarySim'} />
+            </div>
           <CellularRadioSimSettings
             editData={editData}
             simCardNumber={2}
