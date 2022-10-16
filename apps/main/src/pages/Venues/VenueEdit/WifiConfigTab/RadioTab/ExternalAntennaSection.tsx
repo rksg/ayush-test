@@ -16,7 +16,7 @@ import { ExternalAntennaForm } from './ExternalAntennaForm'
 
 const { Option } = Select
 
-export function ExternalAntennaTab () {
+export function ExternalAntennaSection () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const readOnly = false // TODO: !rbacService.isRoleAllowed('UpdateExternalAntennas')

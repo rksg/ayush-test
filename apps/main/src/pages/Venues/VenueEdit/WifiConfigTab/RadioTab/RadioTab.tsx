@@ -9,7 +9,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getExternalAntennaPayload, VenueEditContext } from '../..'
 
-import { ExternalAntennaTab } from './ExternalAntenna'
+import { ExternalAntennaSection } from './ExternalAntennaSection'
 import { RadioSettings }      from './RadioSettings'
 
 export function RadioTab () {
@@ -42,7 +42,7 @@ export function RadioTab () {
         <StepsForm.SectionTitle id='external-antenna'>
           { externalTitle }
         </StepsForm.SectionTitle>
-        <ExternalAntennaTab />
+        <ExternalAntennaSection />
       </>
     )
   }]
