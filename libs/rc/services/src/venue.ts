@@ -24,7 +24,6 @@ import {
   VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile,
-  CommonUrlsInfo,
   WifiUrlsInfo,
   AvailableLteBands,
   VenueApModelCellular
