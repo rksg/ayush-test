@@ -69,7 +69,11 @@ function IncidentBySeverityWidget ({ filters }: { filters: IncidentFilter }) {
     barColors = chart.source.map(([p]) =>
       cssStr(incidentSeverities[p as keyof typeof incidentSeverities].color)
     )
+    console.log(chart)
+    console.log(barColors)
   }
+
+
   return <Loader states={[prevResult, currentResult]}>
     <Card title={$t({ defaultMessage: 'Total Incidents' })} type='no-border'>
       <UI.Container>

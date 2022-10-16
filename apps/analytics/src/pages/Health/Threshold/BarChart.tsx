@@ -5,8 +5,9 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig }        from '@acx-ui/analytics/utils'
-import { Loader, cssStr, DistributionChart } from '@acx-ui/components'
+import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
+import { Loader, DistributionChart }  from '@acx-ui/components'
+import { formatter }                  from '@acx-ui/utils'
 
 import { KPITimeseriesResponse, useKpiTimeseriesQuery } from '../Kpi/services'
 const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
@@ -18,11 +19,12 @@ const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
   ])) as [number, number][]
 }
 
-const strokeColor=[cssStr('--acx-accents-blue-50')]
+export const formatYDataPoint = (data: number | unknown) =>
+  data !== null ? formatter('percentFormat')(data as number / 100) : '-'
+
 function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
   const { $t } = useIntl()
   const { histogram, text, barChart } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-
   const { endDate } = filters
   const startDate = moment(endDate).subtract(6, 'd').format()
   const queryResults = useKpiTimeseriesQuery(
@@ -48,7 +50,7 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
 
 
   const data = {
-    dimensions: ['', ''],
+    dimensions: ['x', 'y'],
     source: queryResults?.data?.[0]?.data ?? [],
     seriesEncode: [
       {
@@ -57,16 +59,22 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
       }
     ]
   }
+
   return (
     <Loader states={[queryResults]} key={kpi}>
       <AutoSizer>
         {({ width, height }) => (
           <DistributionChart
-            style={{ height , width }}
+            style={{ height: height , width }}
             data={data}
-            grid={{ top: '5%' }}
-            title={histogram?.xUnit}
+            grid={{ top: '5%', bottom: '5%' }}
+            title={'last 7 days'}
             barWidth={30}
+            dataYFormatter={formatYDataPoint}
+            yAxisProps={{
+              max: 100,
+              min: 0
+            }}
           />
         )}
       </AutoSizer>

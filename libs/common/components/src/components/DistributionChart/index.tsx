@@ -10,7 +10,8 @@ import {
   tooltipOptions,
   yAxisOptions,
   xAxisOptions,
-  xAxisNameOptions
+  xAxisNameOptions,
+  axisLabelOptions
 } from '../Chart/helper'
 
 import type { EChartsOption, TooltipComponentFormatterCallbackParams } from 'echarts'
@@ -25,7 +26,13 @@ export interface DistributionChartProps
   barWidth?: number
   title?: string
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>,
-  xAxisOffset?: number
+  xAxisOffset?: number,
+  dataXFormatter?: (value: unknown) => string | null,
+  dataYFormatter?: (value: unknown) => string | null,
+  yAxisProps?: {
+    max: number,
+    min: number
+  }
 }
 
 export function DistributionChart<TChartData extends BarChartData>
@@ -37,6 +44,9 @@ export function DistributionChart<TChartData extends BarChartData>
   title,
   tooltipFormatter,
   xAxisOffset,
+  yAxisProps,
+  dataXFormatter,
+  dataYFormatter,
   ...props
 }: DistributionChartProps<TChartData>) {
   const option: EChartsOption = {
@@ -62,16 +72,23 @@ export function DistributionChart<TChartData extends BarChartData>
       type: 'category',
       offset: xAxisOffset ? xAxisOffset : 0,
       axisLabel: {
-        ...barChartAxisLabelOptions(),
+        ...axisLabelOptions(),
         formatter: function (value: string) {
-          return value.trim()
+          return (dataXFormatter && dataXFormatter(value)) || value.trim()
         }
       },
       nameLocation: 'middle' // will have type error if nameLocation is set in xAxisNameOptions
     },
     yAxis: {
       ...yAxisOptions(),
-      type: 'value'
+      ...yAxisProps,
+      type: 'value',
+      axisLabel: {
+        ...axisLabelOptions(),
+        formatter: function (value: number) {
+          return (dataYFormatter && dataYFormatter(value)) || `${value}`
+        }
+      }
     },
     series: data?.seriesEncode.map(encode => ({
       type: 'bar',

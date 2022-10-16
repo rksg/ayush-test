@@ -64,19 +64,25 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
     })
 
   const data = {
-    dimensions: ['', ''],
+    dimensions: ['x', 'y'],
     source: queryResults?.data?.[0]?.data ?? [],
     seriesEncode: [
       {
-        x: 'Rss Distribution',
-        y: 'Samples'
+        x: 'x',
+        y: 'y'
       }
     ]
   }
 
+  const barColors = [
+    cssStr('--acx-accents-orange-50'),
+    cssStr('--acx-neutrals-40')
+  ]
   const percent: number = queryResults?.data?.[0]?.rawData
     ? tranformHistResponse({ ...queryResults?.data?.[0]?.rawData, kpi, thresholdValue })
     : 0
+
+
   return (
     <Loader states={[queryResults]} key={kpi}>
       <GridRow>
@@ -85,12 +91,14 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
             {({ width, height }) => (
               <>
                 <DistributionChart
-                  style={{ height: height * 0.75, width }}
+                  style={{ height: height * 0.8, width }}
                   data={data}
-                  grid={{ bottom: '10%', top: '5%' }}
-                  title={histogram?.xUnit}
+                  grid={{ bottom: '15%', top: '5%' }}
+                  title={`(${histogram?.xUnit})`}
                   barWidth={30}
-                  xAxisOffset={10}
+                  xAxisOffset={5}
+                  dataYFormatter={histogram?.shortYFormat}
+                  dataXFormatter={histogram?.shortXFormat}
                 />
                 <UI.StyledSlider
                   min={0}
@@ -115,7 +123,7 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
             <UI.HistogramSpanContent>
               {'Goal'}
               <UI.HistogramBoldContent>
-                {thresholdValue} {histogram?.xUnit}
+                {histogram?.shortXFormat?.(thresholdValue)} {histogram?.xUnit}
               </UI.HistogramBoldContent>
             </UI.HistogramSpanContent>
             <UI.HistogramGoalPercentage>
