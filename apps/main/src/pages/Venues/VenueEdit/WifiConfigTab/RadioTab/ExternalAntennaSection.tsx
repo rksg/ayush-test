@@ -14,8 +14,6 @@ import ApModelPlaceholder   from '../../../../../assets/images/ap-model-placehol
 
 import { ExternalAntennaForm } from './ExternalAntennaForm'
 
-const { Option } = Select
-
 export function ExternalAntennaSection () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -36,15 +34,7 @@ export function ExternalAntennaSection () {
       }
     }
   })
-  const { allApExternalAntennas } = useGetVenueExternalAntennaQuery({ params }, {
-    selectFromResult ({ data }) {
-      let selectoptions = data?.map(item => ({ label: item.model, value: item.model })) || []
-      selectoptions.unshift({ label: $t({ defaultMessage: 'No model selected' }), value: '' })
-      return {
-        allApExternalAntennas: data
-      }
-    }
-  })
+  const { data: allApExternalAntennas } = useGetVenueExternalAntennaQuery({ params })
 
   const filterModelCapabilities = (model: string) => {
     return allApModelCapabilities?.find(modelCapabilities => modelCapabilities.model === model) as unknown as CapabilitiesApModel
@@ -68,8 +58,7 @@ export function ExternalAntennaSection () {
       setHandledApExternalAntennas(apExternalAntennas)
       let selectItems = apExternalAntennas.map((item:ExternalAntenna) => ({ label: item.model, value: item.model })) || []
       selectItems.unshift({ label: $t({ defaultMessage: 'No model selected' }), value: '' })
-      setSelectOptions(selectItems?.map((item:{ label: string, value:string }) =>
-        <Option key={item.value} value={item.value}>{item.label}</Option>) ?? [])
+      setSelectOptions(selectItems)
     }
   }, [allApModelCapabilities, allApExternalAntennas])
 
@@ -122,7 +111,7 @@ export function ExternalAntennaSection () {
         <Select
           style={{ width: '280px', marginBottom: '15px' }}
           onChange={onSelectModel}
-          children={selectOptions}
+          options={selectOptions}
         />
       </Form.Item>
       {

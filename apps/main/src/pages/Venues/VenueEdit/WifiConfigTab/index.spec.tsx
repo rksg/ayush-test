@@ -18,7 +18,11 @@ describe('WifiConfigTab', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(
       <Provider>
-        <VenueEditContext.Provider value={{ editContextData: {}, setEditContextData: jest.fn() }}>
+        <VenueEditContext.Provider value={{
+          editContextData: {},
+          setEditContextData: jest.fn(),
+          setEditRadioContextData: jest.fn()
+        }}>
           <WifiConfigTab />
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })

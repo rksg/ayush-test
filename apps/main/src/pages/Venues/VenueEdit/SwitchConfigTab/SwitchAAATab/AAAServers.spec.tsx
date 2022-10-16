@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
@@ -104,14 +105,14 @@ describe('AAAServers', () => {
         res(ctx.json(emptyList))
       )
     )
-    const { asFragment } = render(
+    render(
       <Provider>
         <AAAServers />
       </Provider>,
       { route: { params } }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('You must have at least one RADIUS or TACACS+ server set-up in order to enable authorization or accounting')).toBeVisible()
   })
 
   it('should render RADIUS list correctly and add data', async () => {
@@ -177,7 +178,7 @@ describe('AAAServers', () => {
         res(ctx.json({}))
       )
     )
-    const { asFragment } = render(
+    render(
       <Provider>
         <AAAServers />
       </Provider>,
@@ -200,7 +201,6 @@ describe('AAAServers', () => {
     fireEvent.click(editButton)
     const saveButton = screen.getByRole('button', { name: /save/i })
     fireEvent.click(saveButton)
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render RADIUS list correctly and delete data', async () => {

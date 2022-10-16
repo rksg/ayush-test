@@ -285,6 +285,7 @@ export function ExternalAntennaForm (props:{
             </>}
             style={{ marginBottom: '15px' }}
             children={<InputNumber
+              data-testid='gain24G'
               onChange={value=>{onChangeGain('gain24G', value)}}
               min={0}
               max={60}
@@ -334,6 +335,7 @@ export function ExternalAntennaForm (props:{
             </>}
             style={{ marginBottom: '15px' }}
             children={<InputNumber
+              data-testid='gain50G'
               onChange={value=>{onChangeGain('gain50G', value)}}
               min={0}
               max={60}

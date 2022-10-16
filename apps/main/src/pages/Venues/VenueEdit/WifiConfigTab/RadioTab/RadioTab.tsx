@@ -10,7 +10,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { getExternalAntennaPayload, VenueEditContext } from '../..'
 
 import { ExternalAntennaSection } from './ExternalAntennaSection'
-import { RadioSettings }      from './RadioSettings'
+import { RadioSettings }          from './RadioSettings'
 
 export function RadioTab () {
   const { $t } = useIntl()
@@ -70,13 +70,12 @@ export function RadioTab () {
       if (editRadioContextData.apModels) {
         const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
         await editRadioContextData?.updateExternalAntenna?.(extPayload)
+        setEditContextData({
+          ...editContextData,
+          unsavedTabKey: 'radio',
+          isDirty: false
+        })
       }
-      setEditContextData({
-        ...editContextData,
-        unsavedTabKey: 'radio',
-        isDirty: false
-      })
-      //  TODO: Call APIs
       if (redirect) {
         navigate({
           ...basePath,
