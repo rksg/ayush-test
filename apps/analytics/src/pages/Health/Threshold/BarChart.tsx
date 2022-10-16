@@ -1,15 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react'
-
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import moment             from 'moment-timezone'
+import { renderToString } from 'react-dom/server'
+import { useIntl }        from 'react-intl'
+import AutoSizer          from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { Loader, DistributionChart }  from '@acx-ui/components'
 import { formatter }                  from '@acx-ui/utils'
 
+
 import { KPITimeseriesResponse, useKpiTimeseriesQuery } from '../Kpi/services'
+
+import * as UI from './styledComponents'
+
+import type { TooltipComponentFormatterCallbackParams } from 'echarts'
+
 const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
   return data.map((datum, index) => ([
     moment(time[index], 'YYYY/MM/DD').date(),
@@ -18,13 +23,21 @@ const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
       : null
   ])) as [number, number][]
 }
-
+const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+  const rss = Array.isArray(params)
+    && Array.isArray(params[0].data) ? params[0].data[1] : ''
+  return renderToString(<UI.TooltipWrapper>
+    <div>
+      <b> {formatter('percentFormat')(rss as number / 100)}</b>
+    </div>
+  </UI.TooltipWrapper>)
+}
 export const formatYDataPoint = (data: number | unknown) =>
   data !== null ? formatter('percentFormat')(data as number / 100) : '-'
 
 function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
   const { $t } = useIntl()
-  const { histogram, text, barChart } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { endDate } = filters
   const startDate = moment(endDate).subtract(6, 'd').format()
   const queryResults = useKpiTimeseriesQuery(
@@ -47,8 +60,6 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
       })
     }
   )
-
-
   const data = {
     dimensions: ['x', 'y'],
     source: queryResults?.data?.[0]?.data ?? [],
@@ -67,9 +78,10 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
           <DistributionChart
             style={{ height: height , width }}
             data={data}
-            grid={{ top: '5%', bottom: '5%' }}
+            grid={{ top: '5%', bottom: '15%' }}
             title={'last 7 days'}
             barWidth={30}
+            tooltipFormatter={tooltipFormatter}
             dataYFormatter={formatYDataPoint}
             yAxisProps={{
               max: 100,

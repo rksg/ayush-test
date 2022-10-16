@@ -25,13 +25,6 @@ export const StyledSlider = styled(Slider)`
   background-color: var(--acx-primary-black) !important;
 }
 `
-const HistogramCommom = `
-  font-size: var(--acx-subtitle-6-font-size);
-  text-align: center;
-  color: var(--acx-neutrals-40);
-`
-export const HistogramPercentageDesc = styled.span`${HistogramCommom}`
-
 export const HistogramGoalPercentage = styled.span`
   color: var(--acx-primary-black);
   font-weight: var(--acx-subtitle-6-font-weight-bold);
@@ -62,26 +55,27 @@ export const HistogramSpanContent = styled.span`
   font-size: var(--acx-subtitle-6-font-size);
   margin-bottom: 10px
 `
-
-export const Button = styled.input`
-  color: white;
-  background-color: black;
-  height: 20px;
-  border-radius: 10px;
-  font-size: 10px;
-  outline: none;
-  border: none;
-  transition: opacity .1s;
-  cursor: pointer;
-  opacity: 0.5;
-  cursor: not-allowed;
-  margin-right: 5px;
-  width : 35px;
-  text-align : center;
-  font-size: var(--acx-subtitle-6-font-size);
-`
 export const BtnWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px
+`
+export const TooltipWrapper = styled.div`
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  color: var(--acx-primary-white);
+
+  time { font-weight: var(--acx-body-font-weight-bold); }
+
+  > ul {
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
+    padding-top: 4px;
+  }
+  > li {
+    font-weight: var(--acx-body-font-weight);
+    margin-bottom: 4px;
+    &:is(:last-child) { margin-bottom: unset; }
+  }
 `

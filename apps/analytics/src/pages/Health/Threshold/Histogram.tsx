@@ -1,21 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
 
-import { sum }     from 'lodash'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { sum }            from 'lodash'
+import { renderToString } from 'react-dom/server'
+import { useIntl }        from 'react-intl'
+import AutoSizer          from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig }                                  from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, DistributionChart, Button } from '@acx-ui/components'
 import type { TimeStamp }                                              from '@acx-ui/types'
 import { formatter }                                                   from '@acx-ui/utils'
 
+
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
 import * as UI from './styledComponents'
 
+import type { TooltipComponentFormatterCallbackParams } from 'echarts'
+
+export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+  const rss = Array.isArray(params)
+    && Array.isArray(params[0].data) ? params[0].data[1] : ''
+  const name = Array.isArray(params)
+    && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
+  return renderToString(<UI.TooltipWrapper>
+    <div>
+      {name}:
+      <b> {rss as string}</b>
+    </div>
+  </UI.TooltipWrapper>)
+}
 const tranformHistResponse = (
-  { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string }
+  { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue : number }
 ) : number => {
   const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
@@ -36,21 +52,20 @@ const transformHistogramResponse = ({ data, splits }: KPIHistogramResponse & { s
     datum
   ])) as [TimeStamp, number][]
 }
-const marks = [0,1,2,3,4,5,6,7]
-const strokeColor=[cssStr('--acx-accents-blue-50')]
 function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
   const { $t } = useIntl()
   const { histogram, text, barChart } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-  const [inputValue, setInputValue] = useState(5)
+  const { splits, highlightAbove } = histogram
   const [thresholdValue, setThresholdValue] = useState(histogram?.initialThreshold)
+  const [sliderValue, setSliderValue] = useState(splits.indexOf(thresholdValue) + 1)
+  const marks = splits.map(( _ : number,index : number) => index)
 
-  const onChange = (newValue: number) => {
-    if(newValue === 0 || newValue === 8)
+  const onSliderChange = (newValue: number) => {
+    if(newValue === 0 || newValue === splits.length + 1)
       return
-    setInputValue(newValue)
+    setSliderValue(newValue)
     setThresholdValue(histogram?.splits[newValue - 1])
   }
-
   const queryResults = useKpiHistogramQuery(
     { ...filters, kpi, threshold: barChart?.initialThreshold }, {
       selectFromResult: ({ data, ...rest }) => ({
@@ -62,26 +77,29 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
         }]
       })
     })
-
   const data = {
-    dimensions: ['x', 'y'],
+    dimensions: [histogram.xUnit, histogram.yUnit],
     source: queryResults?.data?.[0]?.data ?? [],
     seriesEncode: [
       {
-        x: 'x',
-        y: 'y'
+        x: histogram.xUnit,
+        y: histogram.yUnit
       }
     ]
   }
-
-  const barColors = [
-    cssStr('--acx-accents-orange-50'),
-    cssStr('--acx-neutrals-40')
-  ]
+  const hightlightAboveColor = highlightAbove
+    ? cssStr('--acx-neutrals-40')
+    : cssStr('--acx-accents-blue-50')
+  const hightlightBelowColor = highlightAbove
+    ? cssStr('--acx-accents-blue-50')
+    : cssStr('--acx-neutrals-40')
+  const barColors = Array.from({ length: splits.length + 1 }, (_, index) =>
+    index < splits.indexOf(thresholdValue) + 1
+      ? hightlightAboveColor
+      : hightlightBelowColor)
   const percent: number = queryResults?.data?.[0]?.rawData
     ? tranformHistResponse({ ...queryResults?.data?.[0]?.rawData, kpi, thresholdValue })
     : 0
-
 
   return (
     <Loader states={[queryResults]} key={kpi}>
@@ -99,13 +117,16 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
                   xAxisOffset={5}
                   dataYFormatter={histogram?.shortYFormat}
                   dataXFormatter={histogram?.shortXFormat}
+                  tooltipFormatter={tooltipFormatter}
+                  barColors={barColors}
                 />
                 <UI.StyledSlider
                   min={0}
-                  max={8}
-                  onChange={onChange}
+                  max={splits?.length + 1}
+                  onChange={onSliderChange}
                   marks={marks}
-                  value={inputValue}
+                  value={sliderValue}
+                  tooltipVisible={false}
                   style={{
                     width: width * 0.95,
                     position: 'absolute',

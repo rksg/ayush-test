@@ -6,7 +6,6 @@ import type { BarChartData } from '@acx-ui/analytics/utils'
 import { cssStr }    from '../../theme/helper'
 import {
   gridOptions,
-  barChartAxisLabelOptions,
   tooltipOptions,
   yAxisOptions,
   xAxisOptions,
@@ -94,7 +93,8 @@ export function DistributionChart<TChartData extends BarChartData>
       type: 'bar',
       silent: false,
       cursor: 'auto',
-      color: barColors,
+      colorBy: data?.seriesEncode?.length === 1 ? 'data' : undefined,
+      color: data?.seriesEncode?.length === 1 ? barColors : undefined,
       encode: encode
     }))
   }
