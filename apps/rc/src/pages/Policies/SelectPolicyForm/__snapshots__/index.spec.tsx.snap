@@ -1,0 +1,382 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectPolicyForm should render form 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies"
+              >
+                Policies & Profiles
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Add Policy or Profile
+            </h1>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <section
+    class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
+  >
+    <div
+      class="ant-pro-steps-form"
+    >
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+          >
+            <div
+              class="ant-steps ant-steps-vertical ant-steps-dot"
+            >
+              <div
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+              >
+                <div
+                  class="ant-steps-item-container"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="ant-pro-steps-form-container"
+          >
+            <div
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="selectService"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="ant-radio-group ant-radio-group-outline"
+                            id="selectService_policyType"
+                          >
+                            <div
+                              class="ant-row"
+                            >
+                              <div
+                                class="ant-col ant-col-8"
+                              >
+                                <label
+                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value="Access Control"
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Access Control
+                                    <div
+                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                    >
+                                      Access Control description (TBD)
+                                    </div>
+                                  </span>
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-col-8"
+                              >
+                                <label
+                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value="VLAN Pool"
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    VLAN Pools
+                                    <div
+                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                    >
+                                      VLAN Pool description (TBD)
+                                    </div>
+                                  </span>
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-col-8"
+                              >
+                                <label
+                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value="Rouge AP detection"
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Rogue AP Detection
+                                    <div
+                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                    >
+                                      Rogue AP Detection description (TBD)
+                                    </div>
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                            <div
+                              class="ant-row"
+                            >
+                              <div
+                                class="ant-col ant-col-8"
+                              >
+                                <label
+                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value="AAA"
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    AAA Server
+                                    <div
+                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                    >
+                                      AAA description (TBD)
+                                    </div>
+                                  </span>
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-col-8"
+                              >
+                                <label
+                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value="Syslog"
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Syslog Server
+                                    <div
+                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                    >
+                                      Syslog description (TBD)
+                                    </div>
+                                  </span>
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-col-8"
+                              >
+                                <label
+                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value="Client Isolation"
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Client Isolation
+                                    <div
+                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                    >
+                                      Client Isolation description (TBD)
+                                    </div>
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+      >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center"
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 12px;"
+          >
+            <button
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+              type="button"
+            >
+              <span>
+                Next
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <button
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              type="button"
+            >
+              <span>
+                Cancel
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</DocumentFragment>
+`;

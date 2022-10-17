@@ -11,6 +11,8 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
+import { getPolicyListRoutePath } from '../policyRouteUtils'
+
 import { PoliciesTable } from '.'
 
 const mockTableResult = {
@@ -76,14 +78,15 @@ describe('PoliciesTable', () => {
       <Provider>
         <PoliciesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/policies' }
+        route: { params, path: '/:tenantId/' + getPolicyListRoutePath() }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
 
     const targetPolicyName = mockTableResult.data[0].name
-    expect(await screen.findByRole('button', { name: /Add Policy/i })).toBeInTheDocument()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('button', { name: /Add Policy or Profile/i })).toBeInTheDocument()
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('row', { name: new RegExp(targetPolicyName) })).toBeInTheDocument()
   })
@@ -93,7 +96,7 @@ describe('PoliciesTable', () => {
       <Provider>
         <PoliciesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/policies' }
+        route: { params, path: '/:tenantId/' + getPolicyListRoutePath() }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

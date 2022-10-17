@@ -13,6 +13,7 @@ import {
   getSelectPolicyRoutePath,
   PolicyOperation
 } from './pages/Policies/policyRouteUtils'
+import { SelectPolicyForm }                      from './pages/Policies/SelectPolicyForm'
 import { DHCPForm }                              from './pages/Services/DHCPForm/DHCPForm'
 import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
 import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
@@ -101,7 +102,7 @@ function PolicyRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
       <Route path={getPolicyListRoutePath()} element={<PoliciesTable />} />
-      <Route path={getSelectPolicyRoutePath()} element={<h1>Select Policy</h1>} />
+      <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}

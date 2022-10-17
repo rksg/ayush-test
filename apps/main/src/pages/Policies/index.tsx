@@ -1,13 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Loader }            from '@acx-ui/components'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
-import { Outlet }            from '@acx-ui/react-router-dom'
+import { Loader }                      from '@acx-ui/components'
+import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Outlet }                      from '@acx-ui/react-router-dom'
 
 
 function Policies () {
-  // const isPoliciesEnabled = useSplitTreatment('acx-ui-policies')
-  const isPoliciesEnabled = true
+  const isPoliciesEnabled = useSplitTreatment(Features.POLICIES)
   const { $t } = useIntl()
 
   if (!isPoliciesEnabled) {

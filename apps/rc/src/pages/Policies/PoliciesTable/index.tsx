@@ -93,47 +93,61 @@ export function PoliciesTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
-  const PoliciesTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: usePolicyListQuery,
-      defaultPayload
-    })
+  const tableQuery = useTableQuery({
+    useQuery: usePolicyListQuery,
+    defaultPayload
+  })
 
-    const rowActions: TableProps<Policy>['rowActions'] = [
-      {
-        label: $t({ defaultMessage: 'Delete' }),
-        onClick: ([{ id, name, type }]) => {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Policy' }),
-              entityValue: name
-            },
-            onOk: () => {
-              // TODO
-              // eslint-disable-next-line no-console
-              console.log('Delete policy: ', id, type)
-            }
-          })
-        }
-      },
-      {
-        label: $t({ defaultMessage: 'Edit' }),
-        onClick: ([{ type, id }]) => {
-          navigate({
-            ...tenantBasePath,
-            pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
-              type: type as PolicyType,
-              oper: PolicyOperation.EDIT,
-              policyId: id
-            })
-          })
-        }
+  const rowActions: TableProps<Policy>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([{ id, name, type }]) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Policy' }),
+            entityValue: name
+          },
+          onOk: () => {
+            // TODO
+            // eslint-disable-next-line no-console
+            console.log('Delete policy: ', id, type)
+          }
+        })
       }
-    ]
+    },
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: ([{ type, id }]) => {
+        navigate({
+          ...tenantBasePath,
+          pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
+            type: type as PolicyType,
+            oper: PolicyOperation.EDIT,
+            policyId: id
+          })
+        })
+      }
+    }
+  ]
 
-    return (
+  return (
+    <>
+      <PageHeader
+        title={
+          $t({
+            defaultMessage: 'Policies & Profiles ({policyCount})'
+          }, {
+            policyCount: tableQuery.data?.totalCount
+          })
+        }
+        extra={[
+          <TenantLink to={getSelectPolicyRoutePath(true)} key='add'>
+            <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
+          </TenantLink>
+        ]}
+      />
       <Loader states={[tableQuery]}>
         <Table
           columns={useColumns()}
@@ -145,20 +159,6 @@ export function PoliciesTable () {
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
-    )
-  }
-
-  return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Policies' })}
-        extra={[
-          <TenantLink to={getSelectPolicyRoutePath(true)} key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Policy' })}</Button>
-          </TenantLink>
-        ]}
-      />
-      <PoliciesTable />
     </>
   )
 }

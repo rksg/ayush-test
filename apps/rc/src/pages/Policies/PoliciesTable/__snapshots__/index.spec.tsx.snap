@@ -41,7 +41,7 @@ exports[`PoliciesTable should render table 1`] = `
                   type="button"
                 >
                   <span>
-                    Add Policy
+                    Add Policy or Profile
                   </span>
                 </button>
               </a>
