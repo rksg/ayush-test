@@ -1,9 +1,11 @@
-import { Space, Row, Input } from 'antd'
-import styled                from 'styled-components/macro'
-
-import { DeleteOutlinedIcon as DeleteOutlined } from '@acx-ui/icons'
-
+import styled from 'styled-components/macro'
 
 export const DivContainer = styled.div`
-    margin-top: 10px;
+    margin: 10px 0px 10px 0px;
+`
+
+export const RowWrapper = styled.div`
+    padding: 20px;
+    background: #ececec;
+    border-radius: 6px;
 `

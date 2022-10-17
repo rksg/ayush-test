@@ -1,71 +1,91 @@
 
 import React from 'react'
 
-import { Typography, Switch } from 'antd'
-import { useIntl }            from 'react-intl'
+import { Switch }    from 'antd'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Table, TableProps, Card } from '@acx-ui/components'
-import { TenantLink }              from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card }                                                    from '@acx-ui/components'
+import { useVenueDHCPProfileQuery, useGetDHCPProfileQuery, useVenueActivePoolsQuery } from '@acx-ui/rc/services'
+import { DHCPPool }                                                                   from '@acx-ui/rc/utils'
+import { TenantLink }                                                                 from '@acx-ui/react-router-dom'
 
 
-export default function DHCPInstancesTable (
-  props:Partial<TableProps<DHCPPool>>){
 
+
+export default function DHCPInstancesPoolTable (){
+  const params = useParams()
   const { $t } = useIntl()
-  const { dataSource } = props
+
+
+  const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
+    params: { venueId: params.venueId }
+  })
+
+  const { data: dhcpProfile } = useGetDHCPProfileQuery({
+    params: { serviceId: venueDHCPProfile?.serviceProfileId }
+  })
+
+  const { data: activeList } = useVenueActivePoolsQuery({
+    params: { serviceId: venueDHCPProfile?.serviceProfileId }
+  })
+
+  const tableData = dhcpProfile?.dhcpPools.map( item => {
+    const index = _.findIndex(activeList, poolId => poolId === item.id)
+    item.activated = index!==-1
+    return item
+  })
+
+
+
   const columns: TableProps<DHCPPool>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'venue',
-      width: 10,
       sorter: true,
       render: function (_data, row) {
         return (
           <TenantLink
-            to={`/venues/${row.venue.id}/venue-details/overview`}>{row.venue.name}</TenantLink>
+            to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
         )
       }
     },
     {
       key: 'APs',
       title: $t({ defaultMessage: 'Address Pool' }),
-      dataIndex: 'aps',
-      width: 100
+      dataIndex: 'aps'
     },
     {
       key: 'subnet',
       title: $t({ defaultMessage: 'Subnet Mask' }),
-      dataIndex: 'subnet',
-      width: 100
+      dataIndex: 'subnet'
     },
     {
       key: 'leaseTime',
       title: $t({ defaultMessage: 'Lease Time' }),
-      width: 135,
       dataIndex: 'leaseTime'
     },
     {
       key: 'DNS IP',
       title: $t({ defaultMessage: 'DNS IP' }),
-      width: 200,
       dataIndex: 'successfulAllocations'
     },
     {
       key: 'utilization',
       title: $t({ defaultMessage: 'Utilization' }),
-      width: 220,
       dataIndex: 'unsuccessfulAllocations'
     },
     {
       key: 'Active',
-      title: $t({ defaultMessage: 'Dropped Packets' }),
-      width: 160,
-      dataIndex: 'droppedPackets',
+      title: $t({ defaultMessage: 'Active' }),
+      dataIndex: 'activated',
       render: (data) =>{
+        const switchStatus = Boolean(data)
         return <Switch checkedChildren={$t({ defaultMessage: 'ON' })}
           unCheckedChildren={$t({ defaultMessage: 'OFF' })}
-          defaultChecked={true} />
+          defaultChecked={switchStatus ? switchStatus : false} />
       }
     }
   ]
@@ -73,16 +93,11 @@ export default function DHCPInstancesTable (
   return (
     <Card>
       <div style={{ width: '100%' }}>
-        <Typography.Title level={3}>
-          {$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}
-        </Typography.Title>
-        <div >
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            rowKey='id'
-          />
-        </div>
+        <Table
+          columns={columns}
+          dataSource={tableData}
+          rowKey='id'
+        />
       </div>
     </Card>
   )

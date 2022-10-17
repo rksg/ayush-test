@@ -102,7 +102,7 @@ export interface RadiusService {
 
 
 export interface DHCPPool {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   allowWired: boolean;
@@ -116,6 +116,7 @@ export interface DHCPPool {
   leaseUnit: string;
   vlan: number;
   dhcpOptions: DHCPOption[];
+  activated?: boolean;
 }
 
 export interface DHCPOption{
@@ -148,3 +149,25 @@ export interface DHCPVenue {
   venueId: string
   dhcpId: string
 }
+
+export interface VenueDHCPProfile {
+  serviceProfileId: string,
+  enabled: boolean,
+  dhcpServiceAps: DHCPProfileAps[]
+}
+
+export interface DHCPProfileAps {
+  serialNumber: string,
+  role: string
+}
+
+export interface DHCPLeases {
+  hostName: string,
+  ipAddress: string,
+  dhcpPoolId: string,
+  dhcpPoolName: string,
+  macAddress: string,
+  status: string,
+  leaseExpiration: string
+}
+

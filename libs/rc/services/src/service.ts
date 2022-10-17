@@ -138,14 +138,14 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    getDHCP: build.query<DHCPSaveData | null, RequestPayload>({
+    getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
         if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
           null,
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
-        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getDHCPService, params))
         return result as QueryReturnValue<DHCPSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
@@ -164,6 +164,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     })
+
   })
 })
 
@@ -175,7 +176,7 @@ export const {
   useApplicationPolicyListQuery,
   useDevicePolicyListQuery,
   useServiceListQuery,
-  useGetDHCPQuery,
+  useGetDHCPProfileQuery,
   useSaveDHCPMutation,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,

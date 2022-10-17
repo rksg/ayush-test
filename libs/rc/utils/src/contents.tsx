@@ -157,3 +157,10 @@ export enum RadioEnum {
   _2_4_GHz = '2.4-GHz',
   _5_GHz = '5-GHz',
 }
+
+
+export const DHCPConfigTypeMessages = {
+  MULTIPLE: 'Multiple APs',
+  SIMPLE: 'Each APs',
+  HIERARCHICAL: 'Hierarchical APs'
+}
