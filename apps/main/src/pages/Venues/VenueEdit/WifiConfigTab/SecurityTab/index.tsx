@@ -1,7 +1,7 @@
 import { ReactNode, useContext, useEffect, useRef } from 'react'
 
-import { Col, Form, FormItemProps, InputNumber, Row, Select, Tooltip } from 'antd'
-import { FormattedMessage, useIntl }                                   from 'react-intl'
+import { Form, FormItemProps, InputNumber, Select, Space, Tooltip } from 'antd'
+import { FormattedMessage, useIntl }                                from 'react-intl'
 
 import { Fieldset, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
@@ -196,21 +196,15 @@ export function SecurityTab () {
           name='rogueApEnabled'
           label={$t({ defaultMessage: 'Rogue AP Detection:' })}
           initialValue={false}>
-          <Row>
-            <Col span={2}>
-              <Form.Item
-                label={$t({ defaultMessage: 'Report SNR Threshold:' })}
+          <Form.Item label={$t({ defaultMessage: 'Report SNR Threshold:' })}>
+            <Space>
+              <Form.Item noStyle
                 name='reportThreshold'
                 initialValue={0}
-                children={<InputNumber
-                  min={0}
-                  max={100}
-                  style={{ width: '120px' }} />} />
-            </Col>
-            <Col span={1}>
-              <div style={{ marginTop: '30px' }}>dB</div>
-            </Col>
-          </Row>
+                children={<InputNumber min={0} max={100} style={{ width: '120px' }} />} />
+              <span style={{ marginTop: '30px' }}>dB</span>
+            </Space>
+          </Form.Item>
           <Form.Item
             name='roguePolicyId'
             label={$t({ defaultMessage: 'Report SNR Threshold:' })}
