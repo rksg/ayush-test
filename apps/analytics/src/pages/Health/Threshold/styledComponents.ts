@@ -32,7 +32,7 @@ export const HistogramGoalPercentage = styled.span`
   color: var(--acx-primary-black);
   font-weight: var(--acx-subtitle-6-font-weight-bold);
   font-size: var(--acx-subtitle-5-font-size);
-  margin-bottom: 20px
+  margin-bottom: 10px
 `
 export const HistogramConfig = styled.div`
 font-size: 12px;
@@ -40,7 +40,6 @@ display: flex;
 flex-direction: column;
 -webkit-box-pack: start;
 justify-content: flex-start;
-margin-top: 4px;
 `
 export const HistogramInfo = styled.span`
   margin: 2.5px 10px;
@@ -56,7 +55,7 @@ export const HistogramBoldContent = styled.span`
 export const HistogramSpanContent = styled.span`
   color: var(--acx-primary-black);
   font-size: var(--acx-subtitle-6-font-size);
-  margin-bottom: 10px
+  margin-bottom: 8px
 `
 export const BtnWrapper = styled.div`
   display: flex;

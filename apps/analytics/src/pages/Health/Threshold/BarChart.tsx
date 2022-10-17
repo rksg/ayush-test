@@ -85,7 +85,7 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
             style={{ height: height , width }}
             data={data}
             grid={{ top: '5%', bottom: '15%' }}
-            title={$t(barChartText.title)}
+            title={`(${$t(barChartText.title)})`}
             barWidth={30}
             tooltipFormatter={tooltipFormatter}
             dataYFormatter={formatYDataPoint}

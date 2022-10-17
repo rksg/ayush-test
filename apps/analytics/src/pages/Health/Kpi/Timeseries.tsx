@@ -40,6 +40,7 @@ function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: strin
         {({ height, width }) => (
           queryResults.data[0]?.data.length ?
             <MultiLineTimeSeriesChart
+              grid={{ bottom: '15%', top: '5%' }}
               style={{ height, width }}
               data={queryResults.data}
               lineColors={lineColors}

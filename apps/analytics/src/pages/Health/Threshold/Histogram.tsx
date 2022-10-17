@@ -108,14 +108,14 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
   return (
     <Loader states={[queryResults]} key={kpi}>
       <GridRow>
-        <GridCol col={{ span: 18 }} style={{ height: '210px' }}>
+        <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
             {({ width, height }) => (
               <>
                 <DistributionChart
-                  style={{ height: height * 0.8, width }}
+                  style={{ height: height, width }}
                   data={data}
-                  grid={{ bottom: '15%', top: '5%' }}
+                  grid={{ bottom: '22%', top: '5%' }}
                   title={`(${histogram?.xUnit})`}
                   barWidth={30}
                   xAxisOffset={10}
