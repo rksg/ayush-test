@@ -16,10 +16,7 @@ describe('VerticalBarChart',()=>{
     expect(screen.getAllByText('VerticalBarChartTest')).toHaveLength(1)
   })
   it('should render correctly without title', () => {
-    const { asFragment } = render(<VerticalBarChart
-      data={data}
-    />)
-    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
-    expect(asFragment().querySelector('svg')).toBeDefined()
+    render(<VerticalBarChart data={data} />)
+    expect(screen.queryByText('VerticalBarChartTest')).toBeNull()
   })
 })
