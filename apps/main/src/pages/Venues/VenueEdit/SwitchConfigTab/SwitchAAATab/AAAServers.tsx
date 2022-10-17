@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { Collapse } from 'antd'
-import { useIntl }  from 'react-intl'
+import { defineMessage, useIntl }  from 'react-intl'
 
 import { Alert }                                                   from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
@@ -13,17 +13,18 @@ import * as UI             from './styledComponents'
 
 const { Panel } = Collapse
 
+const PanelHeader = {
+  [AAAServerTypeEnum.RADIUS]: defineMessage({ defaultMessage: 'RADIUS Servers ({count})' }),
+  [AAAServerTypeEnum.TACACS]: defineMessage({ defaultMessage: 'TACACS+ Servers ({count})' }),
+  [AAAServerTypeEnum.LOCAL_USER]: defineMessage({ defaultMessage: 'Local Users ({count})' })
+}
+
 export function AAAServers () {
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
-  const PanelHeader = {
-    [AAAServerTypeEnum.RADIUS]: $t({ defaultMessage: 'RADIUS Servers' }),
-    [AAAServerTypeEnum.TACACS]: $t({ defaultMessage: 'TACACS+ Servers' }),
-    [AAAServerTypeEnum.LOCAL_USER]: $t({ defaultMessage: 'Local Users' })
-  }
 
   const getPanelHeader = (type: AAAServerTypeEnum, count: number) => {
-    return PanelHeader[type] + ' (' + count + ')'
+    return $t(PanelHeader[type] , { count })
   }
 
   const defaultPayload = {
