@@ -15,7 +15,8 @@ import {
   VenueLed,
   VenueApModels,
   VenueSwitchConfiguration,
-  ConfigurationProfile
+  ConfigurationProfile,
+  VenueDefaultRegulatoryChannels
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -191,6 +192,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    venueDefaultRegulatoryChannels: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.GetVenueDefaultRegulatoryChannels, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -211,5 +220,6 @@ export const {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
-  useSwitchConfigProfileQuery
+  useSwitchConfigProfileQuery,
+  useVenueDefaultRegulatoryChannelsQuery
 } = venueApi

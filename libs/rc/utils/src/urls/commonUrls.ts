@@ -162,5 +162,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getUserProfile: {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'
+  },
+  GetVenueDefaultRegulatoryChannels: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/valid-channels'
   }
 }
