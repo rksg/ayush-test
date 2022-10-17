@@ -14,7 +14,8 @@ import {
   CommonResult,
   DHCPSaveData,
   WifiCallingUrls,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  Portal
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -162,6 +163,52 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
 
       },
+
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortalService: build.query<TableResult<Portal>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const wifiCallingServiceReq = createHttpRequest(
+          CommonUrlsInfo.getWifiCallingService, params
+        )
+        return {
+          ...wifiCallingServiceReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    createPortalService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const createWifiCallingServiceReq = createHttpRequest(
+          CommonUrlsInfo.addWifiCallingService, params
+        )
+        return {
+          ...createWifiCallingServiceReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updatePortalService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.updateWifiCallingService, params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    deletePortalService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteWifiCallingService, params)
+        return {
+          ...req
+        }
+      },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     })
   })
@@ -179,5 +226,6 @@ export const {
   useSaveDHCPMutation,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
-  useDeleteWifiCallingServiceMutation
+  useDeleteWifiCallingServiceMutation,
+  useCreatePortalServiceMutation
 } = serviceApi
