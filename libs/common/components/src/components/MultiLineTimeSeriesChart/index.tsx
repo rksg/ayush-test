@@ -11,10 +11,11 @@ import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
 import { useIntl }  from 'react-intl'
 
-import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStampRange }               from '@acx-ui/types'
+import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import type { TimeStampRange }      from '@acx-ui/types'
+import { formatter }                from '@acx-ui/utils'
 
-import { cssStr }              from '../../theme/helper'
+import { cssStr }       from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
@@ -24,8 +25,10 @@ import {
   axisLabelOptions,
   dateAxisFormatter,
   tooltipOptions,
-  timeSeriesTooltipFormatter
-} from '../Chart/helper'
+  timeSeriesTooltipFormatter,
+  getTimeSeriesSymbol
+}                       from '../Chart/helper'
+import { ResetButton } from '../Chart/styledComponents'
 import { useDataZoom } from '../Chart/useDataZoom'
 
 import * as UI from './styledComponents'
@@ -56,29 +59,31 @@ type LegendEventData = {
 }
 
 export interface MultiLineTimeSeriesChartProps <
-  TChartData extends MultiLineTimeSeriesChartData,
+  TChartData extends TimeSeriesChartData,
   MarkerData
 >
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
-    legendProp?: keyof TChartData
+    legendProp?: keyof TChartData /** @default 'name' */
     lineColors?: string[]
-    dataFormatter?: (value: unknown) => string | null
+    dataFormatter?: ReturnType<typeof formatter>
+    seriesFormatters?: Record<string, ReturnType<typeof formatter>>
     yAxisProps?: {
-      max: number,
-      min: number
+      max?: number
+      min?: number
+      minInterval?: number
     }
     disableLegend?: boolean
     chartRef?: RefCallback<ReactECharts>
     zoom?: TimeStampRange
-    onDataZoom?: (range: TimeStampRange) => void
+    onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
     brush?: TimeStampRange
     onBrushChange?: (range: TimeStampRange) => void
     markers?: Marker<MarkerData>[]
     onMarkAreaClick?: (data: MarkerData) => void
   }
 
-export function useBrush<TChartData extends MultiLineTimeSeriesChartData> (
+export function useBrush<TChartData extends TimeSeriesChartData> (
   eChartsRef: RefObject<ReactECharts>,
   data: TChartData[],
   brush?: TimeStampRange,
@@ -141,13 +146,14 @@ export function useLegendSelectChanged (
 }
 
 export function MultiLineTimeSeriesChart <
-  TChartData extends MultiLineTimeSeriesChartData,
+  TChartData extends TimeSeriesChartData,
   MarkerData
 >
 ({
   data,
   legendProp = 'name' as keyof TChartData,
-  dataFormatter,
+  dataFormatter = formatter('countFormat'),
+  seriesFormatters,
   yAxisProps,
   disableLegend,
   onMarkAreaClick,
@@ -173,10 +179,7 @@ export function MultiLineTimeSeriesChart <
       cssStr('--acx-accents-orange-50'),
       cssStr('--acx-semantics-yellow-40')
     ],
-    grid: {
-      ...gridOptions(),
-      ...(disableLegend ? { top: '6px' } : {})
-    },
+    grid: { ...gridOptions(disableLegend) },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),
@@ -187,7 +190,10 @@ export function MultiLineTimeSeriesChart <
     tooltip: {
       ...tooltipOptions(),
       trigger: 'axis',
-      formatter: timeSeriesTooltipFormatter(dataFormatter)
+      formatter: timeSeriesTooltipFormatter(
+        data,
+        { ...seriesFormatters, default: dataFormatter }
+      )
     },
     xAxis: {
       ...xAxisOptions(),
@@ -208,24 +214,26 @@ export function MultiLineTimeSeriesChart <
         }
       }
     },
-    series: data.map((datum, i) => ({
-      name: datum[legendProp] as unknown as string,
-      data: datum.data,
-      type: 'line',
-      smooth: true,
-      symbol: 'none',
-      z: 1,
-      zlevel: 1,
-      lineStyle: { width: 1 },
-      ...(i === 0 ? {
-        markArea: props.markers ? {
-          data: props.markers?.map(marker => [
-            { xAxis: marker.startTime, itemStyle: marker.itemStyle, data: marker.data },
-            { xAxis: marker.endTime }
-          ])
-        } : undefined
-      } : {})
-    })),
+    series: data
+      .filter(datum=> datum.show !== false )
+      .map((datum, i) => ({
+        name: datum[legendProp] as unknown as string,
+        data: datum.data,
+        type: 'line',
+        smooth: true,
+        symbol: getTimeSeriesSymbol(data),
+        z: 1,
+        zlevel: 1,
+        lineStyle: { width: 1 },
+        ...(i === 0 ? {
+          markArea: props.markers ? {
+            data: props.markers?.map(marker => [
+              { xAxis: marker.startTime, itemStyle: marker.itemStyle, data: marker.data },
+              { xAxis: marker.endTime }
+            ])
+          } : undefined
+        } : {})
+      })),
     ...(zoomEnabled ? {
       toolbox: {
         feature: {
@@ -270,7 +278,7 @@ export function MultiLineTimeSeriesChart <
           brushend: onBrushendCallback
         }}
       />
-      {canResetZoom && <UI.ResetButton
+      {canResetZoom && <ResetButton
         size='small'
         onClick={resetZoomCallback}
         children={$t({ defaultMessage: 'Reset Zoom' })}

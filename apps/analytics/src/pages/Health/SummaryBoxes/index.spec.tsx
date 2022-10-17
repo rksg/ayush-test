@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { dataApiURL }                                                  from '@acx-ui/analytics/services'
+import { BrowserRouter as Router }                                     from '@acx-ui/react-router-dom'
 import { Provider, store }                                             from '@acx-ui/store'
 import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 
@@ -14,20 +15,19 @@ jest.mock('@acx-ui/icons', ()=> ({
   CaretDoubleUpOutlined: () => <div data-testid='up-arrow'/>,
   CaretDoubleDownOutlined: () => <div data-testid='down-arrow'/>
 }), { virtual: true })
-
 describe('Incidents Page', () => {
   beforeEach(()=>{
     store.dispatch(api.util.resetApiState())
   })
   it('should match snapshot', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-    const { asFragment } = render(<Provider><SummaryBoxes/></Provider>)
+    const { asFragment } = render(<Router><Provider><SummaryBoxes/></Provider></Router>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should show - when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
-    const { asFragment } = render(<Provider><SummaryBoxes/></Provider>)
+    const { asFragment } = render(<Router><Provider><SummaryBoxes/></Provider></Router>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
@@ -35,7 +35,7 @@ describe('Incidents Page', () => {
   describe('toggle stats', () => {
     it('should handle toggle stats', async () => {
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      render(<Provider><SummaryBoxes/></Provider>)
+      render(<Router><Provider><SummaryBoxes/></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
       const downArrows = screen.getAllByTestId('down-arrow')
@@ -51,7 +51,7 @@ describe('Incidents Page', () => {
 
     it('should handle toggle ttc', async () => {
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      render(<Provider><SummaryBoxes/></Provider>)
+      render(<Router><Provider><SummaryBoxes/></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
       expect(screen.getAllByTestId('down-arrow')).toHaveLength(4)
