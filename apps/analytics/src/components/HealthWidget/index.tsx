@@ -5,7 +5,8 @@ import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
   Loader,
-  Table
+  Table,
+  ProgressBar
 } from '@acx-ui/components'
 import { intlFormats } from '@acx-ui/utils'
 
@@ -25,48 +26,68 @@ export default function HealthWidget ({
     {
       title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'zoneName',
-      key: 'zoneName',
-      width: 100
+      key: 'zoneName'
     },
     {
       title: $t({ defaultMessage: 'Overall Health' }),
-      dataIndex: 'overallHealthFormatted',
-      key: 'overallHealthFormatted',
-      width: 60
+      dataIndex: 'overallHealth',
+      key: 'overallHealth',
+      width: 40,
+      align: 'center' as const,
+      render: (value:unknown)=>{
+        return <ProgressBar percent={(value as number)*100}/>
+      }
     },
     {
       title: $t({ defaultMessage: 'Connection Success' }),
       dataIndex: 'connectionSuccessPercent',
       key: 'connectionSuccessPercent',
-      width: 60
+      width: 40,
+      align: 'center' as const
     },
     {
       title: $t({ defaultMessage: 'Time To Connect' }),
       dataIndex: 'timeToConnectPercent',
       key: 'timeToConnectPercent',
-      width: 60,
+      width: 80,
+      align: 'center' as const,
       render: (value:unknown,row:HealthData)=>{
         if(value === '-')
           return <span>{value}</span>
         else
-          return (<span>
-            {`${value as string} - ${Number(row.timeToConnectThreshold)/1000} Secs`}
-          </span>)
+          return (<><span>
+            {value as string}
+          </span>
+          <br/><span style={{ fontSize: '9px' }}>
+            {`Under ${Number(row.timeToConnectThreshold) / 1000} Secs`}
+          </span></>
+          )
       }
     },
     {
       title: $t({ defaultMessage: 'Client Throughput' }),
       dataIndex: 'clientThroughputPercent',
       key: 'clientThroughputPercent',
-      width: 60,
+      width: 90,
+      align: 'center' as const,
       render: (value:unknown,row:HealthData)=>{
         if(value === '-')
           return <span>{value}</span>
         else
-          return (<span>
-            {`${value as string} - ${Number(row.clientThroughputThreshold)/1000} Mbps`}
-          </span>)
+          return (<><span>
+            {value as string}
+          </span>
+          <br/><span style={{ fontSize: '9px' }}>
+            {`Above ${Number(row.clientThroughputThreshold) / 1000} Mbps`}
+          </span></>)
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Online APs' }),
+      dataIndex: 'onlineAps',
+      key: 'onlineAps',
+      align: 'center' as const,
+      width: 80
     }
   ]
   const calcPercent = (values:[number,number]|[null,null]) => {
@@ -105,7 +126,8 @@ export default function HealthWidget ({
         timeToConnectPercent: timeToConnectPercent.formatted,
         clientThroughputPercent: clientThroughputPercent.formatted,
         overallHealthFormatted: $t(intlFormats.percentFormatRound, { value: overallHealth }),
-        overallHealth
+        overallHealth,
+        onlineAps: '100%'
       }
     }).filter(item=>item.overallHealth!==0)
       .sort((a,b)=>a.overallHealth - b.overallHealth)
