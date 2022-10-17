@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { ServiceType }    from '@acx-ui/rc/utils'
-import { Path }           from '@acx-ui/react-router-dom'
+import { ServiceType }              from '@acx-ui/rc/utils'
+import { Path }                     from '@acx-ui/react-router-dom'
 import { logRoles, render, screen } from '@acx-ui/test-utils'
 
 import { getServiceRoutePath, ServiceOperation } from '../serviceRouteUtils'
