@@ -20,7 +20,7 @@ exports[`PoliciesTable should render table 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              Policies
+              Policies & Profiles (3)
             </h1>
           </span>
         </div>
