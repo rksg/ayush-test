@@ -22,7 +22,7 @@ interface HistogramResponse <HistogramData> {
   histogram: HistogramData
 }
 
-type KpiPayload = AnalyticsFilter & { kpi: string, threshold?: string }
+export type KpiPayload = AnalyticsFilter & { kpi: string, threshold?: string }
 
 const getKPIMetric = (kpi: string, threshold?: string) : string => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]

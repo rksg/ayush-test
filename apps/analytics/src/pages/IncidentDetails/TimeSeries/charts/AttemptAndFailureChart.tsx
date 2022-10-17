@@ -7,10 +7,10 @@ import {
   getSeriesData,
   mapCodeToReason,
   mapCodeToAttempt,
-  codeToFailureTypeMap
+  codeToFailureTypeMap,
+  TimeSeriesDataType
 } from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { formatter }                      from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -38,7 +38,8 @@ export const AttemptAndFailureChart = ({ chartRef, data, incident }: TimeSeriesC
     { key: 'attemptCount', name: attempt }
   ]
 
-  const chartResults = getSeriesData(attemptAndFailureChart, seriesMapping)
+  const chartResults = getSeriesData(
+    attemptAndFailureChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
   return <Card title={$t({ defaultMessage: 'Failures' })} type='no-border'>
     <AutoSizer>
@@ -47,7 +48,6 @@ export const AttemptAndFailureChart = ({ chartRef, data, incident }: TimeSeriesC
           chartRef={chartRef}
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={formatter('countFormat')}
         />
       )}
     </AutoSizer>

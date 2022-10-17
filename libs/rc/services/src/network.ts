@@ -98,6 +98,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
+    updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
+    }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params)
@@ -287,6 +297,7 @@ export const {
   useUpdateNetworkMutation,
   useDeleteNetworkMutation,
   useAddNetworkVenueMutation,
+  useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,

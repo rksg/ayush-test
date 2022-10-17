@@ -4,7 +4,7 @@ import { useIntl }        from 'react-intl'
 import AutoSizer          from 'react-virtualized-auto-sizer'
 
 import { BarChartData, calculateSeverity, Incident } from '@acx-ui/analytics/utils'
-import { Card, DistributionChart, TooltipWrapper }   from '@acx-ui/components'
+import { Card, VerticalBarChart, TooltipWrapper }   from '@acx-ui/components'
 
 import type { TimeSeriesChartProps, TimeSeriesChartResponse } from '../types'
 import type { TooltipComponentFormatterCallbackParams }       from 'echarts'
@@ -66,12 +66,10 @@ export const RssDistributionChart = ({ data, incident }: TimeSeriesChartProps) =
   return <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <DistributionChart
+        <VerticalBarChart
           data={expectedResult}
           style={{ height, width }}
-          grid={{ bottom: '10%', top: '5%' }}
-          xAxisName={$t({ defaultMessage: 'RSS (in dBm)' })}
-          tooltipFormatter={tooltipFormatter}
+          xAxisName={$t({ defaultMessage: '(RSS, in dBm)' })}
           barColors={barColors(incident, data)}
         />
       )}
