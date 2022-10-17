@@ -112,13 +112,7 @@ describe('useColumnsState', () => {
 
   it('resets state to default when deselect all columns', () => {
     const options: Options = {
-      columns: [
-        { key: 'col1', dataIndex: 'col1', fixed: 'left' },
-        { key: 'col2', dataIndex: 'col2' },
-        { key: 'col3', dataIndex: 'col3', disable: true },
-        { key: 'col4', dataIndex: 'col4', show: false },
-        { key: 'col5', dataIndex: 'col5', show: true }
-      ],
+      columns,
       columnState: {
         defaultValue: {
           col1: true,
