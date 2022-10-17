@@ -90,7 +90,7 @@ function Histogram ({
     setKpiThreshold({ ...thresholds, [kpi]: histogram?.splits[newValue - 0.5] })
   }
   const queryResults = useKpiHistogramQuery(
-    { ...filters, kpi, threshold: threshold },
+    { ...filters, kpi, threshold: histogram?.initialThreshold },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
