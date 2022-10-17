@@ -6,13 +6,17 @@ import { useIntl }                      from 'react-intl'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useVenuesListQuery }         from '@acx-ui/rc/services'
-import { Venue }                      from '@acx-ui/rc/utils'
+import { EdgeSaveData, Venue }        from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
 
 // will remove when api is ready
 interface Option {
   label: string
   value: string
+}
+
+interface EdgeSettingFormProps {
+  isEdit?: boolean
 }
 
 const defaultPayload = {
@@ -23,7 +27,7 @@ const defaultPayload = {
   ]
 }
 
-const EdgeSettingForm = () => {
+const EdgeSettingForm = (props: EdgeSettingFormProps) => {
 
   const { $t } = useIntl()
   const [venues, setVenues] = useState<Venue[]>([])
@@ -97,7 +101,7 @@ const EdgeSettingForm = () => {
           required: true,
           message: $t({ defaultMessage: 'Please enter Serial Number' })
         }]}
-        children={<Input />}
+        children={<Input disabled={props.isEdit} />}
       />
       <Form.Item
         name='description'

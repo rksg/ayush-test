@@ -4,6 +4,7 @@ import { rootRoutes, Route } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
 import AddEdge                                   from './pages/Devices/Edge/AddEdge'
+import EditEdge                                  from './pages/Devices/Edge/EditEdge'
 import { NetworkDetails }                        from './pages/Networks/NetworkDetails/NetworkDetails'
 import { NetworkForm }                           from './pages/Networks/NetworkForm/NetworkForm'
 import { NetworksTable }                         from './pages/Networks/NetworksTable'
@@ -95,6 +96,7 @@ function DeviceRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='devices/add' element={<AddEdge />} />
+      <Route path='devices/:serialNumber/edit' element={<EditEdge />} />
     </Route>
   )
 }

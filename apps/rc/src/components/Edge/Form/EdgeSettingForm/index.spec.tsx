@@ -33,6 +33,15 @@ describe('EdgeSettingForm', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('should create EdgeSettingForm with edit mode successfully', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <EdgeSettingForm isEdit />
+      </Provider>, { route: { params } }
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should render init data correctly', async () => {
     const user = userEvent.setup()
     render(
