@@ -25,8 +25,12 @@ export function useColumnsState <RecordType> (options: UseColumnsStateOptions<Re
 
   const onChange = useCallback((state: TableColumnState) => {
     columnState?.onChange?.(stateToUserState(state))
-    setState(state)
-  }, [setState, columnState])
+    if(Object.entries(state).every(([,col]) => col.disable || !col.show)){
+      setState(initialState)
+    } else {
+      setState(state)
+    }
+  }, [setState, columnState, initialState])
 
   const resetState = useCallback(
     () => onChange(defaultState),
