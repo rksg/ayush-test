@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { Collapse } from 'antd'
-import { defineMessage, useIntl }  from 'react-intl'
+import { Collapse }               from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { Alert }                                                   from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
