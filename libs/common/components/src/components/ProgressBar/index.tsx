@@ -3,7 +3,7 @@ import { cssStr } from '../../theme/helper'
 import * as UI from './styledComponents'
 
 interface ProgressBarProps {
-  percent: number
+  percent: number // 0 - 100
 }
 
 export const strokeColorsByPercent = (percent: number) => {
