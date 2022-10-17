@@ -974,3 +974,77 @@ export const externalAntennaApModels = {
 } as unknown as {
   [index: string]: ExternalAntenna;
 }
+
+export const emptyList = {
+  data: [],
+  totalCount: 0
+}
+
+export const mockAaaSetting = {
+  authnEnabledSsh: true,
+  authnEnableTelnet: false,
+  authnFirstPref: 'LOCAL',
+  authzEnabledCommand: false,
+  authzEnabledExec: false,
+  acctEnabledCommand: false,
+  acctEnabledExec: false,
+  id: '3d0e71c087e743feaaf6f6a19ea955f2'
+}
+
+export const radiusList = {
+  data: [
+    {
+      id: '40aa7da509ee48bb97e423d5f5d41ec0',
+      name: 'r0',
+      serverType: 'RADIUS',
+      secret: 'dg',
+      ip: '3.3.3.3',
+      acctPort: 45,
+      authPort: 45
+    }
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const tacacsList = {
+  data: [
+    {
+      id: '4bd01f10e31a4d6c835d1785121bacd1',
+      name: 't1',
+      purpose: 'AUTHENTICATION_ONLY',
+      serverType: 'TACACS_PLUS',
+      secret: 'password-1',
+      ip: '4.3.3.3',
+      authPort: 56
+    }
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const localUserList = {
+  data: [
+    { id: '7829365a824e477d81332cfacfe29b95',
+      name: 'admin',
+      username: 'admin',
+      password: '@cVp14FH_v',
+      purpose: 'DEFAULT',
+      level: 'READ_WRITE',
+      serverType: 'LOCAL',
+      authPort: 0
+    },
+    {
+      id: '6c4aea92d32e4875a5b736db83875eb6',
+      name: 'yguo1',
+      username: 'yguo1',
+      password: '12dC@jkfjk',
+      level: 'READ_WRITE',
+      serverType: 'LOCAL'
+    }],
+  totalCount: 2,
+  totalPages: 1,
+  page: 1
+}
