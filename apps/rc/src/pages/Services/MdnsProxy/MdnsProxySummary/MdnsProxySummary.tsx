@@ -28,19 +28,19 @@ export function MdnsProxySummary () {
           </Col>
           <Col span={8}>
             <Form.Item
-              label={$t({ defaultMessage: 'Service Name' })}
+              label={$t({ defaultMessage: 'Service Name:' })}
               children={currentData.name}
             />
           </Col>
           <Col span={8}>
             <Form.Item
-              label={$t({ defaultMessage: 'Tags' })}
+              label={$t({ defaultMessage: 'Tags:' })}
               children={currentData.tags}
             />
           </Col>
           <Col span={16}>
             <Form.Item
-              label={$t({ defaultMessage: 'Forwarding Rules' })}
+              label={$t({ defaultMessage: 'Forwarding Rules:' })}
             >
               <MdnsProxyForwardingRulesTable
                 readonly={true}
