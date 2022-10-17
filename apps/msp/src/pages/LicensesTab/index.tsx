@@ -24,10 +24,10 @@ export function LicensesTab () {
         ]}
       />
       <Tabs>
-        <Tabs.TabPane tab='Wi-Fi' key='wifiLicense'>
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })} key='wifiLicense'>
           <WifiLicense></WifiLicense>
         </Tabs.TabPane>
-        <Tabs.TabPane tab='Switch' key='switchLicense'>
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Switch' })} key='switchLicense'>
           <SwitchLicense></SwitchLicense>
         </Tabs.TabPane>
       </Tabs>

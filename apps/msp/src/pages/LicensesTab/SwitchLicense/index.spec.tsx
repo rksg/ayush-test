@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { MspUrlsInfo }                                           from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
 import { SwitchLicense } from '.'
 
@@ -28,23 +28,30 @@ const list = {
 }
 
 describe('SwitchLicense', () => {
-  it('should render correctly', async () => {
+  let params: { tenantId: string }
+  beforeEach(async () => {
     mockServer.use(
       rest.get(
         MspUrlsInfo.getMspEntitlement.url,
         (req, res, ctx) => res(ctx.json(list))
       )
     )
-    const params = {
+    params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+  })
 
-    const { asFragment } = render(<Provider><SwitchLicense /></Provider>, {
-      route: { params, path: '/:tenantId/msplicenses' }
-    })
+  it('should render correctly', async () => {
+
+    const { asFragment } = render(
+      <Provider>
+        <SwitchLicense />
+      </Provider>, {
+        route: { params, path: '/:tenantId/msplicenses' }
+      })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    // await screen.findByText('Switch')
+    // await screen.findByText('ICX76')
 
     // eslint-disable-next-line testing-library/no-node-access
     // const tbody = screen.getByRole('table').querySelector('tbody')!

@@ -4,12 +4,10 @@ import { Provider }                          from '@acx-ui/store'
 
 import { DeviceInventory } from './pages/DeviceInventory'
 import { Integrators }     from './pages/Integrators'
-// import { AddIntegrator }   from './pages/Integrators/AddIntegrator'
-import Layout           from './pages/Layout'
-import { LicensesTab }  from './pages/LicensesTab'
-import { MspCustomers } from './pages/MspCustomers'
-// import { AddMspCustomer }  from './pages/MspCustomers/AddMspCustomer'
-import { VarCustomers } from './pages/VarCustomers'
+import Layout              from './pages/Layout'
+import { LicensesTab }     from './pages/LicensesTab'
+import { MspCustomers }    from './pages/MspCustomers'
+import { VarCustomers }    from './pages/VarCustomers'
 
 export default function MspRoutes () {
   const routes = rootRoutes(

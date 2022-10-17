@@ -50,7 +50,12 @@ describe('Device Inventory Table', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
-
+  it('should render page header and grid layout', async () => {
+    render(<Provider><DeviceInventory /></Provider>, { route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    expect(screen.getByText('Device Inventory')).toBeVisible()
+    expect(screen.getByText('Manage own account')).toBeVisible()
+  })
   it('should render table', async () => {
     const { asFragment } = render(
       <Provider>
