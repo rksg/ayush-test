@@ -1,13 +1,14 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, Row, Select } from 'antd'
-import _                     from 'lodash'
-import { useIntl }           from 'react-intl'
+import { Col, Form, Row, Select } from 'antd'
+import _                          from 'lodash'
+import { useIntl }                from 'react-intl'
 
-import { useGetVenueApCapabilitiesQuery, useGetVenueExternalAntennaQuery } from '@acx-ui/rc/services'
-import { CapabilitiesApModel, ExternalAntenna }                            from '@acx-ui/rc/utils'
-import { useParams }                                                       from '@acx-ui/react-router-dom'
+import { Loader, showToast }                                                                                      from '@acx-ui/components'
+import { useGetVenueApCapabilitiesQuery, useGetVenueExternalAntennaQuery, useUpdateVenueExternalAntennaMutation } from '@acx-ui/rc/services'
+import { CapabilitiesApModel, ExternalAntenna }                                                                   from '@acx-ui/rc/utils'
+import { useParams }                                                                                              from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../..'
 import ApModelPlaceholder   from '../../../../../assets/images/ap-model-placeholder.png'
@@ -35,6 +36,26 @@ export function ExternalAntennaSection () {
     }
   })
   const { data: allApExternalAntennas } = useGetVenueExternalAntennaQuery({ params })
+  const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] = useUpdateVenueExternalAntennaMutation()
+
+  const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
+    try {
+      await updateVenueExternalAntenna({ params, payload: [ ...data ] })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
+  useEffect(() => {
+    setEditRadioContextData({
+      ...editRadioContextData,
+      updateExternalAntenna: handleUpdateExternalAntenna
+    })
+  }, [])
+
 
   const filterModelCapabilities = (model: string) => {
     return allApModelCapabilities?.find(modelCapabilities => modelCapabilities.model === model) as unknown as CapabilitiesApModel
@@ -103,35 +124,37 @@ export function ExternalAntennaSection () {
   }
 
   return (
-    <>
-      <Form.Item
-        label={$t({ defaultMessage: 'AP Model' })}
-        name={['external', 'apModel', 'selected']}
-      >
-        <Select
-          style={{ width: '280px', marginBottom: '15px' }}
-          onChange={onSelectModel}
-          options={selectOptions}
-        />
-      </Form.Item>
-      {
-        selectedApExternalAntenna && apiSelectedApExternalAntenna ?
-          <ExternalAntennaForm
-            model={selectedApExternalAntenna.model}
-            apiSelectedApExternalAntenna={apiSelectedApExternalAntenna}
-            selectedApExternalAntenna={selectedApExternalAntenna}
-            readOnly={readOnly}
-          /> :
-          (
-            <Row style={{ marginTop: '60px' }}>
-              <img
-                src={selectedApCapabilities?.lanPortPictureDownloadUrl || ApModelPlaceholder}
-                alt={imageTitle}
-              />
-            </Row>
-          )
-      }
-    </>
-
+    <Loader states={[{ isLoading: isUpdatingExternalAntenna }]}>
+      <Row gutter={24}>
+        <Col span={8}>
+          <Form.Item
+            label={$t({ defaultMessage: 'AP Model' })}
+            name={['external', 'apModel', 'selected']}
+          >
+            <Select
+              onChange={onSelectModel}
+              options={selectOptions}
+            />
+          </Form.Item>
+          {
+            selectedApExternalAntenna && apiSelectedApExternalAntenna ?
+              <ExternalAntennaForm
+                model={selectedApExternalAntenna.model}
+                apiSelectedApExternalAntenna={apiSelectedApExternalAntenna}
+                selectedApExternalAntenna={selectedApExternalAntenna}
+                readOnly={readOnly}
+              /> :
+              (
+                <Row style={{ marginTop: '60px' }}>
+                  <img
+                    src={selectedApCapabilities?.lanPortPictureDownloadUrl || ApModelPlaceholder}
+                    alt={imageTitle}
+                  />
+                </Row>
+              )
+          }
+        </Col>
+      </Row>
+    </Loader>
   )
 }

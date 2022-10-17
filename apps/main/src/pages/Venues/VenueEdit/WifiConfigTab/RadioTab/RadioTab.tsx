@@ -1,10 +1,8 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
-import { useUpdateVenueExternalAntennaMutation } from '@acx-ui/rc/services'
-import { ExternalAntenna }                       from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getExternalAntennaPayload, VenueEditContext } from '../..'
@@ -19,10 +17,10 @@ export function RadioTab () {
   const navigate = useNavigate()
   const { editContextData,
     setEditContextData,
-    editRadioContextData,
-    setEditRadioContextData } = useContext(VenueEditContext)
+    editRadioContextData
+  } = useContext(VenueEditContext)
   const basePath = useTenantLink('/venues/')
-  const [updateVenueExternalAntenna ] = useUpdateVenueExternalAntennaMutation()
+
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const externalTitle = $t({ defaultMessage: 'External Antenna' })
   const anchorItems = [{
@@ -46,24 +44,6 @@ export function RadioTab () {
       </>
     )
   }]
-
-  useEffect(() => {
-    setEditRadioContextData({
-      ...editRadioContextData,
-      updateExternalAntenna: handleUpdateExternalAntenna
-    })
-  }, [])
-
-  const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
-    try {
-      await updateVenueExternalAntenna({ params, payload: [ ...data ] })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
-    }
-  }
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
