@@ -1,13 +1,11 @@
-import { gql }            from 'graphql-request'
-import { renderToString } from 'react-dom/server'
-import { useIntl }        from 'react-intl'
-import AutoSizer          from 'react-virtualized-auto-sizer'
+import { gql }     from 'graphql-request'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { BarChartData, calculateSeverity, Incident } from '@acx-ui/analytics/utils'
-import { Card, VerticalBarChart, TooltipWrapper }   from '@acx-ui/components'
+import { Card, VerticalBarChart }                    from '@acx-ui/components'
 
 import type { TimeSeriesChartProps, TimeSeriesChartResponse } from '../types'
-import type { TooltipComponentFormatterCallbackParams }       from 'echarts'
 
 const rssDistributionScale = 5
 const rssThreshold = -80
@@ -26,21 +24,6 @@ const rssDistributionChartQuery = () => gql`
   }
 `
 
-export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
-  const rss = Array.isArray(params)
-    && Array.isArray(params[0].data) ? params[0].data[1] : ''
-  const name = Array.isArray(params)
-    && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
-  return renderToString(
-    <TooltipWrapper>
-      <div>
-        {name}:
-        <b> {rss as string}</b>
-      </div>
-    </TooltipWrapper>
-  )
-}
-
 const barColors = (incident: Incident, data: TimeSeriesChartResponse) => {
   const normalColor = 'rgb(156, 172, 185)'
   const severityColor = incidentsColors[calculateSeverity(incident.severity)]
@@ -57,7 +40,7 @@ export const RssDistributionChart = ({ data, incident }: TimeSeriesChartProps) =
   const xValue = $t({ defaultMessage: 'RSS Distribution' })
   const yValue = $t({ defaultMessage: 'Samples' })
 
-  const expectedResult = {
+  const chartResults = {
     dimensions: [xValue, yValue],
     source: rssDistribution!.map(({ rss, count }) => [rss, count]).reverse(),
     seriesEncode: [{ x: xValue, y: yValue }]
@@ -67,7 +50,7 @@ export const RssDistributionChart = ({ data, incident }: TimeSeriesChartProps) =
     <AutoSizer>
       {({ height, width }) => (
         <VerticalBarChart
-          data={expectedResult}
+          data={chartResults}
           style={{ height, width }}
           xAxisName={$t({ defaultMessage: '(RSS, in dBm)' })}
           barColors={barColors(incident, data)}
