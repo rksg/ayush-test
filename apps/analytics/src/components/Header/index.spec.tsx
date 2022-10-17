@@ -34,6 +34,9 @@ describe('Analytics dumb header', () => {
         { key: 'apCount', value: [1] },
         { key: 'version', value: ['1', '2'] }
       ]
+    },
+    queryState: {
+      isLoading: false
     }
   }
   it('should render correctly', async () => {
