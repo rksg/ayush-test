@@ -29,8 +29,6 @@ export enum WanConnectionEnum {
   CELLULAR = 'CELLULAR',
 }
 
-
-
 export function CellularOptionsForm () {
   const { $t } = useIntl()
   const params = useParams()
@@ -80,31 +78,6 @@ export function CellularOptionsForm () {
   const formRef = useRef<StepsFormInstance>()
   const form = Form.useFormInstance()
 
-  const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
-    if (!_.isEmpty(currentRegion)) {
-      const index = lteBands.findIndex(item => item.region === currentRegion)
-      lteBands.splice(0, 0, lteBands.splice(index, 1)[0])
-    }
-  }
-
-  const sortByLteBandRegionEnum = function (availableLteBands: AvailableLteBands[]) {
-    const map = {
-      [LteBandRegionEnum.DOMAIN_1]: 0,
-      [LteBandRegionEnum.DOMAIN_2]: 1,
-      [LteBandRegionEnum.USA_CANADA]: 2,
-      [LteBandRegionEnum.JAPAN]: 3
-    }
-    availableLteBands.sort((a, b) => {
-      if (map[a.region] < map[b.region]) {
-        return -1
-      }
-      if (map[a.region] > map[b.region]) {
-        return 1
-      }
-      return 0
-    })
-  }
-
   useEffect(() => {
     let availableLteBandsData = _.cloneDeep(availableLteBands.data)
     let venueApModelCellularData = _.cloneDeep(venueApModelCellular.data)
@@ -150,16 +123,6 @@ export function CellularOptionsForm () {
             })
           }
         }
-
-        //sortByLteBandRegionEnum
-        sortByLteBandRegionEnum(venueApModelCellularData.primarySim.lteBands)
-        sortByLteBandRegionEnum(venueApModelCellularData.secondarySim.lteBands)
-        sortByLteBandRegionEnum(availableLteBandsData)
-
-        //shiftCurrentRegionToFirst
-        shiftCurrentRegionToFirst(venueApModelCellularData.primarySim.lteBands)
-        shiftCurrentRegionToFirst(venueApModelCellularData.secondarySim.lteBands)
-        shiftCurrentRegionToFirst(availableLteBandsData)
 
         setEditData(venueApModelCellularData)
 

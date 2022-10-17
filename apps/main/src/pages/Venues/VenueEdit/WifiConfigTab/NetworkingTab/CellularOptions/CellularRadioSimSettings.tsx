@@ -10,9 +10,10 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { AvailableLteBands, CellularNetworkSelectionEnum, LteBandLockCountriesJson, VenueApModelCellular } from '@acx-ui/rc/utils'
+import { AvailableLteBands, CellularNetworkSelectionEnum, LteBandLockChannel, LteBandLockCountriesJson, LteBandRegionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import { LteBandChannels } from './LteBandChannels'
+import _ from 'lodash'
 
 export interface ModelOption {
   label: string
@@ -34,10 +35,40 @@ export function CellularRadioSimSettings (props: {
   const { $t } = useIntl()
   const [isShowOtherLteBands, setIsShowOtherLteBands] = useState(false)
 
-  return (
-    <div style={{
+  const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
+    if (!_.isEmpty(props.currentRegion)) {
+      const index = lteBands.findIndex(item => item.region === props.currentRegion)
+      lteBands.splice(0, 0, lteBands.splice(index, 1)[0])
+    }
+  }
 
-    }}>
+  const sortByLteBandRegionEnum = function (availableLteBands: LteBandLockChannel[]) {
+    const map = {
+      [LteBandRegionEnum.DOMAIN_1]: 0,
+      [LteBandRegionEnum.DOMAIN_2]: 1,
+      [LteBandRegionEnum.USA_CANADA]: 2,
+      [LteBandRegionEnum.JAPAN]: 3
+    }
+    availableLteBands.sort((a, b) => {
+      if (map[a.region] < map[b.region]) {
+        return -1
+      }
+      if (map[a.region] > map[b.region]) {
+        return 1
+      }
+      return 0
+    })
+  }
+
+  sortByLteBandRegionEnum(props.availableLteBands)
+  shiftCurrentRegionToFirst(props.availableLteBands)
+  if (props.editData[props.formControlName].lteBands) {
+    shiftCurrentRegionToFirst(_.get(props.editData, [props.formControlName] + '.lteBands'))
+    sortByLteBandRegionEnum(_.get(props.editData, [props.formControlName] + '.lteBands'))
+  }
+
+  return (
+    <div>
       <Divider orientation='left' plain>
         <div style={{
           display: 'grid', gridTemplateColumns: 'auto 100px', gridGap: '5px',
@@ -140,6 +171,5 @@ export function CellularRadioSimSettings (props: {
       />
       <Divider orientation='left' plain />
     </div>
-
   )
 }
