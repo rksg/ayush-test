@@ -6,7 +6,6 @@ import { useIntl } from 'react-intl'
 import { defaultComDisplay, PortalComponentsEnum } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
-import { useIsomorphicLayoutEffect } from '@reduxjs/toolkit/dist/query/react/buildHooks'
 export default function PortalComponents (props:{
   isShow: boolean,
   isReset: boolean,

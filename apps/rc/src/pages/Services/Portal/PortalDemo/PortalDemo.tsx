@@ -37,7 +37,7 @@ export default function PortalDemo () {
     <>
       <UI.LayoutHeader>
         <Row >
-          <Col>
+          <Col flex='345px'>
             <UI.Label>
               {$t({ defaultMessage: 'View as:' })}
             </UI.Label>
@@ -51,7 +51,7 @@ export default function PortalDemo () {
               ))}
             </UI.Select>
           </Col>
-          <Col>
+          <Col flex='20px'>
             <UI.FieldExtraTooltip>
               <Tooltip
                 placement='bottom'
@@ -64,7 +64,7 @@ export default function PortalDemo () {
               />
             </UI.FieldExtraTooltip>
           </Col>
-          <Col>
+          <Col flex='157px'>
             <UI.DesktopOutlined $marked={marked.desk}
               onClick={()=>{
                 setScreen('desk')
@@ -81,7 +81,7 @@ export default function PortalDemo () {
                 setMarked({ desk: false, tablet: false, mobile: true })
               }}/>
           </Col>
-          <Col offset={2}>
+          <Col flex='auto' style={{ textAlign: 'right', paddingRight: 5 }}>
             <UI.Button onClick={(e)=>{
               e.preventDefault()
               setShowLanguage(true)
@@ -116,16 +116,18 @@ export default function PortalDemo () {
             componentDisplay={componentDisplay}
             alternativeLang={alternativeLang}/>
         </UI.LayoutView>
-        <PortalLanguageSettings isShow={showLanguage}
-          isReset={isReset}
-          onClose={() => setShowLanguage(false)}
-          updateAlternativeLanguage={(value) => setAlternativeLang(value)}
-        />
-        <PortalComponents isShow={showComponent}
-          isReset={isReset}
-          onClose={() => setShowComponent(false)}
-          updateComponentDisplay={(value) => setComponentDisplay(value)}
-        />
+        <div style={{ width: '95%', position: 'absolute' }}>
+          <PortalLanguageSettings isShow={showLanguage}
+            isReset={isReset}
+            onClose={() => setShowLanguage(false)}
+            updateAlternativeLanguage={(value) => setAlternativeLang(value)}
+          />
+          <PortalComponents isShow={showComponent}
+            isReset={isReset}
+            onClose={() => setShowComponent(false)}
+            updateComponentDisplay={(value) => setComponentDisplay(value)}
+          />
+        </div>
       </UI.LayoutContent>
     </>)
 }

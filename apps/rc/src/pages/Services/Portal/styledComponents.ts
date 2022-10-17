@@ -36,9 +36,7 @@ export const CommonContainer= styled.div<{ $isShow: boolean | null }>`
   `:css`
   display: none;
   `}
-  position: absolute;
-  right: 0;
-  top: 50px;
+  float: right;
   border: 1px solid var(--acx-neutrals-50);
   background-color: var(--acx-primary-white);
   width: 300px;
