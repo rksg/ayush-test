@@ -15,7 +15,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
         </span>
       </button>
       <div
-        class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollapsePanel-sc-lhsic1-3 ijzxTj"
+        class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollapsePanel-sc-lhsic1-3 bvaGkz"
         style="width: 100%; max-width: 600px;"
       >
         <div
