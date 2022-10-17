@@ -30,6 +30,7 @@ export interface VerticalBarChartProps
     min?: number
   }
   xAxisName?: string
+  xAxisOffset?: number
   showTooltipName?: Boolean
 }
 
@@ -58,11 +59,16 @@ export function VerticalBarChart<TChartData extends BarChartData>
   dataFormatter = formatter('countFormat'),
   yAxisProps,
   xAxisName,
+  xAxisOffset,
   showTooltipName = true,
   ...props
 }: VerticalBarChartProps<TChartData>) {
   const option: EChartsOption = {
-    grid: { ...gridOptions({ disableLegend: true, hasXAxisName: Boolean(xAxisName) }) },
+    grid: { ...gridOptions({
+      disableLegend: true,
+      hasXAxisName: Boolean(xAxisName),
+      xAxisOffset
+    }) },
     dataset: {
       dimensions: data.dimensions,
       source: data.source
@@ -79,6 +85,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
     xAxis: {
       ...xAxisOptions(),
       ...(xAxisName ? xAxisNameOptions(xAxisName) : {}),
+      offset: xAxisOffset,
       axisPointer: { type: 'shadow' },
       type: 'category',
       axisLabel: {

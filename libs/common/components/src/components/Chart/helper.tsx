@@ -35,12 +35,13 @@ export type TooltipFormatterParams = Exclude<
 
 export const gridOptions = ({
   disableLegend = false,
-  hasXAxisName = false
+  hasXAxisName = false,
+  xAxisOffset = 0
 } = {}) => ({
-  left: '0%',
-  right: '0%',
-  bottom: hasXAxisName ? '16px' : '0%',
-  top: disableLegend ? '6px': '15%',
+  left: 0,
+  right: 0,
+  bottom: hasXAxisName ? 16 + xAxisOffset : 0,
+  top: disableLegend ? 6 : '15%',
   containLabel: true
 })
 
