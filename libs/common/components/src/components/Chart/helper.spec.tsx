@@ -6,6 +6,7 @@ import { renderHook }          from '@acx-ui/test-utils'
 import { TimeStamp }           from '@acx-ui/types'
 
 import {
+  dataZoomOptions,
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
   stackedBarTooltipFormatter,
@@ -15,6 +16,29 @@ import {
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
+
+describe('dataZoomOptions', () => {
+  it('should return correct dataZoom options', () => {
+    const data = [
+      {
+        key: 'series1',
+        name: 'series1',
+        data: [['2022-04-07T09:15:00.000Z', '-'], ['2022-04-07T09:30:00.000Z', '-']]
+      },
+      {
+        key: 'series2',
+        name: 'series2',
+        data: [['2022-04-07T09:15:00.000Z', '-'], ['2022-04-07T09:45:00.000Z', '-']]
+      }
+    ] as TimeSeriesChartData[]
+    expect(dataZoomOptions(data)).toEqual([{
+      id: 'zoom',
+      type: 'inside',
+      zoomLock: true,
+      minValueSpan: 2 * 30 * 60 * 1000
+    }])
+  })
+})
 
 describe('dateAxisFormatter', () => {
   it('formats date time correctly', () => {
