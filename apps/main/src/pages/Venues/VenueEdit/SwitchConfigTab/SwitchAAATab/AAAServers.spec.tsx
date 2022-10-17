@@ -1,11 +1,12 @@
-/* eslint-disable max-len */
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { venueApi }                                                              from '@acx-ui/rc/services'
-import { AAAServerTypeEnum, SwitchUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider, store }                                                       from '@acx-ui/store'
-import { mockServer, render, waitForElementToBeRemoved, screen, fireEvent, act } from '@acx-ui/test-utils'
+
+import { venueApi }                                                               from '@acx-ui/rc/services'
+import { AAAServerTypeEnum, SwitchUrlsInfo }                                      from '@acx-ui/rc/utils'
+import { Provider, store }                                                        from '@acx-ui/store'
+import { mockServer, render, waitForElementToBeRemoved, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { AAAServers } from './AAAServers'
 
@@ -86,33 +87,21 @@ const localUserList = {
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 describe('AAAServers', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(venueApi.util.resetApiState())
-    })
+    store.dispatch(venueApi.util.resetApiState())
   })
   it('should render empty lists and alert message correctly', async () => {
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
-        res(ctx.json(settings))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(emptyList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(emptyList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(emptyList))
-      )
+      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) => res(ctx.json(settings))),
+      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => res(ctx.json(emptyList)))
     )
-    render(
-      <Provider>
-        <AAAServers />
-      </Provider>,
-      { route: { params } }
-    )
+    const { asFragment } = render(<Provider><AAAServers /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('You must have at least one RADIUS or TACACS+ server set-up in order to enable authorization or accounting')).toBeVisible()
+    await waitFor(async () => {
+      (await screen.findAllByRole('columnheader', { name: /name/ })).forEach(header => {
+        expect(header).toHaveClass('react-resizable')
+      })
+    })
+    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render RADIUS list correctly and add data', async () => {
@@ -120,15 +109,11 @@ describe('AAAServers', () => {
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(settings))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(radiusList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(emptyList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(emptyList))
-      ),
+      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+        const body = req.body as { serverType: string }
+        if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
+        return res(ctx.json(emptyList))
+      }),
       rest.post(SwitchUrlsInfo.addAaaServer.url, (req, res, ctx) =>
         res(ctx.json({}))
       )
@@ -144,20 +129,19 @@ describe('AAAServers', () => {
     const addButton = screen.getByRole('button', { name: 'Add RADIUS Server' })
     expect(addButton).toBeVisible()
 
-    fireEvent.click(addButton)
-    const nameField = screen.getByLabelText('Name')
-    fireEvent.change(nameField, { target: { value: 'r2' } })
+    await userEvent.click(addButton)
+    await userEvent.type(screen.getByLabelText('Name'), 'r2r2r2')
     const ipField = screen.getByLabelText('IP Address')
-    fireEvent.change(ipField, { target: { value: '1.1.1.1' } })
+    await userEvent.type(ipField, '1.1.1.1')
     const authField = screen.getByLabelText('Authentication port')
-    fireEvent.change(authField, { target: { value: '10' } })
+    await userEvent.type(authField, '10')
     const acctField = screen.getByLabelText('Accounting port')
-    fireEvent.change(acctField, { target: { value: '11' } })
+    await userEvent.type(acctField, '11')
     const secretField = screen.getByLabelText('Shared secret')
-    fireEvent.change(secretField, { target: { value: 'gogo' } })
+    await userEvent.type(secretField, 'gogo')
 
     const saveButton = screen.getByRole('button', { name: /save/i })
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton)
   })
 
   it('should render RADIUS list correctly and edit row data', async () => {
@@ -165,20 +149,16 @@ describe('AAAServers', () => {
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(settings))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(radiusList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(emptyList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(emptyList))
-      ),
+      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+        const body = req.body as { serverType: string }
+        if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
+        return res(ctx.json(emptyList))
+      }),
       rest.put(SwitchUrlsInfo.updateAaaServer.url, (req, res, ctx) =>
         res(ctx.json({}))
       )
     )
-    render(
+    const { asFragment } = render(
       <Provider>
         <AAAServers />
       </Provider>,
@@ -186,21 +166,22 @@ describe('AAAServers', () => {
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const sharedSecretElem = await screen.findByDisplayValue('dg')
-    fireEvent.click(sharedSecretElem)
+    await userEvent.click(sharedSecretElem)
     const row1 = await screen.findByText('r0')
-    fireEvent.click(row1)
+    await userEvent.click(row1)
     const editButton = screen.getByRole('button', { name: /edit/i })
     expect(editButton).toBeVisible()
 
-    fireEvent.click(editButton)
+    await userEvent.click(editButton)
     const nameField = screen.getByLabelText('Name')
-    fireEvent.change(nameField, { target: { value: 'r0_edit' } })
+    await userEvent.type(nameField, 'r0_edit')
     const cancelButton = screen.getByRole('button', { name: 'Cancel' })
-    fireEvent.click(cancelButton)
+    await userEvent.click(cancelButton)
 
-    fireEvent.click(editButton)
+    await userEvent.click(editButton)
     const saveButton = screen.getByRole('button', { name: /save/i })
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton)
+    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render RADIUS list correctly and delete data', async () => {
@@ -208,15 +189,11 @@ describe('AAAServers', () => {
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(settings))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(radiusList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(emptyList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(emptyList))
-      ),
+      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+        const body = req.body as { serverType: string }
+        if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
+        return res(ctx.json(emptyList))
+      }),
       rest.delete(SwitchUrlsInfo.deleteAaaServer.url, (req, res, ctx) =>
         res(ctx.json({}))
       )
@@ -230,14 +207,14 @@ describe('AAAServers', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const row1 = await screen.findByText('r0')
-    fireEvent.click(row1)
+    await userEvent.click(row1)
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
     await screen.findByText('Delete "r0"?')
     const deleteNetworkButton = await screen.findByText('Delete RADIUS Server')
-    fireEvent.click(deleteNetworkButton)
+    await userEvent.click(deleteNetworkButton)
   })
 
   it('should render RADIUS list correctly and show delete warning', async () => {
@@ -257,15 +234,14 @@ describe('AAAServers', () => {
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(aaaSettings))
       ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(radiusList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(tacacsList))
-      ),
-      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) =>
-        res(ctx.json(localUserList))
-      ),
+      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+        const body = req.body as { serverType: AAAServerTypeEnum }
+        switch (body.serverType) {
+          case 'RADIUS': return res(ctx.json(radiusList))
+          case 'TACACS_PLUS': return res(ctx.json(tacacsList))
+          case 'LOCAL': return res(ctx.json(localUserList))
+        }
+      }),
       rest.delete(SwitchUrlsInfo.deleteAaaServer.url, (req, res, ctx) =>
         res(ctx.json({}))
       )
@@ -278,13 +254,13 @@ describe('AAAServers', () => {
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row1 = await screen.findByText('r0')
-    fireEvent.click(row1)
+    await userEvent.click(row1)
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
-    const warningText = await screen.findByText(/authentication/i)
+    const modal = await screen.findByRole('dialog')
+    const warningText = await within(modal).findByText(/Log-in Authentication/i)
     expect(warningText).toBeVisible()
   })
-
 })

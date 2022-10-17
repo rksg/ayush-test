@@ -18,7 +18,9 @@ jest.mock('@acx-ui/analytics/utils', () => ({
     },
     getNetworkFilter: jest
       .fn()
-      .mockReturnValueOnce({ path: [{ type: 'network', name: 'Network' }] })
+      .mockReturnValueOnce({
+        networkFilter: { path: [{ type: 'network', name: 'Network' }] }
+      })
   })
 }))
 describe('Analytics dumb header', () => {
