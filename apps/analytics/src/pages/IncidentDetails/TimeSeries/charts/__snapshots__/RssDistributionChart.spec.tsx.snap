@@ -1,3 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RssQualityByClientsChart should return correct Html string for the tooltip 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><div>Samples<!-- -->:<b> <!-- -->-70</b></div></div>"`;
+exports[`rssDistributionChartQuery should call corresponding api 1`] = `
+"
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              
+              
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  
+  rssDistribution(scale: 5) {
+    rss
+    count
+  }
+
+                }
+              }
+            }
+          "
+`;
+
+exports[`rssDistributionChartQuery should call corresponding api 2`] = `
+Object {
+  "code": "p-cov-clientrssi-low",
+  "codeMap": Array [
+    "p-cov-clientrssi-low",
+  ],
+  "end": "2022-09-29T06:00:00.000Z",
+  "granularity": "PT180S",
+  "path": Array [
+    Object {
+      "name": "Default Zone",
+      "type": "zone",
+    },
+    Object {
+      "name": "Outdoor",
+      "type": "apGroup",
+    },
+  ],
+  "start": "2022-09-28T16:30:00.000Z",
+}
+`;

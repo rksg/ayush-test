@@ -1,16 +1,17 @@
-import { TooltipComponentFormatterCallbackParams } from 'echarts'
-import { BrowserRouter }                           from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 
-import { fakeIncidentRss }      from '@acx-ui/analytics/utils'
-import { store }                from '@acx-ui/store'
-import { mockDOMWidth, render } from '@acx-ui/test-utils'
+import { dataApiURL }                             from '@acx-ui/analytics/services'
+import { fakeIncidentRss }                        from '@acx-ui/analytics/utils'
+import { store }                                  from '@acx-ui/store'
+import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
+import { TimeSeriesChartTypes }    from '../config'
 import { Api }                     from '../services'
 import { TimeSeriesChartResponse } from '../types'
 
-import { RssDistributionChart, tooltipFormatter } from './RssDistributionChart'
+import { RssDistributionChart } from './RssDistributionChart'
 
-const data = {
+const expectedResult = {
   rssDistribution: [
     { rss: -100, count: 5 },
     { rss: -95, count: 8 },
@@ -38,17 +39,28 @@ describe('RssQualityByClientsChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <RssDistributionChart chartRef={()=>{}} incident={fakeIncidentRss} data={data}/>
+        <RssDistributionChart chartRef={()=>{}} incident={fakeIncidentRss} data={expectedResult}/>
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
-  it('should return correct Html string for the tooltip', async () => {
-    const singleParameters = [{
-      data: [-30, -70],
-      dimensionNames: ['Rss Distribution', 'Samples']
-    }] as TooltipComponentFormatterCallbackParams
-    expect(tooltipFormatter(singleParameters)).toMatchSnapshot()
+})
+describe('rssDistributionChartQuery', () => {
+  it('should call corresponding api', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
+      data: { network: { hierarchyNode: expectedResult } }
+    }, true)
+    const { status, data, error } = await store.dispatch(
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncidentRss,
+        charts: [TimeSeriesChartTypes.RssDistributionChart],
+        minGranularity: 'PT180S'
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult)
+    expect(error).toBe(undefined)
   })
 })
+

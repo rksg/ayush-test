@@ -3,9 +3,9 @@
 exports[`apDisconnectionCountChartQuery should call corresponding api 1`] = `
 "
             query IncidentTimeSeries(
-              $path: [HierarchyNodeInput],
-              $start: DateTime,
-              $end: DateTime,
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
               
               $code: String
             ) {

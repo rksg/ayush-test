@@ -3,10 +3,10 @@
 exports[`failureChartQuery should call corresponding api 1`] = `
 "
             query IncidentTimeSeries(
-              $path: [HierarchyNodeInput],
-              $start: DateTime,
-              $end: DateTime,
-              $granularity: String,
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              $granularity: String
               $code: String
             ) {
               network(start: $start, end: $end) {
