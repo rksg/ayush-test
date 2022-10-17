@@ -1,20 +1,15 @@
-import { ReactNode } from 'react'
-
-import { withKnobs }      from '@storybook/addon-knobs'
-import { storiesOf }      from '@storybook/react'
-import { renderToString } from 'react-dom/server'
+import { withKnobs } from '@storybook/addon-knobs'
+import { storiesOf } from '@storybook/react'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
+import { formatter }         from '@acx-ui/utils'
 
-import { Card }           from '../Card'
-import { TooltipWrapper } from '../Chart/styledComponents'
+import { cssStr } from '../../theme/helper'
 
 import { VerticalBarChart } from '.'
 
-import type { TooltipComponentFormatterCallbackParams } from 'echarts'
-
 export const data: BarChartData = {
-  dimensions: ['Rss Distribution', 'Samples'],
+  dimensions: ['RSS', 'Samples'],
   source: [
     ['-30', 20],
     ['-35', 25],
@@ -25,70 +20,78 @@ export const data: BarChartData = {
     ['-60', 50],
     ['-65', 73],
     ['-70', 95],
-    ['-75', 120],
+    ['-75', 1100],
     ['-80', 80],
     ['-85', 68],
     ['-90', 53],
     ['-95', 28],
     ['-100', 35],
     ['-105', 15],
-    ['-110', 27],
+    ['-110', 0],
     ['-115', 8]
   ],
   seriesEncode: [
     {
-      x: 'Rss Distribution',
+      x: 'RSS',
       y: 'Samples'
     }
   ]
 }
 
-export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
-  const rss = Array.isArray(params)
-    && Array.isArray(params[0].data) ? params[0].data[1] : ''
-  const name = Array.isArray(params)
-    && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
-  return renderToString(
-    <TooltipWrapper>
-      <div>
-        {name}:
-        <b> {rss as string}</b>
-      </div>
-    </TooltipWrapper>
-  )
+const percentData: BarChartData = {
+  dimensions: ['Day', 'Percent'],
+  source: [
+    ['11', 0.7322],
+    ['12', 0.7541],
+    ['13', 0.7704],
+    ['14', 0.7914],
+    ['15', 0],
+    ['16', 0.7937],
+    ['17', 0.8009]
+  ],
+  seriesEncode: [
+    {
+      x: 'Day',
+      y: 'Percent'
+    }
+  ]
 }
 
-export const wrapInsideCard = (title: string, children: ReactNode) => (
-  <div style={{ width: 600, height: 280 }}>
-    <Card title={title}>
-      {children}
-    </Card>
-  </div>)
-
 const colors: string[] = [
-  'yellow',
-  'yellow',
-  'red',
-  'blue',
-  'red',
-  'blue',
-  'red',
-  'blue',
-  'green',
-  'green',
-  'green'
+  cssStr('--acx-semantics-green-50'),
+  cssStr('--acx-semantics-green-50'),
+  cssStr('--acx-semantics-green-50'),
+  cssStr('--acx-semantics-yellow-40'),
+  cssStr('--acx-semantics-yellow-40'),
+  cssStr('--acx-semantics-yellow-40'),
+  cssStr('--acx-semantics-yellow-40'),
+  cssStr('--acx-semantics-yellow-40'),
+  cssStr('--acx-semantics-red-50'),
+  cssStr('--acx-semantics-red-50')
 ]
 // if colors array length is less than data, the colors will loop
 
 storiesOf('VerticalBarChart', module)
   .addDecorator(withKnobs)
   .add('Chart View', () =>
-    wrapInsideCard('RSS Distribution',
+    <div style={{ width: 600, height: 280 }}>
       <VerticalBarChart
         style={{ width: '100%', height: '100%' }}
         data={data}
-        grid={{ bottom: '10%', top: '5%' }}
-        xAxisName={'RSS (in dBm)'}
-        tooltipFormatter={tooltipFormatter}
+        xAxisName={'(RSS, in dBm)'}
         barColors={colors}
-      />))
+      />
+    </div>
+  )
+  .add('With Formatter', () =>
+    <div style={{ width: 324, height: 132 }}>
+      <VerticalBarChart
+        style={{ width: '100%', height: '100%' }}
+        data={percentData}
+        dataFormatter={formatter('percentFormat')}
+        yAxisProps={{ max: 1, min: 0 }}
+        xAxisName={'(Last 7 days)'}
+        showTooltipName={false}
+      />
+    </div>
+  )
