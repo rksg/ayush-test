@@ -1,16 +1,11 @@
-// import { useState } from 'react'
-
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 
 import {
   Button,
-  // cssStr,
-  // deviceStatusColors,
   Loader,
   PageHeader,
-  // StackedBarChart,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -72,20 +67,6 @@ function useCustomerColumns () {
       sorter: true,
       render: function () {
         return 0
-        // return <StackedBarChart
-        //   style={{ height: 10, width: 100 }}
-        //   data={[{
-        //     category: 'emptyStatus',
-        //     series: [{
-        //       name: '',
-        //       value: 1
-        //     }]
-        //   }]}
-        //   showTooltip={false}
-        //   showLabels={false}
-        //   showTotal={false}
-        //   barColors={[cssStr(deviceStatusColors.empty)]}
-        // />
       }
     },
     {
@@ -168,7 +149,6 @@ const transformNextExpirationDate = (row: VarCustomer) => {
 
 export function VarCustomers () {
   const { $t } = useIntl()
-  // const [ search, setSearch ] = useState('')
 
   const varCustomerPayload = {
     searchString: '',

@@ -100,7 +100,7 @@ export function WifiLicense () {
         ...rest
       })
     })
-    queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
+    // queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
 
     return (
       <Loader states={[queryResults]}>

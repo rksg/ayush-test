@@ -98,7 +98,7 @@ export function SwitchLicense () {
         ...rest
       })
     })
-    queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
+    // queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
 
     return (
       <Loader states={[queryResults]}>

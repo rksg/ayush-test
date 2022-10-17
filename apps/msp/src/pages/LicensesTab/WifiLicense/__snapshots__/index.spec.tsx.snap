@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WifiLicense should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <p>
+      Something went wrong.
+    </p>
+    <p>
+      TypeError: dataSource?.reduce is not a function
+      <br />
+      TypeError: dataSource?.reduce is not a function
+      <br />
+          at getFilteredData (/Users/ericleu/Projects/ACX-10795/acx-ui/libs/common/components/src/components/Table/filters.tsx:44:22)
+      <br />
+          at Table (/Users/ericleu/Projects/ACX-10795/acx-ui/libs/common/components/src/components/Table/index.tsx:324:48)
+      <br />
+          at renderWithHooks (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:16175:18)
+      <br />
+          at mountIndeterminateComponent (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:20913:13)
+      <br />
+          at beginWork (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:22416:16)
+      <br />
+          at beginWork$1 (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:27381:14)
+      <br />
+          at performUnitOfWork (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26516:12)
+      <br />
+          at workLoopSync (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26422:5)
+      <br />
+          at renderRootSync (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26390:7)
+      <br />
+          at recoverFromConcurrentError (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:25806:20)
+      <br />
+          at performSyncWorkOnRoot (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26052:20)
+      <br />
+          at flushSyncCallbacks (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:12009:22)
+      <br />
+          at /Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:25607:13
+      <br />
+          at /Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/jsdom/lib/jsdom/browser/Window.js:550:9
+      <br />
+          at node:internal/process/task_queues:141:7
+      <br />
+          at AsyncResource.runInAsyncScope (node:async_hooks:202:9)
+      <br />
+          at AsyncResource.runMicrotask (node:internal/process/task_queues:138:8)
+      <br />
+    </p>
+  </div>
+</DocumentFragment>
+`;

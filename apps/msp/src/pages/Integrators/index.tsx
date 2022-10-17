@@ -3,11 +3,22 @@ import { useState } from 'react'
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
-import { Button, PageHeader, showActionModal, showToast, Table, TableProps, Loader } from '@acx-ui/components'
+import {
+  Button,
+  PageHeader,
+  showActionModal,
+  showToast,
+  Table,
+  TableProps,
+  Loader
+} from '@acx-ui/components'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { useDeleteMspEcMutation, useMspCustomerListQuery } from '@acx-ui/rc/services'
+import {
+  useDeleteMspEcMutation,
+  useMspCustomerListQuery
+} from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MspEc

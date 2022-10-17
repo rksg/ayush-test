@@ -94,7 +94,7 @@ exports[`Device Inventory Table should render table 1`] = `
                 </span>
                 <input
                   class="ant-input"
-                  placeholder="Search MAC Address, Serial Number"
+                  placeholder="Search Serial Number"
                   type="text"
                   value=""
                 />
