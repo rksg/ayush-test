@@ -1,14 +1,14 @@
 import { Key } from 'react'
 
-import { BandBalancing }             from '../models/BandBalancing'
-import { DenialOfServiceProtection } from '../models/DenialOfServiceProtection'
-import { Mesh }                      from '../models/Mesh'
-import { VenueDhcpServiceSetting }   from '../models/VenueDhcpServiceSetting'
-import { VenueRadioCustomization }   from '../models/VenueRadioCustomization'
-import { VenueRogueAp }              from '../models/VenueRogueAp'
-import { VenueSyslog }               from '../models/VenueSyslog'
-
 import { CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
+import { BandBalancing }                                                      from '../models/BandBalancing'
+import { DenialOfServiceProtection }                                          from '../models/DenialOfServiceProtection'
+import { Mesh }                                                               from '../models/Mesh'
+import { VenueDhcpServiceSetting }                                            from '../models/VenueDhcpServiceSetting'
+import { VenueRadioCustomization }                                            from '../models/VenueRadioCustomization'
+import { VenueRogueAp }                                                       from '../models/VenueRogueAp'
+import { VenueSyslog }                                                        from '../models/VenueSyslog'
+
 
 import { ApStatusDetails, ApModel } from './ap'
 
@@ -233,8 +233,8 @@ export interface ConfigurationProfile {
 }
 
 export interface AvailableLteBands {
-	band3G?: string[],  
-	band4G?: string[],  
+	band3G?: string[],
+	band4G?: string[],
 	region: LteBandRegionEnum,
 	countryCodes?: string[]
   }
@@ -262,7 +262,7 @@ export interface LteBandLockChannel {
 }
 
 export interface AvailableLteBandOptions {
-	value: string, 
+	value: string,
 	label: string
 }
 

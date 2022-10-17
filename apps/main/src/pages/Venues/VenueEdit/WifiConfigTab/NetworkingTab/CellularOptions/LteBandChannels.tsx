@@ -55,10 +55,10 @@ export function LteBandChannels (
 
       if(lteBandsArray){
         const lteBandsArrayIndex = lteBandsArray.findIndex(i=>i.region==props.region)
-        form.setFieldValue(['checkbox', props.formControlName, props.region], 
+        form.setFieldValue(['checkbox', props.formControlName, props.region],
           (!_.isEmpty(lteBandsArray[lteBandsArrayIndex]?.band3G)||
         !_.isEmpty(lteBandsArray[lteBandsArrayIndex]?.band4G)))
-     
+
       }
     }
   }, [object])

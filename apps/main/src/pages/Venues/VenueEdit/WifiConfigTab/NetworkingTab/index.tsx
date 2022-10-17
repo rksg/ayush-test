@@ -3,13 +3,13 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm } from '@acx-ui/components'
+import { VenueApModelCellular }               from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../../index'
 
-import { MeshNetwork } from './MeshNetwork'
-
 import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
-import { VenueApModelCellular } from '@acx-ui/rc/utils'
+import { MeshNetwork }         from './MeshNetwork'
+
 
 export interface NetworkingSettingContext {
   cellularData: VenueApModelCellular,

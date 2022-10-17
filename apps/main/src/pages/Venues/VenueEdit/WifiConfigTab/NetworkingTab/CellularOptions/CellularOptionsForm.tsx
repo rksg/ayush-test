@@ -9,12 +9,13 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { showToast, StepsForm, StepsFormInstance, Subtitle }                                                                from '@acx-ui/components'
-import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation }                       from '@acx-ui/rc/services'
-import { AvailableLteBands, CountryIsoDisctionary, LteBandLockChannel, LteBandRegionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
+import { showToast, StepsForm, StepsFormInstance, Subtitle }                                                                               from '@acx-ui/components'
+import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation } from '@acx-ui/rc/services'
+import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }                                                                      from '@acx-ui/rc/utils'
+
+import { VenueEditContext } from '../../..'
 
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
-import { VenueEditContext } from '../../..'
 
 export interface ModelOption {
   label: string
@@ -71,7 +72,7 @@ export function CellularOptionsForm () {
   const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { tenantId, venueId } })
   const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
   const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
-  const [currentRegion, setCurrentRegion] = useState('');
+  const [currentRegion, setCurrentRegion] = useState('')
   const [availableLteBandsArray, setAvailableLteBandsArray] =
     useState(defaultAvailableLteBandsArray)
   const [editData, setEditData] = useState(defaultEditData)
@@ -82,7 +83,7 @@ export function CellularOptionsForm () {
     let availableLteBandsData = _.cloneDeep(availableLteBands.data)
     let venueApModelCellularData = _.cloneDeep(venueApModelCellular.data)
     const countryCode = _.get(venueData, 'data.countryCode')
-    
+
     if (availableLteBandsData && countryCode) {
 
       availableLteBandsData.forEach(lteBands => {
@@ -95,12 +96,12 @@ export function CellularOptionsForm () {
       //setCurrentCountry
       Object.keys(regionCountriesMap).map(function (objectKey) {
         const value = _.get(regionCountriesMap, objectKey)
-        if (value.countryCodes.indexOf(countryCode) > -1) { 
+        if (value.countryCodes.indexOf(countryCode) > -1) {
           setCurrentRegion(objectKey) }
       })
 
 
-      // this.getCellularSupportedModels$(); 
+      // this.getCellularSupportedModels$();
       if (venueApModelCellularData) {
         venueApModelCellularData.primarySim.lteBands =
           venueApModelCellularData.primarySim?.lteBands || []
@@ -132,9 +133,7 @@ export function CellularOptionsForm () {
     }
 
   }, [availableLteBands, venueApModelCellular, venueData, form])
-  const onChange = (current: any) =>{
-    // setCurrent(current)
-    const filedsValue = formRef?.current?.getFieldsValue()
+  const onChange = () =>{
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'networking',
@@ -146,41 +145,43 @@ export function CellularOptionsForm () {
       meshData: { mesh: true },
       updateCellular: handleVenueCellularSettings
     })
-}
-const [updateVenueCellularSettings] = useUpdateVenueCellularSettingsMutation()
-
-const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
-  try {
-    let value;
-    if (formRef?.current?.getFieldsValue()) {
-      const lteBand = formRef?.current?.getFieldsValue().bandLteArray
-      const primaryLteBand = lteBand.primarySim
-      const secondLteBand = lteBand.secondarySim
-
-      const primaryLteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
-      Object.keys(primaryLteBand).forEach(region => {
-        primaryLteBandArray.push({ region, band3G: primaryLteBand[region].band3G, band4G: primaryLteBand[region].band4G })
-      })
-
-      const secLteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
-      Object.keys(secondLteBand).forEach(region => {
-        secLteBandArray.push({ region, band3G: secondLteBand[region].band3G, band4G: secondLteBand[region].band4G })
-      })
-
-      value = formRef.current.getFieldValue('editData');
-      value.primarySim.lteBands = primaryLteBandArray;
-      value.secondarySim.lteBands = secLteBandArray;
-    }
-
-    await updateVenueCellularSettings({ params, 
-      payload: { ...payload, ...value } })
-  } catch {
-    showToast({
-      type: 'error',
-      content: $t({ defaultMessage: 'An error occurred' })
-    })
   }
-}
+  const [updateVenueCellularSettings] = useUpdateVenueCellularSettingsMutation()
+
+  const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
+    try {
+      let value
+      if (formRef?.current?.getFieldsValue()) {
+        const lteBand = formRef?.current?.getFieldsValue().bandLteArray
+        const primaryLteBand = lteBand.primarySim
+        const secondLteBand = lteBand.secondarySim
+
+        const primaryLteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
+        Object.keys(primaryLteBand).forEach(region => {
+          primaryLteBandArray.push({ region,
+            band3G: primaryLteBand[region].band3G, band4G: primaryLteBand[region].band4G })
+        })
+
+        const secLteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
+        Object.keys(secondLteBand).forEach(region => {
+          secLteBandArray.push({ region,
+            band3G: secondLteBand[region].band3G, band4G: secondLteBand[region].band4G })
+        })
+
+        value = formRef.current.getFieldValue('editData')
+        value.primarySim.lteBands = primaryLteBandArray
+        value.secondarySim.lteBands = secLteBandArray
+      }
+
+      await updateVenueCellularSettings({ params,
+        payload: { ...payload, ...value } })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
 
   return (
     <>

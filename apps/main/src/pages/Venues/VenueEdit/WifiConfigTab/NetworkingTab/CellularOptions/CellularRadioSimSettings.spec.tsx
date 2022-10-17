@@ -22,7 +22,7 @@ describe('CellularRadioSimSettings', () => {
         band4G: ['B4'],
         region: LteBandRegionEnum.USA_CANADA
       }, {
-        band4G: ['B3'], 
+        band4G: ['B3'],
         region: LteBandRegionEnum.DOMAIN_1
       }],
       enabled: false,
@@ -76,19 +76,19 @@ describe('CellularRadioSimSettings', () => {
 
 
   it('should render CellularRadioSimSettings successfully', async () => {
-   
+
 
     const { asFragment } = render(
       <Provider>
         <Form>
-          <CellularRadioSimSettings 
-            availableLteBands={availableLteBands} 
-            simCardNumber={0} 
-            regionCountriesMap={regionCountriesMap} 
-            currentCountryName={''}
+          <CellularRadioSimSettings
+            availableLteBands={availableLteBands}
+            simCardNumber={0}
+            regionCountriesMap={regionCountriesMap}
+            countryCode={'JP'}
             legend={'Secondary SIM'}
             currentRegion={''}
-            formControlName={'primarySim'} 
+            formControlName={'primarySim'}
             editData={editData} />
         </Form>
       </Provider>, {
@@ -104,14 +104,14 @@ describe('CellularRadioSimSettings', () => {
     render(
       <Provider>
         <Form>
-          <CellularRadioSimSettings 
-            availableLteBands={availableLteBands} 
-            simCardNumber={0} 
-            regionCountriesMap={regionCountriesMap} 
-            currentCountryName={''}
+          <CellularRadioSimSettings
+            availableLteBands={availableLteBands}
+            simCardNumber={0}
+            regionCountriesMap={regionCountriesMap}
+            countryCode={'JP'}
             legend={'Secondary SIM'}
             currentRegion={''}
-            formControlName={'primarySim'} 
+            formControlName={'primarySim'}
             editData={editData} />
         </Form>
       </Provider>, {
@@ -122,6 +122,6 @@ describe('CellularRadioSimSettings', () => {
     await userEvent.click(view)
     expect(screen.getByText(/Hide bands for other countries/i)).toBeVisible()
   })
-  
+
 })
 

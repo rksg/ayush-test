@@ -21,7 +21,7 @@ describe('LteBandChannels', () => {
         band4G: ['B4'],
         region: LteBandRegionEnum.USA_CANADA
       }, {
-        band4G: ['B3'], 
+        band4G: ['B3'],
         region: LteBandRegionEnum.DOMAIN_1
       }],
       enabled: false,
@@ -75,24 +75,24 @@ describe('LteBandChannels', () => {
 
 
   it('should render LTE Band channel successfully', async () => {
-   
+
 
     const { asFragment } = render(
       <Provider>
         <Form>
-          <LteBandChannels 
+          <LteBandChannels
             index={0}
-            availableLteBands={availableLteBands} 
-            isCurrent={false} 
-            simCardNumber={0} 
-            isShowDesc={false} 
-            countryName={''} 
-            regionName={''} 
-            regionCountries={''} 
-            regionCountriesMap={regionCountriesMap} 
-            region={''} 
-            formControlName={'primarySim'} 
-            isShowOtherLteBands={false} 
+            availableLteBands={availableLteBands}
+            isCurrent={false}
+            simCardNumber={0}
+            isShowDesc={false}
+            countryCode={'JP'}
+            regionName={''}
+            regionCountries={''}
+            regionCountriesMap={regionCountriesMap}
+            region={''}
+            formControlName={'primarySim'}
+            isShowOtherLteBands={false}
             editData={editData} />
         </Form>
       </Provider>, {
@@ -108,19 +108,19 @@ describe('LteBandChannels', () => {
     render(
       <Provider>
         <Form>
-          <LteBandChannels 
+          <LteBandChannels
             index={2}
-            availableLteBands={availableLteBands} 
-            isCurrent={false} 
-            simCardNumber={0} 
-            isShowDesc={true} 
-            countryName={''} 
-            regionName={'USA & Canada'} 
-            regionCountries={'USA, Canada'} 
-            regionCountriesMap={regionCountriesMap} 
-            region={LteBandRegionEnum.USA_CANADA} 
-            formControlName={'primarySim'} 
-            isShowOtherLteBands={true} 
+            availableLteBands={availableLteBands}
+            isCurrent={false}
+            simCardNumber={0}
+            isShowDesc={true}
+            countryCode={'JP'}
+            regionName={'USA & Canada'}
+            regionCountries={'USA, Canada'}
+            regionCountriesMap={regionCountriesMap}
+            region={LteBandRegionEnum.USA_CANADA}
+            formControlName={'primarySim'}
+            isShowOtherLteBands={true}
             editData={editData} />
         </Form>
       </Provider>, {
@@ -129,7 +129,7 @@ describe('LteBandChannels', () => {
 
     expect(screen.getByText(/USA & Canada/i)).toBeVisible()
     expect(screen.getByText(/USA, Canada/i)).toBeVisible()
-      
-   
+
+
   })
 })

@@ -8,12 +8,12 @@ import {
   Input,
   Button
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { AvailableLteBands, CellularNetworkSelectionEnum, LteBandLockChannel, LteBandLockCountriesJson, LteBandRegionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import { LteBandChannels } from './LteBandChannels'
-import _ from 'lodash'
 
 export interface ModelOption {
   label: string

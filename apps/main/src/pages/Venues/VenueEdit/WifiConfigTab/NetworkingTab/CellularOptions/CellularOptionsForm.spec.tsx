@@ -5,13 +5,14 @@ import { Form } from 'antd'
 import { rest } from 'msw'
 
 import { CellularNetworkSelectionEnum, CommonUrlsInfo, LteBandRegionEnum, WanConnectionEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                         from '@acx-ui/store'
-import { mockServer, render, within, screen }                                                               from '@acx-ui/test-utils'
+import { Provider }                                                                                         from '@acx-ui/store'
+import { mockServer, render }                                                                               from '@acx-ui/test-utils'
 
-import { CellularOptionsForm } from './CellularOptionsForm'
 import {
   venueSetting
 } from '../../../../__tests__/fixtures'
+
+import { CellularOptionsForm } from './CellularOptionsForm'
 
 const venueApModelCellularResponse = {
   model: 'M510',
@@ -21,7 +22,7 @@ const venueApModelCellularResponse = {
       band4G: ['B4'],
       region: LteBandRegionEnum.USA_CANADA
     }, {
-      band4G: ['B3'], 
+      band4G: ['B3'],
       region: LteBandRegionEnum.DOMAIN_1
     }],
     enabled: false,
