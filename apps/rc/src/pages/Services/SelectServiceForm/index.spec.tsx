@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { ServiceType }              from '@acx-ui/rc/utils'
-import { Path }                     from '@acx-ui/react-router-dom'
-import { logRoles, render, screen } from '@acx-ui/test-utils'
+import { ServiceType }    from '@acx-ui/rc/utils'
+import { Path }           from '@acx-ui/react-router-dom'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { getServiceRoutePath, ServiceOperation } from '../serviceRouteUtils'
 
@@ -41,7 +41,7 @@ describe('Select Service Form', () => {
   })
 
   it('should navigate to the correct service page', async () => {
-    const { container } = render(
+    render(
       <SelectServiceForm />, {
         route: { params, path: '/:tenantId/services/select' }
       }
@@ -49,8 +49,6 @@ describe('Select Service Form', () => {
 
     const wifiCallingRadio = screen.getByRole('radio', { name: /Wi-Fi Calling/ })
     const submitButton = screen.getByRole('button', { name: 'Add' })
-
-    logRoles(container)
 
     await userEvent.click(wifiCallingRadio)
     await userEvent.click(submitButton)
