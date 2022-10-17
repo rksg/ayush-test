@@ -20,8 +20,8 @@ export const data: BarChartData = {
     ['-60', 50],
     ['-65', 73],
     ['-70', 95],
-    ['-75', 1100],
-    ['-80', 80],
+    ['-75', 80],
+    ['-80', 1100],
     ['-85', 68],
     ['-90', 53],
     ['-95', 28],
@@ -37,6 +37,26 @@ export const data: BarChartData = {
     }
   ]
 }
+const colors: string[] = [
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-accents-orange-50'),
+  cssStr('--acx-accents-orange-50'),
+  cssStr('--acx-accents-orange-50'),
+  cssStr('--acx-accents-orange-50'),
+  cssStr('--acx-accents-orange-50'),
+  cssStr('--acx-accents-orange-50'),
+  cssStr('--acx-accents-orange-50'),
+  cssStr('--acx-accents-orange-50')
+]
 
 const percentData: BarChartData = {
   dimensions: ['Day', 'Percent'],
@@ -56,20 +76,6 @@ const percentData: BarChartData = {
     }
   ]
 }
-
-const colors: string[] = [
-  cssStr('--acx-semantics-green-50'),
-  cssStr('--acx-semantics-green-50'),
-  cssStr('--acx-semantics-green-50'),
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-semantics-red-50'),
-  cssStr('--acx-semantics-red-50')
-]
-// if colors array length is less than data, the colors will loop
 
 storiesOf('VerticalBarChart', module)
   .addDecorator(withKnobs)
