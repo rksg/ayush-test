@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
 
 import { sum }            from 'lodash'
@@ -6,15 +5,15 @@ import { renderToString } from 'react-dom/server'
 import { useIntl }        from 'react-intl'
 import AutoSizer          from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig }                                  from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, cssStr, DistributionChart, Button } from '@acx-ui/components'
-import type { TimeStamp }                                              from '@acx-ui/types'
-import { formatter }                                                   from '@acx-ui/utils'
-
+import { AnalyticsFilter, kpiConfig }                          from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, cssStr, DistributionChart } from '@acx-ui/components'
+import type { TimeStamp }                                      from '@acx-ui/types'
 
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
-import * as UI from './styledComponents'
+import  HistogramSlider    from './HistogramSlider'
+import * as UI             from './styledComponents'
+import { ThresholdConfig } from './ThresholdConfig'
 
 import type { TooltipComponentFormatterCallbackParams } from 'echarts'
 
@@ -30,7 +29,7 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
     </div>
   </UI.TooltipWrapper>)
 }
-const tranformHistResponse = (
+const getGoalPercent = (
   { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue : number }
 ) : number => {
   const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
@@ -46,19 +45,23 @@ const tranformHistResponse = (
   return percent
 }
 
-const transformHistogramResponse = ({ data, splits }: KPIHistogramResponse & { splits : any }) => {
-  return data.map((datum, index) => ([
-    splits[index],
-    datum
-  ])) as [TimeStamp, number][]
+
+const transformHistogramResponse = ({
+  data,
+  splits
+}: KPIHistogramResponse & { splits: number[] }) => {
+  return data.map((datum, index) => [splits[index], datum]) as [
+    TimeStamp,
+    number
+  ][]
 }
+
 function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
   const { $t } = useIntl()
   const { histogram, text, barChart } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove } = histogram
   const [thresholdValue, setThresholdValue] = useState(histogram?.initialThreshold)
   const [sliderValue, setSliderValue] = useState(splits.indexOf(thresholdValue) + 0.5)
-  const marks = splits.map(( _ : number,index : number) => index)
 
   const onSliderChange = (newValue: number) => {
     if(newValue === 0 || newValue === splits.length + 0.5 || newValue % 1 === 0)
@@ -97,8 +100,9 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
     index < splits.indexOf(thresholdValue) + 1
       ? hightlightAboveColor
       : hightlightBelowColor)
+
   const percent: number = queryResults?.data?.[0]?.rawData
-    ? tranformHistResponse({ ...queryResults?.data?.[0]?.rawData, kpi, thresholdValue })
+    ? getGoalPercent({ ...queryResults?.data?.[0]?.rawData, kpi, thresholdValue })
     : 0
 
   return (
@@ -114,51 +118,30 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
                   grid={{ bottom: '15%', top: '5%' }}
                   title={`(${histogram?.xUnit})`}
                   barWidth={30}
-                  xAxisOffset={8}
+                  xAxisOffset={10}
                   dataYFormatter={histogram?.shortYFormat}
                   dataXFormatter={histogram?.shortXFormat}
                   tooltipFormatter={tooltipFormatter}
                   barColors={barColors}
                 />
-                <UI.StyledSlider
-                  min={0}
-                  max={splits?.length + 1}
-                  onChange={onSliderChange}
-                  marks={marks}
-                  value={sliderValue}
-                  tooltipVisible={false}
-                  step={0.5}
-                  style={{
-                    width: width * 0.95,
-                    position: 'absolute',
-                    top: height * 0.55,
-                    marginLeft: width * 0.075,
-                    fontSize: 12
-                  }}
+                <HistogramSlider
+                  splits={splits}
+                  width={width}
+                  height={height}
+                  onSliderChange={onSliderChange}
+                  sliderValue={sliderValue}
                 />
               </>
             )}
           </AutoSizer>
         </GridCol>
         <GridCol col={{ span: 6 }}>
-          <UI.HistogramConfig>
-            <UI.HistogramSpanContent>
-              {'Goal'}
-              <UI.HistogramBoldContent>
-                {histogram?.shortXFormat?.(thresholdValue)} {histogram?.xUnit}
-              </UI.HistogramBoldContent>
-            </UI.HistogramSpanContent>
-            <UI.HistogramGoalPercentage>
-              {formatter('percentFormatRound')(percent / 100)}
-              <UI.HistogramBoldContent>
-                {'met goal'}
-              </UI.HistogramBoldContent>
-            </UI.HistogramGoalPercentage>
-            <UI.BtnWrapper>
-              <Button size='small' >Reset</Button>
-              <Button size='small' type='secondary'>Apply</Button>
-            </UI.BtnWrapper>
-          </UI.HistogramConfig>
+          <ThresholdConfig
+            thresholdValue={thresholdValue}
+            percent={percent}
+            unit={histogram?.xUnit}
+            shortXFormat={histogram?.shortXFormat}
+          />
         </GridCol>
       </GridRow>
     </Loader>

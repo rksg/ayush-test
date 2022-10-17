@@ -3,9 +3,11 @@ import styled      from 'styled-components/macro'
 
 
 export const StyledSlider = styled(Slider)`
+font-size: var(--acx-subtitle-5-font-size);
+position: absolute;
 .ant-slider-handle {
-  min-width: 14px !important; 
-  height: 14px !important;
+  min-width: 15px !important; 
+  height: 15px !important;
   &:before {
     content: none !important;
   }

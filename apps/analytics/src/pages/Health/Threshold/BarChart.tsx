@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import moment             from 'moment-timezone'
 import { renderToString } from 'react-dom/server'
 import { useIntl }        from 'react-intl'
+import { defineMessage }  from 'react-intl'
 import AutoSizer          from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
@@ -15,6 +15,10 @@ import * as UI from './styledComponents'
 
 import type { TooltipComponentFormatterCallbackParams } from 'echarts'
 
+const barChartText = {
+  title: defineMessage({ defaultMessage: 'last 7 days' })
+}
+
 const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
   return data.map((datum, index) => ([
     moment(time[index], 'YYYY/MM/DD').date(),
@@ -23,6 +27,7 @@ const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
       : null
   ])) as [number, number][]
 }
+
 const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
   const rss = Array.isArray(params)
     && Array.isArray(params[0].data) ? params[0].data[1] : ''
@@ -32,6 +37,7 @@ const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
     </div>
   </UI.TooltipWrapper>)
 }
+
 export const formatYDataPoint = (data: number | unknown) =>
   data !== null ? formatter('percentFormat')(data as number / 100) : '-'
 
@@ -65,8 +71,8 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
     source: queryResults?.data?.[0]?.data ?? [],
     seriesEncode: [
       {
-        x: 'Rss Distribution',
-        y: 'Samples'
+        x: 'date',
+        y: 'Percentage'
       }
     ]
   }
@@ -79,7 +85,7 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
             style={{ height: height , width }}
             data={data}
             grid={{ top: '5%', bottom: '15%' }}
-            title={'last 7 days'}
+            title={$t(barChartText.title)}
             barWidth={30}
             tooltipFormatter={tooltipFormatter}
             dataYFormatter={formatYDataPoint}
