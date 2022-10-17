@@ -72,15 +72,11 @@ export const xAxisOptions = () => ({
   }
 } as XAXisComponentOption)
 
-export const xAxisNameOptions = (title: string) => ({
-  name: title,
+export const xAxisNameOptions = (name: string) => ({
+  name,
   nameGap: 30,
-  ...axisNameTextStyleOptions()
-})
-
-export const axisNameTextStyleOptions = () => ({
   nameTextStyle: {
-    color: cssStr('--acx-neutrals-50'),
+    color: cssStr('--acx-neutrals-60'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
     fontSize: cssNumber('--acx-body-5-font-size'),
     lineHeight: cssNumber('--acx-body-5-line-height'),
