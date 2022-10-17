@@ -57,14 +57,14 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
   const { histogram, text, barChart } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove } = histogram
   const [thresholdValue, setThresholdValue] = useState(histogram?.initialThreshold)
-  const [sliderValue, setSliderValue] = useState(splits.indexOf(thresholdValue) + 1)
+  const [sliderValue, setSliderValue] = useState(splits.indexOf(thresholdValue) + 0.5)
   const marks = splits.map(( _ : number,index : number) => index)
 
   const onSliderChange = (newValue: number) => {
-    if(newValue === 0 || newValue === splits.length + 1)
+    if(newValue === 0 || newValue === splits.length + 0.5 || newValue % 1 === 0)
       return
     setSliderValue(newValue)
-    setThresholdValue(histogram?.splits[newValue - 1])
+    setThresholdValue(histogram?.splits[newValue - 0.5])
   }
   const queryResults = useKpiHistogramQuery(
     { ...filters, kpi, threshold: barChart?.initialThreshold }, {
@@ -114,7 +114,7 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
                   grid={{ bottom: '15%', top: '5%' }}
                   title={`(${histogram?.xUnit})`}
                   barWidth={30}
-                  xAxisOffset={5}
+                  xAxisOffset={8}
                   dataYFormatter={histogram?.shortYFormat}
                   dataXFormatter={histogram?.shortXFormat}
                   tooltipFormatter={tooltipFormatter}
@@ -127,11 +127,12 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
                   marks={marks}
                   value={sliderValue}
                   tooltipVisible={false}
+                  step={0.5}
                   style={{
                     width: width * 0.95,
                     position: 'absolute',
-                    top: height * 0.53,
-                    marginLeft: width * 0.08,
+                    top: height * 0.55,
+                    marginLeft: width * 0.075,
                     fontSize: 12
                   }}
                 />

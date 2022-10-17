@@ -4,24 +4,25 @@ import styled      from 'styled-components/macro'
 
 export const StyledSlider = styled(Slider)`
 .ant-slider-handle {
-  min-width: 12px !important; 
-  height: 12px !important;
+  min-width: 14px !important; 
+  height: 14px !important;
   &:before {
     content: none !important;
   }
-  border: 1px solid  var(--acx-neutrals-20) !important;
+  border: 2px solid  var(--acx-neutrals-20) !important;
+  padding: 0 !important;
 }
 .ant-slider-mark{
   display: none;
 }
 .ant-slider-rail,
 &:hover .ant-slider-rail {
-  height: 1.5px !important;
+  height: 1px !important;
   background-color: var(--acx-primary-black) !important;
 }
 .ant-slider-track,
 &:hover .ant-slider-track {
-  height: 1.5px !important;
+  height: 1px !important;
   background-color: var(--acx-primary-black) !important;
 }
 `
