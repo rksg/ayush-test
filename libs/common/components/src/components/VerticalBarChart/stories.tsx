@@ -9,7 +9,7 @@ import type { BarChartData } from '@acx-ui/analytics/utils'
 import { Card }           from '../Card'
 import { TooltipWrapper } from '../Chart/styledComponents'
 
-import { DistributionChart } from '.'
+import { VerticalBarChart } from '.'
 
 import type { TooltipComponentFormatterCallbackParams } from 'echarts'
 
@@ -80,11 +80,11 @@ const colors: string[] = [
 ]
 // if colors array length is less than data, the colors will loop
 
-storiesOf('DistributionChart', module)
+storiesOf('VerticalBarChart', module)
   .addDecorator(withKnobs)
   .add('Chart View', () =>
-    wrapInsideCard('Rss Distribution',
-      <DistributionChart
+    wrapInsideCard('RSS Distribution',
+      <VerticalBarChart
         style={{ width: '100%', height: '100%' }}
         data={data}
         grid={{ bottom: '10%', top: '5%' }}

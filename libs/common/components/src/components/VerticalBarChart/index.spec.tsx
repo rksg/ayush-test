@@ -2,21 +2,21 @@ import {  mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { data } from './stories'
 
-import { DistributionChart } from '.'
+import { VerticalBarChart } from '.'
 
-describe('DistributionChart',()=>{
+describe('VerticalBarChart',()=>{
   mockDOMWidth()
   it('should render correctly', () => {
-    const { asFragment } = render(<DistributionChart
+    const { asFragment } = render(<VerticalBarChart
       data={data}
-      xAxisName={'DistributionChartTest'}
+      xAxisName={'VerticalBarChartTest'}
     />)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
-    expect(screen.getAllByText('DistributionChartTest')).toHaveLength(1)
+    expect(screen.getAllByText('VerticalBarChartTest')).toHaveLength(1)
   })
   it('should render correctly without title', () => {
-    const { asFragment } = render(<DistributionChart
+    const { asFragment } = render(<VerticalBarChart
       data={data}
     />)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()

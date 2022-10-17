@@ -16,7 +16,7 @@ import {
 import type { EChartsOption, TooltipComponentFormatterCallbackParams } from 'echarts'
 import type { EChartsReactProps }                                      from 'echarts-for-react'
 
-export interface DistributionChartProps
+export interface VerticalBarChartProps
   <TChartData extends BarChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: TChartData,
@@ -27,7 +27,7 @@ export interface DistributionChartProps
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
 }
 
-export function DistributionChart<TChartData extends BarChartData>
+export function VerticalBarChart<TChartData extends BarChartData>
 ({
   data,
   grid: gridProps,
@@ -36,7 +36,7 @@ export function DistributionChart<TChartData extends BarChartData>
   xAxisName,
   tooltipFormatter,
   ...props
-}: DistributionChartProps<TChartData>) {
+}: VerticalBarChartProps<TChartData>) {
   const option: EChartsOption = {
     grid: { ...gridOptions(), ...gridProps },
     dataset: {
