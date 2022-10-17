@@ -41,16 +41,24 @@ const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
 export const formatYDataPoint = (data: number | unknown) =>
   data !== null ? formatter('percentFormat')(data as number / 100) : '-'
 
-function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
+function BarChart ({
+  filters,
+  kpi,
+  threshold
+}: {
+  filters: AnalyticsFilter;
+  kpi: string;
+  threshold: string;
+}) {
   const { $t } = useIntl()
-  const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { endDate } = filters
   const startDate = moment(endDate).subtract(6, 'd').format()
   const queryResults = useKpiTimeseriesQuery(
     {
       ...filters,
       kpi,
-      threshold: histogram?.initialThreshold,
+      threshold: threshold,
       granularity: 'PT24H',
       startDate
     },
@@ -82,7 +90,7 @@ function BarChart ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) 
       <AutoSizer>
         {({ width, height }) => (
           <DistributionChart
-            style={{ height: height , width }}
+            style={{ height: height, width }}
             data={data}
             grid={{ top: '5%', bottom: '15%' }}
             title={`(${$t(barChartText.title)})`}

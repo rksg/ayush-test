@@ -37,11 +37,11 @@ const transformTSResponse = (
 }
 
 const tranformHistResponse = (
-  { data, kpi }: KPIHistogramResponse & { kpi: string }
+  { data, kpi, threshold }: KPIHistogramResponse & { kpi: string, threshold : number }
 ) : PillData => {
   const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-  const { splits, highlightAbove, isReverse, initialThreshold } = histogram
-  const indexOfThreshold = splits.indexOf(initialThreshold)
+  const { splits, highlightAbove, isReverse } = histogram
+  const indexOfThreshold = splits.indexOf(threshold)
   const total = sum(data)
   const highlightedData = highlightAbove || isReverse
     ? data.slice(indexOfThreshold + 1)
@@ -53,8 +53,8 @@ const formatPillText = (value: number = 0, suffix: string) => suffix
   ? `${formatter('percentFormatRound')(value / 100)} ${suffix}`
   : `${formatter('percentFormatRound')(value / 100)}`
 
-function HealthPill ({ filters, kpi, timeWindow }: {
-  filters: AnalyticsFilter, kpi: string, timeWindow: [string, string]
+function HealthPill ({ filters, kpi, timeWindow, threshold }: {
+  filters: AnalyticsFilter, kpi: string, timeWindow: [string, string], threshold: number
 }) {
   const { histogram, pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { $t } = useIntl()
@@ -66,7 +66,7 @@ function HealthPill ({ filters, kpi, timeWindow }: {
       { ...filters, startDate, endDate, kpi }, {
         selectFromResult: ({ data, ...rest }) => ({
           ...rest,
-          data: data ? tranformHistResponse({ ...data!, kpi }) : { success: 0, total: 0 }
+          data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
         })
       })
   } else {
@@ -87,13 +87,12 @@ function HealthPill ({ filters, kpi, timeWindow }: {
     : ''
   const translatedThresholdDesc = []
   if (thresholdDesc.length) {
-    const { initialThreshold } = histogram
     translatedThresholdDesc.push($t(thresholdDesc[0]))
     translatedThresholdDesc.push(
       $t(
         thresholdDesc[1],
         {
-          threshold: thresholdFormatter ? thresholdFormatter(initialThreshold) : initialThreshold
+          threshold: thresholdFormatter ? thresholdFormatter(threshold) : threshold
         }
       )
     )

@@ -9,6 +9,7 @@ import { AnalyticsFilter, kpiConfig }                          from '@acx-ui/ana
 import { GridCol, GridRow, Loader, cssStr, DistributionChart } from '@acx-ui/components'
 import type { TimeStamp }                                      from '@acx-ui/types'
 
+import { KpiThresholdType }                            from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
 import  HistogramSlider    from './HistogramSlider'
@@ -30,7 +31,7 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
   </UI.TooltipWrapper>)
 }
 const getGoalPercent = (
-  { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue : number }
+  { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue : string }
 ) : number => {
   const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
@@ -56,30 +57,53 @@ const transformHistogramResponse = ({
   ][]
 }
 
-function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
+function Histogram ({
+  filters,
+  kpi,
+  threshold,
+  setKpiThreshold,
+  thresholds
+}: {
+  filters: AnalyticsFilter;
+  kpi: string;
+  threshold: string;
+  setKpiThreshold: CallableFunction;
+  thresholds: KpiThresholdType
+}) {
   const { $t } = useIntl()
-  const { histogram, text, barChart } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove } = histogram
-  const [thresholdValue, setThresholdValue] = useState(histogram?.initialThreshold)
-  const [sliderValue, setSliderValue] = useState(splits.indexOf(thresholdValue) + 0.5)
+  const [thresholdValue, setThresholdValue] = useState(threshold)
+  const [sliderValue, setSliderValue] = useState(
+    splits.indexOf(thresholdValue) + 0.5
+  )
 
   const onSliderChange = (newValue: number) => {
-    if(newValue === 0 || newValue === splits.length + 0.5 || newValue % 1 === 0)
+    if (
+      newValue === 0 ||
+      newValue === splits.length + 0.5 ||
+      newValue % 1 === 0
+    )
       return
     setSliderValue(newValue)
     setThresholdValue(histogram?.splits[newValue - 0.5])
+    setKpiThreshold({ ...thresholds, [kpi]: histogram?.splits[newValue - 0.5] })
   }
   const queryResults = useKpiHistogramQuery(
-    { ...filters, kpi, threshold: barChart?.initialThreshold }, {
+    { ...filters, kpi, threshold: threshold },
+    {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
-        data: data! && [{
-          name: $t(text),
-          data: transformHistogramResponse({ ...data, ...histogram }),
-          rawData: data
-        }]
+        data: data! && [
+          {
+            name: $t(text),
+            data: transformHistogramResponse({ ...data, ...histogram }),
+            rawData: data
+          }
+        ]
       })
-    })
+    }
+  )
   const data = {
     dimensions: [histogram.xUnit, histogram.yUnit],
     source: queryResults?.data?.[0]?.data ?? [],
@@ -99,10 +123,15 @@ function Histogram ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string })
   const barColors = Array.from({ length: splits.length + 1 }, (_, index) =>
     index < splits.indexOf(thresholdValue) + 1
       ? hightlightAboveColor
-      : hightlightBelowColor)
+      : hightlightBelowColor
+  )
 
   const percent: number = queryResults?.data?.[0]?.rawData
-    ? getGoalPercent({ ...queryResults?.data?.[0]?.rawData, kpi, thresholdValue })
+    ? getGoalPercent({
+      ...queryResults?.data?.[0]?.rawData,
+      kpi,
+      thresholdValue
+    })
     : 0
 
   return (

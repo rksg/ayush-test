@@ -21,7 +21,7 @@ export function ThresholdConfig ({
   unit,
   shortXFormat
 }: {
-  thresholdValue: number;
+  thresholdValue: string;
   percent: number;
   unit: string;
   shortXFormat: CallableFunction

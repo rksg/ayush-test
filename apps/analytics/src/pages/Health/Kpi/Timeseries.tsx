@@ -21,24 +21,36 @@ const transformResponse = ({ data, time }: KPITimeseriesResponse) => {
 export const formatYDataPoint = (data: number | unknown) =>
   data !== null ? formatter('percentFormat')(data) : '-'
 
-function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
+function KpiTimeseries ({
+  filters,
+  kpi,
+  threshold
+}: {
+  filters: AnalyticsFilter;
+  kpi: string;
+  threshold: string;
+}) {
   const { $t } = useIntl()
-  const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const queryResults = useKpiTimeseriesQuery(
-    { ...filters, kpi, threshold: histogram?.initialThreshold }, {
+    { ...filters, kpi, threshold: threshold },
+    {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
-        data: data! && [{
-          name: $t(text),
-          data: transformResponse(data)
-        }]
+        data: data! && [
+          {
+            name: $t(text),
+            data: transformResponse(data)
+          }
+        ]
       })
-    })
+    }
+  )
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
-        {({ height, width }) => (
-          queryResults.data[0]?.data.length ?
+        {({ height, width }) =>
+          queryResults.data[0]?.data.length ? (
             <MultiLineTimeSeriesChart
               grid={{ bottom: '15%', top: '5%' }}
               style={{ height, width }}
@@ -48,8 +60,10 @@ function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: strin
               yAxisProps={{ min: 0, max: 1 }}
               disableLegend
             />
-            : <NoData/>
-        )}
+          ) : (
+            <NoData />
+          )
+        }
       </AutoSizer>
     </Loader>
   )

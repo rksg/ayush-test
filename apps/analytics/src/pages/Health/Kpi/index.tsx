@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import {
   kpisForTab,
@@ -15,13 +15,30 @@ import Histogram             from '../Threshold/Histogram'
 
 import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
-
+export type KpiThresholdType = {
+  timeToConnect: number;
+  rss: number;
+  clientThroughput: number;
+  apCapacity: number;
+  apServiceUptime: number;
+  apSzLatency: number;
+  switchPoeUtilization: number;
+}
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
   const healthFilter = useContext(HealthPageContext)
   const { timeWindow } = healthFilter
   const { filters } = useAnalyticsFilter()
 
+  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>({
+    timeToConnect: 2000,
+    rss: -75,
+    clientThroughput: 10000,
+    apCapacity: 50,
+    apServiceUptime: 0.995,
+    apSzLatency: 200,
+    switchPoeUtilization: 0.8
+  })
   return (
     <>
       {kpis.map((kpi) => (
@@ -33,18 +50,30 @@ export default function KpiSection (props: { tab: HealthTab }) {
                   filters={filters}
                   kpi={kpi}
                   timeWindow={timeWindow as [string, string]}
+                  threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 />
               </GridCol>
               <GridCol col={{ span: 19 }}>
-                <KpiTimeseries filters={filters} kpi={kpi} />
+                <KpiTimeseries filters={filters}
+                  kpi={kpi}
+                  threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+                />
               </GridCol>
             </GridRow>
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
             {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
-              <Histogram filters={filters} kpi={kpi} />
+              <Histogram filters={filters}
+                kpi={kpi}
+                threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+                setKpiThreshold={setKpiThreshold}
+                thresholds={kpiThreshold}
+              />
             ) : (
-              <BarChart filters={filters} kpi={kpi} />
+              <BarChart filters={filters}
+                kpi={kpi}
+                threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+              />
             )}
           </GridCol>
         </KpiRow>
