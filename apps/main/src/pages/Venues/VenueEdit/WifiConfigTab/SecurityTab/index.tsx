@@ -1,9 +1,9 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { ReactNode, useContext, useEffect, useRef } from 'react'
 
-import { Col, Divider, Form, InputNumber, Row, Select, Switch, Tooltip } from 'antd'
-import { FormattedMessage, useIntl }                                     from 'react-intl'
+import { Col, Form, FormItemProps, InputNumber, Row, Select, Tooltip } from 'antd'
+import { FormattedMessage, useIntl }                                   from 'react-intl'
 
-import { showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Fieldset, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
   useGetRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
@@ -42,9 +42,6 @@ export function SecurityTab () {
     setEditContextData,
     setEditSecurityContextData
   } = useContext(VenueEditContext)
-
-  const [dosProtection, setDosProtection] = useState<boolean>(false)
-  const [rogueAp, setRogueAp] = useState<boolean>(false)
 
   const [updateDenialOfServiceProtection] = useUpdateDenialOfServiceProtectionMutation()
   const [updateVenueRogueAp] = useUpdateVenueRogueApMutation()
@@ -85,9 +82,6 @@ export function SecurityTab () {
         reportThreshold,
         roguePolicyId
       })
-
-      setDosProtection(dosProtectionEnabled)
-      setRogueAp(!!rogueApEnabled)
     }
   }, [dosProctectionData, venueRogueApData])
 
@@ -140,105 +134,68 @@ export function SecurityTab () {
       onFormChange={handleChange}
     >
       <StepsForm.StepForm>
-        <Divider orientation='left' plain>
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'auto 100px', gridGap: '5px',
-            height: '30px'
-          }}>
-            <div style={{
-              display: 'flex', alignItems: 'center',
-              height: '30px'
-            }}> {$t({ defaultMessage: 'Dos Protection' })} </div>
-            <Form.Item
-              name='dosProtectionEnabled'
-              valuePropName='checked'
-              initialValue={false}
-              style={{
-                display: 'flex', alignItems: 'center',
-                height: '30px'
-              }}
-            >
-              <Switch onChange={() => setDosProtection(!dosProtection)}/>
-            </Form.Item>
-          </div>
-        </Divider>
-        { dosProtection && <FormattedMessage
-          defaultMessage={`
-            Block a client for <blockingPeriod></blockingPeriod> seconds
-            after <failThreshold></failThreshold> repeat authentication failures
-            within <checkPeriod></checkPeriod> seconds
-          `}
-          values={{
-            blockingPeriod: () => (
-              <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
-                <Form.Item
-                  style={{
-                    display: 'inline-block',
-                    verticalAlign: 'baseline'
-                  }}
-                  name='blockingPeriod'
-                  rules={[
-                    { required: true }
-                  ]}
-                  initialValue={60}
-                  children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
-                />
-              </Tooltip>),
-            failThreshold: () => (
-              <Tooltip title={$t({ defaultMessage: 'Allowed values are 2-25' })}>
-                <Form.Item
-                  style={{
-                    display: 'inline-block',
-                    verticalAlign: 'baseline'
-                  }}
-                  rules={[
-                    { required: true }
-                  ]}
-                  name='failThreshold'
-                  initialValue={5}
-                  children={<InputNumber min={2} max={25} style={{ width: '70px' }} />}
-                />
-              </Tooltip>
-            ),
-            checkPeriod: () => (
-              <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
-                <Form.Item
-                  style={{
-                    display: 'inline-block',
-                    verticalAlign: 'baseline'
-                  }}
-                  name='checkPeriod'
-                  initialValue={30}
-                  children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
-                />
-              </Tooltip>
-            )
-          }}
-        />}
-        <Divider orientation='left' plain>
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'auto 100px', gridGap: '5px',
-            height: '30px'
-          }}>
-            <div style={{
-              display: 'flex', alignItems: 'center',
-              height: '30px'
-            }}> {$t({ defaultMessage: 'Rogue AP Detection:' })} </div>
-            <Form.Item
-              name='rogueApEnabled'
-              valuePropName='checked'
-              initialValue={false}
-              style={{
-                display: 'flex', alignItems: 'center',
-                height: '30px'
-              }}
-            >
-              <Switch onChange={() => setRogueAp(!rogueAp)}/>
-            </Form.Item>
-          </div>
-        </Divider>
-        { rogueAp &&
-        <>
+        <FieldsetItem
+          name='dosProtectionEnabled'
+          label={$t({ defaultMessage: 'DoS Protection:' })}
+          initialValue={false}>
+          <FormattedMessage
+            defaultMessage={`
+              Block a client for <blockingPeriod></blockingPeriod> seconds
+              after <failThreshold></failThreshold> repeat authentication failures
+              within <checkPeriod></checkPeriod> seconds
+            `}
+            values={{
+              blockingPeriod: () => (
+                <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
+                  <Form.Item
+                    style={{
+                      display: 'inline-block',
+                      verticalAlign: 'baseline'
+                    }}
+                    name='blockingPeriod'
+                    rules={[
+                      { required: true }
+                    ]}
+                    initialValue={60}
+                    children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+                  />
+                </Tooltip>),
+              failThreshold: () => (
+                <Tooltip title={$t({ defaultMessage: 'Allowed values are 2-25' })}>
+                  <Form.Item
+                    style={{
+                      display: 'inline-block',
+                      verticalAlign: 'baseline'
+                    }}
+                    rules={[
+                      { required: true }
+                    ]}
+                    name='failThreshold'
+                    initialValue={5}
+                    children={<InputNumber min={2} max={25} style={{ width: '70px' }} />}
+                  />
+                </Tooltip>
+              ),
+              checkPeriod: () => (
+                <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
+                  <Form.Item
+                    style={{
+                      display: 'inline-block',
+                      verticalAlign: 'baseline'
+                    }}
+                    name='checkPeriod'
+                    initialValue={30}
+                    children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+                  />
+                </Tooltip>
+              )
+            }}
+          />
+        </FieldsetItem>
+        <FieldsetItem
+          name='rogueApEnabled'
+          label={$t({ defaultMessage: 'Rogue AP Detection:' })}
+          initialValue={false}>
           <Row>
             <Col span={2}>
               <Form.Item
@@ -260,12 +217,21 @@ export function SecurityTab () {
             style={{ width: '200px' }}
             initialValue={selected}
           >
-            <Select
-              children={selectOptions} />
+            <Select children={selectOptions} />
           </Form.Item>
-        </>
-        }
+        </FieldsetItem>
       </StepsForm.StepForm>
     </StepsForm>
   )
 }
+
+const FieldsetItem = ({
+  children,
+  label,
+  ...props
+}: FormItemProps & { label: string, children: ReactNode }) => <Form.Item
+  {...props}
+  valuePropName='checked'
+>
+  <Fieldset {...{ label, children }} />
+</Form.Item>

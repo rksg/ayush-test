@@ -79,40 +79,31 @@ exports[`SecurityTab should render correctly 1`] = `
                   type="text"
                 />
                 <div
-                  class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-left ant-divider-plain"
-                  role="separator"
+                  class="ant-form-item"
                 >
-                  <span
-                    class="ant-divider-inner-text"
+                  <div
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      style="display: grid; grid-template-columns: auto 100px; height: 30px;"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
-                        style="display: flex; align-items: center; height: 30px;"
-                      >
-                         Dos Protection 
-                      </div>
-                      <div
-                        class="ant-form-item"
-                        style="display: flex; align-items: center; height: 30px;"
+                        class="ant-form-item-control-input"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-form-item-control-input-content"
                         >
-                          <div
-                            class="ant-col ant-form-item-control"
+                          <fieldset
+                            class="styledComponents__Fieldset-sc-azs30w-0"
                           >
-                            <div
-                              class="ant-form-item-control-input"
+                            <legend
+                              class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
+                              <label>
+                                DoS Protection:
                                 <button
                                   aria-checked="false"
                                   class="ant-switch"
-                                  id="0_dosProtectionEnabled"
                                   role="switch"
                                   type="button"
                                 >
@@ -123,49 +114,40 @@ exports[`SecurityTab should render correctly 1`] = `
                                     class="ant-switch-inner"
                                   />
                                 </button>
-                              </div>
-                            </div>
-                          </div>
+                              </label>
+                            </legend>
+                          </fieldset>
                         </div>
                       </div>
                     </div>
-                  </span>
+                  </div>
                 </div>
                 <div
-                  class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-left ant-divider-plain"
-                  role="separator"
+                  class="ant-form-item"
                 >
-                  <span
-                    class="ant-divider-inner-text"
+                  <div
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      style="display: grid; grid-template-columns: auto 100px; height: 30px;"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
-                        style="display: flex; align-items: center; height: 30px;"
-                      >
-                         Rogue AP Detection: 
-                      </div>
-                      <div
-                        class="ant-form-item"
-                        style="display: flex; align-items: center; height: 30px;"
+                        class="ant-form-item-control-input"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-form-item-control-input-content"
                         >
-                          <div
-                            class="ant-col ant-form-item-control"
+                          <fieldset
+                            class="styledComponents__Fieldset-sc-azs30w-0"
                           >
-                            <div
-                              class="ant-form-item-control-input"
+                            <legend
+                              class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
+                              <label>
+                                Rogue AP Detection:
                                 <button
                                   aria-checked="false"
                                   class="ant-switch"
-                                  id="0_rogueApEnabled"
                                   role="switch"
                                   type="button"
                                 >
@@ -176,13 +158,13 @@ exports[`SecurityTab should render correctly 1`] = `
                                     class="ant-switch-inner"
                                   />
                                 </button>
-                              </div>
-                            </div>
-                          </div>
+                              </label>
+                            </legend>
+                          </fieldset>
                         </div>
                       </div>
                     </div>
-                  </span>
+                  </div>
                 </div>
               </form>
             </div>
