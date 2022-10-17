@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useContext } from 'react'
 import {
   Select,
   Form,
-  Input
+  InputNumber
 } from 'antd'
 import _             from 'lodash'
 import { useIntl }   from 'react-intl'
@@ -74,7 +74,6 @@ export function CellularOptionsForm () {
   const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
   const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
   const [currentRegion, setCurrentRegion] = useState('');
-  const [currentCountryName, setCurrentCountryName] = useState('');
   const [availableLteBandsArray, setAvailableLteBandsArray] =
     useState(defaultAvailableLteBandsArray)
   const [editData, setEditData] = useState(defaultEditData)
@@ -106,20 +105,14 @@ export function CellularOptionsForm () {
     })
   }
 
-  const getCurrentCountryName = function (countryCode: string) {
-    return _.pickBy(CountryIsoDisctionary, (val) => {
-      return val.toUpperCase() === countryCode
-    })
-  }
-
   useEffect(() => {
-    let availableLteBandsContext = _.cloneDeep(availableLteBands?.data)
-    let venueApModelCellularContext = _.cloneDeep(venueApModelCellular.data)
+    let availableLteBandsData = _.cloneDeep(availableLteBands.data)
+    let venueApModelCellularData = _.cloneDeep(venueApModelCellular.data)
     const countryCode = _.get(venueData, 'data.countryCode')
     
-    if (availableLteBandsContext && countryCode) {
+    if (availableLteBandsData && countryCode) {
 
-      availableLteBandsContext.forEach(lteBands => {
+      availableLteBandsData.forEach(lteBands => {
         regionCountriesMap[lteBands.region] =
           Object.assign(regionCountriesMap[lteBands.region], {
             countryCodes: lteBands.countryCodes
@@ -133,55 +126,49 @@ export function CellularOptionsForm () {
           setCurrentRegion(objectKey) }
       })
 
-      //setCurrentCountryName
-      const currentCountry = getCurrentCountryName(countryCode)
-
-      if (currentCountry) {
-        setCurrentCountryName( _.keys(currentCountry)[0])
-      }
 
       // this.getCellularSupportedModels$(); 
-      if (venueApModelCellularContext) {
-        venueApModelCellularContext.primarySim.lteBands =
-          venueApModelCellularContext.primarySim?.lteBands || []
-        venueApModelCellularContext.secondarySim.lteBands =
-          venueApModelCellularContext.secondarySim?.lteBands || []
+      if (venueApModelCellularData) {
+        venueApModelCellularData.primarySim.lteBands =
+          venueApModelCellularData.primarySim?.lteBands || []
+        venueApModelCellularData.secondarySim.lteBands =
+          venueApModelCellularData.secondarySim?.lteBands || []
 
         //createDefaultRegion
         for (const region in LteBandRegionEnum) {
-          if (!venueApModelCellularContext.primarySim.lteBands.some(
+          if (!venueApModelCellularData.primarySim.lteBands.some(
             item => item.region === region)) {
-            venueApModelCellularContext.primarySim.lteBands.push({
+            venueApModelCellularData.primarySim.lteBands.push({
               region: _.get(region, region)
             })
           }
 
-          if (!venueApModelCellularContext.secondarySim.lteBands.some(
+          if (!venueApModelCellularData.secondarySim.lteBands.some(
             item => item.region === region)) {
-            venueApModelCellularContext.secondarySim.lteBands.push({
+            venueApModelCellularData.secondarySim.lteBands.push({
               region: _.get(region, region)
             })
           }
         }
 
         //sortByLteBandRegionEnum
-        sortByLteBandRegionEnum(venueApModelCellularContext.primarySim.lteBands)
-        sortByLteBandRegionEnum(venueApModelCellularContext.secondarySim.lteBands)
-        sortByLteBandRegionEnum(availableLteBandsContext)
+        sortByLteBandRegionEnum(venueApModelCellularData.primarySim.lteBands)
+        sortByLteBandRegionEnum(venueApModelCellularData.secondarySim.lteBands)
+        sortByLteBandRegionEnum(availableLteBandsData)
 
         //shiftCurrentRegionToFirst
-        shiftCurrentRegionToFirst(venueApModelCellularContext.primarySim.lteBands)
-        shiftCurrentRegionToFirst(venueApModelCellularContext.secondarySim.lteBands)
-        shiftCurrentRegionToFirst(availableLteBandsContext)
+        shiftCurrentRegionToFirst(venueApModelCellularData.primarySim.lteBands)
+        shiftCurrentRegionToFirst(venueApModelCellularData.secondarySim.lteBands)
+        shiftCurrentRegionToFirst(availableLteBandsData)
 
-        setEditData(venueApModelCellularContext)
+        setEditData(venueApModelCellularData)
 
-        formRef?.current?.setFieldsValue({ editData: venueApModelCellularContext })
+        formRef?.current?.setFieldsValue({ editData: venueApModelCellularData })
       }
-      setAvailableLteBandsArray(availableLteBandsContext)
+      setAvailableLteBandsArray(availableLteBandsData)
     }
 
-  }, [availableLteBands.data, venueApModelCellular.data, form])
+  }, [availableLteBands, venueApModelCellular, venueData, form])
   const onChange = (current: any) =>{
     // setCurrent(current)
     const filedsValue = formRef?.current?.getFieldsValue()
@@ -241,25 +228,22 @@ const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
         <StepsForm.StepForm
           formRef={formRef}
           onChange={onChange}>
-            <div
-              data-testid='primarySettings'>
           <CellularRadioSimSettings
             editData={editData}
             simCardNumber={1}
+            countryCode={_.get(venueData, 'data.countryCode')}
             legend={$t({ defaultMessage: 'Primary SIM' })}
             regionCountriesMap={regionCountriesMap}
             currentRegion={currentRegion}
-            currentCountryName={currentCountryName}
             availableLteBands={availableLteBandsArray}
             formControlName={'primarySim'} />
-            </div>
           <CellularRadioSimSettings
             editData={editData}
             simCardNumber={2}
             legend={$t({ defaultMessage: 'Secondary SIM' })}
             regionCountriesMap={regionCountriesMap}
+            countryCode={_.get(venueData, 'data.countryCode')}
             currentRegion={currentRegion}
-            currentCountryName={currentCountryName}
             availableLteBands={availableLteBandsArray}
             formControlName={'secondarySim'} />
           <Form.Item
@@ -302,7 +286,7 @@ const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
                   'Primary WAN Recovery Timer must be between 10 and 300'
               })
             }]}
-            children={<Input style={{ width: '150px' }}></Input>}
+            children={<InputNumber style={{ width: '150px' }}/>}
           />
         </StepsForm.StepForm>
       </StepsForm>

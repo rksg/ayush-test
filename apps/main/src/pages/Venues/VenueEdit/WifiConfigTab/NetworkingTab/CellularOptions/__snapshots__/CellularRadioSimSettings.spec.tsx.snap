@@ -263,7 +263,7 @@ exports[`CellularRadioSimSettings should render CellularRadioSimSettings success
                   <span
                     class="styledComponents__CurrentCountryLabel-sc-nyixel-2 cLUVoM"
                   >
-                    Bands for current country ()
+                    Bands for current country (undefined)
                   </span>
                   <div
                     class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"

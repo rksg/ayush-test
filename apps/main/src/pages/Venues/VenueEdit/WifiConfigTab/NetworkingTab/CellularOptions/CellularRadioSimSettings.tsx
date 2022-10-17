@@ -25,9 +25,9 @@ export function CellularRadioSimSettings (props: {
   availableLteBands: AvailableLteBands[],
   simCardNumber: number,
   legend: string,
+  countryCode: string,
   regionCountriesMap: LteBandLockCountriesJson,
   currentRegion: string,
-  currentCountryName: string,
   formControlName: 'primarySim' | 'secondarySim',
   editData: VenueApModelCellular
 }) {
@@ -114,9 +114,9 @@ export function CellularRadioSimSettings (props: {
                 formControlName={props.formControlName}
                 simCardNumber={props.simCardNumber}
                 availableLteBands={item}
+                countryCode={props.countryCode}
                 isShowDesc={item.region == 'DOMAIN_1' || item.region == 'DOMAIN_2'}
                 isShowOtherLteBands={isShowOtherLteBands}
-                countryName={props.currentCountryName}
                 regionName={props.regionCountriesMap[item.region].name}
                 regionCountries={props.regionCountriesMap[item.region].countries}
                 regionCountriesMap={props.regionCountriesMap}

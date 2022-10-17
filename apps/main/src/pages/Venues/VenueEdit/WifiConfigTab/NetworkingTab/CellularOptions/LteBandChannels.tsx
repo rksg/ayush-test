@@ -8,7 +8,7 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { AvailableLteBandOptions, AvailableLteBands, LteBandLockCountriesJson, VenueApModelCellular } from '@acx-ui/rc/utils'
+import { AvailableLteBandOptions, AvailableLteBands, CountryIsoDisctionary, LteBandLockCountriesJson, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -22,8 +22,8 @@ export function LteBandChannels (
     isCurrent: boolean,
     simCardNumber: number,
     isShowDesc: boolean,
-    countryName: string,
     regionName: string,
+    countryCode: string,
     regionCountries: string,
     regionCountriesMap: LteBandLockCountriesJson,
     region: string,
@@ -63,6 +63,17 @@ export function LteBandChannels (
     }
   }, [object])
 
+  // set current country name
+  let currentCountryName = ''
+  const getCurrentCountryName = function (countryCode: string) {
+    return _.pickBy(CountryIsoDisctionary, (val) => {
+      return val.toUpperCase() === countryCode
+    })
+  }
+  const currentCountry = getCurrentCountryName(props.countryCode)
+  if (currentCountry) {
+    currentCountryName = _.keys(currentCountry)[0]
+  }
 
   const { $t } = useIntl()
   let availableLteBand3G: AvailableLteBandOptions[] = []
@@ -88,7 +99,7 @@ export function LteBandChannels (
     <>
       {props.isCurrent &&
         <UI.CurrentCountryLabel>{$t({ defaultMessage: 'Bands for current country' })}
-          {' (' + props.countryName + ')'}
+          {' (' + currentCountryName + ')'}
         </UI.CurrentCountryLabel>
       }
       {(!props.isCurrent && props.isShowOtherLteBands) &&
