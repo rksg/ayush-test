@@ -28,15 +28,15 @@ describe('Analytics dumb header', () => {
     title: 'title',
     replaceTitle: true,
     shouldQuerySwitch: true,
-    data: {
-      name: 'name',
-      subTitle: [
-        { key: 'apCount', value: [1] },
-        { key: 'version', value: ['1', '2'] }
-      ]
-    },
     queryState: {
-      isLoading: false
+      isLoading: false,
+      data: {
+        name: 'name',
+        subTitle: [
+          { key: 'apCount', value: [1] },
+          { key: 'version', value: ['1', '2'] }
+        ]
+      }
     }
   }
   it('should render correctly', async () => {

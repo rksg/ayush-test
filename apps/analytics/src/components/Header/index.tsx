@@ -2,7 +2,6 @@ import { ReactElement, ReactNode } from 'react'
 
 import { SerializedError }        from '@reduxjs/toolkit'
 import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
-import _                          from 'lodash'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -32,6 +31,7 @@ interface QueryState {
   isLoading: boolean;
   error?: Error | SerializedError | FetchBaseQueryError;
   isFetching?: boolean;
+  data: HeaderData,
 }
 
 export type SubTitle = {
@@ -46,7 +46,6 @@ export type HeaderData = {
 }
 
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
-  data: HeaderData,
   shouldQuerySwitch: boolean,
   withIncidents?: boolean,
   queryState: QueryState
@@ -88,12 +87,13 @@ export const useTitle = (
 }
 
 export const Header =
-({ data, shouldQuerySwitch, withIncidents, queryState, ...props }: HeaderProps) => {
+({ shouldQuerySwitch, withIncidents, queryState, ...props }: HeaderProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { filters, getNetworkFilter } = useAnalyticsFilter()
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
   const { networkFilter: { path } } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
+  const { data } = queryState
   return (
     <PageHeader
       {...props}
@@ -126,13 +126,13 @@ const ConnectedHeader = (
 ) => {
   const { filters } = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
-  const queryState = _.omit(queryResults, 'data')
+  const { isLoading, isFetching, isError } = queryResults
+  const queryState = { isError, isFetching, isLoading, data: queryResults.data as HeaderData }
   return (
     <ConnectedHeaderWrapper>
       <Loader states={[queryResults]}>
         <Header
           {...props}
-          data={queryResults.data as HeaderData}
           queryState={queryState}
         />
       </Loader>
