@@ -29,10 +29,9 @@ const EdgeSettingForm = () => {
   const params = useParams()
   const { venueOptions } = useVenuesListQuery({ params:
     { tenantId: params.tenantId }, payload: defaultPayload }, {
-    selectFromResult ({ data }) {
+    selectFromResult: ({ data }) => {
       return {
-        venueOptions: data?.data.map(item =>
-          <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>)
+        venueOptions: data?.data.map(item => ({ label: item.name, value: item.id }))
       }
     }
   })
@@ -53,7 +52,7 @@ const EdgeSettingForm = () => {
           required: true
         }]}
       >
-        <Select children={venueOptions} />
+        <Select options={venueOptions} />
       </Form.Item>
       <Form.Item
         name='edgeGroupId'
