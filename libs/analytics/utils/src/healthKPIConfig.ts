@@ -37,7 +37,7 @@ export const kpiConfig = {
     }
   },
   timeToConnect: {
-    text: defineMessage({ defaultMessage: 'Time to Connect' }),
+    text: defineMessage({ defaultMessage: 'Time To Connect' }),
     timeseries: {
       apiMetric: 'ttcCountAndConnectionCount',
       minGranularity: 'PT3M'

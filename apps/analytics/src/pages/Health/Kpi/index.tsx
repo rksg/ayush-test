@@ -1,4 +1,8 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+
+import { connect }  from 'echarts'
+import ReactECharts from 'echarts-for-react'
+import moment       from 'moment-timezone'
 
 import {
   kpisForTab,
@@ -27,7 +31,7 @@ export type KpiThresholdType = {
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
   const healthFilter = useContext(HealthPageContext)
-  const { timeWindow } = healthFilter
+  const { timeWindow, setTimeWindow } = healthFilter
   const { filters } = useAnalyticsFilter()
 
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>({
@@ -39,10 +43,23 @@ export default function KpiSection (props: { tab: HealthTab }) {
     apSzLatency: 200,
     switchPoeUtilization: 0.8
   })
+
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = 'timeSeriesGroup'
+    }
+  }
+  const defaultZoom = (
+    moment(filters.startDate).isSame(timeWindow[0]) &&
+    moment(filters.endDate).isSame(timeWindow[1])
+  )
+
+  useEffect(() => { connect('timeSeriesGroup') }, [])
   return (
     <>
       {kpis.map((kpi) => (
-        <KpiRow key={kpi}>
+        <KpiRow key={kpi + defaultZoom}>
           <GridCol col={{ span: 16 }}>
             <GridRow style={{ height: '160px' }}>
               <GridCol col={{ span: 5 }}>
@@ -57,6 +74,9 @@ export default function KpiSection (props: { tab: HealthTab }) {
                 <KpiTimeseries filters={filters}
                   kpi={kpi}
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+                  chartRef={connectChart}
+                  setTimeWindow={setTimeWindow}
+                  {...(defaultZoom ? {} : { timeWindow })}
                 />
               </GridCol>
             </GridRow>
