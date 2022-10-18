@@ -46,7 +46,7 @@ const getThresholdParam = (value:number | null)=>{
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    kpiTimeseries: build.query<
+    getKpiTimeseries: build.query<
       TimeseriesData,
       PayloadData
     >({
@@ -80,4 +80,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useKpiTimeseriesQuery } = api
+export const { useGetKpiTimeseriesQuery } = api

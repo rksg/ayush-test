@@ -5,8 +5,10 @@ import { AnalyticsFilter, kpiConfig }               from '@acx-ui/analytics/util
 import { GridRow, GridCol, SparklineChart, Loader } from '@acx-ui/components'
 import { intlFormats, formatter }                   from '@acx-ui/utils'
 
-import { useKpiTimeseriesQuery, TimeseriesData } from './services'
-import * as UI                                   from './styledComponents'
+import { useKpiTimeseriesQuery } from '../../pages/Health/Kpi/services'
+
+import { TimeseriesData } from './services'
+import * as UI            from './styledComponents'
 
 export interface KpiList<T> {
   connectionSuccess: T
@@ -72,9 +74,13 @@ export function KpiWidget ({
 }){
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const queryResults= useKpiTimeseriesQuery({
-    name,
-    threshold,
-    filters
+    ...filters,
+    kpi: name,
+    threshold: (threshold ?? '') as string
+  },{
+    selectFromResult: ({ data: kpiData, ...rest })=>{
+      return { data: kpiData?.data, ...rest }
+    }
   })
   const intl = useIntl()
   const { data } = queryResults
@@ -86,7 +92,7 @@ export function KpiWidget ({
 
   const kpiInfoText=getKpiInfoText(numerator, denominator, threshold, intl)
 
-  const sparklineData:number[] = data ? getSparklineData(data) : []
+  const sparklineData:number[] = data ? getSparklineData(data as TimeseriesData) : []
 
   const percent = numerator && denominator ? numerator / denominator : 0
 

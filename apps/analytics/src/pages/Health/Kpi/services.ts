@@ -25,6 +25,10 @@ interface HistogramResponse <HistogramData> {
 export type KpiPayload = AnalyticsFilter & { kpi: string, threshold?: string }
 
 const getKPIMetric = (kpi: string, threshold?: string) : string => {
+  // eslint-disable-next-line no-console
+  console.log('KPI:', kpi)
+  // eslint-disable-next-line no-console
+  console.log('threshold:', threshold)
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { timeseries: { apiMetric } } = config
   return threshold
@@ -60,7 +64,12 @@ export const timeseriesApi = dataApi.injectEndpoints({
         }
       `,
         variables: {
-          path: payload.path,
+          path: [
+            {
+              type: 'network',
+              name: 'Network'
+            }
+          ],// payload.path,
           start: payload.startDate,
           end: payload.endDate,
           granularity: getGranularity(payload.startDate, payload.endDate, payload.kpi)
@@ -115,7 +124,7 @@ interface ThresholdsApiResponse {
 
 export const getThresholdsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    fetchKpiThresholds: build.query<
+    getKpiThresholds: build.query<
       ThresholdsApiResponse,
       AnalyticsFilter
     >({
@@ -140,4 +149,4 @@ export const getThresholdsApi = dataApi.injectEndpoints({
 
 export const { useKpiTimeseriesQuery } = timeseriesApi
 export const { useKpiHistogramQuery } = histogramApi
-export const { useFetchKpiThresholdsQuery } = getThresholdsApi
+export const { useGetKpiThresholdsQuery } = getThresholdsApi

@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter }                from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, kpiConfig }     from '@acx-ui/analytics/utils'
 import { Card, GridRow, GridCol, Loader } from '@acx-ui/components'
 
-import { useFetchKpiThresholdsQuery } from '../../pages/Health/Kpi/services'
-import { KpiWidget }                  from '../KpiWidget'
+import { useGetKpiThresholdsQuery } from '../../pages/Health/Kpi/services'
+import { KpiWidget }                from '../KpiWidget'
 
 import * as UI from './styledComponents'
 
@@ -14,7 +14,7 @@ export default function VenueHealthWidget ({
   filters: AnalyticsFilter;
 }){
   const { $t } = useIntl()
-  const queryResults= useFetchKpiThresholdsQuery(filters)
+  const queryResults= useGetKpiThresholdsQuery(filters)
   const { data } = queryResults
 
   return(
@@ -37,14 +37,16 @@ export default function VenueHealthWidget ({
             <UI.Wrapper>
               <KpiWidget filters={filters}
                 name='timeToConnect'
-                threshold={data?.timeToConnectThreshold.value}/>
+                threshold={data?.timeToConnectThreshold.value ??
+                 kpiConfig.timeToConnect.histogram.initialThreshold}/>
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>
             <UI.Wrapper>
               <KpiWidget filters={filters}
                 name='clientThroughput'
-                threshold={data?.clientThroughputThreshold.value}/>
+                threshold={data?.clientThroughputThreshold.value ??
+                 kpiConfig.clientThroughput.histogram.initialThreshold}/>
             </UI.Wrapper>
           </GridCol>
         </GridRow>

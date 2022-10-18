@@ -102,7 +102,7 @@ describe('Services for health kpis', () => {
         data: expectedResult
       })
       const { status, data, error } = await store.dispatch(
-        getThresholdsApi.endpoints.fetchKpiThresholds.initiate(props)
+        getThresholdsApi.endpoints.getKpiThresholds.initiate(props)
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(expectedResult)
@@ -121,7 +121,7 @@ describe('Services for health kpis', () => {
         data: expectedResult
       })
       const { status, data, error } = await store.dispatch(
-        getThresholdsApi.endpoints.fetchKpiThresholds.initiate(props)
+        getThresholdsApi.endpoints.getKpiThresholds.initiate(props)
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(expectedResult)
@@ -132,7 +132,7 @@ describe('Services for health kpis', () => {
         error: new Error('something went wrong!')
       })
       const { status, data, error } = await store.dispatch(
-        getThresholdsApi.endpoints.fetchKpiThresholds.initiate(props)
+        getThresholdsApi.endpoints.getKpiThresholds.initiate(props)
       )
       expect(status).toBe('rejected')
       expect(data).toBe(undefined)
