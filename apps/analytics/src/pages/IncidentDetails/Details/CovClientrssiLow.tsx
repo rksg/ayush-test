@@ -7,12 +7,11 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
+import { RssDistributionChart }              from '../Charts/RssDistributionChart'
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
-import { TimeSeries }                        from '../TimeSeries'
-import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -49,9 +48,6 @@ export const CovClientrssiLow = (incident: Incident) => {
     type: 'client',
     dimension: 'radios'
   }]
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.RssDistributionChart
-  ]
 
   return (
     <>
@@ -75,14 +71,13 @@ export const CovClientrssiLow = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <NetworkImpact incident={incident} charts={networkImpactCharts}/>
+          <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <TimeSeries
-            incident={incident}
-            charts={timeSeriesCharts}
-            minGranularity='PT180S'
-          />
+          <div>Chart</div>
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
+          <RssDistributionChart incident={incident} />
         </GridCol>
       </GridRow>
     </>
