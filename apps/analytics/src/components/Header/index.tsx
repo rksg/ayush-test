@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { SerializedError }        from '@reduxjs/toolkit'
 import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
@@ -99,7 +99,7 @@ export const Header =
       {...props}
       subTitle={useSubTitle(data.subTitle, type, queryState)}
       title={useTitle(filter, path, data, name, props.title, queryState)}
-      extra={[
+      extra={useMemo(() => [
         <NetworkFilter
           key='network-filter'
           shouldQuerySwitch={shouldQuerySwitch}
@@ -116,7 +116,7 @@ export const Header =
           showTimePicker
           selectionType={range}
         />
-      ]}
+      ], [shouldQuerySwitch, withIncidents, startDate, endDate, range])} // eslint-disable-line react-hooks/exhaustive-deps
     />
   )
 }
