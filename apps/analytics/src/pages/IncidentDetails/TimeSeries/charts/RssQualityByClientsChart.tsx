@@ -78,6 +78,7 @@ export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
           style={{ height, width }}
           data={chartResults}
           dataFormatter={formatter('percentFormat')}
+          yAxisProps={{ max: 1, min: 0 }}
           stackColors={lineColors}
           disableLegend={true}
         />
