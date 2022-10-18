@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -41,27 +43,29 @@ export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
   const { rssQualityByClientsChart } = data
   const { $t } = useIntl()
 
-  const Total: number[] = []
-  const good = rssQualityByClientsChart.good as number[]
-  const average = rssQualityByClientsChart.average as number[]
-  const bad = rssQualityByClientsChart.bad as number[]
+  const rssQualityPercentFormat = useMemo(() => {
+    const total: number[] = []
+    const good = rssQualityByClientsChart.good as number[]
+    const average = rssQualityByClientsChart.average as number[]
+    const bad = rssQualityByClientsChart.bad as number[]
 
-  for(let i = 0; i < good.length; i++) {
-    Total.push(good[i] + average[i] + bad[i])
-  }
+    for(let i = 0; i < good.length; i++) {
+      total.push(good[i] + average[i] + bad[i])
+    }
 
-  const rssQualityPercentFormat = {
-    ...rssQualityByClientsChart,
-    good: good.map((x, index) => {
-      return x/Total[index]
-    }),
-    average: average.map((x, index) => {
-      return x/Total[index]
-    }),
-    bad: bad.map((x, index) => {
-      return x/Total[index]
-    })
-  }
+    return {
+      ...rssQualityByClientsChart,
+      good: good.map((x, index) => {
+        return x ? x/total[index] : null
+      }),
+      average: average.map((x, index) => {
+        return x ? x/total[index] : null
+      }),
+      bad: bad.map((x, index) => {
+        return x ? x/total[index] : null
+      })
+    }
+  }, [rssQualityByClientsChart])
 
   const seriesMapping = [
     { key: 'bad', name: $t({ defaultMessage: 'Bad' }) },

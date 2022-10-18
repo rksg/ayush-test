@@ -31,7 +31,7 @@ Object {
   "codeMap": Array [
     "p-cov-clientrssi-low",
   ],
-  "end": "2022-09-29T06:00:00.000Z",
+  "end": "2022-09-29T00:00:00.000Z",
   "granularity": "PT180S",
   "path": Array [
     Object {
@@ -43,6 +43,6 @@ Object {
       "type": "apGroup",
     },
   ],
-  "start": "2022-09-28T16:30:00.000Z",
+  "start": "2022-09-28T22:30:00.000Z",
 }
 `;
