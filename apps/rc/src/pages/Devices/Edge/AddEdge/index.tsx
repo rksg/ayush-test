@@ -29,8 +29,7 @@ const AddEdge = () => {
 
   const handleAddEdge = async (data: EdgeSaveData) => {
     try {
-      const formData = { ...data }
-      await addEdge({ payload: formData }).unwrap()
+      await addEdge({ payload: { ...data } }).unwrap()
       navigate(linkToDevices, { replace: true })
     } catch {
       showToast({
