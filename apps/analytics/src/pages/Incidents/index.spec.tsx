@@ -15,7 +15,9 @@ jest.mock('@acx-ui/analytics/utils', () => ({
     filters: { path: [{ type: 'network', name: 'Network' }] },
     getNetworkFilter: jest
       .fn()
-      .mockReturnValueOnce({ path: [{ type: 'network', name: 'Network' }] })
+      .mockReturnValueOnce({
+        networkFilter: { path: [{ type: 'network', name: 'Network' }] }
+      })
   })
 }))
 jest.mock('../../components/IncidentBySeverity', () => () => <div>IncidentBySeverity</div>)
