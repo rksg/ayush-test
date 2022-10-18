@@ -64,12 +64,7 @@ export const timeseriesApi = dataApi.injectEndpoints({
         }
       `,
         variables: {
-          path: [
-            {
-              type: 'network',
-              name: 'Network'
-            }
-          ],// payload.path,
+          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
           granularity: getGranularity(payload.startDate, payload.endDate, payload.kpi)
