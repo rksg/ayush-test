@@ -97,7 +97,7 @@ export function ConfigProfileModal (props: {
         title={disableButton ? $t(VenueMessages.MODEL_OVERLAPPING_TOOLTIP) : null}
       >
         <Space style={{ marginLeft: '8px' }}> {/* Fix Tooltip on disabled button */}
-          <Button key='submit' type='primary' disabled={disableButton} onClick={onOk}>
+          <Button key='submit' type='secondary' disabled={disableButton} onClick={onOk}>
             {$t({ defaultMessage: 'OK' })}
           </Button>
         </Space>

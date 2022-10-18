@@ -20,7 +20,7 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   severity: { [key: string]: number };
 }
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
-type ConnectedNetworkFilterProps = { shouldQuerySwitch : boolean }
+type ConnectedNetworkFilterProps = { shouldQuerySwitch : boolean, withIncidents?: boolean }
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
 ): VenuesWithSeverityNodes => {
@@ -193,18 +193,27 @@ export const onApply = (
 const emptyArrayVenue = [] as unknown as VenuesWithSeverityNodes
 const emptyArrayFilter = [] as unknown as Option[]
 
-function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterProps) {
+function ConnectedNetworkFilter (
+  { shouldQuerySwitch, withIncidents } : ConnectedNetworkFilterProps
+) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
-  const incidentsList = useIncidentsListQuery(
-    omit({ ...filters, path: defaultNetworkPath }, 'filter'),
+  const validIncidents = useIncidentsListQuery(
+    omit({
+      ...filters, path: defaultNetworkPath, includeMuted: false
+    }, 'filter'),
     {
-      selectFromResult: ({ data, ...rest }) => ({
-        data: data ? getSeverityFromIncidents(data) : emptyArrayVenue,
-        ...rest
-      })
+      selectFromResult: ({ data }) => ({
+        data: data ? getSeverityFromIncidents(data) : emptyArrayVenue
+      }),
+      skip: !withIncidents
     }
   )
+
+  const incidentsList = useMemo(() => withIncidents
+    ? validIncidents
+    : { data: [] }, [validIncidents, withIncidents])
+
   const networkFilter = { ...filters, shouldQuerySwitch }
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
@@ -224,7 +233,7 @@ function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterP
 
     return (
       <UI.Container>
-        <Loader states={[queryResults, incidentsList]}>
+        <Loader states={[queryResults]}>
           <NetworkFilter
             placeholder={$t({ defaultMessage: 'Entire Organization' })}
             multiple={false}
@@ -238,7 +247,7 @@ function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterP
           />
         </Loader>
       </UI.Container>
-    )}, [$t, incidentsList, queryResults, raw, setNetworkPath])
+    )}, [$t, queryResults, raw, setNetworkPath])
 }
 
 export default ConnectedNetworkFilter

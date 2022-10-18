@@ -1,10 +1,12 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { fakeIncident1 }        from '@acx-ui/analytics/utils'
-import { store }                from '@acx-ui/store'
-import { mockDOMWidth, render } from '@acx-ui/test-utils'
+import { dataApiURL }                             from '@acx-ui/analytics/services'
+import { fakeIncident1 }                          from '@acx-ui/analytics/utils'
+import { store }                                  from '@acx-ui/store'
+import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
-import { Api } from '../services'
+import { TimeSeriesChartTypes } from '../config'
+import { Api }                  from '../services'
 
 import { ClientCountChart } from './ClientCountChart'
 
@@ -25,7 +27,7 @@ const expectedResult = {
   }
 } as unknown as TimeSeriesChartResponse
 
-beforeEach(() => store.dispatch(Api.util.resetApiState()))
+afterEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('ClientCountChart', () => {
   mockDOMWidth()
@@ -37,5 +39,22 @@ describe('ClientCountChart', () => {
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+})
+describe('clientCountChartQuery', () => {
+  it('should call corresponding api', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
+      data: { network: { hierarchyNode: expectedResult } }
+    }, true)
+    const { status, data, error } = await store.dispatch(
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts: [TimeSeriesChartTypes.ClientCountChart],
+        minGranularity: 'PT180S'
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult)
+    expect(error).toBe(undefined)
   })
 })

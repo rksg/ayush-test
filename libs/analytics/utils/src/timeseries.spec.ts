@@ -39,14 +39,17 @@ describe('getSeriesData', () => {
     expect(getSeriesData(sample, seriesMapping))
       .toEqual([
         {
+          key: 'newClientCount',
           name: 'New Clients',
           data: sample.time.map((t,index)=>[t, 1+index])
         },
         {
+          key: 'impactedClientCount',
           name: 'Impacted Clients',
           data: sample.time.map((t,index)=>[t, 6+index])
         },
         {
+          key: 'connectedClientCount',
           name: 'Connected Clients',
           data: sample.time.map((t,index)=>[t, 11+index])
         }
@@ -77,6 +80,12 @@ describe('checkNoData', () => {
   it('should return false if data is present', ()=>{
     expect(checkNoData(sample))
       .toEqual(false)
+    expect(checkNoData({
+      ...sample,
+      newClientCount: [1, 2, null, 4, 5],
+      impactedClientCount: [null, null, 8, null, null],
+      connectedClientCount: [null]
+    })).toEqual(false)
   })
   it('should return true if no data', ()=>{
     expect(checkNoData(null))
