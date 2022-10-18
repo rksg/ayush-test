@@ -3,7 +3,7 @@
 exports[`useDashboardFilter changes filter value 1`] = `
 <DocumentFragment>
   <div>
-    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"network","name":"zone"}]],"switchNodes":[[{"type":"network","name":"switchGroup"}]]}}
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"name":"Network","type":"zone"}]],"switchNodes":[[{"name":"Network","type":"switchGroup"}]]}}
   </div>
 </DocumentFragment>
 `;
@@ -11,7 +11,7 @@ exports[`useDashboardFilter changes filter value 1`] = `
 exports[`useDashboardFilter gets initial value from search parameters 1`] = `
 <DocumentFragment>
   <div>
-    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"0":"v","1":"e","2":"n","3":"u","4":"e","5":"1","name":"zone"}],[{"0":"v","1":"e","2":"n","3":"u","4":"e","5":"2","name":"zone"}]],"switchNodes":[[{"0":"v","1":"e","2":"n","3":"u","4":"e","5":"1","name":"switchGroup"}],[{"0":"v","1":"e","2":"n","3":"u","4":"e","5":"2","name":"switchGroup"}]]}}
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"name":"venue1","type":"zone"}],[{"name":"venue2","type":"zone"}]],"switchNodes":[[{"name":"venue1","type":"switchGroup"}],[{"name":"venue2","type":"switchGroup"}]]}}
   </div>
 </DocumentFragment>
 `;

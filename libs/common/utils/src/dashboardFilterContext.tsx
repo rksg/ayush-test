@@ -48,17 +48,19 @@ export function useDashboardFilter () {
   const { range, startDate, endDate } = dateFilter
   const networkNodes: NetworkPath[] = nodes.map(node => {
     if (Array.isArray(node)) {
-      return [{ ...node[0], name: 'zone' }]
+      const [name] = node
+      return [{ name, type: 'zone' }] as unknown as NetworkPath
     }
 
-    return [{ ...node, name: 'zone' }]
+    return [{ name: node.name, type: 'zone' }]
   })
   const switchNodes: NetworkPath[] = nodes.map(node => {
     if (Array.isArray(node)) {
-      return [{ ...node[0], name: 'switchGroup' }]
+      const [name] = node
+      return [{ name, type: 'switchGroup' }] as unknown as NetworkPath
     }
 
-    return [{ ...node, name: 'switchGroup' }]
+    return [{ name: node.name, type: 'switchGroup' }]
   })
   return {
     filters: {
