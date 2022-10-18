@@ -30,8 +30,8 @@ function HistogramSlider ({
       range={false}
       style={{
         width: width * 0.95,
-        top: height * 0.62,
-        marginLeft: width * 0.08
+        top: height * 0.68,
+        marginLeft: width * 0.06
       }}
     />
   )

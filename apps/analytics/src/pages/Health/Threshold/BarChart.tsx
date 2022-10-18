@@ -1,19 +1,14 @@
-import moment             from 'moment-timezone'
-import { renderToString } from 'react-dom/server'
-import { useIntl }        from 'react-intl'
-import { defineMessage }  from 'react-intl'
-import AutoSizer          from 'react-virtualized-auto-sizer'
+import moment            from 'moment-timezone'
+import { useIntl }       from 'react-intl'
+import { defineMessage } from 'react-intl'
+import AutoSizer         from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { Loader, DistributionChart }  from '@acx-ui/components'
+import { Loader, VerticalBarChart }   from '@acx-ui/components'
 import { formatter }                  from '@acx-ui/utils'
 
 
 import { KPITimeseriesResponse, useKpiTimeseriesQuery } from '../Kpi/services'
-
-import * as UI from './styledComponents'
-
-import type { TooltipComponentFormatterCallbackParams } from 'echarts'
 
 const barChartText = {
   title: defineMessage({ defaultMessage: 'last 7 days' })
@@ -26,16 +21,6 @@ const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
       ? datum[1] === 0 ? 0 : (datum[0] / datum[1]) * 100
       : null
   ])) as [number, number][]
-}
-
-const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
-  const rss = Array.isArray(params)
-    && Array.isArray(params[0].data) ? params[0].data[1] : ''
-  return renderToString(<UI.TooltipWrapper>
-    <div>
-      <b> {formatter('percentFormat')(rss as number / 100)}</b>
-    </div>
-  </UI.TooltipWrapper>)
 }
 
 export const formatYDataPoint = (data: number | unknown) =>
@@ -89,14 +74,14 @@ function BarChart ({
     <Loader states={[queryResults]} key={kpi}>
       <AutoSizer>
         {({ width, height }) => (
-          <DistributionChart
+          <VerticalBarChart
             style={{ height: height, width }}
             data={data}
-            grid={{ top: '5%', bottom: '15%' }}
-            title={`(${$t(barChartText.title)})`}
+            // grid={{ top: '5%', bottom: '15%' }}
+            xAxisName={`(${$t(barChartText.title)})`}
             barWidth={30}
-            tooltipFormatter={tooltipFormatter}
-            dataYFormatter={formatYDataPoint}
+            dataFormatter={formatYDataPoint}
+            showTooltipName={false}
             yAxisProps={{
               max: 100,
               min: 0

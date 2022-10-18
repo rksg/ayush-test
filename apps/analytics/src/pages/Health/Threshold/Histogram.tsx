@@ -1,35 +1,21 @@
 import React, { useState } from 'react'
 
-import { sum }            from 'lodash'
-import { renderToString } from 'react-dom/server'
-import { useIntl }        from 'react-intl'
-import AutoSizer          from 'react-virtualized-auto-sizer'
+import { sum }     from 'lodash'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig }                          from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, cssStr, DistributionChart } from '@acx-ui/components'
-import type { TimeStamp }                                      from '@acx-ui/types'
+import { AnalyticsFilter, kpiConfig }                         from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, cssStr, VerticalBarChart } from '@acx-ui/components'
+import type { TimeStamp }                                     from '@acx-ui/types'
 
 import { KpiThresholdType }                            from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
 import  HistogramSlider    from './HistogramSlider'
-import * as UI             from './styledComponents'
 import { ThresholdConfig } from './ThresholdConfig'
 
-import type { TooltipComponentFormatterCallbackParams } from 'echarts'
 
-export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
-  const rss = Array.isArray(params)
-    && Array.isArray(params[0].data) ? params[0].data[1] : ''
-  const name = Array.isArray(params)
-    && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
-  return renderToString(<UI.TooltipWrapper>
-    <div>
-      {name}:
-      <b> {rss as string}</b>
-    </div>
-  </UI.TooltipWrapper>)
-}
+
 const getGoalPercent = (
   { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue : string }
 ) : number => {
@@ -46,15 +32,15 @@ const getGoalPercent = (
   return percent
 }
 
-
 const transformHistogramResponse = ({
   data,
-  splits
-}: KPIHistogramResponse & { splits: number[] }) => {
-  return data.map((datum, index) => [splits[index], datum]) as [
-    TimeStamp,
-    number
-  ][]
+  splits,
+  shortXFormat
+}: KPIHistogramResponse & { splits: number[], shortXFormat: CallableFunction }) => {
+  return data.map((datum, index) => [
+    splits[index] ? shortXFormat(splits[index]) : null,
+    datum
+  ]) as [TimeStamp, number][]
 }
 
 function Histogram ({
@@ -141,16 +127,12 @@ function Histogram ({
           <AutoSizer>
             {({ width, height }) => (
               <>
-                <DistributionChart
+                <VerticalBarChart
                   style={{ height: height, width }}
                   data={data}
-                  grid={{ bottom: '22%', top: '5%' }}
-                  title={`(${histogram?.xUnit})`}
+                  xAxisName={`(${histogram?.xUnit})`}
                   barWidth={30}
                   xAxisOffset={10}
-                  dataYFormatter={histogram?.shortYFormat}
-                  dataXFormatter={histogram?.shortXFormat}
-                  tooltipFormatter={tooltipFormatter}
                   barColors={barColors}
                 />
                 <HistogramSlider
