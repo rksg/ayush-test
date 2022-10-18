@@ -4,8 +4,8 @@ import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { useLocation }                                                                from '@acx-ui/react-router-dom'
-import { DateFilterContext, getDateRangeFilter, DateFilter, pathFilter, NetworkPath } from '@acx-ui/utils'
+import { useLocation }                                                                          from '@acx-ui/react-router-dom'
+import { DateFilterContext, getDateRangeFilter, DateFilter, pathFilter, NetworkPath, NodeType } from '@acx-ui/utils'
 
 interface AnalyticsFilterProps {
   path: NetworkPath
@@ -18,8 +18,8 @@ export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Networ
 export const defaultAnalyticsFilter = {
   path: defaultNetworkPath,
   raw: [],
-  setNetworkPath: () => {}, // abstract, comsumer should wrap provider
-  getNetworkFilter: () => ({ path: defaultNetworkPath })
+  setNetworkPath: () => {}, // abstract, consumer should wrap provider
+  getNetworkFilter: () => ({ networkFilter: { path: defaultNetworkPath }, raw: [] })
 } as const
 
 export const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
@@ -29,22 +29,14 @@ export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : p
 
 export function useAnalyticsFilter () {
   const { getNetworkFilter, setNetworkPath } = useContext(AnalyticsFilterContext)
-  const { path, raw } = getNetworkFilter()
+  const { networkFilter, raw } = getNetworkFilter()
   const { dateFilter } = useContext(DateFilterContext)
   const { range, startDate, endDate } = dateFilter
   const [search] = useSearchParams()
   return useMemo(() => ({
     filters: {
       ...getDateRangeFilter(range, startDate, endDate),
-      ...(path.length === 2 ? { // venue level
-        filter: {
-          networkNodes: [path.slice(1)].map(([node]) => [{ type: 'zone', name: node.name }]),
-          switchNodes: [path.slice(1)].map(([node]) => [{ type: 'switchGroup', name: node.name }])
-        } as pathFilter,
-        path: defaultNetworkPath
-      } : {
-        path
-      })
+      ...networkFilter
     } as AnalyticsFilter,
     setNetworkPath,
     getNetworkFilter,
@@ -55,20 +47,38 @@ export function useAnalyticsFilter () {
 export function AnalyticsFilterProvider (props: { children: ReactNode }) {
   const [search, setSearch] = useSearchParams()
   const { pathname } = useLocation()
-  const sublocation = pathname.substring(pathname.lastIndexOf('/') + 1)
+  const isHealthPage = pathname.includes('/analytics/health')
   const getNetworkFilter = () => {
     let networkFilter = search.has('analyticsNetworkFilter')
       ? JSON.parse(
         Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
       )
       : { path: defaultNetworkPath, raw: [] }
-    const { path } = networkFilter
-    if(sublocation === 'health' &&
-    path.length > 1 &&
-    path[1]?.type === 'switchGroup'){
-      networkFilter = { path: defaultNetworkPath, raw: [] }
+    const { path: currentPath, raw: rawVal } = networkFilter
+    let path, filter, raw
+    if (isHealthPage) {
+      if (currentPath.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
+        path = defaultNetworkPath
+        raw = []
+      } else {
+        path = currentPath
+        raw = rawVal
+      }
+    } else { // incident page, ...
+      if (currentPath.length === 2) { // venues
+        filter = {
+          networkNodes: [currentPath.slice(1)]
+            .map(([node]) => [{ type: 'zone', name: node.name }]),
+          switchNodes: [currentPath.slice(1)]
+            .map(([node]) => [{ type: 'switchGroup', name: node.name }])
+        } as pathFilter
+        path = defaultNetworkPath
+      } else {
+        path = currentPath
+      }
+      raw = rawVal
     }
-    return networkFilter
+    return { networkFilter: { filter, path }, raw }
   }
   const setNetworkPath = (path: NetworkPath, raw: object) => {
     search.set(
@@ -77,7 +87,7 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
     )
     setSearch(search, { replace: true })
   }
-  const { path } = getNetworkFilter()
+  const { networkFilter: { path } } = getNetworkFilter()
   const providerValue = {
     path: path,
     setNetworkPath,

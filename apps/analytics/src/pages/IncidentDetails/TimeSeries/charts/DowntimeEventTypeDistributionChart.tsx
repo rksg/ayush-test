@@ -4,7 +4,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData, TimeSeriesDataType } from '@acx-ui/analytics/utils'
 import { Card, cssStr, StackedAreaChart }    from '@acx-ui/components'
-import { formatter }                         from '@acx-ui/utils'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -55,8 +54,6 @@ export const DowntimeEventTypeDistributionChart = (
           style={{ height, width }}
           stackColors={stackColors}
           data={chartResults}
-          dataFormatter={formatter('countFormat')}
-          yAxisProps={{ minInterval: 1 }}
           tooltipTotalTitle={$t({ defaultMessage: 'Total Events' })}
         />
       )}
