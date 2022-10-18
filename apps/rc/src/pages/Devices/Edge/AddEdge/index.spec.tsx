@@ -43,7 +43,7 @@ describe('AddEdge', () => {
       <Provider>
         <AddEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/add' }
+        route: { params, path: '/:tenantId/devices/edge/add' }
       })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -54,7 +54,7 @@ describe('AddEdge', () => {
       <Provider>
         <AddEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/add' }
+        route: { params, path: '/:tenantId/devices/edge/add' }
       })
     user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Venue')
@@ -68,7 +68,7 @@ describe('AddEdge', () => {
       <Provider>
         <AddEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/add' }
+        route: { params, path: '/:tenantId/devices/edge/add' }
       })
     const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
@@ -79,10 +79,10 @@ describe('AddEdge', () => {
       { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
-    // AddEdge success should back to /devices, use UI to test this case is normal
+    // AddEdge success should back to /devices/edge/list, use UI to test this case is normal
     // but use jest always fail
     // expect(mockedUsedNavigate).toHaveBeenCalledWith({
-    //   pathname: `/t/${params.tenantId}/devices`,
+    //   pathname: `/t/${params.tenantId}/devices/edge/list`,
     //   hash: '',
     //   search: ''
     // })
@@ -94,11 +94,11 @@ describe('AddEdge', () => {
       <Provider>
         <AddEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/add' }
+        route: { params, path: '/:tenantId/devices/edge/add' }
       })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices`,
+      pathname: `/t/${params.tenantId}/devices/edge/list`,
       hash: '',
       search: ''
     })
@@ -126,7 +126,7 @@ describe('AddEdge api fail', () => {
       <Provider>
         <AddEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/add' }
+        route: { params, path: '/:tenantId/devices/edge/add' }
       })
     const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
