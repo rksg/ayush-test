@@ -433,7 +433,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                         data-row-key="40aa7da509ee48bb97e423d5f5d41ec0"
                                       >
                                         <td
-                                          class="ant-table-cell ant-table-selection-column"
+                                          class="ant-table-cell ant-table-selection-column ant-table-cell-row-hover"
                                         >
                                           <label
                                             class="ant-checkbox-wrapper ant-checkbox-wrapper-checked"
@@ -453,27 +453,27 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                           </label>
                                         </td>
                                         <td
-                                          class="ant-table-cell"
+                                          class="ant-table-cell ant-table-cell-row-hover"
                                         >
                                           r0
                                         </td>
                                         <td
-                                          class="ant-table-cell"
+                                          class="ant-table-cell ant-table-cell-row-hover"
                                         >
                                           3.3.3.3
                                         </td>
                                         <td
-                                          class="ant-table-cell"
+                                          class="ant-table-cell ant-table-cell-row-hover"
                                         >
                                           45
                                         </td>
                                         <td
-                                          class="ant-table-cell"
+                                          class="ant-table-cell ant-table-cell-row-hover"
                                         >
                                           45
                                         </td>
                                         <td
-                                          class="ant-table-cell"
+                                          class="ant-table-cell ant-table-cell-row-hover"
                                         >
                                           <div>
                                             <span
@@ -517,7 +517,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                           </div>
                                         </td>
                                         <td
-                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-row-hover"
                                           style="position: sticky; right: 0px;"
                                         />
                                       </tr>
@@ -686,44 +686,281 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                   </div>
                 </div>
                 <div
-                  class="ant-result ant-result-error"
+                  class="ant-pro-table"
                 >
                   <div
-                    class="ant-result-icon"
+                    class="ant-pro-card"
                   >
-                    <span
-                      aria-label="close-circle"
-                      class="anticon anticon-close-circle"
-                      role="img"
+                    <div
+                      class="ant-pro-card-body"
+                      style="padding-top: 0px;"
                     >
-                      <svg
-                        aria-hidden="true"
-                        data-icon="close-circle"
-                        fill="currentColor"
-                        focusable="false"
-                        height="1em"
-                        viewBox="64 64 896 896"
-                        width="1em"
+                      <div
+                        class="ant-pro-table-list-toolbar"
                       >
-                        <path
-                          d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                  <div
-                    class="ant-result-title"
-                  >
-                    Something went wrong.
-                  </div>
-                  <div
-                    class="ant-result-extra"
-                  >
-                    [@formatjs/intl] An \`id\` must be provided to format a message. You can either:
-1. Configure your build toolchain with [babel-plugin-formatjs](https://formatjs.io/docs/tooling/babel-plugin)
-or [@formatjs/ts-transformer](https://formatjs.io/docs/tooling/ts-transformer) OR
-2. Configure your \`eslint\` config to include [eslint-plugin-formatjs](https://formatjs.io/docs/tooling/linter#enforce-id)
-to autofix this issue
+                        <div
+                          class="ant-pro-table-list-toolbar-container"
+                        >
+                          <div
+                            class="ant-pro-table-list-toolbar-left"
+                          />
+                          <div
+                            class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                          >
+                            <div
+                              class="ant-space-item"
+                            >
+                              <div
+                                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                              >
+                                <div
+                                  class="ant-space-item"
+                                >
+                                  <div
+                                    class="ant-pro-table-list-toolbar-setting-item"
+                                  >
+                                    <svg>
+                                      SettingsOutlined.svg
+                                    </svg>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-table-wrapper"
+                      >
+                        <div
+                          class="ant-spin-nested-loading"
+                        >
+                          <div
+                            class="ant-spin-container"
+                          >
+                            <div
+                              class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                            >
+                              <div
+                                class="ant-table-container"
+                              >
+                                <div
+                                  class="ant-table-content"
+                                  style="overflow-x: auto; overflow-y: hidden;"
+                                >
+                                  <table
+                                    style="min-width: 100%; table-layout: auto;"
+                                  >
+                                    <colgroup>
+                                      <col
+                                        class="ant-table-selection-col"
+                                      />
+                                      <col />
+                                      <col />
+                                      <col />
+                                      <col />
+                                      <col />
+                                      <col
+                                        style="width: 32px;"
+                                      />
+                                    </colgroup>
+                                    <thead
+                                      class="ant-table-thead"
+                                    >
+                                      <tr>
+                                        <th
+                                          class="ant-table-cell ant-table-selection-column react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          <div
+                                            class="ant-table-selection"
+                                          >
+                                            <label
+                                              class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled"
+                                            >
+                                              <span
+                                                class="ant-checkbox ant-checkbox-disabled"
+                                              >
+                                                <input
+                                                  class="ant-checkbox-input"
+                                                  disabled=""
+                                                  type="checkbox"
+                                                  value=""
+                                                />
+                                                <span
+                                                  class="ant-checkbox-inner"
+                                                />
+                                              </span>
+                                            </label>
+                                          </div>
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          Name
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          IP Address
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          Authentication Port
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          Shared Secret
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          Purpose
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                          style="position: sticky; right: 0px;"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody
+                                      class="ant-table-tbody"
+                                    >
+                                      <tr
+                                        aria-hidden="true"
+                                        class="ant-table-measure-row"
+                                        style="height: 0px; font-size: 0px;"
+                                      >
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        class="ant-table-placeholder"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                          colspan="7"
+                                        >
+                                          <div
+                                            class="ant-table-expanded-row-fixed"
+                                            style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                          />
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -800,44 +1037,239 @@ to autofix this issue
                   </div>
                 </div>
                 <div
-                  class="ant-result ant-result-error"
+                  class="ant-pro-table"
                 >
                   <div
-                    class="ant-result-icon"
+                    class="ant-pro-card"
                   >
-                    <span
-                      aria-label="close-circle"
-                      class="anticon anticon-close-circle"
-                      role="img"
+                    <div
+                      class="ant-pro-card-body"
+                      style="padding-top: 0px;"
                     >
-                      <svg
-                        aria-hidden="true"
-                        data-icon="close-circle"
-                        fill="currentColor"
-                        focusable="false"
-                        height="1em"
-                        viewBox="64 64 896 896"
-                        width="1em"
+                      <div
+                        class="ant-pro-table-list-toolbar"
                       >
-                        <path
-                          d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                  <div
-                    class="ant-result-title"
-                  >
-                    Something went wrong.
-                  </div>
-                  <div
-                    class="ant-result-extra"
-                  >
-                    [@formatjs/intl] An \`id\` must be provided to format a message. You can either:
-1. Configure your build toolchain with [babel-plugin-formatjs](https://formatjs.io/docs/tooling/babel-plugin)
-or [@formatjs/ts-transformer](https://formatjs.io/docs/tooling/ts-transformer) OR
-2. Configure your \`eslint\` config to include [eslint-plugin-formatjs](https://formatjs.io/docs/tooling/linter#enforce-id)
-to autofix this issue
+                        <div
+                          class="ant-pro-table-list-toolbar-container"
+                        >
+                          <div
+                            class="ant-pro-table-list-toolbar-left"
+                          />
+                          <div
+                            class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                          >
+                            <div
+                              class="ant-space-item"
+                            >
+                              <div
+                                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                              >
+                                <div
+                                  class="ant-space-item"
+                                >
+                                  <div
+                                    class="ant-pro-table-list-toolbar-setting-item"
+                                  >
+                                    <svg>
+                                      SettingsOutlined.svg
+                                    </svg>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-table-wrapper"
+                      >
+                        <div
+                          class="ant-spin-nested-loading"
+                        >
+                          <div
+                            class="ant-spin-container"
+                          >
+                            <div
+                              class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                            >
+                              <div
+                                class="ant-table-container"
+                              >
+                                <div
+                                  class="ant-table-content"
+                                  style="overflow-x: auto; overflow-y: hidden;"
+                                >
+                                  <table
+                                    style="min-width: 100%; table-layout: auto;"
+                                  >
+                                    <colgroup>
+                                      <col
+                                        class="ant-table-selection-col"
+                                      />
+                                      <col />
+                                      <col />
+                                      <col />
+                                      <col
+                                        style="width: 32px;"
+                                      />
+                                    </colgroup>
+                                    <thead
+                                      class="ant-table-thead"
+                                    >
+                                      <tr>
+                                        <th
+                                          class="ant-table-cell ant-table-selection-column react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          <div
+                                            class="ant-table-selection"
+                                          >
+                                            <label
+                                              class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled"
+                                            >
+                                              <span
+                                                class="ant-checkbox ant-checkbox-disabled"
+                                              >
+                                                <input
+                                                  class="ant-checkbox-input"
+                                                  disabled=""
+                                                  type="checkbox"
+                                                  value=""
+                                                />
+                                                <span
+                                                  class="ant-checkbox-inner"
+                                                />
+                                              </span>
+                                            </label>
+                                          </div>
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          Username
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          Password
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          Privilege
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                          style="position: sticky; right: 0px;"
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody
+                                      class="ant-table-tbody"
+                                    >
+                                      <tr
+                                        aria-hidden="true"
+                                        class="ant-table-measure-row"
+                                        style="height: 0px; font-size: 0px;"
+                                      >
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        class="ant-table-placeholder"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                          colspan="5"
+                                        >
+                                          <div
+                                            class="ant-table-expanded-row-fixed"
+                                            style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                          />
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1730,8 +2162,11 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                                     >
                                       <tr>
                                         <th
-                                          class="ant-table-cell ant-table-selection-column"
+                                          class="ant-table-cell ant-table-selection-column react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           <div
                                             class="ant-table-selection"
                                           >
@@ -1753,26 +2188,54 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                                               </span>
                                             </label>
                                           </div>
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell"
+                                          class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           Username
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell"
+                                          class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           Password
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell"
+                                          class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
                                           Privilege
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
                                         </th>
                                         <th
-                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                           style="position: sticky; right: 0px;"
-                                        />
+                                        >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                          />
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                          />
+                                        </th>
                                       </tr>
                                     </thead>
                                     <tbody
