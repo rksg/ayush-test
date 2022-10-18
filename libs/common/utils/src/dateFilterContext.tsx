@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
@@ -19,14 +21,17 @@ export const defaultDateFilter = () => ({
 
 export const useDateFilter = () => {
   const [search, setSearch] = useSearchParams()
-  const { dateFilter, setDateFilter } = readDateFilter(search, setSearch)
-  const { range, startDate, endDate } = dateFilter
 
-  return {
-    dateFilter,
-    setDateFilter,
-    ...getDateRangeFilter(range, startDate, endDate)
-  } as const
+  return useMemo(() => {
+    const { dateFilter, setDateFilter } = readDateFilter(search, setSearch)
+    const { range, startDate, endDate } = dateFilter
+
+    return {
+      dateFilter,
+      setDateFilter,
+      ...getDateRangeFilter(range, startDate, endDate)
+    } as const
+  }, [search, setSearch])
 }
 
 function readDateFilter (search: URLSearchParams, setSearch: CallableFunction) {

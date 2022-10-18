@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
@@ -224,30 +224,29 @@ function ConnectedNetworkFilter (
     })
   })
 
-  return useMemo(() => {
-    const onApplyCallback = (value: SingleValueType | SingleValueType[] | undefined) => {
-      const path = !value ? defaultNetworkPath : JSON.parse(value?.slice(-1)[0] as string)
-      setNetworkPath(path, value ?? emptyArrayVenue)
-    }
-    const showSearchCallback = { filter: search }
+  const onApplyCallback = useCallback((value: SingleValueType | SingleValueType[] | undefined) => {
+    const path = !value ? defaultNetworkPath : JSON.parse(value?.slice(-1)[0] as string)
+    setNetworkPath(path, value ?? emptyArrayVenue)
+  }, [])
+  const showSearchCallback = useMemo(() => ({ filter: search }), [])
 
-    return (
-      <UI.Container>
-        <Loader states={[queryResults]}>
-          <NetworkFilter
-            placeholder={$t({ defaultMessage: 'Entire Organization' })}
-            multiple={false}
-            defaultValue={raw}
-            value={raw}
-            options={queryResults.data}
-            onApply={onApplyCallback}
-            placement='bottomRight'
-            displayRender={displayRender}
-            showSearch={showSearchCallback}
-          />
-        </Loader>
-      </UI.Container>
-    )}, [$t, queryResults, raw, setNetworkPath])
+  return (
+    <UI.Container>
+      <Loader states={[queryResults]}>
+        <NetworkFilter
+          placeholder={$t({ defaultMessage: 'Entire Organization' })}
+          multiple={false}
+          defaultValue={raw}
+          value={raw}
+          options={queryResults.data}
+          onApply={onApplyCallback}
+          placement='bottomRight'
+          displayRender={displayRender}
+          showSearch={showSearchCallback}
+        />
+      </Loader>
+    </UI.Container>
+  )
 }
 
 export default ConnectedNetworkFilter

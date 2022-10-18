@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
@@ -42,35 +44,38 @@ function getDashboardNodes (
 
 export function useDashboardFilter () {
   const [search, setSearch] = useSearchParams()
-  const { getNodeFilter, setNodeFilter } = getDashboardNodes(search, setSearch)
-  const { nodes } = getNodeFilter()
   const { dateFilter } = useDateFilter()
-  const { range, startDate, endDate } = dateFilter
-  const networkNodes: NetworkPath[] = nodes.map(node => {
-    if (Array.isArray(node)) {
-      const [name] = node
-      return [{ name, type: 'zone' }] as unknown as NetworkPath
-    }
 
-    return [{ name: node.name, type: 'zone' }]
-  })
-  const switchNodes: NetworkPath[] = nodes.map(node => {
-    if (Array.isArray(node)) {
-      const [name] = node
-      return [{ name, type: 'switchGroup' }] as unknown as NetworkPath
-    }
+  return useMemo(() => {
+    const { getNodeFilter, setNodeFilter } = getDashboardNodes(search, setSearch)
+    const { nodes } = getNodeFilter()
+    const { range, startDate, endDate } = dateFilter
+    const networkNodes: NetworkPath[] = nodes.map(node => {
+      if (Array.isArray(node)) {
+        const [name] = node
+        return [{ name, type: 'zone' }] as unknown as NetworkPath
+      }
 
-    return [{ name: node.name, type: 'switchGroup' }]
-  })
-  return {
-    filters: {
-      path: defaultNetworkPath,
-      ...getDateRangeFilter(range, startDate, endDate),
-      filter: nodes.length ? {
-        networkNodes,
-        switchNodes
-      }: {}
-    },
-    setNodeFilter
-  }
+      return [{ name: node.name, type: 'zone' }]
+    })
+    const switchNodes: NetworkPath[] = nodes.map(node => {
+      if (Array.isArray(node)) {
+        const [name] = node
+        return [{ name, type: 'switchGroup' }] as unknown as NetworkPath
+      }
+
+      return [{ name: node.name, type: 'switchGroup' }]
+    })
+    return {
+      filters: {
+        path: defaultNetworkPath,
+        ...getDateRangeFilter(range, startDate, endDate),
+        filter: nodes.length ? {
+          networkNodes,
+          switchNodes
+        }: {}
+      },
+      setNodeFilter
+    }
+  }, [dateFilter, search, setSearch])
 }

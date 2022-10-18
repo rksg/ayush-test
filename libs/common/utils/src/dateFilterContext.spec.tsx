@@ -45,6 +45,7 @@ describe('useDateFilter', () => {
       <Component update={update} />
     </BrowserRouter>
     const { asFragment, rerender } = render(component(true))
+    expect(asFragment()).toMatchSnapshot()
     rerender(component(false))
     expect(asFragment()).toMatchSnapshot()
   })
