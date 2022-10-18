@@ -56,7 +56,7 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/add' }
       })
-    user.click(screen.getByText('Add'))
+    user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Venue')
     await screen.findByText('Please enter SmartEdge Name')
     await screen.findByText('Please enter Serial Number')
@@ -78,7 +78,7 @@ describe('AddEdge', () => {
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
-    await user.click(screen.getByText('Add'))
+    await user.click(screen.getByRole('button', { name: 'Add' }))
     // AddEdge success should back to /devices, use UI to test this case is normal
     // but use jest always fail
     // expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -136,7 +136,7 @@ describe('AddEdge api fail', () => {
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
-    await user.click(screen.getByText('Add'))
+    await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('An error occurred')
   })
 })
