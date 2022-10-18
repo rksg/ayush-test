@@ -43,7 +43,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
               >
                 <label
                   class=""
-                  title="Service Name"
+                  title="Service Name:"
                 >
                   Service Name
                 </label>
@@ -79,7 +79,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
               >
                 <label
                   class=""
-                  title="Tags"
+                  title="Tags:"
                 >
                   Tags
                 </label>
@@ -113,7 +113,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
               >
                 <label
                   class=""
-                  title="Forwarding Rules"
+                  title="Forwarding Rules:"
                 >
                   Forwarding Rules
                 </label>
@@ -466,7 +466,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                             </tr>
                                             <tr
                                               class="ant-table-row ant-table-row-level-0"
-                                              data-row-key="AIRPLAY"
+                                              data-row-key="__UUID__rule1"
                                             >
                                               <td
                                                 class="ant-table-cell"
@@ -490,7 +490,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                             </tr>
                                             <tr
                                               class="ant-table-row ant-table-row-level-0"
-                                              data-row-key="AIRDISK"
+                                              data-row-key="__UUID__rule2"
                                             >
                                               <td
                                                 class="ant-table-cell"

@@ -341,7 +341,7 @@ exports[`MdnsProxyForwardingRulesTable should render the readonly table 1`] = `
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
-                            data-row-key="AIRPLAY"
+                            data-row-key="__UUID__rule1"
                           >
                             <td
                               class="ant-table-cell"
@@ -365,7 +365,7 @@ exports[`MdnsProxyForwardingRulesTable should render the readonly table 1`] = `
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
-                            data-row-key="AIRDISK"
+                            data-row-key="__UUID__rule2"
                           >
                             <td
                               class="ant-table-cell"
@@ -862,7 +862,7 @@ exports[`MdnsProxyForwardingRulesTable should render the table with the given da
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
-                            data-row-key="AIRPLAY"
+                            data-row-key="__UUID__rule1"
                           >
                             <td
                               class="ant-table-cell ant-table-selection-column"
@@ -906,7 +906,7 @@ exports[`MdnsProxyForwardingRulesTable should render the table with the given da
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
-                            data-row-key="AIRDISK"
+                            data-row-key="__UUID__rule2"
                           >
                             <td
                               class="ant-table-cell ant-table-selection-column"
