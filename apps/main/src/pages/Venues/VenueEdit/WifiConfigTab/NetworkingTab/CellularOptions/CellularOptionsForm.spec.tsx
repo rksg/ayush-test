@@ -5,9 +5,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { venueApi }                                                                                         from '@acx-ui/rc/services'
 import { CellularNetworkSelectionEnum, CommonUrlsInfo, LteBandRegionEnum, WanConnectionEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor, within }                                                            from '@acx-ui/test-utils'
+import { Provider, store }                                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor, within }                                           from '@acx-ui/test-utils'
 
 import { EditContext, VenueEditContext } from '../../..'
 import {
@@ -15,7 +16,6 @@ import {
 } from '../../../../__tests__/fixtures'
 
 import { CellularOptionsForm } from './CellularOptionsForm'
-import { venueApi } from '@acx-ui/rc/services'
 
 const venueApModelCellularResponse = {
   model: 'M510',
@@ -68,7 +68,7 @@ describe('CellularOptionsForm', () => {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockedUsedNavigate
   }))
-  
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
@@ -105,7 +105,7 @@ describe('CellularOptionsForm', () => {
       })
 
     screen.getByText(/1 primary sim/i)
-    const view = screen.getByTestId('primarySim');
+    const view = screen.getByTestId('primarySim')
     await waitFor(() => within(view).getByText(/show bands for other countries/i))
     expect(asFragment()).toMatchSnapshot()
   })

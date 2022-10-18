@@ -97,39 +97,39 @@ export function CellularOptionsForm () {
       //setCurrentCountry
       Object.keys(regionCountriesMap).map(function (objectKey) {
         const value = _.get(regionCountriesMap, objectKey)
-        if (Array.isArray(value.countryCodes) && 
+        if (Array.isArray(value.countryCodes) &&
         value.countryCodes.includes(countryCode)) {
           setCurrentRegion(objectKey) }
       })
 
       // this.getCellularSupportedModels$();
-        venueApModelCellularData.primarySim.lteBands =
+      venueApModelCellularData.primarySim.lteBands =
           venueApModelCellularData.primarySim?.lteBands || []
-        venueApModelCellularData.secondarySim.lteBands =
+      venueApModelCellularData.secondarySim.lteBands =
           venueApModelCellularData.secondarySim?.lteBands || []
 
 
-        //createDefaultRegion
-        for (const region in LteBandRegionEnum) {
+      //createDefaultRegion
+      for (const region in LteBandRegionEnum) {
 
-          if (!venueApModelCellularData.primarySim.lteBands.some(
-            item => item.region === region)) {
-            venueApModelCellularData.primarySim.lteBands.push({
-              region: _.get(region, region)
-            })
-          }
-
-          if (!venueApModelCellularData.secondarySim.lteBands.some(
-            item => item.region === region)) {
-            venueApModelCellularData.secondarySim.lteBands.push({
-              region: _.get(region, region)
-            })
-          }
+        if (!venueApModelCellularData.primarySim.lteBands.some(
+          item => item.region === region)) {
+          venueApModelCellularData.primarySim.lteBands.push({
+            region: _.get(region, region)
+          })
         }
 
-        setEditData(venueApModelCellularData)
+        if (!venueApModelCellularData.secondarySim.lteBands.some(
+          item => item.region === region)) {
+          venueApModelCellularData.secondarySim.lteBands.push({
+            region: _.get(region, region)
+          })
+        }
+      }
 
-        formRef?.current?.setFieldsValue({ editData: venueApModelCellularData })
+      setEditData(venueApModelCellularData)
+
+      formRef?.current?.setFieldsValue({ editData: venueApModelCellularData })
       setAvailableLteBandsArray(availableLteBandsData)
     }
 
@@ -153,16 +153,17 @@ export function CellularOptionsForm () {
     try {
       const lteBand = formRef?.current?.getFieldsValue().bandLteArray
 
-      const genLteBands = function (ltBand: { [x: string]: { band4G: string[], band3G: string[] } }) {
-        let lteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
-        Object.keys(ltBand).forEach(region => {
-          lteBandArray.push({
-            region,
-            band3G: ltBand[region].band3G, band4G: ltBand[region].band4G
+      const genLteBands =
+        function (ltBand: { [x: string]: { band4G: string[], band3G: string[] } }) {
+          let lteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
+          Object.keys(ltBand).forEach(region => {
+            lteBandArray.push({
+              region,
+              band3G: ltBand[region].band3G, band4G: ltBand[region].band4G
+            })
           })
-        })
-        return lteBandArray;
-      }
+          return lteBandArray
+        }
 
       let value = formRef?.current?.getFieldValue('editData')
       value.primarySim.lteBands = genLteBands(lteBand.primarySim)
@@ -187,7 +188,7 @@ export function CellularOptionsForm () {
         <StepsForm.StepForm
           formRef={formRef}
           onChange={onChange}>
-          <div data-testid="primarySim">
+          <div data-testid='primarySim'>
             <CellularRadioSimSettings
               editData={editData}
               simCardNumber={1}
