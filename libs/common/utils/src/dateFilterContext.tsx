@@ -1,9 +1,3 @@
-import {
-  createContext,
-  useContext,
-  ReactNode
-} from 'react'
-
 import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
@@ -19,33 +13,34 @@ export interface DateFilter {
   endDate: string;
 }
 
-export const defaultDateFilter = {
+export const defaultDateFilter = () => ({
   dateFilter: { ...getDateRangeFilter(DateRange.last24Hours) }
-} as const
-
-export const DateFilterContext =
-  createContext<DateFilterContextprops>(defaultDateFilter)
+} as const)
 
 export const useDateFilter = () => {
-  const { dateFilter, setDateFilter } = useContext(DateFilterContext)
+  const [search, setSearch] = useSearchParams()
+  const { dateFilter, setDateFilter } = readDateFilter(search, setSearch)
   const { range, startDate, endDate } = dateFilter
+
   return {
+    dateFilter,
     setDateFilter,
     ...getDateRangeFilter(range, startDate, endDate)
   } as const
 }
 
-export function DateFilterProvider (props: { children: ReactNode }) {
-  const [search, setSearch] = useSearchParams()
+function readDateFilter (search: URLSearchParams, setSearch: CallableFunction) {
   const period = search.has('period') && JSON.parse(
     Buffer.from(search.get('period') as string, 'base64').toString('ascii')
   )
   const dateFilter = period
     ? getDateRangeFilter(period.range, period.startDate, period.endDate)
-    : defaultDateFilter.dateFilter
+    : defaultDateFilter().dateFilter
+
   const setDateFilter = (date: DateFilter) => {
     search.set('period', Buffer.from(JSON.stringify(date)).toString('base64'))
     setSearch(search, { replace: true })
   }
-  return <DateFilterContext.Provider {...props} value={{ dateFilter, setDateFilter }} />
+  return { dateFilter, setDateFilter }
 }
+

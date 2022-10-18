@@ -4,7 +4,8 @@ import { renderHook, render } from '@testing-library/react'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDateFilter, DateFilterProvider }            from './dateFilterContext'
+
+import { useDateFilter }                                from './dateFilterContext'
 import { defaultRanges, DateRange, getDateRangeFilter } from './dateUtil'
 
 describe('useDateFilter', () => {
@@ -12,16 +13,16 @@ describe('useDateFilter', () => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
   it('should return correctly value', () => {
-    const { result } = renderHook(useDateFilter)
+    const { result } = renderHook(() => useDateFilter(), {
+      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>
+    })
     expect(result.current).toMatchObject({
       startDate: '2021-12-31T00:00:00+00:00',
       endDate: '2022-01-01T00:00:00+00:00',
       range: 'Last 24 Hours'
     })
   })
-})
 
-describe('DateFilterProvider', () => {
   it('should render correctly', () => {
     function Component () {
       const filters = useDateFilter()
@@ -29,9 +30,7 @@ describe('DateFilterProvider', () => {
     }
     const { asFragment } = render(
       <BrowserRouter>
-        <DateFilterProvider>
-          <Component />
-        </DateFilterProvider>
+        <Component />
       </BrowserRouter>
     )
     expect(asFragment()).toMatchSnapshot()
@@ -43,9 +42,7 @@ describe('DateFilterProvider', () => {
       return <div>{JSON.stringify(filters)}</div>
     }
     const component = (update: boolean) => <BrowserRouter>
-      <DateFilterProvider>
-        <Component update={update} />
-      </DateFilterProvider>
+      <Component update={update} />
     </BrowserRouter>
     const { asFragment, rerender } = render(component(true))
     rerender(component(false))
@@ -68,14 +65,13 @@ describe('DateFilterProvider', () => {
     })
     const { asFragment } = render(
       <BrowserRouter window={window}>
-        <DateFilterProvider>
-          <Component />
-        </DateFilterProvider>
+        <Component />
       </BrowserRouter>
     )
     expect(asFragment()).toMatchSnapshot()
   })
 })
+
 
 describe('defaultRanges', () => {
   beforeEach(() => {

@@ -5,15 +5,20 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDashboardFilter, DashboardFilterProvider, defaultDashboardFilter } from './dashboardFilterContext'
+import { useDashboardFilter } from './dashboardFilterContext'
 
 describe('useDashboardFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
   it('should return default value', () => {
-    const { result } = renderHook(useDashboardFilter)
-    defaultDashboardFilter.setNodeFilter()
+    const { result } = renderHook(() => useDashboardFilter(), {
+      wrapper: ({ children }) =>
+        <BrowserRouter>
+          {children}
+        </BrowserRouter>
+    })
+
     expect(result.current.filters).toEqual({
       path: [{ name: 'Network', type: 'network' }],
       startDate: '2021-12-31T00:00:00+00:00',
@@ -22,18 +27,14 @@ describe('useDashboardFilter', () => {
       filter: {}
     })
   })
-})
 
-describe('DashboardFilterProvider', () => {
   it('should render correctly', () => {
     function Component () {
       const { filters } = useDashboardFilter()
       return <div>{JSON.stringify(filters)}</div>
     }
     const { asFragment } = render(<BrowserRouter>
-      <DashboardFilterProvider>
-        <Component />
-      </DashboardFilterProvider>
+      <Component />
     </BrowserRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -42,13 +43,12 @@ describe('DashboardFilterProvider', () => {
       const { filters, setNodeFilter } = useDashboardFilter()
       useEffect(() => {
         setNodeFilter(filters.path)
-      })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [])
       return <div>{JSON.stringify(filters)}</div>
     }
     const { asFragment } = render(<BrowserRouter>
-      <DashboardFilterProvider>
-        <Component />
-      </DashboardFilterProvider>
+      <Component />
     </BrowserRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -64,9 +64,7 @@ describe('DashboardFilterProvider', () => {
         pathname: '/incidents',
         search: `?dashboardVenueFilter=${path}`
       }]}>
-        <DashboardFilterProvider>
-          <Component />
-        </DashboardFilterProvider>
+        <Component />
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()
@@ -76,13 +74,12 @@ describe('DashboardFilterProvider', () => {
       const { filters, setNodeFilter } = useDashboardFilter()
       useEffect(() => {
         setNodeFilter([])
-      })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [])
       return <div>{JSON.stringify(filters)}</div>
     }
     const { asFragment } = render(<BrowserRouter>
-      <DashboardFilterProvider>
-        <Component />
-      </DashboardFilterProvider>
+      <Component />
     </BrowserRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
