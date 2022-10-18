@@ -20,6 +20,8 @@ export * from './models/OpenWlanAdvancedCustomization'
 export * from './models/AAAWlanAdvancedCustomization'
 export * from './models/DpskWlanAdvancedCustomization'
 export * from './models/PskWlanAdvancedCustomization'
+export * from './models/VenueRogueAp'
+export * from './models/RogueClassificationPolicy'
 
 export * from './types/user'
 export * from './types/venue'
