@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { ClockCircleOutlined }    from '@ant-design/icons'
-import { Switch, Tooltip }        from 'antd'
+import { Form, Switch, Tooltip }  from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -16,6 +16,7 @@ import {
 import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
+  useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useNetworkVenueListQuery,
   useUpdateNetworkMutation
@@ -24,7 +25,10 @@ import {
   useTableQuery,
   NetworkSaveData,
   NetworkVenue,
+  NetworkApGroup,
   Venue,
+  VlanType,
+  RadioEnum,
   generateDefaultNetworkVenue,
   VLAN_PREFIX,
   ISlotIndex,
@@ -38,6 +42,10 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
+
+import { NetworkApGroupDialog } from './NetworkApGroupDialog'
+
+import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
 const defaultPayload = {
   searchString: '',
@@ -69,6 +77,21 @@ const notificationMessage = defineMessage({
   defaultMessage: 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
 })
 
+const transformRadioTypeEnumToRadioEnum = (radioTypes: RadioTypeEnum[]) => {
+  if (radioTypes.includes(RadioTypeEnum._2_4_GHz) && radioTypes.includes(RadioTypeEnum._5_GHz)) {
+    return RadioEnum.Both
+  } else {
+    const radioEnum = [RadioEnum._2_4_GHz, RadioEnum._5_GHz]
+    return radioEnum[_.findIndex([RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz], (r)=>radioTypes.includes(r))]
+  }
+}
+
+interface ApGroupModalState {
+  visible: boolean,
+  networkVenue?: NetworkVenue,
+  venueName?: string
+}
+
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
@@ -76,8 +99,13 @@ export function NetworkVenuesTab () {
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
+  const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
+    visible: false
+  })
+
   const params = useParams()
   const [updateNetwork] = useUpdateNetworkMutation()
+  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
   const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
   const networkQuery = useGetNetwork()
   const [
@@ -322,22 +350,22 @@ export function NetworkVenuesTab () {
 
   const getCurrentVenue = (row: Venue) => {
     if (!row.activated.isActivated) {
-      return null
+      return
     }
 
     const network = networkQuery.data
     const venueId = row.id
-    let currentVenue = row.deepVenue
+    let venue = row.deepVenue
 
-    if (!currentVenue) {
-      currentVenue = network?.venues?.find(venue => venue.venueId === venueId)
+    if (!venue) {
+      venue = network?.venues?.find(v => v.venueId === venueId)
     }
 
-    return currentVenue
+    return venue
   }
 
   const transformVLAN = (row: Venue) => {
-    let currentVenue = getCurrentVenue(row)
+    const currentVenue = getCurrentVenue(row)
     let result = ''
 
     let valuePrefix = ''
@@ -365,7 +393,7 @@ export function NetworkVenuesTab () {
           vlanString = '1' // default fallback to avoid unavailable vlan1 of default ap group
         }
       }
-      else {
+      else { //isAllApGroups
         valueSuffix = $t({ defaultMessage: '(Default)' })
         const network = networkQuery.data
         const wlan = network?.wlan
@@ -379,13 +407,13 @@ export function NetworkVenuesTab () {
         }
       }
       result = `${valuePrefix}${vlanString} ${valueSuffix}`
-      return <Button type='link'>{result}</Button>
+      return <Button type='link' onClick={(e) => handleClickApGroups(row, e)}>{result}</Button>
     }
     return result
   }
 
   const transformAps = (row: Venue) => {
-    let currentVenue = getCurrentVenue(row)
+    const currentVenue = getCurrentVenue(row)
     let result = ''
 
     if (currentVenue) {
@@ -401,13 +429,13 @@ export function NetworkVenuesTab () {
           result = firstApGroup.apGroupName
         }
       }
-      return <Button type='link'>{result}</Button>
+      return <Button type='link' onClick={(e) => handleClickApGroups(row, e)}>{result}</Button>
     }
     return result
   }
 
   const transformRadios = (row: Venue) => {
-    let currentVenue = getCurrentVenue(row)
+    const currentVenue = getCurrentVenue(row)
     let result = ''
     if (currentVenue) {
       if (currentVenue.isAllApGroups) {
@@ -440,13 +468,13 @@ export function NetworkVenuesTab () {
           result = $t({ defaultMessage: 'Per AP Group' })
         }
       }
-      return <Button type='link'>{result}</Button>
+      return <Button type='link' onClick={(e) => handleClickApGroups(row, e)}>{result}</Button>
     }
     return result
   }
 
   const transformScheduling = (row: Venue) => {
-    let currentVenue = getCurrentVenue(row)
+    const currentVenue = getCurrentVenue(row)
     let result = ''
     const scheduler = currentVenue?.scheduler
     const venueId = row.id
@@ -498,6 +526,73 @@ export function NetworkVenuesTab () {
     e.preventDefault()
   }
 
+  const handleClickApGroups = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.preventDefault()
+    setApGroupModalState({
+      visible: true,
+      venueName: row.name,
+      networkVenue: getCurrentVenue(row)
+    })
+  }
+
+  const handleCancel = () => {
+    setApGroupModalState({
+      visible: false
+    })
+  }
+
+  const handleFormFinish = (name: string, info: FormFinishInfo) => {
+    if (name === 'networkApGroupForm') {
+
+      const { selectionType, allApGroupsRadioTypes, apgroups } = info.values
+
+      let data = _.cloneDeep(apGroupModalState.networkVenue)
+
+      let newData = {
+        isAllApGroups: selectionType === 0
+      }
+
+      if (newData.isAllApGroups) {
+        _.assign(newData, {
+          allApGroupsRadio: transformRadioTypeEnumToRadioEnum(allApGroupsRadioTypes),
+          allApGroupsRadioTypes: allApGroupsRadioTypes,
+          apgroups: []
+        })
+      } else {
+        _.assign(newData, {
+          apgroups: (data?.apGroups || []).map((apGroup) => {
+            const editedApGroup = apgroups.find((a:{ selected: boolean, apGroupId: string }) => (a.apGroupId === apGroup.apGroupId && a.selected))
+            if (editedApGroup) {
+              let ret: NetworkApGroup = { ...apGroup }
+
+              ret.radioTypes = editedApGroup.radioTypes
+              ret.radio = transformRadioTypeEnumToRadioEnum(editedApGroup.radioTypes) || RadioEnum.Both
+              if (editedApGroup.vlanType === VlanType.Pool) {
+                ret.vlanPoolId = editedApGroup.vlanPoolId
+                ret.vlanPoolName = editedApGroup.vlanPoolName
+              } else {
+                ret.vlanId = editedApGroup.vlan.vlanId
+              }
+              return ret
+            }
+            return null
+          }).filter(_.isEmpty)
+        })
+      }
+
+      const payload = _.assign(data, newData)
+
+      updateNetworkVenue({ params: {
+        tenantId: params.tenantId,
+        networkVenueId: payload.id
+      }, payload: payload }).then(()=>{
+        setApGroupModalState({
+          visible: false
+        })
+      })
+    }
+  }
+
   return (
     <Loader states={[
       tableQuery,
@@ -520,6 +615,17 @@ export function NetworkVenuesTab () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
       />
+      <Form.Provider
+        onFormFinish={handleFormFinish}
+      >
+        <NetworkApGroupDialog
+          {...apGroupModalState}
+          formName='networkApGroupForm'
+          network={networkQuery.data}
+          onCancel={handleCancel}
+          // onOk={handleOk}
+        />
+      </Form.Provider>
     </Loader>
   )
 }

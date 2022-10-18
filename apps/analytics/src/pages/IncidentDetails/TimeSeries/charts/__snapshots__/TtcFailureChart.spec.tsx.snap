@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ttcFailureChartQuery should call corresponding api 1`] = `
+"
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput],
+              $start: DateTime,
+              $end: DateTime,
+              $granularity: String,
+              $code: String
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  
+  relatedIncidents: incidents(filter: {code: [$code]}) {
+    id severity code startTime endTime
+  }
+  ttcFailureChart: timeSeries(granularity: $granularity) {
+    time
+    ttc: timeToConnect
+  }
+  
+                }
+              }
+            }
+          "
+`;
+
+exports[`ttcFailureChartQuery should call corresponding api 2`] = `
+Object {
+  "code": "ttc",
+  "codeMap": Array [
+    "ttc",
+  ],
+  "end": "2022-08-26T02:03:00.000Z",
+  "granularity": "PT180S",
+  "path": Array [
+    Object {
+      "name": "EDU-MeshZone_orig",
+      "type": "zone",
+    },
+  ],
+  "start": "2022-08-25T13:48:00.000Z",
+}
+`;
