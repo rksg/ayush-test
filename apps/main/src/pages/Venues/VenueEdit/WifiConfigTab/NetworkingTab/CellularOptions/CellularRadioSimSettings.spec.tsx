@@ -122,6 +122,6 @@ describe('CellularRadioSimSettings', () => {
     await userEvent.click(view)
     expect(screen.getByText(/Hide bands for other countries/i)).toBeVisible()
   })
-
+  
 })
 

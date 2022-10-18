@@ -100,7 +100,6 @@ export function CellularOptionsForm () {
           setCurrentRegion(objectKey) }
       })
 
-
       // this.getCellularSupportedModels$();
       if (venueApModelCellularData) {
         venueApModelCellularData.primarySim.lteBands =
@@ -108,8 +107,10 @@ export function CellularOptionsForm () {
         venueApModelCellularData.secondarySim.lteBands =
           venueApModelCellularData.secondarySim?.lteBands || []
 
+
         //createDefaultRegion
         for (const region in LteBandRegionEnum) {
+
           if (!venueApModelCellularData.primarySim.lteBands.some(
             item => item.region === region)) {
             venueApModelCellularData.primarySim.lteBands.push({
@@ -150,28 +151,22 @@ export function CellularOptionsForm () {
 
   const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
     try {
-      let value
-      if (formRef?.current?.getFieldsValue()) {
-        const lteBand = formRef?.current?.getFieldsValue().bandLteArray
-        const primaryLteBand = lteBand.primarySim
-        const secondLteBand = lteBand.secondarySim
+      const lteBand = formRef?.current?.getFieldsValue().bandLteArray
 
-        const primaryLteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
-        Object.keys(primaryLteBand).forEach(region => {
-          primaryLteBandArray.push({ region,
-            band3G: primaryLteBand[region].band3G, band4G: primaryLteBand[region].band4G })
+      const genLteBands = function (ltBand: { [x: string]: { band4G: string[], band3G: string[] } }) {
+        let lteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
+        Object.keys(ltBand).forEach(region => {
+          lteBandArray.push({
+            region,
+            band3G: ltBand[region].band3G, band4G: ltBand[region].band4G
+          })
         })
-
-        const secLteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
-        Object.keys(secondLteBand).forEach(region => {
-          secLteBandArray.push({ region,
-            band3G: secondLteBand[region].band3G, band4G: secondLteBand[region].band4G })
-        })
-
-        value = formRef.current.getFieldValue('editData')
-        value.primarySim.lteBands = primaryLteBandArray
-        value.secondarySim.lteBands = secLteBandArray
+        return lteBandArray;
       }
+
+      let value = formRef?.current?.getFieldValue('editData')
+      value.primarySim.lteBands = genLteBands(lteBand.primarySim)
+      value.secondarySim.lteBands = genLteBands(lteBand.secondarySim)
 
       await updateVenueCellularSettings({ params,
         payload: { ...payload, ...value } })

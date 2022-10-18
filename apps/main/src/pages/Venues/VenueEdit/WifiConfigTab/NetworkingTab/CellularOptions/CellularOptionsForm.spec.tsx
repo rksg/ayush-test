@@ -1,18 +1,21 @@
 import '@testing-library/jest-dom'
 
 
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { CellularNetworkSelectionEnum, CommonUrlsInfo, LteBandRegionEnum, WanConnectionEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                         from '@acx-ui/store'
-import { mockServer, render }                                                                               from '@acx-ui/test-utils'
+import { Provider, store }                                                                                         from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent }                                                            from '@acx-ui/test-utils'
 
+import { EditContext, VenueEditContext } from '../../..'
 import {
   venueSetting
 } from '../../../../__tests__/fixtures'
 
 import { CellularOptionsForm } from './CellularOptionsForm'
+import { venueApi } from '@acx-ui/rc/services'
 
 const venueApModelCellularResponse = {
   model: 'M510',
@@ -47,17 +50,56 @@ const venueApModelCellularResponse = {
   primaryWanRecoveryTimer: 99
 }
 
+const availableLteBandsResponse = [{
+  band3G: ['B2', 'B4', 'B5'],
+  band4G: ['B2', 'B4', 'B12'],
+  region: LteBandRegionEnum.USA_CANADA,
+  countryCodes: ['US', 'CA']
+}]
+
 describe('CellularOptionsForm', () => {
   const params = { venueId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-  it('should render Cellular options form successfully', async () => {
-    const availableLteBandsResponse = [{
-      band3G: ['B2', 'B4', 'B5'],
-      band4G: ['B2', 'B4', 'B12'],
-      region: LteBandRegionEnum.USA_CANADA,
-      countryCodes: ['US', 'CA']
-    }]
+  let editContextData = {} as EditContext
+  const setEditContextData = jest.fn()
 
+  const mockedUsedNavigate = jest.fn()
+  jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockedUsedNavigate
+  }))
+  
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    mockServer.use(
+      rest.get(WifiUrlsInfo.getAvailableLteBands.url,
+        (_, res, ctx) => res(ctx.json(availableLteBandsResponse))),
+      rest.get(
+        CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json(venueSetting))),
+      rest.get(WifiUrlsInfo.getVenueApModelCellular.url,
+        (_, res, ctx) => res(ctx.json(venueApModelCellularResponse))),
+      rest.put(WifiUrlsInfo.updateVenueCellularSettings.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+  })
+  it('should render Cellular options form successfully', async () => {
+
+    const { asFragment } = render(
+      <Provider>
+        <Form>
+          <CellularOptionsForm />
+        </Form>
+      </Provider>, {
+        route: { params }
+      })
+
+    screen.getByText(/1 primary sim/i)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+
+  it('should render correctly', async () => {
     mockServer.use(
       rest.get(WifiUrlsInfo.getAvailableLteBands.url,
         (_, res, ctx) => res(ctx.json(availableLteBandsResponse))),
@@ -68,17 +110,24 @@ describe('CellularOptionsForm', () => {
         (_, res, ctx) => res(ctx.json(venueApModelCellularResponse)))
     )
 
-    const { asFragment } = render(
+    const params = {
+      tenantId: 'tenant-id',
+      venueId: 'venue-id',
+      activeTab: 'wifi'
+    }
+    render(
       <Provider>
-        <Form>
-          <CellularOptionsForm/>
-        </Form>
+        <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
+          <CellularOptionsForm />
+        </VenueEditContext.Provider>
       </Provider>, {
-        route: { params }
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
       })
+    screen.getByText(/1 primary sim/i)
 
-    expect(asFragment()).toMatchSnapshot()
+    const wanConnection = screen.getByText(/ethernet \(primary\) with cellular failover/i)
+    fireEvent.click(wanConnection)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
-
-
 })
