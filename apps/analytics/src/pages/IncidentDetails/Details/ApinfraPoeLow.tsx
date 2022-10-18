@@ -11,6 +11,8 @@ import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import { TimeSeries }                        from '../TimeSeries'
+import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -37,6 +39,10 @@ export const ApinfraPoeLow = (incident: Incident) => {
     dimension: 'apFwVersions'
   }]
 
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.ApPoeImpactChart
+  ]
+
   return (
     <>
       <PageHeader
@@ -61,9 +67,11 @@ export const ApinfraPoeLow = (incident: Incident) => {
         <GridCol col={{ offset: 4, span: 20 }}>
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Charts</div>
-        </GridCol>
+        <TimeSeries
+          incident={incident}
+          charts={timeSeriesCharts}
+          minGranularity='PT180S'
+        />
         <GridCol col={{ offset: 4, span: 20 }}>
           <div>Impacted Entities Section</div>
         </GridCol>

@@ -1,10 +1,15 @@
 import { Incident } from '@acx-ui/analytics/utils'
 
 import apDisconnectionCountChart          from './charts/ApDisconnectionCountChart'
+import apPoeImpactQuery                   from './charts/ApPoeImpactChart'
+import apRebootBySystemQuery              from './charts/ApRebootBySystemChart'
+import apWanthroughputImpactQuery         from './charts/APWanthroughputImpactChart'
 import attemptAndFailureChart             from './charts/AttemptAndFailureChart'
 import clientCountChart                   from './charts/ClientCountChart'
+import connectedClientsChartQuery         from './charts/ConnectedClientsChart'
 import downtimeEventTypeDistributionChart from './charts/DowntimeEventTypeDistributionChart'
 import failureChart                       from './charts/FailureChart'
+import rebootedAPsCountQuery              from './charts/RebootedAPsCountChart'
 import ttcByFailureTypeChart              from './charts/TtcByFailureTypeChart'
 import ttcFailureChart                    from './charts/TtcFailureChart'
 
@@ -22,7 +27,12 @@ export enum TimeSeriesChartTypes {
   TtcFailureChart,
   TtcByFailureTypeChart,
   ApDisconnectionCountChart,
-  DowntimeEventTypeDistributionChart
+  DowntimeEventTypeDistributionChart,
+  ApRebootBySystemChart,
+  ConnectedClientsChart,
+  RebootedApsCountChart,
+  ApPoeImpactChart,
+  ApWanThroughputImpactChart
 }
 
 export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
@@ -32,5 +42,10 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.TtcFailureChart]: ttcFailureChart,
   [TimeSeriesChartTypes.TtcByFailureTypeChart]: ttcByFailureTypeChart,
   [TimeSeriesChartTypes.ApDisconnectionCountChart]: apDisconnectionCountChart,
-  [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart]: downtimeEventTypeDistributionChart
+  [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart]: downtimeEventTypeDistributionChart,
+  [TimeSeriesChartTypes.ApRebootBySystemChart]: apRebootBySystemQuery,
+  [TimeSeriesChartTypes.ConnectedClientsChart]: connectedClientsChartQuery,
+  [TimeSeriesChartTypes.RebootedApsCountChart]: rebootedAPsCountQuery,
+  [TimeSeriesChartTypes.ApPoeImpactChart]: apPoeImpactQuery,
+  [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactQuery
 }

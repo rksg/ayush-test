@@ -11,6 +11,8 @@ import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import { TimeSeries }                        from '../TimeSeries'
+import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -37,6 +39,10 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
     dimension: 'apFwVersions'
   }]
 
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.ApWanThroughputImpactChart
+  ]
+
   return (
     <>
       <PageHeader
@@ -62,7 +68,11 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Charts</div>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+          />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
           <div>Impacted Entities Section</div>

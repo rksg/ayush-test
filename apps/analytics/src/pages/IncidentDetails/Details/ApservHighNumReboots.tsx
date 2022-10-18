@@ -11,6 +11,8 @@ import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import { TimeSeries }                        from '../TimeSeries'
+import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -46,6 +48,12 @@ export const ApservHighNumReboots = (incident: Incident) => {
     dimension: 'reason'
   }]
 
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.ApRebootBySystemChart,
+    TimeSeriesChartTypes.ConnectedClientsChart,
+    TimeSeriesChartTypes.RebootedApsCountChart
+  ]
+
   return (
     <>
       <PageHeader
@@ -71,7 +79,11 @@ export const ApservHighNumReboots = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Chart</div>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+          />
         </GridCol>
       </GridRow>
     </>
