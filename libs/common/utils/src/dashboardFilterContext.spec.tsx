@@ -5,11 +5,19 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDashboardFilter } from './dashboardFilterContext'
+import { useDashboardFilter }   from './dashboardFilterContext'
+import { resetGlobalDateRange } from './dateUtil'
 
+const original = Date.now
 describe('useDashboardFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetGlobalDateRange()
+  })
+
+  afterAll(() => {
+    Date.now = original
+    resetGlobalDateRange()
   })
   it('should return default value', () => {
     const { result } = renderHook(() => useDashboardFilter(), {

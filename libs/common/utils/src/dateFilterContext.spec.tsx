@@ -5,12 +5,19 @@ import { renderHook, render } from '@testing-library/react'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 
-import { useDateFilter }                                from './dateFilterContext'
-import { defaultRanges, DateRange, getDateRangeFilter } from './dateUtil'
+import { useDateFilter }                                                      from './dateFilterContext'
+import { defaultRanges, DateRange, getDateRangeFilter, resetGlobalDateRange } from './dateUtil'
 
+const original = Date.now
 describe('useDateFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetGlobalDateRange()
+  })
+
+  afterAll(() => {
+    Date.now = original
+    resetGlobalDateRange()
   })
   it('should return correctly value', () => {
     const { result } = renderHook(() => useDateFilter(), {
@@ -77,8 +84,13 @@ describe('useDateFilter', () => {
 describe('defaultRanges', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetGlobalDateRange()
   })
 
+  afterAll(() => {
+    Date.now = original
+    resetGlobalDateRange()
+  })
   it('should return defaultRange when no subRange', () => {
     const result = defaultRanges()
     expect(
@@ -111,8 +123,13 @@ describe('defaultRanges', () => {
 describe('getDateRangeFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetGlobalDateRange()
   })
 
+  afterAll(() => {
+    Date.now = original
+    resetGlobalDateRange()
+  })
   it('should return correct dateFilter for the given range', () => {
     expect(getDateRangeFilter(DateRange.last1Hour)).toStrictEqual({
       startDate: '2021-12-31T23:00:00+00:00',

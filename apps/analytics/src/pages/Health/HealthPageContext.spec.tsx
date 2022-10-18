@@ -2,10 +2,10 @@ import { useContext } from 'react'
 
 import moment from 'moment'
 
-import { BrowserRouter as Router }  from '@acx-ui/react-router-dom'
-import { act, renderHook }          from '@acx-ui/test-utils'
-import { TimeStampRange }           from '@acx-ui/types'
-import { DateRange, useDateFilter } from '@acx-ui/utils'
+import { BrowserRouter as Router }                        from '@acx-ui/react-router-dom'
+import { act, renderHook }                                from '@acx-ui/test-utils'
+import { TimeStampRange }                                 from '@acx-ui/types'
+import { DateRange, resetGlobalDateRange, useDateFilter } from '@acx-ui/utils'
 
 import {
   HealthPageContext,
@@ -13,9 +13,16 @@ import {
   formatTimeWindow
 } from './HealthPageContext'
 
+const original = Date.now
 describe('HealthPageContextProvider', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetGlobalDateRange()
+  })
+
+  afterAll(() => {
+    Date.now = original
+    resetGlobalDateRange()
   })
   const expectedTimeWindow: TimeStampRange = [
     '2021-12-31T00:00:00.000Z',
