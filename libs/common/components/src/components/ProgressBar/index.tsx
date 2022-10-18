@@ -1,9 +1,14 @@
+import { Tooltip as AntTooltip } from 'antd'
+import { useIntl }               from 'react-intl'
+
+import { intlFormats } from '@acx-ui/utils'
+
 import { cssStr } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
 interface ProgressBarProps {
-  percent: number
+  percent: number // 0 - 100
 }
 
 export const strokeColorsByPercent = (percent: number) => {
@@ -11,6 +16,7 @@ export const strokeColorsByPercent = (percent: number) => {
   const average = cssStr('--acx-semantics-yellow-40') // YELLOW
   const good = cssStr('--acx-semantics-green-50') // GREEN
 
+  // Create array of same color based on the percentage
   if (percent <= 20)
     return Array(1).fill(poor)
   else if (percent <= 60)
@@ -34,11 +40,17 @@ export const normalizePercent = (percent: number) => {
 export function ProgressBar ({
   percent
 }: ProgressBarProps) {
-  return <UI.Progress
-    percent={normalizePercent(percent)}
-    steps={5}
-    showInfo={false}
-    trailColor={cssStr('--acx-neutrals-30')}
-    strokeWidth={10}
-    strokeColor={strokeColorsByPercent(percent)} />
+  const { $t } = useIntl()
+
+  return <AntTooltip
+    placement={'top'}
+    title={$t(intlFormats.percentFormat, { value: percent/100 })}>
+    <UI.Progress
+      percent={normalizePercent(percent)}
+      steps={5}
+      showInfo={false}
+      trailColor={cssStr('--acx-neutrals-30')}
+      strokeWidth={10}
+      strokeColor={strokeColorsByPercent(percent)} />
+  </AntTooltip>
 }
