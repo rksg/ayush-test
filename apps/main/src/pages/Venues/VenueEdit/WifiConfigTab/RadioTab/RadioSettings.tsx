@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, Radio, RadioChangeEvent, Space, Switch, Tabs, Tooltip } from 'antd'
 import _                                                               from 'lodash'
@@ -8,8 +8,9 @@ import { Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/compone
 import { Features, useSplitTreatment }                     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
 import {
-  useApListQuery,
   useGetVenueCapabilitiesQuery,
+  useGetDefaultRadioCustomizationQuery,
+  useGetVenueRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -34,14 +35,11 @@ const tabs = {
   Upper5GHz: RadioUpper5GHz
 }
 
-const { useWatch } = Form
-
 export function RadioSettings () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId, venueId } = useParams()
   const basePath = useTenantLink('/venues/')
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
   const formRef = useRef<StepsFormInstance<VenueDefaultRegulatoryChannelsForm>>()
   const [triBandRadio, setTriBandRadio] = useState(false)
@@ -49,6 +47,12 @@ export function RadioSettings () {
   const [triBandApModels, setTriBandApModels] = useState<string[]>([])
 
   const { data: venueCaps } = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
+
+  const { data: defaultChannelsData } =
+    useGetDefaultRadioCustomizationQuery({ params: { tenantId, venueId } })
+
+  const { data: venueSavedChannelsData } =
+    useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } })
 
   const triBandApModelNames = _.isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
 
@@ -64,15 +68,13 @@ export function RadioSettings () {
     url: '/api/viewmodel/{tenantId}/aps'
   }
 
-  const { data } = useApListQuery({ params: { tenantId }, payload: defaultPayload })
-
   useEffect(() => {
     if(venueCaps){
       setTriBandApModels(venueCaps?.apModels
         .filter(apCapability => apCapability.supportTriRadio === true)
         .map(triBandApCapability => triBandApCapability.model) as string[])
     }
-  }, [venueCaps])
+  }, [venueCaps, defaultChannelsData, venueSavedChannelsData])
 
   // if (venueIds.length) {
   //   filters = Object.assign(filters, { venueId: venueIds });
@@ -81,7 +83,6 @@ export function RadioSettings () {
 
   const handleUpdate = async () => {
     console.log(formRef.current?.getFieldsValue())
-    return false
   }
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
@@ -94,48 +95,47 @@ export function RadioSettings () {
   const onRadioChange = (e: RadioChangeEvent) => {
     setRadioBandManagement(e.target.value)
   }
+
   return (
-    <Loader>
-      <StepsForm
-        formRef={formRef}
-        onFinish={handleUpdate}
-        onCancel={() => {}}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+    <StepsForm
+      formRef={formRef}
+      onFinish={() => handleUpdate()}
+      onCancel={() => {return false}}
+      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+    >
+      <StepsForm.StepForm
+        layout='horizontal'
+        labelAlign='left'
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 12 }}
+        initialValues={{}}
       >
-        <StepsForm.StepForm
-          layout='horizontal'
-          labelAlign='left'
-          onFinish={handleUpdate}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 12 }}
-          initialValues={{}}
-        >
-          <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-            <FieldLabel width='200px'>
-              {$t({ defaultMessage: 'Tri-band radio settings' })}
-              <Form.Item
-                name='triband'
-                valuePropName='checked'
-                initialValue={triBandRadio}
-                children={
-                  <>
-                    <Switch
-                      disabled={!triBandRadioFeatureFlag}
-                      onClick={(checked, event) => {
-                        setTriBandRadio(checked)
-                        event.stopPropagation()
-                      }} /><Tooltip
-                      // eslint-disable-next-line max-len
-                      title={$t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })}
-                      placement='bottom'
-                    >
-                      <QuestionMarkCircleOutlined />
-                    </Tooltip>
-                  </>
-                }
-              />
-            </FieldLabel>
-            {triBandRadio &&
+        <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+          <FieldLabel width='200px'>
+            {$t({ defaultMessage: 'Tri-band radio settings' })}
+            <Form.Item
+              name='triband'
+              valuePropName='checked'
+              initialValue={triBandRadio}
+              children={
+                <>
+                  <Switch
+                    disabled={!triBandRadioFeatureFlag}
+                    onClick={(checked, event) => {
+                      setTriBandRadio(checked)
+                      event.stopPropagation()
+                    }} /><Tooltip
+                    // eslint-disable-next-line max-len
+                    title={$t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })}
+                    placement='bottom'
+                  >
+                    <QuestionMarkCircleOutlined />
+                  </Tooltip>
+                </>
+              }
+            />
+          </FieldLabel>
+          {triBandRadio &&
               <>
                 {$t({ defaultMessage: 'R760 radio bands management' })}
                 <Radio.Group onChange={onRadioChange} defaultValue={'5GHzLowerUpper'}>
@@ -154,11 +154,11 @@ export function RadioSettings () {
                   </Space>
                 </Radio.Group>
               </>
-            }
-            <Tabs onChange={onTabChange} activeKey={currentTab}>
-              <Tabs.TabPane tab={$t({ defaultMessage: '2.4GHz' })} key='Normal24GHz' />
-              <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key='Normal5GHz' />
-              { triBandRadio && radioBandManagement === '5GHzLowerUpper' &&
+          }
+          <Tabs onChange={onTabChange} activeKey={currentTab}>
+            <Tabs.TabPane tab={$t({ defaultMessage: '2.4GHz' })} key='Normal24GHz' />
+            <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key='Normal5GHz' />
+            { triBandRadio && radioBandManagement === '5GHzLowerUpper' &&
                   <>
                     <Tabs.TabPane
                       tab={$t({ defaultMessage: 'Lower 5 GHz' })}
@@ -167,16 +167,15 @@ export function RadioSettings () {
                       tab={$t({ defaultMessage: 'Upper 5 GHz' })}
                       key='Upper5GHz' />
                   </>
-              }
-              { triBandRadio &&
+            }
+            { triBandRadio &&
                 ( radioBandManagement === '5GHzLowerUpper' || radioBandManagement === '6GHz' ) &&
                 <Tabs.TabPane tab={$t({ defaultMessage: '6 GHz' })} key='Normal6GHz' />
-              }
-            </Tabs>
-            {Tab && <Tab /> }
-          </Space>
-        </StepsForm.StepForm>
-      </StepsForm>
-    </Loader>
+            }
+          </Tabs>
+          {Tab && <Tab /> }
+        </Space>
+      </StepsForm.StepForm>
+    </StepsForm>
   )
 }

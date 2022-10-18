@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react'
 import { Checkbox, Form, InputNumber, Select, Slider, Space } from 'antd'
 import { useIntl }                                            from 'react-intl'
 
-import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
-import { useParams }                              from '@acx-ui/react-router-dom'
+import {
+  useVenueDefaultRegulatoryChannelsQuery
+} from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import {
-  AvailableLteBandOptions,
   channelSelectionMethodsOptions,
   channelBandwidth24GOptions,
   txPowerAdjustmentOptions
@@ -19,8 +20,11 @@ const { useWatch } = Form
 export function Radio24GHz () {
   const { $t } = useIntl()
 
+  const form = Form.useFormInstance()
   const { tenantId, venueId } = useParams()
+  const [validChannels, setValidChannels] = useState<string[]>([''])
   const [defaultChannels, setDefaultChannels] = useState<string[]>([''])
+  const [venueSavedChannels, setVenueSavedChannels] = useState<string[]>([''])
 
   const [
     channelMethod,
@@ -30,25 +34,28 @@ export function Radio24GHz () {
     useWatch<string>(['radioParams24G', 'channelBandwidth'])
   ]
 
-  const { data: defaultChannelsData } =
+  const { data: validChannelsData } =
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
 
+
   useEffect(() => {
-    if(defaultChannelsData){
-      defaultChannelsData && setDefaultChannels(defaultChannelsData['2.4GChannels']['20MHz'])
+    if(validChannelsData){
+      setValidChannels(validChannelsData['2.4GChannels']['20MHz'])
     }
-    if(defaultChannelsData && channelBandwidth){
+
+    if(validChannelsData && channelBandwidth){
       const channelType = channelBandwidth === 'AUTO' ?
         channelBandwidth.toLowerCase() : channelBandwidth
-      setDefaultChannels(
-        defaultChannelsData['2.4GChannels'][channelType]
+      setValidChannels(
+        validChannelsData['2.4GChannels'][channelType]
       )
     }
-  }, [defaultChannelsData, channelBandwidth])
+  }, [validChannelsData, channelBandwidth])
 
   function formatter (value: any) {
     return `${value}%`
   }
+
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <FieldLabel width='200px'>
@@ -125,11 +132,12 @@ export function Radio24GHz () {
       <FieldLabel width='25px'>
         <MultiSelect>
           <Form.Item
-            initialValue={[]}
+            initialValue={venueSavedChannels}
             name={['radioParams24G', 'allowedChannels']}
             children={
               <Checkbox.Group
-                options={defaultChannels}
+                options={validChannels.map(item => ({ label: item, value: item }))}
+                defaultValue={venueSavedChannels}
               />
             }
           />

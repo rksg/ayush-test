@@ -16,7 +16,8 @@ import {
   VenueApModels,
   VenueSwitchConfiguration,
   ConfigurationProfile,
-  VenueDefaultRegulatoryChannels
+  VenueDefaultRegulatoryChannels,
+  VenueDefaultRegulatoryChannelsForm
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -200,6 +201,22 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getDefaultRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.GetDefaultRadioCustomization, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.GetVenueRadioCustomization, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -221,5 +238,7 @@ export const {
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
   useSwitchConfigProfileQuery,
-  useVenueDefaultRegulatoryChannelsQuery
+  useVenueDefaultRegulatoryChannelsQuery,
+  useGetDefaultRadioCustomizationQuery,
+  useGetVenueRadioCustomizationQuery
 } = venueApi

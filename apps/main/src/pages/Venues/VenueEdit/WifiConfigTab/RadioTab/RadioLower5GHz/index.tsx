@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Checkbox, Form, InputNumber, Radio, RadioChangeEvent, Select, Slider, Space } from 'antd'
-import { useIntl }                                                   from 'react-intl'
+import { useIntl }                                                                     from 'react-intl'
 
 import { Button }                                 from '@acx-ui/components'
 import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
@@ -67,7 +67,7 @@ export function RadioLower5GHz () {
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-      <div style={{ marginBottom: '50px' }}>
+      <div>
         {$t({ defaultMessage: '5GHz settings:' })}
         <Form.Item
           name={['radioParamsDual5G', 'inheritParamsLower5G']}
@@ -86,10 +86,9 @@ export function RadioLower5GHz () {
             </FieldLabel>
           </Radio.Group>
         </Form.Item>
-      </div>
-      < hr />
+      </div>  
       <FieldLabel width='200px'>
-      { $t({ defaultMessage: 'Channel selection method:' }) }
+        { $t({ defaultMessage: 'Channel selection method:' }) }
         <Form.Item
           name={['radioParamsDual5G', 'radioParamsLower5G', 'method']}>
           <Select

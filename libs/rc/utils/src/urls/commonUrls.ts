@@ -166,5 +166,17 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   GetVenueDefaultRegulatoryChannels: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/valid-channels'
+  },
+  GetDefaultRadioCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/radio/default'
+  },
+  GetVenueRadioCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/radio'
+  },
+  UpdateVenueRadioCustomization: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/radio'
   }
 }

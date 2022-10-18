@@ -30,7 +30,7 @@ div.ant-checkbox-group {
     width: 32px;
     height: 0;
     margin-bottom: 30px;
-    border-bottom: 20px solid rgb(96, 159, 231);
+    border-bottom: 20px solid rgb(172, 174, 176);
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
 
@@ -50,7 +50,7 @@ div.ant-checkbox-group {
   }
 
   > label.ant-checkbox-wrapper-checked {
-    border-bottom: 20px solid rgb(172, 174, 176);
+    border-bottom: 20px solid rgb(96, 159, 231);
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
