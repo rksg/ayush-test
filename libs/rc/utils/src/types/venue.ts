@@ -94,7 +94,6 @@ export interface VenueApModels {
 	models: string[]
 }
 
-
 export interface Address {
   addressLine?: string
   city?: string
@@ -229,6 +228,103 @@ export interface ConfigurationProfile {
 	vlans?: Vlan[],
 	acls?: Acl[],
 	venues?: string[]
+}
+export interface VenueDefaultRegulatoryChannels {
+  '2.4GChannels': {
+	[key: string]: string[]
+  },
+  '5GChannels': {
+	dfs: {
+	  [key: string]: string[]
+	},
+	indoor: {
+	  [key: string]: string[]
+	},
+	outdoor: {
+	  [key: string]: string[]
+	}
+  },
+  '5GLowerChannels': {
+	dfs: {
+	  [key: string]: string[]
+	},
+	indoor: {
+	  [key: string]: string[]
+	},
+	outdoor: {
+	  [key: string]: string[]
+	}
+  },
+  '5GUpperChannels': {
+	dfs: {
+	  [key: string]: string[]
+	},
+	indoor: {
+	  [key: string]: string[]
+	},
+	outdoor: {
+	  [key: string]: string[]
+	}
+  },
+  '6GChannels': {
+	[key: string]: string[]
+  }
+}
+
+export interface VenueDefaultRegulatoryChannelsForm {
+  radioParams24G: {
+	allowedChannels: string[],
+	channelBandwidth: string,
+	method: string,
+	changeInterval: number,
+	scanInterval: number,
+	txPower: string
+  },
+  radioParams50G: {
+	combineChannels: boolean,
+	allowedIndoorChannels: string[],
+	allowedOutdoorChannels: string[],
+	channelBandwidth: string,
+	method: string,
+	changeInterval: number,
+	scanInterval: number,
+	txPower: string
+  },
+  radioParamsDual5G: {
+	enabled: boolean,
+	inheritParamsLower5G: boolean,
+	radioParamsLower5G: {
+	  combineChannels: boolean,
+	  allowedIndoorChannels: string[],
+	  allowedOutdoorChannels: string[],
+	  channelBandwidth: string,
+	  method: string,
+	  changeInterval: number,
+	  scanInterval: number,
+	  txPower: string
+	},
+	inheritParamsUpper5G: boolean,
+	radioParamsUpper5G: {
+	  combineChannels: boolean,
+	  allowedIndoorChannels: string[],
+	  allowedOutdoorChannels: string[],
+	  channelBandwidth: string,
+	  method: string,
+	  changeInterval: number,
+	  scanInterval: number,
+	  txPower: string
+	},
+	radioParams6G: {
+	  method: string,
+	  scanInterval: number,
+	  allowedIndoorChannels: string[],
+	  channelBandwidth: string,
+	  bssMinRate6G: string,
+	  mgmtTxRate6G: string,
+	  changeInterval: number,
+	  txPower: string
+	}
+  }
 }
 
 export enum AAAServerTypeEnum {

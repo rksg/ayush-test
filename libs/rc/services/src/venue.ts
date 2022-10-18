@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
+  WifiUrlsInfo,
   SwitchUrlsInfo,
   createHttpRequest,
   FloorPlanDto,
@@ -16,6 +17,8 @@ import {
   VenueCapabilities,
   VenueLed,
   VenueApModels,
+  ExternalAntenna,
+  CapabilitiesApModel,
   RadiusServer,
   TacacsServer,
   LocalUser,
@@ -23,13 +26,15 @@ import {
   CommonResult,
   VenueSettings,
   VenueSwitchConfiguration,
-  ConfigurationProfile
+  ConfigurationProfile,
+  VenueDefaultRegulatoryChannels,
+  VenueDefaultRegulatoryChannelsForm
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -227,20 +232,20 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
+        return{
+          ...req
+        }
+      }
+    }),
     updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params)
         return {
           ...req,
           body: payload
-        }
-      }
-    }),
-    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
-        return{
-          ...req
         }
       }
     }),
@@ -309,6 +314,68 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    getVenueExternalAntenna: build.query<ExternalAntenna[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.GetVenueExternalAntenna, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg,
+            ['UpdateVenueExternalAntenna'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    venueDefaultRegulatoryChannels: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.GetVenueDefaultRegulatoryChannels, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getDefaultRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.GetDefaultRadioCustomization, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.GetVenueRadioCustomization, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueApCapabilities: build.query<{
+      version: string,
+      apModels:CapabilitiesApModel[] }, RequestPayload>({
+        query: ({ params }) => {
+          const req = createHttpRequest(WifiUrlsInfo.GetVenueApCapabilities, params)
+          return {
+            ...req
+          }
+        },
+        providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
+      }),
+    UpdateVenueExternalAntenna: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.UpdateVenueExternalAntenna, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
     })
   })
 })
@@ -339,5 +406,11 @@ export const {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
-  useSwitchConfigProfileQuery
+  useSwitchConfigProfileQuery,
+  useVenueDefaultRegulatoryChannelsQuery,
+  useGetDefaultRadioCustomizationQuery,
+  useGetVenueRadioCustomizationQuery,
+  useGetVenueExternalAntennaQuery,
+  useGetVenueApCapabilitiesQuery,
+  useUpdateVenueExternalAntennaMutation
 } = venueApi
