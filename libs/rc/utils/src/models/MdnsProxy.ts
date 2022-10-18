@@ -23,6 +23,7 @@ export enum MdnsProxyForwardingRuleTypeEnum {
 }
 
 export interface MdnsProxyForwardingRule {
+  id?: string;
   type: MdnsProxyForwardingRuleTypeEnum;
   fromVlan: number;
   toVlan: number;

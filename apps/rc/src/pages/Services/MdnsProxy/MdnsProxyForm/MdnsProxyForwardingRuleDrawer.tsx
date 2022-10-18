@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
-import { Form, Input, Select } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Form, Input, InputNumber, Select } from 'antd'
+import { useIntl }                          from 'react-intl'
 
 import { Drawer }                                                   from '@acx-ui/components'
 import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
@@ -14,24 +14,44 @@ export interface MdnsProxyForwardingRuleDrawerProps {
   editMode: boolean;
   visible: boolean;
   setVisible: (v: boolean) => void;
+  isRuleUnique?: (r: MdnsProxyForwardingRule) => boolean
 }
 
 export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDrawerProps) {
   const { $t } = useIntl()
-  const { rule = {}, setRule, visible, setVisible, editMode } = props
+  const {
+    rule = {},
+    setRule,
+    visible,
+    setVisible,
+    editMode,
+    isRuleUnique = () => true
+  } = props
   const [ form ] = Form.useForm<MdnsProxyForwardingRule>()
   const { Option } = Select
 
   useEffect(() => {
     form.setFieldsValue(rule)
-
-    return () => {
-      form.resetFields()
-    }
   }, [form, rule])
 
   const onClose = () => {
     setVisible(false)
+  }
+
+  const ruleDuplicationValidator = async () => {
+    const values: MdnsProxyForwardingRule = form.getFieldsValue()
+    return isRuleUnique(values)
+      ? Promise.resolve()
+      // eslint-disable-next-line max-len
+      : Promise.reject($t({ defaultMessage: 'This rule is already in use. Please select different VLAN or Type' }))
+  }
+
+  const vlanDuplicationValidator = async () => {
+    const toVlan = form.getFieldValue('toVlan')
+    const fromVlan = form.getFieldValue('fromVlan')
+    return (toVlan && toVlan === fromVlan)
+      ? Promise.reject($t({ defaultMessage: 'From VLAN and To VLAN must be different' }))
+      : Promise.resolve()
   }
 
   const content = <Form layout='vertical'
@@ -40,11 +60,20 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
       setRule(data)
       form.resetFields()
     }}>
+    <Form.Item name='id' noStyle>
+      <Input type='hidden' />
+    </Form.Item>
     <Form.Item
       label={$t({ defaultMessage: 'Type' })}
       name='type'
+      dependencies={['toVlan', 'fromVlan']}
       rules={[
-        { required: true }
+        {
+          required: true
+        },
+        {
+          validator: () => ruleDuplicationValidator()
+        }
       ]}
     >
       <Select
@@ -63,18 +92,42 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
     <Form.Item
       name='fromVlan'
       label={$t({ defaultMessage: 'From VLAN' })}
+      dependencies={['toVlan']}
       rules={[
-        { required: true }
+        {
+          required: true
+        },
+        {
+          type: 'number',
+          min: 1,
+          max: 4094,
+          message: $t({ defaultMessage: 'VLAN ID must be between 1 and 4094' })
+        },
+        {
+          validator: () => vlanDuplicationValidator()
+        }
       ]}
-      children={<Input />}
+      children={<InputNumber />}
     />
     <Form.Item
       name='toVlan'
       label={$t({ defaultMessage: 'To VLAN' })}
+      dependencies={['fromVlan']}
       rules={[
-        { required: true }
+        {
+          required: true
+        },
+        {
+          type: 'number',
+          min: 1,
+          max: 4094,
+          message: $t({ defaultMessage: 'VLAN ID must be between 1 and 4094' })
+        },
+        {
+          validator: () => vlanDuplicationValidator()
+        }
       ]}
-      children={<Input />}
+      children={<InputNumber />}
     />
   </Form>
 
@@ -96,11 +149,16 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
             save: editMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
           })}
           onCancel={onClose}
-          onSave={(addAnotherRuleChecked: boolean) => {
-            form.submit()
+          onSave={async (addAnotherRuleChecked: boolean) => {
+            try {
+              await form.validateFields()
+              form.submit()
 
-            if (!addAnotherRuleChecked) {
-              onClose()
+              if (!addAnotherRuleChecked) {
+                onClose()
+              }
+            } catch (error) {
+              if (error instanceof Error) throw error
             }
           }}
         />

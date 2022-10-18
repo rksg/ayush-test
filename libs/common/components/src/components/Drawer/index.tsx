@@ -53,7 +53,7 @@ export const Drawer = (props: DrawerProps) => {
 interface FormFooterProps {
   showAddAnother?: boolean
   onCancel: () => void
-  onSave: (checked: boolean) => void
+  onSave: (checked: boolean) => Promise<void>
   buttonLabel?: {
     addAnother?: string
     cancel?: string

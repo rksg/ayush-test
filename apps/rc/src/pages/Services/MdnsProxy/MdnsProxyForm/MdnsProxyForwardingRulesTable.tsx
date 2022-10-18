@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }      from 'react-intl'
+import { v4 as uuidv4 } from 'uuid'
 
 import { showActionModal, Table, TableProps }                       from '@acx-ui/components'
 import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
@@ -20,7 +21,6 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
   const { $t } = useIntl()
   const [ drawerFormRule, setDrawerFormRule ] = useState<MdnsProxyForwardingRule>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
-  const [ selectedRuleIndex, setSelectedItemIndex ] = useState(-1)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
 
   const handleAddAction = () => {
@@ -33,8 +33,10 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     const newRules: MdnsProxyForwardingRule[] = rules ? rules.slice() : []
 
     if (drawerEditMode) {
-      newRules[selectedRuleIndex] = data
+      const targetIdx = newRules.findIndex((r: MdnsProxyForwardingRule) => r.id === data.id)
+      newRules.splice(targetIdx, 1, data)
     } else {
+      data.id = uuidv4()
       newRules.push(data)
     }
 
@@ -70,10 +72,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     onClick: (selectedRows) => {
       setDrawerVisible(true)
       setDrawerEditMode(true)
-
-      const selectedRuleIndex = rules.findIndex(value => value.type === selectedRows[0].type)
-      setSelectedItemIndex(selectedRuleIndex)
-      setDrawerFormRule(rules[selectedRuleIndex])
+      setDrawerFormRule(selectedRows[0])
     }
   },{
     label: $t({ defaultMessage: 'Delete' }),
@@ -87,7 +86,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         },
         onOk: () => {
           const newRules = rules.filter((r: MdnsProxyForwardingRule) => {
-            return selectedRows.every((s: MdnsProxyForwardingRule) => s.type !== r.type )
+            return selectedRows[0].id !== r.id
           })
 
           setRules(newRules)
@@ -105,12 +104,23 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
           rule={(drawerFormRule)}
           visible={drawerVisible}
           setVisible={setDrawerVisible}
-          setRule={handleSetRule} />
+          setRule={handleSetRule}
+          isRuleUnique={(comingRule: MdnsProxyForwardingRule) => {
+            // eslint-disable-next-line max-len
+            const hasDuplicationRule = rules.some((rule: MdnsProxyForwardingRule) => {
+              return comingRule.type === rule.type
+                && comingRule.fromVlan === rule.fromVlan
+                && comingRule.toVlan === rule.toVlan
+                && comingRule.id !== rule.id
+            })
+
+            return !hasDuplicationRule
+          }} />
       }
       <Table
         columns={columns}
         dataSource={rules}
-        rowKey='type'
+        rowKey='id'
         actions={readonly
           ? []
           : [{

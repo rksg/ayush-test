@@ -4,6 +4,8 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
   FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import _                from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 
 import {
   CommonUrlsInfo,
@@ -16,7 +18,8 @@ import {
   MdnsProxyUrls,
   DHCPSaveData,
   WifiCallingUrls,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  MdnsProxyForwardingRule
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -146,6 +149,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
+      transformResponse (result: MdnsProxyFormData) {
+        if (!result.forwardingRules) {
+          return result
+        }
+
+        result.forwardingRules = result.forwardingRules.map((rule: MdnsProxyForwardingRule) => {
+          return {
+            ...rule,
+            id: uuidv4()
+          }
+        })
+        return result
+      },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
     }),
     updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
@@ -179,6 +195,11 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MdnsProxyUrls.addMdnsProxy, params)
+
+        if (payload?.forwardingRules) {
+          payload.forwardingRules = payload.forwardingRules.map(r => _.omit(r, 'id'))
+        }
+
         return {
           ...req,
           body: payload
