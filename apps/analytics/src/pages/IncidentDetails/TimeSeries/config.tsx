@@ -22,7 +22,7 @@ export enum TimeSeriesChartTypes {
   TtcFailureChart,
   TtcByFailureTypeChart,
   ApDisconnectionCountChart,
-  DowntimeEventTypeDistributionChart,
+  DowntimeEventTypeDistributionChart
 }
 
 export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
