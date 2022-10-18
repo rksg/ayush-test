@@ -1,8 +1,8 @@
 import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { NetworkFilter, Option, Loader }       from '@acx-ui/components'
-import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
+import { NetworkFilter, Option, Loader }                    from '@acx-ui/components'
+import { useDashboardFilter, NetworkNodePath, NetworkPath } from '@acx-ui/utils'
 
 import { Child, useVenueFilterQuery } from './services'
 import * as UI                        from './styledComponents'
@@ -38,7 +38,9 @@ function VenueFilter () {
           defaultValue={value}
           value={value}
           options={queryResults.data}
-          onApply={(selectedOptions) => setNodeFilter(selectedOptions)}
+          onApply={(selectedOptions: unknown) =>
+            setNodeFilter(selectedOptions as NetworkPath | NetworkPath[])
+          }
           placement='bottomRight'
         />
       </Loader>

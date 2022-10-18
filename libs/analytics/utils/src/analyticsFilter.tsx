@@ -4,8 +4,8 @@ import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { useLocation }                                                                          from '@acx-ui/react-router-dom'
-import { DateFilterContext, getDateRangeFilter, DateFilter, pathFilter, NetworkPath, NodeType } from '@acx-ui/utils'
+import { useLocation }                                                                      from '@acx-ui/react-router-dom'
+import { getDateRangeFilter, DateFilter, pathFilter, NetworkPath, NodeType, useDateFilter } from '@acx-ui/utils'
 
 interface AnalyticsFilterProps {
   path: NetworkPath
@@ -30,10 +30,10 @@ export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : p
 export function useAnalyticsFilter () {
   const { getNetworkFilter, setNetworkPath } = useContext(AnalyticsFilterContext)
   const { networkFilter, raw } = getNetworkFilter()
-  const { dateFilter } = useContext(DateFilterContext)
+  const { dateFilter } = useDateFilter()
   const { range, startDate, endDate } = dateFilter
-  const [search] = useSearchParams()
-  return useMemo(() => ({
+
+  return {
     filters: {
       ...getDateRangeFilter(range, startDate, endDate),
       ...networkFilter
@@ -41,62 +41,64 @@ export function useAnalyticsFilter () {
     setNetworkPath,
     getNetworkFilter,
     raw
-  }), [search]) // eslint-disable-line react-hooks/exhaustive-deps
+  }
 }
 
-export function AnalyticsFilterProvider (props: { children: ReactNode }) {
+export function AnalyticsFilterProvider ({ children }: { children: ReactNode }) {
   const [search, setSearch] = useSearchParams()
   const { pathname } = useLocation()
-  const isHealthPage = pathname.includes('/analytics/health')
-  const getNetworkFilter = () => {
-    let networkFilter = search.has('analyticsNetworkFilter')
-      ? JSON.parse(
-        Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
-      )
-      : { path: defaultNetworkPath, raw: [] }
-    const { path: currentPath, raw: rawVal } = networkFilter
-    let path, filter, raw
-    if (isHealthPage) {
-      if (currentPath.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
-        path = defaultNetworkPath
-        raw = []
-      } else {
-        path = currentPath
+
+  const providerValue = useMemo(() => {
+    const isHealthPage = pathname.includes('/analytics/health')
+    const getNetworkFilter = () => {
+      let networkFilter = search.has('analyticsNetworkFilter')
+        ? JSON.parse(
+          Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
+        )
+        : { path: defaultNetworkPath, raw: [] }
+      const { path: currentPath, raw: rawVal } = networkFilter
+      let path, filter, raw
+      if (isHealthPage) {
+        if (currentPath.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
+          path = defaultNetworkPath
+          raw = []
+        } else {
+          path = currentPath
+          raw = rawVal
+        }
+      } else { // incident page, ...
+        if (currentPath.length === 2) { // venues
+          filter = {
+            networkNodes: [currentPath.slice(1)]
+              .map(([node]) => [{ type: 'zone', name: node.name }]),
+            switchNodes: [currentPath.slice(1)]
+              .map(([node]) => [{ type: 'switchGroup', name: node.name }])
+          } as pathFilter
+          path = defaultNetworkPath
+        } else {
+          path = currentPath
+        }
         raw = rawVal
       }
-    } else { // incident page, ...
-      if (currentPath.length === 2) { // venues
-        filter = {
-          networkNodes: [currentPath.slice(1)]
-            .map(([node]) => [{ type: 'zone', name: node.name }]),
-          switchNodes: [currentPath.slice(1)]
-            .map(([node]) => [{ type: 'switchGroup', name: node.name }])
-        } as pathFilter
-        path = defaultNetworkPath
-      } else {
-        path = currentPath
-      }
-      raw = rawVal
+      return { networkFilter: { filter, path }, raw }
     }
-    return { networkFilter: { filter, path }, raw }
-  }
-  const setNetworkPath = (path: NetworkPath, raw: object) => {
-    search.set(
-      'analyticsNetworkFilter',
-      Buffer.from(JSON.stringify({ path, raw })).toString('base64')
-    )
-    setSearch(search, { replace: true })
-  }
-  const { networkFilter: { path } } = getNetworkFilter()
-  const providerValue = {
-    path: path,
-    setNetworkPath,
-    getNetworkFilter
-  }
+    const setNetworkPath = (path: NetworkPath, raw: object) => {
+      search.set(
+        'analyticsNetworkFilter',
+        Buffer.from(JSON.stringify({ path, raw })).toString('base64')
+      )
+      setSearch(search, { replace: true })
+    }
+    const { networkFilter: { path } } = getNetworkFilter()
+    return {
+      path: path,
+      setNetworkPath,
+      getNetworkFilter
+    }
+  }, [pathname, search, setSearch])
   return (
-    <AnalyticsFilterContext.Provider
-      {...props}
-      value={providerValue}
-    />
+    <AnalyticsFilterContext.Provider value={providerValue}>
+      {children}
+    </AnalyticsFilterContext.Provider>
   )
 }

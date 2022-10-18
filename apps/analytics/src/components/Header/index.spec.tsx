@@ -1,3 +1,5 @@
+import { BrowserRouter } from 'react-router-dom'
+
 import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
@@ -37,7 +39,7 @@ describe('Analytics dumb header', () => {
     }
   }
   it('should render correctly', async () => {
-    render(<DumbHeader {...props}/>)
+    render(<BrowserRouter><DumbHeader {...props}/></BrowserRouter>)
     expect(await screen.findByText('name')).toBeVisible()
     expect(await screen.findByText('APs: 1')).toBeVisible()
     expect(await screen.findByText('Firmware: 1 (2)')).toBeVisible()
@@ -53,14 +55,24 @@ describe('Analytics connected header', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
       data: header1.queryResult
     })
-    render(<Provider> <Header title={''} shouldQuerySwitch/></Provider>)
+    render(
+      <BrowserRouter>
+        <Provider>
+          <Header title={''} shouldQuerySwitch/>
+        </Provider>
+      </BrowserRouter>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render header', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
       data: header2.queryResult
     })
-    render(<Provider><Header title={'Title'} shouldQuerySwitch/></Provider>)
+    render(
+      <BrowserRouter>
+        <Provider>
+          <Header title={'Title'} shouldQuerySwitch/>
+        </Provider>
+      </BrowserRouter>)
     await screen.findByText('Venue')
     expect(screen.getByTitle('Venue')).toHaveTextContent('Type:')
   })
