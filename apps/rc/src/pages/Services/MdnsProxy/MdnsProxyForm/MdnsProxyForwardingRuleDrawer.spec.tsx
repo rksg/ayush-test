@@ -53,7 +53,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
       return { visible, setVisible }
     })
 
-    const targetRule: MdnsProxyForwardingRule = {
+    const ruleToAdd: MdnsProxyForwardingRule = {
       type: MdnsProxyForwardingRuleTypeEnum.AIRPLAY,
       fromVlan: 1,
       toVlan: 2
@@ -62,7 +62,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     const setRule = jest.fn()
 
     const { result: fakeRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[targetRule.type])
+      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.type])
     })
 
     render(
@@ -80,17 +80,17 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     await userEvent.click(screen.getByText(fakeRuleTypeLabel.current))
 
     // eslint-disable-next-line max-len
-    await userEvent.type(screen.getByRole('spinbutton', { name: /From VLAN/i }), targetRule.fromVlan.toString())
+    await userEvent.type(screen.getByRole('spinbutton', { name: /From VLAN/i }), ruleToAdd.fromVlan.toString())
     // eslint-disable-next-line max-len
-    await userEvent.type(screen.getByRole('spinbutton', { name: /To VLAN/i }), targetRule.toVlan.toString())
+    await userEvent.type(screen.getByRole('spinbutton', { name: /To VLAN/i }), ruleToAdd.toVlan.toString())
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       await userEvent.click(screen.getByRole('button', { name: 'Add' }))
       expect(setRule).toHaveBeenCalledWith({
-        type: targetRule.type,
-        fromVlan: targetRule.fromVlan,
-        toVlan: targetRule.toVlan
+        type: ruleToAdd.type,
+        fromVlan: ruleToAdd.fromVlan,
+        toVlan: ruleToAdd.toVlan
       })
     })
 

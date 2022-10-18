@@ -41,11 +41,11 @@ describe('MdnsProxySettingsForm', () => {
     await userEvent.click(screen.getByText(fakeRuleTypeLabel.current))
 
     await userEvent.type(
-      screen.getByRole('textbox', { name: /From VLAN/i }),
+      screen.getByRole('spinbutton', { name: /From VLAN/i }),
       ruleToAdd.fromVlan.toString()
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: /To VLAN/i }),
+      screen.getByRole('spinbutton', { name: /To VLAN/i }),
       ruleToAdd.toVlan.toString()
     )
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
@@ -97,11 +97,11 @@ describe('MdnsProxySettingsForm', () => {
     await userEvent.click(await screen.findByRole('combobox', { name: 'Type' }))
     await userEvent.click(screen.getByText(ruleAfterEditTypeLabel.current))
 
-    const fromVlanInput = screen.getByRole('textbox', { name: /From VLAN/i })
+    const fromVlanInput = screen.getByRole('spinbutton', { name: /From VLAN/i })
     await userEvent.clear(fromVlanInput)
     await userEvent.type(fromVlanInput, ruleAfterEdit.fromVlan.toString())
 
-    const toVlanInput = screen.getByRole('textbox', { name: /To VLAN/i })
+    const toVlanInput = screen.getByRole('spinbutton', { name: /To VLAN/i })
     await userEvent.clear(toVlanInput)
     await userEvent.type(toVlanInput, ruleAfterEdit.toVlan.toString())
 
@@ -139,8 +139,10 @@ describe('MdnsProxySettingsForm', () => {
     await userEvent.click(within(targetRow).getByRole('radio'))
     await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
 
-    await screen.findByText('Delete "' + targetRuleTypeLabel.current + '"?')
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Delete "' + targetRuleTypeLabel.current + '"?')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: /Delete Rule/i }))
+
 
     // eslint-disable-next-line max-len
     const targetAfterDelete = screen.queryByRole('cell', { name: targetRuleTypeLabel.current })

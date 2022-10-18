@@ -4,11 +4,13 @@ export const mockedTenantId = '6de6a5239a1441cfb9c7fde93aa613fe'
 
 export const mockedForwardingRules: MdnsProxyForwardingRule[] = [
   {
+    id: '__UUID__rule1',
     type: MdnsProxyForwardingRuleTypeEnum.AIRPLAY,
     fromVlan: 10,
     toVlan: 20
   },
   {
+    id: '__UUID__rule2',
     type: MdnsProxyForwardingRuleTypeEnum.AIRDISK,
     fromVlan: 21,
     toVlan: 30
