@@ -57,7 +57,7 @@ describe('Analytics connected header', () => {
       data: header1.queryResult
     })
     render(<Provider> <Header title={''} shouldQuerySwitch/></Provider>)
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    expect(screen.getAllByRole('img', { name: 'loader' })).toHaveLength(2)
   })
   it('should render header', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {

@@ -5,9 +5,9 @@ import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { nodeTypes, useAnalyticsFilter }                          from '@acx-ui/analytics/utils'
-import { PageHeader, PageHeaderProps, Loader, RangePicker }       from '@acx-ui/components'
-import { useDateFilter, dateRangeForLast, NodeType, NetworkPath } from '@acx-ui/utils'
+import { nodeTypes, useAnalyticsFilter }                                      from '@acx-ui/analytics/utils'
+import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
+import { useDateFilter, dateRangeForLast, NodeType, NetworkPath }             from '@acx-ui/utils'
 
 import NetworkFilter from '../NetworkFilter'
 
@@ -55,7 +55,10 @@ export const useSubTitle =
 (subTitles: SubTitle[], type: NodeType, queryState: QueryState): ReactElement => {
   const { $t } = useIntl()
   const subs = [{ key: 'type', value: [nodeTypes(type)] }, ...subTitles]
-  return (<Loader states={[queryState]}>
+  return <Loader
+    states={[queryState]}
+    fallback={<SuspenseBoundary.DefaultFallback size='small' />}
+  >
     <span>
       {subs.map(({ key, value }, index) => {
         const labelKey = key as keyof typeof labelMap
@@ -68,10 +71,10 @@ export const useSubTitle =
         )
       })}
     </span>
-  </Loader>)
+  </Loader>
 }
 
-export const useTitle = (
+export const renderTitle = (
   filter: NetworkPath | undefined,
   path: unknown[],
   data: HeaderData,
@@ -79,9 +82,12 @@ export const useTitle = (
   title: ReactNode | undefined,
   queryState: QueryState
 ): ReactNode => {
-  return <Loader states={[queryState]}>
+  return <Loader
+    states={[queryState]}
+    fallback={<SuspenseBoundary.DefaultFallback size='default' />}
+  >
     {filter || path.length > 1 ?
-      (data.name || name as string) // ap/switch name from data || venue name from filter
+      (data?.name || name as string) // ap/switch name from data || venue name from filter
       : title}
   </Loader>
 }
@@ -97,8 +103,8 @@ export const Header =
   return (
     <PageHeader
       {...props}
-      subTitle={useSubTitle(data.subTitle, type, queryState)}
-      title={useTitle(filter, path, data, name, props.title, queryState)}
+      subTitle={useSubTitle(data?.subTitle || [], type, queryState)}
+      title={renderTitle(filter, path, data, name, props.title, queryState)}
       extra={useMemo(() => [
         <NetworkFilter
           key='network-filter'
@@ -126,16 +132,12 @@ const ConnectedHeader = (
 ) => {
   const { filters } = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
-  const { isLoading, isFetching, isError } = queryResults
-  const queryState = { isError, isFetching, isLoading, data: queryResults.data as HeaderData }
   return (
     <ConnectedHeaderWrapper>
-      <Loader states={[queryResults]}>
-        <Header
-          {...props}
-          queryState={queryState}
-        />
-      </Loader>
+      <Header
+        {...props}
+        queryState={{ ...queryResults, isLoading: false, data: queryResults.data as HeaderData }}
+      />
     </ConnectedHeaderWrapper>
   )
 }
