@@ -80,6 +80,12 @@ describe('checkNoData', () => {
   it('should return false if data is present', ()=>{
     expect(checkNoData(sample))
       .toEqual(false)
+    expect(checkNoData({
+      ...sample,
+      newClientCount: [1, 2, null, 4, 5],
+      impactedClientCount: [null, null, 8, null, null],
+      connectedClientCount: [null]
+    })).toEqual(false)
   })
   it('should return true if no data', ()=>{
     expect(checkNoData(null))

@@ -23,7 +23,7 @@ export function useDataZoom<TChartData extends TimeSeriesChartData> (
   zoomEnabled: boolean,
   data: TChartData[],
   zoom?: TimeStampRange,
-  onDataZoom?: (range: TimeStampRange) => void
+  onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
 ): [boolean, (event: OnDatazoomEvent) => void, () => void] {
   const firstLastTimeStamp = useCallback((data: TChartData[]) => {
     const firstSeries = data[0].data
@@ -55,10 +55,10 @@ export function useDataZoom<TChartData extends TimeSeriesChartData> (
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
   const onDatazoomCallback = useCallback((event: OnDatazoomEvent) => {
     const firstBatch = event.batch?.[0]
-    firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue])
+    firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
     if (event.start === 0 && event.end === 100) {
       const [firstTimeStamp, lastTimeStamp] = firstLastTimeStamp(data)
-      onDataZoom && onDataZoom([+new Date(firstTimeStamp), +new Date(lastTimeStamp)])
+      onDataZoom && onDataZoom([+new Date(firstTimeStamp), +new Date(lastTimeStamp)], true)
       setCanResetZoom(false)
     } else {
       setCanResetZoom(true)
