@@ -12,9 +12,9 @@ interface ProgressBarProps {
 }
 
 export const strokeColorsByPercent = (percent: number) => {
-  const poor = cssStr('--acx-semantics-red-50') // RED
-  const average = cssStr('--acx-semantics-yellow-40') // YELLOW
-  const good = cssStr('--acx-semantics-green-50') // GREEN
+  const poor = cssStr('--acx-semantics-red-50')
+  const average = cssStr('--acx-semantics-yellow-40')
+  const good = cssStr('--acx-semantics-green-50')
 
   // Create array of same color based on the percentage
   if (percent <= 20)
