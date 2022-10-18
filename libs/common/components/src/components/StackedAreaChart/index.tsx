@@ -4,9 +4,9 @@ import {
   useRef
 } from 'react'
 
-import ReactECharts from 'echarts-for-react'
-import { isEmpty }  from 'lodash'
-import { useIntl }  from 'react-intl'
+import ReactECharts       from 'echarts-for-react'
+import { isEmpty, sumBy } from 'lodash'
+import { useIntl }        from 'react-intl'
 
 import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import type { TimeStampRange } from '@acx-ui/types'
@@ -52,17 +52,17 @@ export interface StackedAreaChartProps
 
 export function getSeriesTotal <DataType extends TimeSeriesChartData> (
   series: DataType[],
-  tooltipTotalTitleTitle: string
+  tooltipTotalTitle: string
 ) {
   return {
     key: 'total',
-    name: tooltipTotalTitleTitle,
+    name: tooltipTotalTitle,
     show: false,
     data: series[0].data.map((point, index)=>{
-      const total = series.reduce((sum, series)=>
-        (typeof series.data[index][1] === 'number'
-          ? sum + (series.data[index][1] as number)
-          : sum ), 0)
+      const total = sumBy(series, (datum) => {
+        const value = datum.data[index][1]
+        return typeof value === 'number' ? value : 0
+      })
       return [ point[0], total ]
     })
   } as DataType
