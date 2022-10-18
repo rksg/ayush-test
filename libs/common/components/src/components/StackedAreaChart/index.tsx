@@ -26,6 +26,7 @@ import {
 }                             from '../Chart/helper'
 import { ResetWrapper, ResetButton } from '../Chart/styledComponents'
 import { useDataZoom }               from '../Chart/useDataZoom'
+import { useLegendSelectChanged }    from '../Chart/useLegendSelectChanged'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
@@ -80,6 +81,7 @@ export function StackedAreaChart <
 }: StackedAreaChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
+  useLegendSelectChanged(eChartsRef)
 
   const { $t } = useIntl()
 
