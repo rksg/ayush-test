@@ -9,6 +9,7 @@ import { TimeSeriesChartTypes }    from '../config'
 import { Api }                     from '../services'
 import { TimeSeriesChartResponse } from '../types'
 
+import { buffer6hr }                 from './__tests__/fixtures'
 import { ApDisconnectionCountChart } from './ApDisconnectionCountChart'
 
 const expectedResult = {
@@ -48,6 +49,7 @@ describe('ApDisconnectionCountChart', () => {
       <BrowserRouter>
         <ApDisconnectionCountChart
           chartRef={()=>{}}
+          buffer={buffer6hr}
           incident={fakeIncidentDowntimeHigh}
           data={expectedResult}
         />
@@ -64,6 +66,7 @@ describe('apDisconnectionCountChartQuery', () => {
     }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
+        buffer: buffer6hr,
         incident: fakeIncidentDowntimeHigh,
         charts: [TimeSeriesChartTypes.ApDisconnectionCountChart],
         minGranularity: 'PT180S'

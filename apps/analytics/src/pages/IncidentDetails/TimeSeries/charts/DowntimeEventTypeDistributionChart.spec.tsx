@@ -9,6 +9,7 @@ import { TimeSeriesChartTypes }    from '../config'
 import { Api }                     from '../services'
 import { TimeSeriesChartResponse } from '../types'
 
+import { buffer6hr }                          from './__tests__/fixtures'
 import { DowntimeEventTypeDistributionChart } from './DowntimeEventTypeDistributionChart'
 
 const expectedResult = {
@@ -36,7 +37,12 @@ describe('TtcByFailureTypeChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <DowntimeEventTypeDistributionChart data={expectedResult}/>
+        <DowntimeEventTypeDistributionChart
+          chartRef={()=>{}}
+          buffer={buffer6hr}
+          incident={fakeIncidentDowntimeHigh}
+          data={expectedResult}
+        />
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -50,6 +56,7 @@ describe('downtimeEventTypeDistributionChartQuery', () => {
     }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
+        buffer: buffer6hr,
         incident: fakeIncidentDowntimeHigh,
         charts: [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart],
         minGranularity: 'PT180S'

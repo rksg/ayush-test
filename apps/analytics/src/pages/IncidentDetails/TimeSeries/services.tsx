@@ -8,19 +8,12 @@ import { calculateGranularity } from '../../../utils'
 
 import { timeSeriesCharts, TimeSeriesChartTypes } from './config'
 
-import type { TimeSeriesChartResponse } from './types'
-
-export type BufferConfig = {
-  value: number;
-  unit: unitOfTime.Base;
-}
-
-export type BufferType = { front: BufferConfig, back: BufferConfig }
+import type { BufferType, TimeSeriesChartResponse } from './types'
 
 export interface ChartDataProps {
   charts: TimeSeriesChartTypes[]
   incident: Incident
-  buffer: BufferType,
+  buffer: BufferType
   minGranularity: string
 }
 

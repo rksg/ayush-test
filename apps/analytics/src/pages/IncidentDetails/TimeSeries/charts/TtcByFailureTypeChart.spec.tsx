@@ -1,4 +1,3 @@
-import { unitOfTime }    from 'moment-timezone'
 import { BrowserRouter } from 'react-router-dom'
 
 import { dataApiURL }                             from '@acx-ui/analytics/services'
@@ -9,6 +8,7 @@ import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
 
+import { buffer6hr }             from './__tests__/fixtures'
 import { TtcByFailureTypeChart } from './TtcByFailureTypeChart'
 
 import type { TimeSeriesChartResponse } from '../types'
@@ -39,7 +39,12 @@ describe('TtcByFailureTypeChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <TtcByFailureTypeChart chartRef={()=>{}} incident={fakeIncidentTtc} data={expectedResult}/>
+        <TtcByFailureTypeChart
+          chartRef={()=>{}}
+          buffer={buffer6hr}
+          incident={fakeIncidentTtc}
+          data={expectedResult}
+        />
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -51,15 +56,11 @@ describe('ttcByFailureTypeChartQuery', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: { network: { hierarchyNode: expectedResult } }
     }, true)
-    const buffer = {
-      front: { value: 6, unit: 'hours' as unitOfTime.Base },
-      back: { value: 6, unit: 'hours' as unitOfTime.Base }
-    }
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
+        buffer: buffer6hr,
         incident: fakeIncidentTtc,
         charts: [TimeSeriesChartTypes.TtcByFailureTypeChart],
-        buffer,
         minGranularity: 'PT180S'
       })
     )

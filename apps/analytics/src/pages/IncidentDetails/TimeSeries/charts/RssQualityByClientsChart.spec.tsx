@@ -1,4 +1,3 @@
-import { unitOfTime }    from 'moment-timezone'
 import { BrowserRouter } from 'react-router-dom'
 
 import { dataApiURL }                             from '@acx-ui/analytics/services'
@@ -9,6 +8,7 @@ import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
 
+import { noBuffer }                 from './__tests__/fixtures'
 import { RssQualityByClientsChart } from './RssQualityByClientsChart'
 
 import type { TimeSeriesChartResponse } from '../types'
@@ -38,6 +38,7 @@ describe('RssQualityByClientsChart', () => {
       <BrowserRouter>
         <RssQualityByClientsChart
           chartRef={()=>{}}
+          buffer={noBuffer}
           incident={fakeIncidentRss}
           data={expectedResult}
         />
@@ -50,15 +51,11 @@ describe('RssQualityByClientsChart', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: { network: { hierarchyNode: expectedResult } }
     }, true)
-    const buffer = {
-      front: { value: 0, unit: 'hours' as unitOfTime.Base },
-      back: { value: 0, unit: 'hours' as unitOfTime.Base }
-    }
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
+        buffer: noBuffer,
         incident: fakeIncidentRss,
         charts: [TimeSeriesChartTypes.RssQualityByClientsChart],
-        buffer,
         minGranularity: 'PT180S'
       })
     )
