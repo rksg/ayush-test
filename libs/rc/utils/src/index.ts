@@ -10,17 +10,10 @@ export * from './validator'
 
 export * from './schedule.utils'
 export * from './toast/toastService'
-export * from './models/NetworkVenue'
-export * from './models/SchedulerTypeEnum'
-export * from './models/NetworkVenueScheduler'
-export * from './models/OpenWlanAdvancedCustomization'
-export * from './models/AAAWlanAdvancedCustomization'
-export * from './models/DpskWlanAdvancedCustomization'
-export * from './models/PskWlanAdvancedCustomization'
+export * from './models'
 
 export * from './types/user'
 export * from './types/venue'
-export * from './types/venueForm'
 export * from './types'
 
 export * from './pipes/networkPipes'

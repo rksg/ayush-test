@@ -70,7 +70,8 @@ function Incidents () {
     <>
       <Header
         title={$t({ defaultMessage: 'Incidents' })}
-        shouldQuerySwitch={true}
+        shouldQuerySwitch
+        withIncidents
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>
             {incidentTabs.map((tabInfo) => (
