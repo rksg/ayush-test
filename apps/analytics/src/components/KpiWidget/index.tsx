@@ -1,9 +1,8 @@
 import { Tooltip }            from 'antd'
 import { useIntl, IntlShape } from 'react-intl'
 
-import { AnalyticsFilter }                          from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, kpiConfig }               from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, SparklineChart, Loader } from '@acx-ui/components'
-import { kpiDefaultThresholds }                     from '@acx-ui/config'
 import { intlFormats, formatter }                   from '@acx-ui/utils'
 
 import { useKpiTimeseriesQuery, TimeseriesData } from './services'
@@ -45,19 +44,19 @@ export const getKpiInfoText = (numerator:number,
       title: $t({ defaultMessage: 'Time To Connect' }),
       shortText: $t({ defaultMessage: 'Under {threshold}' },
         { threshold: formatter('durationFormat')(threshold ??
-           kpiDefaultThresholds.timeToConnect) }),
+           kpiConfig.timeToConnect.histogram.initialThreshold) }),
       tooltip: $t({ defaultMessage: '{n} of {d} connections under {threshold}' },
         { n,d, threshold: formatter('longDurationFormat')(threshold ??
-           kpiDefaultThresholds.timeToConnect) })
+          kpiConfig.timeToConnect.histogram.initialThreshold) })
     },
     clientThroughput: {
       title: $t({ defaultMessage: 'Client Throughput' }),
       shortText: $t({ defaultMessage: 'Above {threshold}' },
         { threshold: formatter('networkSpeedFormat')(threshold ??
-           kpiDefaultThresholds.clientThroughput) }),
+           kpiConfig.clientThroughput.histogram.initialThreshold) }),
       tooltip: $t({ defaultMessage: '{n} of {d} sessions above {threshold}' },
         { n,d, threshold: formatter('networkSpeedFormat')(threshold ??
-           kpiDefaultThresholds.clientThroughput) })
+          kpiConfig.clientThroughput.histogram.initialThreshold) })
     }
   }
 }

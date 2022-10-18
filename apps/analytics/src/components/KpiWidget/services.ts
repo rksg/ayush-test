@@ -1,8 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }              from '@acx-ui/analytics/services'
-import { AnalyticsFilter }      from '@acx-ui/analytics/utils'
-import { kpiDefaultThresholds } from '@acx-ui/config'
+import { dataApi }                    from '@acx-ui/analytics/services'
+import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 
 import { getSparklineGranularity } from '../../utils'
 
@@ -20,11 +19,11 @@ const kpiMetricMap:KpiList<KpiConfig> = {
   },
   timeToConnect: {
     name: 'ttcCountAndConnectionCount',
-    defaultThreshold: kpiDefaultThresholds.timeToConnect
+    defaultThreshold: kpiConfig.timeToConnect.histogram.initialThreshold
   },
   clientThroughput: {
     name: 'throughputCountAndSessionCount',
-    defaultThreshold: kpiDefaultThresholds.clientThroughput
+    defaultThreshold: kpiConfig.clientThroughput.histogram.initialThreshold
   }
 }
 
