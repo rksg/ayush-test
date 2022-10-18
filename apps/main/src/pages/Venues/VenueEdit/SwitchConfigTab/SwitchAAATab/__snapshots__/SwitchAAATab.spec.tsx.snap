@@ -2,332 +2,2383 @@
 
 exports[`SwitchAAATab should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-row Grid__GridRow-sc-5irhjd-2"
-    style="margin: -10px -10px -10px -10px;"
+  <section
+    class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
   >
     <div
-      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-      style="padding: 10px 10px 10px 10px;"
+      class="ant-pro-steps-form"
     >
       <div
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
       >
-        <div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
           <div
-            class=""
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
           >
             <div
-              class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 gMCsgt"
-              style="max-height: calc(100vh - 275px);"
+              class="ant-steps ant-steps-vertical ant-steps-dot"
             >
               <div
-                class="ant-anchor"
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
               >
                 <div
-                  class="ant-anchor-ink"
+                  class="ant-steps-item-container"
                 >
-                  <span
-                    class="ant-anchor-ink-ball visible"
-                    style="top: -4.5px;"
+                  <div
+                    class="ant-steps-item-tail"
                   />
-                </div>
-                <div
-                  class="ant-anchor-link ant-anchor-link-active"
-                >
-                  <a
-                    class="ant-anchor-link-title ant-anchor-link-title-active"
-                    href="#Servers-&-Users"
-                    title="Servers & Users"
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    Servers & Users
-                  </a>
-                </div>
-                <div
-                  class="ant-anchor-link"
-                >
-                  <a
-                    class="ant-anchor-link-title"
-                    href="#Settings"
-                    title="Settings"
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
                   >
-                    Settings
-                  </a>
+                    <div
+                      class="ant-steps-item-title"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
-      style="padding: 10px 10px 10px 10px;"
-    >
       <div
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
       >
         <div
-          class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
-          id="Servers-&-Users"
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
         >
-          <h3
-            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
-            id="aaa-servers"
-          >
-            Servers & Users
-          </h3>
           <div
-            class="styledComponents__AAAServers-sc-1m2ni0r-0 ZnKYN"
+            class="ant-pro-steps-form-container"
           >
             <div
-              class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost"
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
             >
               <div
-                class="ant-collapse-item ant-collapse-item-active"
+                class="ant-row Grid__GridRow-sc-5irhjd-2"
+                style="margin: -10px -10px -10px -10px;"
               >
                 <div
-                  aria-expanded="true"
-                  class="ant-collapse-header"
-                  role="button"
-                  tabindex="0"
+                  class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                  style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="ant-collapse-expand-icon"
+                    class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
-                    <span
-                      aria-label="right"
-                      class="anticon anticon-right ant-collapse-arrow"
-                      role="img"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        data-icon="right"
-                        fill="currentColor"
-                        focusable="false"
-                        height="1em"
-                        style="transform: rotate(90deg);"
-                        viewBox="64 64 896 896"
-                        width="1em"
-                      >
-                        <path
-                          d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                  <span
-                    class="ant-collapse-header-text"
-                  >
-                    RADIUS Servers (0)
-                  </span>
-                </div>
-                <div
-                  class="ant-collapse-content ant-collapse-content-active"
-                >
-                  <div
-                    class="ant-collapse-content-box"
-                  >
-                    <div
-                      class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
-                    >
+                    <div>
                       <div
-                        class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                        class=""
                       >
-                        <span
-                          aria-label="loader"
-                          role="img"
+                        <div
+                          class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 gMCsgt"
+                          style="max-height: calc(100vh - 275px);"
                         >
                           <div
-                            aria-busy="true"
-                            aria-live="polite"
-                            class="ant-spin ant-spin-lg ant-spin-spinning"
+                            class="ant-anchor"
                           >
-                            <span
-                              class="ant-spin-dot ant-spin-dot-spin"
+                            <div
+                              class="ant-anchor-ink"
                             >
-                              <i
-                                class="ant-spin-dot-item"
+                              <span
+                                class="ant-anchor-ink-ball visible"
+                                style="top: -4.5px;"
                               />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                            </span>
+                            </div>
+                            <div
+                              class="ant-anchor-link ant-anchor-link-active"
+                            >
+                              <a
+                                class="ant-anchor-link-title ant-anchor-link-title-active"
+                                href="#Servers-&-Users"
+                                title="Servers & Users"
+                              >
+                                Servers & Users
+                              </a>
+                            </div>
+                            <div
+                              class="ant-anchor-link"
+                            >
+                              <a
+                                class="ant-anchor-link-title"
+                                href="#Settings"
+                                title="Settings"
+                              >
+                                Settings
+                              </a>
+                            </div>
                           </div>
-                        </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="ant-collapse-item ant-collapse-item-active"
-              >
                 <div
-                  aria-expanded="true"
-                  class="ant-collapse-header"
-                  role="button"
-                  tabindex="0"
+                  class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                  style="padding: 10px 10px 10px 10px;"
                 >
                   <div
-                    class="ant-collapse-expand-icon"
-                  >
-                    <span
-                      aria-label="right"
-                      class="anticon anticon-right ant-collapse-arrow"
-                      role="img"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        data-icon="right"
-                        fill="currentColor"
-                        focusable="false"
-                        height="1em"
-                        style="transform: rotate(90deg);"
-                        viewBox="64 64 896 896"
-                        width="1em"
-                      >
-                        <path
-                          d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                  <span
-                    class="ant-collapse-header-text"
-                  >
-                    TACACS+ Servers (0)
-                  </span>
-                </div>
-                <div
-                  class="ant-collapse-content ant-collapse-content-active"
-                >
-                  <div
-                    class="ant-collapse-content-box"
+                    class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     <div
-                      class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                      class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+                      id="Servers-&-Users"
                     >
-                      <div
-                        class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                      <h3
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                        id="aaa-servers"
                       >
-                        <span
-                          aria-label="loader"
-                          role="img"
+                        Servers & Users
+                      </h3>
+                      <div
+                        class="styledComponents__AAAServers-sc-1m2ni0r-0 ZnKYN"
+                      >
+                        <div
+                          class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost"
                         >
                           <div
-                            aria-busy="true"
-                            aria-live="polite"
-                            class="ant-spin ant-spin-lg ant-spin-spinning"
+                            class="ant-collapse-item ant-collapse-item-active"
                           >
-                            <span
-                              class="ant-spin-dot ant-spin-dot-spin"
+                            <div
+                              aria-expanded="true"
+                              class="ant-collapse-header"
+                              role="button"
+                              tabindex="0"
                             >
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                            </span>
+                              <div
+                                class="ant-collapse-expand-icon"
+                              >
+                                <span
+                                  aria-label="right"
+                                  class="anticon anticon-right ant-collapse-arrow"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="right"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    style="transform: rotate(90deg);"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                    />
+                                  </svg>
+                                </span>
+                              </div>
+                              <span
+                                class="ant-collapse-header-text"
+                              >
+                                RADIUS Servers (0)
+                              </span>
+                            </div>
+                            <div
+                              class="ant-collapse-content ant-collapse-content-active"
+                            >
+                              <div
+                                class="ant-collapse-content-box"
+                              >
+                                <div
+                                  class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                                >
+                                  <div
+                                    class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                                  >
+                                    <span
+                                      aria-label="loader"
+                                      role="img"
+                                    >
+                                      <div
+                                        aria-busy="true"
+                                        aria-live="polite"
+                                        class="ant-spin ant-spin-lg ant-spin-spinning"
+                                      >
+                                        <span
+                                          class="ant-spin-dot ant-spin-dot-spin"
+                                        >
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                        </span>
+                                      </div>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                        </span>
+                          <div
+                            class="ant-collapse-item ant-collapse-item-active"
+                          >
+                            <div
+                              aria-expanded="true"
+                              class="ant-collapse-header"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="ant-collapse-expand-icon"
+                              >
+                                <span
+                                  aria-label="right"
+                                  class="anticon anticon-right ant-collapse-arrow"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="right"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    style="transform: rotate(90deg);"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                    />
+                                  </svg>
+                                </span>
+                              </div>
+                              <span
+                                class="ant-collapse-header-text"
+                              >
+                                TACACS+ Servers (0)
+                              </span>
+                            </div>
+                            <div
+                              class="ant-collapse-content ant-collapse-content-active"
+                            >
+                              <div
+                                class="ant-collapse-content-box"
+                              >
+                                <div
+                                  class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                                >
+                                  <div
+                                    class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                                  >
+                                    <span
+                                      aria-label="loader"
+                                      role="img"
+                                    >
+                                      <div
+                                        aria-busy="true"
+                                        aria-live="polite"
+                                        class="ant-spin ant-spin-lg ant-spin-spinning"
+                                      >
+                                        <span
+                                          class="ant-spin-dot ant-spin-dot-spin"
+                                        >
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                        </span>
+                                      </div>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-collapse-item ant-collapse-item-active"
+                          >
+                            <div
+                              aria-expanded="true"
+                              class="ant-collapse-header"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="ant-collapse-expand-icon"
+                              >
+                                <span
+                                  aria-label="right"
+                                  class="anticon anticon-right ant-collapse-arrow"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="right"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    style="transform: rotate(90deg);"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                    />
+                                  </svg>
+                                </span>
+                              </div>
+                              <span
+                                class="ant-collapse-header-text"
+                              >
+                                Local Users (0)
+                              </span>
+                            </div>
+                            <div
+                              class="ant-collapse-content ant-collapse-content-active"
+                            >
+                              <div
+                                class="ant-collapse-content-box"
+                              >
+                                <div
+                                  class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                                >
+                                  <div
+                                    class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                                  >
+                                    <span
+                                      aria-label="loader"
+                                      role="img"
+                                    >
+                                      <div
+                                        aria-busy="true"
+                                        aria-live="polite"
+                                        class="ant-spin ant-spin-lg ant-spin-spinning"
+                                      >
+                                        <span
+                                          class="ant-spin-dot ant-spin-dot-spin"
+                                        >
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                        </span>
+                                      </div>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-collapse-item ant-collapse-item-active"
-              >
-                <div
-                  aria-expanded="true"
-                  class="ant-collapse-header"
-                  role="button"
-                  tabindex="0"
-                >
-                  <div
-                    class="ant-collapse-expand-icon"
-                  >
-                    <span
-                      aria-label="right"
-                      class="anticon anticon-right ant-collapse-arrow"
-                      role="img"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        data-icon="right"
-                        fill="currentColor"
-                        focusable="false"
-                        height="1em"
-                        style="transform: rotate(90deg);"
-                        viewBox="64 64 896 896"
-                        width="1em"
-                      >
-                        <path
-                          d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                  <span
-                    class="ant-collapse-header-text"
-                  >
-                    Local Users (0)
-                  </span>
-                </div>
-                <div
-                  class="ant-collapse-content ant-collapse-content-active"
-                >
-                  <div
-                    class="ant-collapse-content-box"
-                  >
                     <div
-                      class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                      class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+                      id="Settings"
                     >
-                      <div
-                        class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                      <h3
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                        id="aaa-settings"
                       >
-                        <span
-                          aria-label="loader"
-                          role="img"
+                        Settings
+                      </h3>
+                      <form
+                        autocomplete="off"
+                        class="ant-form ant-form-horizontal"
+                        id="aaa-settings"
+                      >
+                        <input
+                          style="display: none;"
+                          type="text"
+                        />
+                        <div
+                          class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost"
                         >
                           <div
-                            aria-busy="true"
-                            aria-live="polite"
-                            class="ant-spin ant-spin-lg ant-spin-spinning"
+                            class="ant-collapse-item ant-collapse-item-active"
                           >
-                            <span
-                              class="ant-spin-dot ant-spin-dot-spin"
+                            <div
+                              aria-expanded="true"
+                              class="ant-collapse-header"
+                              role="button"
+                              tabindex="0"
                             >
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                            </span>
+                              <div
+                                class="ant-collapse-expand-icon"
+                              >
+                                <span
+                                  aria-label="right"
+                                  class="anticon anticon-right ant-collapse-arrow"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="right"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    style="transform: rotate(90deg);"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                    />
+                                  </svg>
+                                </span>
+                              </div>
+                              <span
+                                class="ant-collapse-header-text"
+                              >
+                                Log-in Authentication
+                              </span>
+                            </div>
+                            <div
+                              class="ant-collapse-content ant-collapse-content-active"
+                            >
+                              <div
+                                class="ant-collapse-content-box"
+                              >
+                                <div
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_authnEnabledSsh"
+                                        title="SSH Authentication"
+                                      >
+                                        SSH Authentication
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch"
+                                            id="aaa-settings_authnEnabledSsh"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_authnEnableTelnet"
+                                        title="Telnet Authentication"
+                                      >
+                                        Telnet Authentication
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch"
+                                            id="aaa-settings_authnEnableTelnet"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-hidden"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_selectedLoginServers"
+                                        title="Set Priority"
+                                      >
+                                        Set Priority
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <div
+                                            class="ant-transfer"
+                                          >
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  4 items
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Available Servers & Users
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <ul
+                                                  class="ant-transfer-list-content"
+                                                >
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="RADIUS Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      RADIUS Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="TACACS+ Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      TACACS+ Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="Local Users"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      Local Users
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="No Authentication"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      No Authentication
+                                                    </span>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-operation"
+                                            >
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="right"
+                                                  class="anticon anticon-right"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="right"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="left"
+                                                  class="anticon anticon-left"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="left"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  0 item
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Selected order
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <div
+                                                  class="ant-transfer-list-body-not-found"
+                                                >
+                                                  <div
+                                                    class="ant-empty ant-empty-normal ant-empty-small"
+                                                  >
+                                                    <div
+                                                      class="ant-empty-image"
+                                                    >
+                                                      <svg
+                                                        class="ant-empty-img-simple"
+                                                        height="41"
+                                                        viewBox="0 0 64 41"
+                                                        width="64"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                      >
+                                                        <g
+                                                          fill="none"
+                                                          fill-rule="evenodd"
+                                                          transform="translate(0 1)"
+                                                        >
+                                                          <ellipse
+                                                            class="ant-empty-img-simple-ellipse"
+                                                            cx="32"
+                                                            cy="33"
+                                                            rx="32"
+                                                            ry="7"
+                                                          />
+                                                          <g
+                                                            class="ant-empty-img-simple-g"
+                                                            fill-rule="nonzero"
+                                                          >
+                                                            <path
+                                                              d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                                            />
+                                                            <path
+                                                              class="ant-empty-img-simple-path"
+                                                              d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                                            />
+                                                          </g>
+                                                        </g>
+                                                      </svg>
+                                                    </div>
+                                                    <div
+                                                      class="ant-empty-description"
+                                                    >
+                                                      No Data
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                        </span>
-                      </div>
+                          <div
+                            class="ant-collapse-item ant-collapse-item-active"
+                          >
+                            <div
+                              aria-expanded="true"
+                              class="ant-collapse-header"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="ant-collapse-expand-icon"
+                              >
+                                <span
+                                  aria-label="right"
+                                  class="anticon anticon-right ant-collapse-arrow"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="right"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    style="transform: rotate(90deg);"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                    />
+                                  </svg>
+                                </span>
+                              </div>
+                              <span
+                                class="ant-collapse-header-text"
+                              >
+                                Authorization
+                              </span>
+                            </div>
+                            <div
+                              class="ant-collapse-content ant-collapse-content-active"
+                            >
+                              <div
+                                class="ant-collapse-content-box"
+                              >
+                                <div
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_authzEnabledCommand"
+                                        title="Command Authorization"
+                                      >
+                                        Command Authorization
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch"
+                                            id="aaa-settings_authzEnabledCommand"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-hidden"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_authzCommonsLevel"
+                                        title="Level"
+                                      >
+                                        Level
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <div
+                                            class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                            style="width: 128px;"
+                                          >
+                                            <div
+                                              class="ant-select-selector"
+                                            >
+                                              <span
+                                                class="ant-select-selection-search"
+                                              >
+                                                <input
+                                                  aria-activedescendant="aaa-settings_authzCommonsLevel_list_0"
+                                                  aria-autocomplete="list"
+                                                  aria-controls="aaa-settings_authzCommonsLevel_list"
+                                                  aria-haspopup="listbox"
+                                                  aria-owns="aaa-settings_authzCommonsLevel_list"
+                                                  autocomplete="off"
+                                                  class="ant-select-selection-search-input"
+                                                  id="aaa-settings_authzCommonsLevel"
+                                                  readonly=""
+                                                  role="combobox"
+                                                  style="opacity: 0;"
+                                                  type="search"
+                                                  unselectable="on"
+                                                  value=""
+                                                />
+                                              </span>
+                                              <span
+                                                class="ant-select-selection-placeholder"
+                                              />
+                                            </div>
+                                            <span
+                                              aria-hidden="true"
+                                              class="ant-select-arrow"
+                                              style="user-select: none;"
+                                              unselectable="on"
+                                            >
+                                              <span
+                                                aria-label="down"
+                                                class="anticon anticon-down ant-select-suffix"
+                                                role="img"
+                                              >
+                                                <svg
+                                                  aria-hidden="true"
+                                                  data-icon="down"
+                                                  fill="currentColor"
+                                                  focusable="false"
+                                                  height="1em"
+                                                  viewBox="64 64 896 896"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                                  />
+                                                </svg>
+                                              </span>
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-hidden"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_selectedCommandAuthOrder"
+                                        title="Set Priority"
+                                      >
+                                        Set Priority
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <div
+                                            class="ant-transfer"
+                                          >
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  3 items
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Available Servers
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <ul
+                                                  class="ant-transfer-list-content"
+                                                >
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="RADIUS Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      RADIUS Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="TACACS+ Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      TACACS+ Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="No Authorization"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      No Authorization
+                                                    </span>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-operation"
+                                            >
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="right"
+                                                  class="anticon anticon-right"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="right"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="left"
+                                                  class="anticon anticon-left"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="left"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  0 item
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Selected order
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <div
+                                                  class="ant-transfer-list-body-not-found"
+                                                >
+                                                  <div
+                                                    class="ant-empty ant-empty-normal ant-empty-small"
+                                                  >
+                                                    <div
+                                                      class="ant-empty-image"
+                                                    >
+                                                      <svg
+                                                        class="ant-empty-img-simple"
+                                                        height="41"
+                                                        viewBox="0 0 64 41"
+                                                        width="64"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                      >
+                                                        <g
+                                                          fill="none"
+                                                          fill-rule="evenodd"
+                                                          transform="translate(0 1)"
+                                                        >
+                                                          <ellipse
+                                                            class="ant-empty-img-simple-ellipse"
+                                                            cx="32"
+                                                            cy="33"
+                                                            rx="32"
+                                                            ry="7"
+                                                          />
+                                                          <g
+                                                            class="ant-empty-img-simple-g"
+                                                            fill-rule="nonzero"
+                                                          >
+                                                            <path
+                                                              d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                                            />
+                                                            <path
+                                                              class="ant-empty-img-simple-path"
+                                                              d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                                            />
+                                                          </g>
+                                                        </g>
+                                                      </svg>
+                                                    </div>
+                                                    <div
+                                                      class="ant-empty-description"
+                                                    >
+                                                      No Data
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_authzEnabledExec"
+                                        title="Executive Authorization"
+                                      >
+                                        Executive Authorization
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch"
+                                            id="aaa-settings_authzEnabledExec"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-hidden"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_selectedExecAuthOrder"
+                                        title="Set Priority"
+                                      >
+                                        Set Priority
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <div
+                                            class="ant-transfer"
+                                          >
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  3 items
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Available Servers
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <ul
+                                                  class="ant-transfer-list-content"
+                                                >
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="RADIUS Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      RADIUS Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="TACACS+ Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      TACACS+ Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="No Authorization"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      No Authorization
+                                                    </span>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-operation"
+                                            >
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="right"
+                                                  class="anticon anticon-right"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="right"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="left"
+                                                  class="anticon anticon-left"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="left"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  0 item
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Selected order
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <div
+                                                  class="ant-transfer-list-body-not-found"
+                                                >
+                                                  <div
+                                                    class="ant-empty ant-empty-normal ant-empty-small"
+                                                  >
+                                                    <div
+                                                      class="ant-empty-image"
+                                                    >
+                                                      <svg
+                                                        class="ant-empty-img-simple"
+                                                        height="41"
+                                                        viewBox="0 0 64 41"
+                                                        width="64"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                      >
+                                                        <g
+                                                          fill="none"
+                                                          fill-rule="evenodd"
+                                                          transform="translate(0 1)"
+                                                        >
+                                                          <ellipse
+                                                            class="ant-empty-img-simple-ellipse"
+                                                            cx="32"
+                                                            cy="33"
+                                                            rx="32"
+                                                            ry="7"
+                                                          />
+                                                          <g
+                                                            class="ant-empty-img-simple-g"
+                                                            fill-rule="nonzero"
+                                                          >
+                                                            <path
+                                                              d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                                            />
+                                                            <path
+                                                              class="ant-empty-img-simple-path"
+                                                              d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                                            />
+                                                          </g>
+                                                        </g>
+                                                      </svg>
+                                                    </div>
+                                                    <div
+                                                      class="ant-empty-description"
+                                                    >
+                                                      No Data
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-collapse-item ant-collapse-item-active"
+                          >
+                            <div
+                              aria-expanded="true"
+                              class="ant-collapse-header"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="ant-collapse-expand-icon"
+                              >
+                                <span
+                                  aria-label="right"
+                                  class="anticon anticon-right ant-collapse-arrow"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="right"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    style="transform: rotate(90deg);"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                    />
+                                  </svg>
+                                </span>
+                              </div>
+                              <span
+                                class="ant-collapse-header-text"
+                              >
+                                Accounting
+                              </span>
+                            </div>
+                            <div
+                              class="ant-collapse-content ant-collapse-content-active"
+                            >
+                              <div
+                                class="ant-collapse-content-box"
+                              >
+                                <div
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_acctEnabledCommand"
+                                        title="Command Accounting"
+                                      >
+                                        Command Accounting
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch"
+                                            id="aaa-settings_acctEnabledCommand"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-hidden"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_acctCommonsLevel"
+                                        title="Level"
+                                      >
+                                        Level
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <div
+                                            class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                            style="width: 128px;"
+                                          >
+                                            <div
+                                              class="ant-select-selector"
+                                            >
+                                              <span
+                                                class="ant-select-selection-search"
+                                              >
+                                                <input
+                                                  aria-activedescendant="aaa-settings_acctCommonsLevel_list_0"
+                                                  aria-autocomplete="list"
+                                                  aria-controls="aaa-settings_acctCommonsLevel_list"
+                                                  aria-haspopup="listbox"
+                                                  aria-owns="aaa-settings_acctCommonsLevel_list"
+                                                  autocomplete="off"
+                                                  class="ant-select-selection-search-input"
+                                                  id="aaa-settings_acctCommonsLevel"
+                                                  readonly=""
+                                                  role="combobox"
+                                                  style="opacity: 0;"
+                                                  type="search"
+                                                  unselectable="on"
+                                                  value=""
+                                                />
+                                              </span>
+                                              <span
+                                                class="ant-select-selection-placeholder"
+                                              />
+                                            </div>
+                                            <span
+                                              aria-hidden="true"
+                                              class="ant-select-arrow"
+                                              style="user-select: none;"
+                                              unselectable="on"
+                                            >
+                                              <span
+                                                aria-label="down"
+                                                class="anticon anticon-down ant-select-suffix"
+                                                role="img"
+                                              >
+                                                <svg
+                                                  aria-hidden="true"
+                                                  data-icon="down"
+                                                  fill="currentColor"
+                                                  focusable="false"
+                                                  height="1em"
+                                                  viewBox="64 64 896 896"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                                  />
+                                                </svg>
+                                              </span>
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-hidden"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_selectedCommandAcctOrder"
+                                        title="Set Priority"
+                                      >
+                                        Set Priority
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <div
+                                            class="ant-transfer"
+                                          >
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  3 items
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Available Servers
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <ul
+                                                  class="ant-transfer-list-content"
+                                                >
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="RADIUS Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      RADIUS Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="TACACS+ Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      TACACS+ Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="No Accounting"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      No Accounting
+                                                    </span>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-operation"
+                                            >
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="right"
+                                                  class="anticon anticon-right"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="right"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="left"
+                                                  class="anticon anticon-left"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="left"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  0 item
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Selected order
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <div
+                                                  class="ant-transfer-list-body-not-found"
+                                                >
+                                                  <div
+                                                    class="ant-empty ant-empty-normal ant-empty-small"
+                                                  >
+                                                    <div
+                                                      class="ant-empty-image"
+                                                    >
+                                                      <svg
+                                                        class="ant-empty-img-simple"
+                                                        height="41"
+                                                        viewBox="0 0 64 41"
+                                                        width="64"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                      >
+                                                        <g
+                                                          fill="none"
+                                                          fill-rule="evenodd"
+                                                          transform="translate(0 1)"
+                                                        >
+                                                          <ellipse
+                                                            class="ant-empty-img-simple-ellipse"
+                                                            cx="32"
+                                                            cy="33"
+                                                            rx="32"
+                                                            ry="7"
+                                                          />
+                                                          <g
+                                                            class="ant-empty-img-simple-g"
+                                                            fill-rule="nonzero"
+                                                          >
+                                                            <path
+                                                              d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                                            />
+                                                            <path
+                                                              class="ant-empty-img-simple-path"
+                                                              d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                                            />
+                                                          </g>
+                                                        </g>
+                                                      </svg>
+                                                    </div>
+                                                    <div
+                                                      class="ant-empty-description"
+                                                    >
+                                                      No Data
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_acctEnabledExec"
+                                        title="Executive Accounting"
+                                      >
+                                        Executive Accounting
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch"
+                                            id="aaa-settings_acctEnabledExec"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-hidden"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-col-4 ant-form-item-label"
+                                    >
+                                      <label
+                                        class=""
+                                        for="aaa-settings_selectedExecAcctOrder"
+                                        title="Set Priority"
+                                      >
+                                        Set Priority
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <div
+                                            class="ant-transfer"
+                                          >
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  3 items
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Available Servers
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <ul
+                                                  class="ant-transfer-list-content"
+                                                >
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="RADIUS Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      RADIUS Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="TACACS+ Servers"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      TACACS+ Servers
+                                                    </span>
+                                                  </li>
+                                                  <li
+                                                    class="ant-transfer-list-content-item"
+                                                    title="No Accounting"
+                                                  >
+                                                    <label
+                                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                    >
+                                                      <span
+                                                        class="ant-checkbox"
+                                                      >
+                                                        <input
+                                                          class="ant-checkbox-input"
+                                                          type="checkbox"
+                                                          value=""
+                                                        />
+                                                        <span
+                                                          class="ant-checkbox-inner"
+                                                        />
+                                                      </span>
+                                                    </label>
+                                                    <span
+                                                      class="ant-transfer-list-content-item-text"
+                                                    >
+                                                      No Accounting
+                                                    </span>
+                                                  </li>
+                                                </ul>
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-operation"
+                                            >
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="right"
+                                                  class="anticon anticon-right"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="right"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                              <button
+                                                class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                disabled=""
+                                                type="button"
+                                              >
+                                                <span
+                                                  aria-label="left"
+                                                  class="anticon anticon-left"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="left"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="64 64 896 896"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </button>
+                                            </div>
+                                            <div
+                                              class="ant-transfer-list"
+                                              style="width: 300px; height: 180px;"
+                                            >
+                                              <div
+                                                class="ant-transfer-list-header"
+                                              >
+                                                <span
+                                                  class="ant-transfer-list-header-selected"
+                                                >
+                                                  0 item
+                                                </span>
+                                                <span
+                                                  class="ant-transfer-list-header-title"
+                                                >
+                                                  Selected order
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list-body"
+                                              >
+                                                <div
+                                                  class="ant-transfer-list-body-not-found"
+                                                >
+                                                  <div
+                                                    class="ant-empty ant-empty-normal ant-empty-small"
+                                                  >
+                                                    <div
+                                                      class="ant-empty-image"
+                                                    >
+                                                      <svg
+                                                        class="ant-empty-img-simple"
+                                                        height="41"
+                                                        viewBox="0 0 64 41"
+                                                        width="64"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                      >
+                                                        <g
+                                                          fill="none"
+                                                          fill-rule="evenodd"
+                                                          transform="translate(0 1)"
+                                                        >
+                                                          <ellipse
+                                                            class="ant-empty-img-simple-ellipse"
+                                                            cx="32"
+                                                            cy="33"
+                                                            rx="32"
+                                                            ry="7"
+                                                          />
+                                                          <g
+                                                            class="ant-empty-img-simple-g"
+                                                            fill-rule="nonzero"
+                                                          >
+                                                            <path
+                                                              d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                                            />
+                                                            <path
+                                                              class="ant-empty-img-simple-path"
+                                                              d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                                            />
+                                                          </g>
+                                                        </g>
+                                                      </svg>
+                                                    </div>
+                                                    <div
+                                                      class="ant-empty-description"
+                                                    >
+                                                      No Data
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
                     </div>
                   </div>
                 </div>
@@ -335,19 +2386,41 @@ exports[`SwitchAAATab should render correctly 1`] = `
             </div>
           </div>
         </div>
+      </div>
+      <div
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+      >
         <div
-          class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
-          id="Settings"
+          class="ant-space ant-space-horizontal ant-space-align-center"
         >
-          <h3
-            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
-            id="aaa-settings"
+          <div
+            class="ant-space-item"
+            style="margin-right: 12px;"
           >
-            Settings
-          </h3>
+            <button
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+              type="button"
+            >
+              <span>
+                Save AAA
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <button
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              type="button"
+            >
+              <span>
+                Cancel
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </DocumentFragment>
 `;

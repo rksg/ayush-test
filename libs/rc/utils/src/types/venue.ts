@@ -234,7 +234,7 @@ export interface ConfigurationProfile {
 export enum AAAServerTypeEnum {
   RADIUS = 'RADIUS',
   TACACS = 'TACACS_PLUS',
-	LOCAL_USER = 'LOCAL'
+  LOCAL_USER = 'LOCAL'
 }
 
 export enum AAA_SERVER_TYPE {
@@ -245,23 +245,31 @@ export enum AAA_SERVER_TYPE {
 }
 
 export interface AAASetting {
-	authnEnabledSsh: boolean,
-	authnEnableTelnet: boolean,
-	authnFirstPref: AAAServerTypeEnum,
-	authnSecondPref?: AAA_SERVER_TYPE,
-	authzCommonsFirstServer?: AAAServerTypeEnum,
-	authzCommonsSecondServer?: AAA_SERVER_TYPE,
-	authzExecFirstServer?: AAAServerTypeEnum,
-	authzExecSecondServer?: AAA_SERVER_TYPE,
-	acctCommonsFirstServer?: AAAServerTypeEnum,
-	acctCommonsSecondServer?: AAA_SERVER_TYPE,
-	acctExecFirstServer?: AAAServerTypeEnum,
-	acctExecSecondServer?: AAA_SERVER_TYPE,
-	authzEnabledCommand: boolean,
-	authzEnabledExec: boolean,
-	acctEnabledCommand: boolean,
-	acctEnabledExec: boolean,
-	id: string
+  authnEnabledSsh: boolean,
+  authnEnableTelnet: boolean,
+  authnFirstPref: AAAServerTypeEnum,
+  authnSecondPref?: AAA_SERVER_TYPE,
+  authnThirdPref?: AAA_SERVER_TYPE,
+  authnFourthPref?: AAA_SERVER_TYPE,
+  authzCommonsFirstServer?: AAAServerTypeEnum,
+  authzCommonsSecondServer?: AAA_SERVER_TYPE,
+  authzCommonsThirdServer?: AAA_SERVER_TYPE,
+  authzExecFirstServer?: AAAServerTypeEnum,
+  authzExecSecondServer?: AAA_SERVER_TYPE,
+  authzExecThirdServer?: AAA_SERVER_TYPE,
+  acctCommonsFirstServer?: AAAServerTypeEnum,
+  acctCommonsSecondServer?: AAA_SERVER_TYPE,
+  acctCommonsThirdServer?: AAA_SERVER_TYPE,
+  acctExecFirstServer?: AAAServerTypeEnum,
+  acctExecSecondServer?: AAA_SERVER_TYPE,
+  acctExecThirdServer?: AAA_SERVER_TYPE,
+  authzEnabledCommand: boolean,
+  authzEnabledExec: boolean,
+  acctEnabledCommand: boolean,
+  acctEnabledExec: boolean,
+  authzCommonsLevel?: string,
+  acctCommonsLevel?: string,
+  id: string
 }
 
 export interface RadiusServer {
