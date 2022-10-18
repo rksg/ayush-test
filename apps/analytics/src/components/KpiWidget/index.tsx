@@ -4,7 +4,7 @@ import { useIntl, IntlShape } from 'react-intl'
 import { AnalyticsFilter }                          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, SparklineChart, Loader } from '@acx-ui/components'
 import { kpiDefaultThresholds }                     from '@acx-ui/config'
-import { intlFormats }                              from '@acx-ui/utils'
+import { intlFormats, formatter }                   from '@acx-ui/utils'
 
 import { useKpiTimeseriesQuery, TimeseriesData } from './services'
 import * as UI                                   from './styledComponents'
@@ -43,17 +43,21 @@ export const getKpiInfoText = (numerator:number,
     },
     timeToConnect: {
       title: $t({ defaultMessage: 'Time To Connect' }),
-      shortText: $t({ defaultMessage: 'Under {threshold} secs' },
-        { threshold: (threshold ?? kpiDefaultThresholds.timeToConnect)/1000 }),
-      tooltip: $t({ defaultMessage: '{n} of {d} connections under {threshold} seconds' },
-        { n,d, threshold: (threshold ?? kpiDefaultThresholds.timeToConnect)/1000 })
+      shortText: $t({ defaultMessage: 'Under {threshold}' },
+        { threshold: formatter('durationFormat')(threshold ??
+           kpiDefaultThresholds.timeToConnect) }),
+      tooltip: $t({ defaultMessage: '{n} of {d} connections under {threshold}' },
+        { n,d, threshold: formatter('longDurationFormat')(threshold ??
+           kpiDefaultThresholds.timeToConnect) })
     },
     clientThroughput: {
       title: $t({ defaultMessage: 'Client Throughput' }),
-      shortText: $t({ defaultMessage: 'Above {threshold} Mbps' },
-        { threshold: (threshold ?? kpiDefaultThresholds.clientThroughput)/1000 }),
-      tooltip: $t({ defaultMessage: '{n} of {d} sessions above {threshold} Mbps' },
-        { n,d, threshold: (threshold ?? kpiDefaultThresholds.clientThroughput)/1000 })
+      shortText: $t({ defaultMessage: 'Above {threshold}' },
+        { threshold: formatter('networkSpeedFormat')(threshold ??
+           kpiDefaultThresholds.clientThroughput) }),
+      tooltip: $t({ defaultMessage: '{n} of {d} sessions above {threshold}' },
+        { n,d, threshold: formatter('networkSpeedFormat')(threshold ??
+           kpiDefaultThresholds.clientThroughput) })
     }
   }
 }

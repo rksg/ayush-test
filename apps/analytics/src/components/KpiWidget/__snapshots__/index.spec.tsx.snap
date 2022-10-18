@@ -378,7 +378,7 @@ Object {
       "tooltip": "12.3K of 23.5K attempts",
     },
     "timeToConnect": Object {
-      "shortText": "Under 10 secs",
+      "shortText": "Under 10 s",
       "title": "Time To Connect",
       "tooltip": "12.3K of 23.5K connections under 10 seconds",
     },
