@@ -3,10 +3,10 @@ import { useIntl } from 'react-intl'
 import { AnalyticsFilter }                from '@acx-ui/analytics/utils'
 import { Card, GridRow, GridCol, Loader } from '@acx-ui/components'
 
-import { KpiWidget } from '../KpiWidget'
+import { useFetchKpiThresholdsQuery } from '../../pages/Health/Kpi/services'
+import { KpiWidget }                  from '../KpiWidget'
 
-import { useFetchKpiThresholdsQuery } from './services'
-import * as UI                        from './styledComponents'
+import * as UI from './styledComponents'
 
 export default function VenueHealthWidget ({
   filters

@@ -4,7 +4,7 @@ import { Provider, store }                  from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { api } from './services'
+import { getThresholdsApi } from '../../pages/Health/Kpi/services'
 
 import VenueHealthWidget from './index'
 
@@ -23,11 +23,11 @@ describe('Health Widget', () => {
   }
 
   beforeEach(() =>
-    store.dispatch(api.util.resetApiState())
+    store.dispatch(getThresholdsApi.util.resetApiState())
   )
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'FetchKpiThresholds', {
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
       data: {
         timeToConnectThreshold: {
           value: 1000
@@ -41,7 +41,7 @@ describe('Health Widget', () => {
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render KPI widgets', async () => {
-    mockGraphqlQuery(dataApiURL, 'FetchKpiThresholds', {
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
       data: {
         timeToConnectThreshold: {
           value: 1000
@@ -58,7 +58,7 @@ describe('Health Widget', () => {
   })
 
   it('should render KPI widgets for empty threshold value', async () => {
-    mockGraphqlQuery(dataApiURL, 'FetchKpiThresholds', {
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
       data: {
         timeToConnectThreshold: {
           value: null

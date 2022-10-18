@@ -217,7 +217,7 @@ test('should render Incidents Dashboard Widget', async () => {
 })
 
 test('should render Venue health Widget', async () => {
-  mockGraphqlQuery(dataApiURL, 'FetchKpiThresholds', {
+  mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
     data: {
       timeToConnectThreshold: {
         value: 1000

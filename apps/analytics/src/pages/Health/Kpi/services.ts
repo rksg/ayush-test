@@ -104,5 +104,40 @@ export const histogramApi = dataApi.injectEndpoints({
   })
 })
 
+interface ThresholdData {
+  value: number | null
+}
+
+interface ThresholdsApiResponse {
+  timeToConnectThreshold: ThresholdData
+  clientThroughputThreshold: ThresholdData
+}
+
+export const getThresholdsApi = dataApi.injectEndpoints({
+  endpoints: (build) => ({
+    fetchKpiThresholds: build.query<
+      ThresholdsApiResponse,
+      AnalyticsFilter
+    >({
+      query: (payload) => ({
+        document: gql`
+        query GetKpiThresholds($path: [HierarchyNodeInput]) {
+          timeToConnectThreshold: KPIThreshold(name: "timeToConnect", networkPath: $path) {
+            value
+          }
+          clientThroughputThreshold: KPIThreshold(name: "clientThroughput", networkPath: $path) {
+            value
+          }
+        }
+        `,
+        variables: {
+          path: payload.path
+        }
+      })
+    })
+  })
+})
+
 export const { useKpiTimeseriesQuery } = timeseriesApi
 export const { useKpiHistogramQuery } = histogramApi
+export const { useFetchKpiThresholdsQuery } = getThresholdsApi
