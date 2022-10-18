@@ -7,7 +7,7 @@ import { rest }  from 'msw'
 
 import { CellularNetworkSelectionEnum, CommonUrlsInfo, LteBandRegionEnum, WanConnectionEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent }                                                            from '@acx-ui/test-utils'
+import { mockServer, render, screen, fireEvent, waitFor, within }                                                            from '@acx-ui/test-utils'
 
 import { EditContext, VenueEditContext } from '../../..'
 import {
@@ -74,8 +74,7 @@ describe('CellularOptionsForm', () => {
     mockServer.use(
       rest.get(WifiUrlsInfo.getAvailableLteBands.url,
         (_, res, ctx) => res(ctx.json(availableLteBandsResponse))),
-      rest.get(
-        CommonUrlsInfo.getVenueSettings.url,
+      rest.get(CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(WifiUrlsInfo.getVenueApModelCellular.url,
         (_, res, ctx) => res(ctx.json(venueApModelCellularResponse))),
@@ -84,6 +83,17 @@ describe('CellularOptionsForm', () => {
     )
   })
   it('should render Cellular options form successfully', async () => {
+
+    mockServer.use(
+      rest.get(WifiUrlsInfo.getAvailableLteBands.url,
+        (_, res, ctx) => res(ctx.json(availableLteBandsResponse))),
+      rest.get(CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json(venueSetting))),
+      rest.get(WifiUrlsInfo.getVenueApModelCellular.url,
+        (_, res, ctx) => res(ctx.json(venueApModelCellularResponse))),
+      rest.put(WifiUrlsInfo.updateVenueCellularSettings.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
 
     const { asFragment } = render(
       <Provider>
@@ -95,25 +105,18 @@ describe('CellularOptionsForm', () => {
       })
 
     screen.getByText(/1 primary sim/i)
+    const view = screen.getByTestId('primarySim');
+    await waitFor(() => within(view).getByText(/show bands for other countries/i))
     expect(asFragment()).toMatchSnapshot()
   })
 
 
   it('should render correctly', async () => {
-    mockServer.use(
-      rest.get(WifiUrlsInfo.getAvailableLteBands.url,
-        (_, res, ctx) => res(ctx.json(availableLteBandsResponse))),
-      rest.get(
-        CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json(venueSetting))),
-      rest.get(WifiUrlsInfo.getVenueApModelCellular.url,
-        (_, res, ctx) => res(ctx.json(venueApModelCellularResponse)))
-    )
-
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',
-      activeTab: 'wifi'
+      activeTab: 'wifi',
+      activeSubTab: 'networking'
     }
     render(
       <Provider>
@@ -121,9 +124,8 @@ describe('CellularOptionsForm', () => {
           <CellularOptionsForm />
         </VenueEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
-    screen.getByText(/1 primary sim/i)
 
     const wanConnection = screen.getByText(/ethernet \(primary\) with cellular failover/i)
     fireEvent.click(wanConnection)

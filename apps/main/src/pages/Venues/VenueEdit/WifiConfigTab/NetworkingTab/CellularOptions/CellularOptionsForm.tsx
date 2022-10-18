@@ -34,6 +34,8 @@ export function CellularOptionsForm () {
   const { $t } = useIntl()
   const params = useParams()
   const { tenantId, venueId } = useParams()
+  const formRef = useRef<StepsFormInstance>()
+  const form = Form.useFormInstance()
 
   const {
     editContextData,
@@ -76,15 +78,14 @@ export function CellularOptionsForm () {
   const [availableLteBandsArray, setAvailableLteBandsArray] =
     useState(defaultAvailableLteBandsArray)
   const [editData, setEditData] = useState(defaultEditData)
-  const formRef = useRef<StepsFormInstance>()
-  const form = Form.useFormInstance()
+
 
   useEffect(() => {
     let availableLteBandsData = _.cloneDeep(availableLteBands.data)
     let venueApModelCellularData = _.cloneDeep(venueApModelCellular.data)
     const countryCode = _.get(venueData, 'data.countryCode')
 
-    if (availableLteBandsData && countryCode) {
+    if (availableLteBandsData && countryCode && venueApModelCellularData) {
 
       availableLteBandsData.forEach(lteBands => {
         regionCountriesMap[lteBands.region] =
@@ -96,12 +97,12 @@ export function CellularOptionsForm () {
       //setCurrentCountry
       Object.keys(regionCountriesMap).map(function (objectKey) {
         const value = _.get(regionCountriesMap, objectKey)
-        if (value.countryCodes.indexOf(countryCode) > -1) {
+        if (Array.isArray(value.countryCodes) && 
+        value.countryCodes.includes(countryCode)) {
           setCurrentRegion(objectKey) }
       })
 
       // this.getCellularSupportedModels$();
-      if (venueApModelCellularData) {
         venueApModelCellularData.primarySim.lteBands =
           venueApModelCellularData.primarySim?.lteBands || []
         venueApModelCellularData.secondarySim.lteBands =
@@ -129,7 +130,6 @@ export function CellularOptionsForm () {
         setEditData(venueApModelCellularData)
 
         formRef?.current?.setFieldsValue({ editData: venueApModelCellularData })
-      }
       setAvailableLteBandsArray(availableLteBandsData)
     }
 
@@ -187,15 +187,17 @@ export function CellularOptionsForm () {
         <StepsForm.StepForm
           formRef={formRef}
           onChange={onChange}>
-          <CellularRadioSimSettings
-            editData={editData}
-            simCardNumber={1}
-            countryCode={_.get(venueData, 'data.countryCode')}
-            legend={$t({ defaultMessage: 'Primary SIM' })}
-            regionCountriesMap={regionCountriesMap}
-            currentRegion={currentRegion}
-            availableLteBands={availableLteBandsArray}
-            formControlName={'primarySim'} />
+          <div data-testid="primarySim">
+            <CellularRadioSimSettings
+              editData={editData}
+              simCardNumber={1}
+              countryCode={_.get(venueData, 'data.countryCode')}
+              legend={$t({ defaultMessage: 'Primary SIM' })}
+              regionCountriesMap={regionCountriesMap}
+              currentRegion={currentRegion}
+              availableLteBands={availableLteBandsArray}
+              formControlName={'primarySim'} />
+          </div>
           <CellularRadioSimSettings
             editData={editData}
             simCardNumber={2}
