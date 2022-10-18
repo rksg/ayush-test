@@ -1,4 +1,4 @@
-import {  mockDOMWidth, render, screen } from '@acx-ui/test-utils'
+import {  mockDOMSize, render, screen } from '@acx-ui/test-utils'
 
 import { data } from './stories'
 
@@ -7,7 +7,7 @@ import { VerticalBarChart, tooltipFormatter } from '.'
 import type { TooltipComponentFormatterCallbackParams } from 'echarts'
 
 describe('VerticalBarChart',()=>{
-  mockDOMWidth()
+  mockDOMSize(200, 200)
   it('should render correctly', () => {
     const { asFragment } = render(<VerticalBarChart data={data} />)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
