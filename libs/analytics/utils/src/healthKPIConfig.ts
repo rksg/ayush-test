@@ -49,9 +49,6 @@ export const kpiConfig = {
       xUnit: 'sec',
       shortXFormat: divideBy1000,
       yUnit: 'connections'
-      //longXFormat: createUnitFormatter('{value} seconds', divideBy1000),
-      // shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} connections')
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} connections' }),
@@ -169,9 +166,6 @@ export const kpiConfig = {
       xUnit: 'dBm',
       yUnit: 'sessions',
       shortXFormat: (x: number) => x,
-      //longXFormat: x => t('{x} dBm', {x}),
-      //shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} sessions'),
       isReverse: true
     },
     pill: {
@@ -199,9 +193,6 @@ export const kpiConfig = {
       xUnit: 'Mbps',
       yUnit: 'samples',
       shortXFormat: divideBy1000
-      //longXFormat: x => t('{x} Mbps', {x: divideBy1000(x)}),
-      //shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} samples')
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} sessions' }),
@@ -255,9 +246,6 @@ export const kpiConfig = {
       xUnit: '%',
       yUnit: 'APs',
       shortXFormat: multipleBy100
-      //longXFormat: x => formatter('percentFormat')(x),
-      //shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} APs')
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} APs' }),
@@ -285,9 +273,6 @@ export const kpiConfig = {
       xUnit: 'ms',
       yUnit: 'APs',
       shortXFormat: (x : number) => x
-      // longXFormat: x => t('{x} ms', {x}),
-      // shortYFormat: formatter(),
-      // longYFormat: createUnitFormatter('{value} APs')
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} APs' }),
@@ -316,8 +301,6 @@ export const kpiConfig = {
       yUnit: 'switches',
       shortXFormat: multipleBy100,
       longXFormat: formatter('percentFormat')
-      //shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} switches')
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches' }),

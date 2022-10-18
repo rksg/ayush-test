@@ -32,7 +32,7 @@ export function ThresholdConfig ({
       <UI.HistogramSpanContent>
         {$t(thresholdDescText.goal)}
         <UI.HistogramBoldContent>
-          {shortXFormat?.(thresholdValue)} {unit}
+          {shortXFormat?.(thresholdValue)}{unit !== '%' ? ` ${unit}` : unit }
         </UI.HistogramBoldContent>
       </UI.HistogramSpanContent>
       <UI.HistogramGoalPercentage>
@@ -42,8 +42,8 @@ export function ThresholdConfig ({
         </UI.HistogramBoldContent>
       </UI.HistogramGoalPercentage>
       <UI.BtnWrapper>
-        <Button size='small'>{$t(thresholdDescText.resetBtn)}</Button>
-        <Button size='small' type='secondary'>
+        <Button style={{ width: 70 }} size='small'>{$t(thresholdDescText.resetBtn)}</Button>
+        <Button style={{ width: 70 }} size='small' type='secondary'>
           {$t(thresholdDescText.applyBtn)}
         </Button>
       </UI.BtnWrapper>
