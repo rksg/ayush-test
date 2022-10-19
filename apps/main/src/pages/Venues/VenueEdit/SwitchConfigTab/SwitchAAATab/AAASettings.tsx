@@ -290,22 +290,23 @@ export function AAASettings () {
             <Switch />
           </Form.Item>
         </Popconfirm>
-        <Form.Item
-          name='selectedLoginServers'
-          label={$t({ defaultMessage: 'Set Priority' })}
-          valuePropName='targetKeys'
-          rules={[
-            { required: authnEnabledSsh, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
-            { validator: (_, value) => orderValidator(value, AUTHEN_SERVERS_OBJ.NONE_TYPE) }
-          ]}
-          hidden={!authnEnabledSsh}
-        >
-          <Transfer
-            {...defaultTransferProps}
-            dataSource={availableLoginServers}
-            titles={[$t({ defaultMessage: 'Available Servers & Users' }), $t({ defaultMessage: 'Selected order' })]}
-          />
-        </Form.Item>
+        { authnEnabledSsh &&
+          <Form.Item
+            name='selectedLoginServers'
+            label={$t({ defaultMessage: 'Set Priority' })}
+            valuePropName='targetKeys'
+            rules={[
+              { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+              { validator: (_, value) => orderValidator(value, AUTHEN_SERVERS_OBJ.NONE_TYPE) }
+            ]}
+          >
+            <Transfer
+              {...defaultTransferProps}
+              dataSource={availableLoginServers}
+              titles={[$t({ defaultMessage: 'Available Servers & Users' }), $t({ defaultMessage: 'Selected order' })]}
+            />
+          </Form.Item>
+        }
       </Collapse.Panel>
       <Collapse.Panel header={$t({ defaultMessage: 'Authorization' })} key='2' >
         <Form.Item
@@ -315,30 +316,32 @@ export function AAASettings () {
         >
           <Switch />
         </Form.Item>
-        <Form.Item
-          name='authzCommonsLevel'
-          label={$t({ defaultMessage: 'Level' })}
-          hidden={!authzEnabledCommand}
-        >
-          <Select style={{ width: 128 }}
-            options={serverLevelItem}
-          />
-        </Form.Item>
-        <Form.Item
-          name='selectedCommandAuthOrder'
-          label={$t({ defaultMessage: 'Set Priority' })}
-          valuePropName='targetKeys'
-          rules={[
-            { required: authzEnabledCommand, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
-            { validator: (_, value) => orderValidator(value, AUTHOR_SERVERS_OBJ.NONE_TYPE) }
-          ]}
-          hidden={!authzEnabledCommand}
-        >
-          <Transfer
-            {...defaultTransferProps}
-            dataSource={availableCommandAuthOrder}
-          />
-        </Form.Item>
+        { authzEnabledCommand &&
+          <>
+            <Form.Item
+              name='authzCommonsLevel'
+              label={$t({ defaultMessage: 'Level' })}
+            >
+              <Select style={{ width: 128 }}
+                options={serverLevelItem}
+              />
+            </Form.Item>
+            <Form.Item
+              name='selectedCommandAuthOrder'
+              label={$t({ defaultMessage: 'Set Priority' })}
+              valuePropName='targetKeys'
+              rules={[
+                { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+                { validator: (_, value) => orderValidator(value, AUTHOR_SERVERS_OBJ.NONE_TYPE) }
+              ]}
+            >
+              <Transfer
+                {...defaultTransferProps}
+                dataSource={availableCommandAuthOrder}
+              />
+            </Form.Item>
+          </>
+        }
         <Form.Item
           name='authzEnabledExec'
           label={$t({ defaultMessage: 'Executive Authorization' })}
@@ -346,21 +349,22 @@ export function AAASettings () {
         >
           <Switch />
         </Form.Item>
-        <Form.Item
-          name='selectedExecAuthOrder'
-          label={$t({ defaultMessage: 'Set Priority' })}
-          valuePropName='targetKeys'
-          rules={[
-            { required: authzEnabledExec, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
-            { validator: (_, value) => orderValidator(value, AUTHOR_SERVERS_OBJ.NONE_TYPE) }
-          ]}
-          hidden={!authzEnabledExec}
-        >
-          <Transfer
-            {...defaultTransferProps}
-            dataSource={availableExecAuthOrder}
-          />
-        </Form.Item>
+        { authzEnabledExec &&
+          <Form.Item
+            name='selectedExecAuthOrder'
+            label={$t({ defaultMessage: 'Set Priority' })}
+            valuePropName='targetKeys'
+            rules={[
+              { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+              { validator: (_, value) => orderValidator(value, AUTHOR_SERVERS_OBJ.NONE_TYPE) }
+            ]}
+          >
+            <Transfer
+              {...defaultTransferProps}
+              dataSource={availableExecAuthOrder}
+            />
+          </Form.Item>
+        }
       </Collapse.Panel>
       <Collapse.Panel header={$t({ defaultMessage: 'Accounting' })} key='3' >
         <Form.Item
@@ -370,30 +374,32 @@ export function AAASettings () {
         >
           <Switch />
         </Form.Item>
-        <Form.Item
-          name='acctCommonsLevel'
-          label={$t({ defaultMessage: 'Level' })}
-          hidden={!acctEnabledCommand}
-        >
-          <Select style={{ width: 128 }}
-            options={serverLevelItem}
-          />
-        </Form.Item>
-        <Form.Item
-          name='selectedCommandAcctOrder'
-          label={$t({ defaultMessage: 'Set Priority' })}
-          valuePropName='targetKeys'
-          rules={[
-            { required: acctEnabledCommand, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
-            { validator: (_, value) => orderValidator(value, ACCOUNTING_SERVERS_OBJ.NONE_TYPE) }
-          ]}
-          hidden={!acctEnabledCommand}
-        >
-          <Transfer
-            {...defaultTransferProps}
-            dataSource={availableCommandAcctOrder}
-          />
-        </Form.Item>
+        { acctEnabledCommand &&
+          <>
+            <Form.Item
+              name='acctCommonsLevel'
+              label={$t({ defaultMessage: 'Level' })}
+            >
+              <Select style={{ width: 128 }}
+                options={serverLevelItem}
+              />
+            </Form.Item>
+            <Form.Item
+              name='selectedCommandAcctOrder'
+              label={$t({ defaultMessage: 'Set Priority' })}
+              valuePropName='targetKeys'
+              rules={[
+                { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+                { validator: (_, value) => orderValidator(value, ACCOUNTING_SERVERS_OBJ.NONE_TYPE) }
+              ]}
+            >
+              <Transfer
+                {...defaultTransferProps}
+                dataSource={availableCommandAcctOrder}
+              />
+            </Form.Item>
+          </>
+        }
         <Form.Item
           name='acctEnabledExec'
           label={$t({ defaultMessage: 'Executive Accounting' })}
@@ -401,21 +407,22 @@ export function AAASettings () {
         >
           <Switch />
         </Form.Item>
-        <Form.Item
-          name='selectedExecAcctOrder'
-          label={$t({ defaultMessage: 'Set Priority' })}
-          valuePropName='targetKeys'
-          rules={[
-            { required: acctEnabledExec, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
-            { validator: (_, value) => orderValidator(value, ACCOUNTING_SERVERS_OBJ.NONE_TYPE) }
-          ]}
-          hidden={!acctEnabledExec}
-        >
-          <Transfer
-            {...defaultTransferProps}
-            dataSource={availableExecAcctOrder}
-          />
-        </Form.Item>
+        { acctEnabledExec &&
+          <Form.Item
+            name='selectedExecAcctOrder'
+            label={$t({ defaultMessage: 'Set Priority' })}
+            valuePropName='targetKeys'
+            rules={[
+              { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+              { validator: (_, value) => orderValidator(value, ACCOUNTING_SERVERS_OBJ.NONE_TYPE) }
+            ]}
+          >
+            <Transfer
+              {...defaultTransferProps}
+              dataSource={availableExecAcctOrder}
+            />
+          </Form.Item>
+        }
       </Collapse.Panel>
     </Collapse>
   )

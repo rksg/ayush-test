@@ -26,40 +26,52 @@ export function SwitchAAATab () {
 
   const handleUpdate = async () => {
     const values = formRef?.current?.getFieldsValue()
-    let payload = {
-      ...values,
-      authnFirstPref: values.selectedLoginServers[0],
-      authnSecondPref: values.selectedLoginServers[1],
-      authnThirdPref: values.selectedLoginServers[2],
-      authnFourthPref: values.selectedLoginServers[3],
-      authzCommonsFirstServer: values.selectedCommandAuthOrder[0],
-      authzCommonsSecondServer: values.selectedCommandAuthOrder[1],
-      authzCommonsThirdServer: values.selectedCommandAuthOrder[2],
-      authzExecFirstServer: values.selectedExecAuthOrder[0],
-      authzExecSecondServer: values.selectedExecAuthOrder[1],
-      authzExecThirdServer: values.selectedExecAuthOrder[2],
-      acctCommonsFirstServer: values.selectedCommandAcctOrder[0],
-      acctCommonsSecondServer: values.selectedCommandAcctOrder[1],
-      acctCommonsThirdServer: values.selectedCommandAcctOrder[2],
-      acctExecFirstServer: values.selectedExecAcctOrder[0],
-      acctExecSecondServer: values.selectedExecAcctOrder[1],
-      acctExecThirdServer: values.selectedExecAcctOrder[2]
-    }
-
-    payload = _.omit(payload, [
-      'selectedLoginServers',
-      'selectedCommandAuthOrder',
-      'selectedExecAuthOrder',
-      'selectedCommandAcctOrder',
-      'selectedExecAcctOrder'
+    let payload = _.pick(values, [
+      'authnEnabledSsh',
+      'authnEnableTelnet',
+      'authzEnabledCommand',
+      'authzEnabledExec',
+      'acctEnabledCommand',
+      'acctEnabledExec'
     ])
 
-    if (!values.authzEnabledCommand) {
-      payload.authzCommonsLevel = undefined
+    if (values.authnEnabledSsh) {
+      _.assign(payload, {
+        authnFirstPref: values.selectedLoginServers[0],
+        authnSecondPref: values.selectedLoginServers[1],
+        authnThirdPref: values.selectedLoginServers[2],
+        authnFourthPref: values.selectedLoginServers[3]
+      })
     }
-
-    if (!values.acctEnabledCommand) {
-      payload.acctCommonsLevel = undefined
+    if (values.authzEnabledCommand) {
+      _.assign(payload, {
+        authzCommonsLevel: values.authzCommonsLevel,
+        authzCommonsFirstServer: values.selectedCommandAuthOrder[0],
+        authzCommonsSecondServer: values.selectedCommandAuthOrder[1],
+        authzCommonsThirdServer: values.selectedCommandAuthOrder[2]
+      })
+    }
+    if (values.authzEnabledExec) {
+      _.assign(payload, {
+        authzExecFirstServer: values.selectedExecAuthOrder[0],
+        authzExecSecondServer: values.selectedExecAuthOrder[1],
+        authzExecThirdServer: values.selectedExecAuthOrder[2]
+      })
+    }
+    if (values.acctEnabledCommand) {
+      _.assign(payload, {
+        acctCommonsLevel: values.acctCommonsLevel,
+        acctCommonsFirstServer: values.selectedCommandAcctOrder[0],
+        acctCommonsSecondServer: values.selectedCommandAcctOrder[1],
+        acctCommonsThirdServer: values.selectedCommandAcctOrder[2]
+      })
+    }
+    if (values.acctEnabledExec) {
+      _.assign(payload, {
+        acctExecFirstServer: values.selectedExecAcctOrder[0],
+        acctExecSecondServer: values.selectedExecAcctOrder[1],
+        acctExecThirdServer: values.selectedExecAcctOrder[2]
+      })
     }
 
     await updateAAASettingMutation({
