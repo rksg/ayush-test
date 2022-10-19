@@ -376,8 +376,6 @@ export const Wrapper = styled.div<StyledTable>`
         }
 
         &.ant-table-column-has-sorters {
-          background: unset;
-
           .ant-table-column-sorters {
             display: unset;
             white-space: nowrap;
