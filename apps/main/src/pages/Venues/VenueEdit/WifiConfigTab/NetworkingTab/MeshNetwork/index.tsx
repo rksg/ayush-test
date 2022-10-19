@@ -4,7 +4,7 @@ import { Form, Switch, Tooltip } from 'antd'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Subtitle } from '@acx-ui/components'
+import { Loader, showActionModal, showToast } from '@acx-ui/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
