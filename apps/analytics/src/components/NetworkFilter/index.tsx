@@ -1,5 +1,3 @@
-import { useCallback, useMemo } from 'react'
-
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
@@ -23,8 +21,8 @@ export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = { shouldQuerySwitch : boolean, withIncidents?: boolean }
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
-): VenuesWithSeverityNodes => {
-  return groupBy(
+): VenuesWithSeverityNodes =>
+  groupBy(
     incidentsList.map((incident: Incident) => ({
       ...pick(incident, ['sliceType', 'path']),
       severity: {
@@ -38,7 +36,6 @@ const getSeverityFromIncidents = (
     })),
     'venueName'
   )
-}
 const getSeverityCircles = (
   nodes: ApOrSwitch[],
   venueWiseSeverities: NodesWithSeverity[],
@@ -179,7 +176,6 @@ const search = (input: string, path: DefaultOptionType[]): boolean => {
     ? false
     : (item?.displayLabel as string)?.toLowerCase().includes(input.toLowerCase())
 }
-// eslint-disable-next-line no-empty-pattern
 export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
   selectedOptions?.map((option) => option?.displayLabel || option?.label).join(' / ')
 export const onApply = (
@@ -190,46 +186,32 @@ export const onApply = (
   setNetworkPath(path, value || [])
 }
 
-const emptyArrayVenue = [] as unknown as VenuesWithSeverityNodes
-const emptyArrayFilter = [] as unknown as Option[]
-
 function ConnectedNetworkFilter (
   { shouldQuerySwitch, withIncidents } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
-  const validIncidents = useIncidentsListQuery(
-    omit({
-      ...filters, path: defaultNetworkPath, includeMuted: false
-    }, 'filter'),
-    {
-      selectFromResult: ({ data }) => ({
-        data: data ? getSeverityFromIncidents(data) : emptyArrayVenue
-      }),
-      skip: !withIncidents
-    }
-  )
-
-  const incidentsList = useMemo(() => withIncidents
-    ? validIncidents
-    : { data: [] }, [validIncidents, withIncidents])
+  /* eslint-disable react-hooks/rules-of-hooks */
+  const incidentsList = withIncidents
+    ? useIncidentsListQuery(
+      omit({
+        ...filters, path: defaultNetworkPath, includeMuted: false
+      }, 'filter'),
+      {
+        selectFromResult: ({ data }) => ({
+          data: data ? getSeverityFromIncidents(data) : []
+        })
+      }
+    )
+    : { data: [] }
 
   const networkFilter = { ...filters, shouldQuerySwitch }
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
-      data: data
-        ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes)
-        : emptyArrayFilter,
+      data: data ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) : [],
       ...rest
     })
   })
-
-  const onApplyCallback = useCallback((value: SingleValueType | SingleValueType[] | undefined) => {
-    const path = !value ? defaultNetworkPath : JSON.parse(value?.slice(-1)[0] as string)
-    setNetworkPath(path, value ?? emptyArrayVenue)
-  }, [])
-  const showSearchCallback = useMemo(() => ({ filter: search }), [])
-
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
@@ -239,10 +221,10 @@ function ConnectedNetworkFilter (
           defaultValue={raw}
           value={raw}
           options={queryResults.data}
-          onApply={onApplyCallback}
+          onApply={(value) => onApply(value, setNetworkPath)}
           placement='bottomRight'
           displayRender={displayRender}
-          showSearch={showSearchCallback}
+          showSearch={{ filter: search }}
         />
       </Loader>
     </UI.Container>
