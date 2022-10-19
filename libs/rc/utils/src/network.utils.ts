@@ -15,3 +15,11 @@ export const generateDefaultNetworkVenue = (venueId: string, networkId:string) =
     networkId
   }
 }
+
+export const generateHexKey = (keyLength: number):string => {
+  let hexKey = ''
+  while (hexKey.length < keyLength) {
+    hexKey += Math.random().toString(16).substring(2)
+  }
+  return hexKey
+}

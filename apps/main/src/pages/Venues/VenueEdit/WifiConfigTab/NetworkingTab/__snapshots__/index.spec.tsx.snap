@@ -142,28 +142,32 @@ exports[`MeshNetwork should render correctly 1`] = `
                           Mesh Network
                         </h3>
                         <div
-                          class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
-                          width="125px"
+                          class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
                         >
-                          Mesh Network
                           <div
-                            class="styledComponents__FieldLabel-sc-cldbhn-0 bZxgmF"
-                            width="30px"
+                            class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
+                            width="125px"
                           >
-                            <button
-                              aria-checked="false"
-                              class="ant-switch"
-                              role="switch"
-                              style="margin-top: 5px;"
-                              type="button"
+                            Mesh Network
+                            <div
+                              class="styledComponents__FieldLabel-sc-cldbhn-0 bZxgmF"
+                              width="30px"
                             >
-                              <div
-                                class="ant-switch-handle"
-                              />
-                              <span
-                                class="ant-switch-inner"
-                              />
-                            </button>
+                              <button
+                                aria-checked="false"
+                                class="ant-switch"
+                                role="switch"
+                                style="margin-top: 5px;"
+                                type="button"
+                              >
+                                <div
+                                  class="ant-switch-handle"
+                                />
+                                <span
+                                  class="ant-switch-inner"
+                                />
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
