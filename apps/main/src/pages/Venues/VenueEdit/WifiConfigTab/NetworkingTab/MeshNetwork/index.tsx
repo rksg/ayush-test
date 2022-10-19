@@ -4,7 +4,7 @@ import { Form, Switch, Tooltip } from 'antd'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { showActionModal, showToast, Loader } from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Subtitle } from '@acx-ui/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -26,7 +26,7 @@ export function MeshNetwork () {
   } = useContext(VenueEditContext)
 
   const [apList] = useLazyApListQuery()
-  const [updateVenueMesh] = useUpdateVenueMeshMutation()
+  const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useUpdateVenueMeshMutation()
 
   const defaultToolTip = $t({ defaultMessage: 'Not available' })
   const [isAllowEnableMesh, setIsAllowEnableMesh] = useState(true)
@@ -131,7 +131,8 @@ export function MeshNetwork () {
   }
 
   return (<Loader states={[{
-    isLoading: !data || meshToolTipDisabledText === defaultToolTip
+    isLoading: !data || meshToolTipDisabledText === defaultToolTip,
+    isFetching: isUpdatingVenueMesh
   }]}>
     <Form.Item
       label={$t({ defaultMessage: 'Mesh Network' })}

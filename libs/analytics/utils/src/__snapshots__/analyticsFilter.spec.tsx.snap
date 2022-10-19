@@ -48,6 +48,14 @@ exports[`AnalyticsFilterProvider should set filter with switches when search par
 </DocumentFragment>
 `;
 
+exports[`AnalyticsFilterProvider should set filters correctly path is health and selected node is zone 1`] = `
+<DocumentFragment>
+  <div>
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","path":[{"type":"network","name":"Network"},{"type":"zone","name":"Zone"}]}
+  </div>
+</DocumentFragment>
+`;
+
 exports[`AnalyticsFilterProvider should set path to default when path is health and selected node is switch 1`] = `
 <DocumentFragment>
   <div>

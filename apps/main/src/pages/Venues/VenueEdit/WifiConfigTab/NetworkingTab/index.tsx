@@ -2,12 +2,8 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, showToast, StepsForm } from '@acx-ui/components'
-import {
-  useNavigate,
-  useTenantLink,
-  useParams
-} from '@acx-ui/react-router-dom'
+import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
@@ -25,7 +21,8 @@ export interface NetworkingSettingContext {
 
 export function NetworkingTab () {
   const { $t } = useIntl()
-  const { venueId } = useParams()
+  const params = useParams()
+  const { venueId } = params
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
 
@@ -63,7 +60,7 @@ export function NetworkingTab () {
     try {
       editNetworkingContextData?.updateCellular?.()
       await editNetworkingContextData?.updateLanPorts?.()
-      editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
+      await editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       setEditContextData({
         ...editContextData,
         unsavedTabKey: 'networking',

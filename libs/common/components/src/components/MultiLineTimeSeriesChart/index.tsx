@@ -63,12 +63,11 @@ export interface MultiLineTimeSeriesChartProps <
     yAxisProps?: {
       max?: number
       min?: number
-      minInterval?: number
     }
     disableLegend?: boolean
     chartRef?: RefCallback<ReactECharts>
     zoom?: TimeStampRange
-    onDataZoom?: (range: TimeStampRange) => void
+    onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
     brush?: TimeStampRange
     onBrushChange?: (range: TimeStampRange) => void
     markers?: Marker<MarkerData>[]
@@ -153,7 +152,7 @@ export function MultiLineTimeSeriesChart <
       cssStr('--acx-accents-orange-50'),
       cssStr('--acx-semantics-yellow-40')
     ],
-    grid: { ...gridOptions(disableLegend) },
+    grid: { ...gridOptions({ disableLegend }) },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),
@@ -179,7 +178,7 @@ export function MultiLineTimeSeriesChart <
     },
     yAxis: {
       ...yAxisOptions(),
-      ...yAxisProps,
+      ...(yAxisProps || { minInterval: 1 }),
       type: 'value',
       axisLabel: {
         ...axisLabelOptions(),

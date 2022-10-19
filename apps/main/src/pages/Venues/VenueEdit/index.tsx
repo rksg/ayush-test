@@ -1,5 +1,7 @@
 import { createContext, useState } from 'react'
 
+import { IntlShape } from 'react-intl'
+
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
 import { VenueLed, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
@@ -10,6 +12,7 @@ import { VenueDetailsTab }          from './VenueDetailsTab'
 import VenueEditPageHeader          from './VenueEditPageHeader'
 import { WifiConfigTab }            from './WifiConfigTab'
 import { NetworkingSettingContext } from './WifiConfigTab/NetworkingTab'
+import { SecuritySettingContext }   from './WifiConfigTab/SecurityTab'
 
 const tabs = {
   details: VenueDetailsTab,
@@ -40,23 +43,30 @@ export const VenueEditContext = createContext({} as {
 
   editNetworkingContextData: NetworkingSettingContext,
   setEditNetworkingContextData: (data: NetworkingSettingContext) => void
+
+  editSecurityContextData: SecuritySettingContext,
+  setEditSecurityContextData: (data: SecuritySettingContext) => void
 })
 
 export function VenueEdit () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   const [editContextData, setEditContextData] = useState({} as EditContext)
-
   const [
     editNetworkingContextData, setEditNetworkingContextData
   ] = useState({} as NetworkingSettingContext)
+  const [
+    editSecurityContextData, setEditSecurityContextData
+  ] = useState({} as SecuritySettingContext)
 
   return (
     <VenueEditContext.Provider value={{
       editContextData,
       setEditContextData,
       editNetworkingContextData,
-      setEditNetworkingContextData
+      setEditNetworkingContextData,
+      editSecurityContextData,
+      setEditSecurityContextData
     }}>
       <VenueEditPageHeader />
       { Tab && <Tab /> }
@@ -66,7 +76,8 @@ export function VenueEdit () {
 
 function processWifiTab (
   editContextData: EditContext,
-  editNetworkingContextData: NetworkingSettingContext
+  editNetworkingContextData: NetworkingSettingContext,
+  editSecurityContextData: SecuritySettingContext
 ){
   switch(editContextData?.unsavedTabKey){
     case 'settings':
@@ -77,6 +88,9 @@ function processWifiTab (
       editNetworkingContextData?.updateLanPorts?.()
       editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       break
+    case 'security':
+      editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
+      break
   }
 }
 
@@ -84,6 +98,8 @@ export function showUnsavedModal (
   editContextData: EditContext,
   setEditContextData: (data: EditContext) => void,
   editNetworkingContextData: NetworkingSettingContext,
+  editSecurityContextData: SecuritySettingContext,
+  intl: IntlShape,
   callback?: () => void
 ) {
   const { $t } = getIntl()
@@ -136,7 +152,7 @@ export function showUnsavedModal (
       const wifiTab = ['radio', 'networking', 'security', 'services', 'settings']
 
       if(wifiTab.includes(editContextData?.unsavedTabKey as string)){
-        processWifiTab(editContextData, editNetworkingContextData)
+        processWifiTab(editContextData, editNetworkingContextData, editSecurityContextData)
       }else{
         editContextData?.updateChanges?.()
       }
