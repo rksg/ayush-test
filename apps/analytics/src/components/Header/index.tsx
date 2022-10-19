@@ -1,18 +1,18 @@
-import { ReactElement, ReactNode, useMemo } from 'react'
+import { ReactElement, useMemo } from 'react'
 
-import { SerializedError }        from '@reduxjs/toolkit'
-import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { nodeTypes, useAnalyticsFilter }                                      from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
-import { useDateFilter, dateRangeForLast, NodeType, NetworkPath }             from '@acx-ui/utils'
+import { useDateFilter, dateRangeForLast, NodeType }                          from '@acx-ui/utils'
 
 import NetworkFilter from '../NetworkFilter'
 
 import { useNetworkNodeInfoQuery }         from './services'
 import { Divider, ConnectedHeaderWrapper } from './styledComponents'
+
+const { DefaultFallback: Spinner } = SuspenseBoundary
 
 const labelMap = {
   type: defineMessage({ defaultMessage: 'Type:' }),
@@ -27,17 +27,9 @@ const labelMap = {
   switchCount: defineMessage({ defaultMessage: 'Switches:' })
 }
 
-interface QueryState {
-  isLoading: boolean;
-  error?: Error | SerializedError | FetchBaseQueryError;
-  isFetching?: boolean;
-  data: HeaderData,
-}
-
 export type SubTitle = {
   key: string
   value: (number | string)[]
-  queryState?: QueryState
 }
 
 export type HeaderData = {
@@ -50,45 +42,21 @@ type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
   withIncidents?: boolean
 }
 
-export const useSubTitle =
-(subTitles: SubTitle[], type: NodeType, queryState: QueryState): ReactElement => {
+export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement => {
   const { $t } = useIntl()
   const subs = [{ key: 'type', value: [nodeTypes(type)] }, ...subTitles]
-  return <Loader
-    states={[queryState]}
-    fallback={<SuspenseBoundary.DefaultFallback size='small' />}
-  >
-    <span>
-      {subs.map(({ key, value }, index) => {
-        const labelKey = key as keyof typeof labelMap
-        const content = value.length > 1 ? `${value[0]} (${value.length})` : `${value[0]}`
-        return (
-          <span key={key} title={value.join(', ')}>
-            {$t(labelMap[labelKey])} {content}
-            {index < subs.length - 1 && <Divider key={key} type='vertical' />}
-          </span>
-        )
-      })}
-    </span>
-  </Loader>
-}
-
-export const renderTitle = (
-  filter: NetworkPath | undefined,
-  path: unknown[],
-  data: HeaderData,
-  name: unknown,
-  title: ReactNode | undefined,
-  queryState: QueryState
-): ReactNode => {
-  return <Loader
-    states={[queryState]}
-    fallback={<SuspenseBoundary.DefaultFallback size='default' />}
-  >
-    {filter || path.length > 1 ?
-      (data?.name || name as string) // ap/switch name from data || venue name from filter
-      : title}
-  </Loader>
+  return <span>
+    {subs.map(({ key, value }, index) => {
+      const labelKey = key as keyof typeof labelMap
+      const content = value.length > 1 ? `${value[0]} (${value.length})` : `${value[0]}`
+      return (
+        <span key={key} title={value.join(', ')}>
+          {$t(labelMap[labelKey])} {content}
+          {index < subs.length - 1 && <Divider key={key} type='vertical' />}
+        </span>
+      )
+    })}
+  </span>
 }
 
 const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
@@ -103,8 +71,14 @@ const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => 
   return <ConnectedHeaderWrapper>
     <PageHeader
       {...props}
-      subTitle={useSubTitle(data?.subTitle || [], type, queryState)}
-      title={renderTitle(filter, path, data, name, props.title, queryState)}
+      subTitle={<Loader states={[queryState]} fallback={<Spinner size='small' />}>
+        {useSubTitle(data?.subTitle || [], type)}
+      </Loader>}
+      title={<Loader states={[queryState]} fallback={<Spinner size='default' />}>
+        {filter || path.length > 1 ?
+          (data?.name || name as string) // ap/switch name from data || venue name from filter
+          : props.title}
+      </Loader>}
       extra={useMemo(() => [
         <NetworkFilter
           key='network-filter'
