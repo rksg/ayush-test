@@ -2,209 +2,213 @@
 
 exports[`SecurityTab should render correctly 1`] = `
 <DocumentFragment>
-  <section
-    class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
-    <div
-      class="ant-pro-steps-form"
+    <section
+      class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
     >
       <div
-        class="ant-row"
-        style="margin-left: -12px; margin-right: -12px;"
+        class="ant-pro-steps-form"
       >
         <div
-          class="ant-col ant-col-24"
-          style="padding-left: 12px; padding-right: 12px;"
+          class="ant-row"
+          style="margin-left: -12px; margin-right: -12px;"
         >
           <div
-            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+            class="ant-col ant-col-24"
+            style="padding-left: 12px; padding-right: 12px;"
           >
             <div
-              class="ant-steps ant-steps-vertical ant-steps-dot"
+              class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
             >
               <div
-                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                class="ant-steps ant-steps-vertical ant-steps-dot"
               >
                 <div
-                  class="ant-steps-item-container"
+                  class="ant-steps-item ant-steps-item-process ant-steps-item-active"
                 >
                   <div
-                    class="ant-steps-item-tail"
-                  />
-                  <div
-                    class="ant-steps-item-icon"
-                  >
-                    <span
-                      class="ant-steps-icon"
-                    >
-                      <span
-                        class="ant-steps-icon-dot"
-                      />
-                    </span>
-                  </div>
-                  <div
-                    class="ant-steps-item-content"
+                    class="ant-steps-item-container"
                   >
                     <div
-                      class="ant-steps-item-title"
+                      class="ant-steps-item-tail"
                     />
+                    <div
+                      class="ant-steps-item-icon"
+                    >
+                      <span
+                        class="ant-steps-icon"
+                      >
+                        <span
+                          class="ant-steps-icon-dot"
+                        />
+                      </span>
+                    </div>
+                    <div
+                      class="ant-steps-item-content"
+                    >
+                      <div
+                        class="ant-steps-item-title"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="ant-row"
-        style="margin-left: -12px; margin-right: -12px;"
-      >
         <div
-          class="ant-col ant-col-24"
-          style="padding-left: 12px; padding-right: 12px;"
+          class="ant-row"
+          style="margin-left: -12px; margin-right: -12px;"
         >
           <div
-            class="ant-pro-steps-form-container"
+            class="ant-col ant-col-24"
+            style="padding-left: 12px; padding-right: 12px;"
           >
             <div
-              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+              class="ant-pro-steps-form-container"
             >
-              <form
-                autocomplete="off"
-                class="ant-form ant-form-vertical"
-                id="0"
+              <div
+                class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
               >
-                <input
-                  style="display: none;"
-                  type="text"
-                />
-                <div
-                  class="ant-form-item"
+                <form
+                  autocomplete="off"
+                  class="ant-form ant-form-vertical"
+                  id="0"
                 >
+                  <input
+                    style="display: none;"
+                    type="text"
+                  />
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-form-item"
                   >
                     <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-row ant-form-item-row"
                     >
                       <div
-                        class="ant-form-item-control-input"
+                        class="ant-col ant-form-item-control"
                       >
                         <div
-                          class="ant-form-item-control-input-content"
+                          class="ant-form-item-control-input"
                         >
-                          <fieldset
-                            class="styledComponents__Fieldset-sc-azs30w-0"
+                          <div
+                            class="ant-form-item-control-input-content"
                           >
-                            <legend
-                              class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
+                            <fieldset
+                              class="styledComponents__Fieldset-sc-azs30w-0"
                             >
-                              <label>
-                                DoS Protection:
-                                <button
-                                  aria-checked="false"
-                                  class="ant-switch"
-                                  role="switch"
-                                  type="button"
-                                >
-                                  <div
-                                    class="ant-switch-handle"
-                                  />
-                                  <span
-                                    class="ant-switch-inner"
-                                  />
-                                </button>
-                              </label>
-                            </legend>
-                          </fieldset>
+                              <legend
+                                class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
+                              >
+                                <label>
+                                  DoS Protection:
+                                  <button
+                                    aria-checked="false"
+                                    class="ant-switch"
+                                    role="switch"
+                                    type="button"
+                                  >
+                                    <div
+                                      class="ant-switch-handle"
+                                    />
+                                    <span
+                                      class="ant-switch-inner"
+                                    />
+                                  </button>
+                                </label>
+                              </legend>
+                            </fieldset>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  class="ant-form-item"
-                >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-form-item"
                   >
                     <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-row ant-form-item-row"
                     >
                       <div
-                        class="ant-form-item-control-input"
+                        class="ant-col ant-form-item-control"
                       >
                         <div
-                          class="ant-form-item-control-input-content"
+                          class="ant-form-item-control-input"
                         >
-                          <fieldset
-                            class="styledComponents__Fieldset-sc-azs30w-0"
+                          <div
+                            class="ant-form-item-control-input-content"
                           >
-                            <legend
-                              class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
+                            <fieldset
+                              class="styledComponents__Fieldset-sc-azs30w-0"
                             >
-                              <label>
-                                Rogue AP Detection:
-                                <button
-                                  aria-checked="false"
-                                  class="ant-switch"
-                                  role="switch"
-                                  type="button"
-                                >
-                                  <div
-                                    class="ant-switch-handle"
-                                  />
-                                  <span
-                                    class="ant-switch-inner"
-                                  />
-                                </button>
-                              </label>
-                            </legend>
-                          </fieldset>
+                              <legend
+                                class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
+                              >
+                                <label>
+                                  Rogue AP Detection:
+                                  <button
+                                    aria-checked="false"
+                                    class="ant-switch"
+                                    role="switch"
+                                    type="button"
+                                  >
+                                    <div
+                                      class="ant-switch-handle"
+                                    />
+                                    <span
+                                      class="ant-switch-inner"
+                                    />
+                                  </button>
+                                </label>
+                              </legend>
+                            </fieldset>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 12px;"
+            >
+              <button
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                type="button"
+              >
+                <span>
+                  Save
+                </span>
+              </button>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                type="button"
+              >
+                <span>
+                  Cancel
+                </span>
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
-      >
-        <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
-        >
-          <div
-            class="ant-space-item"
-            style="margin-right: 12px;"
-          >
-            <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
-              type="button"
-            >
-              <span>
-                Save
-              </span>
-            </button>
-          </div>
-          <div
-            class="ant-space-item"
-          >
-            <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              type="button"
-            >
-              <span>
-                Cancel
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </DocumentFragment>
 `;
