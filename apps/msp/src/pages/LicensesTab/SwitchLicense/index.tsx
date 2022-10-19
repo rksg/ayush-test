@@ -17,8 +17,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-function useColumns () {
+export function SwitchLicense () {
   const { $t } = useIntl()
+
   const columns: TableProps<MspEntitlement>['columns'] = [
     {
       title: $t({ defaultMessage: 'License for' }),
@@ -70,11 +71,6 @@ function useColumns () {
       }
     }
   ]
-  return columns
-}
-
-export function SwitchLicense () {
-  const { $t } = useIntl()
 
   const actions: TableProps<MspEntitlement>['actions'] = [
     {
@@ -94,16 +90,15 @@ export function SwitchLicense () {
       params: useParams()
     },{
       selectFromResult: ({ data, ...rest }) => ({
+        // data: data?.filter(n => n.deviceType === 'MSP_SWITCH'),
         data,
         ...rest
       })
     })
-    // queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
-
     return (
       <Loader states={[queryResults]}>
         <Table
-          columns={useColumns()}
+          columns={columns}
           actions={actions}
           dataSource={queryResults?.data}
           rowKey='id'

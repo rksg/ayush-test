@@ -402,6 +402,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -830,6 +831,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>

@@ -27,8 +27,31 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { ResendInviteModal } from '../../components/ResendInviteModal'
 
-function useColumns () {
+const transformAssignedCustomerCount = (row: MspEc) => {
+  return row.assignedMspEcList.length
+}
+
+const defaultPayload = {
+  searchString: '',
+  filters: { tenantType: ['MSP_INTEGRATOR', 'MSP_INSTALLER'] },
+  fields: [
+    'check-all',
+    'id',
+    'name',
+    'tenantType',
+    'mspAdminCount',
+    'mspEcAdminCount',
+    'wifiLicense',
+    'switchLicens'
+  ]
+}
+
+export function Integrators () {
   const { $t } = useIntl()
+
+  const [modalVisible, setModalVisible] = useState(false)
+  const [tenantId, setTenantId] = useState('')
+
   const columns: TableProps<MspEc>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -95,33 +118,6 @@ function useColumns () {
       sorter: true
     }
   ]
-  return columns
-}
-
-const transformAssignedCustomerCount = (row: MspEc) => {
-  return row.assignedMspEcList.length
-}
-
-const defaultPayload = {
-  searchString: '',
-  filters: { tenantType: ['MSP_INTEGRATOR', 'MSP_INSTALLER'] },
-  fields: [
-    'check-all',
-    'id',
-    'name',
-    'tenantType',
-    'mspAdminCount',
-    'mspEcAdminCount',
-    'wifiLicense',
-    'switchLicens'
-  ]
-}
-
-export function Integrators () {
-  const { $t } = useIntl()
-
-  const [modalVisible, setModalVisible] = useState(false)
-  const [tenantId, setTenantId] = useState('')
 
   const IntegratorssTable = () => {
     const tableQuery = useTableQuery({
@@ -172,7 +168,7 @@ export function Integrators () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
-          columns={useColumns()}
+          columns={columns}
           rowActions={rowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

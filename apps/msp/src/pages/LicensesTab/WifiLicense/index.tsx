@@ -18,7 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-function useColumns () {
+export function WifiLicense () {
   const { $t } = useIntl()
 
   const columns: TableProps<MspEntitlement>['columns'] = [
@@ -72,11 +72,6 @@ function useColumns () {
       }
     }
   ]
-  return columns
-}
-
-export function WifiLicense () {
-  const { $t } = useIntl()
 
   const actions: TableProps<MspEntitlement>['actions'] = [
     {
@@ -96,16 +91,15 @@ export function WifiLicense () {
       params: useParams()
     },{
       selectFromResult: ({ data, ...rest }) => ({
+        // data: data?.filter(n => n.deviceType === 'MSP_WIFI'),
         data,
         ...rest
       })
     })
-    // queryResults.data = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
-
     return (
       <Loader states={[queryResults]}>
         <Table
-          columns={useColumns()}
+          columns={columns}
           actions={actions}
           dataSource={queryResults?.data}
           rowKey='id'

@@ -51,17 +51,6 @@ describe('SwitchLicense', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    // await screen.findByText('ICX76')
-
-    // eslint-disable-next-line testing-library/no-node-access
-    // const tbody = screen.getByRole('table').querySelector('tbody')!
-    // expect(tbody).toBeVisible()
-
-    // const rows = await within(tbody).findAllByRole('row')
-    // expect(rows).toHaveLength(list.data.length)
-    // list.data.forEach((item, index) => {
-    //   expect(within(rows[index]).getByText(item.deviceType)).toBeVisible()
-    // })
 
     expect(asFragment()).toMatchSnapshot()
   })

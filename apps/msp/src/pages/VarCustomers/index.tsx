@@ -25,87 +25,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-function useCustomerColumns () {
-  const { $t } = useIntl()
-
-  const columns: TableProps<VarCustomer>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Customer' }),
-      dataIndex: 'tenantName',
-      key: 'tenantName',
-      searchable: true,
-      sorter: true,
-      defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data) {
-        return (
-          <TenantLink to={''}>{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Account Email' }),
-      dataIndex: 'tenantEmail',
-      key: 'tenantEmail',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Active Alarms' }),
-      dataIndex: 'alarmCount',
-      key: 'alarmCount',
-      sorter: true,
-      align: 'center',
-      render: function (data) {
-        return (
-          <TenantLink to={''}>{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incidents' }),
-      dataIndex: 'activeIncindents',
-      key: 'activeIncindents',
-      sorter: true,
-      render: function () {
-        return 0
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'wifiLicenses',
-      key: 'wifiLicenses',
-      sorter: true,
-      align: 'center'
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
-      dataIndex: 'wifiLicensesUtilization',
-      key: 'wifiLicensesUtilization',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return transformApUtilization(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchLicenses',
-      key: 'switchLicenses',
-      sorter: true,
-      align: 'center'
-    },
-    {
-      title: $t({ defaultMessage: 'Next License Expiration' }),
-      dataIndex: 'expirationDate',
-      key: 'expirationDate',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return transformNextExpirationDate(row)
-      }
-    }
-  ]
-  return columns
-}
 
 const transformApUtilization = (row: VarCustomer) => {
   const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
@@ -150,6 +69,84 @@ const transformNextExpirationDate = (row: VarCustomer) => {
 export function VarCustomers () {
   const { $t } = useIntl()
 
+  const customerColumns: TableProps<VarCustomer>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Customer' }),
+      dataIndex: 'tenantName',
+      key: 'tenantName',
+      searchable: true,
+      sorter: true,
+      defaultSortOrder: 'ascend' as SortOrder,
+      render: function (data) {
+        return (
+          <TenantLink to={''}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Account Email' }),
+      dataIndex: 'tenantEmail',
+      key: 'tenantEmail',
+      sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Active Alarms' }),
+      dataIndex: 'alarmCount',
+      key: 'alarmCount',
+      sorter: true,
+      align: 'center',
+      render: function (data) {
+        return (
+          <TenantLink to={''}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Active Incidents' }),
+      dataIndex: 'activeIncindents',
+      key: 'activeIncindents',
+      sorter: true,
+      align: 'center',
+      render: function () {
+        return 0
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+      dataIndex: 'wifiLicenses',
+      key: 'wifiLicenses',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
+      dataIndex: 'wifiLicensesUtilization',
+      key: 'wifiLicensesUtilization',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformApUtilization(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Switch Licenses' }),
+      dataIndex: 'switchLicenses',
+      key: 'switchLicenses',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Next License Expiration' }),
+      dataIndex: 'expirationDate',
+      key: 'expirationDate',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformNextExpirationDate(row)
+      }
+    }
+  ]
+
   const varCustomerPayload = {
     searchString: '',
     fields: [
@@ -184,7 +181,7 @@ export function VarCustomers () {
             icon={<DownloadOutlined />} />
         </div><hr/>
         <Table
-          columns={useCustomerColumns()}
+          columns={customerColumns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
