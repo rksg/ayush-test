@@ -51,19 +51,19 @@ describe('Test', () => {
         component: ApinfraPoeLow,
         fakeIncident: fakeIncidentPoeLow,
         hasNetworkImpact: true,
-        hasTimeSeries: false
+        hasTimeSeries: true
       },
       {
         component: ApinfraWanthroughputLow,
         fakeIncident: fakeIncidentApInfraWanthroughput,
         hasNetworkImpact: true,
-        hasTimeSeries: false
+        hasTimeSeries: true
       },
       {
         component: ApservContinuousReboots,
         fakeIncident: fakeIncidentContReboot,
         hasNetworkImpact: true,
-        hasTimeSeries: false
+        hasTimeSeries: true
       },
       {
         component: ApservDowntimeHigh,
@@ -75,7 +75,7 @@ describe('Test', () => {
         component: ApservHighNumReboots,
         fakeIncident: fakeIncidentHighReboot,
         hasNetworkImpact: true,
-        hasTimeSeries: false
+        hasTimeSeries: true
       },
       {
         component: AssocFailure,

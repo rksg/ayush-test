@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rebootedAPsCountQuery should call corresponding api 1`] = `
+"
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput],
+              $start: DateTime,
+              $end: DateTime,
+              $granularity: String,
+              $code: String
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  
+  rebootedAPsChart: timeSeries(granularity: $granularity) {
+    time
+    rebootedApCount
+  }
+  
+                }
+              }
+            }
+          "
+`;
+
+exports[`rebootedAPsCountQuery should call corresponding api 2`] = `
+Object {
+  "code": "i-apserv-high-num-reboots",
+  "codeMap": Array [
+    "i-apserv-high-num-reboots",
+  ],
+  "end": "2022-10-04T16:30:00.000Z",
+  "granularity": "PT180S",
+  "path": Array [
+    Object {
+      "name": "vishnu_11ac",
+      "type": "zone",
+    },
+  ],
+  "start": "2022-10-04T03:30:00.000Z",
+}
+`;

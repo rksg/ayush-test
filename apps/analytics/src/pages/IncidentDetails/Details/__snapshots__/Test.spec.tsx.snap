@@ -151,16 +151,11 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
       </div>
     </div>
     <div
-      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-      style="padding: 10px 10px 10px 10px;"
+      data-testid="timeseries"
     >
       <div
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
-      >
-        <div>
-          Charts
-        </div>
-      </div>
+        data-testid="timeseries-ApPoeImpactChart"
+      />
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -335,8 +330,12 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Charts
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApWanThroughputImpactChart"
+          />
         </div>
       </div>
     </div>
@@ -523,8 +522,15 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApRebootBySystemChart"
+          />
+          <div
+            data-testid="timeseries-ConnectedClientsChart"
+          />
         </div>
       </div>
     </div>
@@ -882,8 +888,18 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApRebootBySystemChart"
+          />
+          <div
+            data-testid="timeseries-ConnectedClientsChart"
+          />
+          <div
+            data-testid="timeseries-RebootedApsCountChart"
+          />
         </div>
       </div>
     </div>

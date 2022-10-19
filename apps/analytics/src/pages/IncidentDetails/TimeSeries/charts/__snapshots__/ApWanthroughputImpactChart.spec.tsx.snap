@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`apWanthroughputImpactQuery should call corresponding api 1`] = `
+"
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput],
+              $start: DateTime,
+              $end: DateTime,
+              $granularity: String,
+              $code: String
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  
+  apInfraImpactedAPsChart: timeSeries(granularity:$granularity){
+    time
+    impactedAPs: apInfraAPCount(code: $code)
+  }
+
+                }
+              }
+            }
+          "
+`;
+
+exports[`apWanthroughputImpactQuery should call corresponding api 2`] = `
+Object {
+  "code": "i-apinfra-wanthroughput-low",
+  "codeMap": Array [
+    "i-apinfra-wanthroughput-low",
+  ],
+  "end": "2022-08-03T06:00:00.000Z",
+  "granularity": "PT180S",
+  "path": Array [
+    Object {
+      "name": "AlphaNet_5_1",
+      "type": "zone",
+    },
+  ],
+  "start": "2022-08-01T18:00:00.000Z",
+}
+`;
