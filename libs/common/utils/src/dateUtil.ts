@@ -10,17 +10,16 @@ export enum DateRange {
   lastMonth = 'Last Month',
   custom = 'Custom',
 }
-export let globalDateRange = defaultRanges()
-export const resetGlobalDateRange = () => { globalDateRange = defaultRanges() }
 export function getDateRangeFilter (
   range: DateRange,
   start?: string,
   end?: string
 ) {
+  const ranges = defaultRanges()
   const [startDate, endDate] =
     range === DateRange.custom && start && end
       ? [start, end]
-      : (globalDateRange as Record<string, [moment.Moment, moment.Moment]>)[range].map(
+      : (ranges as Record<string, [moment.Moment, moment.Moment]>)[range].map(
         (date: moment.Moment) => date.format()
       )
   return { startDate, endDate, range }

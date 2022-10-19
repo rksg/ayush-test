@@ -3,21 +3,15 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
-import { resetGlobalDateRange } from '@acx-ui/utils'
-
 import { useAnalyticsFilter } from './analyticsFilter'
 
 const original = Date.now
 describe('useAnalyticsFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
-    resetGlobalDateRange()
   })
 
-  afterAll(() => {
-    Date.now = original
-    resetGlobalDateRange()
-  })
+  afterAll(() => Date.now = original)
 
   it('should return correct value', () => {
     const { result } = renderHook(useAnalyticsFilter, {
