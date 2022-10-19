@@ -15,7 +15,7 @@ exports[`SwitchLicense should render correctly 1`] = `
       <br />
           at getFilteredData (/Users/ericleu/Projects/ACX-10795/acx-ui/libs/common/components/src/components/Table/filters.tsx:44:22)
       <br />
-          at Table (/Users/ericleu/Projects/ACX-10795/acx-ui/libs/common/components/src/components/Table/index.tsx:324:48)
+          at Table (/Users/ericleu/Projects/ACX-10795/acx-ui/libs/common/components/src/components/Table/index.tsx:339:48)
       <br />
           at renderWithHooks (/Users/ericleu/Projects/ACX-10795/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:16175:18)
       <br />

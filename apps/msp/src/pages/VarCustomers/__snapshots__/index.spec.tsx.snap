@@ -69,10 +69,10 @@ exports[`VarCustomers should render correctly 1`] = `
     </div>
     <hr />
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
     >
       <div
-        class="styledComponents__Header-sc-1abm7iv-10 jhzeUr"
+        class="styledComponents__Header-sc-1abm7iv-11 lWiiO"
       >
         <div>
           <div
@@ -132,7 +132,7 @@ exports[`VarCustomers should render correctly 1`] = `
           </div>
         </div>
         <div
-          class="styledComponents__HeaderRight-sc-1abm7iv-11 hLRWq"
+          class="styledComponents__HeaderRight-sc-1abm7iv-12 bHNaiJ"
         />
       </div>
       <div
