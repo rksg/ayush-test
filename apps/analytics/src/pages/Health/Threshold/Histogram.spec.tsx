@@ -31,11 +31,6 @@ const filters = {
 } as AnalyticsFilter
 const setKpiThreshold = jest.fn()
 
-jest.mock('./HistogramSlider', () => () => <div>Histogram Slider</div>)
-jest.mock('./ThresholdConfigContent', () => () => (
-  <div>Threshold Config Content</div>
-))
-
 describe('Threshold Histogram chart', () => {
   mockDOMWidth()
   beforeEach(() => {
@@ -93,5 +88,22 @@ describe('Threshold Histogram chart', () => {
       </Provider>
     )
     expect(await screen.findByText('10')).toBeVisible()
+  })
+  it('should handle data greater than the splits size', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,20] } }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('20')).toBeVisible()
   })
 })

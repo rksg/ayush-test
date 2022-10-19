@@ -7,7 +7,7 @@ import { DateRange }                                      from '@acx-ui/utils'
 
 import { timeseriesApi } from '../Kpi/services'
 
-import BarChart from './BarChart'
+import BarChart, { formatYDataPoint } from './BarChart'
 
 
 const filters = {
@@ -92,6 +92,10 @@ describe('Threshold barchart', () => {
       </Provider>
     )
     expect(await screen.findByText('No data to display')).toBeVisible()
+  })
+  it('should format y value for barChart', async () => {
+    expect(formatYDataPoint(null)).toStrictEqual('-')
+    expect(formatYDataPoint(0.1)).toStrictEqual('0.1%')
   })
 
 })
