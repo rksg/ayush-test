@@ -12,7 +12,7 @@ import { KpiThresholdType }                            from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
 import  HistogramSlider    from './HistogramSlider'
-import { ThresholdConfig } from './ThresholdConfig'
+import { ThresholdConfig } from './ThresholdConfigContent'
 
 
 

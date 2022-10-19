@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-
 import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
 
