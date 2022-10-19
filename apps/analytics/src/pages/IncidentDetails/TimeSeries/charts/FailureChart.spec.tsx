@@ -1,15 +1,17 @@
-import { BrowserRouter, Path } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 
+import { dataApiURL } from '@acx-ui/analytics/services'
 import {
   fakeIncident1,
   fakeIncident
 } from '@acx-ui/analytics/utils'
-import { store }                from '@acx-ui/store'
-import { mockDOMWidth, render } from '@acx-ui/test-utils'
+import { store }                                  from '@acx-ui/store'
+import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
-import { Api } from '../services'
+import { TimeSeriesChartTypes } from '../config'
+import { Api }                  from '../services'
 
-import { FailureChart, onMarkedAreaClick, getMarkers } from './FailureChart'
+import { FailureChart } from './FailureChart'
 
 import type { TimeSeriesChartResponse } from '../types'
 
@@ -41,7 +43,7 @@ const expectedResult = {
   ]
 } as unknown as TimeSeriesChartResponse
 
-beforeEach(() => store.dispatch(Api.util.resetApiState()))
+afterEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('FailureChart', () => {
   mockDOMWidth()
@@ -55,35 +57,22 @@ describe('FailureChart', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
-
-  describe('onMarkedAreaClick', () => {
-    it('navigate to clicked incident', () => {
-      const navigate = jest.fn()
-      const [incident, relatedIncident] = expectedResult.relatedIncidents!
-      const basePath = { pathname: '/analytics/incidents/' }
-
-      onMarkedAreaClick(navigate, basePath as Path, incident)(relatedIncident)
-
-      expect(navigate).toBeCalledTimes(1)
-      expect(navigate).toBeCalledWith({
-        ...basePath,
-        pathname: `${basePath.pathname}/${relatedIncident.id}`
+})
+describe('failureChartQuery', () => {
+  it('should call corresponding api', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
+      data: { network: { hierarchyNode: expectedResult } }
+    }, true)
+    const { status, data, error } = await store.dispatch(
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts: [TimeSeriesChartTypes.FailureChart],
+        minGranularity: 'PT180S'
       })
-    })
-
-    it('does not navigate to same incident', () => {
-      const navigate = jest.fn()
-      const [incident] = expectedResult.relatedIncidents!
-      const basePath = { pathname: '/analytics/incidents/' }
-
-      onMarkedAreaClick(navigate, basePath as Path, incident)(incident)
-
-      expect(navigate).not.toBeCalled()
-    })
-  })
-
-  it('should handle markAreaProps', () => {
-    const { relatedIncidents } = expectedResult
-    expect(getMarkers(relatedIncidents!, relatedIncidents![0])).toMatchSnapshot()
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult)
+    expect(error).toBe(undefined)
   })
 })
+
