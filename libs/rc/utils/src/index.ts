@@ -10,13 +10,18 @@ export * from './validator'
 
 export * from './schedule.utils'
 export * from './toast/toastService'
+
+export * from './models/VlanPool'
 export * from './models/NetworkVenue'
+export * from './models/NetworkApGroup'
 export * from './models/SchedulerTypeEnum'
 export * from './models/NetworkVenueScheduler'
 export * from './models/OpenWlanAdvancedCustomization'
 export * from './models/AAAWlanAdvancedCustomization'
 export * from './models/DpskWlanAdvancedCustomization'
 export * from './models/PskWlanAdvancedCustomization'
+export * from './models/VenueRogueAp'
+export * from './models/RogueClassificationPolicy'
 
 export * from './types/user'
 export * from './types/venue'
