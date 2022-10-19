@@ -152,16 +152,18 @@ export function CellularOptionsForm () {
 
   const handleVenueCellularSettings = async (payload: VenueApModelCellular) => {
     try {
-      const lteBand = formRef?.current?.getFieldsValue().bandLteArray
+      const lteBand = formRef?.current?.getFieldValue('bandLteArray')
 
       const genLteBands =
         function (ltBand: { [x: string]: { band4G: string[], band3G: string[] } }) {
           let lteBandArray: { region: string; band3G: string[]; band4G: string[] }[] = []
           Object.keys(ltBand).forEach(region => {
-            lteBandArray.push({
-              region,
-              band3G: ltBand[region].band3G, band4G: ltBand[region].band4G
-            })
+            if (region !== 'undefined') {
+              lteBandArray.push({
+                region,
+                band3G: ltBand[region].band3G, band4G: ltBand[region].band4G
+              })
+            }
           })
           return lteBandArray
         }

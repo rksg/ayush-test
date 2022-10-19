@@ -1,12 +1,11 @@
 import '@testing-library/jest-dom'
 
 
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
+import { Form } from 'antd'
 
 import { CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                           from '@acx-ui/store'
-import {  render, screen }                                                    from '@acx-ui/test-utils'
+import {  render }                                                            from '@acx-ui/test-utils'
 
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
 
@@ -25,7 +24,7 @@ describe('CellularRadioSimSettings', () => {
         band4G: ['B3'],
         region: LteBandRegionEnum.DOMAIN_1
       }],
-      enabled: false,
+      enabled: true,
       apn: 'defaultapn0000',
       roaming: true,
       networkSelection: CellularNetworkSelectionEnum.ThreeG
@@ -97,31 +96,5 @@ describe('CellularRadioSimSettings', () => {
 
     expect(asFragment()).toMatchSnapshot()
   })
-
-
-  it('should click Show bands for other countries successfully', async () => {
-
-    render(
-      <Provider>
-        <Form>
-          <CellularRadioSimSettings
-            availableLteBands={availableLteBands}
-            simCardNumber={0}
-            regionCountriesMap={regionCountriesMap}
-            countryCode={'JP'}
-            legend={'Secondary SIM'}
-            currentRegion={''}
-            formControlName={'primarySim'}
-            editData={editData} />
-        </Form>
-      </Provider>, {
-        route: { params }
-      })
-
-    const view = screen.getByText(/Show bands for other countries/i)
-    await userEvent.click(view)
-    expect(screen.getByText(/Hide bands for other countries/i)).toBeVisible()
-  })
-
 })
 
