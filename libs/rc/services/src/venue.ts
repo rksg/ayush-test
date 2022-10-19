@@ -16,6 +16,9 @@ import {
   VenueCapabilities,
   VenueLed,
   VenueApModels,
+  VenueDosProtection,
+  VenueRogueAp,
+  RogueClassificationPolicy,
   RadiusServer,
   TacacsServer,
   LocalUser,
@@ -51,7 +54,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'AddVenue',
             'UpdateVenue',
             'DeleteVenue',
-            'DeleteVenues'
+            'DeleteVenues',
+            'UpdateVenueRogueAp',
+            'AddRoguePolicy',
+            'UpdateRoguePolicy',
+            'UpdateDenialOfServiceProtection'
           ]
           showActivityMessage(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
@@ -309,6 +316,50 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    getDenialOfServiceProtection: build.query<VenueDosProtection, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getDenialOfServiceProtection, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateDenialOfServiceProtection: build.mutation<VenueDosProtection, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateDenialOfServiceProtection, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
+    }),
+    getVenueRogueAp: build.query<VenueRogueAp, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueRogueAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
+    }),
+    getRoguePolicies: build.query<RogueClassificationPolicy[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getRoguePolicies, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -336,6 +387,11 @@ export const {
   useUpdateAAAServerMutation,
   useDeleteAAAServerMutation,
   useBulkDeleteAAAServerMutation,
+  useGetDenialOfServiceProtectionQuery,
+  useUpdateDenialOfServiceProtectionMutation,
+  useGetVenueRogueApQuery,
+  useUpdateVenueRogueApMutation,
+  useGetRoguePoliciesQuery,
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
