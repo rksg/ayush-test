@@ -34,7 +34,8 @@ import {
   WifiNetworkMessages,
   hexRegExp,
   passphraseRegExp,
-  NetworkSaveData
+  NetworkSaveData,
+  generateHexKey
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -151,11 +152,8 @@ function SettingsForm () {
       { macAuthMacFormatOptions[key as keyof typeof macAuthMacFormatOptions] }
     </Option>
   ))
-  const generateHexKey = () => {
-    let hexKey = ''
-    while (hexKey.length < 26) {
-      hexKey += Math.random().toString(16).substring(2)
-    }
+  const onGenerateHexKey = () => {
+    let hexKey = generateHexKey(26)
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
   }
   const securityOnChange = (value: string) => {
@@ -216,7 +214,7 @@ function SettingsForm () {
             children={<Input.Password />}
           />
           <div style={{ position: 'absolute', top: '105px', right: '15px' }}>
-            <Button type='link' onClick={generateHexKey}>
+            <Button type='link' onClick={onGenerateHexKey}>
               {intl.$t({ defaultMessage: 'Generate' })}
             </Button>
           </div>
