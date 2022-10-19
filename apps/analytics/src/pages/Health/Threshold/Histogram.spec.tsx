@@ -1,0 +1,97 @@
+import { dataApiURL }      from '@acx-ui/analytics/services'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  mockGraphqlQuery,
+  render,
+  screen,
+  mockDOMWidth
+} from '@acx-ui/test-utils'
+import { DateRange } from '@acx-ui/utils'
+
+import { histogramApi } from '../Kpi/services'
+
+import Histogram from './Histogram'
+
+const thresholdMap = {
+  timeToConnect: 2000,
+  rss: -75,
+  clientThroughput: 10000,
+  apCapacity: 50,
+  apServiceUptime: 0.995,
+  apToSZLatency: 200,
+  switchPoeUtilization: 0.8
+}
+const filters = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  path: [{ type: 'network', name: 'Network' }],
+  range: DateRange.last24Hours,
+  filter: {}
+} as AnalyticsFilter
+const setKpiThreshold = jest.fn()
+
+jest.mock('./HistogramSlider', () => () => <div>Histogram Slider</div>)
+jest.mock('./ThresholdConfigContent', () => () => (
+  <div>Threshold Config Content</div>
+))
+
+describe('Threshold Histogram chart', () => {
+  mockDOMWidth()
+  beforeEach(() => {
+    store.dispatch(histogramApi.util.resetApiState())
+  })
+
+  it('should render Histogram with data', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 200, 3, 3, 0] } }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('200')).toBeVisible()
+  })
+  it('should render Histogram with no data', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [] } }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('No data to display')).toBeVisible()
+  })
+
+  it('should render Histogram with data for reverse interpreted values', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [1, 1, 1, 10, 1, 1, 1, 1, 2] } }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'rss'}
+          threshold={thresholdMap['rss'] as unknown as string}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+        />
+      </Provider>
+    )
+    expect(await screen.findByText('10')).toBeVisible()
+  })
+})

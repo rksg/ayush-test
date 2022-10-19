@@ -4,15 +4,15 @@ import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig }                         from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, cssStr, VerticalBarChart } from '@acx-ui/components'
-import type { TimeStamp }                                     from '@acx-ui/types'
+import { AnalyticsFilter, kpiConfig }                                 from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, NoData } from '@acx-ui/components'
+import type { TimeStamp }                                             from '@acx-ui/types'
 
 import { KpiThresholdType }                            from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
-import  HistogramSlider    from './HistogramSlider'
-import { ThresholdConfig } from './ThresholdConfigContent'
+import  HistogramSlider from './HistogramSlider'
+import  ThresholdConfig from './ThresholdConfigContent'
 
 
 
@@ -125,25 +125,31 @@ function Histogram ({
       <GridRow>
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
-            {({ width, height }) => (
-              <>
-                <VerticalBarChart
-                  style={{ height: height, width }}
-                  data={data}
-                  xAxisName={`(${histogram?.xUnit})`}
-                  barWidth={30}
-                  xAxisOffset={10}
-                  barColors={barColors}
-                />
-                <HistogramSlider
-                  splits={splits}
-                  width={width}
-                  height={height}
-                  onSliderChange={onSliderChange}
-                  sliderValue={sliderValue}
-                />
-              </>
-            )}
+            {({ width, height }) =>
+              queryResults?.data?.[0]?.data.length
+                ? (
+                  <>
+                    <VerticalBarChart
+                      style={{ height: height, width }}
+                      data={data}
+                      xAxisName={`(${histogram?.xUnit})`}
+                      barWidth={30}
+                      xAxisOffset={10}
+                      barColors={barColors}
+                    />
+                    <HistogramSlider
+                      splits={splits}
+                      width={width}
+                      height={height}
+                      onSliderChange={onSliderChange}
+                      sliderValue={sliderValue}
+                    />
+                  </> )
+                :
+                (
+                  <NoData />
+                )
+            }
           </AutoSizer>
         </GridCol>
         <GridCol col={{ span: 6 }}>

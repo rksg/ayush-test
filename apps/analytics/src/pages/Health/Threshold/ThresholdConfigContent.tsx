@@ -12,7 +12,7 @@ const thresholdDescText = {
   resetBtn: defineMessage({ defaultMessage: 'Reset' }),
   applyBtn: defineMessage({ defaultMessage: 'Apply' })
 }
-export function ThresholdConfig ({
+function ThresholdConfig ({
   thresholdValue,
   percent,
   unit,
