@@ -27,7 +27,7 @@ export const ApRebootBySystemChart = (
 
   const seriesMapping = [{
     key: 'apRebootBySystem',
-    name: $t({ defaultMessage: 'Count' })
+    name: $t({ defaultMessage: 'Reboot By System Event' })
   }]
 
   const chartResults = getSeriesData(

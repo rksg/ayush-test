@@ -1,15 +1,15 @@
 import { Incident } from '@acx-ui/analytics/utils'
 
 import apDisconnectionCountChart          from './charts/ApDisconnectionCountChart'
-import apPoeImpactQuery                   from './charts/ApPoeImpactChart'
-import apRebootBySystemQuery              from './charts/ApRebootBySystemChart'
-import apWanthroughputImpactQuery         from './charts/APWanthroughputImpactChart'
+import apPoeImpactChart                   from './charts/ApPoeImpactChart'
+import apRebootBySystemChart              from './charts/ApRebootBySystemChart'
+import apWanthroughputImpactChart         from './charts/ApWanthroughputImpactChart'
 import attemptAndFailureChart             from './charts/AttemptAndFailureChart'
 import clientCountChart                   from './charts/ClientCountChart'
-import connectedClientsChartQuery         from './charts/ConnectedClientsChart'
+import connectedClientsChartChart         from './charts/ConnectedClientsChart'
 import downtimeEventTypeDistributionChart from './charts/DowntimeEventTypeDistributionChart'
 import failureChart                       from './charts/FailureChart'
-import rebootedAPsCountQuery              from './charts/RebootedAPsCountChart'
+import rebootedAPsCountChart              from './charts/RebootedAPsCountChart'
 import ttcByFailureTypeChart              from './charts/TtcByFailureTypeChart'
 import ttcFailureChart                    from './charts/TtcFailureChart'
 
@@ -43,9 +43,9 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.TtcByFailureTypeChart]: ttcByFailureTypeChart,
   [TimeSeriesChartTypes.ApDisconnectionCountChart]: apDisconnectionCountChart,
   [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart]: downtimeEventTypeDistributionChart,
-  [TimeSeriesChartTypes.ApRebootBySystemChart]: apRebootBySystemQuery,
-  [TimeSeriesChartTypes.ConnectedClientsChart]: connectedClientsChartQuery,
-  [TimeSeriesChartTypes.RebootedApsCountChart]: rebootedAPsCountQuery,
-  [TimeSeriesChartTypes.ApPoeImpactChart]: apPoeImpactQuery,
-  [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactQuery
+  [TimeSeriesChartTypes.ApRebootBySystemChart]: apRebootBySystemChart,
+  [TimeSeriesChartTypes.ConnectedClientsChart]: connectedClientsChartChart,
+  [TimeSeriesChartTypes.RebootedApsCountChart]: rebootedAPsCountChart,
+  [TimeSeriesChartTypes.ApPoeImpactChart]: apPoeImpactChart,
+  [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactChart
 }

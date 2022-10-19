@@ -23,7 +23,7 @@ export const ApPoeImpactChart = (
 
   const seriesMapping = [{
     key: 'impactedAPs',
-    name: $t({ defaultMessage: 'Count' })
+    name: $t({ defaultMessage: 'Impacted APs' })
   }]
 
   const chartResults = getSeriesData(

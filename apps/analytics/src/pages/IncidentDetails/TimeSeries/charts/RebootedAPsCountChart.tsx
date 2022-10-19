@@ -22,7 +22,7 @@ export const RebootedAPsCountChart = (
 
   const seriesMapping = [{
     key: 'rebootedApCount',
-    name: $t({ defaultMessage: 'AP Count' })
+    name: $t({ defaultMessage: 'Rebooted APs' })
   }]
 
   const chartResults = getSeriesData(

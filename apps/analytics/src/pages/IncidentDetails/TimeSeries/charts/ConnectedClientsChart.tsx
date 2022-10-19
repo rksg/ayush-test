@@ -22,13 +22,13 @@ export const ConnectedClientsChart = (
 
   const seriesMapping = [{
     key: 'connectedClientCount',
-    name: $t({ defaultMessage: 'Count' })
+    name: $t({ defaultMessage: 'Connected Clients' })
   }]
 
   const chartResults = getSeriesData(
     clientCountCharts as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'Rebooted APs' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'Connected Clients' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         <MultiLineTimeSeriesChart
