@@ -48,7 +48,7 @@ export function NetworkingTab () {
 
   const handleUpdateAllSettings = async () => {
     try {
-      editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
+      await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       await editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       setEditContextData({
         ...editContextData,
