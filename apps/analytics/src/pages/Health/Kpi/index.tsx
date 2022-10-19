@@ -25,7 +25,7 @@ export type KpiThresholdType = {
   clientThroughput: number;
   apCapacity: number;
   apServiceUptime: number;
-  apSzLatency: number;
+  apToSZLatency: number;
   switchPoeUtilization: number;
 }
 export default function KpiSection (props: { tab: HealthTab }) {
@@ -40,7 +40,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
     clientThroughput: 10000,
     apCapacity: 50,
     apServiceUptime: 0.995,
-    apSzLatency: 200,
+    apToSZLatency: 200,
     switchPoeUtilization: 0.8
   })
 
