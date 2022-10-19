@@ -11,5 +11,6 @@
   # following must match the default value.yaml in the Helm chart
   service:
     name: acx-ui
+    type: service
     image:
       path: gcr.io/kumo-scratch/services/acx-ui
