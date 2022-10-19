@@ -1,14 +1,13 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }      from '@acx-ui/analytics/services'
-import { fakeIncident1 }   from '@acx-ui/analytics/utils'
-import { Provider, store } from '@acx-ui/store'
+import { dataApiURL }         from '@acx-ui/analytics/services'
+import { fakeIncident1 }      from '@acx-ui/analytics/utils'
+import { Provider, store }    from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
   screen,
-  waitForElementToBeRemoved,
-  mockDOMWidth
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import { TimeSeriesChartTypes } from './config'
@@ -17,8 +16,6 @@ import { Api }                  from './services'
 import { TimeSeries } from '.'
 
 describe('Timeseries component', () => {
-  mockDOMWidth()
-
   const charts = [
     TimeSeriesChartTypes.FailureChart,
     TimeSeriesChartTypes.AttemptAndFailureChart

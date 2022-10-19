@@ -127,7 +127,15 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
           <div
             class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
             style="overflow: visible; height: 0px; width: 0px;"
-          />
+          >
+            <div
+              style="width: 1280px;"
+            >
+              <div
+                data-testid="incidentAttributes"
+              />
+            </div>
+          </div>
           <div
             class="resize-triggers"
           >
@@ -135,7 +143,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
               class="expand-trigger"
             >
               <div
-                style="width: 1px; height: 1px;"
+                style="width: 1281px; height: 801px;"
               />
             </div>
             <div

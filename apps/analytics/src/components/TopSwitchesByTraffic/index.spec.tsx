@@ -7,7 +7,7 @@ import { EventParams }                      from '@acx-ui/components'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider, store }                  from '@acx-ui/store'
 import { render, renderHook, screen }       from '@acx-ui/test-utils'
-import { mockGraphqlQuery, mockDOMWidth }   from '@acx-ui/test-utils'
+import { mockGraphqlQuery }                 from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
 import { topSwitchesByTrafficResponse } from './__tests__/fixtures'
@@ -37,7 +37,6 @@ const filters = {
 } as AnalyticsFilter
 
 describe('TopSwitchesByTrafficWidget', () => {
-  mockDOMWidth()
 
   const wrapper = (<BrowserRouter>
     <Provider>
