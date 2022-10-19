@@ -6,8 +6,9 @@ import { Provider, store }                              from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery, renderHook } from '@acx-ui/test-utils'
 import { DateRange }                                    from '@acx-ui/utils'
 
+import { timeseriesApi } from '../../pages/Health/Kpi/services'
+
 import { connectionSuccessFixture, clientThroughputFixture } from './__tests__/fixtures'
-import { api }                                               from './services'
 
 import { KpiWidget, getKpiInfoText } from './index'
 
@@ -21,11 +22,11 @@ describe('KpiWidget', () => {
   }
 
   beforeEach(() =>
-    store.dispatch(api.util.resetApiState())
+    store.dispatch(timeseriesApi.util.resetApiState())
   )
 
   it('should render loader', async () => {
-    mockGraphqlQuery(dataApiURL, 'KpiWidget', {
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: { data: connectionSuccessFixture } }
     })
     render( <Provider> <KpiWidget name='connectionSuccess' filters={filters}/></Provider>)
@@ -34,7 +35,7 @@ describe('KpiWidget', () => {
   })
 
   it('should render for empty data', async () => {
-    mockGraphqlQuery(dataApiURL, 'KpiWidget', {
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: { data: [null, null] } }
     })
     const { asFragment } =render( <Provider>
@@ -45,7 +46,7 @@ describe('KpiWidget', () => {
     expect(asFragment().querySelector('svg')).toMatchSnapshot('svg')
   })
   it('should render component properly with sparkline', async () => {
-    mockGraphqlQuery(dataApiURL, 'KpiWidget', {
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: { data: connectionSuccessFixture } }
     })
     const { asFragment } =render( <Provider>
@@ -57,7 +58,7 @@ describe('KpiWidget', () => {
   })
 
   it('should render component having healthy icon', async () => {
-    mockGraphqlQuery(dataApiURL, 'KpiWidget', {
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: { data: clientThroughputFixture } }
     })
     const { asFragment } =render( <Provider>
@@ -68,7 +69,7 @@ describe('KpiWidget', () => {
     expect(asFragment().querySelector('svg')).toMatchSnapshot('svg')
   })
   it('should render component having major icon', async () => {
-    mockGraphqlQuery(dataApiURL, 'KpiWidget', {
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: { data: [
         [1,3],
         [1,3]

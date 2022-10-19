@@ -5,16 +5,18 @@ import { AnalyticsFilter, kpiConfig }               from '@acx-ui/analytics/util
 import { GridRow, GridCol, SparklineChart, Loader } from '@acx-ui/components'
 import { intlFormats, formatter }                   from '@acx-ui/utils'
 
-import { useKpiTimeseriesQuery } from '../../pages/Health/Kpi/services'
+import { useKpiTimeseriesQuery }   from '../../pages/Health/Kpi/services'
+import { getSparklineGranularity } from '../../utils'
 
-import { TimeseriesData } from './services'
-import * as UI            from './styledComponents'
+import * as UI from './styledComponents'
 
 export interface KpiList<T> {
   connectionSuccess: T
   timeToConnect: T
   clientThroughput: T
 }
+
+type TimeseriesData = Array<[number, number] | null>
 
 export type KpiNames = keyof KpiList<void>
 
@@ -76,7 +78,8 @@ export function KpiWidget ({
   const queryResults= useKpiTimeseriesQuery({
     ...filters,
     kpi: name,
-    threshold: (threshold ?? '') as string
+    threshold: (threshold ?? '') as string,
+    granularity: getSparklineGranularity(filters.startDate,filters.endDate)
   },{
     selectFromResult: ({ data: kpiData, ...rest })=>{
       return { data: kpiData?.data, ...rest }

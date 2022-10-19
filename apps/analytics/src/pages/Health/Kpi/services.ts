@@ -22,13 +22,9 @@ interface HistogramResponse <HistogramData> {
   histogram: HistogramData
 }
 
-export type KpiPayload = AnalyticsFilter & { kpi: string, threshold?: string }
+export type KpiPayload = AnalyticsFilter & { kpi: string, threshold?: string, granularity?: string }
 
 const getKPIMetric = (kpi: string, threshold?: string) : string => {
-  // eslint-disable-next-line no-console
-  console.log('KPI:', kpi)
-  // eslint-disable-next-line no-console
-  console.log('threshold:', threshold)
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { timeseries: { apiMetric } } = config
   return threshold
@@ -67,7 +63,8 @@ export const timeseriesApi = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: getGranularity(payload.startDate, payload.endDate, payload.kpi)
+          granularity: payload.granularity ||
+           getGranularity(payload.startDate, payload.endDate, payload.kpi)
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],

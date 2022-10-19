@@ -246,6 +246,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                     <div
                       data-name="timeToConnect"
                       data-testid="kpiWidget"
+                      data-threshold="2000"
                     >
                       Kpi Widget
                     </div>
@@ -269,6 +270,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                     <div
                       data-name="clientThroughput"
                       data-testid="kpiWidget"
+                      data-threshold="10000"
                     >
                       Kpi Widget
                     </div>
