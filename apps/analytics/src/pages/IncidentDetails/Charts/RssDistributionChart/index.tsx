@@ -48,7 +48,7 @@ export const RssDistributionChart = ({ incident }: { incident: Incident }) => {
             <VerticalBarChart
               data={queryResults.data!}
               style={{ height, width }}
-              xAxisName={$t({ defaultMessage: '(RSS, in dBm)' })}
+              xAxisName={$t({ defaultMessage: '(dBm)' })}
               barColors={barColors(
                 incident.severity,
                 queryResults.data!.source.map(([rss]) => rss as number)
