@@ -77,7 +77,6 @@ function BarChart ({
           <VerticalBarChart
             style={{ height: height, width }}
             data={data}
-            // grid={{ top: '5%', bottom: '15%' }}
             xAxisName={`(${$t(barChartText.title)})`}
             barWidth={30}
             dataFormatter={formatYDataPoint}

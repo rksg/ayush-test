@@ -35,7 +35,7 @@ export const HistogramGoalPercentage = styled.span`
   margin-bottom: 10px
 `
 export const HistogramConfig = styled.div`
-font-size: 12px;
+font-size: var(--acx-subtitle-6-font-size);
 display: flex;
 flex-direction: column;
 -webkit-box-pack: start;
@@ -61,23 +61,4 @@ export const BtnWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px
-`
-export const TooltipWrapper = styled.div`
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
-  color: var(--acx-primary-white);
-
-  time { font-weight: var(--acx-body-font-weight-bold); }
-
-  > ul {
-    padding: 0px;
-    margin: 0px;
-    list-style-type: none;
-    padding-top: 4px;
-  }
-  > li {
-    font-weight: var(--acx-body-font-weight);
-    margin-bottom: 4px;
-    &:is(:last-child) { margin-bottom: unset; }
-  }
 `

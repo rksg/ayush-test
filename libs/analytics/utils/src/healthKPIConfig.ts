@@ -46,7 +46,7 @@ export const kpiConfig = {
       initialThreshold: 2000,
       splits: [1000, 2000, 5000, 10000, 30000, 50000],
       apiMetric: 'timeToConnect',
-      xUnit: 'sec',
+      xUnit: 'seconds',
       shortXFormat: divideBy1000,
       yUnit: 'connections'
     },

@@ -69,8 +69,6 @@ function IncidentBySeverityWidget ({ filters }: { filters: IncidentFilter }) {
     barColors = chart.source.map(([p]) =>
       cssStr(incidentSeverities[p as keyof typeof incidentSeverities].color)
     )
-    console.log(chart)
-    console.log(barColors)
   }
 
 

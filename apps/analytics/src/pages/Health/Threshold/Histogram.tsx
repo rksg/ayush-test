@@ -123,7 +123,7 @@ function Histogram ({
   return (
     <Loader states={[queryResults]} key={kpi}>
       <GridRow>
-        <GridCol col={{ span: 19 }} style={{ height: '160px' }}>
+        <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
             {({ width, height }) => (
               <>
@@ -146,7 +146,7 @@ function Histogram ({
             )}
           </AutoSizer>
         </GridCol>
-        <GridCol col={{ span: 5 }}>
+        <GridCol col={{ span: 6 }}>
           <ThresholdConfig
             thresholdValue={thresholdValue}
             percent={percent}
