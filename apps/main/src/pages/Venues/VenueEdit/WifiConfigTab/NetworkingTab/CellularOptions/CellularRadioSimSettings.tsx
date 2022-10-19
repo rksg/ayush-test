@@ -69,73 +69,69 @@ export function CellularRadioSimSettings (props: {
   }
 
   return (
-    <div>
-      <FieldsetItem
-        name={['editData', props.formControlName, 'enabled']}
-        label={$t({ defaultMessage: '{simCardNumber} {legend}' },
-          { simCardNumber: props.simCardNumber, legend: props.legend })}
-        initialValue={false}>
+    <FieldsetItem
+      name={['editData', props.formControlName, 'enabled']}
+      label={$t({ defaultMessage: '{simCardNumber} {legend}' },
+        { simCardNumber: props.simCardNumber, legend: props.legend })}
+      initialValue={false}>
 
-        <Form.Item
-          name={['editData', props.formControlName, 'apn']}
-          label={$t({ defaultMessage: 'APN:' })}
-          initialValue={1}
-          children={<Input style={{ width: '150px' }}></Input>}
-        />
+      <Form.Item
+        name={['editData', props.formControlName, 'apn']}
+        label={$t({ defaultMessage: 'APN:' })}
+        initialValue={1}
+        children={<Input style={{ width: '150px' }}></Input>}
+      />
 
-        <Form.Item
-          name={['editData', props.formControlName, 'networkSelection']}
-          rules={[{
-            required: true
-          }]}
-          label={$t({ defaultMessage: '3G/4G (LTE) Selection:' })}
-          initialValue={CellularNetworkSelectionEnum.AUTO}
-          children={
-            <Select
-              style={{ width: '150px' }}>
-              <Option value={CellularNetworkSelectionEnum.AUTO}>
-                {$t({ defaultMessage: 'Auto' })}
-              </Option>
-              <Option value={CellularNetworkSelectionEnum.LTE}>
-                {$t({ defaultMessage: '4G (LTE) only' })}
-              </Option>
-              <Option value={CellularNetworkSelectionEnum.ThreeG}>
-                {$t({ defaultMessage: '3G only' })}
-              </Option>
-            </Select>
-          }
-        />
+      <Form.Item
+        name={['editData', props.formControlName, 'networkSelection']}
+        label={$t({ defaultMessage: '3G/4G (LTE) Selection:' })}
+        initialValue={CellularNetworkSelectionEnum.AUTO}
+        children={
+          <Select
+            style={{ width: '150px' }}>
+            <Option value={CellularNetworkSelectionEnum.AUTO}>
+              {$t({ defaultMessage: 'Auto' })}
+            </Option>
+            <Option value={CellularNetworkSelectionEnum.LTE}>
+              {$t({ defaultMessage: '4G (LTE) only' })}
+            </Option>
+            <Option value={CellularNetworkSelectionEnum.ThreeG}>
+              {$t({ defaultMessage: '3G only' })}
+            </Option>
+          </Select>
+        }
+      />
 
-        <Form.Item
-          name={['editData', props.formControlName, 'roaming']}
-          label={$t({ defaultMessage: 'Data Roaming' })}
-          initialValue={false}
-          valuePropName='checked'
-          children={<Switch />}
-        />
+      <Form.Item
+        name={['editData', props.formControlName, 'roaming']}
+        label={$t({ defaultMessage: 'Data Roaming' })}
+        initialValue={false}
+        valuePropName='checked'
+        children={<Switch />}
+      />
 
 
-        <Form.Item
-          label={$t({ defaultMessage: 'LTE Bank Lock' })}
-          children={
-            props.availableLteBands.map((item, index) => (
-              <div
-                key={props.formControlName + index}>
-                <LteBandChannels
-                  index={index}
-                  editData={props.editData}
-                  formControlName={props.formControlName}
-                  simCardNumber={props.simCardNumber}
-                  availableLteBands={item}
-                  countryCode={props.countryCode}
-                  isShowDesc={item.region === 'DOMAIN_1' || item.region === 'DOMAIN_2'}
-                  isShowOtherLteBands={isShowOtherLteBands}
-                  regionName={props.regionCountriesMap[item.region].name}
-                  regionCountries={props.regionCountriesMap[item.region].countries}
-                  regionCountriesMap={props.regionCountriesMap}
-                  region={item.region}
-                  isCurrent={index === 0} />
-                {index === 0 &&
+      <Form.Item
+        label={$t({ defaultMessage: 'LTE Bank Lock' })}
+        children={
+          props.availableLteBands.map((item, index) => (
+            <div
+              key={props.formControlName + index}>
+              <LteBandChannels
+                index={index}
+                editData={props.editData}
+                formControlName={props.formControlName}
+                simCardNumber={props.simCardNumber}
+                availableLteBands={item}
+                countryCode={props.countryCode}
+                isShowDesc={item.region === 'DOMAIN_1' || item.region === 'DOMAIN_2'}
+                isShowOtherLteBands={isShowOtherLteBands}
+                regionName={props.regionCountriesMap[item.region].name}
+                regionCountries={props.regionCountriesMap[item.region].countries}
+                regionCountriesMap={props.regionCountriesMap}
+                region={item.region}
+                isCurrent={index === 0} />
+              {index === 0 &&
                 <Button
                   type='link'
                   onClick={() => {
@@ -146,13 +142,12 @@ export function CellularRadioSimSettings (props: {
                     $t({ defaultMessage: 'Hide bands for other countries' }) :
                     $t({ defaultMessage: 'Show bands for other countries' })}
                 </Button>
-                }
-              </div>
-            ))
-          }
-        />
-      </FieldsetItem>
-    </div>
+              }
+            </div>
+          ))
+        }
+      />
+    </FieldsetItem>
   )
 }
 const FieldsetItem = ({

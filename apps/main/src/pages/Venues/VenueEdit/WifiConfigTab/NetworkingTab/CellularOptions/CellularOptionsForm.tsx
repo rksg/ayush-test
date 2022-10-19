@@ -46,21 +46,21 @@ export function CellularOptionsForm () {
 
   const LteBandLockCountriesJson = {
     [LteBandRegionEnum.DOMAIN_1]: {
-      name: 'Domain 1 countries',
+      name: $t({ defaultMessage: 'Domain 1 countries' }),
       // eslint-disable-next-line max-len
-      countries: 'European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam'
+      countries: $t({ defaultMessage: 'European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam' })
     },
     [LteBandRegionEnum.DOMAIN_2]: {
-      name: 'Domain 2 countries',
-      countries: 'Australia, Brazil, Mexico, New Zealand, Taiwan'
+      name: $t({ defaultMessage: 'Domain 2 countries' }),
+      countries: $t({ defaultMessage: 'Australia, Brazil, Mexico, New Zealand, Taiwan' })
     },
     [LteBandRegionEnum.USA_CANADA]: {
-      name: 'USA & Canada',
-      countries: 'USA, Canada'
+      name: $t({ defaultMessage: 'USA & Canada' }),
+      countries: $t({ defaultMessage: 'USA & Canada' })
     },
     [LteBandRegionEnum.JAPAN]: {
-      name: 'Japan',
-      countries: 'Japan'
+      name: $t({ defaultMessage: 'Japan' }),
+      countries: $t({ defaultMessage: 'Japan' })
     }
   }
 
@@ -143,7 +143,6 @@ export function CellularOptionsForm () {
     })
     setEditNetworkingContextData && setEditNetworkingContextData({
       ...editNetworkingContextData,
-      meshData: { mesh: true },
       updateCellular: handleVenueCellularSettings
     })
   }
@@ -186,12 +185,10 @@ export function CellularOptionsForm () {
     <>
       <Subtitle level={3}>{$t({ defaultMessage: 'Cellular Options' })}</Subtitle>
       <Loader states={[{ isLoading: false, isFetching: isUpdatingVenueCellularSettings }]}>
-        <StepsForm
-          buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
-        >
+        <StepsForm>
           <StepsForm.StepForm
             formRef={formRef}
-            onChange={onChange}>
+            onValuesChange={onChange}>
             <div data-testid='primarySim'>
               <CellularRadioSimSettings
                 editData={editData}
