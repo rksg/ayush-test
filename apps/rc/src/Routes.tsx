@@ -95,7 +95,7 @@ function ServiceRoutes () {
 function DeviceRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path='devices/add' element={<AddEdge />} />
+      <Route path='devices/edge/add' element={<AddEdge />} />
       <Route path='devices/:serialNumber/edit' element={<EditEdge />} />
     </Route>
   )

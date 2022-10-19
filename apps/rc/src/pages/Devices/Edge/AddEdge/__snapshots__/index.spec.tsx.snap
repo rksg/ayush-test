@@ -17,7 +17,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices"
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/edge/list"
               >
                 SmartEdge
               </a>

@@ -23,15 +23,14 @@ const AddEdge = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToDevices = useTenantLink('/devices')
+  const linkToEdgeList = useTenantLink('/devices/edge/list')
   const formRef = useRef<StepsFormInstance<EdgeSaveData>>()
   const [addEdge] = useAddEdgeMutation()
 
   const handleAddEdge = async (data: EdgeSaveData) => {
     try {
-      const formData = { ...data }
-      await addEdge({ payload: formData }).unwrap()
-      navigate(linkToDevices, { replace: true })
+      await addEdge({ payload: { ...data } }).unwrap()
+      navigate(linkToEdgeList, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -45,13 +44,13 @@ const AddEdge = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Add SmartEdge' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices' }
+          { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
         ]}
       />
       <StepsForm
         formRef={formRef}
         onFinish={handleAddEdge}
-        onCancel={() => navigate(linkToDevices)}
+        onCancel={() => navigate(linkToEdgeList)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>

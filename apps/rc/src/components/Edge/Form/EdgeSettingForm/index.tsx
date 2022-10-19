@@ -6,7 +6,7 @@ import { useIntl }                      from 'react-intl'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useVenuesListQuery }         from '@acx-ui/rc/services'
-import { EdgeSaveData, Venue }        from '@acx-ui/rc/utils'
+import { EdgeSaveData }        from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
 
 // will remove when api is ready
@@ -30,19 +30,20 @@ const defaultPayload = {
 const EdgeSettingForm = (props: EdgeSettingFormProps) => {
 
   const { $t } = useIntl()
-  const [venues, setVenues] = useState<Venue[]>([])
-  const [edgeGroups, setEdgeGroups] = useState<Option[]>([])
+  const [edgeGroupOptions, setEdgeGroupOptions] = useState<Option[]>([])
   const params = useParams()
-  const { data: venueData } = useVenuesListQuery({ params:
-    { tenantId: params.tenantId }, payload: defaultPayload })
+  const { venueOptions } = useVenuesListQuery({ params:
+    { tenantId: params.tenantId }, payload: defaultPayload }, {
+    selectFromResult: ({ data }) => {
+      return {
+        venueOptions: data?.data.map(item => ({ label: item.name, value: item.id }))
+      }
+    }
+  })
 
   useEffect(() => {
-    setVenues(venueData?.data || [])
-  }, [venueData])
-
-  useEffect(() => {
-    // TODO should call api to get edge group
-    setEdgeGroups([{ label: 'Mock Group 1', value: 'mock_group_1' }
+    // TODO will remove when api is ready
+    setEdgeGroupOptions([{ label: 'Mock Group 1', value: 'mock_group_1' }
       , { label: 'Mock Group 2', value: 'mock_group_2' }
       , { label: 'Mock Group 3', value: 'mock_group_3' }])
   }, [])
@@ -56,27 +57,13 @@ const EdgeSettingForm = (props: EdgeSettingFormProps) => {
           required: true
         }]}
       >
-        <Select>
-          {
-            venues.map(venue =>
-              <Select.Option key={venue.id} value={venue.id}>
-                {venue.name}
-              </Select.Option>)
-          }
-        </Select>
+        <Select options={venueOptions} />
       </Form.Item>
       <Form.Item
         name='edgeGroupId'
         label={$t({ defaultMessage: 'SmartEdge Group' })}
       >
-        <Select>
-          {
-            edgeGroups.map(edgeGroup =>
-              <Select.Option key={edgeGroup.value} value={edgeGroup.value}>
-                {edgeGroup.label}
-              </Select.Option>)
-          }
-        </Select>
+        <Select options={edgeGroupOptions} />
       </Form.Item>
       <Form.Item
         name='name'
