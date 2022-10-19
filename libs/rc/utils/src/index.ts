@@ -8,6 +8,7 @@ export * from './onSocketActivityChanged'
 export * from './useTableQuery'
 export * from './validator'
 
+export * from './network.utils'
 export * from './schedule.utils'
 export * from './toast/toastService'
 
@@ -31,5 +32,4 @@ export * from './pipes/networkPipes'
 export * from './pipes/apPipes'
 export * from './pipes/commonPipes'
 
-export * from './networkService'
 export * from './urls'
