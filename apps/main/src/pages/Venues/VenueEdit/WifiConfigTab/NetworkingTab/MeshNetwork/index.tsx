@@ -133,21 +133,23 @@ export function MeshNetwork () {
   }
 
   return (
-    <Loader states={[{ isLoading: isUpdatingVenueMesh }]}>
+    <>
       <Subtitle level={3}>{$t({ defaultMessage: 'Mesh Network' })}</Subtitle>
-      <UI.FieldLabel width='125px'>
-        {$t({ defaultMessage: 'Mesh Network' })}
-        <UI.FieldLabel width='30px'>
-          <Tooltip title={meshToolTipDisabledText}>
-            <Switch
-              checked={meshEnabled}
-              disabled={!isAllowEnableMesh}
-              onClick={toggleMesh}
-              style={{ marginTop: isAllowEnableMesh? '5px' : '0' }}
-            />
-          </Tooltip>
+      <Loader states={[{ isLoading: false, isFetching: isUpdatingVenueMesh }]}>
+        <UI.FieldLabel width='125px'>
+          {$t({ defaultMessage: 'Mesh Network' })}
+          <UI.FieldLabel width='30px'>
+            <Tooltip title={meshToolTipDisabledText}>
+              <Switch
+                checked={meshEnabled}
+                disabled={!isAllowEnableMesh}
+                onClick={toggleMesh}
+                style={{ marginTop: isAllowEnableMesh ? '5px' : '0' }}
+              />
+            </Tooltip>
+          </UI.FieldLabel>
         </UI.FieldLabel>
-      </UI.FieldLabel>
-    </Loader>
+      </Loader>
+    </>
   )
 }

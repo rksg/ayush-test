@@ -136,14 +136,14 @@ exports[`MeshNetwork should render correctly 1`] = `
                         class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
                         id="Mesh-Network"
                       >
+                        <h3
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                        >
+                          Mesh Network
+                        </h3>
                         <div
                           class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
                         >
-                          <h3
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                          >
-                            Mesh Network
-                          </h3>
                           <div
                             class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
                             width="125px"
