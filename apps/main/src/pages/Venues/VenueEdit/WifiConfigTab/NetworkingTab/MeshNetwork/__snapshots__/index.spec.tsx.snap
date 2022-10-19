@@ -2,34 +2,38 @@
 
 exports[`MeshNetwork should render correctly 1`] = `
 <DocumentFragment>
-  <h3
-    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-  >
-    Mesh Network
-  </h3>
   <div
-    class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
-    width="125px"
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
-    Mesh Network
-    <div
-      class="styledComponents__FieldLabel-sc-cldbhn-0 bZxgmF"
-      width="30px"
+    <h3
+      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
     >
-      <button
-        aria-checked="false"
-        class="ant-switch"
-        role="switch"
-        style="margin-top: 5px;"
-        type="button"
+      Mesh Network
+    </h3>
+    <div
+      class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
+      width="125px"
+    >
+      Mesh Network
+      <div
+        class="styledComponents__FieldLabel-sc-cldbhn-0 bZxgmF"
+        width="30px"
       >
-        <div
-          class="ant-switch-handle"
-        />
-        <span
-          class="ant-switch-inner"
-        />
-      </button>
+        <button
+          aria-checked="false"
+          class="ant-switch"
+          role="switch"
+          style="margin-top: 5px;"
+          type="button"
+        >
+          <div
+            class="ant-switch-handle"
+          />
+          <span
+            class="ant-switch-inner"
+          />
+        </button>
+      </div>
     </div>
   </div>
 </DocumentFragment>
@@ -37,34 +41,38 @@ exports[`MeshNetwork should render correctly 1`] = `
 
 exports[`MeshNetwork should render disabled switch button correctly 1`] = `
 <DocumentFragment>
-  <h3
-    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-  >
-    Mesh Network
-  </h3>
   <div
-    class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
-    width="125px"
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
-    Mesh Network
-    <div
-      class="styledComponents__FieldLabel-sc-cldbhn-0 bZxgmF"
-      width="30px"
+    <h3
+      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
     >
-      <button
-        aria-checked="true"
-        class="ant-switch ant-switch-checked"
-        role="switch"
-        style="margin-top: 5px;"
-        type="button"
+      Mesh Network
+    </h3>
+    <div
+      class="styledComponents__FieldLabel-sc-cldbhn-0 hRkrAc"
+      width="125px"
+    >
+      Mesh Network
+      <div
+        class="styledComponents__FieldLabel-sc-cldbhn-0 bZxgmF"
+        width="30px"
       >
-        <div
-          class="ant-switch-handle"
-        />
-        <span
-          class="ant-switch-inner"
-        />
-      </button>
+        <button
+          aria-checked="true"
+          class="ant-switch ant-switch-checked"
+          role="switch"
+          style="margin-top: 5px;"
+          type="button"
+        >
+          <div
+            class="ant-switch-handle"
+          />
+          <span
+            class="ant-switch-inner"
+          />
+        </button>
+      </div>
     </div>
   </div>
 </DocumentFragment>
