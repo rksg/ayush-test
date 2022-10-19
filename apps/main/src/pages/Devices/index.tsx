@@ -1,10 +1,10 @@
 import { Loader } from '@acx-ui/components'
 import { Outlet } from '@acx-ui/react-router-dom'
 
-function Edges () {
+function Devices () {
   return <Loader>
     <Outlet />
   </Loader>
 }
 
-export default Edges
+export default Devices
