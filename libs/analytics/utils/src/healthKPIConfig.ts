@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { identity }      from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
@@ -16,8 +17,8 @@ const createBarChartConfig = (apiMetric: string) => ({
   shortYFormat: (val: number) => formatter('percentFormat')(val / 100)
 })
 
-
 const divideBy1000 = (ms: number) => ms / 1000
+const multipleBy100 = (ms: number) => ms * 100
 
 export const kpiConfig = {
   connectionSuccess: {
@@ -45,11 +46,9 @@ export const kpiConfig = {
       initialThreshold: 2000,
       splits: [1000, 2000, 5000, 10000, 30000, 50000],
       apiMetric: 'timeToConnect',
-      xUnit: 'sec',
-      shortXFormat: divideBy1000
-      //longXFormat: createUnitFormatter('{value} seconds', divideBy1000),
-      // shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} connections')
+      xUnit: 'seconds',
+      shortXFormat: divideBy1000,
+      yUnit: 'connections'
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} connections' }),
@@ -165,9 +164,8 @@ export const kpiConfig = {
       apiMetric: 'rss',
       splits: [-100, -90, -85, -80, -75, -70, -65, -60, -50],
       xUnit: 'dBm',
-      //longXFormat: x => t('{x} dBm', {x}),
-      //shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} sessions'),
+      yUnit: 'sessions',
+      shortXFormat: (x: number) => x,
       isReverse: true
     },
     pill: {
@@ -193,10 +191,8 @@ export const kpiConfig = {
       splits: [10000, 25000, 50000, 100000, 200000, 500000, 1000000],
       apiMetric: 'clientThroughput',
       xUnit: 'Mbps',
+      yUnit: 'samples',
       shortXFormat: divideBy1000
-      //longXFormat: x => t('{x} Mbps', {x: divideBy1000(x)}),
-      //shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} samples')
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} sessions' }),
@@ -220,11 +216,10 @@ export const kpiConfig = {
       initialThreshold: 50,
       splits: [5, 10, 25, 50, 100, 300, 500],
       apiMetric: 'apCapacity',
-      xUnit: 'Mbps'
-      //shortXFormat: identity,
-      //longXFormat: x => t('{x} Mbps', {x}),
+      xUnit: 'Mbps',
+      shortXFormat: identity,
       //shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} APs')
+      yUnit: 'APs'
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} APs' }),
@@ -248,11 +243,9 @@ export const kpiConfig = {
       initialThreshold: 0.995,
       splits: [0.5, 0.95, 0.98, 0.99, 0.995, 0.997, 0.999],
       apiMetric: 'apServiceUptime',
-      xUnit: '%'
-      //shortXFormat: x => formatter('percentFormatNoSign')(x),
-      //longXFormat: x => formatter('percentFormat')(x),
-      //shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} APs')
+      xUnit: '%',
+      yUnit: 'APs',
+      shortXFormat: multipleBy100
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} APs' }),
@@ -277,10 +270,9 @@ export const kpiConfig = {
       initialThreshold: 200,
       apiMetric: 'apSzLatency',
       splits: [50, 100, 150, 200, 250, 300, 350, 400],
-      xUnit: 'ms'
-      // longXFormat: x => t('{x} ms', {x}),
-      // shortYFormat: formatter(),
-      // longYFormat: createUnitFormatter('{value} APs')
+      xUnit: 'ms',
+      yUnit: 'APs',
+      shortXFormat: (x : number) => x
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} APs' }),
@@ -306,10 +298,9 @@ export const kpiConfig = {
       apiMetric: 'switchPoeUtilization',
       splits: [0.1, 0.25, 0.5, 0.6, 0.7, 0.8, 0.9],
       xUnit: '%',
-      //shortXFormat: formatter('percentFormatNoSign'),
+      yUnit: 'switches',
+      shortXFormat: multipleBy100,
       longXFormat: formatter('percentFormat')
-      //shortYFormat: formatter(),
-      //longYFormat: createUnitFormatter('{value} switches')
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches' }),

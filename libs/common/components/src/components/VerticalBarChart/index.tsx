@@ -1,4 +1,5 @@
 import ReactECharts       from 'echarts-for-react'
+import { GridOption }     from 'echarts/types/dist/shared'
 import { renderToString } from 'react-dom/server'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
@@ -15,8 +16,8 @@ import {
 } from '../Chart/helper'
 import { TooltipWrapper } from '../Chart/styledComponents'
 
-import type { EChartsOption, TooltipComponentFormatterCallbackParams } from 'echarts'
-import type { EChartsReactProps }                                      from 'echarts-for-react'
+import type { EChartsOption, TooltipComponentFormatterCallbackParams  } from 'echarts'
+import type { EChartsReactProps }                                       from 'echarts-for-react'
 
 export interface VerticalBarChartProps
   <TChartData extends BarChartData>
@@ -31,7 +32,8 @@ export interface VerticalBarChartProps
   }
   xAxisName?: string
   xAxisOffset?: number
-  showTooltipName?: Boolean
+  showTooltipName?: Boolean,
+  grid?: GridOption,
 }
 
 export const tooltipFormatter = (
@@ -61,13 +63,15 @@ export function VerticalBarChart<TChartData extends BarChartData>
   xAxisName,
   xAxisOffset,
   showTooltipName = true,
+  grid: gridProps,
   ...props
 }: VerticalBarChartProps<TChartData>) {
   const option: EChartsOption = {
     grid: { ...gridOptions({
       disableLegend: true,
       hasXAxisName: Boolean(xAxisName),
-      xAxisOffset
+      xAxisOffset,
+      ...gridProps
     }) },
     dataset: {
       dimensions: data.dimensions,

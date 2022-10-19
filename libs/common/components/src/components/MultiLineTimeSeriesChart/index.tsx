@@ -7,9 +7,10 @@ import {
   useCallback
 } from 'react'
 
-import ReactECharts from 'echarts-for-react'
-import { isEmpty }  from 'lodash'
-import { useIntl }  from 'react-intl'
+import ReactECharts   from 'echarts-for-react'
+import { GridOption } from 'echarts/types/dist/shared'
+import { isEmpty }    from 'lodash'
+import { useIntl }    from 'react-intl'
 
 import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import type { TimeStampRange }      from '@acx-ui/types'
@@ -33,8 +34,9 @@ import { useDataZoom } from '../Chart/useDataZoom'
 
 import * as UI from './styledComponents'
 
-import type { ECharts, EChartsOption, MarkAreaComponentOption } from 'echarts'
-import type { EChartsReactProps }                               from 'echarts-for-react'
+import type { ECharts, EChartsOption, MarkAreaComponentOption  } from 'echarts'
+import type { EChartsReactProps }                                from 'echarts-for-react'
+
 
 type OnBrushendEvent = { areas: { coordRange: TimeStampRange }[] }
 
@@ -72,6 +74,7 @@ export interface MultiLineTimeSeriesChartProps <
     onBrushChange?: (range: TimeStampRange) => void
     markers?: Marker<MarkerData>[]
     onMarkAreaClick?: (data: MarkerData) => void
+    grid?: GridOption,
   }
 
 export function useBrush<TChartData extends TimeSeriesChartData> (
@@ -131,6 +134,7 @@ export function MultiLineTimeSeriesChart <
   yAxisProps,
   disableLegend,
   onMarkAreaClick,
+  grid: gridProps,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData, MarkerData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -152,7 +156,10 @@ export function MultiLineTimeSeriesChart <
       cssStr('--acx-accents-orange-50'),
       cssStr('--acx-semantics-yellow-40')
     ],
-    grid: { ...gridOptions({ disableLegend }) },
+    grid: {
+      ...gridOptions({ disableLegend }),
+      ...gridProps
+    },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),

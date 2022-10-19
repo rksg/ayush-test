@@ -24,32 +24,45 @@ const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
 export const formatYDataPoint = (data: number | unknown) =>
   data !== null ? formatter('percentFormat')(data) : '-'
 
-function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: {
-  filters: AnalyticsFilter,
-  kpi: string,
-  chartRef: RefCallback<ReactECharts>,
-  setTimeWindow: { (timeWidow: TimeStampRange, isReset: boolean): void },
+function KpiTimeseries ({
+  filters,
+  kpi,
+  threshold,
+  chartRef,
+  setTimeWindow,
+  timeWindow
+}: {
+  filters: AnalyticsFilter;
+  kpi: string;
+  threshold: string;
+  chartRef: RefCallback<ReactECharts>;
+  setTimeWindow: { (timeWidow: TimeStampRange, isReset: boolean): void };
   timeWindow?: TimeStampRange // no set if there is no zoom
 }) {
   const { $t } = useIntl()
-  const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const queryResults = useKpiTimeseriesQuery(
-    { ...filters, kpi, threshold: histogram?.initialThreshold }, {
+    { ...filters, kpi, threshold: threshold },
+    {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
-        data: data! && [{
-          key: kpi,
-          name: $t(text),
-          data: transformResponse(data)
-        }]
+        data: data! && [
+          {
+            key: kpi,
+            name: $t(text),
+            data: transformResponse(data)
+          }
+        ]
       })
-    })
+    }
+  )
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
-        {({ height, width }) => (
-          queryResults.data[0]?.data.length ?
+        {({ height, width }) =>
+          queryResults.data[0]?.data.length ? (
             <MultiLineTimeSeriesChart
+              grid={{ bottom: '10%', top: '5%' }}
               style={{ height, width }}
               data={queryResults.data}
               lineColors={lineColors}
@@ -60,8 +73,10 @@ function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: {
               onDataZoom={setTimeWindow}
               zoom={timeWindow}
             />
-            : <NoData/>
-        )}
+          ) : (
+            <NoData />
+          )
+        }
       </AutoSizer>
     </Loader>
   )
