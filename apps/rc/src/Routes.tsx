@@ -96,7 +96,7 @@ function DeviceRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='devices/edge/add' element={<AddEdge />} />
-      <Route path='devices/:serialNumber/edit' element={<EditEdge />} />
+      <Route path='devices/edge/:serialNumber/edit' element={<EditEdge />} />
     </Route>
   )
 }

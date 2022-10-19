@@ -48,7 +48,7 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/:serialNumber/edit' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit' }
       })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -59,7 +59,7 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/:serialNumber/edit' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit' }
       })
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: '' } })
@@ -73,7 +73,7 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/:serialNumber/edit' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit' }
       })
     const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
@@ -99,11 +99,11 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/:serialNumber/edit' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit' }
       })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices`,
+      pathname: `/t/${params.tenantId}/devices/edge/list`,
       hash: '',
       search: ''
     })
@@ -122,6 +122,14 @@ describe('EditEdge api fail', () => {
       rest.put(
         EdgeUrlsInfo.updateEdge.url,
         (req, res, ctx) => res(ctx.status(500), ctx.json(null))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdge.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockVenueData))
       )
     )
   })
@@ -132,7 +140,7 @@ describe('EditEdge api fail', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/:serialNumber/edit' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit' }
       })
     const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)

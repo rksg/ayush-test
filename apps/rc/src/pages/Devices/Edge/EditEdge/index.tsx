@@ -22,7 +22,7 @@ const EditEdge = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const linkToDevices = useTenantLink('/devices')
+  const linkToEdgeList = useTenantLink('/devices/edge/list')
   const formRef = useRef<StepsFormInstance<EdgeSaveData>>()
   const { data: edgeInfoData } = useGetEdgeQuery({ params: { serialNumber: params.serialNumber } })
   const [upadteEdge] = useUpdateEdgeMutation()
@@ -42,7 +42,7 @@ const EditEdge = () => {
       const formData = { ...data }
       delete formData.serialNumber // serial number can not be sent in update API's payload
       await upadteEdge({ params: params, payload: formData }).unwrap()
-      navigate(linkToDevices, { replace: true })
+      navigate(linkToEdgeList, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -62,7 +62,7 @@ const EditEdge = () => {
       <StepsForm
         formRef={formRef}
         onFinish={handleUpdateEdge}
-        onCancel={() => navigate(linkToDevices)}
+        onCancel={() => navigate(linkToEdgeList)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
       >
         <StepsForm.StepForm>
