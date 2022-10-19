@@ -9,7 +9,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showToast, StepsForm, StepsFormInstance, Subtitle }                                                                               from '@acx-ui/components'
+import { Loader, showToast, StepsForm, StepsFormInstance, Subtitle }                                                                       from '@acx-ui/components'
 import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation } from '@acx-ui/rc/services'
 import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }                                                                      from '@acx-ui/rc/utils'
 

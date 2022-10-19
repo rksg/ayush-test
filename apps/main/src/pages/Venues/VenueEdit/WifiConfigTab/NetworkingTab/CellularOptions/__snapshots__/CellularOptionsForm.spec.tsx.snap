@@ -10,80 +10,548 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
     >
       Cellular Options
     </h3>
-    <section
-      class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
+    <div
+      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
     >
-      <div
-        class="ant-pro-steps-form"
+      <section
+        class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
       >
         <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
+          class="ant-pro-steps-form"
         >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="ant-row"
+            style="margin-left: -12px; margin-right: -12px;"
           >
             <div
-              class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+              class="ant-col ant-col-24"
+              style="padding-left: 12px; padding-right: 12px;"
             >
               <div
-                class="ant-steps ant-steps-vertical ant-steps-dot"
+                class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
               >
                 <div
-                  class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                  class="ant-steps ant-steps-vertical ant-steps-dot"
                 >
                   <div
-                    class="ant-steps-item-container"
+                    class="ant-steps-item ant-steps-item-process ant-steps-item-active"
                   >
                     <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
-                    >
-                      <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
+                      class="ant-steps-item-container"
                     >
                       <div
-                        class="ant-steps-item-title"
+                        class="ant-steps-item-tail"
                       />
+                      <div
+                        class="ant-steps-item-icon"
+                      >
+                        <span
+                          class="ant-steps-icon"
+                        >
+                          <span
+                            class="ant-steps-icon-dot"
+                          />
+                        </span>
+                      </div>
+                      <div
+                        class="ant-steps-item-content"
+                      >
+                        <div
+                          class="ant-steps-item-title"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
-        >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="ant-row"
+            style="margin-left: -12px; margin-right: -12px;"
           >
             <div
-              class="ant-pro-steps-form-container"
+              class="ant-col ant-col-24"
+              style="padding-left: 12px; padding-right: 12px;"
             >
               <div
-                class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+                class="ant-pro-steps-form-container"
               >
-                <input
-                  style="display: none;"
-                  type="text"
-                />
                 <div
-                  data-testid="primarySim"
+                  class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
                 >
+                  <input
+                    style="display: none;"
+                    type="text"
+                  />
+                  <div
+                    data-testid="primarySim"
+                  >
+                    <div>
+                      <div
+                        class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-left ant-divider-plain"
+                        role="separator"
+                      >
+                        <span
+                          class="ant-divider-inner-text"
+                        >
+                          <div
+                            style="display: grid; grid-template-columns: auto 100px; height: 30px;"
+                          >
+                            <div
+                              style="display: flex; align-items: center; height: 30px;"
+                            >
+                              1 Primary SIM 
+                            </div>
+                            <div
+                              class="ant-form-item"
+                              style="display: flex; align-items: center; height: 30px;"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="0_editData_primarySim_enabled"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </span>
+                      </div>
+                      <div
+                        class="ant-form-item ant-form-item-has-success"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="0_editData_primarySim_apn"
+                              title="APN:"
+                            >
+                              APN:
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <input
+                                  class="ant-input ant-input-status-success"
+                                  id="0_editData_primarySim_apn"
+                                  style="width: 150px;"
+                                  type="text"
+                                  value="defaultapn0000"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item ant-form-item-has-success"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class="ant-form-item-required"
+                              for="0_editData_primarySim_networkSelection"
+                              title="3G/4G (LTE) Selection:"
+                            >
+                              3G/4G (LTE) Selection:
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-select ant-select-in-form-item ant-select-status-success ant-select-single ant-select-show-arrow"
+                                  style="width: 150px;"
+                                >
+                                  <div
+                                    class="ant-select-selector"
+                                  >
+                                    <span
+                                      class="ant-select-selection-search"
+                                    >
+                                      <input
+                                        aria-activedescendant="0_editData_primarySim_networkSelection_list_0"
+                                        aria-autocomplete="list"
+                                        aria-controls="0_editData_primarySim_networkSelection_list"
+                                        aria-haspopup="listbox"
+                                        aria-owns="0_editData_primarySim_networkSelection_list"
+                                        autocomplete="off"
+                                        class="ant-select-selection-search-input"
+                                        id="0_editData_primarySim_networkSelection"
+                                        readonly=""
+                                        role="combobox"
+                                        style="opacity: 0;"
+                                        type="search"
+                                        unselectable="on"
+                                        value=""
+                                      />
+                                    </span>
+                                    <span
+                                      class="ant-select-selection-item"
+                                      title="3G only"
+                                    >
+                                      3G only
+                                    </span>
+                                  </div>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ant-select-arrow"
+                                    style="user-select: none;"
+                                    unselectable="on"
+                                  >
+                                    <span
+                                      aria-label="down"
+                                      class="anticon anticon-down ant-select-suffix"
+                                      role="img"
+                                    >
+                                      <svg
+                                        aria-hidden="true"
+                                        data-icon="down"
+                                        fill="currentColor"
+                                        focusable="false"
+                                        height="1em"
+                                        viewBox="64 64 896 896"
+                                        width="1em"
+                                      >
+                                        <path
+                                          d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                        />
+                                      </svg>
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item ant-form-item-has-success"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="0_editData_primarySim_roaming"
+                              title="Data Roaming"
+                            >
+                              Data Roaming
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <button
+                                  aria-checked="true"
+                                  class="ant-switch ant-switch-checked"
+                                  id="0_editData_primarySim_roaming"
+                                  role="switch"
+                                  type="button"
+                                >
+                                  <div
+                                    class="ant-switch-handle"
+                                  />
+                                  <span
+                                    class="ant-switch-inner"
+                                  />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              title="LTE Bank Lock"
+                            >
+                              LTE Bank Lock
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div>
+                                  <span
+                                    class="styledComponents__CurrentCountryLabel-sc-nyixel-2 cLUVoM"
+                                  >
+                                    Bands for current country (United States)
+                                  </span>
+                                  <div
+                                    class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
+                                    width="25px"
+                                  >
+                                    3G:
+                                    <div
+                                      class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
+                                    >
+                                      <div
+                                        class="ant-form-item"
+                                        style="margin-bottom: 0px;"
+                                      >
+                                        <div
+                                          class="ant-row ant-form-item-row"
+                                        >
+                                          <div
+                                            class="ant-col ant-form-item-control"
+                                          >
+                                            <div
+                                              class="ant-form-item-control-input"
+                                            >
+                                              <div
+                                                class="ant-form-item-control-input-content"
+                                              >
+                                                <div
+                                                  class="ant-checkbox-group"
+                                                  id="0_bandLteArray_primarySim_USA_CANADA_band3G"
+                                                >
+                                                  <label
+                                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                                  >
+                                                    <span
+                                                      class="ant-checkbox"
+                                                    >
+                                                      <input
+                                                        class="ant-checkbox-input"
+                                                        type="checkbox"
+                                                        value="B2"
+                                                      />
+                                                      <span
+                                                        class="ant-checkbox-inner"
+                                                      />
+                                                    </span>
+                                                    <span>
+                                                      B2
+                                                    </span>
+                                                  </label>
+                                                  <label
+                                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                                  >
+                                                    <span
+                                                      class="ant-checkbox"
+                                                    >
+                                                      <input
+                                                        class="ant-checkbox-input"
+                                                        type="checkbox"
+                                                        value="B4"
+                                                      />
+                                                      <span
+                                                        class="ant-checkbox-inner"
+                                                      />
+                                                    </span>
+                                                    <span>
+                                                      B4
+                                                    </span>
+                                                  </label>
+                                                  <label
+                                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                                  >
+                                                    <span
+                                                      class="ant-checkbox"
+                                                    >
+                                                      <input
+                                                        class="ant-checkbox-input"
+                                                        type="checkbox"
+                                                        value="B5"
+                                                      />
+                                                      <span
+                                                        class="ant-checkbox-inner"
+                                                      />
+                                                    </span>
+                                                    <span>
+                                                      B5
+                                                    </span>
+                                                  </label>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
+                                    width="25px"
+                                  >
+                                    4G:
+                                    <div
+                                      class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
+                                    >
+                                      <div
+                                        class="ant-form-item"
+                                      >
+                                        <div
+                                          class="ant-row ant-form-item-row"
+                                        >
+                                          <div
+                                            class="ant-col ant-form-item-control"
+                                          >
+                                            <div
+                                              class="ant-form-item-control-input"
+                                            >
+                                              <div
+                                                class="ant-form-item-control-input-content"
+                                              >
+                                                <div
+                                                  class="ant-checkbox-group"
+                                                  id="0_bandLteArray_primarySim_USA_CANADA_band4G"
+                                                >
+                                                  <label
+                                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                                  >
+                                                    <span
+                                                      class="ant-checkbox"
+                                                    >
+                                                      <input
+                                                        class="ant-checkbox-input"
+                                                        type="checkbox"
+                                                        value="B2"
+                                                      />
+                                                      <span
+                                                        class="ant-checkbox-inner"
+                                                      />
+                                                    </span>
+                                                    <span>
+                                                      B2
+                                                    </span>
+                                                  </label>
+                                                  <label
+                                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                                  >
+                                                    <span
+                                                      class="ant-checkbox"
+                                                    >
+                                                      <input
+                                                        class="ant-checkbox-input"
+                                                        type="checkbox"
+                                                        value="B4"
+                                                      />
+                                                      <span
+                                                        class="ant-checkbox-inner"
+                                                      />
+                                                    </span>
+                                                    <span>
+                                                      B4
+                                                    </span>
+                                                  </label>
+                                                  <label
+                                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                                  >
+                                                    <span
+                                                      class="ant-checkbox"
+                                                    >
+                                                      <input
+                                                        class="ant-checkbox-input"
+                                                        type="checkbox"
+                                                        value="B12"
+                                                      />
+                                                      <span
+                                                        class="ant-checkbox-inner"
+                                                      />
+                                                    </span>
+                                                    <span>
+                                                      B12
+                                                    </span>
+                                                  </label>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <button
+                                    class="ant-btn ant-btn-link"
+                                    type="button"
+                                  >
+                                    <span>
+                                      Show bands for other countries
+                                    </span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-divider ant-divider-horizontal ant-divider-plain"
+                        role="separator"
+                      />
+                    </div>
+                  </div>
                   <div>
                     <div
                       class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-left ant-divider-plain"
@@ -98,10 +566,10 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                           <div
                             style="display: flex; align-items: center; height: 30px;"
                           >
-                            1 Primary SIM 
+                            2 Secondary SIM 
                           </div>
                           <div
-                            class="ant-form-item"
+                            class="ant-form-item ant-form-item-has-success"
                             style="display: flex; align-items: center; height: 30px;"
                           >
                             <div
@@ -117,9 +585,9 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                     class="ant-form-item-control-input-content"
                                   >
                                     <button
-                                      aria-checked="false"
-                                      class="ant-switch"
-                                      id="0_editData_primarySim_enabled"
+                                      aria-checked="true"
+                                      class="ant-switch ant-switch-checked"
+                                      id="0_editData_secondarySim_enabled"
                                       role="switch"
                                       type="button"
                                     >
@@ -149,7 +617,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                         >
                           <label
                             class=""
-                            for="0_editData_primarySim_apn"
+                            for="0_editData_secondarySim_apn"
                             title="APN:"
                           >
                             APN:
@@ -166,10 +634,10 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                             >
                               <input
                                 class="ant-input ant-input-status-success"
-                                id="0_editData_primarySim_apn"
+                                id="0_editData_secondarySim_apn"
                                 style="width: 150px;"
                                 type="text"
-                                value="defaultapn0000"
+                                value="defaultapn"
                               />
                             </div>
                           </div>
@@ -187,7 +655,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                         >
                           <label
                             class="ant-form-item-required"
-                            for="0_editData_primarySim_networkSelection"
+                            for="0_editData_secondarySim_networkSelection"
                             title="3G/4G (LTE) Selection:"
                           >
                             3G/4G (LTE) Selection:
@@ -213,14 +681,14 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                     class="ant-select-selection-search"
                                   >
                                     <input
-                                      aria-activedescendant="0_editData_primarySim_networkSelection_list_0"
+                                      aria-activedescendant="0_editData_secondarySim_networkSelection_list_0"
                                       aria-autocomplete="list"
-                                      aria-controls="0_editData_primarySim_networkSelection_list"
+                                      aria-controls="0_editData_secondarySim_networkSelection_list"
                                       aria-haspopup="listbox"
-                                      aria-owns="0_editData_primarySim_networkSelection_list"
+                                      aria-owns="0_editData_secondarySim_networkSelection_list"
                                       autocomplete="off"
                                       class="ant-select-selection-search-input"
-                                      id="0_editData_primarySim_networkSelection"
+                                      id="0_editData_secondarySim_networkSelection"
                                       readonly=""
                                       role="combobox"
                                       style="opacity: 0;"
@@ -231,9 +699,9 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                   </span>
                                   <span
                                     class="ant-select-selection-item"
-                                    title="3G only"
+                                    title="4G (LTE) only"
                                   >
-                                    3G only
+                                    4G (LTE) only
                                   </span>
                                 </div>
                                 <span
@@ -279,7 +747,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                         >
                           <label
                             class=""
-                            for="0_editData_primarySim_roaming"
+                            for="0_editData_secondarySim_roaming"
                             title="Data Roaming"
                           >
                             Data Roaming
@@ -297,7 +765,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                               <button
                                 aria-checked="true"
                                 class="ant-switch ant-switch-checked"
-                                id="0_editData_primarySim_roaming"
+                                id="0_editData_secondarySim_roaming"
                                 role="switch"
                                 type="button"
                               >
@@ -370,7 +838,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                             >
                                               <div
                                                 class="ant-checkbox-group"
-                                                id="0_bandLteArray_primarySim_USA_CANADA_band3G"
+                                                id="0_bandLteArray_secondarySim_USA_CANADA_band3G"
                                               >
                                                 <label
                                                   class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
@@ -462,7 +930,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                             >
                                               <div
                                                 class="ant-checkbox-group"
-                                                id="0_bandLteArray_primarySim_USA_CANADA_band4G"
+                                                id="0_bandLteArray_secondarySim_USA_CANADA_band4G"
                                               >
                                                 <label
                                                   class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
@@ -548,99 +1016,6 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                       role="separator"
                     />
                   </div>
-                </div>
-                <div>
-                  <div
-                    class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-left ant-divider-plain"
-                    role="separator"
-                  >
-                    <span
-                      class="ant-divider-inner-text"
-                    >
-                      <div
-                        style="display: grid; grid-template-columns: auto 100px; height: 30px;"
-                      >
-                        <div
-                          style="display: flex; align-items: center; height: 30px;"
-                        >
-                          2 Secondary SIM 
-                        </div>
-                        <div
-                          class="ant-form-item ant-form-item-has-success"
-                          style="display: flex; align-items: center; height: 30px;"
-                        >
-                          <div
-                            class="ant-row ant-form-item-row"
-                          >
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <button
-                                    aria-checked="true"
-                                    class="ant-switch ant-switch-checked"
-                                    id="0_editData_secondarySim_enabled"
-                                    role="switch"
-                                    type="button"
-                                  >
-                                    <div
-                                      class="ant-switch-handle"
-                                    />
-                                    <span
-                                      class="ant-switch-inner"
-                                    />
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </span>
-                  </div>
-                  <div
-                    class="ant-form-item ant-form-item-has-success"
-                  >
-                    <div
-                      class="ant-row ant-form-item-row"
-                    >
-                      <div
-                        class="ant-col ant-form-item-label"
-                      >
-                        <label
-                          class=""
-                          for="0_editData_secondarySim_apn"
-                          title="APN:"
-                        >
-                          APN:
-                        </label>
-                      </div>
-                      <div
-                        class="ant-col ant-form-item-control"
-                      >
-                        <div
-                          class="ant-form-item-control-input"
-                        >
-                          <div
-                            class="ant-form-item-control-input-content"
-                          >
-                            <input
-                              class="ant-input ant-input-status-success"
-                              id="0_editData_secondarySim_apn"
-                              style="width: 150px;"
-                              type="text"
-                              value="defaultapn"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   <div
                     class="ant-form-item ant-form-item-has-success"
                   >
@@ -652,10 +1027,10 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                       >
                         <label
                           class="ant-form-item-required"
-                          for="0_editData_secondarySim_networkSelection"
-                          title="3G/4G (LTE) Selection:"
+                          for="0_editData_wanConnection"
+                          title="WAN Connection:"
                         >
-                          3G/4G (LTE) Selection:
+                          WAN Connection:
                         </label>
                       </div>
                       <div
@@ -669,7 +1044,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                           >
                             <div
                               class="ant-select ant-select-in-form-item ant-select-status-success ant-select-single ant-select-show-arrow"
-                              style="width: 150px;"
+                              style="width: 330px;"
                             >
                               <div
                                 class="ant-select-selector"
@@ -678,14 +1053,14 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                   class="ant-select-selection-search"
                                 >
                                   <input
-                                    aria-activedescendant="0_editData_secondarySim_networkSelection_list_0"
+                                    aria-activedescendant="0_editData_wanConnection_list_0"
                                     aria-autocomplete="list"
-                                    aria-controls="0_editData_secondarySim_networkSelection_list"
+                                    aria-controls="0_editData_wanConnection_list"
                                     aria-haspopup="listbox"
-                                    aria-owns="0_editData_secondarySim_networkSelection_list"
+                                    aria-owns="0_editData_wanConnection_list"
                                     autocomplete="off"
                                     class="ant-select-selection-search-input"
-                                    id="0_editData_secondarySim_networkSelection"
+                                    id="0_editData_wanConnection"
                                     readonly=""
                                     role="combobox"
                                     style="opacity: 0;"
@@ -696,9 +1071,9 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                 </span>
                                 <span
                                   class="ant-select-selection-item"
-                                  title="4G (LTE) only"
+                                  title="Cellular only"
                                 >
-                                  4G (LTE) only
+                                  Cellular only
                                 </span>
                               </div>
                               <span
@@ -743,11 +1118,11 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                         class="ant-col ant-form-item-label"
                       >
                         <label
-                          class=""
-                          for="0_editData_secondarySim_roaming"
-                          title="Data Roaming"
+                          class="ant-form-item-required"
+                          for="0_editData_primaryWanRecoveryTimer"
+                          title="Primary WAN Recovery Timer:"
                         >
-                          Data Roaming
+                          Primary WAN Recovery Timer:
                         </label>
                       </div>
                       <div
@@ -758,453 +1133,82 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                         >
                           <div
                             class="ant-form-item-control-input-content"
-                          >
-                            <button
-                              aria-checked="true"
-                              class="ant-switch ant-switch-checked"
-                              id="0_editData_secondarySim_roaming"
-                              role="switch"
-                              type="button"
-                            >
-                              <div
-                                class="ant-switch-handle"
-                              />
-                              <span
-                                class="ant-switch-inner"
-                              />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-form-item"
-                  >
-                    <div
-                      class="ant-row ant-form-item-row"
-                    >
-                      <div
-                        class="ant-col ant-form-item-label"
-                      >
-                        <label
-                          class=""
-                          title="LTE Bank Lock"
-                        >
-                          LTE Bank Lock
-                        </label>
-                      </div>
-                      <div
-                        class="ant-col ant-form-item-control"
-                      >
-                        <div
-                          class="ant-form-item-control-input"
-                        >
-                          <div
-                            class="ant-form-item-control-input-content"
-                          >
-                            <div>
-                              <span
-                                class="styledComponents__CurrentCountryLabel-sc-nyixel-2 cLUVoM"
-                              >
-                                Bands for current country (United States)
-                              </span>
-                              <div
-                                class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
-                                width="25px"
-                              >
-                                3G:
-                                <div
-                                  class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
-                                >
-                                  <div
-                                    class="ant-form-item"
-                                    style="margin-bottom: 0px;"
-                                  >
-                                    <div
-                                      class="ant-row ant-form-item-row"
-                                    >
-                                      <div
-                                        class="ant-col ant-form-item-control"
-                                      >
-                                        <div
-                                          class="ant-form-item-control-input"
-                                        >
-                                          <div
-                                            class="ant-form-item-control-input-content"
-                                          >
-                                            <div
-                                              class="ant-checkbox-group"
-                                              id="0_bandLteArray_secondarySim_USA_CANADA_band3G"
-                                            >
-                                              <label
-                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                              >
-                                                <span
-                                                  class="ant-checkbox"
-                                                >
-                                                  <input
-                                                    class="ant-checkbox-input"
-                                                    type="checkbox"
-                                                    value="B2"
-                                                  />
-                                                  <span
-                                                    class="ant-checkbox-inner"
-                                                  />
-                                                </span>
-                                                <span>
-                                                  B2
-                                                </span>
-                                              </label>
-                                              <label
-                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                              >
-                                                <span
-                                                  class="ant-checkbox"
-                                                >
-                                                  <input
-                                                    class="ant-checkbox-input"
-                                                    type="checkbox"
-                                                    value="B4"
-                                                  />
-                                                  <span
-                                                    class="ant-checkbox-inner"
-                                                  />
-                                                </span>
-                                                <span>
-                                                  B4
-                                                </span>
-                                              </label>
-                                              <label
-                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                              >
-                                                <span
-                                                  class="ant-checkbox"
-                                                >
-                                                  <input
-                                                    class="ant-checkbox-input"
-                                                    type="checkbox"
-                                                    value="B5"
-                                                  />
-                                                  <span
-                                                    class="ant-checkbox-inner"
-                                                  />
-                                                </span>
-                                                <span>
-                                                  B5
-                                                </span>
-                                              </label>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
-                                width="25px"
-                              >
-                                4G:
-                                <div
-                                  class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
-                                >
-                                  <div
-                                    class="ant-form-item"
-                                  >
-                                    <div
-                                      class="ant-row ant-form-item-row"
-                                    >
-                                      <div
-                                        class="ant-col ant-form-item-control"
-                                      >
-                                        <div
-                                          class="ant-form-item-control-input"
-                                        >
-                                          <div
-                                            class="ant-form-item-control-input-content"
-                                          >
-                                            <div
-                                              class="ant-checkbox-group"
-                                              id="0_bandLteArray_secondarySim_USA_CANADA_band4G"
-                                            >
-                                              <label
-                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                              >
-                                                <span
-                                                  class="ant-checkbox"
-                                                >
-                                                  <input
-                                                    class="ant-checkbox-input"
-                                                    type="checkbox"
-                                                    value="B2"
-                                                  />
-                                                  <span
-                                                    class="ant-checkbox-inner"
-                                                  />
-                                                </span>
-                                                <span>
-                                                  B2
-                                                </span>
-                                              </label>
-                                              <label
-                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                              >
-                                                <span
-                                                  class="ant-checkbox"
-                                                >
-                                                  <input
-                                                    class="ant-checkbox-input"
-                                                    type="checkbox"
-                                                    value="B4"
-                                                  />
-                                                  <span
-                                                    class="ant-checkbox-inner"
-                                                  />
-                                                </span>
-                                                <span>
-                                                  B4
-                                                </span>
-                                              </label>
-                                              <label
-                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                                              >
-                                                <span
-                                                  class="ant-checkbox"
-                                                >
-                                                  <input
-                                                    class="ant-checkbox-input"
-                                                    type="checkbox"
-                                                    value="B12"
-                                                  />
-                                                  <span
-                                                    class="ant-checkbox-inner"
-                                                  />
-                                                </span>
-                                                <span>
-                                                  B12
-                                                </span>
-                                              </label>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <button
-                                class="ant-btn ant-btn-link"
-                                type="button"
-                              >
-                                <span>
-                                  Show bands for other countries
-                                </span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-divider ant-divider-horizontal ant-divider-plain"
-                    role="separator"
-                  />
-                </div>
-                <div
-                  class="ant-form-item ant-form-item-has-success"
-                >
-                  <div
-                    class="ant-row ant-form-item-row"
-                  >
-                    <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class="ant-form-item-required"
-                        for="0_editData_wanConnection"
-                        title="WAN Connection:"
-                      >
-                        WAN Connection:
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
-                    >
-                      <div
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <div
-                            class="ant-select ant-select-in-form-item ant-select-status-success ant-select-single ant-select-show-arrow"
-                            style="width: 330px;"
                           >
                             <div
-                              class="ant-select-selector"
+                              class="ant-input-number ant-input-number-in-form-item ant-input-number-status-success"
+                              style="width: 150px;"
                             >
-                              <span
-                                class="ant-select-selection-search"
+                              <div
+                                class="ant-input-number-handler-wrap"
+                              >
+                                <span
+                                  aria-disabled="false"
+                                  aria-label="Increase Value"
+                                  class="ant-input-number-handler ant-input-number-handler-up"
+                                  role="button"
+                                  unselectable="on"
+                                >
+                                  <span
+                                    aria-label="up"
+                                    class="anticon anticon-up ant-input-number-handler-up-inner"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="up"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </span>
+                                <span
+                                  aria-disabled="false"
+                                  aria-label="Decrease Value"
+                                  class="ant-input-number-handler ant-input-number-handler-down"
+                                  role="button"
+                                  unselectable="on"
+                                >
+                                  <span
+                                    aria-label="down"
+                                    class="anticon anticon-down ant-input-number-handler-down-inner"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="down"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </span>
+                              </div>
+                              <div
+                                class="ant-input-number-input-wrap"
                               >
                                 <input
-                                  aria-activedescendant="0_editData_wanConnection_list_0"
-                                  aria-autocomplete="list"
-                                  aria-controls="0_editData_wanConnection_list"
-                                  aria-haspopup="listbox"
-                                  aria-owns="0_editData_wanConnection_list"
+                                  aria-valuenow="60"
                                   autocomplete="off"
-                                  class="ant-select-selection-search-input"
-                                  id="0_editData_wanConnection"
-                                  readonly=""
-                                  role="combobox"
-                                  style="opacity: 0;"
-                                  type="search"
-                                  unselectable="on"
-                                  value=""
+                                  class="ant-input-number-input"
+                                  id="0_editData_primaryWanRecoveryTimer"
+                                  role="spinbutton"
+                                  step="1"
+                                  value="60"
                                 />
-                              </span>
-                              <span
-                                class="ant-select-selection-item"
-                                title="Cellular only"
-                              >
-                                Cellular only
-                              </span>
-                            </div>
-                            <span
-                              aria-hidden="true"
-                              class="ant-select-arrow"
-                              style="user-select: none;"
-                              unselectable="on"
-                            >
-                              <span
-                                aria-label="down"
-                                class="anticon anticon-down ant-select-suffix"
-                                role="img"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  data-icon="down"
-                                  fill="currentColor"
-                                  focusable="false"
-                                  height="1em"
-                                  viewBox="64 64 896 896"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                  />
-                                </svg>
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-form-item ant-form-item-has-success"
-                >
-                  <div
-                    class="ant-row ant-form-item-row"
-                  >
-                    <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class="ant-form-item-required"
-                        for="0_editData_primaryWanRecoveryTimer"
-                        title="Primary WAN Recovery Timer:"
-                      >
-                        Primary WAN Recovery Timer:
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
-                    >
-                      <div
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <div
-                            class="ant-input-number ant-input-number-in-form-item ant-input-number-status-success"
-                            style="width: 150px;"
-                          >
-                            <div
-                              class="ant-input-number-handler-wrap"
-                            >
-                              <span
-                                aria-disabled="false"
-                                aria-label="Increase Value"
-                                class="ant-input-number-handler ant-input-number-handler-up"
-                                role="button"
-                                unselectable="on"
-                              >
-                                <span
-                                  aria-label="up"
-                                  class="anticon anticon-up ant-input-number-handler-up-inner"
-                                  role="img"
-                                >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="up"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
-                                  >
-                                    <path
-                                      d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
-                                    />
-                                  </svg>
-                                </span>
-                              </span>
-                              <span
-                                aria-disabled="false"
-                                aria-label="Decrease Value"
-                                class="ant-input-number-handler ant-input-number-handler-down"
-                                role="button"
-                                unselectable="on"
-                              >
-                                <span
-                                  aria-label="down"
-                                  class="anticon anticon-down ant-input-number-handler-down-inner"
-                                  role="img"
-                                >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="down"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
-                                  >
-                                    <path
-                                      d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                    />
-                                  </svg>
-                                </span>
-                              </span>
-                            </div>
-                            <div
-                              class="ant-input-number-input-wrap"
-                            >
-                              <input
-                                aria-valuenow="60"
-                                autocomplete="off"
-                                class="ant-input-number-input"
-                                id="0_editData_primaryWanRecoveryTimer"
-                                role="spinbutton"
-                                step="1"
-                                value="60"
-                              />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1215,42 +1219,42 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
-        >
           <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
+            class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
           >
             <div
-              class="ant-space-item"
-              style="margin-right: 12px;"
+              class="ant-space ant-space-horizontal ant-space-align-center"
             >
-              <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
-                type="button"
+              <div
+                class="ant-space-item"
+                style="margin-right: 12px;"
               >
-                <span>
-                  Save
-                </span>
-              </button>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                  type="button"
+                >
+                  <span>
+                    Save
+                  </span>
+                </button>
+              </div>
+              <div
+                class="ant-space-item"
               >
-                <span>
-                  Cancel
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  type="button"
+                >
+                  <span>
+                    Cancel
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </form>
 </DocumentFragment>
 `;

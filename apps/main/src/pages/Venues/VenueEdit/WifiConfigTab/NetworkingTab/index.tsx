@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
-import { VenueApModelCellular }               from '@acx-ui/rc/utils'
+import { VenueApModelCellular }                  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
