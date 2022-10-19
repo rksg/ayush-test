@@ -6,7 +6,6 @@ import { useIntl }                      from 'react-intl'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useVenuesListQuery }         from '@acx-ui/rc/services'
-import { EdgeSaveData }        from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
 
 // will remove when api is ready
