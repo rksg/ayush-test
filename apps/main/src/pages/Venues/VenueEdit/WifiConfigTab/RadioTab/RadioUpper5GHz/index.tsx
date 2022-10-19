@@ -19,19 +19,20 @@ const { useWatch } = Form
 export function RadioUpper5GHz () {
   const { $t } = useIntl()
 
-  const { tenantId, venueId } = useParams()
-  const [inheritSettings, setInheritSettings] = useState<boolean>(true)
-  const [defaultIndoorChannels, setDefaultIndoorChannels] = useState<string[]>([''])
-  const [defaultOutdoorChannels, setDefaultOutdoorChannels] = useState<string[]>([''])
-
-
   const [
+    channelInheritSettings,
     channelMethod,
     channelBandwidth
   ] = [
+    useWatch<boolean>(['radioParamsDual5G', 'inheritParamsUpper5G']),
     useWatch<string>(['radioParamsDual5G', 'radioParamsUpper5G', 'method']),
     useWatch<string>(['radioParamsDual5G', 'radioParamsUpper5G', 'channelBandwidth'])
   ]
+
+  const { tenantId, venueId } = useParams()
+  const [inheritSettings, setInheritSettings] = useState<boolean>(false)
+  const [defaultIndoorChannels, setDefaultIndoorChannels] = useState<string[]>([''])
+  const [defaultOutdoorChannels, setDefaultOutdoorChannels] = useState<string[]>([''])
 
   const { data: defaultIndoorChannelsData } =
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
@@ -55,7 +56,11 @@ export function RadioUpper5GHz () {
         defaultIndoorChannelsData['5GUpperChannels']['outdoor'][channelType]
       )
     }
-  }, [defaultIndoorChannelsData, channelBandwidth])
+
+    if(channelInheritSettings){
+      setInheritSettings(channelInheritSettings)
+    }
+  }, [defaultIndoorChannelsData, channelBandwidth, channelInheritSettings])
 
   function formatter (value: any) {
     return `${value}%`
@@ -68,23 +73,25 @@ export function RadioUpper5GHz () {
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       {$t({ defaultMessage: '5GHz settings:' })}
-      <Form.Item
-        name={['radioParamsDual5G', 'inheritParamsUpper5G']}
-      >
-        <Radio.Group defaultValue={true} onChange={on5GHzSettingChange}>
-          <FieldLabel width='300px'>
-            <Radio value={true}>
-              {$t({ defaultMessage: 'Inherit from 5GHz' })}
-            </Radio>
-          </FieldLabel>
+      <div style={{ paddingBottom: '2em' }}>
+        <Form.Item
+          name={['radioParamsDual5G', 'inheritParamsUpper5G']}
+        >
+          <Radio.Group defaultValue={true} onChange={on5GHzSettingChange}>
+            <FieldLabel width='300px'>
+              <Radio value={true}>
+                {$t({ defaultMessage: 'Inherit from 5GHz' })}
+              </Radio>
+            </FieldLabel>
 
-          <FieldLabel width='300px'>
-            <Radio value={false}>
-              {$t({ defaultMessage: 'Custom Settings' })}
-            </Radio>
-          </FieldLabel>
-        </Radio.Group>
-      </Form.Item>
+            <FieldLabel width='300px'>
+              <Radio value={false}>
+                {$t({ defaultMessage: 'Custom Settings' })}
+              </Radio>
+            </FieldLabel>
+          </Radio.Group>
+        </Form.Item>
+      </div>
       <FieldLabel width='200px'>
         { $t({ defaultMessage: 'Channel selection method:' }) }
         <Form.Item
@@ -195,7 +202,7 @@ export function RadioUpper5GHz () {
         </MultiSelect>
       </div>
 
-      <div style={{ marginTop: '100px' }}>
+      <div style={{ marginTop: '50px' }}>
         <div>{$t({ defaultMessage: 'Outdoor Aps' })}</div>
         <Button
           type='link'

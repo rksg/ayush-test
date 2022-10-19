@@ -18,7 +18,7 @@ import {
 import {
   VenueDefaultRegulatoryChannelsForm
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../..'
 
@@ -35,13 +35,10 @@ export function RadioSettings () {
   const {
     editContextData,
     setEditContextData,
-    editRadioContextData,
     setEditRadioContextData
   } = useContext(VenueEditContext)
 
-  const navigate = useNavigate()
   const { tenantId, venueId } = useParams()
-  const basePath = useTenantLink('/venues/')
 
   const formRef = useRef<StepsFormInstance<VenueDefaultRegulatoryChannelsForm>>()
   const [triBandRadio, setTriBandRadio] = useState(false)
@@ -64,6 +61,8 @@ export function RadioSettings () {
 
   const [ updateVenueTripleBandRadioSettings ] = useUpdateVenueTripleBandRadioSettingsMutation()
 
+  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+
   useEffect(() => {
     if(venueCaps){
       setTriBandApModels(venueCaps?.apModels
@@ -84,12 +83,8 @@ export function RadioSettings () {
       formRef?.current?.setFieldsValue(defaultChannelsData)
       setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
     }
-  }, [venueCaps, tripleBandRadioSettingsData, defaultChannelsData, venueSavedChannelsData])
-
-  // if (venueIds.length) {
-  //   filters = Object.assign(filters, { venueId: venueIds });
-  // }
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  }, [venueCaps,tripleBandRadioSettingsData,
+    defaultChannelsData, venueSavedChannelsData, triBandRadioFeatureFlag, setEditRadioContextData])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
@@ -147,8 +142,13 @@ export function RadioSettings () {
               disabled={!triBandRadioFeatureFlag}
               checked={triBandRadio}
               onClick={(checked, event) => {
-                setTriBandRadio(checked)
                 event.stopPropagation()
+                setTriBandRadio(checked)
+                setEditContextData({
+                  ...editContextData,
+                  unsavedTabKey: 'radio',
+                  isDirty: true
+                })
               }}
               style={{ marginLeft: '20px' }}
             />
