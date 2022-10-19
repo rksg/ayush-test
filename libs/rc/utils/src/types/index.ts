@@ -6,9 +6,7 @@ import {
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
-  NetworkTypeEnum,
-  PolicyType,
-  PolicyTechnology
+  NetworkTypeEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
@@ -24,6 +22,7 @@ export * from './network'
 export * from './user'
 export * from './service'
 export * from './msp'
+export * from './policy'
 
 export interface CommonResult {
   requestId: string
@@ -347,13 +346,4 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
-}
-
-export interface Policy {
-  id: string
-  name: string
-  type: PolicyType
-  technology: PolicyTechnology
-  scope: number
-  tags: string[]
 }
