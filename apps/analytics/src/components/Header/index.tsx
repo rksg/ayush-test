@@ -47,8 +47,7 @@ export type HeaderData = {
 
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
   shouldQuerySwitch: boolean,
-  withIncidents?: boolean,
-  queryState: QueryState
+  withIncidents?: boolean
 }
 
 export const useSubTitle =
@@ -92,15 +91,16 @@ export const renderTitle = (
   </Loader>
 }
 
-export const Header =
-({ shouldQuerySwitch, withIncidents, queryState, ...props }: HeaderProps) => {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
   const { filters, getNetworkFilter } = useAnalyticsFilter()
+  const queryResults = useNetworkNodeInfoQuery(filters)
+  const queryState = { ...queryResults, isLoading: false, data: queryResults.data as HeaderData }
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
   const { networkFilter: { path } } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
   const { data } = queryState
-  return (
+  return <ConnectedHeaderWrapper>
     <PageHeader
       {...props}
       subTitle={useSubTitle(data?.subTitle || [], type, queryState)}
@@ -124,22 +124,7 @@ export const Header =
         />
       ], [shouldQuerySwitch, withIncidents, startDate, endDate, range])} // eslint-disable-line react-hooks/exhaustive-deps
     />
-  )
+  </ConnectedHeaderWrapper>
 }
 
-const ConnectedHeader = (
-  props: PageHeaderProps & { shouldQuerySwitch : boolean, withIncidents?: boolean }
-) => {
-  const { filters } = useAnalyticsFilter()
-  const queryResults = useNetworkNodeInfoQuery(filters)
-  return (
-    <ConnectedHeaderWrapper>
-      <Header
-        {...props}
-        queryState={{ ...queryResults, isLoading: false, data: queryResults.data as HeaderData }}
-      />
-    </ConnectedHeaderWrapper>
-  )
-}
-
-export default ConnectedHeader
+export default Header
