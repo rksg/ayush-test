@@ -4,17 +4,17 @@ import { dataApi }     from '@acx-ui/analytics/services'
 import { kpiConfig }   from '@acx-ui/analytics/utils'
 import { NetworkPath } from '@acx-ui/utils'
 
-type ThresholdResponse = {
-  threshold: {
-    value: number,
-    updatedBy: string,
-    updatedAt: string
-  }
-}
+type ConfigCode = keyof typeof kpiConfig
+
+type ThresholdResponse = Record<ConfigCode, {
+  value: number | null,
+  updateBy: string | null,
+  updateAt: string | null
+}>
 
 type ThresholdPayload = {
   path: NetworkPath,
-  configCode: keyof typeof kpiConfig
+  configCode: ConfigCode[]
 }
 
 type ThresholdPermissionResponse = {
@@ -36,11 +36,14 @@ export const configApi = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
           query KPIThresholdQuery($path: [HierarchyNodeInput], $name: String) {
-          threshold: KPIThreshold(name: $name, networkPath: $path) {
-            value
-            updatedBy
-            updatedAt
-          }
+            ${payload.configCode.map((code) => `
+              ${code}: KPIThreshold(name: $name, networkPath: $path) {
+              value
+              updatedBy
+              updatedAt
+              }`)
+          .join('\n')
+        }
         }`,
         variables: {
           path: payload.path,

@@ -13,7 +13,7 @@ describe('configApi', () => {
   it('should return correct data for fetchThreshold query', async () => {
     const validPayload = {
       path: [{ name: 'Network', type: 'Network' as NodeType }] as NetworkPath,
-      configCode: 'userAuthentication' as 'userAuthentication'
+      configCode: ['userAuthentication' as 'userAuthentication']
     }
 
     const validData = {
@@ -41,7 +41,7 @@ describe('configApi', () => {
   it('should return error for fetchThreshold query', async () => {
     const validPayload = {
       path: [{ name: 'Network', type: 'Network' as NodeType }] as NetworkPath,
-      configCode: 'userAuthentication' as 'userAuthentication'
+      configCode: ['userAuthentication' as 'userAuthentication', 'apCapacity' as 'apCapacity']
     }
 
     const invalidData = undefined
