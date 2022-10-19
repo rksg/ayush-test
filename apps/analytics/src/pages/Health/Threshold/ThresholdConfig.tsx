@@ -19,12 +19,16 @@ export function ThresholdConfig ({
   thresholdValue,
   percent,
   unit,
-  shortXFormat
+  shortXFormat,
+  onReset,
+  onApply
 }: {
   thresholdValue: string;
   percent: number;
   unit: string;
   shortXFormat: CallableFunction
+  onReset?: React.MouseEventHandler<HTMLElement>,
+  onApply?: React.MouseEventHandler<HTMLElement>
 }) {
   const { $t } = useIntl()
   return (
@@ -42,8 +46,10 @@ export function ThresholdConfig ({
         </UI.HistogramBoldContent>
       </UI.HistogramGoalPercentage>
       <UI.BtnWrapper>
-        <Button style={{ width: 70 }} size='small'>{$t(thresholdDescText.resetBtn)}</Button>
-        <Button style={{ width: 70 }} size='small' type='secondary'>
+        <Button style={{ width: 70 }} size='small' onClick={onReset}>
+          {$t(thresholdDescText.resetBtn)}
+        </Button>
+        <Button style={{ width: 70 }} size='small' type='secondary' onClick={onApply}>
           {$t(thresholdDescText.applyBtn)}
         </Button>
       </UI.BtnWrapper>

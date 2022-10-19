@@ -28,21 +28,22 @@ export type KpiThresholdType = {
   apSzLatency: number;
   switchPoeUtilization: number;
 }
+const getDefaultThreshold = () => ({
+  timeToConnect: 2000,
+  rss: -75,
+  clientThroughput: 10000,
+  apCapacity: 50,
+  apServiceUptime: 0.995,
+  apSzLatency: 200,
+  switchPoeUtilization: 0.8
+})
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
   const healthFilter = useContext(HealthPageContext)
   const { timeWindow, setTimeWindow } = healthFilter
   const { filters } = useAnalyticsFilter()
 
-  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>({
-    timeToConnect: 2000,
-    rss: -75,
-    clientThroughput: 10000,
-    apCapacity: 50,
-    apServiceUptime: 0.995,
-    apSzLatency: 200,
-    switchPoeUtilization: 0.8
-  })
+  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(getDefaultThreshold)
 
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
@@ -58,46 +59,52 @@ export default function KpiSection (props: { tab: HealthTab }) {
   useEffect(() => { connect('timeSeriesGroup') }, [])
   return (
     <>
-      {kpis.map((kpi) => (
-        <KpiRow key={kpi + defaultZoom}>
-          <GridCol col={{ span: 16 }}>
-            <GridRow style={{ height: '160px' }}>
-              <GridCol col={{ span: 5 }}>
-                <HealthPill
-                  filters={filters}
-                  kpi={kpi}
-                  timeWindow={timeWindow as [string, string]}
-                  threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
-                />
-              </GridCol>
-              <GridCol col={{ span: 19 }}>
-                <KpiTimeseries filters={filters}
+      {kpis.map((kpi) => {
+        const onReset = (event: MouseEvent) => {
+          event.preventDefault()
+        }
+        return (
+          <KpiRow key={kpi + defaultZoom}>
+            <GridCol col={{ span: 16 }}>
+              <GridRow style={{ height: '160px' }}>
+                <GridCol col={{ span: 5 }}>
+                  <HealthPill
+                    filters={filters}
+                    kpi={kpi}
+                    timeWindow={timeWindow as [string, string]}
+                    threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
+                  />
+                </GridCol>
+                <GridCol col={{ span: 19 }}>
+                  <KpiTimeseries filters={filters}
+                    kpi={kpi}
+                    threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+                    chartRef={connectChart}
+                    setTimeWindow={setTimeWindow}
+                    {...(defaultZoom ? {} : { timeWindow })}
+                  />
+                </GridCol>
+              </GridRow>
+            </GridCol>
+            <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
+              {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
+                <Histogram filters={filters}
                   kpi={kpi}
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
-                  chartRef={connectChart}
-                  setTimeWindow={setTimeWindow}
-                  {...(defaultZoom ? {} : { timeWindow })}
+                  setKpiThreshold={setKpiThreshold}
+                  thresholds={kpiThreshold}
+                  onReset={onReset}
                 />
-              </GridCol>
-            </GridRow>
-          </GridCol>
-          <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
-            {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
-              <Histogram filters={filters}
-                kpi={kpi}
-                threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
-                setKpiThreshold={setKpiThreshold}
-                thresholds={kpiThreshold}
-              />
-            ) : (
-              <BarChart filters={filters}
-                kpi={kpi}
-                threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
-              />
-            )}
-          </GridCol>
-        </KpiRow>
-      ))}
+              ) : (
+                <BarChart filters={filters}
+                  kpi={kpi}
+                  threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+                />
+              )}
+            </GridCol>
+          </KpiRow>
+        )
+      })}
     </>
   )
 }

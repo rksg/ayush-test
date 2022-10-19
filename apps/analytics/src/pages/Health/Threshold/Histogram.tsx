@@ -54,7 +54,8 @@ function Histogram ({
   kpi: string;
   threshold: string;
   setKpiThreshold: CallableFunction;
-  thresholds: KpiThresholdType
+  thresholds: KpiThresholdType;
+  onReset?: CallableFunction
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
