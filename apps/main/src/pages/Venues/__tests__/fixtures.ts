@@ -1,3 +1,5 @@
+import { GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+
 export const successResponse = {
   requestId: 'request-id'
 }
@@ -98,30 +100,6 @@ export const autocompleteResult = {
       ]
     },
     {
-      long_name: 'Sunnyvale',
-      short_name: 'Sunnyvale',
-      types: [
-        'locality',
-        'political'
-      ]
-    },
-    {
-      long_name: 'Santa Clara County',
-      short_name: 'Santa Clara County',
-      types: [
-        'administrative_area_level_2',
-        'political'
-      ]
-    },
-    {
-      long_name: 'California',
-      short_name: 'CA',
-      types: [
-        'administrative_area_level_1',
-        'political'
-      ]
-    },
-    {
       long_name: 'United States',
       short_name: 'US',
       types: [
@@ -186,6 +164,364 @@ export const timezoneResult = {
   timeZoneName: 'Pacific Daylight Time'
 }
 
+export const venueSetting = {
+  tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
+  wifiFirmwareVersion: '6.2.0.103.486',
+  countryCode: 'US',
+  mesh: {
+    enabled: true
+  },
+  bandBalancing: {
+    enabled: false,
+    clientPercent24: 25
+  },
+  radioCustomization: {
+    radioParams6G: {
+      method: 'CHANNELFLY',
+      scanInterval: 20,
+      allowedChannels:
+      // eslint-disable-next-line max-len
+      ['1','5','9','13','17','21','25','29','33','37','41','45','49','53','57','61','65','69','73','77','81','85','89','93','97','101','105','109','113','117','121','125','129','133','137','141','145','149','153','157','161','165','169','173','177','181','185','189','193','197','201','205','209','213','217','221'],
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      changeInterval: 33,
+      txPower: 'MAX' },
+    radioParamsDual5G: {
+      inheritParamsLower5G: true,
+      radioParamsLower5G: {
+        allowedIndoorChannels: ['36','40','44','48','52','56','60','64'],
+        allowedOutdoorChannels: ['36','40','44','48','52','56','60','64'],
+        channelBandwidth: 'AUTO',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33,
+        scanInterval: 20,
+        txPower: 'MAX'
+      },
+      inheritParamsUpper5G: true,
+      radioParamsUpper5G: {
+        // eslint-disable-next-line max-len
+        allowedIndoorChannels: ['100','104','108','112','116','120','124','128','132','136','149','153','157','161'],
+        // eslint-disable-next-line max-len
+        allowedOutdoorChannels: ['100','104','108','112','116','120','124','128','132','136','149','153','157','161'],
+        channelBandwidth: 'AUTO',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33,
+        scanInterval: 20,
+        txPower: 'MAX'
+      }
+    },
+    radioParams24G: {
+      allowedChannels: ['1','2','3','4','5','6','7','8','9','10','11'],
+      channelBandwidth: 'AUTO',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20,
+      txPower: 'MAX'
+    },
+    radioParams50G: {
+      combineChannels: false,
+      // eslint-disable-next-line max-len
+      allowedIndoorChannels: ['36','40','44','48','52','56','60','64','100','104','108','112','116','120','124','128','132','136','149','153','157','161'],
+      // eslint-disable-next-line max-len
+      allowedOutdoorChannels: ['36','40','44','48','52','56','60','64','100','104','108','112','116','120','124','128','132','136','149','153','157','161'],
+      channelBandwidth: 'AUTO',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20,
+      txPower: 'MAX'
+    }
+  },
+  denialOfServiceProtection: {
+    enabled: false,
+    blockingPeriod: 60,
+    failThreshold: 5,
+    checkPeriod: 30
+  },
+  syslog: {
+    enabled: false,
+    port: 514,
+    facility: 'KEEP_ORIGINAL',
+    priority: 'INFO',
+    protocol: 'UDP',
+    flowLevel: 'CLIENT_FLOW',
+    secondaryPort: 514,
+    secondaryProtocol: 'TCP'
+  },dhcpServiceSetting: {
+    enabled: false,
+    mode: 'EnableOnEachAPs',
+    wanPortSelectionMode: 'Dynamic'
+  },rogueAp: {
+    enabled: false,
+    reportThreshold: 0
+  },
+  enableClientIsolationAllowlist: false,
+  id: 'f892848466d047798430de7ac234e940'
+}
+
+export const venueNetworkList = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'test_1',
+      id: 'd556bb683e4248b7a911fdb40c307aa5',
+      vlan: 1,
+      nwSubType: 'psk',
+      ssid: 'test_1',
+      venues: {
+        count: 0,
+        names: []
+      },
+      aps: 0,
+      description: '',
+      clients: 0,
+      captiveType: GuestNetworkTypeEnum.ClickThrough,
+      activated: { isActivated: false }
+    },
+    {
+      name: 'test_2',
+      id: 'cd922ec00f744a16b4b784f3305ec0aa',
+      vlan: 1,
+      nwSubType: 'aaa',
+      ssid: 'test_2',
+      venues: {
+        count: 0,
+        names: []
+      },
+      aps: 0,
+      description: '',
+      clients: 0,
+      captiveType: GuestNetworkTypeEnum.ClickThrough,
+      activated: { isActivated: false }
+    }
+  ]
+}
+
+export const venueNetworkApGroup = {
+  response: [
+    {
+      venueId: '45aa5ab71bd040be8c445be8523e0b6c',
+      networkId: 'd556bb683e4248b7a911fdb40c307aa5',
+      apGroups: [
+        {
+          id: 'test',
+          apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+          radio: 'Both',
+          isDefault: true,
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false
+        }
+      ],
+      isAllApGroups: false,
+      allApGroupsRadio: 'Both'
+    },
+    {
+      venueId: '45aa5ab71bd040be8c445be8523e0b6c',
+      networkId: 'cd922ec00f744a16b4b784f3305ec0aa',
+      apGroups: [
+        {
+          apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+          radio: 'Both',
+          isDefault: true,
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false
+        }
+      ],
+      isAllApGroups: false,
+      allApGroupsRadio: 'Both'
+    }
+  ]
+}
+
+export const networkDeepList = {
+  response: [
+    {
+      type: 'aaa',
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.WPA3,
+        advancedCustomization: {
+          userUplinkRateLimiting: 0,
+          userDownlinkRateLimiting: 0,
+          totalUplinkRateLimiting: 0,
+          totalDownlinkRateLimiting: 0,
+          maxClientsOnWlanPerRadio: 100,
+          enableBandBalancing: true,
+          clientIsolation: false,
+          clientIsolationOptions: {
+            autoVrrp: false
+          },
+          hideSsid: false,
+          forceMobileDeviceDhcp: false,
+          clientLoadBalancingEnable: true,
+          enableAaaVlanOverride: true,
+          directedThreshold: 5,
+          enableNeighborReport: true,
+          enableFastRoaming: false,
+          mobilityDomainId: 1,
+          radioCustomization: {
+            rfBandUsage: 'BOTH',
+            bssMinimumPhyRate: 'default',
+            phyTypeConstraint: 'OFDM',
+            managementFrameMinimumPhyRate: '6'
+          },
+          enableSyslog: false,
+          clientInactivityTimeout: 120,
+          accessControlEnable: false,
+          respectiveAccessControl: false,
+          applicationPolicyEnable: false,
+          l2AclEnable: false,
+          l3AclEnable: false,
+          wifiCallingEnabled: false,
+          singleSessionIdAccounting: false,
+          proxyARP: false,
+          enableAirtimeDecongestion: false,
+          enableJoinRSSIThreshold: false,
+          joinRSSIThreshold: -85,
+          enableTransientClientManagement: false,
+          joinWaitTime: 30,
+          joinExpireTime: 300,
+          joinWaitThreshold: 10,
+          enableOptimizedConnectivityExperience: false,
+          broadcastProbeResponseDelay: 15,
+          rssiAssociationRejectionThreshold: -75,
+          enableAntiSpoofing: false,
+          enableArpRequestRateLimit: true,
+          arpRequestRateLimit: 15,
+          enableDhcpRequestRateLimit: true,
+          dhcpRequestRateLimit: 15,
+          dnsProxyEnabled: false
+        },
+        vlanId: 1,
+        ssid: 'test_2',
+        enabled: true,
+        bypassCPUsingMacAddressAuthentication: false,
+        bypassCNA: false
+      },
+      authRadius: {
+        primary: {
+          ip: '3.3.3.3',
+          port: 1812,
+          sharedSecret: 'dddddddd'
+        },
+        id: '03649e4122f74870b89d2a4517e09cfb'
+      },
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
+      name: 'test_2',
+      enableAuthProxy: false,
+      enableAccountingProxy: false,
+      id: 'cd922ec00f744a16b4b784f3305ec0aa'
+    },
+    {
+      type: 'psk',
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.WPA2Personal,
+        advancedCustomization: {
+          userUplinkRateLimiting: 0,
+          userDownlinkRateLimiting: 0,
+          totalUplinkRateLimiting: 0,
+          totalDownlinkRateLimiting: 0,
+          maxClientsOnWlanPerRadio: 100,
+          enableBandBalancing: true,
+          clientIsolation: false,
+          clientIsolationOptions: {
+            autoVrrp: false
+          },
+          hideSsid: false,
+          forceMobileDeviceDhcp: false,
+          clientLoadBalancingEnable: true,
+          directedThreshold: 5,
+          enableNeighborReport: true,
+          enableFastRoaming: false,
+          mobilityDomainId: 1,
+          radioCustomization: {
+            rfBandUsage: 'BOTH',
+            bssMinimumPhyRate: 'default',
+            phyTypeConstraint: 'OFDM',
+            managementFrameMinimumPhyRate: '6'
+          },
+          enableSyslog: false,
+          clientInactivityTimeout: 120,
+          accessControlEnable: false,
+          respectiveAccessControl: false,
+          applicationPolicyEnable: false,
+          l2AclEnable: false,
+          l3AclEnable: false,
+          wifiCallingEnabled: false,
+          proxyARP: false,
+          enableAirtimeDecongestion: false,
+          enableJoinRSSIThreshold: false,
+          joinRSSIThreshold: -85,
+          enableTransientClientManagement: false,
+          joinWaitTime: 30,
+          joinExpireTime: 300,
+          joinWaitThreshold: 10,
+          enableOptimizedConnectivityExperience: false,
+          broadcastProbeResponseDelay: 15,
+          rssiAssociationRejectionThreshold: -75,
+          enableAntiSpoofing: false,
+          enableArpRequestRateLimit: true,
+          arpRequestRateLimit: 15,
+          enableDhcpRequestRateLimit: true,
+          dhcpRequestRateLimit: 15,
+          dnsProxyEnabled: false
+        },
+        macAddressAuthentication: false,
+        macAuthMacFormat: 'UpperDash',
+        managementFrameProtection: 'Disabled',
+        vlanId: 1,
+        ssid: 'test_1',
+        enabled: true,
+        passphrase: '15215215'
+      },
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
+      name: 'test_1',
+      id: 'd556bb683e4248b7a911fdb40c307aa5',
+      venues: [{
+        venueId: '3b2ffa31093f41648ed38ed122510029',
+        id: '3b2ffa31093f41648ed38ed122510029'
+      }]
+    }
+  ]
+}
+
+export const venueApsList = { fields: ['meshRole','serialNumber'],totalCount: 0,page: 1,data: [] }
+
+export const venueDosProtection = {
+  enabled: true,
+  blockingPeriod: 50,
+  failThreshold: 6,
+  checkPeriod: 30
+}
+
+export const venueRougeAp = {
+  enabled: true,
+  reportThreshold: 0,
+  roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
+export const venueRoguePolicy = [{
+  venues: [{ id: '3db73a30cd06490aaf4bca01a1eb8894',name: 'My-Venue' }],
+  name: 'Default profile',
+  rules: [
+    { name: 'Same Network Rule',type: 'SameNetworkRule',classification: 'Malicious',priority: 1 },
+    { name: 'Mac Spoofing Rule',type: 'MacSpoofingRule',classification: 'Malicious',priority: 2 },
+    { name: 'SSID Spoofing Rule',type: 'SsidSpoofingRule',classification: 'Malicious',priority: 3 },
+    { name: 'RTS Abuse Rule',type: 'RTSAbuseRule',classification: 'Malicious',priority: 4 },
+    { name: 'CTS Abuse Rule',type: 'CTSAbuseRule',classification: 'Malicious',priority: 5 },
+    { name: 'Deauth Flood Rule',type: 'DeauthFloodRule',classification: 'Malicious',priority: 6 },
+    { name: 'Disassoc Flood Rule',type: 'DisassocFloodRule',
+      classification: 'Malicious',priority: 7 },
+    { name: 'Excessive Power Rule',type: 'ExcessivePowerRule',
+      classification: 'Malicious',priority: 8 },
+    { name: 'Null SSID Rule',type: 'NullSSIDRule',classification: 'Malicious',priority: 9 },
+    { name: 'Adhoc',type: 'AdhocRule',classification: 'Unclassified',priority: 10 }],
+  id: '9700ca95e4be4a22857f0e4b621a685f' }
+]
 export const configProfiles = [{
   id: '771f6e6b21af43fa8879e10170114fc4',
   name: 'profile-cli01',

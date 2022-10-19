@@ -1,0 +1,131 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SwitchAAATab should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          <div
+            class=""
+          >
+            <div
+              class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 gMCsgt"
+              style="max-height: calc(100vh - 275px);"
+            >
+              <div
+                class="ant-anchor"
+              >
+                <div
+                  class="ant-anchor-ink"
+                >
+                  <span
+                    class="ant-anchor-ink-ball visible"
+                    style="top: -4.5px;"
+                  />
+                </div>
+                <div
+                  class="ant-anchor-link ant-anchor-link-active"
+                >
+                  <a
+                    class="ant-anchor-link-title ant-anchor-link-title-active"
+                    href="#Servers-&-Users"
+                    title="Servers & Users"
+                  >
+                    Servers & Users
+                  </a>
+                </div>
+                <div
+                  class="ant-anchor-link"
+                >
+                  <a
+                    class="ant-anchor-link-title"
+                    href="#Settings"
+                    title="Settings"
+                  >
+                    Settings
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+          id="Servers-&-Users"
+        >
+          <h3
+            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+            id="aaa-servers"
+          >
+            Servers & Users
+          </h3>
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+          >
+            <div
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
+            >
+              <span
+                aria-label="loader"
+                role="img"
+              >
+                <div
+                  aria-busy="true"
+                  aria-live="polite"
+                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                >
+                  <span
+                    class="ant-spin-dot ant-spin-dot-spin"
+                  >
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                  </span>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+          id="Settings"
+        >
+          <h3
+            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+            id="aaa-settings"
+          >
+            Settings
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

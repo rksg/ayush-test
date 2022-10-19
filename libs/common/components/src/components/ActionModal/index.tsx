@@ -4,6 +4,7 @@ import { Modal, Collapse, Form, Input } from 'antd'
 import { TextAreaRef }                  from 'antd/lib/input/TextArea'
 import { ModalFuncProps }               from 'antd/lib/modal'
 import { pick, has }                    from 'lodash'
+import { RawIntlProvider }              from 'react-intl'
 
 import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
 import { getIntl }                          from '@acx-ui/utils'
@@ -76,6 +77,7 @@ export const showActionModal = (props: ModalProps) => {
   const config = transformProps(props, modal)
   modal.update({
     ...config,
+    content: <RawIntlProvider value={getIntl()} children={config.content} />,
     icon: <> </>
   })
   return pick(modal, 'destroy')
