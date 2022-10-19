@@ -56,6 +56,14 @@ export function RadioTab () {
           isDirty: false
         })
       }
+      if (editRadioContextData.radioData) {
+        await editRadioContextData?.updateWifiRadio?.(editRadioContextData.radioData)
+        setEditContextData({
+          ...editContextData,
+          unsavedTabKey: 'radio',
+          isDirty: false
+        })
+      }
       if (redirect) {
         navigate({
           ...basePath,

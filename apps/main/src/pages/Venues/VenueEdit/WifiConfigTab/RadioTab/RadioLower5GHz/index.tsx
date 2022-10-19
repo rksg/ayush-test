@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, InputNumber, Radio, RadioChangeEvent, Select, Slider, Space } from 'antd'
-import { useIntl }                                                                     from 'react-intl'
+import { Checkbox, Form, Input, InputNumber, Radio, RadioChangeEvent, Select, Slider, Space } from 'antd'
+import { useIntl }                                                                            from 'react-intl'
 
 import { Button }                                 from '@acx-ui/components'
 import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
@@ -67,26 +67,24 @@ export function RadioLower5GHz () {
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-      <div>
-        {$t({ defaultMessage: '5GHz settings:' })}
-        <Form.Item
-          name={['radioParamsDual5G', 'inheritParamsLower5G']}
-        >
-          <Radio.Group defaultValue={true} onChange={on5GHzSettingChange}>
-            <FieldLabel width='300px'>
-              <Radio value={true}>
-                {$t({ defaultMessage: 'Inherit from 5GHz' })}
-              </Radio>
-            </FieldLabel>
+      {$t({ defaultMessage: '5GHz settings:' })}
+      <Form.Item
+        name={['radioParamsDual5G', 'inheritParamsLower5G']}
+      >
+        <Radio.Group defaultValue={true} onChange={on5GHzSettingChange}>
+          <FieldLabel width='300px'>
+            <Radio value={true}>
+              {$t({ defaultMessage: 'Inherit from 5GHz' })}
+            </Radio>
+          </FieldLabel>
 
-            <FieldLabel width='300px'>
-              <Radio value={false}>
-                {$t({ defaultMessage: 'Custom Settings' })}
-              </Radio>
-            </FieldLabel>
-          </Radio.Group>
-        </Form.Item>
-      </div>  
+          <FieldLabel width='300px'>
+            <Radio value={false}>
+              {$t({ defaultMessage: 'Custom Settings' })}
+            </Radio>
+          </FieldLabel>
+        </Radio.Group>
+      </Form.Item>
       <FieldLabel width='200px'>
         { $t({ defaultMessage: 'Channel selection method:' }) }
         <Form.Item
@@ -98,8 +96,11 @@ export function RadioLower5GHz () {
           />
         </Form.Item>
       </FieldLabel>
-      { channelMethod === channelSelectionMethodsOptions[0].value &&
-      <FieldLabel width='200px'>
+      <FieldLabel
+        width='200px'
+        style={{ display: channelMethod === channelSelectionMethodsOptions[0].value ?
+          'block' : 'none' }}
+      >
         { $t({ defaultMessage: 'Channel Change Frequency:' }) }
         <Form.Item
           name={['radioParamsDual5G', 'radioParamsLower5G', 'changeInterval']}
@@ -114,7 +115,6 @@ export function RadioLower5GHz () {
           />
         </Form.Item>
       </FieldLabel>
-      }
       <FieldLabel width='200px'>
         {$t({ defaultMessage: 'Run background scan every:' })}
         <Form.Item
@@ -164,33 +164,26 @@ export function RadioLower5GHz () {
 
       <div>
         <div>{$t({ defaultMessage: 'Indoor Aps' })}</div>
-        <Form.Item noStyle name='indoorLower5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'Lower 5G' })}
-          </Button>
-        </Form.Item>
-        <Form.Item noStyle name='indoorUpper5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'Upper 5G' })}
-          </Button>
-        </Form.Item>
-        <Form.Item noStyle name='indoorDfs5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'DFS' })}
-          </Button>
-        </Form.Item>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'Lower 5G' })}
+        </Button>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'Upper 5G' })}
+        </Button>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'DFS' })}
+        </Button>
         <MultiSelect>
           <Form.Item
-            initialValue={[]}
             name={['radioParamsDual5G', 'radioParamsLower5G', 'allowedIndoorChannels']}
             children={
               <Checkbox.Group
@@ -204,33 +197,26 @@ export function RadioLower5GHz () {
 
       <div style={{ marginTop: '100px' }}>
         <div>{$t({ defaultMessage: 'Outdoor Aps' })}</div>
-        <Form.Item noStyle name='outdoorLower5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'Lower 5G' })}
-          </Button>
-        </Form.Item>
-        <Form.Item noStyle name='outdoorUpper5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'Upper 5G' })}
-          </Button>
-        </Form.Item>
-        <Form.Item noStyle name='dfsOutdoor'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'DFS' })}
-          </Button>
-        </Form.Item>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'Lower 5G' })}
+        </Button>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'Upper 5G' })}
+        </Button>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'DFS' })}
+        </Button>
         <MultiSelect>
           <Form.Item
-            initialValue={[]}
             name={['radioParamsDual5G', 'radioParamsLower5G', 'allowedOutdoorChannels']}
             children={
               <Checkbox.Group
@@ -240,6 +226,12 @@ export function RadioLower5GHz () {
             }
           />
         </MultiSelect>
+        <Form.Item
+          name={['radioParamsDual5G', 'radioParamsLower5G', 'combineChannels']}
+          initialValue={false}
+        >
+          <Input type='hidden'></Input>
+        </Form.Item>
       </div>
     </Space>
   )

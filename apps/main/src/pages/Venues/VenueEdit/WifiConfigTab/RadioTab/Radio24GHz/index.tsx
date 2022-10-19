@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Checkbox, Form, InputNumber, Select, Slider, Space } from 'antd'
 import { useIntl }                                            from 'react-intl'
@@ -8,6 +8,7 @@ import {
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { VenueEditContext }  from '../../..'
 import {
   channelSelectionMethodsOptions,
   channelBandwidth24GOptions,
@@ -20,11 +21,8 @@ const { useWatch } = Form
 export function Radio24GHz () {
   const { $t } = useIntl()
 
-  const form = Form.useFormInstance()
   const { tenantId, venueId } = useParams()
   const [validChannels, setValidChannels] = useState<string[]>([''])
-  const [defaultChannels, setDefaultChannels] = useState<string[]>([''])
-  const [venueSavedChannels, setVenueSavedChannels] = useState<string[]>([''])
 
   const [
     channelMethod,
@@ -68,8 +66,11 @@ export function Radio24GHz () {
           />
         </Form.Item>
       </FieldLabel>
-      { channelMethod === channelSelectionMethodsOptions[0].value &&
-      <FieldLabel width='200px'>
+      <FieldLabel
+        width='200px'
+        style={{ display: channelMethod === channelSelectionMethodsOptions[0].value ?
+          'block' : 'none' }}
+      >
         { $t({ defaultMessage: 'Channel Change Frequency:' }) }
         <Form.Item
           name={['radioParams24G', 'changeInterval']}
@@ -84,7 +85,6 @@ export function Radio24GHz () {
           />
         </Form.Item>
       </FieldLabel>
-      }
       <FieldLabel width='200px'>
         {$t({ defaultMessage: 'Run background scan every:' })}
         <Form.Item
@@ -98,7 +98,6 @@ export function Radio24GHz () {
           children={<InputNumber min={1} max={65535} />}
         />
       </FieldLabel>
-
       <FieldLabel width='200px'>
         {$t({ defaultMessage: 'Bandwidth:' })}
         <Form.Item
@@ -109,7 +108,6 @@ export function Radio24GHz () {
           />
         </Form.Item>
       </FieldLabel>
-
       <FieldLabel width='200px'>
         {$t({ defaultMessage: 'Transmit Power adjustment:' })}
         <Form.Item
@@ -132,12 +130,10 @@ export function Radio24GHz () {
       <FieldLabel width='25px'>
         <MultiSelect>
           <Form.Item
-            initialValue={venueSavedChannels}
             name={['radioParams24G', 'allowedChannels']}
             children={
               <Checkbox.Group
                 options={validChannels.map(item => ({ label: item, value: item }))}
-                defaultValue={venueSavedChannels}
               />
             }
           />

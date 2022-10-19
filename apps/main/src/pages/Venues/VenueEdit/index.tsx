@@ -1,9 +1,9 @@
 import { createContext, useState } from 'react'
 
-import { showActionModal, CustomButtonProps }                  from '@acx-ui/components'
-import { VenueLed, VenueSwitchConfiguration, ExternalAntenna } from '@acx-ui/rc/utils'
-import { useParams }                                           from '@acx-ui/react-router-dom'
-import { getIntl }                                             from '@acx-ui/utils'
+import { showActionModal, CustomButtonProps }                                                      from '@acx-ui/components'
+import { VenueLed, VenueSwitchConfiguration, ExternalAntenna, VenueDefaultRegulatoryChannelsForm } from '@acx-ui/rc/utils'
+import { useParams }                                                                               from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                 from '@acx-ui/utils'
 
 import { SwitchConfigTab }          from './SwitchConfigTab'
 import { VenueDetailsTab }          from './VenueDetailsTab'
@@ -37,7 +37,10 @@ export interface EditContext {
 export interface RadioContext {
   apiApModels?: { [index: string]: ExternalAntenna }
   apModels?: { [index: string]: ExternalAntenna }
-  updateExternalAntenna: ((data: ExternalAntenna[]) => void)
+  updateExternalAntenna?: ((data: ExternalAntenna[]) => void)
+
+  radioData?: VenueDefaultRegulatoryChannelsForm,
+  updateWifiRadio?: ((data: VenueDefaultRegulatoryChannelsForm) => void)
 }
 
 export const VenueEditContext = createContext({} as {
@@ -117,6 +120,8 @@ function processWifiTab (
         const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
         editRadioContextData?.updateExternalAntenna?.(extPayload)
       }
+      editRadioContextData?.updateWifiRadio?.
+      (editRadioContextData.radioData as VenueDefaultRegulatoryChannelsForm)
       break
   }
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, InputNumber, Select, Slider, Space } from 'antd'
-import { useIntl }                                            from 'react-intl'
+import { Checkbox, Form, Input, InputNumber, Select, Slider, Space } from 'antd'
+import { useIntl }                                                   from 'react-intl'
 
 import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
 import { useParams }                              from '@acx-ui/react-router-dom'
@@ -63,8 +63,11 @@ export function Radio6GHz () {
           />
         </Form.Item>
       </FieldLabel>
-      { channelMethod === channelSelectionMethodsOptions[0].value &&
-      <FieldLabel width='200px'>
+      <FieldLabel
+        width='200px'
+        style={{ display: channelMethod === channelSelectionMethodsOptions[0].value ?
+          'block' : 'none' }}
+      >
         { $t({ defaultMessage: 'Channel Change Frequency:' }) }
         <Form.Item
           name={['radioParams6G', 'changeInterval']}
@@ -79,7 +82,6 @@ export function Radio6GHz () {
           />
         </Form.Item>
       </FieldLabel>
-      }
       <FieldLabel width='200px'>
         {$t({ defaultMessage: 'Run background scan every:' })}
         <Form.Item
@@ -127,7 +129,6 @@ export function Radio6GHz () {
       <div>
         <MultiSelect>
           <Form.Item
-            initialValue={[]}
             name={['radioParams6G', 'allowedChannels']}
             children={
               <Checkbox.Group
@@ -136,6 +137,18 @@ export function Radio6GHz () {
             }
           />
         </MultiSelect>
+        <Form.Item
+          name={['radioParams6G', 'bssMinRate6G']}
+          initialValue={'HE_MCS_0'}
+        >
+          <Input type='hidden'></Input>
+        </Form.Item>
+        <Form.Item
+          name={['radioParams6G', 'mgmtTxRate6G']}
+          initialValue={'6'}
+        >
+          <Input type='hidden'></Input>
+        </Form.Item>
       </div>
     </Space>
   )

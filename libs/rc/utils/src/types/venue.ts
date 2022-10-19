@@ -229,6 +229,9 @@ export interface ConfigurationProfile {
 	acls?: Acl[],
 	venues?: string[]
 }
+export interface TriBandSettings {
+  enabled: boolean
+}
 export interface VenueDefaultRegulatoryChannels {
   '2.4GChannels': {
 	[key: string]: string[]

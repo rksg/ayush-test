@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, InputNumber, Select, Slider, Space } from 'antd'
-import { useIntl }                                            from 'react-intl'
+import { Checkbox, Form, Input, InputNumber, Select, Slider, Space } from 'antd'
+import { useIntl }                                                   from 'react-intl'
 
 import { Button }                                 from '@acx-ui/components'
 import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
@@ -138,30 +138,24 @@ export function Radio5GHz () {
 
       <div>
         <div>{$t({ defaultMessage: 'Indoor Aps' })}</div>
-        <Form.Item noStyle name='indoorLower5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'Lower 5G' })}
-          </Button>
-        </Form.Item>
-        <Form.Item noStyle name='indoorUpper5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'Upper 5G' })}
-          </Button>
-        </Form.Item>
-        <Form.Item noStyle name='indoorDfs5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'DFS' })}
-          </Button>
-        </Form.Item>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'Lower 5G' })}
+        </Button>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'Upper 5G' })}
+        </Button>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'DFS' })}
+        </Button>
         <MultiSelect>
           <Form.Item
             initialValue={[]}
@@ -177,33 +171,26 @@ export function Radio5GHz () {
 
       <div style={{ marginTop: '100px' }}>
         <div>{$t({ defaultMessage: 'Outdoor Aps' })}</div>
-        <Form.Item noStyle name='outdoorLower5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'Lower 5G' })}
-          </Button>
-        </Form.Item>
-        <Form.Item noStyle name='outdoorUpper5G'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'Upper 5G' })}
-          </Button>
-        </Form.Item>
-        <Form.Item noStyle name='dfsOutdoor'>
-          <Button
-            type='link'
-            onClick={() => {}}
-          >
-            {$t({ defaultMessage: 'DFS' })}
-          </Button>
-        </Form.Item>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'Lower 5G' })}
+        </Button>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'Upper 5G' })}
+        </Button>
+        <Button
+          type='link'
+          onClick={() => {}}
+        >
+          {$t({ defaultMessage: 'DFS' })}
+        </Button>
         <MultiSelect>
           <Form.Item
-            initialValue={[]}
             name={['radioParams50G', 'allowedOutdoorChannels']}
             children={
               <Checkbox.Group
@@ -212,6 +199,12 @@ export function Radio5GHz () {
             }
           />
         </MultiSelect>
+        <Form.Item
+          name={['radioParams50G', 'combineChannels']}
+          initialValue={false}
+        >
+          <Input type='hidden'></Input>
+        </Form.Item>
       </div>
     </Space>
   )
