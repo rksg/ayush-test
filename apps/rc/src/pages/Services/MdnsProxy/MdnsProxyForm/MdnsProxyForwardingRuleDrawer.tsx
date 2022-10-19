@@ -5,6 +5,7 @@ import { useIntl }                          from 'react-intl'
 
 import { Drawer }                                                   from '@acx-ui/components'
 import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
+import { validationMessages }                                       from '@acx-ui/utils'
 
 import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
@@ -43,7 +44,7 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
     return isRuleUnique(values)
       ? Promise.resolve()
       // eslint-disable-next-line max-len
-      : Promise.reject($t({ defaultMessage: 'This rule is already in use. Please select different VLAN or Type' }))
+      : Promise.reject($t({ defaultMessage: 'Rule with same Type and VLAN IDs already exists' }))
   }
 
   const vlanDuplicationValidator = async () => {
@@ -101,7 +102,7 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
           type: 'number',
           min: 1,
           max: 4094,
-          message: $t({ defaultMessage: 'VLAN ID must be between 1 and 4094' })
+          message: $t(validationMessages.vlanRange)
         },
         {
           validator: () => vlanDuplicationValidator()
@@ -121,7 +122,7 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
           type: 'number',
           min: 1,
           max: 4094,
-          message: $t({ defaultMessage: 'VLAN ID must be between 1 and 4094' })
+          message: $t(validationMessages.vlanRange)
         },
         {
           validator: () => vlanDuplicationValidator()
