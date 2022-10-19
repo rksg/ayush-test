@@ -1,10 +1,17 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { Collapse, Form, Select, Switch, Transfer } from 'antd'
-import { TransferItem }                             from 'antd/lib/transfer'
-import _                                            from 'lodash'
-import { useIntl }                                  from 'react-intl'
+import {
+  Collapse,
+  Form,
+  Popconfirm,
+  Select,
+  Switch,
+  Transfer
+} from 'antd'
+import { TransferItem } from 'antd/lib/transfer'
+import _                from 'lodash'
+import { useIntl }      from 'react-intl'
 
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
 import { useTableQuery, AAAServerTypeEnum, AAA_SERVER_TYPE }       from '@acx-ui/rc/utils'
@@ -209,12 +216,14 @@ export function AAASettings () {
   const acctEnabledCommand = Form.useWatch('acctEnabledCommand')
   const acctEnabledExec = Form.useWatch('acctEnabledExec')
 
+  const [openConfirm, setOpenConfirm] = useState(false)
+
   const defaultTransferProps = {
     titles: [$t({ defaultMessage: 'Available Servers' }), $t({ defaultMessage: 'Selected order' })],
     showSelectAll: false,
     listStyle: {
       width: 300,
-      height: 180
+      height: 172
     },
     render: (item: TransferItem) => item.name,
     onChange: (targetKeys: string[]) => {
@@ -225,11 +234,27 @@ export function AAASettings () {
     }
   }
 
-  const onTelnetAuthChange = (checked: boolean) => {
-    // TODO: show warning message
-    if (checked) {
-      form.setFieldValue('authnEnabledSsh', true)
+  const handleOpenChange = (newOpen: boolean) => {
+    const currentAuthnEnabledSsh = form.getFieldValue('authnEnabledSsh')
+    if (newOpen === false) {
+      setOpenConfirm(false)
+      if (currentAuthnEnabledSsh === false) {
+        form.setFieldValue('authnEnableTelnet', false)
+      }
+      return
     }
+    if (currentAuthnEnabledSsh === true) {
+      form.setFieldValue('authnEnableTelnet', !authnEnableTelnet)
+    } else {
+      setOpenConfirm(true)
+    }
+  }
+
+  const orderValidator = (targetKeys: string[], serverObjNone: { name: string }) => {
+    if (targetKeys.indexOf(AAA_SERVER_TYPE.NONE) === 0) {
+      return Promise.reject($t({ defaultMessage: '"{name}" cannot be saved as first option.' }, serverObjNone))
+    }
+    return Promise.resolve()
   }
 
   return (
@@ -247,18 +272,32 @@ export function AAASettings () {
         >
           <Switch disabled={authnEnableTelnet}/>
         </Form.Item>
-        <Form.Item
-          name='authnEnableTelnet'
-          label={$t({ defaultMessage: 'Telnet Authentication' })}
-          valuePropName='checked'
+        <Popconfirm
+          title={$t({ defaultMessage: 'Telnet Authentication requires SSH Authentication also to be turned ON.' })}
+          placement='bottomLeft'
+          visible={openConfirm}
+          onVisibleChange={handleOpenChange}
+          onConfirm={() => {
+            setOpenConfirm(false)
+            form.setFieldValue('authnEnabledSsh', true)
+          }}
         >
-          <Switch onChange={onTelnetAuthChange}/>
-        </Form.Item>
+          <Form.Item
+            name='authnEnableTelnet'
+            label={$t({ defaultMessage: 'Telnet Authentication' })}
+            valuePropName='checked'
+          >
+            <Switch />
+          </Form.Item>
+        </Popconfirm>
         <Form.Item
           name='selectedLoginServers'
           label={$t({ defaultMessage: 'Set Priority' })}
           valuePropName='targetKeys'
-          // rules={[{ required: true, message: 'Please input your username!' }]}
+          rules={[
+            { required: authnEnabledSsh, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+            { validator: (_, value) => orderValidator(value, AUTHEN_SERVERS_OBJ.NONE_TYPE) }
+          ]}
           hidden={!authnEnabledSsh}
         >
           <Transfer
@@ -289,6 +328,10 @@ export function AAASettings () {
           name='selectedCommandAuthOrder'
           label={$t({ defaultMessage: 'Set Priority' })}
           valuePropName='targetKeys'
+          rules={[
+            { required: authzEnabledCommand, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+            { validator: (_, value) => orderValidator(value, AUTHOR_SERVERS_OBJ.NONE_TYPE) }
+          ]}
           hidden={!authzEnabledCommand}
         >
           <Transfer
@@ -307,6 +350,10 @@ export function AAASettings () {
           name='selectedExecAuthOrder'
           label={$t({ defaultMessage: 'Set Priority' })}
           valuePropName='targetKeys'
+          rules={[
+            { required: authzEnabledExec, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+            { validator: (_, value) => orderValidator(value, AUTHOR_SERVERS_OBJ.NONE_TYPE) }
+          ]}
           hidden={!authzEnabledExec}
         >
           <Transfer
@@ -336,6 +383,10 @@ export function AAASettings () {
           name='selectedCommandAcctOrder'
           label={$t({ defaultMessage: 'Set Priority' })}
           valuePropName='targetKeys'
+          rules={[
+            { required: acctEnabledCommand, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+            { validator: (_, value) => orderValidator(value, ACCOUNTING_SERVERS_OBJ.NONE_TYPE) }
+          ]}
           hidden={!acctEnabledCommand}
         >
           <Transfer
@@ -354,6 +405,10 @@ export function AAASettings () {
           name='selectedExecAcctOrder'
           label={$t({ defaultMessage: 'Set Priority' })}
           valuePropName='targetKeys'
+          rules={[
+            { required: acctEnabledExec, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+            { validator: (_, value) => orderValidator(value, ACCOUNTING_SERVERS_OBJ.NONE_TYPE) }
+          ]}
           hidden={!acctEnabledExec}
         >
           <Transfer

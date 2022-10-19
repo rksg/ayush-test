@@ -168,6 +168,7 @@ describe('AAAServers', () => {
           case 'RADIUS': return res(ctx.json(radiusList))
           case 'TACACS_PLUS': return res(ctx.json(tacacsList))
           case 'LOCAL': return res(ctx.json(localUserList))
+          default: return res(ctx.json(emptyList))
         }
       }),
       rest.delete(SwitchUrlsInfo.deleteAaaServer.url, (req, res, ctx) =>
@@ -180,7 +181,10 @@ describe('AAAServers', () => {
       </Provider>,
       { route: { params } }
     )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(
+      () => screen.queryAllByRole('img', { name: 'loader' }),
+      { timeout: 10000 }
+    )
     const row1 = await screen.findByText('r0')
     await userEvent.click(row1)
 

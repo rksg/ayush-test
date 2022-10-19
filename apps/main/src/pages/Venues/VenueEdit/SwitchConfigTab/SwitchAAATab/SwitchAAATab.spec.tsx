@@ -62,5 +62,8 @@ describe('SwitchAAATab', () => {
     fireEvent.click(saveBtn)
 
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+
+    const cancelBtn = screen.getByRole('button', { name: 'Cancel' })
+    fireEvent.click(cancelBtn)
   })
 })
