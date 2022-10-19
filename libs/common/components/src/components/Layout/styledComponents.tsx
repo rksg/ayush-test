@@ -22,6 +22,7 @@ export const Wrapper = styled.div`
           .ant-pro-sider-logo {
             width: var(--acx-sider-width);
             padding: 18px 20px;
+            margin-bottom: 10px;
           }
           .ant-menu-submenu-arrow {
             display: none;
@@ -183,7 +184,7 @@ export const Content = styled.div`
     - var(--acx-sider-width)
     - var(--acx-content-horizontal-space) * 2
   );
-  min-height: calc(100vh - var(--acx-header-height));
+  min-height: 0;
   position: relative;
   display: flex;
   flex-direction: column;
