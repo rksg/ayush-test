@@ -14,7 +14,8 @@ export default function VenueHealthWidget ({
   filters: AnalyticsFilter;
 }){
   const { $t } = useIntl()
-  const queryResults= useGetKpiThresholdsQuery(filters)
+  const queryResults= useGetKpiThresholdsQuery({ ...filters,
+    kpis: ['timeToConnect','clientThroughput'] })
   const { data } = queryResults
 
   return(
@@ -37,7 +38,7 @@ export default function VenueHealthWidget ({
             <UI.Wrapper>
               <KpiWidget filters={filters}
                 name='timeToConnect'
-                threshold={data?.timeToConnectThreshold.value ??
+                threshold={data?.timeToConnectThreshold?.value ??
                  kpiConfig.timeToConnect.histogram.initialThreshold}/>
             </UI.Wrapper>
           </GridCol>
@@ -45,7 +46,7 @@ export default function VenueHealthWidget ({
             <UI.Wrapper>
               <KpiWidget filters={filters}
                 name='clientThroughput'
-                threshold={data?.clientThroughputThreshold.value ??
+                threshold={data?.clientThroughputThreshold?.value ??
                  kpiConfig.clientThroughput.histogram.initialThreshold}/>
             </UI.Wrapper>
           </GridCol>

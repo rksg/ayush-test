@@ -93,9 +93,6 @@ describe('Services for health kpis', () => {
       const expectedResult = {
         timeToConnectThreshold: {
           value: 1000
-        },
-        clientThroughputThreshold: {
-          value: 5000
         }
       }
       mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
@@ -121,7 +118,8 @@ describe('Services for health kpis', () => {
         data: expectedResult
       })
       const { status, data, error } = await store.dispatch(
-        getThresholdsApi.endpoints.getKpiThresholds.initiate(props)
+        getThresholdsApi.endpoints.getKpiThresholds.initiate({ ...props,
+          kpis: ['timeToConnect', 'clientThroughput'] })
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(expectedResult)

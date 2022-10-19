@@ -110,31 +110,38 @@ interface ThresholdData {
 }
 
 interface ThresholdsApiResponse {
-  timeToConnectThreshold: ThresholdData
-  clientThroughputThreshold: ThresholdData
+  timeToConnectThreshold?: ThresholdData
+  clientThroughputThreshold?: ThresholdData
 }
+
+export type KpisHavingThreshold = 'timeToConnect' | 'clientThroughput'
+
+export type KpiThresholsPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
 
 export const getThresholdsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     getKpiThresholds: build.query<
       ThresholdsApiResponse,
-      AnalyticsFilter
+      KpiThresholsPayload
     >({
-      query: (payload) => ({
-        document: gql`
-        query GetKpiThresholds($path: [HierarchyNodeInput]) {
-          timeToConnectThreshold: KPIThreshold(name: "timeToConnect", networkPath: $path) {
-            value
+      query: (payload) => {
+        let kpis:KpisHavingThreshold[] = payload.kpis && payload.kpis.length ?
+          payload.kpis : ['timeToConnect'] // atleast one kpi should be there
+        const queryFields = kpis.map(kpi=>(
+          `${kpi}Threshold: KPIThreshold(name: "${kpi}", networkPath: $path) {
+          value
+        }`)).join('\n')
+        return {
+          document: gql`
+          query GetKpiThresholds($path: [HierarchyNodeInput]) {
+            ${queryFields}
           }
-          clientThroughputThreshold: KPIThreshold(name: "clientThroughput", networkPath: $path) {
-            value
+          `,
+          variables: {
+            path: payload.path
           }
         }
-        `,
-        variables: {
-          path: payload.path
-        }
-      })
+      }
     })
   })
 })
