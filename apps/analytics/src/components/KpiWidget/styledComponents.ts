@@ -42,8 +42,8 @@ export const KpiTitle = styled.span`
 
 export const KpiShortText = styled.span`
   font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
+  font-size: var(--acx-body-6-font-size);
+  line-height: var(--acx-body-6-line-height);
   font-weight: var(--acx-body-font-weight);
   color: var(--acx-neutrals-60);
 `
