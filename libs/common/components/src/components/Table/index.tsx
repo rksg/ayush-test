@@ -145,6 +145,7 @@ function Table <RecordType extends Record<string, any>> (
           onClick={() => {
             columnsState.resetState()
             props.onResetState?.()
+            setColWidth({})
           }}
           children={$t({ defaultMessage: 'Reset to default' })}
         />
