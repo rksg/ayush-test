@@ -181,6 +181,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     //Get Venue Active DHCP Pool
     method: 'get',
     url: '/api/venues/{:venueId}/dhcpConfigServiceProfileLeases'
+  },
+  getDHCPProfiles: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/tenant/{tenantId}/wifi/dhcpconfigserviceprofiles'
   }
 
 }

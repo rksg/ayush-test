@@ -138,6 +138,14 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
+    getDHCPProfileList: build.query<DHCPSaveData[] | null, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getDHCPProfiles, params)
+        return{
+          ...req
+        }
+      }
+    }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
         if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
@@ -180,5 +188,6 @@ export const {
   useSaveDHCPMutation,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
-  useDeleteWifiCallingServiceMutation
+  useDeleteWifiCallingServiceMutation,
+  useGetDHCPProfileListQuery
 } = serviceApi
