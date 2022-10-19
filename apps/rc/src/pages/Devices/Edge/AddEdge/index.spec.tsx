@@ -116,6 +116,10 @@ describe('AddEdge api fail', () => {
       rest.post(
         EdgeUrlsInfo.addEdge.url,
         (req, res, ctx) => res(ctx.status(500), ctx.json(null))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockVenueData))
       )
     )
   })
