@@ -125,6 +125,11 @@ describe('timeSeriesTooltipFormatter', () => {
     const result = timeSeriesTooltipFormatter(noBadgeSeries, dataFormatters)(singleparameters)
     expect(result).toMatchSnapshot()
   })
+  it('accept custom formatter which includes index in param', () => {
+    const dataFormatters = { default: jest.fn((value, tz, index) => `formatted-${value}-${index}`) }
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(multiParameters)
+    expect(result).toMatchSnapshot()
+  })
 })
 
 describe('stackedBarTooltipFormatter', () => {

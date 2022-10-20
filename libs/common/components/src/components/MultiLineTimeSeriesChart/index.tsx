@@ -26,7 +26,8 @@ import {
   dateAxisFormatter,
   tooltipOptions,
   timeSeriesTooltipFormatter,
-  getTimeSeriesSymbol
+  getTimeSeriesSymbol,
+  ChartFormatterFn
 }                       from '../Chart/helper'
 import { ResetButton } from '../Chart/styledComponents'
 import { useDataZoom } from '../Chart/useDataZoom'
@@ -58,8 +59,8 @@ export interface MultiLineTimeSeriesChartProps <
     data: TChartData[]
     legendProp?: keyof TChartData /** @default 'name' */
     lineColors?: string[]
-    dataFormatter?: ReturnType<typeof formatter>
-    seriesFormatters?: Record<string, ReturnType<typeof formatter>>
+    dataFormatter?: ChartFormatterFn
+    seriesFormatters?: Record<string, ChartFormatterFn>
     yAxisProps?: {
       max?: number
       min?: number

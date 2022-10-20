@@ -23,7 +23,8 @@ import {
   axisLabelOptions,
   dateAxisFormatter,
   tooltipOptions,
-  timeSeriesTooltipFormatter
+  timeSeriesTooltipFormatter,
+  ChartFormatterFn
 }                             from '../Chart/helper'
 import { ResetWrapper, ResetButton } from '../Chart/styledComponents'
 import { useDataZoom }               from '../Chart/useDataZoom'
@@ -42,8 +43,8 @@ export interface StackedAreaChartProps
       min?: number
     }
     stackColors?: string[]
-    dataFormatter?: ReturnType<typeof formatter>
-    seriesFormatters?: Record<string, ReturnType<typeof formatter>>
+    dataFormatter?: ChartFormatterFn
+    seriesFormatters?: Record<string, ChartFormatterFn>
     tooltipTotalTitle?: string
     disableLegend?: boolean
     chartRef?: RefCallback<ReactECharts>

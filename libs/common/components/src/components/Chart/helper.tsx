@@ -34,6 +34,12 @@ export type TooltipFormatterParams = Exclude<
   Array<unknown>
 >
 
+export type ChartFormatterFn = (
+  value: unknown,
+  tz?: string,
+  index?: number
+) => string
+
 const defaultRickTextFormatValues: Record<
   string,
   FormatXMLElementFn<React.ReactNode, React.ReactNode>
@@ -172,9 +178,7 @@ export const tooltipOptions = () => ({
 
 export const timeSeriesTooltipFormatter = (
   series: TimeSeriesChartData[],
-  dataFormatters: {
-    default: ReturnType<typeof formatter>
-  } & Record<string, (ReturnType<typeof formatter> | undefined)>
+  dataFormatters: { default: ChartFormatterFn } & Record<string, ChartFormatterFn>
 ) => (
   parameters: TooltipFormatterParams | TooltipFormatterParams[]
 ) => {
@@ -201,7 +205,7 @@ export const timeSeriesTooltipFormatter = (
               values={{
                 ...defaultRickTextFormatValues,
                 name: data.name,
-                value: formatter(value)
+                value: formatter(value, undefined, dataIndex)
               }}
             />
             text = data.show !== false ? <UI.Badge color={(color) as string} text={text} /> : text
