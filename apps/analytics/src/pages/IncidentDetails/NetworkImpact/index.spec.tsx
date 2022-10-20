@@ -1,7 +1,7 @@
-import { dataApiURL }                                                                from '@acx-ui/analytics/services'
-import { Incident }                                                                  from '@acx-ui/analytics/utils'
-import { Provider, store }                                                           from '@acx-ui/store'
-import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, mockDOMWidth } from '@acx-ui/test-utils'
+import { dataApiURL }                                                  from '@acx-ui/analytics/services'
+import { Incident }                                                    from '@acx-ui/analytics/utils'
+import { Provider, store }                                             from '@acx-ui/store'
+import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 
 import { NetworkImpactChartTypes, networkImpactChartConfigs } from './config'
 import { networkImpactChartsApi }                             from './services'
@@ -73,7 +73,6 @@ describe('transformSummary', () => {
 })
 
 describe('NetworkImpact', () => {
-  mockDOMWidth()
   const props: NetworkImpactProps = {
     incident: { id: 'id', metadata: { dominant: { } } } as Incident,
     charts: [{

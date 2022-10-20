@@ -159,6 +159,26 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   },
+  getDenialOfServiceProtection: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection'
+  },
+  updateDenialOfServiceProtection: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection'
+  },
+  getVenueRogueAp: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
+  },
+  updateVenueRogueAp: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
+  },
+  getRoguePolicies: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/rogue-policy'
+  },
   getConfigProfiles: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
