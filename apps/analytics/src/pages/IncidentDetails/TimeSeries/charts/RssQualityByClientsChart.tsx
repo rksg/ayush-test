@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
 
 import { gql }     from 'graphql-request'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData }                  from '@acx-ui/analytics/utils'
 import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
-import { formatter }                      from '@acx-ui/utils'
+import { formatter, getIntl }             from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -39,50 +40,61 @@ const lineColors = [
   cssStr('--acx-semantics-green-50')
 ]
 
+export function formatWithPercentageAndCount (
+  totals: number[],
+  percentage: unknown,
+  tz?: string,
+  index?: number
+) {
+  const { $t } = getIntl()
+  return $t({
+    defaultMessage: '{formattedPercentage} ({count} {count, plural, one {client} other {clients}})'
+  }, {
+    count: percentage as number * totals[index!],
+    formattedPercentage: formatter('percentFormat')(percentage)
+  })
+}
+
 export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
-  const { rssQualityByClientsChart } = data
+  const { rssQualityByClientsChart: items } = data
   const { $t } = useIntl()
 
-  const rssQualityPercentFormat = useMemo(() => {
-    const total: number[] = []
-    const good = rssQualityByClientsChart.good as number[]
-    const average = rssQualityByClientsChart.average as number[]
-    const bad = rssQualityByClientsChart.bad as number[]
+  const [chartData, seriesFormatters] = useMemo(() => {
+    const sets = [items.good, items.average, items.bad] as number[][]
 
-    for(let i = 0; i < good.length; i++) {
-      total.push(good[i] + average[i] + bad[i])
+    const totals = _.zipWith(...sets, (...values) => _.sum(values))
+    const [good, average, bad] = _(totals)
+      .map((total, index) => sets.map(set => set[index] ? set[index] / total : null))
+      .unzip()
+      .value()
+
+    const formatWithCount = formatWithPercentageAndCount.bind(undefined, totals)
+
+    const seriesFormatters = {
+      good: formatWithCount,
+      average: formatWithCount,
+      bad: formatWithCount
     }
 
-    return {
-      ...rssQualityByClientsChart,
-      good: good.map((x, index) => {
-        return x ? x/total[index] : null
-      }),
-      average: average.map((x, index) => {
-        return x ? x/total[index] : null
-      }),
-      bad: bad.map((x, index) => {
-        return x ? x/total[index] : null
-      })
-    }
-  }, [rssQualityByClientsChart])
+    const seriesMapping = [
+      { key: 'bad', name: $t({ defaultMessage: 'Bad' }) },
+      { key: 'average', name: $t({ defaultMessage: 'Average' }) },
+      { key: 'good', name: $t({ defaultMessage: 'Good' }) }
+    ]
+    const chartData = getSeriesData({ ...items, good, average, bad }, seriesMapping)
 
-  const seriesMapping = [
-    { key: 'bad', name: $t({ defaultMessage: 'Bad' }) },
-    { key: 'average', name: $t({ defaultMessage: 'Average' }) },
-    { key: 'good', name: $t({ defaultMessage: 'Good' }) }
-  ]
-
-  const chartResults = getSeriesData(rssQualityPercentFormat, seriesMapping)
+    return [chartData, seriesFormatters]
+  }, [$t, items])
 
   return <Card title={$t({ defaultMessage: 'RSS Quality By Clients' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         <StackedAreaChart
           style={{ height, width }}
-          data={chartResults}
+          data={chartData}
           dataFormatter={formatter('percentFormat')}
           yAxisProps={{ max: 1, min: 0 }}
+          seriesFormatters={seriesFormatters}
           stackColors={lineColors}
           disableLegend={true}
         />

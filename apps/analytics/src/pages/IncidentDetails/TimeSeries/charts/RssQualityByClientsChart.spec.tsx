@@ -8,8 +8,11 @@ import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
 import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
 
-import { noBuffer }                 from './__tests__/fixtures'
-import { RssQualityByClientsChart } from './RssQualityByClientsChart'
+import { noBuffer }              from './__tests__/fixtures'
+import {
+  RssQualityByClientsChart,
+  formatWithPercentageAndCount
+} from './RssQualityByClientsChart'
 
 import type { TimeSeriesChartResponse } from '../types'
 
@@ -62,5 +65,15 @@ describe('RssQualityByClientsChart', () => {
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult)
     expect(error).toBe(undefined)
+  })
+
+  describe('formatWithPercentageAndCount', () => {
+    const totals = [82, 79, 78, 100]
+    const format = formatWithPercentageAndCount
+    it('format values', () => {
+      expect(format(totals, 7/79, undefined, 1)).toEqual('8.86% (7 clients)')
+      expect(format(totals, 1/100, undefined, 3)).toEqual('1% (1 client)')
+      expect(format(totals, null, undefined, 1)).toEqual('- (0 clients)')
+    })
   })
 })
