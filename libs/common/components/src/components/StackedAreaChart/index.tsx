@@ -28,6 +28,7 @@ import {
 }                             from '../Chart/helper'
 import { ResetWrapper, ResetButton } from '../Chart/styledComponents'
 import { useDataZoom }               from '../Chart/useDataZoom'
+import { useLegendSelectChanged }    from '../Chart/useLegendSelectChanged'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
@@ -85,11 +86,12 @@ export function StackedAreaChart <
 }: StackedAreaChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
+  useLegendSelectChanged(eChartsRef)
 
   const { $t } = useIntl()
 
   disableLegend = Boolean(disableLegend)
-  const [canResetZoom, onDatazoomCallback, resetZoomCallback] =
+  const [canResetZoom, resetZoomCallback] =
     useDataZoom<TChartData>(eChartsRef, true, initialData, props.zoom, props.onDataZoom)
 
   const data = useMemo(() => {
@@ -177,7 +179,6 @@ export function StackedAreaChart <
         ref={eChartsRef}
         opts={{ renderer: 'svg' }}
         option={option}
-        onEvents={{ datazoom: onDatazoomCallback }}
       />
       {canResetZoom && <ResetButton
         size='small'
