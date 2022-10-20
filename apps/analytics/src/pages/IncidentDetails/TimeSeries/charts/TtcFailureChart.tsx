@@ -84,7 +84,6 @@ export const TtcFailureChart = ({ chartRef, data, incident }: TimeSeriesChartPro
               chartRef={chartRef}
               style={{ height, width }}
               data={chartResults}
-              dataFormatter={formatter('countFormat')}
               seriesFormatters={seriesFormatters}
               onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
               markers={getMarkers(data.relatedIncidents!, incident)}

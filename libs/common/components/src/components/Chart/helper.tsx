@@ -33,11 +33,15 @@ export type TooltipFormatterParams = Exclude<
   Array<unknown>
 >
 
-export const gridOptions = (disableLegend = false) => ({
-  left: '0%',
-  right: '0%',
-  bottom: '0%',
-  top: disableLegend ? '6px': '15%',
+export const gridOptions = ({
+  disableLegend = false,
+  hasXAxisName = false,
+  xAxisOffset = 0
+} = {}) => ({
+  left: 0,
+  right: 0,
+  bottom: hasXAxisName ? 16 + xAxisOffset : 0,
+  top: disableLegend ? 6 : '15%',
   containLabel: true
 })
 
@@ -70,6 +74,19 @@ export const xAxisOptions = () => ({
       color: cssStr('--acx-primary-black')
     }
   }
+} as XAXisComponentOption)
+
+export const xAxisNameOptions = (name: string) => ({
+  name,
+  nameGap: 25,
+  nameTextStyle: {
+    color: cssStr('--acx-neutrals-60'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-body-5-font-size'),
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-font-weight-bold')
+  },
+  nameLocation: 'middle'
 } as XAXisComponentOption)
 
 export const barChartAxisLabelOptions = () => ({
