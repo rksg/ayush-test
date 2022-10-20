@@ -59,7 +59,7 @@ export function Venues () {
 
   useEffect(()=>{
     if(saveState){
-      form.setFieldsValue({ venues: saveState.venues })
+      form.setFieldsValue({ venues: saveState.venueIds })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])

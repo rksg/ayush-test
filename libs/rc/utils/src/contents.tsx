@@ -1,5 +1,9 @@
 import { defineMessage } from 'react-intl'
 
+import {
+  DHCPConfigTypeEnum
+} from './constants'
+
 export enum PskWlanSecurityEnum {
   WPA2Personal = 'WPA2 (Recommended)',
   WPA3 = 'WPA3',
@@ -160,7 +164,7 @@ export enum RadioEnum {
 
 
 export const DHCPConfigTypeMessages = {
-  MULTIPLE: 'Multiple APs',
-  SIMPLE: 'Each APs',
-  HIERARCHICAL: 'Hierarchical APs'
+  [DHCPConfigTypeEnum.MULTIPLE]: 'Multiple APs',
+  [DHCPConfigTypeEnum.SIMPLE]: 'Each APs',
+  [DHCPConfigTypeEnum.HIERARCHICAL]: 'Hierarchical APs'
 }

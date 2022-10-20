@@ -17,7 +17,8 @@ import {
   VenueSwitchConfiguration,
   ConfigurationProfile,
   VenueDHCPProfile,
-  DHCPLeases
+  DHCPLeases,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -200,7 +201,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Venue', id: 'DHCPProfile' }]
     }),
     venueActivePools: build.query<string[] | null, RequestPayload>({
       query: ({ params }) => {
@@ -217,8 +219,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...leasesList
         }
       }
+    }),
+    activateDHCPPool: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.activeVenueDHCPPool, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
-
 
   })
 })
@@ -242,5 +252,6 @@ export const {
   useSwitchConfigProfileQuery,
   useVenueDHCPProfileQuery,
   useVenueActivePoolsQuery,
-  useVenuesLeasesListQuery
+  useVenuesLeasesListQuery,
+  useActivateDHCPPoolMutation
 } = venueApi

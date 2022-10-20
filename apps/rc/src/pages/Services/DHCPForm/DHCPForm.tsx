@@ -7,9 +7,9 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useGetDHCPProfileQuery }                              from '@acx-ui/rc/services'
-import { DHCPSaveData, DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
-import { useParams, useTenantLink, useNavigate }               from '@acx-ui/react-router-dom'
+import { useGetDHCPProfileQuery }                from '@acx-ui/rc/services'
+import { DHCPSaveData, DHCPConfigTypeEnum }      from '@acx-ui/rc/utils'
+import { useParams, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
 import DHCPFormContext from './DHCPFormContext'
 import { SettingForm } from './DHCPSettingForm'
@@ -37,11 +37,9 @@ export function DHCPForm () {
   // ] = useSaveDHCPMutation()
 
   const [saveState, updateSaveState] = useState<DHCPSaveData>({
-    name: '',
-    tags: [],
-    createType: ServiceTechnology.WIFI,
-    dhcpConfig: DHCPConfigTypeEnum.SIMPLE,
-    venues: [],
+    serviceName: '',
+    dhcpMode: DHCPConfigTypeEnum.SIMPLE,
+    venueIds: [],
     dhcpPools: []
   })
 
@@ -62,9 +60,7 @@ export function DHCPForm () {
     <>
       <PageHeader
         title={editMode ? $t({ defaultMessage: 'Edit DHCP Service' }) :
-          saveState.createType === ServiceTechnology.WIFI ?
-            $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' }) :
-            $t({ defaultMessage: 'Add DHCP for Switch Service' })}
+          $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Service' }), link: '/services' }
         ]}

@@ -1,14 +1,11 @@
-import { useContext } from 'react'
-
-import { Form, Input, Col, Radio, Row, Space, RadioChangeEvent } from 'antd'
-import { useIntl }                                               from 'react-intl'
+import { Form, Input, Col, Radio, Row, Space } from 'antd'
+import { useIntl }                             from 'react-intl'
 
 import { StepsForm }                             from '@acx-ui/components'
 import { DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
-import DHCPFormContext              from './DHCPFormContext'
 import DHCPPoolTable                from './DHCPPool'
 import { RadioDescription }         from './styledComponents'
 
@@ -19,7 +16,6 @@ export function SettingForm () {
 
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
   const createType = useWatch<ServiceTechnology>('createType')
-  const { saveState, updateSaveState } = useContext(DHCPFormContext)
 
   const types = Object.values(DHCPConfigTypeEnum)
 
@@ -46,26 +42,6 @@ export function SettingForm () {
           label={intl.$t({ defaultMessage: 'Tags' })}
           children={<Input />}
         />
-
-        <Form.Item
-          name='createType'
-          style={{ display: 'none' }}
-          initialValue={ServiceTechnology.WIFI}
-          label={intl.$t({ defaultMessage: 'Type' })}>
-          <Radio.Group onChange={(e: RadioChangeEvent) => {
-            updateSaveState({
-              ...saveState,
-              createType: e.target.value as ServiceTechnology
-            })
-          }}>
-            <Radio value={ServiceTechnology.WIFI}>
-              {intl.$t({ defaultMessage: 'Wi-Fi' })}
-            </Radio>
-            <Radio value={ServiceTechnology.SWITCH}>
-              {intl.$t({ defaultMessage: 'Switch' })}
-            </Radio>
-          </Radio.Group>
-        </Form.Item>
 
         {createType === ServiceTechnology.WIFI &&
         <Form.Item

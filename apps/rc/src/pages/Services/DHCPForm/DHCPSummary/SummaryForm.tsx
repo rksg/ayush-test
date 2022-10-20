@@ -35,14 +35,14 @@ export function SummaryForm (props: {
   }, {})
 
   const getVenues = function () {
-    const venues = summaryData.venues
+    const venues:string[] = summaryData.venueIds
     const rows = []
     if (venues && venues.length > 0) {
-      for (const venue of venues) {
+      for (const venueId of venues) {
         rows.push(
-          <li key={venue.venueId} style={{ margin: '10px 0px' }}>
+          <li key={venueId} style={{ margin: '10px 0px' }}>
             <EnvironmentOutlined />
-            {venueList ? venueList[venue.venueId].name : venue.venueId}
+            {venueList ? venueList[venueId].name : venueId}
           </li>
         )
       }
@@ -60,14 +60,16 @@ export function SummaryForm (props: {
           <Subtitle level={4}>
             { $t({ defaultMessage: 'DHCP Settings' }) }
           </Subtitle>
-          <Form.Item label={$t({ defaultMessage: 'Service Name:' })} children={summaryData.name} />
           <Form.Item
+            label={$t({ defaultMessage: 'Service Name:' })}
+            children={summaryData.serviceName} />
+          {/* <Form.Item
             label={$t({ defaultMessage: 'Tags:' })}
             children={summaryData.tags}
-          />
+          /> */}
           <Form.Item
             label={$t({ defaultMessage: 'DHCP Configuration:' })}
-            children={summaryData.dhcpConfig && $t(dhcpTypes[summaryData.dhcpConfig])}
+            children={summaryData.dhcpMode && $t(dhcpTypes[summaryData.dhcpMode])}
           />
 
         </Col>

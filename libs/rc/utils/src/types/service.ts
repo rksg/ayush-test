@@ -1,6 +1,5 @@
 import {
-  DHCPConfigTypeEnum,
-  ServiceTechnology
+  DHCPConfigTypeEnum
 } from '../constants'
 
 export enum AccessEnum {
@@ -110,9 +109,11 @@ export interface DHCPPool {
   mask: string;
   excludedRangeStart?: string;
   excludedRangeEnd?: string;
-  primaryDNS: string;
-  secondaryDNS: string;
+  primaryDnsIp: string;
+  secondaryDnsIp: string;
   leaseTime: number;
+  leaseTimeHours: string;
+  leaseTimeMinutes: string;
   leaseUnit: string;
   vlan: number;
   dhcpOptions: DHCPOption[];
@@ -128,12 +129,12 @@ export interface DHCPOption{
 }
 
 export interface CreateDHCPFormFields {
-  name: string;
-  tags: string[];
-  createType: ServiceTechnology;
-  dhcpConfig: DHCPConfigTypeEnum;
+  serviceName: string;
+  // tags: string[];
+  // createType: ServiceTechnology;
+  dhcpMode: DHCPConfigTypeEnum;
   dhcpPools: DHCPPool[];
-  venues: DHCPVenue[];
+  venueIds: string[];
 }
 
 export interface DHCPSaveData extends CreateDHCPFormFields {

@@ -5,10 +5,13 @@ import _                                              from 'lodash'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { Modal }                                            from '@acx-ui/components'
-import { useVenueDHCPProfileQuery, useGetDHCPProfileQuery } from '@acx-ui/rc/services'
-import { DHCPConfigTypeMessages }                           from '@acx-ui/rc/utils'
-import { TenantLink }                                       from '@acx-ui/react-router-dom'
+import { Modal }   from '@acx-ui/components'
+import {
+  useVenueDHCPProfileQuery,
+  useGetDHCPProfileQuery,
+  useApListQuery } from '@acx-ui/rc/services'
+import { DHCPConfigTypeMessages } from '@acx-ui/rc/utils'
+import { TenantLink }             from '@acx-ui/react-router-dom'
 
 import { RowWrapper } from './styledComponents'
 import VenueDHCPForm  from './VenueDHCPForm'
@@ -22,27 +25,36 @@ export default function BasicInfo () {
   const { $t } = useIntl()
   const TYPOGRAPHY_LEVEL = 4
   const SPAN_NUM = 3
-  // const form = Form.useFormInstance()
-  const form = useRef<FormInstance>()
+  let formRef = useRef() as React.Ref<FormInstance> | undefined
+
   const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
-    params: { venueId: params.venueId }
+    params
   })
 
   const { data: dhcpProfile } = useGetDHCPProfileQuery({
-    params: { serviceId: venueDHCPProfile?.serviceProfileId }
+    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
   })
 
+  const { data: apList } = useApListQuery({ params })
+
+  const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
+
+
+  const primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
+    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
+  const backupServerSN = venueDHCPProfile?.dhcpServiceAps[
+    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
+  const natGatewaySN = venueDHCPProfile?.dhcpServiceAps[
+    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'NatGateway' })].serialNumber
+
   const displayData = {
-    name: dhcpProfile?.name,
+    name: dhcpProfile?.serviceName,
     status: venueDHCPProfile?.enabled === true,
-    configurationType: dhcpProfile ? DHCPConfigTypeMessages[dhcpProfile.dhcpConfig]:'',
+    configurationType: dhcpProfile ? DHCPConfigTypeMessages[dhcpProfile.dhcpMode]:'',
     poolsNum: dhcpProfile? dhcpProfile?.dhcpPools.length : 0,
-    // eslint-disable-next-line max-len
-    primaryDHCP: venueDHCPProfile?.dhcpServiceAps[_.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber,
-    // eslint-disable-next-line max-len
-    secondaryDHCP: venueDHCPProfile?.dhcpServiceAps[_.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber,
-    // eslint-disable-next-line max-len
-    natGateway: venueDHCPProfile?.dhcpServiceAps[_.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'NatGateway' })].serialNumber
+    primaryDHCP: primaryServerSN && apList ? apListGroupSN[primaryServerSN].name:'',
+    secondaryDHCP: backupServerSN && apList ? apListGroupSN[backupServerSN].name:'',
+    natGateway: natGatewaySN && apList ? apListGroupSN[natGatewaySN].name:''
   }
 
 
@@ -118,17 +130,18 @@ export default function BasicInfo () {
       okText={$t({ defaultMessage: 'Apply' })}
       width={650}
       onCancel={() => {
+        const form = formRef as React.MutableRefObject<FormInstance>
         setVisible(false)
-        // form.resetFields()
+        form.current.resetFields()
       }}
       onOk={() => {
-        // form?.current?.validateFields()
-        //   .then(values=>{
-        //     console.log(values)
-        //   })
+        const form = formRef as React.MutableRefObject<FormInstance>
+        form.current.getFieldsValue()
+        form.current.submit()
+
       }}
     >
-      <VenueDHCPForm/>
+      <VenueDHCPForm ref={formRef} />
     </Modal>
   </>
 }
