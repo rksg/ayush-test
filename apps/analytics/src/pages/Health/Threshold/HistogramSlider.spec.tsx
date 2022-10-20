@@ -11,7 +11,7 @@ import HistogramSlider from './HistogramSlider'
 
 
 const splits = [1,2,3,4,5,6]
-const onSliderChange = jest.fn().mockReturnValueOnce(2)
+const onSliderChange = jest.fn()
 describe('Threshold Histogram chart', () => {
   mockDOMWidth()
   beforeEach(() => {
@@ -30,6 +30,6 @@ describe('Threshold Histogram chart', () => {
         />
       </Provider>
     )
-    expect(await screen.findByText('2')).toBeInTheDocument()
+    expect(await screen.findByRole('slider')).toBeInTheDocument()
   })
 })

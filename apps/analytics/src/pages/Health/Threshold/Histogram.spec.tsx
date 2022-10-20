@@ -5,7 +5,8 @@ import {
   mockGraphqlQuery,
   render,
   screen,
-  mockDOMWidth
+  mockDOMWidth,
+  fireEvent
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
@@ -30,6 +31,8 @@ const filters = {
   filter: {}
 } as AnalyticsFilter
 const setKpiThreshold = jest.fn()
+
+
 
 describe('Threshold Histogram chart', () => {
   mockDOMWidth()
@@ -91,7 +94,7 @@ describe('Threshold Histogram chart', () => {
   })
   it('should handle data greater than the splits size', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,20] } }
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
     render(
       <Provider>
@@ -104,6 +107,28 @@ describe('Threshold Histogram chart', () => {
         />
       </Provider>
     )
-    expect(await screen.findByText('20')).toBeVisible()
+    await screen.findByText('(seconds)')
+    expect( screen.queryByText('2000')).toBeNull()
   })
+  it('should handle slider onchange', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+        />
+      </Provider>
+    )
+    fireEvent.mouseDown(await screen.findByRole('slider'))
+    fireEvent.mouseMove(await screen.findByRole('slider'))
+    fireEvent.mouseUp(await screen.findByRole('slider'))
+    expect(setKpiThreshold).not.toBeCalled()
+  })
+
 })
