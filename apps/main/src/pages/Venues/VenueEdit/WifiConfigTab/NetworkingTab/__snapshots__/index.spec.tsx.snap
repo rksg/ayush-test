@@ -291,7 +291,7 @@ exports[`NetworkingTab should render correctly 1`] = `
                                       class="ant-image"
                                     >
                                       <img
-                                        alt="AP Lan port default image"
+                                        alt="AP LAN port default image"
                                         class="ant-image-img"
                                         src="ap-model-placeholder.png"
                                       />

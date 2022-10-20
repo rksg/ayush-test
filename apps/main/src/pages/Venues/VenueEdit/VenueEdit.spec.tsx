@@ -58,7 +58,7 @@ async function updateLanPorts () {
   fireEvent.mouseDown(await screen.findByRole('combobox'))
   const option = screen.getByText('T750')
   await userEvent.click(option)
-  expect(await screen.findByAltText(/AP Lan port image - T750/)).toBeVisible()
+  expect(await screen.findByAltText(/AP LAN port image - T750/)).toBeVisible()
 
   fireEvent.mouseDown(screen.getByLabelText('PoE Operating Mode'))
   await userEvent.click(await screen.getAllByText('802.3at')[1])

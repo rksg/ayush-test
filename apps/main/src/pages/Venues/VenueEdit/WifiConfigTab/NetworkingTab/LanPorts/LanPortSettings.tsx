@@ -1,5 +1,5 @@
-import { Form, Input, InputNumber, Select, Space, Switch, Tooltip, Typography } from 'antd'
-import { useIntl }                                                              from 'react-intl'
+import { Form, Input, InputNumber, Select, Space, Switch, Tooltip } from 'antd'
+import { FormattedMessage, useIntl }                                from 'react-intl'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
@@ -60,19 +60,17 @@ export function LanPortSettings (props: {
         disabled={readOnly}
       />}
     />}
-    {isDhcpEnabled && !useVenueSettings && <Space
-      direction='vertical'
-      style={{ marginBottom: '12px' }}
-    >
-      <Typography.Text>{
-        // eslint-disable-next-line max-len
-        $t({ defaultMessage: '* The following LAN Port settings can\'t work because DHCP is enabled.' })
-      }</Typography.Text>
-      <Typography.Text>{
-        // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'You cannot edit LAN Port setting on this device because it has assigned to the venue which already has enabled DHCP service.' })
-      }</Typography.Text>
-    </Space>}
+    {isDhcpEnabled && !useVenueSettings && <FormattedMessage
+      defaultMessage={`<section>
+        <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
+        <p>You cannot edit LAN Port setting on this device because it has assigned 
+          to the venue which already has enabled DHCP service.</p>
+      </section>`}
+      values={{
+        section: (contents) => <Space direction='vertical'>{contents}</Space>,
+        p: (contents) => <p>{contents}</p>
+      }}
+    />}
 
     <Form.Item
       name={['lan', index, 'enabled']}

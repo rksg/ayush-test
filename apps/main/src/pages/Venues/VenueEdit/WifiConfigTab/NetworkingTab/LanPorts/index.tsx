@@ -41,7 +41,8 @@ export function LanPorts () {
   const venueSettings = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
   const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
   const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
-  const [updateVenueLanPorts] = useUpdateVenueLanPortsMutation()
+  const [updateVenueLanPorts, {
+    isLoading: isUpdatingVenueLanPorts }] = useUpdateVenueLanPortsMutation()
 
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
   const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)
@@ -165,7 +166,10 @@ export function LanPorts () {
     }
   }
 
-  return (<Loader states={[{ isLoading: venueLanPorts.isLoading || venueCaps.isLoading }]}>
+  return (<Loader states={[{
+    isLoading: venueLanPorts.isLoading || venueCaps.isLoading,
+    isFetching: isUpdatingVenueLanPorts
+  }]}>
     <Row gutter={24}>
       <Col span={8}>
         <Form.Item
@@ -223,8 +227,8 @@ export function LanPorts () {
           <Space style={{ padding: '16px 0' }}>
             <Image
               alt={selectedModelCaps?.lanPortPictureDownloadUrl
-                ? `${$t({ defaultMessage: 'AP Lan port image' })} - ${selectedModelCaps?.model}`
-                : $t({ defaultMessage: 'AP Lan port default image' })}
+                ? `${$t({ defaultMessage: 'AP LAN port image' })} - ${selectedModelCaps?.model}`
+                : $t({ defaultMessage: 'AP LAN port default image' })}
               preview={false}
               src={selectedModelCaps?.lanPortPictureDownloadUrl || DefaultApModelDiagram}
             />

@@ -43,7 +43,7 @@ describe('LanPortsForm', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
           <LanPorts />
@@ -54,7 +54,6 @@ describe('LanPortsForm', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
     expect(await screen.findByAltText(/default image/)).toBeVisible()
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should handle tab and model changed', async () => {
@@ -122,7 +121,7 @@ describe('LanPortsForm', () => {
     fireEvent.mouseDown(await screen.findByRole('combobox'))
     const option = screen.getByText('T750')
     await userEvent.click(option)
-    expect(await screen.findByAltText(/AP Lan port image - T750/)).toBeVisible()
+    expect(await screen.findByAltText(/AP LAN port image - T750/)).toBeVisible()
 
     fireEvent.mouseDown(screen.getByLabelText('PoE Operating Mode'))
     await userEvent.click(await screen.getAllByText('802.3at')[1])
