@@ -98,24 +98,8 @@ export default function DHCPInstancesPoolTable (){
         const switchRef = <Switch checkedChildren={$t({ defaultMessage: 'ON' })}
           unCheckedChildren={$t({ defaultMessage: 'OFF' })}
           defaultChecked={switchStatus ? switchStatus : false}
-          onChange={(checked: boolean)=>{
-            const activeMsg =
-            $t({ defaultMessage: 'Are you sure you want to active this DHCP Pool?' })
-            const deactivateMsg =
-            $t({ defaultMessage: 'Are you sure you want to deactivate this DHCP Pool?' })
-            showActionModal({
-              type: 'confirm',
-              width: 450,
-              title: $t({ defaultMessage: 'Active DHCP Pool' }),
-              content: checked ? activeMsg : deactivateMsg,
-              okText: $t({ defaultMessage: 'Confirm' }),
-              onOk () {
-                setActivePool(data as string)
-              },
-              onCancel () {
-                // console.log(switchRef)
-              }
-            })
+          onChange={()=>{
+            setActivePool(data as string)
           }}/>
         return switchRef
       }
