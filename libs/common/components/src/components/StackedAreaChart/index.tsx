@@ -131,7 +131,7 @@ export function StackedAreaChart <
       axisLabel: {
         ...axisLabelOptions(),
         formatter: function (value: number) {
-          return (dataFormatter && dataFormatter(value)) || `${value}`
+          return dataFormatter(value)
         }
       }
     },

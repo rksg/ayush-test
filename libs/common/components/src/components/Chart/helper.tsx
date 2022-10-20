@@ -173,36 +173,44 @@ export const tooltipOptions = () => ({
 export const timeSeriesTooltipFormatter = (
   series: TimeSeriesChartData[],
   dataFormatters: {
-    default?: (ReturnType<typeof formatter> | undefined)
+    default: ReturnType<typeof formatter>
   } & Record<string, (ReturnType<typeof formatter> | undefined)>
 ) => (
   parameters: TooltipFormatterParams | TooltipFormatterParams[]
 ) => {
-  const param = Array.isArray(parameters) ? parameters : [parameters]
-  const [ time ] = param[0].data as [TimeStamp, number]
-  const dataIndex = param[0].dataIndex
+  const intl = getIntl()
+  const params = Array.isArray(parameters) ? parameters : [parameters]
+  const [ time ] = params[0].data as [TimeStamp, number]
+  const dataIndex = params[0].dataIndex
 
   return renderToString(
-    <UI.TooltipWrapper>
-      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
-      <ul>{
-        series.map((data: TimeSeriesChartData)=> {
-          const color = param.find(p => p.seriesName === data.name)?.color || ''
-          const formatter = dataFormatters[data.key] || dataFormatters.default
-          const [, value] = data.data[dataIndex as number] as [TimeStamp, number]
-          const text = <>
-            {`${data.name}: `}
-            <b>{`${formatter ? formatter(value) : value}`}</b>
-          </>
-          return <li key={data.name}>
-            { data.show !== false
-              ? (color ? <UI.Badge color={(color) as string} text={text}/> : null)
-              : text
-            }
-          </li>
-        })
-      }</ul>
-    </UI.TooltipWrapper>
+    <RawIntlProvider value={intl}>
+      <UI.TooltipWrapper>
+        <time dateTime={new Date(time).toJSON()}>
+          {formatter('dateTimeFormat')(time) as string}
+        </time>
+        <ul>{
+          series.map((data: TimeSeriesChartData)=> {
+            const color = params.find(p => p.seriesName === data.name)?.color || ''
+            if (!color && data.show !== false) return null
+
+            const formatter = dataFormatters[data.key] || dataFormatters.default
+            const [, value] = data.data[dataIndex as number] as [TimeStamp, number | null]
+            let text = <FormattedMessage
+              defaultMessage='{name}: <b>{value}</b>'
+              values={{
+                ...defaultRickTextFormatValues,
+                name: data.name,
+                value: formatter(value)
+              }}
+            />
+            text = data.show !== false ? <UI.Badge color={(color) as string} text={text} /> : text
+            text = <li key={data.name}>{text}</li>
+            return text
+          })
+        }</ul>
+      </UI.TooltipWrapper>
+    </RawIntlProvider>
   )
 }
 

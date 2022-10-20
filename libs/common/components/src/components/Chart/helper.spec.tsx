@@ -91,24 +91,24 @@ describe('timeSeriesTooltipFormatter', () => {
 
   it('should return correct Html string for single value', async () => {
     const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
-    expect(timeSeriesTooltipFormatter(singleSeries, dataFormatters)(singleparameters))
-      .toMatchSnapshot()
+    const result = timeSeriesTooltipFormatter(singleSeries, dataFormatters)(singleparameters)
+    expect(result).toMatchSnapshot()
     expect(dataFormatters.default).toBeCalledTimes(1)
   })
   it('should return correct Html string for multiple value', async () => {
     const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
-    expect(timeSeriesTooltipFormatter(multiSeries, dataFormatters)(multiParameters))
-      .toMatchSnapshot()
-    expect(dataFormatters.default).toBeCalledTimes(multiParameters.length)
-  })
-  it('should handle when no formatter', async () => {
-    expect(timeSeriesTooltipFormatter(singleSeries, {})(singleparameters)).toMatchSnapshot()
-    expect(timeSeriesTooltipFormatter(multiSeries, {})(multiParameters)).toMatchSnapshot()
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(multiParameters)
+    expect(result).toMatchSnapshot()
+    expect(dataFormatters.default).toBeCalledTimes(multiSeries.length)
   })
   it('should hide row when legend deselected', async () => {
-    expect(timeSeriesTooltipFormatter(multiSeries, {})(singleparameters)).toMatchSnapshot()
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(singleparameters)
+    expect(result).toMatchSnapshot()
+    expect(dataFormatters.default).toBeCalledTimes(1)
   })
   it('should hide badge when show is false (only show in tooltip not in chart)', async () => {
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
     const noBadgeSeries = [
       ...singleSeries, {
         key: 'key2',
@@ -122,7 +122,8 @@ describe('timeSeriesTooltipFormatter', () => {
         data: [[1605628800000, 2672] as [TimeStamp, number]]
       }
     ]
-    expect(timeSeriesTooltipFormatter(noBadgeSeries, {})(singleparameters)).toMatchSnapshot()
+    const result = timeSeriesTooltipFormatter(noBadgeSeries, dataFormatters)(singleparameters)
+    expect(result).toMatchSnapshot()
   })
 })
 
