@@ -1,5 +1,5 @@
 export * from './formatter'
-export * from './dateFilterContext'
+export * from './dateFilter'
 export * from './locales'
 export * from './dateUtil'
 export * from './validationMessages'

@@ -4,7 +4,7 @@ import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { DateFilter, useDateFilter } from './dateFilterContext'
+import { DateFilter, useDateFilter } from './dateFilter'
 import {  getDateRangeFilter }       from './dateUtil'
 import { NetworkPath, pathFilter }   from './types/networkFilter'
 
