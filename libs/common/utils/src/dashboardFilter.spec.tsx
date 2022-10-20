@@ -5,7 +5,7 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDashboardFilter } from './dashboardFilterContext'
+import { useDashboardFilter } from './dashboardFilter'
 
 const original = Date.now
 describe('useDashboardFilter', () => {
