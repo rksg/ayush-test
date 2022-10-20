@@ -2,7 +2,6 @@ import { dataApiURL }      from '@acx-ui/analytics/services'
 import { fakeIncidentRss } from '@acx-ui/analytics/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
-  mockDOMWidth,
   mockGraphqlQuery,
   render,
   screen
@@ -41,8 +40,6 @@ const response = {
 } as RssDistributionChartResponse
 
 describe('RssQualityByClientsChart', () => {
-  mockDOMWidth()
-
   beforeEach(() => {
     store.dispatch(rssDistributionChartApi.util.resetApiState())
   })

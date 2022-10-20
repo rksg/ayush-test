@@ -3,8 +3,9 @@ import { BrowserRouter } from 'react-router-dom'
 import { dataApiURL }                             from '@acx-ui/analytics/services'
 import { fakeIncidentDowntimeHigh, fakeIncident } from '@acx-ui/analytics/utils'
 import { store }                                  from '@acx-ui/store'
-import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
+import { mockGraphqlQuery, render }               from '@acx-ui/test-utils'
 
+import { buffer6hr }               from '../__tests__/fixtures'
 import { TimeSeriesChartTypes }    from '../config'
 import { Api }                     from '../services'
 import { TimeSeriesChartResponse } from '../types'
@@ -42,12 +43,12 @@ const expectedResult = {
 afterEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('ApDisconnectionCountChart', () => {
-  mockDOMWidth()
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
         <ApDisconnectionCountChart
           chartRef={()=>{}}
+          buffer={buffer6hr}
           incident={fakeIncidentDowntimeHigh}
           data={expectedResult}
         />
@@ -64,6 +65,7 @@ describe('apDisconnectionCountChartQuery', () => {
     }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
+        buffer: buffer6hr,
         incident: fakeIncidentDowntimeHigh,
         charts: [TimeSeriesChartTypes.ApDisconnectionCountChart],
         minGranularity: 'PT180S'

@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                                     from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                                from '@acx-ui/analytics/utils'
-import { Provider, store }                                from '@acx-ui/store'
-import { render, screen, mockGraphqlQuery, mockDOMWidth } from '@acx-ui/test-utils'
-import { DateRange }                                      from '@acx-ui/utils'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { Provider, store }                  from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange }                        from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -47,7 +47,6 @@ const sampleNoData = {
 }
 
 describe('ConnectedClientsOverTimeWidget', () => {
-  mockDOMWidth()
 
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
