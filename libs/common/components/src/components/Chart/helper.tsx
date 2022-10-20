@@ -6,6 +6,7 @@ import {
   TooltipComponentOption
 } from 'echarts'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
+import { FormatXMLElementFn } from 'intl-messageformat'
 import { renderToString }     from 'react-dom/server'
 import {
   MessageDescriptor,
@@ -32,6 +33,17 @@ export type TooltipFormatterParams = Exclude<
   TooltipComponentFormatterCallbackParams,
   Array<unknown>
 >
+
+const defaultRickTextFormatValues: Record<
+  string,
+  FormatXMLElementFn<React.ReactNode, React.ReactNode>
+> = {
+  br: () => <br />,
+  div: content => <div>{content}</div>,
+  span: content => <span>{content}</span>,
+  b: content => <b>{content}</b>,
+  space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+}
 
 export const gridOptions = ({
   disableLegend = false,
@@ -223,13 +235,10 @@ export const stackedBarTooltipFormatter = (
   })
   const text = <FormattedMessage {...tooltipFormat}
     values={{
+      ...defaultRickTextFormatValues,
       name,
       formattedValue,
-      value: value[0],
-      br: () => <br />,
-      span: content => <span>{content}</span>,
-      b: content => <b>{content}</b>,
-      space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+      value: value[0]
     }}
   />
 
@@ -263,13 +272,9 @@ export const donutChartTooltipFormatter = (
 
   const text = <FormattedMessage {...tooltipFormat}
     values={{
+      ...defaultRickTextFormatValues,
       name, value, percent, total,
-      formattedPercent, formattedValue, formattedTotal,
-      br: () => <br />,
-      div: content => <div>{content}</div>,
-      span: content => <span>{content}</span>,
-      b: content => <b>{content}</b>,
-      space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+      formattedPercent, formattedValue, formattedTotal
     }}
   />
 
