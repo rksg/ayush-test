@@ -40,7 +40,7 @@ export type ChartFormatterFn = (
   index?: number
 ) => string
 
-const defaultRickTextFormatValues: Record<
+const defaultRichTextFormatValues: Record<
   string,
   FormatXMLElementFn<React.ReactNode, React.ReactNode>
 > = {
@@ -203,7 +203,7 @@ export const timeSeriesTooltipFormatter = (
             let text = <FormattedMessage
               defaultMessage='{name}: <b>{value}</b>'
               values={{
-                ...defaultRickTextFormatValues,
+                ...defaultRichTextFormatValues,
                 name: data.name,
                 value: formatter(value, undefined, dataIndex)
               }}
@@ -247,7 +247,7 @@ export const stackedBarTooltipFormatter = (
   })
   const text = <FormattedMessage {...tooltipFormat}
     values={{
-      ...defaultRickTextFormatValues,
+      ...defaultRichTextFormatValues,
       name,
       formattedValue,
       value: value[0]
@@ -284,7 +284,7 @@ export const donutChartTooltipFormatter = (
 
   const text = <FormattedMessage {...tooltipFormat}
     values={{
-      ...defaultRickTextFormatValues,
+      ...defaultRichTextFormatValues,
       name, value, percent, total,
       formattedPercent, formattedValue, formattedTotal
     }}
