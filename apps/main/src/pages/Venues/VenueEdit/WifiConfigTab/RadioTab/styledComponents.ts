@@ -58,61 +58,45 @@ div.ant-checkbox-group {
   }
 }
 `
+const channelWidth = '26px'
+const channelMarginRight = '4px'
 
 export const CheckboxGroup = styled(Checkbox.Group)`
   .ant-checkbox-wrapper {
     position: relative;
     font-size: 10px;
-    width: 26px;
-    height: 16px;
-    margin-right: 4px;
+    width: ${channelWidth};
+    height: 0;
+    margin-right: ${channelMarginRight};
+    border-bottom: 16px solid var(--acx-neutrals-30);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
     .channels > span + span {
       padding-left: 6px;
     }
     > span {
       width: 100%;  
       padding: 0;
-    }  
-    > span:first-child {
-      display: none;
-    }
-    > span:last-child {
-      position: relative;
-      text-align: center;
-      font-size: var(--acx-body-5-font-size);
-      line-height: var(--acx-body-5-line-height);
-      color: var(--acx-primary-white);
-      user-select: none;
-    }
-    &::before {
-      content: '';
-      display: inline-block;
-      position: absolute;
-      top: -2px;
-      left: 2px;
-      width: 21px;
-      height: 17px;
-      -webkit-transform: perspective(20px) rotateX(25deg);
-      background: var(--acx-neutrals-30);
-      border: 1px solid var(--acx-neutrals-30);
+      &:first-child {
+        display: none;
+      }
+      &:last-child {
+        position: relative;
+        text-align: center;
+        font-size: var(--acx-body-5-font-size);
+        line-height: var(--acx-body-5-line-height);
+        color: var(--acx-primary-white);
+        user-select: none;
+      }
     }
     &:hover {
-      &::before {
-        background: var(--acx-neutrals-40);
-        border: 1px solid var(--acx-neutrals-40);
-      }
+      border-bottom-color: var(--acx-neutrals-40);
     }
 
     &.ant-checkbox-wrapper-checked {
-      &:before {
-        border-color: var(--acx-accents-blue-50);
-        background: var(--acx-accents-blue-50);
-      }
+      border-bottom-color: var(--acx-accents-blue-50);
       &:hover {
-        &:before {
-          border-color: var(--acx-accents-blue-60);
-          background: var(--acx-accents-blue-60);
-        }
+        border-bottom-color: var(--acx-accents-blue-60);
       }
     }
 
@@ -121,40 +105,26 @@ export const CheckboxGroup = styled(Checkbox.Group)`
         color: var(--acx-neutrals-30);
       }
       &:before {
-        background: var(--acx-primary-white);
+        content: '';
+        display: inline-block;
+        position: absolute;
+        border-bottom: 14px solid var(--acx-primary-white);
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        width: calc(100% + 6px);
+        left: -3px;
+        top: 1px;
       }
     }
   }
-  &.group-2 {
-    .ant-checkbox-wrapper {
-      width: 56px;
-      &::before {
-        width: 50px;
-        top: -1px;
-        -webkit-transform: perspective(20px) rotateX(10deg);
-      }
-    }
+  &.group-2 .ant-checkbox-wrapper {
+    width: calc(${channelWidth}*2 + ${channelMarginRight});
   }
-
-  &.group-4 {
-    .ant-checkbox-wrapper {
-      width: 116px;
-      &::before {
-        width: 112px;
-        top: -1px;
-        -webkit-transform: perspective(20px) rotateX(4deg);
-      }
-    }
+  &.group-4 .ant-checkbox-wrapper {
+    width: calc(${channelWidth}*4 + ${channelMarginRight}*3);
   }
-  &.group-8 {
-    .ant-checkbox-wrapper {
-      width: 234px;
-      &::before {
-        width: 230px;
-        top: -1px;
-        -webkit-transform: perspective(20px) rotateX(2deg);
-      }
-    }
+  &.group-8 .ant-checkbox-wrapper {
+    width: calc(${channelWidth}*8 + ${channelMarginRight}*7);
   }
 }
 `
