@@ -18,7 +18,7 @@ export const generateDefaultNetworkVenue = (venueId: string, networkId:string) =
 
 export const generateHexKey = (keyLength: number):string => {
   let hexKey = ''
-  const crypto = window.crypto || window.Crypto
+  const crypto = window.crypto
   const array = new Uint32Array(1)
   while (hexKey.length < keyLength) {
     hexKey += crypto.getRandomValues(array)[0].toString(16).substring(2)
