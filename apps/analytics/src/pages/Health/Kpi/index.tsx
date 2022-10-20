@@ -13,30 +13,34 @@ import { GridCol, GridRow } from '@acx-ui/components'
 
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
-import { KpiRow }            from '../styledComponents'
-import BarChart              from '../Threshold/BarChart'
-import Histogram             from '../Threshold/Histogram'
+import {
+  useFetchThresholdPermissionQuery,
+  useSaveThresholdMutation
+} from '../services'
+import { KpiRow } from '../styledComponents'
+import BarChart   from '../Threshold/BarChart'
+import Histogram  from '../Threshold/Histogram'
 
 import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
-export type KpiThresholdType = {
+export interface KpiThresholdType {
   timeToConnect: number;
   rss: number;
   clientThroughput: number;
   apCapacity: number;
   apServiceUptime: number;
-  apSzLatency: number;
+  apToSZLatency: number;
   switchPoeUtilization: number;
 }
-const getDefaultThreshold = () => ({
+const getDefaultThreshold: KpiThresholdType = {
   timeToConnect: 2000,
   rss: -75,
   clientThroughput: 10000,
   apCapacity: 50,
   apServiceUptime: 0.995,
-  apSzLatency: 200,
+  apToSZLatency: 200,
   switchPoeUtilization: 0.8
-})
+}
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
   const healthFilter = useContext(HealthPageContext)
@@ -44,6 +48,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
   const { filters } = useAnalyticsFilter()
 
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(getDefaultThreshold)
+  const thresholdPermission = useFetchThresholdPermissionQuery({ path: filters.path })
+  const [ triggerSave ] = useSaveThresholdMutation()
 
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
@@ -57,12 +63,23 @@ export default function KpiSection (props: { tab: HealthTab }) {
   )
 
   useEffect(() => { connect('timeSeriesGroup') }, [])
+
+  const canSave =
+  thresholdPermission && thresholdPermission.data && thresholdPermission.data.mutationAllowed
+
+  const onReset = (kpi: keyof KpiThresholdType) => {
+    // todo, use data base fetching
+    const defaultConfig = getDefaultThreshold[kpi]
+    return defaultConfig
+  }
+
+  const onApply = (kpi: keyof KpiThresholdType) => {
+    return (value: number) => triggerSave({ path: filters.path, name: kpi, value }).unwrap()
+  }
+
   return (
     <>
       {kpis.map((kpi) => {
-        const onReset = (event: MouseEvent) => {
-          event.preventDefault()
-        }
         return (
           <KpiRow key={kpi + defaultZoom}>
             <GridCol col={{ span: 16 }}>
@@ -93,7 +110,9 @@ export default function KpiSection (props: { tab: HealthTab }) {
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
                   setKpiThreshold={setKpiThreshold}
                   thresholds={kpiThreshold}
-                  onReset={onReset}
+                  onReset={() => onReset(kpi as keyof KpiThresholdType)}
+                  onApply={() => onApply(kpi as keyof KpiThresholdType)}
+                  canSave={canSave}
                 />
               ) : (
                 <BarChart filters={filters}

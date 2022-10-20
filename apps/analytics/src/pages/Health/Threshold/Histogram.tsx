@@ -48,14 +48,19 @@ function Histogram ({
   kpi,
   threshold,
   setKpiThreshold,
-  thresholds
+  thresholds,
+  onReset,
+  onApply,
+  canSave
 }: {
   filters: AnalyticsFilter;
   kpi: string;
   threshold: string;
   setKpiThreshold: CallableFunction;
   thresholds: KpiThresholdType;
-  onReset?: CallableFunction
+  onReset?: CallableFunction,
+  onApply?: CallableFunction,
+  canSave?: boolean
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
@@ -121,6 +126,15 @@ function Histogram ({
     })
     : 0
 
+  const onButtonReset = () => {
+    const defaultConfig: unknown = onReset && onReset()
+    setSliderValue(splits.indexOf(defaultConfig) + 0.5)
+    setThresholdValue(defaultConfig as string)
+    setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
+  }
+
+  const onButtonApply = () => onApply && onApply(threshold)
+
   return (
     <Loader states={[queryResults]} key={kpi}>
       <GridRow>
@@ -153,6 +167,9 @@ function Histogram ({
             percent={percent}
             unit={histogram?.xUnit}
             shortXFormat={histogram?.shortXFormat}
+            onReset={onButtonReset}
+            onApply={onButtonApply}
+            canSave={canSave}
           />
         </GridCol>
       </GridRow>
