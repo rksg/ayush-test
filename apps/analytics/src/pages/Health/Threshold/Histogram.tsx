@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState, useCallback } from 'react'
 
 import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
@@ -64,7 +64,7 @@ function Histogram ({
     splits.indexOf(thresholdValue) + 0.5
   )
 
-  const onSliderChange = (newValue: number) => {
+  const onSliderChange = useCallback((newValue: number) => {
     if (
       newValue === 0 ||
       newValue === splits.length + 0.5 ||
@@ -74,7 +74,7 @@ function Histogram ({
     setSliderValue(newValue)
     setThresholdValue(histogram?.splits[newValue - 0.5])
     setKpiThreshold({ ...thresholds, [kpi]: histogram?.splits[newValue - 0.5] })
-  }
+  },[kpi, histogram?.splits, setKpiThreshold, thresholds, splits.length])
   const queryResults = useKpiHistogramQuery(
     { ...filters, kpi, threshold: histogram?.initialThreshold },
     {

@@ -41,11 +41,6 @@ flex-direction: column;
 -webkit-box-pack: start;
 justify-content: flex-start;
 `
-export const HistogramInfo = styled.span`
-  margin: 2.5px 10px;
-  font-size: var(--acx-subtitle-6-font-size);
-  color: var(--acx-neutrals-40);
-`
 export const HistogramBoldContent = styled.span`
   color: var(--acx-primary-black);
   padding-left: 2.5px;

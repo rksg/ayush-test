@@ -110,7 +110,7 @@ describe('Threshold Histogram chart', () => {
     await screen.findByText('(seconds)')
     expect( screen.queryByText('2000')).toBeNull()
   })
-  it('should handle slider onchange', async () => {
+  it('should handle slider onchange and return when value is positive whole number', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
