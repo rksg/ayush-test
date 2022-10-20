@@ -1,8 +1,9 @@
+import { useRef } from 'react'
+
 import { LabelFormatterCallback, RegisteredSeriesOption }           from 'echarts'
 import { TooltipComponentFormatterCallbackParams }                  from 'echarts'
 import ReactECharts                                                 from 'echarts-for-react'
 import { CallbackDataParams, GridOption, TooltipFormatterCallback } from 'echarts/types/dist/shared'
-
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 
@@ -15,6 +16,7 @@ import {
   tooltipOptions,
   EventParams
 } from '../Chart/helper'
+import { useLegendSelectChanged } from '../Chart/useLegendSelectChanged'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
@@ -74,6 +76,9 @@ export function BarChart<TChartData extends BarChartData>
   onClick,
   ...props
 }: BarChartProps<TChartData>) {
+  const eChartsRef = useRef<ReactECharts>(null)
+  useLegendSelectChanged(eChartsRef)
+
   const option: EChartsOption = {
     animation: false,
     grid: { ...gridOptions(), ...gridProps },
@@ -129,6 +134,7 @@ export function BarChart<TChartData extends BarChartData>
 
   return (
     <ReactECharts
+      ref={eChartsRef}
       {...props}
       opts={{ renderer: 'svg' }}
       option={option}
