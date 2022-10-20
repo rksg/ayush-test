@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement } from 'react'
 
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
@@ -64,19 +64,14 @@ export const Header = ({ data, shouldQuerySwitch, withIncidents, ...props }: Hea
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
   const { networkFilter: { path } } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
-  const title = useMemo(() => (filter || path.length > 1)
-    ? (data.name || name) // ap/switch name from data || venue name from filter
-    : props.title,
-  [data.name, filter, name, path.length, props.title]) // displays Incidents at root level
-  const selectedRange = {
-    startDate: moment(startDate),
-    endDate: moment(endDate)
-  }
   return (
     <PageHeader
       {...props}
       subTitle={useSubTitle(data.subTitle, type)}
-      title={title}
+      title={filter || path.length > 1 ?
+        (data.name || name) // ap/switch name from data || venue name from filter
+        : props.title // displays Incidents at root level
+      }
       extra={[
         <NetworkFilter
           key='network-filter'
@@ -85,7 +80,10 @@ export const Header = ({ data, shouldQuerySwitch, withIncidents, ...props }: Hea
         />,
         <RangePicker
           key='range-picker'
-          selectedRange={selectedRange}
+          selectedRange={{
+            startDate: moment(startDate),
+            endDate: moment(endDate)
+          }}
           enableDates={dateRangeForLast(3, 'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
