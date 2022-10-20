@@ -39,7 +39,7 @@ function VenueFilter () {
           value={value}
           options={queryResults.data}
           onApply={(selectedOptions: unknown) =>
-            setNodeFilter(selectedOptions as NetworkPath | NetworkPath[])
+            setNodeFilter(selectedOptions as NetworkPath[])
           }
           placement='bottomRight'
         />
