@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-
 import { Space, Tooltip, Form }               from 'antd'
 import { intersection, findIndex, map, uniq } from 'lodash'
 import { useIntl }                            from 'react-intl'
@@ -17,7 +16,14 @@ interface channelGroupOption {
   selected: boolean
 }
 
+enum ChannelTypeEnum {
+  dfs = 'dfs',
+  lower5G = 'lower5G',
+  upper5G = 'upper5G',
+}
+
 export function RadioSettingsChannels (props: {
+  formName: string[],
   groupSize: number,
   channelList: RadioChannel[],
   displayBarSettings: string[],
@@ -31,7 +37,7 @@ export function RadioSettingsChannels (props: {
   }
 }) {
   const { $t } = useIntl()
-  // const form = Form.useFormInstance()
+  const form = Form.useFormInstance()
   // TODO: rbacService
   const isAllowUpdate = true // rbacService.isRoleAllowed('updateVenueRadioCustomization') || rbacService.isRoleAllowed('UpdateApRadioButton')
   const disabled = props?.disabled || props?.readonly || !isAllowUpdate
@@ -41,90 +47,92 @@ export function RadioSettingsChannels (props: {
   const { dfsChannels, lower5GChannels, upper5GChannels } = props.channelBars
   const channelValueList = props.channelList?.map((channelItem: RadioChannel) => channelItem.value)
 
-  const dfsAvlBarChannels = getAvaliableBarChannels(dfsChannels, channelValueList)
-  const lower5GAvlBarChannels = getAvaliableBarChannels(lower5GChannels, channelValueList)
-  const upper5GAvlBarChannels = getAvaliableBarChannels(upper5GChannels, channelValueList)
+  const avaliableBarChannels = {
+    dfs: getAvaliableBarChannels(dfsChannels, channelValueList),
+    lower5G: getAvaliableBarChannels(lower5GChannels, channelValueList),
+    upper5G: getAvaliableBarChannels(upper5GChannels, channelValueList)
+  }
 
   const dfsBarPosition = showDfsBar
-    ? calcBarPosition(channelValueList, dfsChannels, dfsAvlBarChannels, 'DfsChannels') : null
+    ? calcBarPosition(channelValueList, dfsChannels, avaliableBarChannels.dfs, 'DfsChannels') : null
   const lower5GBarPosition = calcBarPosition(
-    channelValueList, lower5GChannels, lower5GAvlBarChannels, 'Lower5GChannels')
+    channelValueList, lower5GChannels, avaliableBarChannels.lower5G, 'Lower5GChannels')
   const upper5GBarPosition = calcBarPosition(
-    channelValueList, upper5GChannels, upper5GAvlBarChannels, 'Upper5GChannels')
+    channelValueList, upper5GChannels, avaliableBarChannels.upper5G, 'Upper5GChannels')
 
   const channelGroupListArray = getChannelGroupListArray(props.channelList, props.groupSize)
   const channelGroupValueList = channelGroupListArray.map(g=>g?.flatMap(c => c.value)) as string[][]
   const [channelGroupList, setChannelGroupList]
     = useState(getChannelGroupList(channelGroupListArray as RadioChannel[][]))
 
-  // TODO:
-  const selectedValue = getSelectedValues(channelGroupValueList, props?.checkedValues) as string[]
-
-  // TODO: can delete if not necessary
-  const dfsChannelsGroupIdx = findBarChannelGroupIdx(dfsAvlBarChannels, channelGroupList)
-  const lower5GChannelsGroupIdx = findBarChannelGroupIdx(lower5GAvlBarChannels, channelGroupList)
-  const upper5GdfsChannelsGroupIdx = findBarChannelGroupIdx(upper5GAvlBarChannels, channelGroupList)
-
-  // TODO:
-  const handleSelectGroupButton = (barChannelsKey: string) => {
-    // console.log('handleSelectGroupButton: ', barChannelsKey)
+  const handleClickBarButton = (barType: ChannelTypeEnum) => {
+    const oldSelected = (form.getFieldValue(props.formName) ?? []) as string[]
+    const hasAnySelected = intersection(avaliableBarChannels[barType], oldSelected).length > 0
+    const newSelected = hasAnySelected
+      ? oldSelected.filter(item => !avaliableBarChannels[barType].includes(item))
+      : oldSelected.concat(avaliableBarChannels[barType])
+    form.setFieldValue(props.formName, uniq(newSelected))
   }
-  // TODO:
-  const handleSelectGroupChannels = (checkedValues: any) => {
-    const selectedValue = getSelectedValues(channelGroupValueList, checkedValues)
-    // form.setFieldValue(['radioParams24G', 'allowedChannels'], selectedValue )
+
+  const handleClickGroupChannels = async (checkedValues: any) => {
+    const selectedValue = await getSelectedValues(channelGroupValueList, checkedValues)
+    form.setFieldValue(props.formName, selectedValue)
   }
 
   return (<>
     {showLowerUpper5GBar && <div>
-      {lower5GAvlBarChannels.length > 0 && <Button5G
+      {avaliableBarChannels.lower5G?.length > 0 && <Button5G
         disabled={disabled}
-        onClick={() => handleSelectGroupButton('lower5GChannels')}
+        onClick={() => handleClickBarButton(ChannelTypeEnum.lower5G)}
         style={{ width: lower5GBarPosition.width }}
       >
         {$t({ defaultMessage: 'Lower 5G' })}
       </Button5G>}
-      {upper5GAvlBarChannels.length > 0 && <Button5G
+      {avaliableBarChannels.upper5G?.length > 0 && <Button5G
         disabled={disabled}
-        onClick={() => handleSelectGroupButton('upper5GChannels')}
+        onClick={() => handleClickBarButton(ChannelTypeEnum.upper5G)}
         style={{ width: upper5GBarPosition.width }}
       >
         {$t({ defaultMessage: 'Upper 5G' })}
       </Button5G>}
     </div>}
-    { showDfsBar && dfsAvlBarChannels.length > 0 && <ButtonDFS
+    { showDfsBar && avaliableBarChannels.dfs?.length > 0 && <ButtonDFS
       disabled={disabled}
-      onClick={() => handleSelectGroupButton('dfsChannels')}
+      onClick={() => handleClickBarButton(ChannelTypeEnum.dfs)}
       style={{ width: dfsBarPosition?.width, left: dfsBarPosition?.left }}
     >
       {$t({ defaultMessage: 'DFS' })}
     </ButtonDFS> }
     <Space style={{ display: 'flex' }}>
-      <CheckboxGroup
-        className={props.groupSize ? `group-${props.groupSize}` : ''}
-        disabled={disabled}
-        onChange={handleSelectGroupChannels}
-        options={channelGroupList?.map((group: channelGroupOption) => ({
-          label: <Tooltip
-            title={props.disabled
-              ? ''
-              : (group.selected
-                ? $t({ defaultMessage: 'Disable this channel' })
-                : $t({ defaultMessage: 'Enable this channel' }))
-            }
-            className='channels'
-          >{
-              group?.channels.map((item: RadioChannel) => <span>{ item.value }</span>)
-            }</Tooltip>,
-          value: group?.channels?.[0].value
-        }))}
-        // TODO:
-        defaultValue={selectedValue}
+      <Form.Item
+        name={props.formName}
+        children={
+          <CheckboxGroup
+            className={props.groupSize ? `group-${props.groupSize}` : ''}
+            disabled={disabled}
+            onChange={handleClickGroupChannels}
+            options={channelGroupList?.map((group: channelGroupOption) => ({
+              label: <Tooltip
+                title={props.disabled
+                  ? ''
+                  : (group.selected
+                    ? $t({ defaultMessage: 'Disable this channel' })
+                    : $t({ defaultMessage: 'Enable this channel' }))
+                }
+                className='channels'
+              >{
+                  group?.channels.map((item: RadioChannel) => <span>{ item.value }</span>)
+                }</Tooltip>,
+              value: group?.channels?.[0].value
+            }))}
+          />
+        }
       />
+
     </Space>
   </>)
 
-  function splitArray (arr: RadioChannel[], groupSize: number) {
+  function transformGroupArray (arr: RadioChannel[], groupSize: number) {
     return map(arr, (item, index) =>
       index % groupSize === 0 ? arr.slice(index, index + groupSize) : null
     ).filter(item => item)
@@ -158,27 +166,6 @@ export function RadioSettingsChannels (props: {
       : { left: 0, width: 0 }
   }
 
-  function findBarChannelGroupIdx (
-    avaliableBarChannels: string[],
-    channelGroupList: channelGroupOption[]) {
-    if (!avaliableBarChannels.length) {
-      return []
-    }
-
-    let barChannelGroupIdx: number[] = []
-    channelGroupList.forEach((channelGroup, idx) => {
-      const barChannelGroup = channelGroup.channels.some((ch) => {
-        return avaliableBarChannels.includes(ch.value)
-      })
-
-      if (barChannelGroup) {
-        barChannelGroupIdx.push(idx)
-      }
-    })
-
-    return barChannelGroupIdx
-  }
-
   function getChannelGroupList (channelGroupListArray: RadioChannel[][]) {
     return channelGroupListArray.map((channelGroup: RadioChannel[]) => {
       let selected = false
@@ -197,7 +184,7 @@ export function RadioSettingsChannels (props: {
 
   function getChannelGroupListArray (channelList: RadioChannel[], groupSize: number) {
     if (groupSize !== 4) {
-      return splitArray(channelList, groupSize)
+      return transformGroupArray(channelList, groupSize)
     } else { // channel width is 80MHz
       const result = []
       const len = channelList.length
@@ -226,7 +213,7 @@ export function RadioSettingsChannels (props: {
     }
   }
 
-  function getSelectedValues (groupValueList: string[][], selectedValues: string[]) {
+  async function getSelectedValues (groupValueList: string[][], selectedValues: string[]) {
     const values = selectedValues.map((value:string) =>
       groupValueList.filter(list => list?.includes(value))
     ).flat().flat()

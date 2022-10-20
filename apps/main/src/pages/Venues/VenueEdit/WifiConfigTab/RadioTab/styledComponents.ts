@@ -100,7 +100,8 @@ export const CheckboxGroup = styled(Checkbox.Group)`
       }
     }
 
-    &.ant-checkbox-wrapper-disabled {
+    &.ant-checkbox-wrapper-disabled:not(.ant-checkbox-wrapper-checked) {
+      border-bottom-color: var(--acx-neutrals-30);
       > span:last-child {
         color: var(--acx-neutrals-30);
       }
