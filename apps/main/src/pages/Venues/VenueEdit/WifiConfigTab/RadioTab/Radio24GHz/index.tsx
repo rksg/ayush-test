@@ -23,7 +23,7 @@ export function Radio24GHz () {
   const { $t } = useIntl()
 
   const { tenantId, venueId } = useParams()
-  const [validChannels, setValidChannels] = useState<string[]>([''])
+  const [defaultChannels, setDefaultChannels] = useState<string[]>([''])
 
   const [
     channelMethod,
@@ -33,24 +33,24 @@ export function Radio24GHz () {
     useWatch<string>(['radioParams24G', 'channelBandwidth'])
   ]
 
-  const { data: validChannelsData } =
+  const { data: defaultChannelsData } =
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
 
 
   useEffect(() => {
-    if(validChannelsData){
-      setValidChannels(validChannelsData['2.4GChannels']['20MHz'])
+    if(defaultChannelsData){
+      setDefaultChannels(defaultChannelsData['2.4GChannels']['20MHz'])
     }
 
-    if(validChannelsData && channelBandwidth){
+    if(defaultChannelsData && channelBandwidth){
       const channelType = channelBandwidth === 'AUTO' ?
         channelBandwidth.toLowerCase() : channelBandwidth
-      setValidChannels(
-        validChannelsData['2.4GChannels'][channelType]
+      setDefaultChannels(
+        defaultChannelsData['2.4GChannels'][channelType]
       )
-      console.log(validChannels)
+      console.log(defaultChannels)
     }
-  }, [validChannelsData, channelBandwidth])
+  }, [defaultChannelsData, channelBandwidth])
 
   function formatter (value: any) {
     return `${value}%`
@@ -111,8 +111,8 @@ export function Radio24GHz () {
         <Form.Item
           name={['radioParams24G', 'channelBandwidth']}>
           <Select
-            options={validChannelsData &&
-              Object.keys(validChannelsData['2.4GChannels'])
+            options={defaultChannelsData &&
+              Object.keys(defaultChannelsData['2.4GChannels'])
                 .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
             defaultValue={'auto'}
           />
@@ -137,15 +137,17 @@ export function Radio24GHz () {
           $t({ defaultMessage: 'Selected channels will be available for radio broadcasting in this venue. Hover to see overlapping channels' })
         }
       </div>
-      <RadioSettingsChannels
-        formName={['radioParams24G', 'allowedChannels']}
-        groupSize={1}
-        channelList={validChannels.map(item =>
-          ({ value: item, selected: false }))}
-        displayBarSettings={[]}
-        channelBars={channelBars}
-        disabled={false}
-      />
+      {defaultChannels &&
+        <RadioSettingsChannels
+          formName={['radioParams24G', 'allowedChannels']}
+          groupSize={1}
+          channelList={defaultChannels.map(item =>
+            ({ value: item, selected: false }))}
+          displayBarSettings={[]}
+          channelBars={channelBars}
+          disabled={false}
+        />
+      }
     </Space>
   )
 }

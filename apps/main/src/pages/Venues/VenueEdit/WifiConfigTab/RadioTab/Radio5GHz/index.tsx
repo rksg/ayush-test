@@ -165,28 +165,32 @@ export function Radio5GHz () {
 
       <div>
         <div>{$t({ defaultMessage: 'Indoor Aps' })}</div>
-        <RadioSettingsChannels
-          formName={['radioParams50G', 'allowedIndoorChannels']}
-          groupSize={groupSize}
-          channelList={defaultIndoorChannels.map(item =>
-            ({ value: item, selected: false }))}
-          displayBarSettings={['5G', 'DFS']}
-          channelBars={channelBars}
-          disabled={false}
-        />
+        { defaultIndoorChannels &&
+          <RadioSettingsChannels
+            formName={['radioParams50G', 'allowedIndoorChannels']}
+            groupSize={groupSize}
+            channelList={defaultIndoorChannels.map(item =>
+              ({ value: item, selected: false }))}
+            displayBarSettings={['5G', 'DFS']}
+            channelBars={channelBars}
+            disabled={false}
+          />
+        }
       </div>
 
       <div>
         <div>{$t({ defaultMessage: 'Outdoor Aps' })}</div>
-        <RadioSettingsChannels
-          formName={['radioParams50G', 'allowedOutdoorChannels']}
-          groupSize={groupSize}
-          channelList={defaultOutdoorChannels.map(item =>
-            ({ value: item, selected: false }))}
-          displayBarSettings={['5G', 'DFS']}
-          channelBars={channelBars}
-          disabled={false}
-        />
+        {defaultOutdoorChannels &&
+          <RadioSettingsChannels
+            formName={['radioParams50G', 'allowedOutdoorChannels']}
+            groupSize={groupSize}
+            channelList={defaultOutdoorChannels.map(item =>
+              ({ value: item, selected: false }))}
+            displayBarSettings={['5G', 'DFS']}
+            channelBars={channelBars}
+            disabled={false}
+          />
+        }
         <Form.Item
           name={['radioParams50G', 'combineChannels']}
           initialValue={false}

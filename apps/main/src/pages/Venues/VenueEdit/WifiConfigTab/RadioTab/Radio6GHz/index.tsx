@@ -152,15 +152,17 @@ export function Radio6GHz () {
         }
       </div>
       <div>
-        <RadioSettingsChannels
-          formName={['radioParams6G', 'allowedChannels']}
-          groupSize={groupSize}
-          channelList={defaultChannels.map(item =>
-            ({ value: item, selected: false }))}
-          displayBarSettings={[]}
-          channelBars={channelBars}
-          disabled={false}
-        />
+        {defaultChannels &&
+          <RadioSettingsChannels
+            formName={['radioParams6G', 'allowedChannels']}
+            groupSize={groupSize}
+            channelList={defaultChannels.map(item =>
+              ({ value: item, selected: false }))}
+            displayBarSettings={[]}
+            channelBars={channelBars}
+            disabled={false}
+          />
+        }
         <Form.Item
           name={['radioParams6G', 'bssMinRate6G']}
           initialValue={'HE_MCS_0'}

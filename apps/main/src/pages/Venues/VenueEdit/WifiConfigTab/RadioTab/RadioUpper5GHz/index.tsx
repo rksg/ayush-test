@@ -199,28 +199,32 @@ export function RadioUpper5GHz () {
 
       <div>
         <div>{$t({ defaultMessage: 'Indoor Aps' })}</div>
-        <RadioSettingsChannels
-          formName={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedIndoorChannels']}
-          groupSize={groupSize}
-          channelList={defaultIndoorChannels.map(item =>
-            ({ value: item, selected: false }))}
-          displayBarSettings={['5G', 'DFS']}
-          channelBars={channelBars}
-          disabled={inheritSettings}
-        />
+        {defaultIndoorChannels &&
+          <RadioSettingsChannels
+            formName={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedIndoorChannels']}
+            groupSize={groupSize}
+            channelList={defaultIndoorChannels.map(item =>
+              ({ value: item, selected: false }))}
+            displayBarSettings={['5G', 'DFS']}
+            channelBars={channelBars}
+            disabled={inheritSettings}
+          />
+        }
       </div>
 
       <div>
         <div>{$t({ defaultMessage: 'Outdoor Aps' })}</div>
-        <RadioSettingsChannels
-          formName={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedOutdoorChannels']}
-          groupSize={groupSize}
-          channelList={defaultOutdoorChannels.map(item =>
-            ({ value: item, selected: false }))}
-          displayBarSettings={['5G', 'DFS']}
-          channelBars={channelBars}
-          disabled={inheritSettings}
-        />
+        {defaultOutdoorChannels &&
+          <RadioSettingsChannels
+            formName={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedOutdoorChannels']}
+            groupSize={groupSize}
+            channelList={defaultOutdoorChannels.map(item =>
+              ({ value: item, selected: false }))}
+            displayBarSettings={['5G', 'DFS']}
+            channelBars={channelBars}
+            disabled={inheritSettings}
+          />
+        }
         <Form.Item
           name={['radioParamsDual5G', 'radioParamsUpper5G', 'combineChannels']}
           initialValue={false}
