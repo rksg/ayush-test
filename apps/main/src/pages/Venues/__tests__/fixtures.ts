@@ -99,30 +99,6 @@ export const autocompleteResult = {
         'route'
       ]
     },
-    // {
-    //   long_name: 'Sunnyvale',
-    //   short_name: 'Sunnyvale',
-    //   types: [
-    //     'locality',
-    //     'political'
-    //   ]
-    // },
-    // {
-    //   long_name: 'Santa Clara County',
-    //   short_name: 'Santa Clara County',
-    //   types: [
-    //     'administrative_area_level_2',
-    //     'political'
-    //   ]
-    // },
-    // {
-    //   long_name: 'California',
-    //   short_name: 'CA',
-    //   types: [
-    //     'administrative_area_level_1',
-    //     'political'
-    //   ]
-    // },
     {
       long_name: 'United States',
       short_name: 'US',
@@ -519,6 +495,38 @@ export const networkDeepList = {
 }
 
 export const venueApsList = { fields: ['meshRole','serialNumber'],totalCount: 0,page: 1,data: [] }
+
+export const venueDosProtection = {
+  enabled: true,
+  blockingPeriod: 50,
+  failThreshold: 6,
+  checkPeriod: 30
+}
+
+export const venueRougeAp = {
+  enabled: true,
+  reportThreshold: 0,
+  roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
+export const venueRoguePolicy = [{
+  venues: [{ id: '3db73a30cd06490aaf4bca01a1eb8894',name: 'My-Venue' }],
+  name: 'Default profile',
+  rules: [
+    { name: 'Same Network Rule',type: 'SameNetworkRule',classification: 'Malicious',priority: 1 },
+    { name: 'Mac Spoofing Rule',type: 'MacSpoofingRule',classification: 'Malicious',priority: 2 },
+    { name: 'SSID Spoofing Rule',type: 'SsidSpoofingRule',classification: 'Malicious',priority: 3 },
+    { name: 'RTS Abuse Rule',type: 'RTSAbuseRule',classification: 'Malicious',priority: 4 },
+    { name: 'CTS Abuse Rule',type: 'CTSAbuseRule',classification: 'Malicious',priority: 5 },
+    { name: 'Deauth Flood Rule',type: 'DeauthFloodRule',classification: 'Malicious',priority: 6 },
+    { name: 'Disassoc Flood Rule',type: 'DisassocFloodRule',
+      classification: 'Malicious',priority: 7 },
+    { name: 'Excessive Power Rule',type: 'ExcessivePowerRule',
+      classification: 'Malicious',priority: 8 },
+    { name: 'Null SSID Rule',type: 'NullSSIDRule',classification: 'Malicious',priority: 9 },
+    { name: 'Adhoc',type: 'AdhocRule',classification: 'Unclassified',priority: 10 }],
+  id: '9700ca95e4be4a22857f0e4b621a685f' }
+]
 export const configProfiles = [{
   id: '771f6e6b21af43fa8879e10170114fc4',
   name: 'profile-cli01',

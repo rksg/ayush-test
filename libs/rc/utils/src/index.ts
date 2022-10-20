@@ -8,6 +8,7 @@ export * from './onSocketActivityChanged'
 export * from './useTableQuery'
 export * from './validator'
 
+export * from './network.utils'
 export * from './schedule.utils'
 export * from './apGroupDialog.utils'
 
@@ -20,6 +21,8 @@ export * from './models/OpenWlanAdvancedCustomization'
 export * from './models/AAAWlanAdvancedCustomization'
 export * from './models/DpskWlanAdvancedCustomization'
 export * from './models/PskWlanAdvancedCustomization'
+export * from './models/VenueRogueAp'
+export * from './models/RogueClassificationPolicy'
 
 export * from './types/user'
 export * from './types/venue'
@@ -29,4 +32,3 @@ export * from './pipes/networkPipes'
 export * from './pipes/apPipes'
 export * from './pipes/commonPipes'
 
-export * from './networkService'

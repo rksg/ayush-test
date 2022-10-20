@@ -5,7 +5,6 @@ import { fakeIncidentTtc }    from '@acx-ui/analytics/utils'
 import { Provider, store }    from '@acx-ui/store'
 import {
   screen,
-  mockDOMWidth,
   mockGraphqlQuery,
   render,
   waitForElementToBeRemoved
@@ -45,7 +44,6 @@ describe('aggregateTtc', () => {
 })
 
 describe('TtcFailureChart', () => {
-  mockDOMWidth()
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: { time, data: ttcCounts } }
