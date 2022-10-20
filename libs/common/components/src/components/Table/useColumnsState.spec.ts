@@ -111,9 +111,11 @@ describe('useColumnsState', () => {
   })
 
   it('resets state to default when deselect all columns', () => {
+    const onChange = jest.fn()
     const options: Options = {
       columns,
       columnState: {
+        onChange,
         defaultValue: {
           col1: true,
           col3: true,
@@ -148,6 +150,14 @@ describe('useColumnsState', () => {
       col3: { order: 1, fixed: undefined, show: true, disable: true },
       col4: { order: 4, fixed: undefined, show: true, disable: false },
       col5: { order: 3, fixed: undefined, show: false, disable: false }
+    })
+
+    expect(onChange).toHaveBeenCalledWith({
+      col1: true,
+      col3: true,
+      col2: false,
+      col5: false,
+      col4: true
     })
   })
 })
