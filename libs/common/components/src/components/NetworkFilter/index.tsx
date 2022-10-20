@@ -30,7 +30,7 @@ export type CascaderProps = AntCascaderProps<Option> & {
 }
 
 
-export function NetworkFilterComponent (props: CascaderProps) {
+export function NetworkFilter (props: CascaderProps) {
   const { onApply, ...antProps } = props
   const { $t } = useIntl()
   const initialValues = props.defaultValue || []
@@ -96,5 +96,3 @@ export function NetworkFilterComponent (props: CascaderProps) {
     />
   }
 }
-
-export const NetworkFilter = React.memo(NetworkFilterComponent)
