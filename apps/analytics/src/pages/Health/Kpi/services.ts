@@ -22,11 +22,7 @@ interface HistogramResponse <HistogramData> {
   histogram: HistogramData
 }
 
-export type KpiPayload = AnalyticsFilter & {
-  kpi: string;
-  threshold?: string;
-  granularity?: string;
-}
+export type KpiPayload = AnalyticsFilter & { kpi: string, threshold?: string, granularity?: string }
 
 const getKPIMetric = (kpi: string, threshold?: string) : string => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
@@ -64,9 +60,8 @@ export const timeseriesApi = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: payload.granularity
-            ? payload.granularity
-            : getGranularity(payload.startDate, payload.endDate, payload.kpi)
+          granularity: payload.granularity ||
+           getGranularity(payload.startDate, payload.endDate, payload.kpi)
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
@@ -108,5 +103,47 @@ export const histogramApi = dataApi.injectEndpoints({
   })
 })
 
+interface ThresholdData {
+  value: number | null
+}
+
+interface ThresholdsApiResponse {
+  timeToConnectThreshold?: ThresholdData
+  clientThroughputThreshold?: ThresholdData
+}
+
+export type KpisHavingThreshold = 'timeToConnect' | 'clientThroughput'
+
+export type KpiThresholsPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
+
+export const getThresholdsApi = dataApi.injectEndpoints({
+  endpoints: (build) => ({
+    getKpiThresholds: build.query<
+      ThresholdsApiResponse,
+      KpiThresholsPayload
+    >({
+      query: (payload) => {
+        let kpis:KpisHavingThreshold[] = payload.kpis && payload.kpis.length ?
+          payload.kpis : ['timeToConnect'] // atleast one kpi should be there
+        const queryFields = kpis.map(kpi=>(
+          `${kpi}Threshold: KPIThreshold(name: "${kpi}", networkPath: $path) {
+          value
+        }`)).join('\n')
+        return {
+          document: gql`
+          query GetKpiThresholds($path: [HierarchyNodeInput]) {
+            ${queryFields}
+          }
+          `,
+          variables: {
+            path: payload.path
+          }
+        }
+      }
+    })
+  })
+})
+
 export const { useKpiTimeseriesQuery } = timeseriesApi
 export const { useKpiHistogramQuery } = histogramApi
+export const { useGetKpiThresholdsQuery } = getThresholdsApi

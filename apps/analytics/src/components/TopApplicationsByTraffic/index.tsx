@@ -40,8 +40,7 @@ export default function TopApplicationsByTrafficWidget ({
     {
       title: $t({ defaultMessage: 'Traffic History' }),
       dataIndex: 'trafficHistory',
-      key: 'trafficHistory',
-      width: 100
+      key: 'trafficHistory'
     },
     {
       title: $t({ defaultMessage: 'Clients' }),
