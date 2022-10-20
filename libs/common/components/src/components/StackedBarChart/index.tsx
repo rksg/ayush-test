@@ -178,6 +178,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
     tooltip: {
       ...tooltipOptions(),
       trigger: 'item',
+      position: 'top',
       formatter: stackedBarTooltipFormatter(
         dataFormatter,
         props.tooltipFormat),

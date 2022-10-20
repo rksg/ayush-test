@@ -32,7 +32,7 @@ interface DonutChartOptionalProps {
 
 const defaultProps: DonutChartOptionalProps = {
   showLegend: false,
-  animation: true,
+  animation: false,
   showLabel: false,
   showTotal: true,
   legend: 'value',
@@ -125,8 +125,7 @@ export function DonutChart ({
   }
 
   const option: EChartsOption = {
-    // animation: props.animation,
-    animation: false,
+    animation: props.animation,
     tooltip: {
       show: false
     },
