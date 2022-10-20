@@ -128,6 +128,7 @@ function processWifiTab (
         const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
         editRadioContextData?.updateExternalAntenna?.(extPayload)
       }
+      break
     case 'security':
       editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
       break

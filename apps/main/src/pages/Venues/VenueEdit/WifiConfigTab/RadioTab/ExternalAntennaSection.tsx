@@ -11,7 +11,7 @@ import { CapabilitiesApModel, ExternalAntenna }                                 
 import { useParams }                                                                                              from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../..'
-import ApModelPlaceholder   from '../../../../../assets/images/ap-model-placeholder.png'
+import ApModelPlaceholder   from '../../../../../assets/images/aps/ap-model-placeholder.png'
 
 import { ExternalAntennaForm } from './ExternalAntennaForm'
 
