@@ -23,7 +23,7 @@ export function useDashboardFilter () {
       ? JSON.parse(
         Buffer.from(search.get('dashboardVenueFilter') as string, 'base64').toString('ascii')
       )
-      : []
+      : { nodes: [] }
     const { range, startDate, endDate } = dateFilter
     return {
       filters: {
