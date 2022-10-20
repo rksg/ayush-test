@@ -1,9 +1,9 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-import { CardTitle } from '@acx-ui/components'
+import { Card } from '@acx-ui/components'
 
-export const Title = styled(CardTitle)`
+export const Title = styled(Card.Title)`
   height: unset;
 `
 
