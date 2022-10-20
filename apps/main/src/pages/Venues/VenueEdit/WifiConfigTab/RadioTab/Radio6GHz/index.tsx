@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Input, InputNumber, Select, Slider, Space } from 'antd'
-import { useIntl }                                                   from 'react-intl'
+import { Form, Input, InputNumber, Select, Slider, Space } from 'antd'
+import { useIntl }                                         from 'react-intl'
 
 import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
 import { useParams }                              from '@acx-ui/react-router-dom'
 
 import {
   channelSelectionMethodsOptions,
-  channelBandwidth6GOptions,
   txPowerAdjustmentOptions
 } from '../contents'
-import { RadioSettingsChannels }   from '../RadioSettingsChannels'
-import { FieldLabel, MultiSelect } from '../styledComponents'
+import { RadioSettingsChannels } from '../RadioSettingsChannels'
+import { FieldLabel }            from '../styledComponents'
 
 const { useWatch } = Form
 

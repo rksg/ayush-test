@@ -1,21 +1,27 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Input, InputNumber, Radio, RadioChangeEvent, Select, Slider, Space } from 'antd'
-import { useIntl }                                                                            from 'react-intl'
+import { Form, Input, InputNumber, Radio, RadioChangeEvent, Select, Slider, Space } from 'antd'
+import { useIntl }                                                                  from 'react-intl'
 
-import { Button }                                 from '@acx-ui/components'
 import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
 import { useParams }                              from '@acx-ui/react-router-dom'
 
 import {
+  ChannelBars,
   channelSelectionMethodsOptions,
-  channelBandwidth50GOptions,
+  split5GChannels,
   txPowerAdjustmentOptions
 } from '../contents'
-import { RadioSettingsChannels }   from '../RadioSettingsChannels'
-import { FieldLabel, MultiSelect } from '../styledComponents'
+import { RadioSettingsChannels } from '../RadioSettingsChannels'
+import { FieldLabel }            from '../styledComponents'
 
 const { useWatch } = Form
+
+const defaultChannelBars: ChannelBars = {
+  dfsChannels: [],
+  lower5GChannels: [],
+  upper5GChannels: []
+}
 
 export function RadioLower5GHz () {
   const { $t } = useIntl()
@@ -34,13 +40,13 @@ export function RadioLower5GHz () {
   const [inheritSettings, setInheritSettings] = useState<boolean>(false)
   const [defaultIndoorChannels, setDefaultIndoorChannels] = useState<string[]>([''])
   const [defaultOutdoorChannels, setDefaultOutdoorChannels] = useState<string[]>([''])
+  const [indoorChannelBars, setIndoorChannelBars] = useState<ChannelBars>(defaultChannelBars)
+  const [outdoorChannelBars, setOutdoorChannelBars] = useState<ChannelBars>(defaultChannelBars)
+  const [channelType, setChannelType] = useState<string>('auto')
   const [groupSize, setGroupSize] = useState<number>(1)
 
   const { data: defaultChannelsData } =
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
-
-  const channelType = channelBandwidth === 'AUTO' ?
-    channelBandwidth.toLowerCase() : channelBandwidth
 
   useEffect(() => {
     if(defaultChannelsData){
@@ -52,6 +58,9 @@ export function RadioLower5GHz () {
       )
     }
     if(defaultChannelsData && channelBandwidth){
+      setChannelType(channelBandwidth === 'AUTO' ?
+        channelBandwidth.toLowerCase() : channelBandwidth)
+
       setDefaultIndoorChannels(
         defaultChannelsData['5GLowerChannels']['indoor'][channelType]
       )
@@ -73,6 +82,30 @@ export function RadioLower5GHz () {
           setGroupSize(1)
           break
       }
+
+      const {
+        lower5GChannels: indoorLower5GChannels,
+        upper5GChannels: indoorUpper5GChannels
+      } =
+        split5GChannels(defaultChannelsData['5GLowerChannels']['indoor'][channelType])
+
+      const {
+        lower5GChannels: outdoorLower5GChannels,
+        upper5GChannels: outdoorUpper5GChannels
+      } =
+        split5GChannels(defaultChannelsData['5GLowerChannels']['outdoor'][channelType])
+
+      setIndoorChannelBars({
+        dfsChannels: defaultChannelsData['5GLowerChannels']['dfs'][channelType],
+        lower5GChannels: indoorLower5GChannels,
+        upper5GChannels: indoorUpper5GChannels
+      })
+
+      setOutdoorChannelBars({
+        dfsChannels: defaultChannelsData['5GLowerChannels']['dfs'][channelType],
+        lower5GChannels: outdoorLower5GChannels,
+        upper5GChannels: outdoorUpper5GChannels
+      })
     }
 
     if(channelInheritSettings){
@@ -87,13 +120,6 @@ export function RadioLower5GHz () {
 
   const on5GHzSettingChange = (e: RadioChangeEvent) => {
     setInheritSettings(e.target.value)
-  }
-
-  const channelBars = {
-    dfsChannels: defaultChannelsData && defaultChannelsData['5GLowerChannels']['dfs'][channelType]
-     || [],
-    lower5GChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
-    upper5GChannels: []
   }
 
   return (
@@ -206,7 +232,7 @@ export function RadioLower5GHz () {
             channelList={defaultIndoorChannels.map(item =>
               ({ value: item, selected: false }))}
             displayBarSettings={['5G', 'DFS']}
-            channelBars={channelBars}
+            channelBars={indoorChannelBars}
             disabled={inheritSettings}
           />
         }
@@ -221,7 +247,7 @@ export function RadioLower5GHz () {
             channelList={defaultOutdoorChannels.map(item =>
               ({ value: item, selected: false }))}
             displayBarSettings={['5G', 'DFS']}
-            channelBars={channelBars}
+            channelBars={outdoorChannelBars}
             disabled={inheritSettings}
           />
         }

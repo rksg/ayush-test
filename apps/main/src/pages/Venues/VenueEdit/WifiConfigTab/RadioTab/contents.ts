@@ -1,34 +1,17 @@
-
 export interface AvailableLteBandOptions {
 	value: string,
 	label: string
 }
 
+export interface ChannelBars {
+  dfsChannels: string[],
+  lower5GChannels: string[],
+  upper5GChannels: string[]
+}
+
 export const channelSelectionMethodsOptions = [
   { label: 'Channel Fly', value: 'CHANNELFLY' },
   { label: 'Background Scanning', value: 'BACKGROUND_SCANNING' }
-]
-
-export const channelBandwidth24GOptions = [
-  { label: 'Auto', value: 'AUTO' },
-  { label: '20 MHz', value: '20MHz' },
-  { label: '40 MHz', value: '40MHz' }
-]
-
-export const channelBandwidth50GOptions = [
-  { label: 'Auto', value: 'AUTO' },
-  { label: '20 MHz', value: '20MHz' },
-  { label: '40 MHz', value: '40MHz' },
-  { label: '80 MHz', value: '80MHz' },
-  { label: '160 MHz', value: '160MHz' }
-]
-
-export const channelBandwidth6GOptions = [
-  { label: 'Auto', value: 'AUTO' },
-  { label: '20 MHz', value: '20MHz' },
-  { label: '40 MHz', value: '40MHz' },
-  { label: '80 MHz', value: '80MHz' },
-  { label: '160 MHz', value: '160MHz' }
 ]
 
 export const txPowerAdjustmentOptions = [
@@ -46,3 +29,17 @@ export const txPowerAdjustmentOptions = [
   { label: '-10dB', value: '-10' },
   { label: 'Min', value: 'MIN' }
 ]
+
+export function split5GChannels (radio5GChannels: string[]) {
+  const lower5GChannels: string[] = []
+  const upper5GChannels: string[] = []
+  radio5GChannels.forEach( (ch: string) => {
+    if (parseInt(ch, 10) < 100) {
+      lower5GChannels.push(ch)
+    } else {
+      upper5GChannels.push(ch)
+    }
+  })
+
+  return { lower5GChannels, upper5GChannels }
+}
