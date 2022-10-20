@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement } from 'react'
 
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
@@ -78,7 +78,7 @@ const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => 
           (results.data?.name || name as string) // ap/switch name from data || venue name from filter
           : props.title}
       </Loader>}
-      extra={useMemo(() => [
+      extra={[
         <NetworkFilter
           key='network-filter'
           shouldQuerySwitch={shouldQuerySwitch}
@@ -95,7 +95,7 @@ const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => 
           showTimePicker
           selectionType={range}
         />
-      ], [shouldQuerySwitch, withIncidents, startDate, endDate, range])} // eslint-disable-line react-hooks/exhaustive-deps
+      ]}
     />
   </ConnectedHeaderWrapper>
 }
