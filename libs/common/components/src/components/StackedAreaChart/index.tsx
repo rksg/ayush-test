@@ -1,6 +1,7 @@
 import {
   RefCallback,
   useImperativeHandle,
+  useMemo,
   useRef
 } from 'react'
 
@@ -12,7 +13,7 @@ import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import type { TimeStampRange } from '@acx-ui/types'
 import { formatter }           from '@acx-ui/utils'
 
-import { cssStr }              from '../../theme/helper'
+import { cssStr }    from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
@@ -90,9 +91,11 @@ export function StackedAreaChart <
   const [canResetZoom, onDatazoomCallback, resetZoomCallback] =
     useDataZoom<TChartData>(eChartsRef, true, initialData, props.zoom, props.onDataZoom)
 
-  const data = tooltipTotalTitle && !isEmpty(initialData)
-    ? initialData.concat(getSeriesTotal<TChartData>(initialData, tooltipTotalTitle))
-    : initialData
+  const data = useMemo(() => {
+    return tooltipTotalTitle && !isEmpty(initialData)
+      ? initialData.concat(getSeriesTotal<TChartData>(initialData, tooltipTotalTitle))
+      : initialData
+  }, [tooltipTotalTitle, initialData])
 
   const option: EChartsOption = {
     color: props.stackColors || [
@@ -140,7 +143,7 @@ export function StackedAreaChart <
       data: datum.data.map(([time, value]) => [time, (value === null) ? 0 : value]),
       type: 'line',
       silent: true,
-      stack: 'Total',
+      stack: 'value',
       smooth: true,
       step: type === 'step' ? 'start' : false,
       symbol: 'none',
