@@ -148,7 +148,8 @@ exports[`MeshNetwork should render correctly 1`] = `
                         id="Cellular-Options"
                       >
                         <h3
-                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                          id="cellular-options"
                         >
                           Cellular Options
                         </h3>
@@ -563,7 +564,8 @@ exports[`MeshNetwork should render correctly 1`] = `
                         id="Mesh-Network"
                       >
                         <h3
-                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                          id="mesh-network"
                         >
                           Mesh Network
                         </h3>

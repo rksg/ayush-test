@@ -37,10 +37,20 @@ export function NetworkingTab () {
   //   content: 'LAN Ports Content'
   // }, {
     title: $t({ defaultMessage: 'Cellular Options' }),
-    content: (<CellularOptionsForm />)
+    content: <>
+      <StepsForm.SectionTitle id='cellular-options'>
+        { $t({ defaultMessage: 'Cellular Options' }) }
+      </StepsForm.SectionTitle>
+      <CellularOptionsForm />
+    </>
   }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
-    content: (<MeshNetwork />)
+    content: <>
+      <StepsForm.SectionTitle id='mesh-network'>
+        { $t({ defaultMessage: 'Mesh Network' }) }
+      </StepsForm.SectionTitle>
+      <MeshNetwork />
+    </>
   // }, {
   //   title: $t({ defaultMessage: 'Client Isolation Allowlist' }),
   //   content: 'Client Isolation Allowlist Content'

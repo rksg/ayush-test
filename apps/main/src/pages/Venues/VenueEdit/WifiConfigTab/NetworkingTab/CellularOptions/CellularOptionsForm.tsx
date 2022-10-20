@@ -9,7 +9,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showToast, StepsForm, StepsFormInstance, Subtitle }                                                                       from '@acx-ui/components'
+import { Loader, showToast, StepsForm, StepsFormInstance }                                                                                 from '@acx-ui/components'
 import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation } from '@acx-ui/rc/services'
 import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }                                                                      from '@acx-ui/rc/utils'
 
@@ -182,79 +182,76 @@ export function CellularOptionsForm () {
   }
 
   return (
-    <>
-      <Subtitle level={3}>{$t({ defaultMessage: 'Cellular Options' })}</Subtitle>
-      <Loader states={[{ isLoading: false, isFetching: isUpdatingVenueCellularSettings }]}>
-        <StepsForm>
-          <StepsForm.StepForm
-            formRef={formRef}
-            onValuesChange={onChange}>
-            <div data-testid='primarySim'>
-              <CellularRadioSimSettings
-                editData={editData}
-                simCardNumber={1}
-                countryCode={_.get(venueData, 'data.countryCode')}
-                legend={$t({ defaultMessage: 'Primary SIM' })}
-                regionCountriesMap={regionCountriesMap}
-                currentRegion={currentRegion}
-                availableLteBands={availableLteBandsArray}
-                formControlName={'primarySim'} />
-            </div>
+    <Loader states={[{ isLoading: false, isFetching: isUpdatingVenueCellularSettings }]}>
+      <StepsForm>
+        <StepsForm.StepForm
+          formRef={formRef}
+          onValuesChange={onChange}>
+          <div data-testid='primarySim'>
             <CellularRadioSimSettings
               editData={editData}
-              simCardNumber={2}
-              legend={$t({ defaultMessage: 'Secondary SIM' })}
-              regionCountriesMap={regionCountriesMap}
+              simCardNumber={1}
               countryCode={_.get(venueData, 'data.countryCode')}
+              legend={$t({ defaultMessage: 'Primary SIM' })}
+              regionCountriesMap={regionCountriesMap}
               currentRegion={currentRegion}
               availableLteBands={availableLteBandsArray}
-              formControlName={'secondarySim'} />
-            <Form.Item
-              name={['editData', 'wanConnection']}
-              label={$t({ defaultMessage: 'WAN Connection:' })}
-              initialValue={WanConnectionEnum.ETH_WITH_CELLULAR_FAILOVER}
-              rules={[{
-                required: true
-              }]}
-              children={
-                <Select
-                  style={{ width: '330px' }}>
-                  <Option value={WanConnectionEnum.ETH_WITH_CELLULAR_FAILOVER}>
-                    {$t({ defaultMessage: 'Ethernet (Primary) with cellular failover' })}
-                  </Option>
-                  <Option value={WanConnectionEnum.CELLULAR_WITH_ETH_FAILOVER}>
-                    {$t({ defaultMessage: 'Cellular (Primary) with ethernet failover' })}
-                  </Option>
-                  <Option value={WanConnectionEnum.ETH}>
-                    {$t({ defaultMessage: 'Ethernet only' })}
-                  </Option>
-                  <Option value={WanConnectionEnum.CELLULAR}>
-                    {$t({ defaultMessage: 'Cellular only' })}
-                  </Option>
-                </Select>
-              }
-            />
+              formControlName={'primarySim'} />
+          </div>
+          <CellularRadioSimSettings
+            editData={editData}
+            simCardNumber={2}
+            legend={$t({ defaultMessage: 'Secondary SIM' })}
+            regionCountriesMap={regionCountriesMap}
+            countryCode={_.get(venueData, 'data.countryCode')}
+            currentRegion={currentRegion}
+            availableLteBands={availableLteBandsArray}
+            formControlName={'secondarySim'} />
+          <Form.Item
+            name={['editData', 'wanConnection']}
+            label={$t({ defaultMessage: 'WAN Connection:' })}
+            initialValue={WanConnectionEnum.ETH_WITH_CELLULAR_FAILOVER}
+            rules={[{
+              required: true
+            }]}
+            children={
+              <Select
+                style={{ width: '330px' }}>
+                <Option value={WanConnectionEnum.ETH_WITH_CELLULAR_FAILOVER}>
+                  {$t({ defaultMessage: 'Ethernet (Primary) with cellular failover' })}
+                </Option>
+                <Option value={WanConnectionEnum.CELLULAR_WITH_ETH_FAILOVER}>
+                  {$t({ defaultMessage: 'Cellular (Primary) with ethernet failover' })}
+                </Option>
+                <Option value={WanConnectionEnum.ETH}>
+                  {$t({ defaultMessage: 'Ethernet only' })}
+                </Option>
+                <Option value={WanConnectionEnum.CELLULAR}>
+                  {$t({ defaultMessage: 'Cellular only' })}
+                </Option>
+              </Select>
+            }
+          />
 
 
-            <Form.Item
-              name={['editData', 'primaryWanRecoveryTimer']}
-              label={$t({ defaultMessage: 'Primary WAN Recovery Timer:' })}
-              initialValue={60}
-              rules={[{
-                required: true
-              }, {
-                type: 'number', max: 300, min: 10,
-                message: $t({
-                  defaultMessage:
-                    'Primary WAN Recovery Timer must be between 10 and 300'
-                })
-              }]}
-              children={<InputNumber style={{ width: '150px' }} />}
-            />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Loader>
-    </>
+          <Form.Item
+            name={['editData', 'primaryWanRecoveryTimer']}
+            label={$t({ defaultMessage: 'Primary WAN Recovery Timer:' })}
+            initialValue={60}
+            rules={[{
+              required: true
+            }, {
+              type: 'number', max: 300, min: 10,
+              message: $t({
+                defaultMessage:
+                  'Primary WAN Recovery Timer must be between 10 and 300'
+              })
+            }]}
+            children={<InputNumber style={{ width: '150px' }} />}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+    </Loader>
 
   )
 }

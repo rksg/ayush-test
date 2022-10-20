@@ -4,7 +4,7 @@ import { Switch, Tooltip } from 'antd'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Subtitle } from '@acx-ui/components'
+import { Loader, showActionModal, showToast } from '@acx-ui/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -133,23 +133,20 @@ export function MeshNetwork () {
   }
 
   return (
-    <>
-      <Subtitle level={3}>{$t({ defaultMessage: 'Mesh Network' })}</Subtitle>
-      <Loader states={[{ isLoading: false, isFetching: isUpdatingVenueMesh }]}>
-        <UI.FieldLabel width='125px'>
-          {$t({ defaultMessage: 'Mesh Network' })}
-          <UI.FieldLabel width='30px'>
-            <Tooltip title={meshToolTipDisabledText}>
-              <Switch
-                checked={meshEnabled}
-                disabled={!isAllowEnableMesh}
-                onClick={toggleMesh}
-                style={{ marginTop: isAllowEnableMesh ? '5px' : '0' }}
-              />
-            </Tooltip>
-          </UI.FieldLabel>
+    <Loader states={[{ isLoading: false, isFetching: isUpdatingVenueMesh }]}>
+      <UI.FieldLabel width='125px'>
+        {$t({ defaultMessage: 'Mesh Network' })}
+        <UI.FieldLabel width='30px'>
+          <Tooltip title={meshToolTipDisabledText}>
+            <Switch
+              checked={meshEnabled}
+              disabled={!isAllowEnableMesh}
+              onClick={toggleMesh}
+              style={{ marginTop: isAllowEnableMesh ? '5px' : '0' }}
+            />
+          </Tooltip>
         </UI.FieldLabel>
-      </Loader>
-    </>
+      </UI.FieldLabel>
+    </Loader>
   )
 }
