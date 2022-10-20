@@ -1,9 +1,9 @@
 /* eslint-disable testing-library/no-node-access */
-import { dataApiURL }                                     from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                                from '@acx-ui/analytics/utils'
-import { Provider, store }                                from '@acx-ui/store'
-import { render, screen, mockDOMWidth, mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }                                      from '@acx-ui/utils'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { Provider, store }                  from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange }                        from '@acx-ui/utils'
 
 import { topSSIDsByClientFixture } from './__tests__/fixtures'
 import { api }                     from './services'
@@ -32,7 +32,6 @@ const extractRows = (doc:DocumentFragment)=>{
 }
 
 describe('TopSSIDsByClientWidget', () => {
-  mockDOMWidth()
   const filters:AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',

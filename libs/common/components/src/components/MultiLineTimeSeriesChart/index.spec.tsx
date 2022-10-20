@@ -3,7 +3,7 @@ import React, { RefObject } from 'react'
 import { ECharts }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
-import { mockDOMWidth, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
+import { render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import { cssStr } from '../../theme/helper'
 
@@ -23,7 +23,6 @@ const markers = [{
 }]
 
 describe('MultiLineTimeSeriesChart', () => {
-  mockDOMWidth()
 
   it('should use imperative handle', async () => {
     const mockCallbackRef = jest.fn()
