@@ -10,7 +10,7 @@ export type SuspenseBoundaryProps = React.PropsWithChildren<{
 }>
 
 export function SuspenseBoundary (props: SuspenseBoundaryProps) {
-  const fallback = props.fallback || <SuspenseBoundary.DefaultFallback />
+  const fallback = props.fallback || <SuspenseBoundary.DefaultFallback size='large' />
 
   return (
     <ErrorBoundary fallback={props.errorFallback}>
@@ -22,8 +22,10 @@ export function SuspenseBoundary (props: SuspenseBoundaryProps) {
   )
 }
 
-SuspenseBoundary.DefaultFallback = function DefaultSuspenseFallback () {
+SuspenseBoundary.DefaultFallback = function DefaultSuspenseFallback (props: {
+  size: 'small' | 'default' | 'large'
+}) {
   return <span role='img' aria-label='loader'>
-    <Spin size='large' />
+    <Spin size={props.size} />
   </span>
 }
