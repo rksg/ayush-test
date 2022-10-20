@@ -1,8 +1,7 @@
 import { Provider, store } from '@acx-ui/store'
 import {
   render,
-  screen,
-  mockDOMWidth
+  screen
 } from '@acx-ui/test-utils'
 
 import { histogramApi } from '../Kpi/services'
@@ -13,7 +12,6 @@ import HistogramSlider from './HistogramSlider'
 const splits = [1,2,3,4,5,6]
 const onSliderChange = jest.fn()
 describe('Threshold Histogram chart', () => {
-  mockDOMWidth()
   beforeEach(() => {
     store.dispatch(histogramApi.util.resetApiState())
   })

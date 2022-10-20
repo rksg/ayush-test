@@ -5,7 +5,6 @@ import {
   mockGraphqlQuery,
   render,
   screen,
-  mockDOMWidth,
   fireEvent
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
@@ -35,7 +34,6 @@ const setKpiThreshold = jest.fn()
 
 
 describe('Threshold Histogram chart', () => {
-  mockDOMWidth()
   beforeEach(() => {
     store.dispatch(histogramApi.util.resetApiState())
   })
