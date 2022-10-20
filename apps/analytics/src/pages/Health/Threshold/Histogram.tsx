@@ -90,6 +90,11 @@ function Histogram ({
       })
     }
   )
+  const onReset = () => {
+    setSliderValue(splits.indexOf(histogram?.initialThreshold ) + 0.5)
+    setThresholdValue(histogram?.initialThreshold )
+    setKpiThreshold({ ...thresholds, [kpi]: histogram?.initialThreshold })
+  }
   const data = {
     dimensions: [histogram.xUnit, histogram.yUnit],
     source: queryResults?.data?.[0]?.data ?? [],
@@ -158,6 +163,7 @@ function Histogram ({
             percent={percent}
             unit={histogram?.xUnit}
             shortXFormat={histogram?.shortXFormat}
+            onReset={onReset}
           />
         </GridCol>
       </GridRow>

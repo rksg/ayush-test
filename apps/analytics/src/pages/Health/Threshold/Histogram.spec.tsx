@@ -31,8 +31,6 @@ const filters = {
 } as AnalyticsFilter
 const setKpiThreshold = jest.fn()
 
-
-
 describe('Threshold Histogram chart', () => {
   beforeEach(() => {
     store.dispatch(histogramApi.util.resetApiState())
@@ -128,5 +126,25 @@ describe('Threshold Histogram chart', () => {
     fireEvent.mouseUp(await screen.findByRole('slider'))
     expect(setKpiThreshold).not.toBeCalled()
   })
+  it('should call setKpiThreshold on clicking reset btn', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+        />
+      </Provider>
+    )
 
+    fireEvent.click(await screen.findByText('Reset'))
+    expect(setKpiThreshold).toBeCalled()
+  })
 })
+
+
