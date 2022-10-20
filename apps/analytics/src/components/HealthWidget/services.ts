@@ -16,6 +16,7 @@ export type HealthData = {
     clientThroughputSLA: [number, number]
     clientThroughputThreshold: string
     connectionSuccessSLA: [number, number]
+    onlineApsSLA: [number, number]
 }
 
 interface Response <T> {
@@ -43,6 +44,7 @@ export const api = dataApi.injectEndpoints({
                     clientThroughputSLA
                     clientThroughputThreshold
                     connectionSuccessSLA
+                    onlineApsSLA
                 }
               }
             }

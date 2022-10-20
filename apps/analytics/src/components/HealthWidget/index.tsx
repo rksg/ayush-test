@@ -1,3 +1,4 @@
+import { mean }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
@@ -6,7 +7,10 @@ import {
   Card,
   Loader,
   Table,
-  ProgressBar
+  ProgressBar,
+  ContentSwitcher,
+  ContentSwitcherProps,
+  NoData
 } from '@acx-ui/components'
 import { intlFormats } from '@acx-ui/utils'
 
@@ -29,9 +33,9 @@ export default function HealthWidget ({
       key: 'zoneName'
     },
     {
-      title: $t({ defaultMessage: 'Overall Health' }),
-      dataIndex: 'overallHealth',
-      key: 'overallHealth',
+      title: $t({ defaultMessage: 'Client Experience' }),
+      dataIndex: 'clientExperience',
+      key: 'clientExperience',
       width: 40,
       align: 'center' as const,
       render: (value:unknown)=>{
@@ -84,8 +88,8 @@ export default function HealthWidget ({
     },
     {
       title: $t({ defaultMessage: 'Online APs' }),
-      dataIndex: 'onlineAps',
-      key: 'onlineAps',
+      dataIndex: 'onlineApsPercent',
+      key: 'onlineApsPercent',
       align: 'center' as const,
       width: 80
     }
@@ -100,55 +104,65 @@ export default function HealthWidget ({
     }
     return {
       formatted: '-',
-      percent: 0
+      percent: null
     }
+  }
+  const calculateClientExp = (slas:(number|null)[]) => {
+    const arr = slas.filter(sla => sla !== null)
+    return arr.length ? mean(arr) : null
   }
   const getHealthData = (healthData:HealthData[])=>{
     return healthData.map((row)=>{
       const {
         connectionSuccessSLA,
         timeToConnectSLA,
-        clientThroughputSLA
+        clientThroughputSLA,
+        onlineApsSLA
       } = row
       const connectionSuccessPercent=calcPercent(connectionSuccessSLA)
       const timeToConnectPercent= calcPercent(timeToConnectSLA)
       const clientThroughputPercent=calcPercent(clientThroughputSLA)
-      let overallHealth = 0
-      if(connectionSuccessPercent.percent
-        && timeToConnectPercent.percent
-        && clientThroughputPercent.percent){
-        overallHealth=(connectionSuccessPercent.percent
-            + timeToConnectPercent.percent
-            + clientThroughputPercent.percent)/3
-      }
+      const onlineApsPercent=calcPercent(onlineApsSLA)
+      const clientExperience=calculateClientExp([
+        connectionSuccessPercent.percent,
+        timeToConnectPercent.percent,
+        clientThroughputPercent.percent
+      ])
       return { ...row,
         connectionSuccessPercent: connectionSuccessPercent.formatted,
         timeToConnectPercent: timeToConnectPercent.formatted,
         clientThroughputPercent: clientThroughputPercent.formatted,
-        overallHealthFormatted: $t(intlFormats.percentFormatRound, { value: overallHealth }),
-        overallHealth,
-        onlineAps: '100%'
+        onlineApsPercent: onlineApsPercent.formatted,
+        clientExperience
       }
-    }).filter(item=>item.overallHealth!==0)
-      .sort((a,b)=>a.overallHealth - b.overallHealth)
+    }).filter(item=>item.clientExperience!==null)
+      .sort((a,b)=>(a.clientExperience as number) - (b.clientExperience as number))
       .slice(0,5)
   }
+  const clientExpTab = data ? <Table
+    columns={columns}
+    dataSource={getHealthData(data.health)}
+    pagination={false}
+    type={'compact'}
+    rowKey='zoneName'
+  /> : <NoData/>
+  const tabDetails:ContentSwitcherProps['tabDetails']=[
+    { label: $t({ defaultMessage: 'Venues' }) ,
+      children: clientExpTab, value: 'clientExp' },
+    { label: $t({ defaultMessage: 'Services' }), children: <>
+      {$t({ defaultMessage: 'Coming Soon' })}
+    </>, value: 'services' }
+  ]
   return (
     <Loader states={[queryResults]}>
       <Card
-        title={$t({ defaultMessage: 'Health' })}
-        subTitle={$t({ defaultMessage: 'Top 5 Venues with poor experience' })}
+        title={$t({ defaultMessage: 'Client Experience' })}
+        subTitle={$t({ defaultMessage: 'Top 5 Venues/Services with poor experience' })}
       >
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              {data && <Table
-                columns={columns}
-                dataSource={getHealthData(data.health)}
-                pagination={false}
-                type={'compact'}
-                rowKey='zoneName'
-              />}
+              <ContentSwitcher tabDetails={tabDetails} size='small' space={8} />
             </div>)}
         </AutoSizer>
       </Card>
