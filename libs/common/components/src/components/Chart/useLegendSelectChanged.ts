@@ -25,5 +25,5 @@ export function useLegendSelectChanged (
           type: 'legendAllSelect'
         })
     })
-  }, [eChartsRef])
+  })
 }
