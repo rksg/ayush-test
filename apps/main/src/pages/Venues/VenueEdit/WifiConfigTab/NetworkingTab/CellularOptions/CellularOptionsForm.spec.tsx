@@ -1,16 +1,14 @@
 import '@testing-library/jest-dom'
 
 
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
 import { venueApi }                                                                                         from '@acx-ui/rc/services'
 import { CellularNetworkSelectionEnum, CommonUrlsInfo, LteBandRegionEnum, WanConnectionEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor, within }                                           from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor, within }                                                      from '@acx-ui/test-utils'
 
-import { EditContext, VenueEditContext } from '../../..'
 import {
   venueSetting
 } from '../../../../__tests__/fixtures'
@@ -59,9 +57,6 @@ const availableLteBandsResponse = [{
 
 describe('CellularOptionsForm', () => {
   const params = { venueId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
-  let editContextData = {} as EditContext
-  const setEditContextData = jest.fn()
 
   const mockedUsedNavigate = jest.fn()
   jest.mock('react-router-dom', () => ({
