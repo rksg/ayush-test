@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter, kpiConfig }     from '@acx-ui/analytics/utils'
-import { Card, GridRow, GridCol, Loader } from '@acx-ui/components'
+import { AnalyticsFilter, kpiConfig }                from '@acx-ui/analytics/utils'
+import { Card, GridRow, GridCol, Loader, CardTitle } from '@acx-ui/components'
 
 import { useGetKpiThresholdsQuery } from '../../pages/Health/Kpi/services'
 import { KpiWidget }                from '../KpiWidget'
@@ -24,9 +24,9 @@ export default function VenueHealthWidget ({
         <GridRow style={{ width: '100%' }}>
           <GridCol col={{ span: 3 }}>
             <UI.Wrapper>
-              <UI.Title>
+              <CardTitle>
                 {$t({ defaultMessage: 'Client Experience' })}
-              </UI.Title>
+              </CardTitle>
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>
