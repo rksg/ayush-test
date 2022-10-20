@@ -5,11 +5,11 @@ import { fakeIncidentDowntimeHigh } from '@acx-ui/analytics/utils'
 import { store }                    from '@acx-ui/store'
 import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
+import { buffer6hr }               from '../__tests__/fixtures'
 import { TimeSeriesChartTypes }    from '../config'
 import { Api }                     from '../services'
 import { TimeSeriesChartResponse } from '../types'
 
-import { buffer6hr }                          from './__tests__/fixtures'
 import { DowntimeEventTypeDistributionChart } from './DowntimeEventTypeDistributionChart'
 
 const expectedResult = {

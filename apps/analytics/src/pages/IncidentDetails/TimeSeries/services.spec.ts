@@ -1,11 +1,11 @@
-import moment         from 'moment-timezone'
-import { unitOfTime } from 'moment-timezone'
+import moment from 'moment-timezone'
 
 import { dataApiURL }       from '@acx-ui/analytics/services'
 import { fakeIncident1 }    from '@acx-ui/analytics/utils'
 import { store }            from '@acx-ui/store'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
+import { buffer6hr }             from './__tests__/fixtures'
 import { TimeSeriesChartTypes }  from './config'
 import {
   Api,
@@ -22,10 +22,6 @@ describe('chartQuery', () => {
     TimeSeriesChartTypes.ClientCountChart,
     TimeSeriesChartTypes.AttemptAndFailureChart
   ]
-  const buffer = {
-    front: { value: 6, unit: 'hours' as unitOfTime.Base },
-    back: { value: 6, unit: 'hours' as unitOfTime.Base }
-  }
 
   const expectedQueryResults = {
     network: {
@@ -84,7 +80,7 @@ describe('chartQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
         charts,
-        buffer,
+        buffer: buffer6hr,
         minGranularity: 'PT180S'
       })
     )
@@ -107,7 +103,7 @@ describe('chartQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
         charts,
-        buffer,
+        buffer: buffer6hr,
         minGranularity: 'PT180S'
       })
     )
@@ -124,7 +120,7 @@ describe('chartQuery', () => {
         incident: fakeIncident1,
         charts,
         minGranularity: 'PT180S',
-        buffer
+        buffer: buffer6hr
       })
     )
     expect(status).toBe('rejected')
@@ -132,9 +128,9 @@ describe('chartQuery', () => {
     expect(error).not.toBe(undefined)
   })
   it('should getIncidentTimeSeriesPeriods', () => {
-    expect(getIncidentTimeSeriesPeriods(fakeIncident1, buffer).start).toEqual(
+    expect(getIncidentTimeSeriesPeriods(fakeIncident1, buffer6hr).start).toEqual(
       moment(fakeIncident1.startTime).subtract(6, 'hours'))
-    expect(getIncidentTimeSeriesPeriods(fakeIncident1, buffer).end).toEqual(
+    expect(getIncidentTimeSeriesPeriods(fakeIncident1, buffer6hr).end).toEqual(
       moment(fakeIncident1.endTime).add(6, 'hours'))
   })
 })
