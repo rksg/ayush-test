@@ -11,11 +11,11 @@ import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
 import { useIntl }  from 'react-intl'
 
-import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStampRange }      from '@acx-ui/types'
-import { formatter }                from '@acx-ui/utils'
+import type { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
+import type { TimeStamp, TimeStampRange } from '@acx-ui/types'
+import { formatter }                      from '@acx-ui/utils'
 
-import { cssStr }       from '../../theme/helper'
+import { cssStr }    from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
@@ -191,7 +191,7 @@ export function MultiLineTimeSeriesChart <
       .filter(datum=> datum.show !== false )
       .map((datum, i) => ({
         name: datum[legendProp] as unknown as string,
-        data: datum.data,
+        data: datum.data as [TimeStamp, number][],
         type: 'line',
         smooth: true,
         symbol: getTimeSeriesSymbol(data),

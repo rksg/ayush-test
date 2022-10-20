@@ -137,8 +137,7 @@ export function StackedAreaChart <
     },
     series: initialData.map(datum => ({
       name: datum[legendProp] as unknown as string,
-      data: datum.data.map(([time, value]) =>
-        [time, (value === '-' || value === null) ? 0 : value]),
+      data: datum.data.map(([time, value]) => [time, (value === null) ? 0 : value]),
       type: 'line',
       silent: true,
       stack: 'Total',
