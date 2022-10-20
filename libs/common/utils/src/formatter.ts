@@ -184,10 +184,10 @@ export const intlFormats = {
 export function formatter (
   name: keyof typeof formats | keyof typeof dateTimeFormats | keyof typeof intlFormats
 ) {
-  return function formatter (value: unknown, tz?: string): string | null {
+  return function formatter (value: unknown, tz?: string): string {
     const intl = getIntl()
     if (value === null || value === '-') {
-      return value as null | '-'
+      return '-'
     }
     if (isIntlFormat(name)) {
       return intl.$t(intlFormats[name], { value: value as number | string | Date })
@@ -199,7 +199,7 @@ export function formatter (
       const formatter = formats[name] as (value: unknown, intl: IntlShape) => string
       return formatter(value, intl)
     }
-    return null
+    return '-'
   }
 }
 

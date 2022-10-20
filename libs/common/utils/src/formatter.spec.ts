@@ -12,11 +12,11 @@ function testFormat (
   }
 }
 describe('formatter', () => {
-  it('returns null if format is not supported', () => {
-    expect(formatter('something' as keyof typeof formats)(1)).toBe(null)
+  it("returns '-' if format is not supported", () => {
+    expect(formatter('something' as keyof typeof formats)(1)).toBe('-')
   })
-  it('Should take care of null values correctly', () => {
-    expect(formatter('decibelFormat')(null)).toBe(null)
+  it("Should take care of '-' values correctly", () => {
+    expect(formatter('decibelFormat')(null)).toBe('-')
   })
   it('decibelFormat', () => testFormat('decibelFormat', {
     '7.131': '7 dB',
