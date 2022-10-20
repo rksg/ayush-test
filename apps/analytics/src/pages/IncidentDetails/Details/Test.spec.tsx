@@ -92,7 +92,7 @@ describe('Test', () => {
         component: CovClientrssiLow,
         fakeIncident: fakeIncidentRss,
         hasNetworkImpact: true,
-        hasTimeSeries: false
+        hasTimeSeries: true
       },
       {
         component: DhcpFailure,

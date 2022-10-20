@@ -5,6 +5,7 @@ import { fakeIncident1 }            from '@acx-ui/analytics/utils'
 import { store }                    from '@acx-ui/store'
 import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
+import { buffer6hr }            from '../__tests__/fixtures'
 import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
 
@@ -33,7 +34,12 @@ describe('ClientCountChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <ClientCountChart chartRef={()=>{}} incident={fakeIncident1} data={expectedResult}/>
+        <ClientCountChart
+          chartRef={()=>{}}
+          buffer={buffer6hr}
+          incident={fakeIncident1}
+          data={expectedResult}
+        />
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -47,6 +53,7 @@ describe('clientCountChartQuery', () => {
     }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
+        buffer: buffer6hr,
         incident: fakeIncident1,
         charts: [TimeSeriesChartTypes.ClientCountChart],
         minGranularity: 'PT180S'
