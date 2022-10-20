@@ -13,6 +13,7 @@ import { TransferItem } from 'antd/lib/transfer'
 import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 
+import { Loader }                                                  from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
 import { useTableQuery, AAAServerTypeEnum, AAA_SERVER_TYPE }       from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
@@ -148,7 +149,7 @@ export function AAASettings () {
     }
   })
 
-  const { data: aaaSetting } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
+  const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
 
   const [ availableLoginServers, setAvailableLoginServers] = useState(defaultAvailableLoginServers)
   const [ availableCommandAuthOrder, setAvailableCommandAuthOrder] = useState(defaultAvailableCommandAuthOrder)
@@ -258,39 +259,40 @@ export function AAASettings () {
   }
 
   return (
-    <Collapse
-      defaultActiveKey={['1', '2', '3']}
-      expandIconPosition='end'
-      ghost={true}
-      bordered={false}
-    >
-      <Collapse.Panel header={$t({ defaultMessage: 'Log-in Authentication' })} key='1' >
-        <Form.Item
-          name='authnEnabledSsh'
-          label={$t({ defaultMessage: 'SSH Authentication' })}
-          valuePropName='checked'
-        >
-          <Switch disabled={authnEnableTelnet}/>
-        </Form.Item>
-        <Popconfirm
-          title={$t({ defaultMessage: 'Telnet Authentication requires SSH Authentication also to be turned ON.' })}
-          placement='bottomLeft'
-          visible={openConfirm}
-          onVisibleChange={handleOpenChange}
-          onConfirm={() => {
-            setOpenConfirm(false)
-            form.setFieldValue('authnEnabledSsh', true)
-          }}
-        >
+    <Loader states={[{ isLoading, isFetching }]}>
+      <Collapse
+        defaultActiveKey={['1', '2', '3']}
+        expandIconPosition='end'
+        ghost={true}
+        bordered={false}
+      >
+        <Collapse.Panel header={$t({ defaultMessage: 'Log-in Authentication' })} key='1' >
           <Form.Item
-            name='authnEnableTelnet'
-            label={$t({ defaultMessage: 'Telnet Authentication' })}
+            name='authnEnabledSsh'
+            label={$t({ defaultMessage: 'SSH Authentication' })}
             valuePropName='checked'
           >
-            <Switch />
+            <Switch disabled={authnEnableTelnet}/>
           </Form.Item>
-        </Popconfirm>
-        { authnEnabledSsh &&
+          <Popconfirm
+            title={$t({ defaultMessage: 'Telnet Authentication requires SSH Authentication also to be turned ON.' })}
+            placement='bottomLeft'
+            visible={openConfirm}
+            onVisibleChange={handleOpenChange}
+            onConfirm={() => {
+              setOpenConfirm(false)
+              form.setFieldValue('authnEnabledSsh', true)
+            }}
+          >
+            <Form.Item
+              name='authnEnableTelnet'
+              label={$t({ defaultMessage: 'Telnet Authentication' })}
+              valuePropName='checked'
+            >
+              <Switch />
+            </Form.Item>
+          </Popconfirm>
+          { authnEnabledSsh &&
           <Form.Item
             name='selectedLoginServers'
             label={$t({ defaultMessage: 'Set Priority' })}
@@ -306,17 +308,17 @@ export function AAASettings () {
               titles={[$t({ defaultMessage: 'Available Servers & Users' }), $t({ defaultMessage: 'Selected order' })]}
             />
           </Form.Item>
-        }
-      </Collapse.Panel>
-      <Collapse.Panel header={$t({ defaultMessage: 'Authorization' })} key='2' >
-        <Form.Item
-          name='authzEnabledCommand'
-          label={$t({ defaultMessage: 'Command Authorization' })}
-          valuePropName='checked'
-        >
-          <Switch />
-        </Form.Item>
-        { authzEnabledCommand &&
+          }
+        </Collapse.Panel>
+        <Collapse.Panel header={$t({ defaultMessage: 'Authorization' })} key='2' >
+          <Form.Item
+            name='authzEnabledCommand'
+            label={$t({ defaultMessage: 'Command Authorization' })}
+            valuePropName='checked'
+          >
+            <Switch />
+          </Form.Item>
+          { authzEnabledCommand &&
           <>
             <Form.Item
               name='authzCommonsLevel'
@@ -341,15 +343,15 @@ export function AAASettings () {
               />
             </Form.Item>
           </>
-        }
-        <Form.Item
-          name='authzEnabledExec'
-          label={$t({ defaultMessage: 'Executive Authorization' })}
-          valuePropName='checked'
-        >
-          <Switch />
-        </Form.Item>
-        { authzEnabledExec &&
+          }
+          <Form.Item
+            name='authzEnabledExec'
+            label={$t({ defaultMessage: 'Executive Authorization' })}
+            valuePropName='checked'
+          >
+            <Switch />
+          </Form.Item>
+          { authzEnabledExec &&
           <Form.Item
             name='selectedExecAuthOrder'
             label={$t({ defaultMessage: 'Set Priority' })}
@@ -364,17 +366,17 @@ export function AAASettings () {
               dataSource={availableExecAuthOrder}
             />
           </Form.Item>
-        }
-      </Collapse.Panel>
-      <Collapse.Panel header={$t({ defaultMessage: 'Accounting' })} key='3' >
-        <Form.Item
-          name='acctEnabledCommand'
-          label={$t({ defaultMessage: 'Command Accounting' })}
-          valuePropName='checked'
-        >
-          <Switch />
-        </Form.Item>
-        { acctEnabledCommand &&
+          }
+        </Collapse.Panel>
+        <Collapse.Panel header={$t({ defaultMessage: 'Accounting' })} key='3' >
+          <Form.Item
+            name='acctEnabledCommand'
+            label={$t({ defaultMessage: 'Command Accounting' })}
+            valuePropName='checked'
+          >
+            <Switch />
+          </Form.Item>
+          { acctEnabledCommand &&
           <>
             <Form.Item
               name='acctCommonsLevel'
@@ -399,15 +401,15 @@ export function AAASettings () {
               />
             </Form.Item>
           </>
-        }
-        <Form.Item
-          name='acctEnabledExec'
-          label={$t({ defaultMessage: 'Executive Accounting' })}
-          valuePropName='checked'
-        >
-          <Switch />
-        </Form.Item>
-        { acctEnabledExec &&
+          }
+          <Form.Item
+            name='acctEnabledExec'
+            label={$t({ defaultMessage: 'Executive Accounting' })}
+            valuePropName='checked'
+          >
+            <Switch />
+          </Form.Item>
+          { acctEnabledExec &&
           <Form.Item
             name='selectedExecAcctOrder'
             label={$t({ defaultMessage: 'Set Priority' })}
@@ -422,8 +424,9 @@ export function AAASettings () {
               dataSource={availableExecAcctOrder}
             />
           </Form.Item>
-        }
-      </Collapse.Panel>
-    </Collapse>
+          }
+        </Collapse.Panel>
+      </Collapse>
+    </Loader>
   )
 }

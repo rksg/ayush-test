@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { venueApi }           from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { Provider, store }    from '@acx-ui/store'
 import {
+  act,
   fireEvent,
   mockServer,
   render,
@@ -12,7 +14,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { emptyList, mockAaaSetting, radiusList } from '../../../__tests__/fixtures'
+import { emptyList, mockAaaSetting, mockAaaSetting_with_order, radiusList } from '../../../__tests__/fixtures'
 
 import { SwitchAAATab } from './SwitchAAATab'
 
@@ -20,7 +22,13 @@ import { SwitchAAATab } from './SwitchAAATab'
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
 describe('SwitchAAATab', () => {
-  beforeEach(() => {
+  afterEach(() =>
+    act(() => {
+      store.dispatch(venueApi.util.resetApiState())
+    })
+  )
+
+  it('should render correctly', async () => {
     mockServer.use(
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
         res(ctx.json(mockAaaSetting))
@@ -32,10 +40,11 @@ describe('SwitchAAATab', () => {
       }),
       rest.post(SwitchUrlsInfo.addAaaServer.url, (req, res, ctx) =>
         res(ctx.json({}))
+      ),
+      rest.put(SwitchUrlsInfo.updateAaaSetting.url, (req, res, ctx) =>
+        res(ctx.json({}))
       )
     )
-  })
-  it('should render correctly', async () => {
     const { asFragment } = render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
 
     await waitForElementToBeRemoved(
@@ -43,21 +52,46 @@ describe('SwitchAAATab', () => {
       { timeout: 10000 }
     )
 
+    const settingsBtn = screen.getByRole('link', { name: 'Settings' })
+    fireEvent.click(settingsBtn)
+
     expect(asFragment()).toMatchSnapshot()
+
+    const sshCbx = screen.getByLabelText('SSH Authentication')
+    fireEvent.click(sshCbx)
+
+    const saveBtn = screen.getByRole('button', { name: 'Save AAA' })
+    fireEvent.click(saveBtn)
   })
 
 
   it('should Save AAA correctly', async () => {
-    render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
-
     const requestSpy = jest.fn()
 
     mockServer.use(
+      rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
+        res(ctx.json(mockAaaSetting_with_order))
+      ),
+      rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
+        const body = req.body as { serverType: string }
+        if (body.serverType === 'RADIUS') return res(ctx.json(radiusList))
+        return res(ctx.json(emptyList))
+      }),
       rest.put(SwitchUrlsInfo.updateAaaSetting.url, (req, res, ctx) => {
         requestSpy()
         return res(ctx.json({}))
       })
     )
+    render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
+
+    await waitForElementToBeRemoved(
+      () => screen.queryAllByRole('img', { name: 'loader' }),
+      { timeout: 10000 }
+    )
+
+    const settingsBtn = screen.getByRole('link', { name: 'Settings' })
+    fireEvent.click(settingsBtn)
+
     const saveBtn = screen.getByRole('button', { name: 'Save AAA' })
     fireEvent.click(saveBtn)
 

@@ -105,10 +105,10 @@ exports[`SwitchAAATab should render correctly 1`] = `
                               />
                             </div>
                             <div
-                              class="ant-anchor-link ant-anchor-link-active"
+                              class="ant-anchor-link"
                             >
                               <a
-                                class="ant-anchor-link-title ant-anchor-link-title-active"
+                                class="ant-anchor-link-title"
                                 href="#Servers-&-Users"
                                 title="Servers & Users"
                               >
@@ -116,10 +116,10 @@ exports[`SwitchAAATab should render correctly 1`] = `
                               </a>
                             </div>
                             <div
-                              class="ant-anchor-link"
+                              class="ant-anchor-link ant-anchor-link-active"
                             >
                               <a
-                                class="ant-anchor-link-title"
+                                class="ant-anchor-link-title ant-anchor-link-title-active"
                                 href="#Settings"
                                 title="Settings"
                               >
@@ -307,8 +307,11 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                         >
                                                           <tr>
                                                             <th
-                                                              class="ant-table-cell ant-table-selection-column"
+                                                              class="ant-table-cell ant-table-selection-column react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               <div
                                                                 class="ant-table-selection"
                                                               >
@@ -329,36 +332,76 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                   </span>
                                                                 </label>
                                                               </div>
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Name
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               IP Address
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Authentication Port
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Accounting Port
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Shared Secret
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                                               style="position: sticky; right: 0px;"
-                                                            />
+                                                            >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
+                                                            </th>
                                                           </tr>
                                                         </thead>
                                                         <tbody
@@ -774,8 +817,11 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                         >
                                                           <tr>
                                                             <th
-                                                              class="ant-table-cell ant-table-selection-column"
+                                                              class="ant-table-cell ant-table-selection-column react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               <div
                                                                 class="ant-table-selection"
                                                               >
@@ -797,36 +843,76 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                   </span>
                                                                 </label>
                                                               </div>
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Name
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               IP Address
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Authentication Port
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Shared Secret
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Purpose
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                                               style="position: sticky; right: 0px;"
-                                                            />
+                                                            >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
+                                                            </th>
                                                           </tr>
                                                         </thead>
                                                         <tbody
@@ -1080,8 +1166,11 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                         >
                                                           <tr>
                                                             <th
-                                                              class="ant-table-cell ant-table-selection-column"
+                                                              class="ant-table-cell ant-table-selection-column react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               <div
                                                                 class="ant-table-selection"
                                                               >
@@ -1103,26 +1192,54 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                   </span>
                                                                 </label>
                                                               </div>
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Username
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Password
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell"
+                                                              class="ant-table-cell react-resizable"
                                                             >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
                                                               Privilege
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
                                                             </th>
                                                             <th
-                                                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                                               style="position: sticky; right: 0px;"
-                                                            />
+                                                            >
+                                                              <div
+                                                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                              />
+                                                              <div
+                                                                class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                              />
+                                                            </th>
                                                           </tr>
                                                         </thead>
                                                         <tbody
@@ -1231,138 +1348,366 @@ exports[`SwitchAAATab should render correctly 1`] = `
                           type="text"
                         />
                         <div
-                          class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost"
+                          class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
                         >
                           <div
-                            class="ant-collapse-item ant-collapse-item-active"
+                            class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost"
                           >
                             <div
-                              aria-expanded="true"
-                              class="ant-collapse-header"
-                              role="button"
-                              tabindex="0"
+                              class="ant-collapse-item ant-collapse-item-active"
                             >
                               <div
-                                class="ant-collapse-expand-icon"
+                                aria-expanded="true"
+                                class="ant-collapse-header"
+                                role="button"
+                                tabindex="0"
                               >
-                                <span
-                                  aria-label="right"
-                                  class="anticon anticon-right ant-collapse-arrow"
-                                  role="img"
+                                <div
+                                  class="ant-collapse-expand-icon"
                                 >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="right"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    style="transform: rotate(90deg);"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
+                                  <span
+                                    aria-label="right"
+                                    class="anticon anticon-right ant-collapse-arrow"
+                                    role="img"
                                   >
-                                    <path
-                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                                    />
-                                  </svg>
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="right"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      style="transform: rotate(90deg);"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </div>
+                                <span
+                                  class="ant-collapse-header-text"
+                                >
+                                  Log-in Authentication
                                 </span>
                               </div>
-                              <span
-                                class="ant-collapse-header-text"
-                              >
-                                Log-in Authentication
-                              </span>
-                            </div>
-                            <div
-                              class="ant-collapse-content ant-collapse-content-active"
-                            >
                               <div
-                                class="ant-collapse-content-box"
+                                class="ant-collapse-content ant-collapse-content-active"
                               >
                                 <div
-                                  class="ant-form-item"
+                                  class="ant-collapse-content-box"
                                 >
                                   <div
-                                    class="ant-row ant-form-item-row"
+                                    class="ant-form-item ant-form-item-has-success"
                                   >
                                     <div
-                                      class="ant-col ant-col-4 ant-form-item-label"
-                                    >
-                                      <label
-                                        class=""
-                                        for="aaa-settings_authnEnabledSsh"
-                                        title="SSH Authentication"
-                                      >
-                                        SSH Authentication
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="ant-col ant-form-item-control"
+                                      class="ant-row ant-form-item-row"
                                     >
                                       <div
-                                        class="ant-form-item-control-input"
+                                        class="ant-col ant-form-item-label"
+                                        style="flex: 0 0 150px;"
+                                      >
+                                        <label
+                                          class=""
+                                          for="aaa-settings_authnEnabledSsh"
+                                          title="SSH Authentication"
+                                        >
+                                          SSH Authentication
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
                                       >
                                         <div
-                                          class="ant-form-item-control-input-content"
+                                          class="ant-form-item-control-input"
                                         >
-                                          <button
-                                            aria-checked="true"
-                                            class="ant-switch ant-switch-checked"
-                                            id="aaa-settings_authnEnabledSsh"
-                                            role="switch"
-                                            type="button"
+                                          <div
+                                            class="ant-form-item-control-input-content"
                                           >
-                                            <div
-                                              class="ant-switch-handle"
-                                            />
-                                            <span
-                                              class="ant-switch-inner"
-                                            />
-                                          </button>
+                                            <button
+                                              aria-checked="true"
+                                              class="ant-switch ant-switch-checked"
+                                              id="aaa-settings_authnEnabledSsh"
+                                              role="switch"
+                                              type="button"
+                                            >
+                                              <div
+                                                class="ant-switch-handle"
+                                              />
+                                              <span
+                                                class="ant-switch-inner"
+                                              />
+                                            </button>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                                <div
-                                  class="ant-form-item"
-                                >
                                   <div
-                                    class="ant-row ant-form-item-row"
+                                    class="ant-form-item ant-form-item-has-success"
                                   >
                                     <div
-                                      class="ant-col ant-col-4 ant-form-item-label"
-                                    >
-                                      <label
-                                        class=""
-                                        for="aaa-settings_authnEnableTelnet"
-                                        title="Telnet Authentication"
-                                      >
-                                        Telnet Authentication
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="ant-col ant-form-item-control"
+                                      class="ant-row ant-form-item-row"
                                     >
                                       <div
-                                        class="ant-form-item-control-input"
+                                        class="ant-col ant-form-item-label"
+                                        style="flex: 0 0 150px;"
+                                      >
+                                        <label
+                                          class=""
+                                          for="aaa-settings_authnEnableTelnet"
+                                          title="Telnet Authentication"
+                                        >
+                                          Telnet Authentication
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
                                       >
                                         <div
-                                          class="ant-form-item-control-input-content"
+                                          class="ant-form-item-control-input"
                                         >
-                                          <button
-                                            aria-checked="false"
-                                            class="ant-switch"
-                                            id="aaa-settings_authnEnableTelnet"
-                                            role="switch"
-                                            type="button"
+                                          <div
+                                            class="ant-form-item-control-input-content"
+                                          >
+                                            <button
+                                              aria-checked="false"
+                                              class="ant-switch"
+                                              id="aaa-settings_authnEnableTelnet"
+                                              role="switch"
+                                              type="button"
+                                            >
+                                              <div
+                                                class="ant-switch-handle"
+                                              />
+                                              <span
+                                                class="ant-switch-inner"
+                                              />
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="ant-form-item"
+                                  >
+                                    <div
+                                      class="ant-row ant-form-item-row"
+                                    >
+                                      <div
+                                        class="ant-col ant-form-item-label"
+                                        style="flex: 0 0 150px;"
+                                      >
+                                        <label
+                                          class="ant-form-item-required"
+                                          for="aaa-settings_selectedLoginServers"
+                                          title="Set Priority"
+                                        >
+                                          Set Priority
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input"
+                                        >
+                                          <div
+                                            class="ant-form-item-control-input-content"
                                           >
                                             <div
-                                              class="ant-switch-handle"
-                                            />
-                                            <span
-                                              class="ant-switch-inner"
-                                            />
-                                          </button>
+                                              class="ant-transfer"
+                                            >
+                                              <div
+                                                class="ant-transfer-list"
+                                                style="width: 300px; height: 172px;"
+                                              >
+                                                <div
+                                                  class="ant-transfer-list-header"
+                                                >
+                                                  <span
+                                                    class="ant-transfer-list-header-selected"
+                                                  >
+                                                    2 items
+                                                  </span>
+                                                  <span
+                                                    class="ant-transfer-list-header-title"
+                                                  >
+                                                    Available Servers & Users
+                                                  </span>
+                                                </div>
+                                                <div
+                                                  class="ant-transfer-list-body"
+                                                >
+                                                  <ul
+                                                    class="ant-transfer-list-content"
+                                                  >
+                                                    <li
+                                                      class="ant-transfer-list-content-item"
+                                                      title="RADIUS Servers"
+                                                    >
+                                                      <label
+                                                        class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                      >
+                                                        <span
+                                                          class="ant-checkbox"
+                                                        >
+                                                          <input
+                                                            class="ant-checkbox-input"
+                                                            type="checkbox"
+                                                            value=""
+                                                          />
+                                                          <span
+                                                            class="ant-checkbox-inner"
+                                                          />
+                                                        </span>
+                                                      </label>
+                                                      <span
+                                                        class="ant-transfer-list-content-item-text"
+                                                      >
+                                                        RADIUS Servers
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      class="ant-transfer-list-content-item"
+                                                      title="No Authentication"
+                                                    >
+                                                      <label
+                                                        class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                      >
+                                                        <span
+                                                          class="ant-checkbox"
+                                                        >
+                                                          <input
+                                                            class="ant-checkbox-input"
+                                                            type="checkbox"
+                                                            value=""
+                                                          />
+                                                          <span
+                                                            class="ant-checkbox-inner"
+                                                          />
+                                                        </span>
+                                                      </label>
+                                                      <span
+                                                        class="ant-transfer-list-content-item-text"
+                                                      >
+                                                        No Authentication
+                                                      </span>
+                                                    </li>
+                                                  </ul>
+                                                </div>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-operation"
+                                              >
+                                                <button
+                                                  class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                  disabled=""
+                                                  type="button"
+                                                >
+                                                  <span
+                                                    aria-label="right"
+                                                    class="anticon anticon-right"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="right"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="64 64 896 896"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                </button>
+                                                <button
+                                                  class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                                  disabled=""
+                                                  type="button"
+                                                >
+                                                  <span
+                                                    aria-label="left"
+                                                    class="anticon anticon-left"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="left"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="64 64 896 896"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                </button>
+                                              </div>
+                                              <div
+                                                class="ant-transfer-list"
+                                                style="width: 300px; height: 172px;"
+                                              >
+                                                <div
+                                                  class="ant-transfer-list-header"
+                                                >
+                                                  <span
+                                                    class="ant-transfer-list-header-selected"
+                                                  >
+                                                    1 item
+                                                  </span>
+                                                  <span
+                                                    class="ant-transfer-list-header-title"
+                                                  >
+                                                    Selected order
+                                                  </span>
+                                                </div>
+                                                <div
+                                                  class="ant-transfer-list-body"
+                                                >
+                                                  <ul
+                                                    class="ant-transfer-list-content"
+                                                  >
+                                                    <li
+                                                      class="ant-transfer-list-content-item"
+                                                      title="Local Users"
+                                                    >
+                                                      <label
+                                                        class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                      >
+                                                        <span
+                                                          class="ant-checkbox"
+                                                        >
+                                                          <input
+                                                            class="ant-checkbox-input"
+                                                            type="checkbox"
+                                                            value=""
+                                                          />
+                                                          <span
+                                                            class="ant-checkbox-inner"
+                                                          />
+                                                        </span>
+                                                      </label>
+                                                      <span
+                                                        class="ant-transfer-list-content-item-text"
+                                                      >
+                                                        Local Users
+                                                      </span>
+                                                    </li>
+                                                  </ul>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -1370,137 +1715,139 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          <div
-                            class="ant-collapse-item ant-collapse-item-active"
-                          >
                             <div
-                              aria-expanded="true"
-                              class="ant-collapse-header"
-                              role="button"
-                              tabindex="0"
+                              class="ant-collapse-item ant-collapse-item-active"
                             >
                               <div
-                                class="ant-collapse-expand-icon"
+                                aria-expanded="true"
+                                class="ant-collapse-header"
+                                role="button"
+                                tabindex="0"
                               >
-                                <span
-                                  aria-label="right"
-                                  class="anticon anticon-right ant-collapse-arrow"
-                                  role="img"
+                                <div
+                                  class="ant-collapse-expand-icon"
                                 >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="right"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    style="transform: rotate(90deg);"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
+                                  <span
+                                    aria-label="right"
+                                    class="anticon anticon-right ant-collapse-arrow"
+                                    role="img"
                                   >
-                                    <path
-                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                                    />
-                                  </svg>
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="right"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      style="transform: rotate(90deg);"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </div>
+                                <span
+                                  class="ant-collapse-header-text"
+                                >
+                                  Authorization
                                 </span>
                               </div>
-                              <span
-                                class="ant-collapse-header-text"
-                              >
-                                Authorization
-                              </span>
-                            </div>
-                            <div
-                              class="ant-collapse-content ant-collapse-content-active"
-                            >
                               <div
-                                class="ant-collapse-content-box"
+                                class="ant-collapse-content ant-collapse-content-active"
                               >
                                 <div
-                                  class="ant-form-item"
+                                  class="ant-collapse-content-box"
                                 >
                                   <div
-                                    class="ant-row ant-form-item-row"
+                                    class="ant-form-item ant-form-item-has-success"
                                   >
                                     <div
-                                      class="ant-col ant-col-4 ant-form-item-label"
-                                    >
-                                      <label
-                                        class=""
-                                        for="aaa-settings_authzEnabledCommand"
-                                        title="Command Authorization"
-                                      >
-                                        Command Authorization
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="ant-col ant-form-item-control"
+                                      class="ant-row ant-form-item-row"
                                     >
                                       <div
-                                        class="ant-form-item-control-input"
+                                        class="ant-col ant-form-item-label"
+                                        style="flex: 0 0 150px;"
+                                      >
+                                        <label
+                                          class=""
+                                          for="aaa-settings_authzEnabledCommand"
+                                          title="Command Authorization"
+                                        >
+                                          Command Authorization
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
                                       >
                                         <div
-                                          class="ant-form-item-control-input-content"
+                                          class="ant-form-item-control-input"
                                         >
-                                          <button
-                                            aria-checked="false"
-                                            class="ant-switch"
-                                            id="aaa-settings_authzEnabledCommand"
-                                            role="switch"
-                                            type="button"
+                                          <div
+                                            class="ant-form-item-control-input-content"
                                           >
-                                            <div
-                                              class="ant-switch-handle"
-                                            />
-                                            <span
-                                              class="ant-switch-inner"
-                                            />
-                                          </button>
+                                            <button
+                                              aria-checked="false"
+                                              class="ant-switch"
+                                              id="aaa-settings_authzEnabledCommand"
+                                              role="switch"
+                                              type="button"
+                                            >
+                                              <div
+                                                class="ant-switch-handle"
+                                              />
+                                              <span
+                                                class="ant-switch-inner"
+                                              />
+                                            </button>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                                <div
-                                  class="ant-form-item"
-                                >
                                   <div
-                                    class="ant-row ant-form-item-row"
+                                    class="ant-form-item ant-form-item-has-success"
                                   >
                                     <div
-                                      class="ant-col ant-col-4 ant-form-item-label"
-                                    >
-                                      <label
-                                        class=""
-                                        for="aaa-settings_authzEnabledExec"
-                                        title="Executive Authorization"
-                                      >
-                                        Executive Authorization
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="ant-col ant-form-item-control"
+                                      class="ant-row ant-form-item-row"
                                     >
                                       <div
-                                        class="ant-form-item-control-input"
+                                        class="ant-col ant-form-item-label"
+                                        style="flex: 0 0 150px;"
+                                      >
+                                        <label
+                                          class=""
+                                          for="aaa-settings_authzEnabledExec"
+                                          title="Executive Authorization"
+                                        >
+                                          Executive Authorization
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
                                       >
                                         <div
-                                          class="ant-form-item-control-input-content"
+                                          class="ant-form-item-control-input"
                                         >
-                                          <button
-                                            aria-checked="false"
-                                            class="ant-switch"
-                                            id="aaa-settings_authzEnabledExec"
-                                            role="switch"
-                                            type="button"
+                                          <div
+                                            class="ant-form-item-control-input-content"
                                           >
-                                            <div
-                                              class="ant-switch-handle"
-                                            />
-                                            <span
-                                              class="ant-switch-inner"
-                                            />
-                                          </button>
+                                            <button
+                                              aria-checked="false"
+                                              class="ant-switch"
+                                              id="aaa-settings_authzEnabledExec"
+                                              role="switch"
+                                              type="button"
+                                            >
+                                              <div
+                                                class="ant-switch-handle"
+                                              />
+                                              <span
+                                                class="ant-switch-inner"
+                                              />
+                                            </button>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -1508,137 +1855,139 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          <div
-                            class="ant-collapse-item ant-collapse-item-active"
-                          >
                             <div
-                              aria-expanded="true"
-                              class="ant-collapse-header"
-                              role="button"
-                              tabindex="0"
+                              class="ant-collapse-item ant-collapse-item-active"
                             >
                               <div
-                                class="ant-collapse-expand-icon"
+                                aria-expanded="true"
+                                class="ant-collapse-header"
+                                role="button"
+                                tabindex="0"
                               >
-                                <span
-                                  aria-label="right"
-                                  class="anticon anticon-right ant-collapse-arrow"
-                                  role="img"
+                                <div
+                                  class="ant-collapse-expand-icon"
                                 >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="right"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    style="transform: rotate(90deg);"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
+                                  <span
+                                    aria-label="right"
+                                    class="anticon anticon-right ant-collapse-arrow"
+                                    role="img"
                                   >
-                                    <path
-                                      d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                                    />
-                                  </svg>
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="right"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      style="transform: rotate(90deg);"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </div>
+                                <span
+                                  class="ant-collapse-header-text"
+                                >
+                                  Accounting
                                 </span>
                               </div>
-                              <span
-                                class="ant-collapse-header-text"
-                              >
-                                Accounting
-                              </span>
-                            </div>
-                            <div
-                              class="ant-collapse-content ant-collapse-content-active"
-                            >
                               <div
-                                class="ant-collapse-content-box"
+                                class="ant-collapse-content ant-collapse-content-active"
                               >
                                 <div
-                                  class="ant-form-item"
+                                  class="ant-collapse-content-box"
                                 >
                                   <div
-                                    class="ant-row ant-form-item-row"
+                                    class="ant-form-item ant-form-item-has-success"
                                   >
                                     <div
-                                      class="ant-col ant-col-4 ant-form-item-label"
-                                    >
-                                      <label
-                                        class=""
-                                        for="aaa-settings_acctEnabledCommand"
-                                        title="Command Accounting"
-                                      >
-                                        Command Accounting
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="ant-col ant-form-item-control"
+                                      class="ant-row ant-form-item-row"
                                     >
                                       <div
-                                        class="ant-form-item-control-input"
+                                        class="ant-col ant-form-item-label"
+                                        style="flex: 0 0 150px;"
+                                      >
+                                        <label
+                                          class=""
+                                          for="aaa-settings_acctEnabledCommand"
+                                          title="Command Accounting"
+                                        >
+                                          Command Accounting
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
                                       >
                                         <div
-                                          class="ant-form-item-control-input-content"
+                                          class="ant-form-item-control-input"
                                         >
-                                          <button
-                                            aria-checked="false"
-                                            class="ant-switch"
-                                            id="aaa-settings_acctEnabledCommand"
-                                            role="switch"
-                                            type="button"
+                                          <div
+                                            class="ant-form-item-control-input-content"
                                           >
-                                            <div
-                                              class="ant-switch-handle"
-                                            />
-                                            <span
-                                              class="ant-switch-inner"
-                                            />
-                                          </button>
+                                            <button
+                                              aria-checked="false"
+                                              class="ant-switch"
+                                              id="aaa-settings_acctEnabledCommand"
+                                              role="switch"
+                                              type="button"
+                                            >
+                                              <div
+                                                class="ant-switch-handle"
+                                              />
+                                              <span
+                                                class="ant-switch-inner"
+                                              />
+                                            </button>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                                <div
-                                  class="ant-form-item"
-                                >
                                   <div
-                                    class="ant-row ant-form-item-row"
+                                    class="ant-form-item ant-form-item-has-success"
                                   >
                                     <div
-                                      class="ant-col ant-col-4 ant-form-item-label"
-                                    >
-                                      <label
-                                        class=""
-                                        for="aaa-settings_acctEnabledExec"
-                                        title="Executive Accounting"
-                                      >
-                                        Executive Accounting
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="ant-col ant-form-item-control"
+                                      class="ant-row ant-form-item-row"
                                     >
                                       <div
-                                        class="ant-form-item-control-input"
+                                        class="ant-col ant-form-item-label"
+                                        style="flex: 0 0 150px;"
+                                      >
+                                        <label
+                                          class=""
+                                          for="aaa-settings_acctEnabledExec"
+                                          title="Executive Accounting"
+                                        >
+                                          Executive Accounting
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
                                       >
                                         <div
-                                          class="ant-form-item-control-input-content"
+                                          class="ant-form-item-control-input"
                                         >
-                                          <button
-                                            aria-checked="false"
-                                            class="ant-switch"
-                                            id="aaa-settings_acctEnabledExec"
-                                            role="switch"
-                                            type="button"
+                                          <div
+                                            class="ant-form-item-control-input-content"
                                           >
-                                            <div
-                                              class="ant-switch-handle"
-                                            />
-                                            <span
-                                              class="ant-switch-inner"
-                                            />
-                                          </button>
+                                            <button
+                                              aria-checked="false"
+                                              class="ant-switch"
+                                              id="aaa-settings_acctEnabledExec"
+                                              role="switch"
+                                              type="button"
+                                            >
+                                              <div
+                                                class="ant-switch-handle"
+                                              />
+                                              <span
+                                                class="ant-switch-inner"
+                                              />
+                                            </button>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>

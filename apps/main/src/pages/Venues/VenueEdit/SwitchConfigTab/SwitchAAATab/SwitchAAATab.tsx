@@ -104,7 +104,7 @@ export function SwitchAAATab () {
         <StepsForm.SectionTitle id='aaa-settings'>
           { settingsTitle }
         </StepsForm.SectionTitle>
-        <StepsForm.StepForm name='aaa-settings' layout='horizontal' labelCol={{ span: 4 }}>
+        <StepsForm.StepForm name='aaa-settings' layout='horizontal' labelCol={{ flex: '150px' }}>
           <AAASettings />
         </StepsForm.StepForm>
       </>
