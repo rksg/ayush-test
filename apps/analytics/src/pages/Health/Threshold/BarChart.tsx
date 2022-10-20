@@ -60,7 +60,7 @@ function BarChart ({
     }
   )
   const data = {
-    dimensions: ['x', 'y'],
+    dimensions: ['date', 'Percentage'],
     source: queryResults?.data?.[0]?.data ?? [],
     seriesEncode: [
       {
