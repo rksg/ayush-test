@@ -83,7 +83,7 @@ export function RadioSettings () {
       formRef?.current?.setFieldsValue(defaultChannelsData)
       setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
     }
-  }, [venueCaps,tripleBandRadioSettingsData,
+  }, [venueCaps, tripleBandRadioSettingsData,
     defaultChannelsData, venueSavedChannelsData, triBandRadioFeatureFlag, setEditRadioContextData])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')

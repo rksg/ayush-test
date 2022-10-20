@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Space, Tooltip, Form }               from 'antd'
 import { intersection, findIndex, map, uniq } from 'lodash'
@@ -27,7 +27,7 @@ export function RadioSettingsChannels (props: {
   groupSize: number,
   channelList: RadioChannel[],
   displayBarSettings: string[],
-  checkedValues: string[],
+  checkedValues?: string[],
   disabled?: boolean,
   readonly?: boolean,
   channelBars: {
@@ -45,7 +45,8 @@ export function RadioSettingsChannels (props: {
   const showDfsBar = props.displayBarSettings.includes('DFS')
 
   const { dfsChannels, lower5GChannels, upper5GChannels } = props.channelBars
-  const channelValueList = props.channelList?.map((channelItem: RadioChannel) => channelItem.value)
+  const [channelValueList, setChannelValueList] =
+  useState<string[]>(props.channelList?.map((channelItem: RadioChannel) => channelItem.value))
 
   const avaliableBarChannels = {
     dfs: getAvaliableBarChannels(dfsChannels, channelValueList),
@@ -78,6 +79,14 @@ export function RadioSettingsChannels (props: {
     const selectedValue = await getSelectedValues(channelGroupValueList, checkedValues)
     form.setFieldValue(props.formName, selectedValue)
   }
+
+  useEffect(() => {
+    if(props.channelList && props.groupSize){
+      setChannelValueList(props.channelList.map((channelItem: RadioChannel) => channelItem.value))
+      const channelGroupListArray = getChannelGroupListArray(props.channelList, props.groupSize)
+      setChannelGroupList(getChannelGroupList(channelGroupListArray as RadioChannel[][]))
+    }
+  }, [props.channelList, props.groupSize])
 
   return (<>
     {showLowerUpper5GBar && <div>
@@ -127,6 +136,7 @@ export function RadioSettingsChannels (props: {
             }))}
           />
         }
+        style={{ width: '100vw', height: '50px' }}
       />
 
     </Space>

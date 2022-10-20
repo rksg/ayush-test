@@ -11,6 +11,7 @@ import {
   channelBandwidth6GOptions,
   txPowerAdjustmentOptions
 } from '../contents'
+import { RadioSettingsChannels }   from '../RadioSettingsChannels'
 import { FieldLabel, MultiSelect } from '../styledComponents'
 
 const { useWatch } = Form
@@ -20,6 +21,7 @@ export function Radio6GHz () {
 
   const { tenantId, venueId } = useParams()
   const [defaultChannels, setDefaultChannels] = useState<string[]>([''])
+  const [groupSize, setGroupSize] = useState<number>(1)
 
   const [
     channelMethod,
@@ -33,20 +35,41 @@ export function Radio6GHz () {
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
 
   useEffect(() => {
+    const channelType = channelBandwidth === 'AUTO' ?
+      channelBandwidth.toLowerCase() : channelBandwidth
     if(defaultChannelsData){
-      setDefaultChannels(defaultChannelsData['6GChannels']['auto'])
+      setDefaultChannels(defaultChannelsData['6GChannels'][channelType])
     }
 
     if(defaultChannelsData && channelBandwidth){
-      const channelType = channelBandwidth === 'AUTO' ?
-        channelBandwidth.toLowerCase() : channelBandwidth
       setDefaultChannels(defaultChannelsData['6GChannels'][channelType])
+      switch(channelBandwidth){
+        case '40MHz':
+          setGroupSize(2)
+          break
+        case '80MHz':
+          setGroupSize(4)
+          break
+        case '160MHz':
+          setGroupSize(8)
+          break
+        default:
+          setGroupSize(1)
+          break
+      }
     }
   }, [defaultChannelsData, channelBandwidth])
 
   function formatter (value: any) {
     return `${value}%`
   }
+
+  const channelBars = {
+    dfsChannels: [],
+    lower5GChannels: [],
+    upper5GChannels: []
+  }
+
   return (
     <Space direction='vertical'
       size='middle'
@@ -101,8 +124,10 @@ export function Radio6GHz () {
         <Form.Item
           name={['radioParams6G', 'channelBandwidth']}>
           <Select
-            options={channelBandwidth6GOptions?.map(p => ({ label: p.label, value: p.value }))}
-            defaultValue={channelBandwidth6GOptions[0].value}
+            options={defaultChannelsData &&
+              Object.keys(defaultChannelsData['6GChannels'])
+                .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+            defaultValue={'auto'}
           />
         </Form.Item>
       </FieldLabel>
@@ -127,16 +152,15 @@ export function Radio6GHz () {
         }
       </div>
       <div>
-        <MultiSelect>
-          <Form.Item
-            name={['radioParams6G', 'allowedChannels']}
-            children={
-              <Checkbox.Group
-                options={defaultChannels}
-              />
-            }
-          />
-        </MultiSelect>
+        <RadioSettingsChannels
+          formName={['radioParams6G', 'allowedChannels']}
+          groupSize={groupSize}
+          channelList={defaultChannels.map(item =>
+            ({ value: item, selected: false }))}
+          displayBarSettings={[]}
+          channelBars={channelBars}
+          disabled={false}
+        />
         <Form.Item
           name={['radioParams6G', 'bssMinRate6G']}
           initialValue={'HE_MCS_0'}

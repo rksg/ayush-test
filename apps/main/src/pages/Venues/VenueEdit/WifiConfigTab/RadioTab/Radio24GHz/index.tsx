@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Checkbox, Form, InputNumber, Select, Slider, Space } from 'antd'
 import { useIntl }                                            from 'react-intl'
@@ -8,13 +8,14 @@ import {
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext }  from '../../..'
 import {
   channelSelectionMethodsOptions,
   channelBandwidth24GOptions,
   txPowerAdjustmentOptions
 } from '../contents'
+import { RadioSettingsChannels }   from '../RadioSettingsChannels'
 import { FieldLabel, MultiSelect } from '../styledComponents'
+
 
 const { useWatch } = Form
 
@@ -47,11 +48,18 @@ export function Radio24GHz () {
       setValidChannels(
         validChannelsData['2.4GChannels'][channelType]
       )
+      console.log(validChannels)
     }
   }, [validChannelsData, channelBandwidth])
 
   function formatter (value: any) {
     return `${value}%`
+  }
+
+  const channelBars = {
+    dfsChannels: [],
+    lower5GChannels: [],
+    upper5GChannels: []
   }
 
   return (
@@ -103,8 +111,10 @@ export function Radio24GHz () {
         <Form.Item
           name={['radioParams24G', 'channelBandwidth']}>
           <Select
-            options={channelBandwidth24GOptions?.map(p => ({ label: p.label, value: p.value }))}
-            defaultValue={channelBandwidth24GOptions[0].value}
+            options={validChannelsData &&
+              Object.keys(validChannelsData['2.4GChannels'])
+                .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+            defaultValue={'auto'}
           />
         </Form.Item>
       </FieldLabel>
@@ -127,18 +137,15 @@ export function Radio24GHz () {
           $t({ defaultMessage: 'Selected channels will be available for radio broadcasting in this venue. Hover to see overlapping channels' })
         }
       </div>
-      <FieldLabel width='25px'>
-        <MultiSelect>
-          <Form.Item
-            name={['radioParams24G', 'allowedChannels']}
-            children={
-              <Checkbox.Group
-                options={validChannels.map(item => ({ label: item, value: item }))}
-              />
-            }
-          />
-        </MultiSelect>
-      </FieldLabel>
+      <RadioSettingsChannels
+        formName={['radioParams24G', 'allowedChannels']}
+        groupSize={1}
+        channelList={validChannels.map(item =>
+          ({ value: item, selected: false }))}
+        displayBarSettings={[]}
+        channelBars={channelBars}
+        disabled={false}
+      />
     </Space>
   )
 }

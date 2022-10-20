@@ -13,6 +13,7 @@ import {
   txPowerAdjustmentOptions
 } from '../contents'
 import { FieldLabel, MultiSelect } from '../styledComponents'
+import { RadioSettingsChannels } from '../RadioSettingsChannels'
 
 const { useWatch } = Form
 
@@ -33,34 +34,51 @@ export function RadioUpper5GHz () {
   const [inheritSettings, setInheritSettings] = useState<boolean>(false)
   const [defaultIndoorChannels, setDefaultIndoorChannels] = useState<string[]>([''])
   const [defaultOutdoorChannels, setDefaultOutdoorChannels] = useState<string[]>([''])
+  const [groupSize, setGroupSize] = useState<number>(1)
 
-  const { data: defaultIndoorChannelsData } =
+  const { data: defaultChannelsData } =
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
 
+  const channelType = channelBandwidth === 'AUTO' ?
+    channelBandwidth.toLowerCase() : channelBandwidth
+
   useEffect(() => {
-    if(defaultIndoorChannelsData){
+    if(defaultChannelsData){
       setDefaultIndoorChannels(
-        defaultIndoorChannelsData['5GUpperChannels']['indoor']['auto']
+        defaultChannelsData['5GUpperChannels']['indoor']['auto']
       )
       setDefaultOutdoorChannels(
-        defaultIndoorChannelsData['5GUpperChannels']['outdoor']['auto']
+        defaultChannelsData['5GUpperChannels']['outdoor']['auto']
       )
     }
-    if(defaultIndoorChannelsData && channelBandwidth){
-      const channelType = channelBandwidth === 'AUTO' ?
-        channelBandwidth.toLowerCase() : channelBandwidth
+    if(defaultChannelsData && channelBandwidth){
       setDefaultIndoorChannels(
-        defaultIndoorChannelsData['5GUpperChannels']['indoor'][channelType]
+        defaultChannelsData['5GUpperChannels']['indoor'][channelType]
       )
       setDefaultOutdoorChannels(
-        defaultIndoorChannelsData['5GUpperChannels']['outdoor'][channelType]
+        defaultChannelsData['5GUpperChannels']['outdoor'][channelType]
       )
+
+      switch(channelBandwidth){
+        case '40MHz':
+          setGroupSize(2)
+          break
+        case '80MHz':
+          setGroupSize(4)
+          break
+        case '160MHz':
+          setGroupSize(8)
+          break
+        default:
+          setGroupSize(1)
+          break
+      }
     }
 
     if(channelInheritSettings){
       setInheritSettings(channelInheritSettings)
     }
-  }, [defaultIndoorChannelsData, channelBandwidth, channelInheritSettings])
+  }, [defaultChannelsData, channelBandwidth, channelInheritSettings])
 
   function formatter (value: any) {
     return `${value}%`
@@ -68,6 +86,14 @@ export function RadioUpper5GHz () {
 
   const on5GHzSettingChange = (e: RadioChangeEvent) => {
     setInheritSettings(e.target.value)
+  }
+
+  const channelBars = {
+    dfsChannels: defaultChannelsData && defaultChannelsData['5GUpperChannels']['dfs'][channelType]
+     || [],
+    lower5GChannels: [],
+    upper5GChannels: ['100', '104', '108', '112', '116', '120', '124',
+      '128', '132', '136', '140', '144', '149', '153', '157', '161']
   }
 
   return (
@@ -141,8 +167,10 @@ export function RadioUpper5GHz () {
         <Form.Item
           name={['radioParamsDual5G', 'radioParamsUpper5G', 'channelBandwidth']}>
           <Select
-            options={channelBandwidth50GOptions?.map(p => ({ label: p.label, value: p.value }))}
-            defaultValue={channelBandwidth50GOptions[0].value}
+            options={defaultChannelsData &&
+              Object.keys(defaultChannelsData['5GUpperChannels']['dfs'])
+                .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+            defaultValue={'auto'}
             disabled={inheritSettings}
           />
         </Form.Item>
@@ -171,68 +199,28 @@ export function RadioUpper5GHz () {
 
       <div>
         <div>{$t({ defaultMessage: 'Indoor Aps' })}</div>
-        <Button
-          type='link'
-          onClick={() => {}}
-        >
-          {$t({ defaultMessage: 'Lower 5G' })}
-        </Button>
-        <Button
-          type='link'
-          onClick={() => {}}
-        >
-          {$t({ defaultMessage: 'Upper 5G' })}
-        </Button>
-        <Button
-          type='link'
-          onClick={() => {}}
-        >
-          {$t({ defaultMessage: 'DFS' })}
-        </Button>
-        <MultiSelect>
-          <Form.Item
-            name={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedIndoorChannels']}
-            children={
-              <Checkbox.Group
-                options={defaultIndoorChannels}
-                disabled={inheritSettings}
-              />
-            }
-          />
-        </MultiSelect>
+        <RadioSettingsChannels
+          formName={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedIndoorChannels']}
+          groupSize={groupSize}
+          channelList={defaultIndoorChannels.map(item =>
+            ({ value: item, selected: false }))}
+          displayBarSettings={['5G', 'DFS']}
+          channelBars={channelBars}
+          disabled={inheritSettings}
+        />
       </div>
 
-      <div style={{ marginTop: '50px' }}>
+      <div>
         <div>{$t({ defaultMessage: 'Outdoor Aps' })}</div>
-        <Button
-          type='link'
-          onClick={() => {}}
-        >
-          {$t({ defaultMessage: 'Lower 5G' })}
-        </Button>
-        <Button
-          type='link'
-          onClick={() => {}}
-        >
-          {$t({ defaultMessage: 'Upper 5G' })}
-        </Button>
-        <Button
-          type='link'
-          onClick={() => {}}
-        >
-          {$t({ defaultMessage: 'DFS' })}
-        </Button>
-        <MultiSelect>
-          <Form.Item
-            name={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedOutdoorChannels']}
-            children={
-              <Checkbox.Group
-                options={defaultOutdoorChannels}
-                disabled={inheritSettings}
-              />
-            }
-          />
-        </MultiSelect>
+        <RadioSettingsChannels
+          formName={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedOutdoorChannels']}
+          groupSize={groupSize}
+          channelList={defaultOutdoorChannels.map(item =>
+            ({ value: item, selected: false }))}
+          displayBarSettings={['5G', 'DFS']}
+          channelBars={channelBars}
+          disabled={inheritSettings}
+        />
         <Form.Item
           name={['radioParamsDual5G', 'radioParamsUpper5G', 'combineChannels']}
           initialValue={false}
