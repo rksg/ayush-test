@@ -1,9 +1,9 @@
-import { Tabs }    from 'antd'
-import { useIntl } from 'react-intl'
-
+import { Tabs, Tooltip } from 'antd'
+import { useIntl }       from 'react-intl'
 
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                       from '@acx-ui/utils'
 
 function NetworkTabs () {
   const { $t } = useIntl()
@@ -26,16 +26,31 @@ function NetworkTabs () {
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
+      <Tabs.TabPane
+        disabled
+        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Overview' })}</Tooltip>}
+        key='overview'
+      />
       <Tabs.TabPane tab={$t({ defaultMessage: 'APs ({apsCount})' }, { apsCount })} key='aps' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
         key='venues' />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
+        disabled
+        tab={<Tooltip title={$t(notAvailableMsg)}>
+          {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
+        </Tooltip>}
         key='services' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Events' })} key='events' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents' />
+      <Tabs.TabPane
+        disabled
+        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Events' })}</Tooltip>}
+        key='events'
+      />
+      <Tabs.TabPane
+        disabled
+        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Incidents' })}</Tooltip>}
+        key='incidents'
+      />
     </Tabs>
   )
 }
