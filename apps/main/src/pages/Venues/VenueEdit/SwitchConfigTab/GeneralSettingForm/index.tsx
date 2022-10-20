@@ -56,7 +56,8 @@ export function GeneralSettingForm () {
   const formRef = useRef<StepsFormInstance<VenueSwitchConfiguration>>()
   const venueSwitchSetting = useVenueSwitchSettingQuery({ params: { tenantId, venueId } })
   const configProfiles = useConfigProfilesQuery({ params: { tenantId, venueId }, payload: {} })
-  const [updateVenueSwitchSetting] = useUpdateVenueSwitchSettingMutation()
+  const [updateVenueSwitchSetting, {
+    isLoading: isUpdatingVenueSwitchSetting }] = useUpdateVenueSwitchSettingMutation()
 
   const [formState, setFormState] = useState<FormState>(defaultState)
   const [formData, setFormData] = useState<VenueSwitchConfiguration>(defaultFormData)
@@ -135,7 +136,7 @@ export function GeneralSettingForm () {
     })
   }
 
-  const handleUpdate = async (redirect?: boolean) => {
+  const handleUpdate = async () => {
     try {
       setEditContextData({
         ...editContextData,
@@ -150,12 +151,6 @@ export function GeneralSettingForm () {
         syslogPrimaryServer: formData?.syslogPrimaryServer,
         syslogSecondaryServer: formData?.syslogSecondaryServer
       } })
-      if (redirect) {
-        navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-        })
-      }
     } catch {
       showToast({
         type: 'error',
@@ -165,10 +160,13 @@ export function GeneralSettingForm () {
   }
 
   return (
-    <Loader states={[{ isLoading: venueSwitchSetting.isLoading || configProfiles.isLoading }]}>
+    <Loader states={[{
+      isLoading: venueSwitchSetting.isLoading || configProfiles.isLoading,
+      isFetching: isUpdatingVenueSwitchSetting
+    }]}>
       <StepsForm
         formRef={formRef}
-        onFinish={() => handleUpdate(true)}
+        onFinish={() => handleUpdate()}
         onCancel={() => navigate({
           ...basePath,
           pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
@@ -204,18 +202,18 @@ export function GeneralSettingForm () {
                     <ButtonWrapper size={0}
                       split={selectedProfiles?.length > 0 && <Divider type='vertical' />}
                     >
-                      { selectedProfiles?.length > 0 &&
-                          <Button type='link'
-                            key='view'
-                            onClick={() => {
-                              const selectedCLI = selectedProfiles?.filter(p =>
-                                p.profileType === ProfileTypeEnum.CLI)?.length
-                              selectedCLI
-                                ? setFormState({ ...formState, cliModalvisible: true })
-                                : setFormState({ ...formState, regularModalvisible: true })
-                            }}>
-                            {$t({ defaultMessage: 'View Details' })}
-                          </Button> }
+                      {selectedProfiles?.length > 0 &&
+                        <Button type='link'
+                          key='view'
+                          onClick={() => {
+                            const selectedCLI = selectedProfiles?.filter(p =>
+                              p.profileType === ProfileTypeEnum.CLI)?.length
+                            selectedCLI
+                              ? setFormState({ ...formState, cliModalvisible: true })
+                              : setFormState({ ...formState, regularModalvisible: true })
+                          }}>
+                          {$t({ defaultMessage: 'View Details' })}
+                        </Button>}
 
                       <Button type='link'
                         key='select'
@@ -258,9 +256,9 @@ export function GeneralSettingForm () {
                           suffix={
                             <DeleteOutlinedIcon
                               role='deleteBtn'
-                              onClick={()=> {
+                              onClick={() => {
                                 const dns = formRef?.current?.getFieldsValue()?.dns
-                                const data = dns?.filter((d: string, idx:number) => idx !== index)
+                                const data = dns?.filter((d: string, idx: number) => idx !== index)
                                 setFormData({ ...formData, dns: data })
                                 formRef.current?.setFieldsValue({ dns: data })
                               }}
@@ -299,12 +297,12 @@ export function GeneralSettingForm () {
             </Col>
           </RowStyle>
           <ConfigProfileModal {...{ formState, setFormState, formData, setFormData }} />
-          { formState.cliModalvisible &&
-            <CliProfileDetailModal {...{ formState, setFormState, formData }} /> }
-          { formState.syslogModalvisible &&
-            <SyslogServerModal {...{ formState, setFormState, formData, setFormData }} /> }
-          { formState.regularModalvisible &&
-            <RegularProfileDetailModal {...{ formState, setFormState, formData }} /> }
+          {formState.cliModalvisible &&
+            <CliProfileDetailModal {...{ formState, setFormState, formData }} />}
+          {formState.syslogModalvisible &&
+            <SyslogServerModal {...{ formState, setFormState, formData, setFormData }} />}
+          {formState.regularModalvisible &&
+            <RegularProfileDetailModal {...{ formState, setFormState, formData }} />}
         </StepsForm.StepForm>
       </StepsForm>
     </Loader>
