@@ -118,23 +118,29 @@ type DispatchAction = ((payload: unknown, opt?: boolean | {
   silent?: boolean;
   flush?: boolean | undefined;
 }) => void)
-let mockDispatchActionFn: DispatchAction
+let mockDispatchAction: DispatchAction
 let eChartsRef: RefObject<ReactECharts>
 
 describe('useBrush', () => {
-  let callbacks: Record<string, (event: unknown) => void>
+  let onCallbacks: Record<string, (event: unknown) => void>
+  let mockOn: (type: string, callback: ((event: unknown) => void)) => void
+  let getZrOnCallbacks: Record<string, (event: unknown) => void>
   let mockGetZrOn: (type: string, callback: ((event: unknown) => void)) => void
   let mockSetCursorStyle: (style: string) => void
 
   beforeEach(() => {
-    mockDispatchActionFn = jest.fn() as DispatchAction
-    callbacks = {}
-    mockGetZrOn = jest.fn().mockImplementation((type, callback) => callbacks[type] = callback)
+    mockDispatchAction = jest.fn() as DispatchAction
+    onCallbacks = {}
+    mockOn = jest.fn().mockImplementation((type, callback) => onCallbacks[type] = callback)
+    getZrOnCallbacks = {}
+    mockGetZrOn = jest.fn()
+      .mockImplementation((type, callback) => getZrOnCallbacks[type] = callback)
     mockSetCursorStyle = jest.fn()
     eChartsRef = {
       current: {
         getEchartsInstance: () => ({
-          dispatchAction: mockDispatchActionFn,
+          dispatchAction: mockDispatchAction,
+          on: mockOn,
           getZr: () => ({
             on: mockGetZrOn,
             setCursorStyle: mockSetCursorStyle
@@ -152,37 +158,37 @@ describe('useBrush', () => {
 
   it('handles undefined brush prop', () => {
     renderHook(() => useBrush(eChartsRef, getSeriesData(), undefined))
-    expect(mockDispatchActionFn).not.toBeCalled()
+    expect(mockDispatchAction).not.toBeCalled()
   })
 
   it('handles brush events', () => {
     renderHook(() => useBrush(eChartsRef, getSeriesData(), ['2022-09-07', '2022-09-07']))
 
-    expect(mockDispatchActionFn).toBeCalledTimes(1)
-    expect(mockDispatchActionFn).toBeCalledWith({
+    expect(mockDispatchAction).toBeCalledTimes(1)
+    expect(mockDispatchAction).toBeCalledWith({
       type: 'brush',
       areas: [{ brushType: 'lineX', coordRange: ['2022-09-07', '2022-09-07'], xAxisIndex: 0 }]
     })
     expect(mockGetZrOn).toBeCalledWith('mousemove', expect.any(Function))
-    expect(Object.keys(callbacks)).toHaveLength(1)
+    expect(Object.keys(getZrOnCallbacks)).toHaveLength(1)
 
-    callbacks['mousemove']({ target: { type: 'anything' } })
-    callbacks['mousemove']({ target: { type: 'ec-polyline' } })
+    getZrOnCallbacks['mousemove']({ target: { type: 'anything' } })
+    getZrOnCallbacks['mousemove']({ target: { type: 'ec-polyline' } })
     expect(mockSetCursorStyle).toBeCalledWith('default')
     expect(mockSetCursorStyle).toBeCalledTimes(1)
   })
 
-  it('returns onBrushendCallback and calls onBrushChange', () => {
+  it('calls onBrushChange', () => {
     const mockOnBrushChange = jest.fn()
     renderHook(() => {
-      const onBrushendCallback = useBrush(
+      useBrush(
         eChartsRef,
         getSeriesData(),
         ['2022-09-07', '2022-09-07'],
         mockOnBrushChange
       )
-      onBrushendCallback({ areas: [{ coordRange: ['2022-09-07', '2022-09-07'] }] })
     })
+    onCallbacks['brushend']({ areas: [{ coordRange: ['2022-09-07', '2022-09-07'] }] })
     expect(mockOnBrushChange).toBeCalledTimes(1)
     expect(mockOnBrushChange).toBeCalledWith(['2022-09-07', '2022-09-07'])
   })

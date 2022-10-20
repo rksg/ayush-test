@@ -80,7 +80,17 @@ export function useBrush<TChartData extends TimeSeriesChartData> (
   data: TChartData[],
   brush?: TimeStampRange,
   onBrushChange?: (range: TimeStampRange) => void
-): (params: OnBrushendEvent) => void {
+) {
+  const onBrushendCallback = useCallback((e: unknown) => {
+    const event = e as unknown as OnBrushendEvent
+    onBrushChange && onBrushChange(event.areas[0].coordRange)
+  }, [onBrushChange])
+  useEffect(() => {
+    if (!eChartsRef?.current) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
+    echartInstance.on('brushend', onBrushendCallback)
+  })
+
   useEffect(() => {
     if (!eChartsRef?.current || isEmpty(brush)) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
@@ -94,12 +104,6 @@ export function useBrush<TChartData extends TimeSeriesChartData> (
       }
     })
   }, [eChartsRef, brush, data])
-
-  const onBrushendCallback = useCallback((event: OnBrushendEvent) => {
-    onBrushChange && onBrushChange(event.areas[0].coordRange)
-  }, [onBrushChange])
-
-  return onBrushendCallback
 }
 
 export function useOnMarkAreaClick <MarkerData> (
@@ -141,9 +145,9 @@ export function MultiLineTimeSeriesChart <
 
   disableLegend = Boolean(disableLegend)
   const zoomEnabled = !Boolean(props.brush)
-  const [canResetZoom, onDatazoomCallback, resetZoomCallback] =
+  const [canResetZoom, resetZoomCallback] =
     useDataZoom<TChartData>(eChartsRef, zoomEnabled, data, props.zoom, props.onDataZoom)
-  const onBrushendCallback = useBrush(eChartsRef, data, props.brush, props.onBrushChange)
+  useBrush(eChartsRef, data, props.brush, props.onBrushChange)
   useOnMarkAreaClick(eChartsRef, props.markers, onMarkAreaClick)
   useLegendSelectChanged(eChartsRef)
 
@@ -247,11 +251,6 @@ export function MultiLineTimeSeriesChart <
         ref={eChartsRef}
         opts={{ renderer: 'svg' }}
         option={option}
-        onEvents={zoomEnabled ? {
-          datazoom: onDatazoomCallback
-        } : {
-          brushend: onBrushendCallback
-        }}
       />
       {canResetZoom && <ResetButton
         size='small'

@@ -89,7 +89,7 @@ export function StackedAreaChart <
   const { $t } = useIntl()
 
   disableLegend = Boolean(disableLegend)
-  const [canResetZoom, onDatazoomCallback, resetZoomCallback] =
+  const [canResetZoom, resetZoomCallback] =
     useDataZoom<TChartData>(eChartsRef, true, initialData, props.zoom, props.onDataZoom)
 
   const data = tooltipTotalTitle && !isEmpty(initialData)
@@ -176,7 +176,6 @@ export function StackedAreaChart <
         ref={eChartsRef}
         opts={{ renderer: 'svg' }}
         option={option}
-        onEvents={{ datazoom: onDatazoomCallback }}
       />
       {canResetZoom && <ResetButton
         size='small'
