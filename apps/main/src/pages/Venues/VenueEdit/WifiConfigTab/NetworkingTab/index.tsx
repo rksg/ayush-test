@@ -2,7 +2,8 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, showToast, StepsForm } from '@acx-ui/components'
+import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
@@ -17,6 +18,10 @@ export interface NetworkingSettingContext {
 
 export function NetworkingTab () {
   const { $t } = useIntl()
+  const params = useParams()
+  const { venueId } = params
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/venues/')
 
   const {
     editContextData,
@@ -41,7 +46,7 @@ export function NetworkingTab () {
   const handleUpdateAllSettings = async () => {
     try {
       editNetworkingContextData?.updateCellular?.()
-      editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
+      await editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       setEditContextData({
         ...editContextData,
         unsavedTabKey: 'networking',
@@ -58,6 +63,10 @@ export function NetworkingTab () {
   return (
     <StepsForm
       onFinish={handleUpdateAllSettings}
+      onCancel={() => navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
+      })}
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
