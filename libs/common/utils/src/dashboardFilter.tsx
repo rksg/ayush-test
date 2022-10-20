@@ -34,7 +34,7 @@ export function useDashboardFilter () {
           switchNodes: formatNodes('switchGroup', nodes)
         }: {}
       },
-      setNodeFilter: (nodes: NetworkPath[]) => {
+      setNodeFilter: (nodes: string[][]) => {
         search.set(
           'dashboardVenueFilter',
           Buffer.from(JSON.stringify({ nodes: nodes.length ? nodes : [] })).toString('base64'))

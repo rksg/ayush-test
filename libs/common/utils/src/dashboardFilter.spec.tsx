@@ -45,7 +45,7 @@ describe('useDashboardFilter', () => {
     function Component () {
       const { filters, setNodeFilter } = useDashboardFilter()
       useEffect(() => {
-        setNodeFilter(filters.path)
+        setNodeFilter([['venue1']])
       // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
       return <div>{JSON.stringify(filters)}</div>
