@@ -84,17 +84,6 @@ describe('CellularOptionsForm', () => {
   })
   it('should render Cellular options form successfully', async () => {
 
-    mockServer.use(
-      rest.get(WifiUrlsInfo.getAvailableLteBands.url,
-        (_, res, ctx) => res(ctx.json(availableLteBandsResponse))),
-      rest.get(CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json(venueSetting))),
-      rest.get(WifiUrlsInfo.getVenueApModelCellular.url,
-        (_, res, ctx) => res(ctx.json(venueApModelCellularResponse))),
-      rest.put(WifiUrlsInfo.updateVenueCellularSettings.url,
-        (_, res, ctx) => res(ctx.json({})))
-    )
-
     const { asFragment } = render(
       <Provider>
         <Form>
@@ -112,26 +101,4 @@ describe('CellularOptionsForm', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-
-  xit('should render correctly', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      venueId: 'venue-id',
-      activeTab: 'wifi',
-      activeSubTab: 'networking'
-    }
-    render(
-      <Provider>
-        <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
-          <CellularOptionsForm />
-        </VenueEditContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
-      })
-
-    const wanConnection = screen.getByText(/ethernet \(primary\) with cellular failover/i)
-    fireEvent.click(wanConnection)
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
-  })
 })
