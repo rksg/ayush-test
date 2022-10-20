@@ -75,6 +75,7 @@ export function BarChart<TChartData extends BarChartData>
   ...props
 }: BarChartProps<TChartData>) {
   const option: EChartsOption = {
+    animation: false,
     grid: { ...gridOptions(), ...gridProps },
     dataset: {
       dimensions: data.dimensions,

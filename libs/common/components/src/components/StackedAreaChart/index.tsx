@@ -95,6 +95,7 @@ export function StackedAreaChart <
     : initialData
 
   const option: EChartsOption = {
+    animation: false,
     color: props.stackColors || [
       cssStr('--acx-accents-blue-30'),
       cssStr('--acx-accents-blue-70'),

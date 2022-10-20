@@ -65,7 +65,10 @@ function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
           <UI.SeveritiesContainer>
             {headers.map((datum, index) => <IncidentSeverityWidget key={index} data={datum} />)}
           </UI.SeveritiesContainer>
-          <StackedBarChart data={barCharts} showTooltip style={{ height: 100 }} />
+          <StackedBarChart data={barCharts}
+            showTooltip
+            style={{ height: 100 }}
+            axisLabelWidth={80} />
         </UI.Container>}
       </AutoSizer>
     </Card>

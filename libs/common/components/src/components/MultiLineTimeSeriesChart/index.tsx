@@ -146,6 +146,7 @@ export function MultiLineTimeSeriesChart <
   useOnMarkAreaClick(eChartsRef, props.markers, onMarkAreaClick)
 
   const option: EChartsOption = {
+    animation: false,
     color: props.lineColors || [
       cssStr('--acx-accents-blue-30'),
       cssStr('--acx-accents-blue-50'),

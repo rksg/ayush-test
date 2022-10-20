@@ -35,7 +35,17 @@ export const Wrapper = styled.div`
     margin-right: 8px;
   }
   path { stroke: var(--acx-primary-black); }
-  .ant-radio-button-wrapper-checked path { stroke: var(--acx-primary-white); }
+
+  .ant-radio-button-wrapper-checked path {
+    stroke: var(--acx-primary-white);
+  }
+
+  .ant-radio-button-wrapper-checked {
+    cursor: default;
+    &:not(.ant-radio-button-wrapper-disabled):hover {
+      color: var(--acx-primary-white);
+    }
+  }
 
   .ant-radio-group-small {
     svg {

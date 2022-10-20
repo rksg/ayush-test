@@ -31,7 +31,7 @@ interface DonutChartOptionalProps {
 }
 
 const defaultProps: DonutChartOptionalProps = {
-  showLegend: true,
+  showLegend: false,
   animation: true,
   showLabel: false,
   showTotal: true,
@@ -125,7 +125,8 @@ export function DonutChart ({
   }
 
   const option: EChartsOption = {
-    animation: props.animation,
+    // animation: props.animation,
+    animation: false,
     tooltip: {
       show: false
     },
@@ -173,7 +174,8 @@ export function DonutChart ({
     color: colors,
     series: [
       {
-        animation: !isEmpty,
+        // animation: !isEmpty,
+        animation: false,
         data,
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
