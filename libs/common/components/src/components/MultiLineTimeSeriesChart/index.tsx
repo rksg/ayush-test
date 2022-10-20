@@ -158,7 +158,9 @@ export function MultiLineTimeSeriesChart <
       legend: {
         ...legendOptions(),
         textStyle: legendTextStyleOptions(),
-        data: data.map(datum => datum[legendProp]) as unknown as string[]
+        data: data
+          .filter(datum=> datum.show !== false )
+          .map(datum => datum[legendProp]) as unknown as string[]
       }
     }),
     tooltip: {
