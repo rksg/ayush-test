@@ -10,8 +10,8 @@ import {
   fakeIncidentPoePd,
   fakeIncidentTtc
 } from '@acx-ui/analytics/utils'
-import { Provider }                     from '@acx-ui/store'
-import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import * as fixtures               from './__tests__/fixtures'
 import { ApinfraPoeLow }           from './ApinfraPoeLow'
@@ -41,7 +41,6 @@ jest.mock('../NetworkImpact')
 jest.mock('../IncidentDetails/TimeSeries')
 
 describe('Test', () => {
-  mockDOMWidth()
   fixtures.mockTimeSeries()
   fixtures.mockNetworkImpact()
 

@@ -5,6 +5,7 @@ import { Space, Tooltip }                              from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
+import AutoSizer                                       from 'react-virtualized-auto-sizer'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
@@ -42,7 +43,6 @@ export interface TableProps <RecordType>
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip' | 'form'
-    ellipsis?: boolean
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
@@ -218,7 +218,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
-
+  const hasEllipsisColumn = columns.some(column => column.ellipsis)
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
     const defaultOnRow = props.onRow?.(record)
     return {
@@ -238,11 +238,11 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
       width: colWidth[column.key],
       onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
-    }),
-    ...((props.ellipsis && col.key !== settingsKey) && { ellipsis: true })
+    })
   })
 
-  return <UI.Wrapper
+  const WrappedTable = (style: { width?: number }) => <UI.Wrapper
+    style={style}
     $type={type}
     $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
   >
@@ -297,7 +297,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
-      scroll={props.ellipsis ? {} : { x: 'max-content' }}
+      scroll={{ x: hasEllipsisColumn ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
@@ -343,6 +343,11 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       )}
     />
   </UI.Wrapper>
+  if (hasEllipsisColumn) {
+    return <AutoSizer>{({ width }) => WrappedTable({ width })}</AutoSizer>
+  } else {
+    return WrappedTable({})
+  }
 }
 
 Table.SubTitle = UI.SubTitle

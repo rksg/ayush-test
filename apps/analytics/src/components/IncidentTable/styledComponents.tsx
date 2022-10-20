@@ -108,20 +108,7 @@ styled((props: TableProps<IncidentTableRow>) => <Table {...props} />)`
     background-color: var(--incident-table-muted-row-background-color);
   }
 
-  .ant-table-cell {
-    color: unset;
-
-    &-fix-left, 
-    &-fix-right {
-      background: unset;
-    }
-  }
-  
   .ant-radio-inner {
     background-color: var(--acx-primary-white);
-  }
-
-  .ant-typography {
-    color: unset;
   }
 `

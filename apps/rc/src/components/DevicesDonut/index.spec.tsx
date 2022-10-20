@@ -1,13 +1,11 @@
 import { Provider  } from '@acx-ui/store'
 import { render,
-  screen,
-  mockDOMWidth
+  screen
 } from '@acx-ui/test-utils'
 
 import DevicesDonutWidget from '.'
 
 describe('Devices widget', () => {
-  mockDOMWidth()
 
   it('should render loader and then chart', async () => {
     const params = {

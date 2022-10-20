@@ -29,7 +29,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                 >
                   <span
                     class="ant-anchor-ink-ball visible"
-                    style="top: -4.5px;"
+                    style="top: 395.5px;"
                   />
                 </div>
                 <div
@@ -78,260 +78,38 @@ exports[`SwitchAAATab should render correctly 1`] = `
             Servers & Users
           </h3>
           <div
-            class="styledComponents__AAAServers-sc-1m2ni0r-0 ZnKYN"
+            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
           >
             <div
-              class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost"
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
             >
-              <div
-                class="ant-collapse-item ant-collapse-item-active"
+              <span
+                aria-label="loader"
+                role="img"
               >
                 <div
-                  aria-expanded="true"
-                  class="ant-collapse-header"
-                  role="button"
-                  tabindex="0"
+                  aria-busy="true"
+                  aria-live="polite"
+                  class="ant-spin ant-spin-lg ant-spin-spinning"
                 >
-                  <div
-                    class="ant-collapse-expand-icon"
-                  >
-                    <span
-                      aria-label="right"
-                      class="anticon anticon-right ant-collapse-arrow"
-                      role="img"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        data-icon="right"
-                        fill="currentColor"
-                        focusable="false"
-                        height="1em"
-                        style="transform: rotate(90deg);"
-                        viewBox="64 64 896 896"
-                        width="1em"
-                      >
-                        <path
-                          d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                        />
-                      </svg>
-                    </span>
-                  </div>
                   <span
-                    class="ant-collapse-header-text"
+                    class="ant-spin-dot ant-spin-dot-spin"
                   >
-                    RADIUS Servers (0)
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
                   </span>
                 </div>
-                <div
-                  class="ant-collapse-content ant-collapse-content-active"
-                >
-                  <div
-                    class="ant-collapse-content-box"
-                  >
-                    <div
-                      class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
-                    >
-                      <div
-                        class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-                      >
-                        <span
-                          aria-label="loader"
-                          role="img"
-                        >
-                          <div
-                            aria-busy="true"
-                            aria-live="polite"
-                            class="ant-spin ant-spin-lg ant-spin-spinning"
-                          >
-                            <span
-                              class="ant-spin-dot ant-spin-dot-spin"
-                            >
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                            </span>
-                          </div>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-collapse-item ant-collapse-item-active"
-              >
-                <div
-                  aria-expanded="true"
-                  class="ant-collapse-header"
-                  role="button"
-                  tabindex="0"
-                >
-                  <div
-                    class="ant-collapse-expand-icon"
-                  >
-                    <span
-                      aria-label="right"
-                      class="anticon anticon-right ant-collapse-arrow"
-                      role="img"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        data-icon="right"
-                        fill="currentColor"
-                        focusable="false"
-                        height="1em"
-                        style="transform: rotate(90deg);"
-                        viewBox="64 64 896 896"
-                        width="1em"
-                      >
-                        <path
-                          d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                  <span
-                    class="ant-collapse-header-text"
-                  >
-                    TACACS+ Servers (0)
-                  </span>
-                </div>
-                <div
-                  class="ant-collapse-content ant-collapse-content-active"
-                >
-                  <div
-                    class="ant-collapse-content-box"
-                  >
-                    <div
-                      class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
-                    >
-                      <div
-                        class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-                      >
-                        <span
-                          aria-label="loader"
-                          role="img"
-                        >
-                          <div
-                            aria-busy="true"
-                            aria-live="polite"
-                            class="ant-spin ant-spin-lg ant-spin-spinning"
-                          >
-                            <span
-                              class="ant-spin-dot ant-spin-dot-spin"
-                            >
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                            </span>
-                          </div>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-collapse-item ant-collapse-item-active"
-              >
-                <div
-                  aria-expanded="true"
-                  class="ant-collapse-header"
-                  role="button"
-                  tabindex="0"
-                >
-                  <div
-                    class="ant-collapse-expand-icon"
-                  >
-                    <span
-                      aria-label="right"
-                      class="anticon anticon-right ant-collapse-arrow"
-                      role="img"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        data-icon="right"
-                        fill="currentColor"
-                        focusable="false"
-                        height="1em"
-                        style="transform: rotate(90deg);"
-                        viewBox="64 64 896 896"
-                        width="1em"
-                      >
-                        <path
-                          d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                  <span
-                    class="ant-collapse-header-text"
-                  >
-                    Local Users (0)
-                  </span>
-                </div>
-                <div
-                  class="ant-collapse-content ant-collapse-content-active"
-                >
-                  <div
-                    class="ant-collapse-content-box"
-                  >
-                    <div
-                      class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
-                    >
-                      <div
-                        class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-                      >
-                        <span
-                          aria-label="loader"
-                          role="img"
-                        >
-                          <div
-                            aria-busy="true"
-                            aria-live="polite"
-                            class="ant-spin ant-spin-lg ant-spin-spinning"
-                          >
-                            <span
-                              class="ant-spin-dot ant-spin-dot-spin"
-                            >
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                              <i
-                                class="ant-spin-dot-item"
-                              />
-                            </span>
-                          </div>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </span>
             </div>
           </div>
         </div>
