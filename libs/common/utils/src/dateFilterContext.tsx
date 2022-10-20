@@ -5,19 +5,12 @@ import { Buffer } from 'buffer'
 import { useSearchParams } from 'react-router-dom'
 
 import { DateRange, getDateRangeFilter } from './dateUtil'
-export type DateFilterContextprops = {
-  dateFilter: DateFilter,
-  setDateFilter?: (c: DateFilter) => void
-}
+
 export interface DateFilter {
   range: DateRange;
   startDate: string;
   endDate: string;
 }
-
-export const defaultDateFilter = () => ({
-  dateFilter: { ...getDateRangeFilter(DateRange.last24Hours) }
-} as const)
 
 export const useDateFilter = () => {
   const [search, setSearch] = useSearchParams()
@@ -40,7 +33,7 @@ function readDateFilter (search: URLSearchParams, setSearch: CallableFunction) {
   )
   const dateFilter = period
     ? getDateRangeFilter(period.range, period.startDate, period.endDate)
-    : defaultDateFilter().dateFilter
+    : getDateRangeFilter(DateRange.last24Hours)
 
   const setDateFilter = (date: DateFilter) => {
     search.set('period', Buffer.from(JSON.stringify(date)).toString('base64'))
