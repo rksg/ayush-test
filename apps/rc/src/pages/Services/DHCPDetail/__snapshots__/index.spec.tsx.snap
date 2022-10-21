@@ -192,7 +192,7 @@ exports[`DHCP Detail Page should render detail page 1`] = `
             </h3>
             <div>
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
               >
                 <div
                   class="ant-pro-table"
@@ -298,7 +298,7 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                           tabindex="0"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
                                             class="ant-table-column-sorters"
@@ -356,84 +356,84 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           APs
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           Switches
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           Service Health
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           # of successful allocations
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           # of un-successful allocations
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           Dropped Packets
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           Capacity
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
@@ -441,10 +441,10 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                           style="position: sticky; right: 0px;"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                       </tr>
@@ -566,34 +566,30 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                           class="ant-table-cell"
                                         >
                                           <div
-                                            title="0.7"
+                                            class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
                                           >
                                             <div
-                                              class="styledComponents__DivContainer-sc-1ds8per-0 iMXxkL"
+                                              class="ant-progress-steps-outer"
                                             >
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
-                                              />
-                                              <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
-                                              />
-                                              <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-                                              />
-                                              <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                             </div>
                                           </div>
@@ -650,34 +646,30 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                           class="ant-table-cell"
                                         >
                                           <div
-                                            title="0.95"
+                                            class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
                                           >
                                             <div
-                                              class="styledComponents__DivContainer-sc-1ds8per-0 iMXxkL"
+                                              class="ant-progress-steps-outer"
                                             >
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
-                                              />
-                                              <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
-                                              />
-                                              <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
-                                              />
-                                              <div
-                                                class="styledComponents__HealthContentExcellent-sc-1ds8per-1 gaVAHw"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                             </div>
                                           </div>
@@ -734,34 +726,30 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                           class="ant-table-cell"
                                         >
                                           <div
-                                            title="0.3"
+                                            class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
                                           >
                                             <div
-                                              class="styledComponents__DivContainer-sc-1ds8per-0 iMXxkL"
+                                              class="ant-progress-steps-outer"
                                             >
                                               <div
-                                                class="styledComponents__HealthContentPoor-sc-1ds8per-3 gsOGHY"
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__HealthContentPoor-sc-1ds8per-3 gsOGHY"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-                                              />
-                                              <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-                                              />
-                                              <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-                                              />
-                                              <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                             </div>
                                           </div>
@@ -818,34 +806,30 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                           class="ant-table-cell"
                                         >
                                           <div
-                                            title="0.1"
+                                            class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
                                           >
                                             <div
-                                              class="styledComponents__DivContainer-sc-1ds8per-0 iMXxkL"
+                                              class="ant-progress-steps-outer"
                                             >
                                               <div
-                                                class="styledComponents__HealthContentPoor-sc-1ds8per-3 gsOGHY"
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                               <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-                                              />
-                                              <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-                                              />
-                                              <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
-                                              />
-                                              <div
-                                                class="styledComponents__ProgressEmptyContent-sc-1ds8per-4 cBcYCG"
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                               />
                                             </div>
                                           </div>

@@ -1,4 +1,10 @@
+import {
+  DHCPConfigTypeEnum,
+  ServiceTechnology
+} from '../../constants'
+
 export * from './dhcpService'
+
 
 export enum AccessEnum {
   ALLOW = 'Allow',
@@ -64,14 +70,6 @@ export interface AccessControlProfile {
   }
 }
 
-export interface VlanPool {
-  name: string,
-  id: string,
-  tenantId: string,
-  vlanMembers: string[]
-}
-
-
 export interface CloudpathServer {
   id: string
   name: string
@@ -91,4 +89,57 @@ export interface RadiusService {
   ip: string
   port: number
   sharedSecret: string
+}
+
+export enum VlanType {
+  VLAN = 'vlanId',
+  Pool = 'vlanPool'
+}
+
+export interface DHCPPool {
+  id: number;
+  name: string;
+  description?: string;
+  allowWired: boolean;
+  ip: string;
+  mask: string;
+  excludedRangeStart?: string;
+  excludedRangeEnd?: string;
+  primaryDNS: string;
+  secondaryDNS: string;
+  leaseTime: number;
+  leaseUnit: string;
+  vlan: number;
+  dhcpOptions: DHCPOption[];
+}
+
+export interface DHCPOption{
+  optId: string;
+  id: number;
+  optName: string;
+  format: string;
+  value: string;
+}
+
+export interface CreateDHCPFormFields {
+  name: string;
+  tags: string[];
+  createType: ServiceTechnology;
+  dhcpConfig: DHCPConfigTypeEnum;
+  dhcpPools: DHCPPool[];
+  venues: DHCPVenue[];
+}
+
+export interface DHCPSaveData extends CreateDHCPFormFields {
+  id?: string;
+}
+
+export interface DHCPVenue {
+  id?: string
+  name?: string
+  scheduler: {
+    type: string
+  }
+  venueId: string
+  dhcpId: string
 }

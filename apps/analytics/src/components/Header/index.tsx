@@ -3,14 +3,16 @@ import { ReactElement } from 'react'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { nodeTypes, useAnalyticsFilter }                    from '@acx-ui/analytics/utils'
-import { PageHeader, PageHeaderProps, Loader, RangePicker } from '@acx-ui/components'
-import { useDateFilter, dateRangeForLast, NodeType }        from '@acx-ui/utils'
+import { nodeTypes, useAnalyticsFilter }                                      from '@acx-ui/analytics/utils'
+import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
+import { useDateFilter, dateRangeForLast, NodeType }                          from '@acx-ui/utils'
 
 import NetworkFilter from '../NetworkFilter'
 
 import { useNetworkNodeInfoQuery }         from './services'
 import { Divider, ConnectedHeaderWrapper } from './styledComponents'
+
+const { DefaultFallback: Spinner } = SuspenseBoundary
 
 const labelMap = {
   type: defineMessage({ defaultMessage: 'Type:' }),
@@ -36,14 +38,14 @@ export type HeaderData = {
 }
 
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
-  data: HeaderData,
-  shouldQuerySwitch: boolean
+  shouldQuerySwitch: boolean,
+  withIncidents?: boolean
 }
 
 export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement => {
   const { $t } = useIntl()
   const subs = [{ key: 'type', value: [nodeTypes(type)] }, ...subTitles]
-  return <>
+  return <span>
     {subs.map(({ key, value }, index) => {
       const labelKey = key as keyof typeof labelMap
       const content = value.length > 1 ? `${value[0]} (${value.length})` : `${value[0]}`
@@ -54,27 +56,33 @@ export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement
         </span>
       )
     })}
-  </>
+  </span>
 }
 
-export const Header = ({ data, shouldQuerySwitch, ...props }: HeaderProps) => {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
   const { filters, getNetworkFilter } = useAnalyticsFilter()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const results = useNetworkNodeInfoQuery(filters)
+  const state = { ...results, isLoading: false } // isLoading to false to prevent blank header on load
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
-  const { path } = getNetworkFilter()
+  const { networkFilter: { path } } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
-  return (
+  return <ConnectedHeaderWrapper>
     <PageHeader
       {...props}
-      subTitle={useSubTitle(data.subTitle, type)}
-      title={filter || path.length > 1 ?
-        (data.name || name) // ap/switch name from data || venue name from filter
-        : props.title // displays Incidents at root level
-      }
+      subTitle={<Loader states={[state]} fallback={<Spinner size='small' />}>
+        {useSubTitle(results.data?.subTitle || [], type)}
+      </Loader>}
+      title={<Loader states={[state]} fallback={<Spinner size='default' />}>
+        {filter || path.length > 1 ?
+          (results.data?.name || name as string) // ap/switch name from data || venue name from filter
+          : props.title}
+      </Loader>}
       extra={[
         <NetworkFilter
           key='network-filter'
           shouldQuerySwitch={shouldQuerySwitch}
+          withIncidents={withIncidents}
         />,
         <RangePicker
           key='range-picker'
@@ -89,23 +97,7 @@ export const Header = ({ data, shouldQuerySwitch, ...props }: HeaderProps) => {
         />
       ]}
     />
-  )
+  </ConnectedHeaderWrapper>
 }
 
-const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean }) => {
-  const { filters } = useAnalyticsFilter()
-  const queryResults = useNetworkNodeInfoQuery(filters)
-  return (
-    <ConnectedHeaderWrapper>
-      <Loader states={[queryResults]}>
-        <Header
-          {...props}
-          shouldQuerySwitch={props.shouldQuerySwitch}
-          data={queryResults.data as HeaderData}
-        />
-      </Loader>
-    </ConnectedHeaderWrapper>
-  )
-}
-
-export default ConnectedHeader
+export default Header

@@ -20,7 +20,7 @@ import {
   useGetVenueQuery,
   useUpdateVenueMutation
 } from '@acx-ui/rc/services'
-import { Address, VenueSaveData, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { Address, VenueExtended, checkObjectNotExists } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -122,7 +122,7 @@ export function VenuesForm () {
   const intl = useIntl()
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<VenueSaveData>>()
+  const formRef = useRef<StepsFormInstance<VenueExtended>>()
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
@@ -140,7 +140,7 @@ export function VenuesForm () {
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
 
   useEffect(() => {
-    if(data){
+    if (data) {
       formRef.current?.setFieldsValue({
         name: data?.name,
         description: data?.description,
@@ -148,7 +148,7 @@ export function VenuesForm () {
       })
       updateAddress(data?.address as Address)
 
-      if(isMapEnabled){
+      if (isMapEnabled) {
         const latlng = new google.maps.LatLng({
           lat: Number(data?.address?.latitude),
           lng: Number(data?.address?.longitude)
@@ -158,7 +158,12 @@ export function VenuesForm () {
         setZoom(16)
       }
     }
-  }, [data])
+
+    if ( action !== 'edit') { // Add mode
+      const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
+      formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
+    }
+  }, [data, isMapEnabled])
 
   const venuesListPayload = {
     searchString: '',
@@ -203,7 +208,7 @@ export function VenuesForm () {
     })
   }
 
-  const handleAddVenue = async (values: VenueSaveData) => {
+  const handleAddVenue = async (values: VenueExtended) => {
     try {
       const formData = { ...values }
       formData.address = address
@@ -217,7 +222,7 @@ export function VenuesForm () {
     }
   }
 
-  const handleEditVenue = async (values: VenueSaveData) => {
+  const handleEditVenue = async (values: VenueExtended) => {
     try {
       const formData = { ...values }
       formData.address = address
@@ -296,10 +301,10 @@ export function VenuesForm () {
                     validator: () => addressValidator(),
                     validateTrigger: 'onChange'
                   }]}
-                  initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
                 >
                   <Input
                     allowClear
+                    placeholder={intl.$t({ defaultMessage: 'Set address here' })}
                     prefix={<SearchOutlined />}
                     onChange={addressOnChange}
                     data-testid='address-input'

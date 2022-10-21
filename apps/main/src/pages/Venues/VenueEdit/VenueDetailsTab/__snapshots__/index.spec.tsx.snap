@@ -17,7 +17,7 @@ exports[`VenueDetailsTab should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/venues"
+                href="/t/15a04f095a8f4a96acaf17e921e8a6df/venues"
               >
                 Venues
               </a>
@@ -275,6 +275,7 @@ exports[`VenueDetailsTab should render correctly 1`] = `
                                   data-testid="address-input"
                                   disabled=""
                                   id="0_address_addressLine"
+                                  placeholder="Set address here"
                                   type="text"
                                   value="350 W Java Dr, Sunnyvale, CA 94089, USA"
                                 />

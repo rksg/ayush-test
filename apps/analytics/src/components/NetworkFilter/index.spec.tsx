@@ -243,7 +243,7 @@ describe('Network Filter with incident severity', () => {
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter shouldQuerySwitch/>
+        <NetworkFilter shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')
@@ -261,7 +261,7 @@ describe('Network Filter with incident severity', () => {
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter shouldQuerySwitch/>
+        <NetworkFilter shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')
@@ -290,7 +290,7 @@ describe('Network Filter with incident severity', () => {
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter shouldQuerySwitch/>
+        <NetworkFilter shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')
@@ -319,7 +319,7 @@ describe('Network Filter with incident severity', () => {
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter shouldQuerySwitch/>
+        <NetworkFilter shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')

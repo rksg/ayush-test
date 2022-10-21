@@ -3,15 +3,15 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMWidth } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
-
 jest.mock('@acx-ui/icons', ()=> ({
   CancelCircle: () => <div data-testid='cancel-circle'/>,
   InformationOutlined: () => <div data-testid='information-outlined'/>,
   SearchOutlined: () => <div data-testid='search-outlined'/>,
-  SettingsOutlined: () => <div data-testid='settings-outlined'/>
+  SettingsOutlined: ({ onClick }: { onClick: React.MouseEventHandler<HTMLDivElement> }) =>
+    <div data-testid='settings-outlined' onClick={onClick} />
 }), { virtual: true })
 
 jest.mock('react-resizable', () => ({
@@ -281,43 +281,23 @@ describe('Table component', () => {
     expect(onChange).toBeCalledTimes(2)
   })
 
-  it('should handle ellipsis', () => {
-    const basicColumns = [
-      { title: 'Name', key: 'name', dataIndex: 'name', width: 1 },
-      { title: 'Age', key: 'age', dataIndex: 'age' },
-      { title: 'Address', key: 'address', dataIndex: 'name' }
-    ]
-    const basicData = [
-      {
-        key: '1',
-        name: 'John Doe',
-        age: 32,
-        address: 'sample address'
-      },
-      {
-        key: '2',
-        name: 'Jane Doe',
-        age: 33,
-        address: 'new address'
-      },
-      {
-        key: '3',
-        name: 'Will Smith',
-        age: 45,
-        address: 'address'
-      }
-    ]
-    const { asFragment } = render(<Table
+  it('calls onResetState', async () => {
+    const reset = jest.fn()
+    render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      ellipsis={true}
+      extraSettings={[<div>setting element</div>]}
+      onResetState={reset}
     />)
-    expect(asFragment()).toMatchSnapshot()
+    fireEvent.click(await screen.findByTestId('settings-outlined'))
+    await screen.findByText('setting element')
+    fireEvent.click(await screen.findByText('Reset to default'))
+    expect(reset).toHaveBeenCalled()
   })
 
   describe('resize', () => {
-    mockDOMWidth(99)
     it('should allow column resizing', async () => {
+      mockDOMSize(99, 800)
       const { asFragment } = render(<Table
         columns={basicColumns}
         dataSource={basicData}
@@ -400,6 +380,49 @@ describe('Table component', () => {
     const row2 = await screen.findByRole('row', { name: /jane/i })
     fireEvent.click(within(row2).getByRole('checkbox'))
     expect(editButton).not.toBeVisible()
+  })
+
+  it('disabled row action button and add tooltip', async () => {
+    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const rowActions: TableProps<typeof basicData[number]>['rowActions'] = [
+      { label: 'Edit', onClick: onEdit },
+      { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' }
+    ]
+
+    render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+      rowActions={rowActions}
+      rowSelection={{ }}
+    />)
+
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    expect(deleteButton).toBeDisabled()
+  })
+
+  it('add row action button tooltip', async () => {
+    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const rowActions: TableProps<typeof basicData[number]>['rowActions'] = [
+      { label: 'Edit', onClick: onEdit },
+      { label: 'Delete', onClick: onDelete, tooltip: 'test delete' }
+    ]
+
+    render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+      rowActions={rowActions}
+      rowSelection={{ }}
+    />)
+
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    expect(deleteButton).toBeVisible()
+    expect(rowActions[1].onClick).not.toBeCalled()
+    fireEvent.click(deleteButton)
+    expect(rowActions[1].onClick).toBeCalled()
   })
 
   describe('search & filter', () => {

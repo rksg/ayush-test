@@ -2,7 +2,6 @@ import { CommonUrlsInfo, Dashboard } from '@acx-ui/rc/utils'
 import { Provider  }                 from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
-  mockDOMWidth,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import VenuesDonutWidget, { getVenuesDonutChartData } from '.'
@@ -21,7 +20,6 @@ const data: Dashboard = {
 }
 
 describe('Venues widget', () => {
-  mockDOMWidth()
 
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', { data })
