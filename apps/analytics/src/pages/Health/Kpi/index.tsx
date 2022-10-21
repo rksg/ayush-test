@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
@@ -14,6 +14,7 @@ import { GridCol, GridRow } from '@acx-ui/components'
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
 import {
+  ThresholdMutationResponse,
   useFetchThresholdPermissionQuery,
   useSaveThresholdMutation
 } from '../services'
@@ -41,6 +42,10 @@ const getDefaultThreshold: KpiThresholdType = {
   apToSZLatency: 200,
   switchPoeUtilization: 0.8
 }
+
+export type onApplyType = () =>
+   (value: number) => Promise<ThresholdMutationResponse>
+
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
   const healthFilter = useContext(HealthPageContext)
@@ -64,8 +69,11 @@ export default function KpiSection (props: { tab: HealthTab }) {
 
   useEffect(() => { connect('timeSeriesGroup') }, [])
 
-  const canSave =
-  thresholdPermission && thresholdPermission.data && thresholdPermission.data.mutationAllowed
+  const canSave = useMemo(() => ({
+    data: { allowedSave: thresholdPermission.data?.mutationAllowed as boolean | undefined },
+    isFetching: thresholdPermission.isFetching,
+    isLoading: thresholdPermission.isLoading
+  }), [thresholdPermission])
 
   const onReset = (kpi: keyof KpiThresholdType) => {
     // todo, use data base fetching

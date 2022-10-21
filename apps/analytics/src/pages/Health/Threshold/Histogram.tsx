@@ -8,7 +8,7 @@ import { AnalyticsFilter, kpiConfig }                         from '@acx-ui/anal
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart } from '@acx-ui/components'
 import type { TimeStamp }                                     from '@acx-ui/types'
 
-import { KpiThresholdType }                            from '../Kpi'
+import { KpiThresholdType, onApplyType }               from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
 import  HistogramSlider    from './HistogramSlider'
@@ -59,8 +59,12 @@ function Histogram ({
   setKpiThreshold: CallableFunction;
   thresholds: KpiThresholdType;
   onReset?: CallableFunction,
-  onApply?: CallableFunction,
-  canSave?: boolean
+  onApply?: onApplyType,
+  canSave: {
+    data: { allowedSave: boolean | undefined },
+    isFetching: boolean,
+    isLoading: boolean
+  }
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
@@ -133,10 +137,10 @@ function Histogram ({
     setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
   }
 
-  const onButtonApply = () => onApply && onApply(threshold)
+  const onButtonApply = () => onApply && onApply()(threshold as unknown as number)
 
   return (
-    <Loader states={[queryResults]} key={kpi}>
+    <Loader states={[queryResults, canSave]} key={kpi}>
       <GridRow>
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
@@ -169,7 +173,7 @@ function Histogram ({
             shortXFormat={histogram?.shortXFormat}
             onReset={onButtonReset}
             onApply={onButtonApply}
-            canSave={canSave}
+            canSave={canSave.data?.allowedSave}
           />
         </GridCol>
       </GridRow>

@@ -6,7 +6,7 @@ import { NetworkPath } from '@acx-ui/utils'
 
 export type ConfigCode = keyof typeof kpiConfig
 
-type ThresholdResponse = Partial<{
+export type ThresholdResponse = Partial<{
   [k in ConfigCode]: {
       value: number | null,
       updateBy: string | null,
@@ -14,26 +14,26 @@ type ThresholdResponse = Partial<{
   }
 }>
 
-type ThresholdPayload = {
+export type ThresholdPayload = {
   path: NetworkPath,
   configCode: ConfigCode[]
 }
 
-type ThresholdPermissionResponse = {
+export type ThresholdPermissionResponse = {
   mutationAllowed: boolean
 }
 
-type ThresholdPermissionPayload = {
+export type ThresholdPermissionPayload = {
   path: NetworkPath
 }
 
-type ThresholdMutationPayload = {
+export type ThresholdMutationPayload = {
   path: NetworkPath,
   name: ConfigCode,
   value: number
 }
 
-type ThresholdMutationResponse = {
+export type ThresholdMutationResponse = {
   data?: Partial<{
     [k in ConfigCode]: {
       success: boolean
