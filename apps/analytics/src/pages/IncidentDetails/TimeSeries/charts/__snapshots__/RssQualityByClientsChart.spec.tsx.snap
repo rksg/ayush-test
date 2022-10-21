@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RssQualityByClientsChart should call corresponding api 1`] = `
+"
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput],
+              $start: DateTime,
+              $end: DateTime,
+              $granularity: String,
+              
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  
+  rssQualityByClientsChart: timeSeries(granularity: $granularity) {
+    time
+    good: clientCountByRss(filter: { rss: { gt: -74 } })
+average: clientCountByRss(filter: { rss: { gt: -85, lte: -75 } })
+bad: clientCountByRss(filter: { rss: { lte: -86 } })
+  }
+
+                }
+              }
+            }
+          "
+`;
+
+exports[`RssQualityByClientsChart should call corresponding api 2`] = `
+Object {
+  "code": "p-cov-clientrssi-low",
+  "codeMap": Array [
+    "p-cov-clientrssi-low",
+  ],
+  "end": "2022-09-29T00:00:00.000Z",
+  "granularity": "PT180S",
+  "path": Array [
+    Object {
+      "name": "Default Zone",
+      "type": "zone",
+    },
+    Object {
+      "name": "Outdoor",
+      "type": "apGroup",
+    },
+  ],
+  "start": "2022-09-28T22:30:00.000Z",
+}
+`;

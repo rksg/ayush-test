@@ -7,7 +7,7 @@ exports[`downtimeEventTypeDistributionChartQuery should call corresponding api 1
               $start: DateTime,
               $end: DateTime,
               $granularity: String,
-              $code: String
+              
             ) {
               network(start: $start, end: $end) {
                 hierarchyNode(path: $path) {
