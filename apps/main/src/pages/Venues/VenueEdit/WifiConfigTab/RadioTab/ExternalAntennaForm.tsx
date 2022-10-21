@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, InputNumber, Switch, Tooltip } from 'antd'
-import { useIntl }                            from 'react-intl'
+import { Form, InputNumber, Space, Switch, Tooltip } from 'antd'
+import { useIntl }                                   from 'react-intl'
 
 import { StepsForm }                  from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
@@ -268,33 +268,28 @@ export function ExternalAntennaForm (props:{
       }
       {
         (formSettings.has24G && (enable24G || coupled)) &&
-        <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
-          <StepsForm.LabelOfInput>
-            { $t({ defaultMessage: 'dBi' }) }
-          </StepsForm.LabelOfInput>
-          <Form.Item
-            name={['external', 'apModel', model, 'gain24G']}
-            label={<>
-              { $t({ defaultMessage: '2.4 GHz Antenna gain:' }) }
-              <Tooltip
-                title={ANTENNA_TOOLTIP}
-                placement='bottom'
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
-            </>}
-            style={{ marginBottom: '15px' }}
-            children={<InputNumber
-              data-testid='gain24G'
-              onChange={value=>{onChangeGain('gain24G', value)}}
-              min={0}
-              max={60}
-              style={{ width: '65px' }}
-              disabled={readOnly}
-            />
-            }
-          />
-        </div>
+          <Form.Item label={<>
+            { $t({ defaultMessage: '2.4 GHz Antenna gain:' }) }
+            <Tooltip title={ANTENNA_TOOLTIP}>
+              <QuestionMarkCircleOutlined />
+            </Tooltip>
+          </>}>
+            <Space>
+              <Form.Item
+                noStyle
+                name={['external', 'apModel', model, 'gain24G']}
+                children={<InputNumber
+                  data-testid='gain24G'
+                  onChange={value=>{onChangeGain('gain24G', value)}}
+                  min={0}
+                  max={60}
+                  style={{ width: '65px' }}
+                  disabled={readOnly}
+                />}
+              />
+              <span>{$t({ defaultMessage: 'dBi' })}</span>
+            </Space>
+          </Form.Item>
       }
 
       {
@@ -318,33 +313,28 @@ export function ExternalAntennaForm (props:{
       }
       {
         (formSettings.has50G && (enable50G || coupled)) &&
-        <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
-          <StepsForm.LabelOfInput>
-            { $t({ defaultMessage: 'dBi' }) }
-          </StepsForm.LabelOfInput>
-          <Form.Item
-            name={['external', 'apModel', model, 'gain50G']}
-            label={<>
-              { $t({ defaultMessage: '5 GHz Antenna gain:' }) }
-              <Tooltip
-                title={ANTENNA_TOOLTIP}
-                placement='bottom'
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
-            </>}
-            style={{ marginBottom: '15px' }}
-            children={<InputNumber
-              data-testid='gain50G'
-              onChange={value=>{onChangeGain('gain50G', value)}}
-              min={0}
-              max={60}
-              style={{ width: '65px' }}
-              disabled={readOnly}
+        <Form.Item label={<>
+          { $t({ defaultMessage: '5 GHz Antenna gain:' }) }
+          <Tooltip title={ANTENNA_TOOLTIP}>
+            <QuestionMarkCircleOutlined />
+          </Tooltip>
+        </>}>
+          <Space>
+            <Form.Item
+              noStyle
+              name={['external', 'apModel', model, 'gain50G']}
+              children={<InputNumber
+                data-testid='gain50G'
+                onChange={value=>{onChangeGain('gain50G', value)}}
+                min={0}
+                max={60}
+                style={{ width: '65px' }}
+                disabled={readOnly}
+              />}
             />
-            }
-          />
-        </div>
+            <span>{$t({ defaultMessage: 'dBi' })}</span>
+          </Space>
+        </Form.Item>
       }
     </>
   )

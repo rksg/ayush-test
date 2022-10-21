@@ -191,4 +191,3 @@ StepsForm.StepForm = StepForm
 StepsForm.Title = UI.Title
 StepsForm.SectionTitle = UI.SectionTitle
 StepsForm.FieldLabel = UI.FieldLabel
-StepsForm.LabelOfInput = UI.LabelOfInput

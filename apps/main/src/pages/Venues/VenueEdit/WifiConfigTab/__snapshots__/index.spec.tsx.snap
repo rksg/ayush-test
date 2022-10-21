@@ -409,15 +409,11 @@ exports[`WifiConfigTab should render correctly 1`] = `
                                           </div>
                                         </div>
                                       </div>
-                                      <div
-                                        class="ant-row"
+                                      <img
+                                        alt="AP external Antenna image"
+                                        src="ap-model-placeholder.png"
                                         style="margin-top: 60px;"
-                                      >
-                                        <img
-                                          alt="AP external Antenna image"
-                                          src="ap-model-placeholder.png"
-                                        />
-                                      </div>
+                                      />
                                     </div>
                                   </div>
                                 </div>
