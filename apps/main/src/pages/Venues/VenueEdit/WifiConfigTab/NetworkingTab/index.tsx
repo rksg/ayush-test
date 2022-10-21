@@ -8,8 +8,8 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
-import { LanPorts }    from './LanPorts'
 import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
+import { LanPorts }            from './LanPorts'
 import { MeshNetwork }         from './MeshNetwork'
 
 
@@ -66,8 +66,8 @@ export function NetworkingTab () {
 
   const handleUpdateAllSettings = async () => {
     try {
-      await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       await editNetworkingContextData?.updateLanPorts?.()
+      await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       await editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       setEditContextData({
         ...editContextData,

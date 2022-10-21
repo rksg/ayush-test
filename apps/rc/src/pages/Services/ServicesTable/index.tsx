@@ -10,9 +10,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { serviceTechnologyLabelMapping, serviceTypeLabelMapping } from '../contentsMap'
+import { serviceTypeLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
 import { getServiceDetailsLink, ServiceOperation }                from '../serviceRouteUtils'
-
 
 
 function useColumns () {

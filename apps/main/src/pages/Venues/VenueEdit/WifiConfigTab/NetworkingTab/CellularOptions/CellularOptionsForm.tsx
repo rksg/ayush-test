@@ -183,7 +183,7 @@ export function CellularOptionsForm () {
 
   return (
     <Loader states={[{ isLoading: false, isFetching: isUpdatingVenueCellularSettings }]}>
-      <StepsForm>
+      <StepsForm buttonLabel={{ cancel: '' }}>
         <StepsForm.StepForm
           formRef={formRef}
           onValuesChange={onChange}>

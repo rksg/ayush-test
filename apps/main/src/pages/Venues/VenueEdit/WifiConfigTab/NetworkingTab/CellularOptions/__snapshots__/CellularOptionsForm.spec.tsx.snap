@@ -1209,11 +1209,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                 <button
                   class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                   type="button"
-                >
-                  <span>
-                    Cancel
-                  </span>
-                </button>
+                />
               </div>
             </div>
           </div>
