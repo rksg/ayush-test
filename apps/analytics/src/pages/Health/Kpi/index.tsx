@@ -34,14 +34,15 @@ export interface KpiThresholdType {
   switchPoeUtilization: number;
 }
 const getDefaultThreshold: KpiThresholdType = {
-  timeToConnect: 2000,
-  rss: -75,
-  clientThroughput: 10000,
-  apCapacity: 50,
-  apServiceUptime: 0.995,
-  apToSZLatency: 200,
-  switchPoeUtilization: 0.8
+  timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
+  rss: kpiConfig.rss.histogram.initialThreshold,
+  clientThroughput: kpiConfig.clientThroughput.histogram.initialThreshold,
+  apCapacity: kpiConfig.apCapacity.histogram.initialThreshold,
+  apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
+  apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
+  switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
+
 
 export type onApplyType = () =>
    (value: number) => Promise<ThresholdMutationResponse>
@@ -82,7 +83,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
   }
 
   const onApply = (kpi: keyof KpiThresholdType) => {
-    return (value: number) => triggerSave({ path: filters.path, name: kpi, value }).unwrap()
+    return async (value: number) =>
+      await triggerSave({ path: filters.path, name: kpi, value }).unwrap()
   }
 
   return (

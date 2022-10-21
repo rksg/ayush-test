@@ -137,7 +137,12 @@ function Histogram ({
     setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
   }
 
-  const onButtonApply = () => onApply && onApply()(threshold as unknown as number)
+  const onButtonApply = async () => {
+    if (onApply) {
+      const applied = await onApply()(thresholdValue as unknown as number)
+      console.log(applied, 'what is this')
+    }
+  }
 
   return (
     <Loader states={[queryResults, canSave]} key={kpi}>
