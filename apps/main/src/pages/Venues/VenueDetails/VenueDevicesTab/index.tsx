@@ -1,5 +1,6 @@
-import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
+
+import { Tabs } from '@acx-ui/components'
 
 import { VenueMeshApsTable } from './VenueMeshAps'
 
