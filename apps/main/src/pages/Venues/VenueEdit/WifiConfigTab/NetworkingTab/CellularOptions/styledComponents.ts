@@ -28,9 +28,6 @@ div.ant-checkbox-group {
     margin: 0 3px;
     width: auto;
     padding: 4px 12px;
-    border: 1px solid rgb(217, 217, 217);
-    border-right-width: 0;
-
     border: 1px solid var(--acx-primary-black);
     border-radius: 4px;
     background-color: white;
