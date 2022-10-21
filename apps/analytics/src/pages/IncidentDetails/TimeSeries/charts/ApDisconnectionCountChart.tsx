@@ -5,7 +5,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
-import { formatter }                              from '@acx-ui/utils'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -44,8 +43,6 @@ export const ApDisconnectionCountChart = (
             chartRef={chartRef}
             style={{ height, width }}
             data={chartResults}
-            dataFormatter={formatter('countFormat')}
-            yAxisProps={{ minInterval: 1 }}
             disableLegend={true}
             onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
             markers={getMarkers(relatedIncidents!, incident)}

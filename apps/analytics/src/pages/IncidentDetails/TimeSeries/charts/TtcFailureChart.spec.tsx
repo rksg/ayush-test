@@ -5,12 +5,12 @@ import { fakeIncidentTtc }    from '@acx-ui/analytics/utils'
 import { Provider, store }    from '@acx-ui/store'
 import {
   screen,
-  mockDOMWidth,
   mockGraphqlQuery,
   render,
   waitForElementToBeRemoved
 }                             from '@acx-ui/test-utils'
 
+import { buffer6hr }            from '../__tests__/fixtures'
 import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
 
@@ -45,7 +45,6 @@ describe('aggregateTtc', () => {
 })
 
 describe('TtcFailureChart', () => {
-  mockDOMWidth()
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: { time, data: ttcCounts } }
@@ -53,7 +52,13 @@ describe('TtcFailureChart', () => {
     const { asFragment } = render(
       <Provider>
         <BrowserRouter>
-          <TtcFailureChart chartRef={()=>{}} incident={fakeIncidentTtc} data={expectedResult}/>
+          <TtcFailureChart
+            chartRef={()=>{}}
+            buffer={buffer6hr}
+            incident={fakeIncidentTtc}
+            data={expectedResult}
+
+          />
         </BrowserRouter>
       </Provider>
     )
@@ -89,6 +94,7 @@ describe('ttcFailureChartQuery', () => {
     }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
+        buffer: buffer6hr,
         incident: fakeIncidentTtc,
         charts: [TimeSeriesChartTypes.TtcFailureChart],
         minGranularity: 'PT180S'

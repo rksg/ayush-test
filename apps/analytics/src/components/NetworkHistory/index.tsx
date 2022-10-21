@@ -13,9 +13,7 @@ import {
   cssStr,
   NoData
 } from '@acx-ui/components'
-import { TimeStamp } from '@acx-ui/types'
-
-import { TimeWindow } from '../../pages/Health/HealthPageContext'
+import { TimeStamp, TimeStampRange } from '@acx-ui/types'
 
 import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
@@ -27,7 +25,7 @@ interface NetworkHistoryWidgetComponentProps {
   type?: CardTypes;
   filters: IncidentFilter;
   hideIncidents?: boolean;
-  brush?: { timeWindow: TimeWindow, setTimeWindow: (range: TimeWindow) => void }
+  brush?: { timeWindow: TimeStampRange, setTimeWindow: (range: TimeStampRange) => void }
 }
 
 const NetworkHistoryWidget = forwardRef<
@@ -38,7 +36,7 @@ const NetworkHistoryWidget = forwardRef<
     hideTitle,
     type = 'default',
     filters,
-    hideIncidents,
+    hideIncidents=false,
     brush
   } = props
   const { $t } = useIntl()
@@ -63,7 +61,7 @@ const NetworkHistoryWidget = forwardRef<
     })
     lineColors.push(cssStr('--acx-accents-orange-50'))
   }
-  const queryResults = useNetworkHistoryQuery(filters, {
+  const queryResults = useNetworkHistoryQuery({ ...filters, hideIncidents }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest

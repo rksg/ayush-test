@@ -3,8 +3,9 @@ import { BrowserRouter } from 'react-router-dom'
 import { dataApiURL }                                     from '@acx-ui/analytics/services'
 import { fakeIncidentDowntimeHigh }                       from '@acx-ui/analytics/utils'
 import { store }                                          from '@acx-ui/store'
-import { mockDOMWidth, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
+import { buffer6hr }               from '../__tests__/fixtures'
 import { TimeSeriesChartTypes }    from '../config'
 import { Api }                     from '../services'
 import { TimeSeriesChartResponse } from '../types'
@@ -32,12 +33,12 @@ const expectedResult = {
 afterEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('TtcByFailureTypeChart', () => {
-  mockDOMWidth()
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
         <DowntimeEventTypeDistributionChart
           chartRef={()=>{}}
+          buffer={buffer6hr}
           incident={fakeIncidentDowntimeHigh}
           data={expectedResult}
         />
@@ -70,6 +71,7 @@ describe('TtcByFailureTypeChart', () => {
           chartRef={()=>{}}
           incident={fakeIncidentDowntimeHigh}
           data={noDataResult}
+          buffer={buffer6hr}
         />
       </BrowserRouter>
     )
@@ -84,6 +86,7 @@ describe('downtimeEventTypeDistributionChartQuery', () => {
     }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
+        buffer: buffer6hr,
         incident: fakeIncidentDowntimeHigh,
         charts: [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart],
         minGranularity: 'PT180S'

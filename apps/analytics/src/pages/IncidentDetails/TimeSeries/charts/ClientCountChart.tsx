@@ -4,7 +4,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                              from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -39,7 +38,6 @@ export const ClientCountChart = ({ chartRef, data }: TimeSeriesChartProps) => {
             chartRef={chartRef}
             style={{ height, width }}
             data={chartResults}
-            dataFormatter={formatter('countFormat')}
           />
           : <NoData />
       )}

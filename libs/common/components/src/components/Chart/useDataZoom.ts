@@ -23,15 +23,28 @@ export function useDataZoom<TChartData extends TimeSeriesChartData> (
   zoomEnabled: boolean,
   data: TChartData[],
   zoom?: TimeStampRange,
-  onDataZoom?: (range: TimeStampRange) => void
-): [boolean, (event: OnDatazoomEvent) => void, () => void] {
+  onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
+): [boolean, () => void] {
   const firstLastTimeStamp = useCallback((data: TChartData[]) => {
     const firstSeries = data[0].data
     const firstTimeStamp = firstSeries[0][0]
     const lastTimeStamp = firstSeries[firstSeries.length - 1][0]
     return [firstTimeStamp, lastTimeStamp]
   }, [])
+  const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
 
+  const onDatazoomCallback = useCallback((e: unknown) => {
+    const event = e as unknown as OnDatazoomEvent
+    const firstBatch = event.batch?.[0]
+    firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
+    if (event.start === 0 && event.end === 100) {
+      const [firstTimeStamp, lastTimeStamp] = firstLastTimeStamp(data)
+      onDataZoom && onDataZoom([+new Date(firstTimeStamp), +new Date(lastTimeStamp)], true)
+      setCanResetZoom(false)
+    } else {
+      setCanResetZoom(true)
+    }
+  }, [data, onDataZoom, firstLastTimeStamp])
   useEffect(() => {
     if (!eChartsRef?.current || !zoomEnabled) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
@@ -40,6 +53,7 @@ export function useDataZoom<TChartData extends TimeSeriesChartData> (
       key: 'dataZoomSelect',
       dataZoomSelectActive: true
     })
+    echartInstance.on('datazoom', onDatazoomCallback)
   })
 
   useEffect(() => {
@@ -52,24 +66,11 @@ export function useDataZoom<TChartData extends TimeSeriesChartData> (
     echartInstance.dispatchAction({ type: 'dataZoom', startValue: zoom![0], endValue: zoom![1] })
   }, [eChartsRef, zoom, data, firstLastTimeStamp])
 
-  const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
-  const onDatazoomCallback = useCallback((event: OnDatazoomEvent) => {
-    const firstBatch = event.batch?.[0]
-    firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue])
-    if (event.start === 0 && event.end === 100) {
-      const [firstTimeStamp, lastTimeStamp] = firstLastTimeStamp(data)
-      onDataZoom && onDataZoom([+new Date(firstTimeStamp), +new Date(lastTimeStamp)])
-      setCanResetZoom(false)
-    } else {
-      setCanResetZoom(true)
-    }
-  }, [data, onDataZoom, firstLastTimeStamp])
-
   const resetZoomCallback = useCallback(() => {
     if (!eChartsRef?.current) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
     echartInstance.dispatchAction({ type: 'dataZoom', start: 0, end: 100 })
   }, [eChartsRef])
 
-  return [canResetZoom, onDatazoomCallback, resetZoomCallback]
+  return [canResetZoom, resetZoomCallback]
 }

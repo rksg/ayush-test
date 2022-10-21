@@ -76,7 +76,7 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
               class="expand-trigger"
             >
               <div
-                style="width: 281px; height: 281px;"
+                style="width: 1281px; height: 801px;"
               />
             </div>
             <div

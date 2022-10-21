@@ -134,6 +134,12 @@ export enum RadiusErrorsType {
   ACCOUNTING = 'ACCOUNTING'
 }
 
+export enum ApLanPortTypeEnum {
+  ACCESS = 'ACCESS',
+  GENERAL = 'GENERAL',
+  TRUNK = 'TRUNK'
+}
+
 export enum ProfileTypeEnum {
   REGULAR = 'Regular',
   CLI = 'CLI'

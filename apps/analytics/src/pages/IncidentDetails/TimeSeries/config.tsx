@@ -10,6 +10,7 @@ import connectedClientsChartChart         from './charts/ConnectedClientsChart'
 import downtimeEventTypeDistributionChart from './charts/DowntimeEventTypeDistributionChart'
 import failureChart                       from './charts/FailureChart'
 import rebootedAPsCountChart              from './charts/RebootedAPsCountChart'
+import rssQualityByClientsChart           from './charts/RssQualityByClientsChart'
 import ttcByFailureTypeChart              from './charts/TtcByFailureTypeChart'
 import ttcFailureChart                    from './charts/TtcFailureChart'
 
@@ -24,6 +25,7 @@ export enum TimeSeriesChartTypes {
   FailureChart,
   ClientCountChart,
   AttemptAndFailureChart,
+  RssQualityByClientsChart,
   TtcFailureChart,
   TtcByFailureTypeChart,
   ApDisconnectionCountChart,
@@ -39,6 +41,7 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.FailureChart]: failureChart,
   [TimeSeriesChartTypes.ClientCountChart]: clientCountChart,
   [TimeSeriesChartTypes.AttemptAndFailureChart]: attemptAndFailureChart,
+  [TimeSeriesChartTypes.RssQualityByClientsChart]: rssQualityByClientsChart,
   [TimeSeriesChartTypes.TtcFailureChart]: ttcFailureChart,
   [TimeSeriesChartTypes.TtcByFailureTypeChart]: ttcByFailureTypeChart,
   [TimeSeriesChartTypes.ApDisconnectionCountChart]: apDisconnectionCountChart,
