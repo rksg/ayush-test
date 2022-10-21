@@ -77,7 +77,7 @@ describe('TtcFailureChart', () => {
     const { asFragment } = render(
       <Provider>
         <BrowserRouter>
-        <TtcFailureChart
+          <TtcFailureChart
             chartRef={()=>{}}
             buffer={buffer6hr}
             incident={fakeIncidentTtc}
