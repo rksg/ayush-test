@@ -33,8 +33,12 @@ export const api = dataApi.injectEndpoints({
     >({
       query: (payload) => ({
         document: gql`
-        query HealthWidget($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
-            network(start: $start, end: $end) {
+        query HealthWidget(
+          $path: [HierarchyNodeInput],
+          $filter: FilterInput,
+          $start: DateTime,
+          $end: DateTime) {
+            network(filter: $filter, start: $start, end: $end) {
               hierarchyNode(path: $path) {
                 health{
                     systemId,
