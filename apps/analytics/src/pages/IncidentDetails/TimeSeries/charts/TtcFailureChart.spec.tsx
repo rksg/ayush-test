@@ -61,6 +61,26 @@ describe('TtcFailureChart', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
+  it('handle when data is null', async () => {
+    const noDataTtc = [null, null, null, null, null]
+    const noDataTtcCounts = [null, null, null, null, null]
+    const expectedResult = {
+      ttcFailureChart: { time, ttc: noDataTtc }
+    } as unknown as TimeSeriesChartResponse
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { timeSeries: { time, data: noDataTtcCounts } }
+    })
+    const { asFragment } = render(
+      <Provider>
+        <BrowserRouter>
+          <TtcFailureChart chartRef={()=>{}} incident={fakeIncidentTtc} data={expectedResult}/>
+        </BrowserRouter>
+      </Provider>
+    )
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).toBeNull()
+    expect(screen.getByText('No data to display')).toBeVisible()
+  })
 })
 describe('ttcFailureChartQuery', () => {
   it('should call corresponding api', async () => {

@@ -1,9 +1,9 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }                             from '@acx-ui/analytics/services'
-import { fakeIncident1 }                          from '@acx-ui/analytics/utils'
-import { store }                                  from '@acx-ui/store'
-import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
+import { dataApiURL }                                     from '@acx-ui/analytics/services'
+import { fakeIncident1 }                                  from '@acx-ui/analytics/utils'
+import { store }                                          from '@acx-ui/store'
+import { mockDOMWidth, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
@@ -39,6 +39,29 @@ describe('ClientCountChart', () => {
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+  it('handle when data is null', () => {
+    const noDataResult = {
+      clientCountChart: {
+        time: [
+          '2022-04-07T09:15:00.000Z',
+          '2022-04-07T09:30:00.000Z',
+          '2022-04-07T09:45:00.000Z',
+          '2022-04-07T10:00:00.000Z',
+          '2022-04-07T10:15:00.000Z'
+        ],
+        newClientCount: [null, null, null, null, null],
+        impactedClientCount: [null, null, null, null, null],
+        connectedClientCount: [null, null, null, null, null]
+      }
+    }
+    const { asFragment } = render(
+      <BrowserRouter>
+        <ClientCountChart chartRef={()=>{}} incident={fakeIncident1} data={noDataResult}/>
+      </BrowserRouter>
+    )
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).toBeNull()
+    expect(screen.getByText('No data to display')).toBeVisible()
   })
 })
 describe('clientCountChartQuery', () => {

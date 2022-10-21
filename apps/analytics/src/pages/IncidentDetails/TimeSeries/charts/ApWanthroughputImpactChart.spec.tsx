@@ -1,9 +1,9 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }                             from '@acx-ui/analytics/services'
-import { fakeIncidentApInfraWanthroughput }       from '@acx-ui/analytics/utils'
-import { store }                                  from '@acx-ui/store'
-import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
+import { dataApiURL }                                     from '@acx-ui/analytics/services'
+import { fakeIncidentApInfraWanthroughput }               from '@acx-ui/analytics/utils'
+import { store }                                          from '@acx-ui/store'
+import { mockDOMWidth, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { TimeSeriesChartTypes }    from '../config'
 import { Api }                     from '../services'
@@ -44,6 +44,28 @@ describe('ApWanthroughputImpactChart', () => {
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+  it('handle when data is null', () => {
+    const noDataResult = {
+      apRebootBySystem: {
+        time: [
+          '2022-04-07T09:15:00.000Z',
+          '2022-04-08T09:30:00.000Z'
+        ],
+        apDisconnectionCount: [null, null]
+      }
+    }
+    const { asFragment } = render(
+      <BrowserRouter>
+        <ApWanthroughputImpactChart
+          chartRef={()=>{}}
+          incident={fakeIncidentApInfraWanthroughput}
+          data={noDataResult}
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).toBeNull()
+    expect(screen.getByText('No data to display')).toBeVisible()
   })
 })
 describe('apWanthroughputImpactQuery', () => {

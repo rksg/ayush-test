@@ -1,9 +1,9 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }                             from '@acx-ui/analytics/services'
-import { fakeIncidentContReboot }                 from '@acx-ui/analytics/utils'
-import { store }                                  from '@acx-ui/store'
-import { mockDOMWidth, mockGraphqlQuery, render } from '@acx-ui/test-utils'
+import { dataApiURL }                                     from '@acx-ui/analytics/services'
+import { fakeIncidentContReboot }                         from '@acx-ui/analytics/utils'
+import { store }                                          from '@acx-ui/store'
+import { mockDOMWidth, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { TimeSeriesChartTypes }    from '../config'
 import { Api }                     from '../services'
@@ -44,6 +44,35 @@ describe('ConnectedClientsChart', () => {
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+  it('handle when data is null', () => {
+    const noDataResult = {
+      clientCountCharts: {
+        time: [
+          '2022-04-07T09:15:00.000Z',
+          '2022-04-07T12:15:00.000Z',
+          '2022-04-07T15:15:00.000Z',
+          '2022-04-07T18:15:00.000Z',
+          '2022-04-07T21:15:00.000Z',
+          '2022-04-08T00:15:00.000Z',
+          '2022-04-08T03:15:00.000Z',
+          '2022-04-08T06:15:00.000Z',
+          '2022-04-08T09:15:00.000Z'
+        ],
+        connectedClientCount: [null, null, null, null, null, null, null, null, null]
+      }
+    }
+    const { asFragment } = render(
+      <BrowserRouter>
+        <ConnectedClientsChart
+          chartRef={()=>{}}
+          incident={fakeIncidentContReboot}
+          data={noDataResult}
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).toBeNull()
+    expect(screen.getByText('No data to display')).toBeVisible()
   })
 })
 describe('connectedClientsChartQuery', () => {
