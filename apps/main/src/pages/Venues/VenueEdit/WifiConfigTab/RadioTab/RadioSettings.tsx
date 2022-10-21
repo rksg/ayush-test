@@ -105,6 +105,24 @@ export function RadioSettings () {
       params: { tenantId, venueId },
       payload: { enabled: formData.radioParamsDual5G.enabled }
     })
+
+    formData.radioParams50G.allowedIndoorChannels =
+      formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
+    formData.radioParams50G.allowedOutdoorChannels =
+      formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
+    formData.radioParamsDual5G.radioParamsLower5G.allowedIndoorChannels =
+      formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
+        'allowedIndoorChannels'])
+    formData.radioParamsDual5G.radioParamsLower5G.allowedOutdoorChannels =
+      formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
+        'allowedOutdoorChannels'])
+    formData.radioParamsDual5G.radioParamsUpper5G.allowedIndoorChannels =
+      formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
+        'allowedIndoorChannels'])
+    formData.radioParamsDual5G.radioParamsUpper5G.allowedOutdoorChannels =
+      formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
+        'allowedOutdoorChannels'])
+
     updateVenueRadioCustomization({
       params: { tenantId, venueId },
       payload: formData
