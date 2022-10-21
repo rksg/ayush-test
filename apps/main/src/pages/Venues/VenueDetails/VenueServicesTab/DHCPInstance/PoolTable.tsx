@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Switch }    from 'antd'
 import _             from 'lodash'
@@ -20,6 +20,7 @@ export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
   const params = useParams()
   const { $t } = useIntl()
 
+  const [tableData, setTableData] = useState<DHCPPool[]>()
 
   const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
     params
@@ -35,18 +36,35 @@ export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
 
 
   const [activateDHCPPool] = useActivateDHCPPoolMutation()
-  const setActivePool = async (dhcppoolId:string)=>{
+  const setActivePool = async (dhcppoolId:string, activated:boolean)=>{
+
     await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+    const updateActive = tableData?.map((item)=>{
+      if(item.id===dhcppoolId){
+        return {
+          ...item,
+          activated
+        }
+      }else{
+        return item
+      }
+    })
+    setTableData(updateActive)
   }
 
   props.setPoolsNumFn(dhcpProfile?.dhcpPools.length)
-  const tableData = dhcpProfile?.dhcpPools.map( item => {
-    const index = _.findIndex(activeList, poolId => poolId === item.id)
-    return {
-      ...item,
-      activated: index!==-1
-    }
-  })
+
+  useEffect(() => {
+    const mergedData = dhcpProfile?.dhcpPools.map( item => {
+      const index = _.findIndex(activeList, poolId => poolId === item.id)
+      return {
+        ...item,
+        activated: index!==-1
+      }
+    })
+    setTableData(mergedData)
+  }, [activeList, dhcpProfile])
+
 
   const columns: TableProps<DHCPPool>['columns'] = [
     {
@@ -98,9 +116,23 @@ export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
           const switchRef = <Switch
             checkedChildren={$t({ defaultMessage: 'ON' })}
             unCheckedChildren={$t({ defaultMessage: 'OFF' })}
-            defaultChecked={row.activated}
-            onChange={()=>{
-              setActivePool(id as string)
+            checked={row.activated}
+            onChange={(checked)=>{
+              const activeMsg =
+              $t({ defaultMessage: 'Are you sure you want to active this DHCP Pool?' })
+              const deactivateMsg =
+              $t({ defaultMessage: 'Are you sure you want to deactivate this DHCP Pool?' })
+              showActionModal({
+                type: 'confirm',
+                width: 450,
+                title: $t({ defaultMessage: 'Active DHCP Pool' }),
+                content: checked ? activeMsg : deactivateMsg,
+                okText: $t({ defaultMessage: 'Confirm' }),
+                onOk () {
+                  setActivePool(id as string, checked)
+                }
+              })
+
             }}/>
           return switchRef
         }else{

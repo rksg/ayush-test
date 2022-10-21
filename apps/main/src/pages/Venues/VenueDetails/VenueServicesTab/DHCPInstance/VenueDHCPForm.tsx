@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { DeleteTwoTone } from '@ant-design/icons'
 import {
   Switch,
   Row,
   Button,
-  FormInstance
+  FormInstance,
+  Space
 } from 'antd'
 import _             from 'lodash'
 import { useIntl }   from 'react-intl'
@@ -39,18 +40,28 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
     _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
   const backupServerSN = venueDHCPProfile?.dhcpServiceAps[
     _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
-  const natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
 
-  const [gateways, setGateways] = useState<DHCPProfileAps[]>(natGatewayList)
-
+  const [gateways, setGateways] = useState<DHCPProfileAps[]>()
 
 
-  const gatewaysList = gateways.map((item,index)=>{
-	  return <><Row key={index}>
+  useEffect(() => {
+    const natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
+    setGateways(natGatewayList)
+
+    form.setFieldsValue({
+      serviceId: 'serviceProfileId1',
+      primaryServerSN: primaryServerSN,
+      backupServerSN: backupServerSN,
+      gateways: natGatewayList
+    })
+  }, [venueDHCPProfile, dhcpProfileList, apList, primaryServerSN, backupServerSN, form])
+
+
+  const gatewaysList = gateways?.map((item,index)=>{
+    return <><Row key={index}>
       <StyledForm.Item name={['gateways', index, 'serialNumber']}>
-        <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}
-          defaultValue={item.serialNumber}>
-          {apList?.data?.map( ap =>
+        <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
+          {apList?.data?.map(ap =>
             <Option value={ap.serialNumber}>
               {ap.name}
             </Option>
@@ -68,7 +79,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
         style={{ fontSize: 17, marginLeft: 10, cursor: 'pointer' }} />
       </IconContainer>
     </Row>
-    {(gateways.length===index+1) && <AddBtnContainer>
+    {(gateways?.length===index+1) && <AddBtnContainer>
       <Button onClick={()=>{
         form.setFieldsValue({ gateways: [...form.getFieldsValue().gateways, { }] })
         setGateways([...gateways, { serialNumber: '' , role: '' }])
@@ -78,18 +89,11 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
         {$t({ defaultMessage: 'Add gateway' })}
       </Button>
     </AddBtnContainer>}</>
-	 })
+  })
 
   return <StyledForm
     layout='vertical'
     validateTrigger='onBlur'
-    initialValues={{
-      serviceID: venueDHCPProfile?.serviceProfileId,
-      enabled: venueDHCPProfile?.enabled,
-      BackupServer: backupServerSN,
-      PrimaryServer: primaryServerSN,
-      gateways
-    }}
     form={form}
     ref={formRef}
   >
@@ -101,26 +105,32 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
         checked={venueDHCPProfile?.enabled}/>
     </StyledForm.Item>
 
-    <StyledForm.Item label={$t({ defaultMessage: 'DHCP service' })} name='serviceID'>
-      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}
-        defaultValue={venueDHCPProfile?.serviceProfileId}>
-        {dhcpProfileList?.map( dhcp =>
-          <Option value={dhcp.id}>
-            {dhcp.serviceName}
-          </Option>
-        )}
-      </AntSelect>
-      <TenantLink style={{ marginLeft: 10 }}
-        to={`/services/dhcp/${venueDHCPProfile?.serviceProfileId}/detail`}>
-        {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
-      </TenantLink>
-
+    <StyledForm.Item label={$t({ defaultMessage: 'DHCP service' })}>
+      <Space>
+        <StyledForm.Item
+          name='serviceId'
+          noStyle
+          rules={[{ required: true, message: 'Username is required' }]}
+        >
+          <AntSelect placeholder={$t({ defaultMessage: 'Select Service...' })}>
+            {dhcpProfileList?.map( dhcp =>
+              <Option value={dhcp.id}>
+                {dhcp.serviceName}
+              </Option>
+            )}
+          </AntSelect>
+        </StyledForm.Item>
+        <TenantLink style={{ marginLeft: 10 }}
+          to={`/services/dhcp/${venueDHCPProfile?.serviceProfileId}/detail`}>
+          {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
+        </TenantLink>
+      </Space>
     </StyledForm.Item>
+
     <StyledForm.Item label={$t({ defaultMessage: 'Primary Server' })}
-      name='PrimaryServer'
+      name='primaryServerSN'
       rules={[{ required: true }]}>
-      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}
-        defaultValue={primaryServerSN}>
+      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
         {apList?.data?.map( ap =>
           <Option value={ap.serialNumber}>
             {ap.name}
@@ -129,9 +139,8 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
       </AntSelect>
     </StyledForm.Item>
     <StyledForm.Item label={$t({ defaultMessage: 'Secondary Server' })}
-      name='BackupServer'>
-      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}
-        defaultValue={backupServerSN}>
+      name='backupServerSN'>
+      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
         {apList?.data?.map( ap =>
           <Option value={ap.serialNumber}>
             {ap.name}

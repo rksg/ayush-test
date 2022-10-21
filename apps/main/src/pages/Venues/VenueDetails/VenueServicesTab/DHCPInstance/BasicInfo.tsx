@@ -130,9 +130,9 @@ export default function BasicInfo () {
       okText={$t({ defaultMessage: 'Apply' })}
       width={650}
       onCancel={() => {
-        const form = formRef as React.MutableRefObject<FormInstance>
+        // const form = formRef as React.MutableRefObject<FormInstance>
         setVisible(false)
-        form.current.resetFields()
+        // form.current.resetFields()
       }}
       onOk={() => {
         const form = formRef as React.MutableRefObject<FormInstance>
