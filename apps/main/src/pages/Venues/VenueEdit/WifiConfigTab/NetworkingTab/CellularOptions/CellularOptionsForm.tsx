@@ -95,7 +95,7 @@ export function CellularOptionsForm () {
       })
 
       //setCurrentCountry
-      Object.keys(regionCountriesMap).map(function (objectKey) {
+      Object.keys(regionCountriesMap).forEach(function (objectKey) {
         const value = _.get(regionCountriesMap, objectKey)
         if (Array.isArray(value.countryCodes) &&
         value.countryCodes.includes(countryCode)) {
