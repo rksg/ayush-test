@@ -4,9 +4,9 @@ import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig }                         from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, cssStr, VerticalBarChart } from '@acx-ui/components'
-import type { TimeStamp }                                     from '@acx-ui/types'
+import { AnalyticsFilter, kpiConfig }                                    from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast } from '@acx-ui/components'
+import type { TimeStamp }                                                from '@acx-ui/types'
 
 import { KpiThresholdType, onApplyType }               from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
@@ -139,8 +139,22 @@ function Histogram ({
 
   const onButtonApply = async () => {
     if (onApply) {
-      const applied = await onApply()(thresholdValue as unknown as number)
-      console.log(applied, 'what is this')
+      try {
+        await onApply()(thresholdValue as unknown as number)
+        showToast({
+          type: 'success',
+          content: $t({
+            defaultMessage: 'Threshold set succesfully'
+          })
+        })
+      } catch {
+        showToast({
+          type: 'error',
+          content: $t({
+            defaultMessage: 'Error setting threshold, please try again later'
+          })
+        })
+      }
     }
   }
 
