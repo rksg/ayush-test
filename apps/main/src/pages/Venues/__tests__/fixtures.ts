@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { ExternalAntenna, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 export const successResponse = {
   requestId: 'request-id'
@@ -1053,6 +1053,24 @@ export const venueExternalAntennaCap = {
       support11AX: true
     }
   ]
+}
+
+export const externalAntennaApModels = {
+  E510: {
+    enable24G: false, enable50G: false, model: 'E510', gain24G: 3,
+    gain50G: 3, supportDisable: true
+  }, T300E: {
+    enable50G: true, gain50G: 8,
+    model: 'T300E', supportDisable: true
+  }, T350SE: {
+    enable24G: true, enable50G: true,
+    gain24G: 9, gain50G: 9, model: 'T350SE', supportDisable: true, coupled: true
+  }, T750SE: {
+    enable24G: true, enable50G: true, gain24G: 10, gain50G: 10, model: 'T750SE',
+    supportDisable: true, coupled: true
+  }
+} as unknown as {
+  [index: string]: ExternalAntenna;
 }
 
 export const emptyList = {

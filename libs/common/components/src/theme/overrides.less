@@ -107,9 +107,21 @@
           padding: 16px 20px 16px 20px;
         }
         .ant-drawer-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           border-top: 0;
-          padding: 16px 0px;
+          padding: 20px 0px;
           margin: 0px 20px;
+          .ant-checkbox-wrapper {
+            font-size: var(--acx-body-4-font-size);
+            font-weight: var(--acx-body-font-weight);
+            height: 20px;
+            align-items: center;
+            .ant-checkbox {
+              top: 0;
+            }
+          }
           .ant-btn + .ant-btn {
             margin-left: 12px;
           }
