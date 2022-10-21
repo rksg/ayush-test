@@ -3,7 +3,7 @@
 exports[`NetworkTabs should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="ant-tabs ant-tabs-top"
+    class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
   >
     <div
       class="ant-tabs-nav"

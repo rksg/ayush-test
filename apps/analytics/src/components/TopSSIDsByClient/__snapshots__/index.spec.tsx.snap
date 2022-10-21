@@ -93,12 +93,6 @@ exports[`TopSSIDsByClientWidget should render table with sparkline svg: tableHea
     </th>
     <th
       class="ant-table-cell"
-      style="text-align: right;"
-    >
-      Clients
-    </th>
-    <th
-      class="ant-table-cell"
     >
       Total Traffic
     </th>
@@ -106,6 +100,12 @@ exports[`TopSSIDsByClientWidget should render table with sparkline svg: tableHea
       class="ant-table-cell"
     >
       Traffic History
+    </th>
+    <th
+      class="ant-table-cell"
+      style="text-align: right;"
+    >
+      Clients
     </th>
   </tr>
 </thead>
@@ -147,12 +147,6 @@ Array [
       class="ant-table-cell"
     >
       birdywlan-dev
-    </td>,
-    <td
-      class="ant-table-cell"
-      style="text-align: right;"
-    >
-      8
     </td>,
     <td
       class="ant-table-cell"
@@ -241,18 +235,18 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
+    <td
+      class="ant-table-cell"
+      style="text-align: right;"
+    >
+      8
+    </td>,
   ],
   Array [
     <td
       class="ant-table-cell"
     >
       Home-550
-    </td>,
-    <td
-      class="ant-table-cell"
-      style="text-align: right;"
-    >
-      7
     </td>,
     <td
       class="ant-table-cell"
@@ -341,18 +335,18 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
+    <td
+      class="ant-table-cell"
+      style="text-align: right;"
+    >
+      7
+    </td>,
   ],
   Array [
     <td
       class="ant-table-cell"
     >
       psk_test
-    </td>,
-    <td
-      class="ant-table-cell"
-      style="text-align: right;"
-    >
-      3
     </td>,
     <td
       class="ant-table-cell"
@@ -441,18 +435,18 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
+    <td
+      class="ant-table-cell"
+      style="text-align: right;"
+    >
+      3
+    </td>,
   ],
   Array [
     <td
       class="ant-table-cell"
     >
       A-T-Wlan-01
-    </td>,
-    <td
-      class="ant-table-cell"
-      style="text-align: right;"
-    >
-      2
     </td>,
     <td
       class="ant-table-cell"
@@ -541,18 +535,18 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
+    <td
+      class="ant-table-cell"
+      style="text-align: right;"
+    >
+      2
+    </td>,
   ],
   Array [
     <td
       class="ant-table-cell"
     >
       testGoogleZ
-    </td>,
-    <td
-      class="ant-table-cell"
-      style="text-align: right;"
-    >
-      2
     </td>,
     <td
       class="ant-table-cell"
@@ -641,6 +635,12 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
+    <td
+      class="ant-table-cell"
+      style="text-align: right;"
+    >
+      2
+    </td>,
   ],
 ]
 `;

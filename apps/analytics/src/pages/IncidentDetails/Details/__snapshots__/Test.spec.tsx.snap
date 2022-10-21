@@ -1532,59 +1532,21 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
-          type="no-border"
+          data-testid="timeseries"
         >
           <div
-            class="ant-card"
-          >
-            <div
-              class="ant-card-head"
-            >
-              <div
-                class="ant-card-head-wrapper"
-              >
-                <div
-                  class="ant-card-head-title"
-                >
-                  <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
-                  >
-                    RSS Quality by Clients
-                  </div>
-                </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
-              <div
-                style="height: 150px;"
-              >
-                <div
-                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iVIXiF"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      Not available in this Beta version
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            data-testid="timeseries-RssQualityByClientsChart"
+          />
         </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
         <div
           class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
           type="no-border"
