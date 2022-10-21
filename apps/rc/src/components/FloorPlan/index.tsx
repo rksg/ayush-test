@@ -89,7 +89,9 @@ export default function FloorPlan () {
                 'You can place your devices on floor plans or map to view their geographical distribution'
             })}
           </Space>}>
-          <Button type='link'>{$t({ defaultMessage: 'Add Floor Plan' })}</Button>
+          <DisabledButton type='link'>
+            {$t({ defaultMessage: 'Add Floor Plan' })}
+          </DisabledButton>
         </Empty>
       }
     </Loader>
