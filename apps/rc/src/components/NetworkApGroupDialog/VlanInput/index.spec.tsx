@@ -22,33 +22,25 @@ import {
 import {
   network,
   networkVenue_apgroup,
+  vlanPoolList,
   params
 } from '../__tests__/NetworkVenueTestData'
 
 import { VlanInput } from './index'
 
 
-const vlanPoolList = [{
-  tenantId: params.tenantId,
-  name: 'pool1',
-  vlanMembers: ['123'],
-  id: '1c061cf2649344adaf1e79a9d624a451'
-}]
-
 describe('VlanInput', () => {
-  beforeAll(async () => {
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.getVlanPools.url,
-        (req, res, ctx) => res(ctx.json(vlanPoolList))
-      )
-    )
-  })
-
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })
+
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getVlanPools.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolList))
+      )
+    )
   })
 
   it('should render correctly', async () => {

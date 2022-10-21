@@ -23,7 +23,8 @@ import {
 import {
   venueNetworkList,
   networkDeepList,
-  venueNetworkApGroup
+  venueNetworkApGroup,
+  venueData
 } from '../../__tests__/fixtures'
 
 import { VenueNetworksTab } from './index'
@@ -33,14 +34,17 @@ jest.mock(
   () => ({ name }: { name: string }) => <div data-testid={`dialog-${name}`} title={name} />,
   { virtual: true })
 
+const params = {
+  tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+  venueId: '3b2ffa31093f41648ed38ed122510029'
+}
+
 describe('VenueNetworksTab', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })
-  })
 
-  it('should render correctly', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenueNetworkList.url,
@@ -54,17 +58,14 @@ describe('VenueNetworksTab', () => {
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
       ),
-      rest.post(
+      rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => res(ctx.json({ venue: venueData }))
       )
     )
+  })
 
-    const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      venueId: '3b2ffa31093f41648ed38ed122510029'
-    }
-
+  it('should render correctly', async () => {
     const { asFragment } = render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })
@@ -76,29 +77,6 @@ describe('VenueNetworksTab', () => {
 
   it('activate Network', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(true)
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
-      ),
-      rest.post(
-        CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenueDetailsHeader.url,
-        (req, res, ctx) => res(ctx.json({}))
-      )
-    )
-
-    const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      venueId: '3b2ffa31093f41648ed38ed122510029'
-    }
 
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
@@ -130,30 +108,6 @@ describe('VenueNetworksTab', () => {
   })
 
   it('deactivate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
-      ),
-      rest.post(
-        CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenueDetailsHeader.url,
-        (req, res, ctx) => res(ctx.json({}))
-      )
-    )
-
-    const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      venueId: '3b2ffa31093f41648ed38ed122510029'
-    }
-
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })
@@ -191,28 +145,6 @@ describe('VenueNetworksTab', () => {
   })
 
   it('click VLAN, APs, Radios', async () => {
-    const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      venueId: '3b2ffa31093f41648ed38ed122510029'
-    }
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
-      ),
-      rest.post(
-        CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenueDetailsHeader.url,
-        (req, res, ctx) => res(ctx.json({}))
-      )
-    )
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })

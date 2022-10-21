@@ -103,7 +103,7 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(WifiUrlsInfo.updateNetworkDeep.url,
+      rest.put(WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json([]))),

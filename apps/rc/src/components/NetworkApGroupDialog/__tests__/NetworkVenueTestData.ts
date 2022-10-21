@@ -103,6 +103,13 @@ export const networkVenue_apgroup = {
   }]
 }
 
+export const vlanPoolList = [{
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  name: 'pool1',
+  vlanMembers: ['123'],
+  id: '1c061cf2649344adaf1e79a9d624a451'
+}]
+
 export const timezoneRes = { // location=-37.8145092,144.9704868
   dstOffset: 0,
   rawOffset: 36000,

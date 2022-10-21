@@ -6,6 +6,7 @@ import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   RadioTypeEnum,
+  WifiUrlsInfo,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -22,7 +23,8 @@ import {
   network,
   networkVenue_apgroup,
   networkVenue_allAps,
-  params
+  params,
+  vlanPoolList
 } from './__tests__/NetworkVenueTestData'
 
 import { NetworkApGroupDialog } from './index'
@@ -36,6 +38,10 @@ describe('NetworkApGroupDialog', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getVlanPools.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolList))
       )
     )
   })

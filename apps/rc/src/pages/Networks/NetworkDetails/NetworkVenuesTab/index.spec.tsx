@@ -28,7 +28,9 @@ import {
   list,
   timezoneRes,
   params,
-  networkVenue_apgroup
+  networkVenue_allAps,
+  networkVenue_apgroup,
+  vlanPoolList
 } from '../../../../components/NetworkApGroupDialog/__tests__/NetworkVenueTestData'
 
 import { NetworkVenuesTab } from './index'
@@ -48,13 +50,15 @@ describe('NetworkVenuesTab', () => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })
-  })
 
-  it('should render correctly', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
       ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -63,9 +67,19 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         CommonUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
+      ),
+      rest.get(
+        WifiUrlsInfo.getVlanPools.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolList))
+      ),
+      rest.put(
+        WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
+  })
 
+  it('should render correctly', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -84,20 +98,6 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('activate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      )
-    )
     jest.mocked(useSplitTreatment).mockReturnValue(true)
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
@@ -116,16 +116,7 @@ describe('NetworkVenuesTab', () => {
         scheduler: {
           type: 'ALWAYS_ON'
         },
-        apGroups: [{
-          radio: 'Both',
-          radioTypes: ['2.4-GHz'],
-          isDefault: true,
-          id: '6cb1e831973a4d60924ac59f1bda073c',
-          apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
-          apGroupName: 'APs not assigned to any group',
-          vlanPoolId: '1c061cf2649344adaf1e79a9d624a451',
-          vlanPoolName: 'pool1'
-        }]
+        apGroups: networkVenue_apgroup.apGroups
       }
     ]
     mockServer.use(
@@ -156,21 +147,6 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('deactivate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      )
-    )
-
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -199,21 +175,6 @@ describe('NetworkVenuesTab', () => {
   }, 20000)
 
   it('Table action bar activate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      )
-    )
-
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -251,19 +212,15 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('Table action bar activate Network and show modal', async () => {
-    list.data[1].allApDisabled = true
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
+        (req, res, ctx) => res(ctx.json({ ...list,
+          data: [
+            list.data[0],
+            { ...list.data[1], allApDisabled: true }
+          ]
+        }))
       )
     )
 
@@ -304,20 +261,6 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('Table action bar deactivate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      )
-    )
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -356,6 +299,24 @@ describe('NetworkVenuesTab', () => {
 
   it('has custom scheduling', async () => {
 
+    const newAPGroups = [{
+      radio: 'Both',
+      radioTypes: ['5-GHz','2.4-GHz'],
+      isDefault: true,
+      apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
+      id: '6cb1e831973a4d60924ac59f1bda073c',
+      apGroupName: 'APs not assigned to any group',
+      vlanId: 1
+    },{
+      radio: 'Both',
+      radioTypes: ['5-GHz','2.4-GHz'],
+      isDefault: false,
+      apGroupId: '8ef01f614f1644d3869815aae82036b3',
+      id: '9308685565fc47258f9adb5f09875bd0',
+      apGroupName: 'bbb',
+      vlanId: 1
+    }]
+
     const newVenues = [
       {
         ...network.venues[0],
@@ -384,40 +345,23 @@ describe('NetworkVenuesTab', () => {
           sat: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'
         },
         isAllApGroups: false,
-        apGroups: [{
-          radio: 'Both',
-          radioTypes: ['5-GHz','2.4-GHz'],
-          isDefault: true,
-          apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
-          id: '6cb1e831973a4d60924ac59f1bda073c',
-          apGroupName: 'APs not assigned to any group',
-          vlanId: 1
-        },{
-          radio: 'Both',
-          radioTypes: ['5-GHz','2.4-GHz'],
-          isDefault: false,
-          apGroupId: '8ef01f614f1644d3869815aae82036b3',
-          id: '9308685565fc47258f9adb5f09875bd0',
-          apGroupName: 'bbb',
-          vlanId: 1
-        }]
+        apGroups: newAPGroups
       }
     ]
 
     const requestSpy = jest.fn()
 
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [
+          networkVenue_allAps,
+          { ...networkVenue_apgroup, apGroups: newAPGroups }
+        ] }))
       ),
       rest.get(
         'https://maps.googleapis.com/maps/api/timezone/json',
@@ -473,21 +417,16 @@ describe('NetworkVenuesTab', () => {
     ]
 
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      ),
-      rest.put(
-        WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({}))
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [
+          { ...networkVenue_allAps, apGroups: newVenues[0].apGroups },
+          networkVenue_apgroup
+        ] }))
       )
     )
 
@@ -520,30 +459,10 @@ describe('NetworkVenuesTab', () => {
 
 
   it('setup NetworkApGroupDialog', async () => {
-
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      ),
-      rest.put(
-        WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({}))
-      )
-    )
-
     mockServer.use(
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(networkVenue_apgroup))
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
       )
     )
 

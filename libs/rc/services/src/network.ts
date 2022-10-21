@@ -118,14 +118,42 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     getNetwork: build.query<NetworkSaveData | null, RequestPayload>({
-      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
           null,
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
-        const result = await fetch(createHttpRequest(WifiUrlsInfo.getNetwork, params))
-        return result as QueryReturnValue<NetworkSaveData,
+        const networkQuery = await fetchWithBQ(createHttpRequest(WifiUrlsInfo.getNetwork, params))
+        const networkData = networkQuery.data as NetworkSaveData
+
+        const venueNetworkApGroupInfo = {
+          ...createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params),
+          body: networkData.venues?.map(item => ({
+            networkId: params.networkId,
+            ssids: [networkData.wlan?.ssid],
+            venueId: item.venueId
+          }))
+        }
+
+        let venueNetworkApGroupList = {} as { response: NetworkVenue[] }
+
+        if (networkData.wlan?.ssid && venueNetworkApGroupInfo.body?.every(i=>i.venueId)) {
+          const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
+          venueNetworkApGroupList = venueNetworkApGroupQuery.data as { response: NetworkVenue[] }
+        }
+
+        networkData.venues = networkData.venues?.map(item => {
+          const networkApGroup = venueNetworkApGroupList.response?.find(
+            i => i.venueId === item.venueId
+          )
+          return {
+            ...item,
+            apGroups: networkApGroup?.apGroups || item.apGroups
+          }
+        })
+
+        return networkQuery as QueryReturnValue<NetworkSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
       },
