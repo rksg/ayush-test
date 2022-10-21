@@ -7,9 +7,11 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
   >
     <div
       class="ant-row"
+      style="margin-left: -10px; margin-right: -10px;"
     >
       <div
         class="ant-col ant-col-10"
+        style="padding-left: 10px; padding-right: 10px;"
       >
         <h3
           class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
@@ -124,7 +126,7 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
                   class="ant-form-item-control-input-content"
                 >
                   <div
-                    class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
+                    class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
                   >
                     <div
                       class="ant-space ant-space-horizontal ant-space-align-center"
