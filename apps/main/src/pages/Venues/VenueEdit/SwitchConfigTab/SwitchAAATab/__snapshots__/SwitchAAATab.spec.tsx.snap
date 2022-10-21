@@ -1354,363 +1354,337 @@ exports[`SwitchAAATab should render correctly 1`] = `
                         <div
                           class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
                         >
-                          <div
-                            class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost"
+                          <fieldset
+                            class="styledComponents__Fieldset-sc-azs30w-0 iIfzQF"
+                            style="margin-bottom: 20px; width: 840px;"
                           >
+                            <legend
+                              class="styledComponents__Legend-sc-azs30w-1 jfnLPP"
+                            >
+                              <label>
+                                Log-in Authentication
+                                <button
+                                  aria-checked="true"
+                                  class="ant-switch ant-switch-checked"
+                                  role="switch"
+                                  style="display: none; cursor: default;"
+                                  type="button"
+                                >
+                                  <div
+                                    class="ant-switch-handle"
+                                  />
+                                  <span
+                                    class="ant-switch-inner"
+                                  />
+                                </button>
+                              </label>
+                            </legend>
                             <div
-                              class="ant-collapse-item ant-collapse-item-active"
+                              class="ant-form-item"
                             >
                               <div
-                                aria-expanded="true"
-                                class="ant-collapse-header"
-                                role="button"
-                                tabindex="0"
+                                class="ant-row ant-form-item-row"
                               >
                                 <div
-                                  class="ant-collapse-expand-icon"
+                                  class="ant-col ant-form-item-label"
+                                  style="flex: 0 0 150px;"
                                 >
-                                  <span
-                                    aria-label="right"
-                                    class="anticon anticon-right ant-collapse-arrow"
-                                    role="img"
+                                  <label
+                                    class=""
+                                    for="aaa-settings_authnEnabledSsh"
+                                    title="SSH Authentication"
                                   >
-                                    <svg
-                                      aria-hidden="true"
-                                      data-icon="right"
-                                      fill="currentColor"
-                                      focusable="false"
-                                      height="1em"
-                                      style="transform: rotate(90deg);"
-                                      viewBox="64 64 896 896"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                                      />
-                                    </svg>
-                                  </span>
+                                    SSH Authentication
+                                  </label>
                                 </div>
-                                <span
-                                  class="ant-collapse-header-text"
+                                <div
+                                  class="ant-col ant-form-item-control"
                                 >
-                                  Log-in Authentication
-                                </span>
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="true"
+                                        class="ant-switch ant-switch-checked"
+                                        id="aaa-settings_authnEnabledSsh"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
+                            </div>
+                            <div
+                              class="ant-form-item"
+                            >
                               <div
-                                class="ant-collapse-content ant-collapse-content-active"
+                                class="ant-row ant-form-item-row"
                               >
                                 <div
-                                  class="ant-collapse-content-box"
+                                  class="ant-col ant-form-item-label"
+                                  style="flex: 0 0 150px;"
+                                >
+                                  <label
+                                    class=""
+                                    for="aaa-settings_authnEnableTelnet"
+                                    title="Telnet Authentication"
+                                  >
+                                    Telnet Authentication
+                                  </label>
+                                </div>
+                                <div
+                                  class="ant-col ant-form-item-control"
                                 >
                                   <div
-                                    class="ant-form-item ant-form-item-has-success"
+                                    class="ant-form-item-control-input"
                                   >
                                     <div
-                                      class="ant-row ant-form-item-row"
+                                      class="ant-form-item-control-input-content"
                                     >
-                                      <div
-                                        class="ant-col ant-form-item-label"
-                                        style="flex: 0 0 150px;"
-                                      >
-                                        <label
-                                          class=""
-                                          for="aaa-settings_authnEnabledSsh"
-                                          title="SSH Authentication"
-                                        >
-                                          SSH Authentication
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-col ant-form-item-control"
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="aaa-settings_authnEnableTelnet"
+                                        role="switch"
+                                        type="button"
                                       >
                                         <div
-                                          class="ant-form-item-control-input"
-                                        >
-                                          <div
-                                            class="ant-form-item-control-input-content"
-                                          >
-                                            <button
-                                              aria-checked="true"
-                                              class="ant-switch ant-switch-checked"
-                                              id="aaa-settings_authnEnabledSsh"
-                                              role="switch"
-                                              type="button"
-                                            >
-                                              <div
-                                                class="ant-switch-handle"
-                                              />
-                                              <span
-                                                class="ant-switch-inner"
-                                              />
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
                                     </div>
                                   </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="ant-form-item"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-label"
+                                  style="flex: 0 0 150px;"
+                                >
+                                  <label
+                                    class="ant-form-item-required"
+                                    for="aaa-settings_selectedLoginServers"
+                                    title="Set Priority"
+                                  >
+                                    Set Priority
+                                  </label>
+                                </div>
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
                                   <div
-                                    class="ant-form-item ant-form-item-has-success"
+                                    class="ant-form-item-control-input"
                                   >
                                     <div
-                                      class="ant-row ant-form-item-row"
+                                      class="ant-form-item-control-input-content"
                                     >
                                       <div
-                                        class="ant-col ant-form-item-label"
-                                        style="flex: 0 0 150px;"
-                                      >
-                                        <label
-                                          class=""
-                                          for="aaa-settings_authnEnableTelnet"
-                                          title="Telnet Authentication"
-                                        >
-                                          Telnet Authentication
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-col ant-form-item-control"
+                                        class="ant-transfer"
                                       >
                                         <div
-                                          class="ant-form-item-control-input"
+                                          class="ant-transfer-list"
+                                          style="width: 300px; height: 172px;"
                                         >
                                           <div
-                                            class="ant-form-item-control-input-content"
+                                            class="ant-transfer-list-header"
                                           >
-                                            <button
-                                              aria-checked="false"
-                                              class="ant-switch"
-                                              id="aaa-settings_authnEnableTelnet"
-                                              role="switch"
-                                              type="button"
+                                            <span
+                                              class="ant-transfer-list-header-selected"
                                             >
-                                              <div
-                                                class="ant-switch-handle"
-                                              />
-                                              <span
-                                                class="ant-switch-inner"
-                                              />
-                                            </button>
+                                              2 items
+                                            </span>
+                                            <span
+                                              class="ant-transfer-list-header-title"
+                                            >
+                                              Available Servers & Users
+                                            </span>
+                                          </div>
+                                          <div
+                                            class="ant-transfer-list-body"
+                                          >
+                                            <ul
+                                              class="ant-transfer-list-content"
+                                            >
+                                              <li
+                                                class="ant-transfer-list-content-item"
+                                                title="RADIUS Servers"
+                                              >
+                                                <label
+                                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                >
+                                                  <span
+                                                    class="ant-checkbox"
+                                                  >
+                                                    <input
+                                                      class="ant-checkbox-input"
+                                                      type="checkbox"
+                                                      value=""
+                                                    />
+                                                    <span
+                                                      class="ant-checkbox-inner"
+                                                    />
+                                                  </span>
+                                                </label>
+                                                <span
+                                                  class="ant-transfer-list-content-item-text"
+                                                >
+                                                  RADIUS Servers
+                                                </span>
+                                              </li>
+                                              <li
+                                                class="ant-transfer-list-content-item"
+                                                title="No Authentication"
+                                              >
+                                                <label
+                                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
+                                                >
+                                                  <span
+                                                    class="ant-checkbox"
+                                                  >
+                                                    <input
+                                                      class="ant-checkbox-input"
+                                                      type="checkbox"
+                                                      value=""
+                                                    />
+                                                    <span
+                                                      class="ant-checkbox-inner"
+                                                    />
+                                                  </span>
+                                                </label>
+                                                <span
+                                                  class="ant-transfer-list-content-item-text"
+                                                >
+                                                  No Authentication
+                                                </span>
+                                              </li>
+                                            </ul>
                                           </div>
                                         </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="ant-form-item"
-                                  >
-                                    <div
-                                      class="ant-row ant-form-item-row"
-                                    >
-                                      <div
-                                        class="ant-col ant-form-item-label"
-                                        style="flex: 0 0 150px;"
-                                      >
-                                        <label
-                                          class="ant-form-item-required"
-                                          for="aaa-settings_selectedLoginServers"
-                                          title="Set Priority"
-                                        >
-                                          Set Priority
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-col ant-form-item-control"
-                                      >
                                         <div
-                                          class="ant-form-item-control-input"
+                                          class="ant-transfer-operation"
+                                        >
+                                          <button
+                                            class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                            disabled=""
+                                            type="button"
+                                          >
+                                            <span
+                                              aria-label="right"
+                                              class="anticon anticon-right"
+                                              role="img"
+                                            >
+                                              <svg
+                                                aria-hidden="true"
+                                                data-icon="right"
+                                                fill="currentColor"
+                                                focusable="false"
+                                                height="1em"
+                                                viewBox="64 64 896 896"
+                                                width="1em"
+                                              >
+                                                <path
+                                                  d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                                />
+                                              </svg>
+                                            </span>
+                                          </button>
+                                          <button
+                                            class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
+                                            disabled=""
+                                            type="button"
+                                          >
+                                            <span
+                                              aria-label="left"
+                                              class="anticon anticon-left"
+                                              role="img"
+                                            >
+                                              <svg
+                                                aria-hidden="true"
+                                                data-icon="left"
+                                                fill="currentColor"
+                                                focusable="false"
+                                                height="1em"
+                                                viewBox="64 64 896 896"
+                                                width="1em"
+                                              >
+                                                <path
+                                                  d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                                                />
+                                              </svg>
+                                            </span>
+                                          </button>
+                                        </div>
+                                        <div
+                                          class="ant-transfer-list"
+                                          style="width: 300px; height: 172px;"
                                         >
                                           <div
-                                            class="ant-form-item-control-input-content"
+                                            class="ant-transfer-list-header"
                                           >
-                                            <div
-                                              class="ant-transfer"
+                                            <span
+                                              class="ant-transfer-list-header-selected"
                                             >
-                                              <div
-                                                class="ant-transfer-list"
-                                                style="width: 300px; height: 172px;"
+                                              1 item
+                                            </span>
+                                            <span
+                                              class="ant-transfer-list-header-title"
+                                            >
+                                              Selected order
+                                            </span>
+                                          </div>
+                                          <div
+                                            class="ant-transfer-list-body"
+                                          >
+                                            <ul
+                                              class="ant-transfer-list-content"
+                                            >
+                                              <li
+                                                class="ant-transfer-list-content-item"
+                                                title="Local Users"
                                               >
-                                                <div
-                                                  class="ant-transfer-list-header"
+                                                <label
+                                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
                                                 >
                                                   <span
-                                                    class="ant-transfer-list-header-selected"
+                                                    class="ant-checkbox"
                                                   >
-                                                    2 items
+                                                    <input
+                                                      class="ant-checkbox-input"
+                                                      type="checkbox"
+                                                      value=""
+                                                    />
+                                                    <span
+                                                      class="ant-checkbox-inner"
+                                                    />
                                                   </span>
-                                                  <span
-                                                    class="ant-transfer-list-header-title"
-                                                  >
-                                                    Available Servers & Users
-                                                  </span>
-                                                </div>
-                                                <div
-                                                  class="ant-transfer-list-body"
+                                                </label>
+                                                <span
+                                                  class="ant-transfer-list-content-item-text"
                                                 >
-                                                  <ul
-                                                    class="ant-transfer-list-content"
-                                                  >
-                                                    <li
-                                                      class="ant-transfer-list-content-item"
-                                                      title="RADIUS Servers"
-                                                    >
-                                                      <label
-                                                        class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
-                                                      >
-                                                        <span
-                                                          class="ant-checkbox"
-                                                        >
-                                                          <input
-                                                            class="ant-checkbox-input"
-                                                            type="checkbox"
-                                                            value=""
-                                                          />
-                                                          <span
-                                                            class="ant-checkbox-inner"
-                                                          />
-                                                        </span>
-                                                      </label>
-                                                      <span
-                                                        class="ant-transfer-list-content-item-text"
-                                                      >
-                                                        RADIUS Servers
-                                                      </span>
-                                                    </li>
-                                                    <li
-                                                      class="ant-transfer-list-content-item"
-                                                      title="No Authentication"
-                                                    >
-                                                      <label
-                                                        class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
-                                                      >
-                                                        <span
-                                                          class="ant-checkbox"
-                                                        >
-                                                          <input
-                                                            class="ant-checkbox-input"
-                                                            type="checkbox"
-                                                            value=""
-                                                          />
-                                                          <span
-                                                            class="ant-checkbox-inner"
-                                                          />
-                                                        </span>
-                                                      </label>
-                                                      <span
-                                                        class="ant-transfer-list-content-item-text"
-                                                      >
-                                                        No Authentication
-                                                      </span>
-                                                    </li>
-                                                  </ul>
-                                                </div>
-                                              </div>
-                                              <div
-                                                class="ant-transfer-operation"
-                                              >
-                                                <button
-                                                  class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
-                                                  disabled=""
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    aria-label="right"
-                                                    class="anticon anticon-right"
-                                                    role="img"
-                                                  >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      data-icon="right"
-                                                      fill="currentColor"
-                                                      focusable="false"
-                                                      height="1em"
-                                                      viewBox="64 64 896 896"
-                                                      width="1em"
-                                                    >
-                                                      <path
-                                                        d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
-                                                <button
-                                                  class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only"
-                                                  disabled=""
-                                                  type="button"
-                                                >
-                                                  <span
-                                                    aria-label="left"
-                                                    class="anticon anticon-left"
-                                                    role="img"
-                                                  >
-                                                    <svg
-                                                      aria-hidden="true"
-                                                      data-icon="left"
-                                                      fill="currentColor"
-                                                      focusable="false"
-                                                      height="1em"
-                                                      viewBox="64 64 896 896"
-                                                      width="1em"
-                                                    >
-                                                      <path
-                                                        d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
-                                                      />
-                                                    </svg>
-                                                  </span>
-                                                </button>
-                                              </div>
-                                              <div
-                                                class="ant-transfer-list"
-                                                style="width: 300px; height: 172px;"
-                                              >
-                                                <div
-                                                  class="ant-transfer-list-header"
-                                                >
-                                                  <span
-                                                    class="ant-transfer-list-header-selected"
-                                                  >
-                                                    1 item
-                                                  </span>
-                                                  <span
-                                                    class="ant-transfer-list-header-title"
-                                                  >
-                                                    Selected order
-                                                  </span>
-                                                </div>
-                                                <div
-                                                  class="ant-transfer-list-body"
-                                                >
-                                                  <ul
-                                                    class="ant-transfer-list-content"
-                                                  >
-                                                    <li
-                                                      class="ant-transfer-list-content-item"
-                                                      title="Local Users"
-                                                    >
-                                                      <label
-                                                        class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-transfer-list-checkbox"
-                                                      >
-                                                        <span
-                                                          class="ant-checkbox"
-                                                        >
-                                                          <input
-                                                            class="ant-checkbox-input"
-                                                            type="checkbox"
-                                                            value=""
-                                                          />
-                                                          <span
-                                                            class="ant-checkbox-inner"
-                                                          />
-                                                        </span>
-                                                      </label>
-                                                      <span
-                                                        class="ant-transfer-list-content-item-text"
-                                                      >
-                                                        Local Users
-                                                      </span>
-                                                    </li>
-                                                  </ul>
-                                                </div>
-                                              </div>
-                                            </div>
+                                                  Local Users
+                                                </span>
+                                              </li>
+                                            </ul>
                                           </div>
                                         </div>
                                       </div>
@@ -1719,287 +1693,243 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 </div>
                               </div>
                             </div>
+                          </fieldset>
+                          <fieldset
+                            class="styledComponents__Fieldset-sc-azs30w-0 iIfzQF"
+                            style="margin-bottom: 20px; width: 840px;"
+                          >
+                            <legend
+                              class="styledComponents__Legend-sc-azs30w-1 jfnLPP"
+                            >
+                              <label>
+                                Authorization
+                                <button
+                                  aria-checked="true"
+                                  class="ant-switch ant-switch-checked"
+                                  role="switch"
+                                  style="display: none; cursor: default;"
+                                  type="button"
+                                >
+                                  <div
+                                    class="ant-switch-handle"
+                                  />
+                                  <span
+                                    class="ant-switch-inner"
+                                  />
+                                </button>
+                              </label>
+                            </legend>
                             <div
-                              class="ant-collapse-item ant-collapse-item-active"
+                              class="ant-form-item"
                             >
                               <div
-                                aria-expanded="true"
-                                class="ant-collapse-header"
-                                role="button"
-                                tabindex="0"
+                                class="ant-row ant-form-item-row"
                               >
                                 <div
-                                  class="ant-collapse-expand-icon"
+                                  class="ant-col ant-form-item-label"
+                                  style="flex: 0 0 150px;"
                                 >
-                                  <span
-                                    aria-label="right"
-                                    class="anticon anticon-right ant-collapse-arrow"
-                                    role="img"
+                                  <label
+                                    class=""
+                                    for="aaa-settings_authzEnabledCommand"
+                                    title="Command Authorization"
                                   >
-                                    <svg
-                                      aria-hidden="true"
-                                      data-icon="right"
-                                      fill="currentColor"
-                                      focusable="false"
-                                      height="1em"
-                                      style="transform: rotate(90deg);"
-                                      viewBox="64 64 896 896"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                                      />
-                                    </svg>
-                                  </span>
+                                    Command Authorization
+                                  </label>
                                 </div>
-                                <span
-                                  class="ant-collapse-header-text"
-                                >
-                                  Authorization
-                                </span>
-                              </div>
-                              <div
-                                class="ant-collapse-content ant-collapse-content-active"
-                              >
                                 <div
-                                  class="ant-collapse-content-box"
+                                  class="ant-col ant-form-item-control"
                                 >
                                   <div
-                                    class="ant-form-item ant-form-item-has-success"
+                                    class="ant-form-item-control-input"
                                   >
                                     <div
-                                      class="ant-row ant-form-item-row"
+                                      class="ant-form-item-control-input-content"
                                     >
-                                      <div
-                                        class="ant-col ant-form-item-label"
-                                        style="flex: 0 0 150px;"
-                                      >
-                                        <label
-                                          class=""
-                                          for="aaa-settings_authzEnabledCommand"
-                                          title="Command Authorization"
-                                        >
-                                          Command Authorization
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-col ant-form-item-control"
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="aaa-settings_authzEnabledCommand"
+                                        role="switch"
+                                        type="button"
                                       >
                                         <div
-                                          class="ant-form-item-control-input"
-                                        >
-                                          <div
-                                            class="ant-form-item-control-input-content"
-                                          >
-                                            <button
-                                              aria-checked="false"
-                                              class="ant-switch"
-                                              id="aaa-settings_authzEnabledCommand"
-                                              role="switch"
-                                              type="button"
-                                            >
-                                              <div
-                                                class="ant-switch-handle"
-                                              />
-                                              <span
-                                                class="ant-switch-inner"
-                                              />
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="ant-form-item ant-form-item-has-success"
-                                  >
-                                    <div
-                                      class="ant-row ant-form-item-row"
-                                    >
-                                      <div
-                                        class="ant-col ant-form-item-label"
-                                        style="flex: 0 0 150px;"
-                                      >
-                                        <label
-                                          class=""
-                                          for="aaa-settings_authzEnabledExec"
-                                          title="Executive Authorization"
-                                        >
-                                          Executive Authorization
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-col ant-form-item-control"
-                                      >
-                                        <div
-                                          class="ant-form-item-control-input"
-                                        >
-                                          <div
-                                            class="ant-form-item-control-input-content"
-                                          >
-                                            <button
-                                              aria-checked="false"
-                                              class="ant-switch"
-                                              id="aaa-settings_authzEnabledExec"
-                                              role="switch"
-                                              type="button"
-                                            >
-                                              <div
-                                                class="ant-switch-handle"
-                                              />
-                                              <span
-                                                class="ant-switch-inner"
-                                              />
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <div
-                              class="ant-collapse-item ant-collapse-item-active"
+                              class="ant-form-item"
                             >
                               <div
-                                aria-expanded="true"
-                                class="ant-collapse-header"
-                                role="button"
-                                tabindex="0"
+                                class="ant-row ant-form-item-row"
                               >
                                 <div
-                                  class="ant-collapse-expand-icon"
+                                  class="ant-col ant-form-item-label"
+                                  style="flex: 0 0 150px;"
                                 >
-                                  <span
-                                    aria-label="right"
-                                    class="anticon anticon-right ant-collapse-arrow"
-                                    role="img"
+                                  <label
+                                    class=""
+                                    for="aaa-settings_authzEnabledExec"
+                                    title="Executive Authorization"
                                   >
-                                    <svg
-                                      aria-hidden="true"
-                                      data-icon="right"
-                                      fill="currentColor"
-                                      focusable="false"
-                                      height="1em"
-                                      style="transform: rotate(90deg);"
-                                      viewBox="64 64 896 896"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                                      />
-                                    </svg>
-                                  </span>
+                                    Executive Authorization
+                                  </label>
                                 </div>
-                                <span
-                                  class="ant-collapse-header-text"
-                                >
-                                  Accounting
-                                </span>
-                              </div>
-                              <div
-                                class="ant-collapse-content ant-collapse-content-active"
-                              >
                                 <div
-                                  class="ant-collapse-content-box"
+                                  class="ant-col ant-form-item-control"
                                 >
                                   <div
-                                    class="ant-form-item ant-form-item-has-success"
+                                    class="ant-form-item-control-input"
                                   >
                                     <div
-                                      class="ant-row ant-form-item-row"
+                                      class="ant-form-item-control-input-content"
                                     >
-                                      <div
-                                        class="ant-col ant-form-item-label"
-                                        style="flex: 0 0 150px;"
-                                      >
-                                        <label
-                                          class=""
-                                          for="aaa-settings_acctEnabledCommand"
-                                          title="Command Accounting"
-                                        >
-                                          Command Accounting
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-col ant-form-item-control"
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="aaa-settings_authzEnabledExec"
+                                        role="switch"
+                                        type="button"
                                       >
                                         <div
-                                          class="ant-form-item-control-input"
-                                        >
-                                          <div
-                                            class="ant-form-item-control-input-content"
-                                          >
-                                            <button
-                                              aria-checked="false"
-                                              class="ant-switch"
-                                              id="aaa-settings_acctEnabledCommand"
-                                              role="switch"
-                                              type="button"
-                                            >
-                                              <div
-                                                class="ant-switch-handle"
-                                              />
-                                              <span
-                                                class="ant-switch-inner"
-                                              />
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="ant-form-item ant-form-item-has-success"
-                                  >
-                                    <div
-                                      class="ant-row ant-form-item-row"
-                                    >
-                                      <div
-                                        class="ant-col ant-form-item-label"
-                                        style="flex: 0 0 150px;"
-                                      >
-                                        <label
-                                          class=""
-                                          for="aaa-settings_acctEnabledExec"
-                                          title="Executive Accounting"
-                                        >
-                                          Executive Accounting
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-col ant-form-item-control"
-                                      >
-                                        <div
-                                          class="ant-form-item-control-input"
-                                        >
-                                          <div
-                                            class="ant-form-item-control-input-content"
-                                          >
-                                            <button
-                                              aria-checked="false"
-                                              class="ant-switch"
-                                              id="aaa-settings_acctEnabledExec"
-                                              role="switch"
-                                              type="button"
-                                            >
-                                              <div
-                                                class="ant-switch-handle"
-                                              />
-                                              <span
-                                                class="ant-switch-inner"
-                                              />
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </fieldset>
+                          <fieldset
+                            class="styledComponents__Fieldset-sc-azs30w-0 iIfzQF"
+                            style="margin-bottom: 20px; width: 840px;"
+                          >
+                            <legend
+                              class="styledComponents__Legend-sc-azs30w-1 jfnLPP"
+                            >
+                              <label>
+                                Accounting
+                                <button
+                                  aria-checked="true"
+                                  class="ant-switch ant-switch-checked"
+                                  role="switch"
+                                  style="display: none; cursor: default;"
+                                  type="button"
+                                >
+                                  <div
+                                    class="ant-switch-handle"
+                                  />
+                                  <span
+                                    class="ant-switch-inner"
+                                  />
+                                </button>
+                              </label>
+                            </legend>
+                            <div
+                              class="ant-form-item"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-label"
+                                  style="flex: 0 0 150px;"
+                                >
+                                  <label
+                                    class=""
+                                    for="aaa-settings_acctEnabledCommand"
+                                    title="Command Accounting"
+                                  >
+                                    Command Accounting
+                                  </label>
+                                </div>
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="aaa-settings_acctEnabledCommand"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="ant-form-item"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-label"
+                                  style="flex: 0 0 150px;"
+                                >
+                                  <label
+                                    class=""
+                                    for="aaa-settings_acctEnabledExec"
+                                    title="Executive Accounting"
+                                  >
+                                    Executive Accounting
+                                  </label>
+                                </div>
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="aaa-settings_acctEnabledExec"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </fieldset>
                         </div>
                       </form>
                     </div>

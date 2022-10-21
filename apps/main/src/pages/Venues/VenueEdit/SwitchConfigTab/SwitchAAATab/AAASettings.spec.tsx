@@ -50,7 +50,7 @@ describe('AAASettings', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const sshCbx = screen.getByLabelText('SSH Authentication')
+    const sshCbx = await screen.findByLabelText('SSH Authentication')
     expect(sshCbx).not.toBeChecked()
 
     const telnetCbx = screen.getByLabelText('Telnet Authentication')
