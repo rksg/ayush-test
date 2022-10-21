@@ -5,8 +5,9 @@ import {
   Form,
   Checkbox
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import _                       from 'lodash'
+import { useIntl }             from 'react-intl'
 
 import { AvailableLteBandOptions, AvailableLteBands, CountryIsoDisctionary, LteBandLockCountriesJson, VenueApModelCellular } from '@acx-ui/rc/utils'
 
@@ -95,6 +96,13 @@ export function LteBandChannels (
     )
   }
 
+  const onCheckChange = function (e: CheckboxChangeEvent) {
+    if (!e.target.checked) {
+      form.setFieldValue(['bandLteArray', props.formControlName, props.region, 'band3G'], [])
+      form.setFieldValue(['bandLteArray', props.formControlName, props.region, 'band4G'], [])
+    }
+  }
+
   return (
     <>
       {props.isCurrent &&
@@ -110,7 +118,9 @@ export function LteBandChannels (
             valuePropName='checked'
             style={{ marginBottom: '0px' }}
             children={
-              <Checkbox children={props.regionName} />
+              <Checkbox
+                children={props.regionName}
+                onChange={onCheckChange} />
             }
           />
           {props.isShowDesc &&
