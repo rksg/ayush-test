@@ -332,7 +332,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                             >
                                               3G:
                                               <div
-                                                class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
+                                                class="styledComponents__MultiSelect-sc-1ibvcih-5 iDywAN"
                                               >
                                                 <div
                                                   class="ant-form-item"
@@ -425,7 +425,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                             >
                                               4G:
                                               <div
-                                                class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
+                                                class="styledComponents__MultiSelect-sc-1ibvcih-5 iDywAN"
                                               >
                                                 <div
                                                   class="ant-form-item"
@@ -782,7 +782,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                           >
                                             3G:
                                             <div
-                                              class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
+                                              class="styledComponents__MultiSelect-sc-1ibvcih-5 iDywAN"
                                             >
                                               <div
                                                 class="ant-form-item"
@@ -875,7 +875,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                           >
                                             4G:
                                             <div
-                                              class="styledComponents__MultiSelect-sc-nyixel-3 ighBFC"
+                                              class="styledComponents__MultiSelect-sc-1ibvcih-5 iDywAN"
                                             >
                                               <div
                                                 class="ant-form-item"

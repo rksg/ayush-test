@@ -190,3 +190,4 @@ function StepForm <FormValue = any> (
 StepsForm.StepForm = StepForm
 StepsForm.Title = UI.Title
 StepsForm.SectionTitle = UI.SectionTitle
+StepsForm.MultiSelect = UI.MultiSelect

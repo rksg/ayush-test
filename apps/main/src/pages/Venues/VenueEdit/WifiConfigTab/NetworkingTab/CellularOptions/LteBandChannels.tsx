@@ -9,6 +9,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
+import { StepsForm }                                                                                                         from '@acx-ui/components'
 import { AvailableLteBandOptions, AvailableLteBands, CountryIsoDisctionary, LteBandLockCountriesJson, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -131,7 +132,7 @@ export function LteBandChannels (
         <>
           <UI.FieldLabel width='25px'>
             {$t({ defaultMessage: '3G:' })}
-            <UI.MultiSelect>
+            <StepsForm.MultiSelect>
               <Form.Item
                 style={{ marginBottom: '0px' }}
                 initialValue={[]}
@@ -142,12 +143,12 @@ export function LteBandChannels (
                   />
                 }
               />
-            </UI.MultiSelect>
+            </StepsForm.MultiSelect>
           </UI.FieldLabel>
 
           <UI.FieldLabel width='25px'>
             {$t({ defaultMessage: '4G:' })}
-            <UI.MultiSelect>
+            <StepsForm.MultiSelect>
               <Form.Item
                 initialValue={[]}
                 name={['bandLteArray', props.formControlName, props.region, 'band4G']}
@@ -157,7 +158,7 @@ export function LteBandChannels (
                   />
                 }
               />
-            </UI.MultiSelect>
+            </StepsForm.MultiSelect>
           </UI.FieldLabel></>
       }
     </>
