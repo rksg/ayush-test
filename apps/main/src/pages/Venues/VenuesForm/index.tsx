@@ -238,14 +238,12 @@ export function VenuesForm () {
 
   return (
     <>
-      <PageHeader
-        title={action === 'edit' ?
-          intl.$t({ defaultMessage: 'Edit New Venue' }):
-          intl.$t({ defaultMessage: 'Add New Venue' })}
+      {action !== 'edit' && <PageHeader
+        title={intl.$t({ defaultMessage: 'Add New Venue' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
-      />
+      />}
       <StepsForm
         formRef={formRef}
         onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
