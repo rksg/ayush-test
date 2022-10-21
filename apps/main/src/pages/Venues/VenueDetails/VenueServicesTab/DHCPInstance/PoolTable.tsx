@@ -122,10 +122,12 @@ export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
               $t({ defaultMessage: 'Are you sure you want to active this DHCP Pool?' })
               const deactivateMsg =
               $t({ defaultMessage: 'Are you sure you want to deactivate this DHCP Pool?' })
+              const activeTitle = $t({ defaultMessage: 'Active DHCP Pool' })
+              const deactivateTitle = $t({ defaultMessage: 'Deactivate DHCP Pool' })
               showActionModal({
                 type: 'confirm',
                 width: 450,
-                title: $t({ defaultMessage: 'Active DHCP Pool' }),
+                title: checked ? activeTitle : deactivateTitle,
                 content: checked ? activeMsg : deactivateMsg,
                 okText: $t({ defaultMessage: 'Confirm' }),
                 onOk () {
