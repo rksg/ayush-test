@@ -4,9 +4,9 @@ import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig, multipleBy1000, divideBy100, noFormat } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, NoData }        from '@acx-ui/components'
-import type { TimeStamp }                                                    from '@acx-ui/types'
+import { AnalyticsFilter, kpiConfig }                                 from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, NoData } from '@acx-ui/components'
+import type { TimeStamp }                                             from '@acx-ui/types'
 
 import { KpiThresholdType }                            from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
@@ -14,14 +14,6 @@ import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
 
-
-const barDataReformatMap = {
-  'Mbps': multipleBy1000,
-  'seconds': multipleBy1000,
-  '%': divideBy100,
-  'dBm': noFormat,
-  'ms': noFormat
-}
 const getGoalPercent = (
   { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue : string }
 ) : number => {
@@ -103,9 +95,7 @@ function Histogram ({
 
   /* istanbul ignore next */
   const onBarClick = ( barData: [number, number] ) =>{
-    const reformattedBarData = barDataReformatMap[
-      histogram.xUnit as keyof typeof barDataReformatMap
-    ](barData?.[0])
+    const reformattedBarData = histogram?.reFormatFromBarChart(barData?.[0])
     if(splits.indexOf(reformattedBarData) === -1)
       return
     setSliderValue(splits.indexOf(reformattedBarData) + 0.5)

@@ -6,8 +6,8 @@ export const StyledSlider = styled(Slider)`
 font-size: var(--acx-subtitle-5-font-size);
 position: absolute;
 .ant-slider-handle {
-  min-width: 15px !important; 
-  height: 15px !important;
+  min-width: 12px !important; 
+  height: 12px !important;
   &:before {
     content: none !important;
   }

@@ -51,7 +51,8 @@ export const kpiConfig = {
       apiMetric: 'timeToConnect',
       xUnit: 'seconds',
       shortXFormat: divideBy1000,
-      yUnit: 'connections'
+      yUnit: 'connections',
+      reFormatFromBarChart: multipleBy1000
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} connections' }),
@@ -169,7 +170,8 @@ export const kpiConfig = {
       xUnit: 'dBm',
       yUnit: 'sessions',
       shortXFormat: noFormat,
-      isReverse: true
+      isReverse: true,
+      reFormatFromBarChart: noFormat
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} sessions' }),
@@ -195,7 +197,8 @@ export const kpiConfig = {
       apiMetric: 'clientThroughput',
       xUnit: 'Mbps',
       yUnit: 'samples',
-      shortXFormat: divideBy1000
+      shortXFormat: divideBy1000,
+      reFormatFromBarChart: multipleBy1000
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} sessions' }),
@@ -222,7 +225,8 @@ export const kpiConfig = {
       xUnit: 'Mbps',
       shortXFormat: identity,
       //shortYFormat: formatter(),
-      yUnit: 'APs'
+      yUnit: 'APs',
+      reFormatFromBarChart: noFormat
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} APs' }),
@@ -248,7 +252,8 @@ export const kpiConfig = {
       apiMetric: 'apServiceUptime',
       xUnit: '%',
       yUnit: 'APs',
-      shortXFormat: multipleBy100
+      shortXFormat: multipleBy100,
+      reFormatFromBarChart: divideBy100
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} APs' }),
@@ -275,7 +280,8 @@ export const kpiConfig = {
       splits: [50, 100, 150, 200, 250, 300, 350, 400],
       xUnit: 'ms',
       yUnit: 'APs',
-      shortXFormat: (x : number) => x
+      shortXFormat: (x : number) => x,
+      reFormatFromBarChart: noFormat
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} APs' }),
@@ -303,7 +309,8 @@ export const kpiConfig = {
       xUnit: '%',
       yUnit: 'switches',
       shortXFormat: multipleBy100,
-      longXFormat: formatter('percentFormat')
+      longXFormat: formatter('percentFormat'),
+      reFormatFromBarChart: divideBy100
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches' }),
