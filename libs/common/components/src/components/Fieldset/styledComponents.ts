@@ -23,5 +23,9 @@ export const Legend = styled.legend`
     }
   }
 
-  .ant-switch { margin-left: 50px; }
+  .ant-switch { 
+    margin-left: 50px;
+    position: absolute;
+    background: var(--acx-primary-white); 
+  }
 `
