@@ -1,0 +1,1010 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HealthWidget should render for empty data: NoData 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+              >
+                Client Experience
+              </div>
+              <div
+                class="styledComponents__SubTitle-sc-13w5wfx-5 iLbQUI"
+              >
+                Top 5 Venues/Services with poor experience
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div
+            style="overflow: visible; height: 0px; width: 0px;"
+          >
+            <div
+              style="display: block; height: 800px; width: 1280px;"
+            >
+              <div
+                style="text-align: center; padding: 8px 0px;"
+              >
+                <div
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+                >
+                  <div
+                    class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+                  >
+                    <label
+                      class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+                    >
+                      <span
+                        class="ant-radio-button ant-radio-button-checked"
+                      >
+                        <input
+                          checked=""
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="clientExp"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        Venues
+                      </span>
+                    </label>
+                    <label
+                      class="ant-radio-button-wrapper"
+                    >
+                      <span
+                        class="ant-radio-button"
+                      >
+                        <input
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="services"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        Services
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="styledComponents__Wrapper-sc-1abm7iv-13 bzjxMS"
+              >
+                <div
+                  class="ant-pro-table"
+                >
+                  <div
+                    class="ant-pro-card"
+                  >
+                    <div
+                      class="ant-pro-card-body"
+                      style="padding-top: 0px;"
+                    >
+                      <div
+                        class="ant-pro-table-list-toolbar"
+                      />
+                      <div
+                        class="ant-table-wrapper"
+                      >
+                        <div
+                          class="ant-spin-nested-loading"
+                        >
+                          <div
+                            class="ant-spin-container"
+                          >
+                            <div
+                              class="ant-table ant-table-middle ant-table-empty ant-table-scroll-horizontal"
+                            >
+                              <div
+                                class="ant-table-container"
+                              >
+                                <div
+                                  class="ant-table-content"
+                                  style="overflow-x: auto; overflow-y: hidden;"
+                                >
+                                  <table
+                                    style="min-width: 100%; table-layout: auto;"
+                                  >
+                                    <colgroup>
+                                      <col />
+                                      <col
+                                        style="width: 40px;"
+                                      />
+                                      <col
+                                        style="width: 40px;"
+                                      />
+                                      <col
+                                        style="width: 80px;"
+                                      />
+                                      <col
+                                        style="width: 90px;"
+                                      />
+                                      <col
+                                        style="width: 80px;"
+                                      />
+                                    </colgroup>
+                                    <thead
+                                      class="ant-table-thead"
+                                    >
+                                      <tr>
+                                        <th
+                                          class="ant-table-cell"
+                                        >
+                                          Venue Name
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Client Experience
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Connection Success
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Time To Connect
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Client Throughput
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Online APs
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody
+                                      class="ant-table-tbody"
+                                    >
+                                      <tr
+                                        aria-hidden="true"
+                                        class="ant-table-measure-row"
+                                        style="height: 0px; font-size: 0px;"
+                                      >
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        class="ant-table-placeholder"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                          colspan="6"
+                                        >
+                                          <div
+                                            class="ant-table-expanded-row-fixed"
+                                            style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                          />
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1281px; height: 801px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`HealthWidget should render widget with proper data 1`] = `
+<DocumentFragment>
+   
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+              >
+                Client Experience
+              </div>
+              <div
+                class="styledComponents__SubTitle-sc-13w5wfx-5 iLbQUI"
+              >
+                Top 5 Venues/Services with poor experience
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div
+            style="overflow: visible; height: 0px; width: 0px;"
+          >
+            <div
+              style="display: block; height: 800px; width: 1280px;"
+            >
+              <div
+                style="text-align: center; padding: 8px 0px;"
+              >
+                <div
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+                >
+                  <div
+                    class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+                  >
+                    <label
+                      class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+                    >
+                      <span
+                        class="ant-radio-button ant-radio-button-checked"
+                      >
+                        <input
+                          checked=""
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="clientExp"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        Venues
+                      </span>
+                    </label>
+                    <label
+                      class="ant-radio-button-wrapper"
+                    >
+                      <span
+                        class="ant-radio-button"
+                      >
+                        <input
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="services"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        Services
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="styledComponents__Wrapper-sc-1abm7iv-13 bzjxMS"
+              >
+                <div
+                  class="ant-pro-table"
+                >
+                  <div
+                    class="ant-pro-card"
+                  >
+                    <div
+                      class="ant-pro-card-body"
+                      style="padding-top: 0px;"
+                    >
+                      <div
+                        class="ant-pro-table-list-toolbar"
+                      />
+                      <div
+                        class="ant-table-wrapper"
+                      >
+                        <div
+                          class="ant-spin-nested-loading"
+                        >
+                          <div
+                            class="ant-spin-container"
+                          >
+                            <div
+                              class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                            >
+                              <div
+                                class="ant-table-container"
+                              >
+                                <div
+                                  class="ant-table-content"
+                                  style="overflow-x: auto; overflow-y: hidden;"
+                                >
+                                  <table
+                                    style="min-width: 100%; table-layout: auto;"
+                                  >
+                                    <colgroup>
+                                      <col />
+                                      <col
+                                        style="width: 40px;"
+                                      />
+                                      <col
+                                        style="width: 40px;"
+                                      />
+                                      <col
+                                        style="width: 80px;"
+                                      />
+                                      <col
+                                        style="width: 90px;"
+                                      />
+                                      <col
+                                        style="width: 80px;"
+                                      />
+                                    </colgroup>
+                                    <thead
+                                      class="ant-table-thead"
+                                    >
+                                      <tr>
+                                        <th
+                                          class="ant-table-cell"
+                                        >
+                                          Venue Name
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Client Experience
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Connection Success
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Time To Connect
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Client Throughput
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Online APs
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody
+                                      class="ant-table-tbody"
+                                    >
+                                      <tr
+                                        aria-hidden="true"
+                                        class="ant-table-measure-row"
+                                        style="height: 0px; font-size: 0px;"
+                                      >
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        class="ant-table-row ant-table-row-level-0"
+                                        data-row-key="f0997ab93fa24670a961c98446d47ae6"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                        >
+                                          f0997ab93fa24670a961c98446d47ae6
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <div
+                                            class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                          >
+                                            <div
+                                              class="ant-progress-steps-outer"
+                                            >
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                              />
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          31%
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            32%
+                                          </span>
+                                          <br />
+                                          <span
+                                            style="font-size: 9px;"
+                                          >
+                                            Under 2 Secs
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            100%
+                                          </span>
+                                          <br />
+                                          <span
+                                            style="font-size: 9px;"
+                                          >
+                                            Above 10 Mbps
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          100%
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        class="ant-table-row ant-table-row-level-0"
+                                        data-row-key="White, Hane and King"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                        >
+                                          White, Hane and King
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <div
+                                            class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                          >
+                                            <div
+                                              class="ant-progress-steps-outer"
+                                            >
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                              />
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          73%
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            25%
+                                          </span>
+                                          <br />
+                                          <span
+                                            style="font-size: 9px;"
+                                          >
+                                            Under 2 Secs
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            80%
+                                          </span>
+                                          <br />
+                                          <span
+                                            style="font-size: 9px;"
+                                          >
+                                            Above 10 Mbps
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          100%
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        class="ant-table-row ant-table-row-level-0"
+                                        data-row-key="outdoor-germany"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                        >
+                                          outdoor-germany
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <div
+                                            class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                          >
+                                            <div
+                                              class="ant-progress-steps-outer"
+                                            >
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                              />
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          68%
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            -
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            -
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          100%
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        class="ant-table-row ant-table-row-level-0"
+                                        data-row-key="Vaibhav-venue"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                        >
+                                          Vaibhav-venue
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <div
+                                            class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                          >
+                                            <div
+                                              class="ant-progress-steps-outer"
+                                            >
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                              />
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          82%
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            76%
+                                          </span>
+                                          <br />
+                                          <span
+                                            style="font-size: 9px;"
+                                          >
+                                            Under 2 Secs
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            58%
+                                          </span>
+                                          <br />
+                                          <span
+                                            style="font-size: 9px;"
+                                          >
+                                            Above 10 Mbps
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          80%
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        class="ant-table-row ant-table-row-level-0"
+                                        data-row-key="My-Venue"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                        >
+                                          My-Venue
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <div
+                                            class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                          >
+                                            <div
+                                              class="ant-progress-steps-outer"
+                                            >
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                              />
+                                              <div
+                                                class="ant-progress-steps-item"
+                                                style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                              />
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          -
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            51%
+                                          </span>
+                                          <br />
+                                          <span
+                                            style="font-size: 9px;"
+                                          >
+                                            Under 2 Secs
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          <span>
+                                            100%
+                                          </span>
+                                          <br />
+                                          <span
+                                            style="font-size: 9px;"
+                                          >
+                                            Above 10 Mbps
+                                          </span>
+                                        </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          -
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1281px; height: 801px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
