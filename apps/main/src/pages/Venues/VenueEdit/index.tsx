@@ -1,5 +1,7 @@
 import { createContext, useState } from 'react'
 
+import { IntlShape } from 'react-intl'
+
 import { showActionModal, CustomButtonProps }                                                      from '@acx-ui/components'
 import { VenueLed, VenueSwitchConfiguration, ExternalAntenna, VenueDefaultRegulatoryChannelsForm } from '@acx-ui/rc/utils'
 import { useParams }                                                                               from '@acx-ui/react-router-dom'
@@ -10,6 +12,7 @@ import { VenueDetailsTab }          from './VenueDetailsTab'
 import VenueEditPageHeader          from './VenueEditPageHeader'
 import { WifiConfigTab }            from './WifiConfigTab'
 import { NetworkingSettingContext } from './WifiConfigTab/NetworkingTab'
+import { SecuritySettingContext }   from './WifiConfigTab/SecurityTab'
 
 const tabs = {
   details: VenueDetailsTab,
@@ -52,16 +55,21 @@ export const VenueEditContext = createContext({} as {
 
   editRadioContextData: RadioContext,
   setEditRadioContextData: (data: RadioContext) => void
+
+  editSecurityContextData: SecuritySettingContext,
+  setEditSecurityContextData: (data: SecuritySettingContext) => void
 })
 
 export function VenueEdit () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   const [editContextData, setEditContextData] = useState({} as EditContext)
-
   const [
     editNetworkingContextData, setEditNetworkingContextData
   ] = useState({} as NetworkingSettingContext)
+  const [
+    editSecurityContextData, setEditSecurityContextData
+  ] = useState({} as SecuritySettingContext)
 
   const [
     editRadioContextData, setEditRadioContextData
@@ -74,7 +82,9 @@ export function VenueEdit () {
       editNetworkingContextData,
       setEditNetworkingContextData,
       editRadioContextData,
-      setEditRadioContextData
+      setEditRadioContextData,
+      editSecurityContextData,
+      setEditSecurityContextData
     }}>
       <VenueEditPageHeader />
       { Tab && <Tab /> }
@@ -105,6 +115,7 @@ export function getExternalAntennaPayload (apModels: { [index: string]: External
 function processWifiTab (
   editContextData: EditContext,
   editNetworkingContextData: NetworkingSettingContext,
+  editSecurityContextData: SecuritySettingContext,
   editRadioContextData: RadioContext
 ){
   switch(editContextData?.unsavedTabKey){
@@ -123,6 +134,9 @@ function processWifiTab (
       editRadioContextData?.updateWifiRadio?.
       (editRadioContextData.radioData as VenueDefaultRegulatoryChannelsForm)
       break
+    case 'security':
+      editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
+      break
   }
 }
 
@@ -131,6 +145,8 @@ export function showUnsavedModal (
   setEditContextData: (data: EditContext) => void,
   editNetworkingContextData: NetworkingSettingContext,
   editRadioContextData: RadioContext,
+  editSecurityContextData: SecuritySettingContext,
+  intl: IntlShape,
   callback?: () => void
 ) {
   const { $t } = getIntl()
@@ -174,7 +190,12 @@ export function showUnsavedModal (
       const wifiTab = ['radio', 'networking', 'security', 'services', 'settings']
 
       if(wifiTab.includes(editContextData?.unsavedTabKey as string)){
-        processWifiTab(editContextData, editNetworkingContextData, editRadioContextData)
+        processWifiTab(
+          editContextData,
+          editNetworkingContextData,
+          editSecurityContextData,
+          editRadioContextData
+        )
       }else{
         editContextData?.updateChanges?.()
       }

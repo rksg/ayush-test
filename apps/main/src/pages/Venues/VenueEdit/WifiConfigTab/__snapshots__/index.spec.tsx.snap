@@ -88,6 +88,7 @@ exports[`WifiConfigTab should render correctly 1`] = `
           </div>
           <div
             class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+            style="left: 0px; width: 0px;"
           />
         </div>
       </div>
@@ -230,7 +231,12 @@ exports[`WifiConfigTab should render correctly 1`] = `
                             >
                               <div>
                                 <div
-                                  class=""
+                                  aria-hidden="true"
+                                  style="width: 0px; height: 0px;"
+                                />
+                                <div
+                                  class="ant-affix"
+                                  style="position: fixed; top: 275px; width: 0px; height: 0px;"
                                 >
                                   <div
                                     class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 gMCsgt"
@@ -292,7 +298,41 @@ exports[`WifiConfigTab should render correctly 1`] = `
                                 >
                                   Wi-Fi Radio Settings
                                 </h3>
-                                Radio Settings Component
+                                <div
+                                  class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                                >
+                                  <div
+                                    class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
+                                  >
+                                    <span
+                                      aria-label="loader"
+                                      role="img"
+                                    >
+                                      <div
+                                        aria-busy="true"
+                                        aria-live="polite"
+                                        class="ant-spin ant-spin-lg ant-spin-spinning"
+                                      >
+                                        <span
+                                          class="ant-spin-dot ant-spin-dot-spin"
+                                        >
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                          <i
+                                            class="ant-spin-dot-item"
+                                          />
+                                        </span>
+                                      </div>
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
                               <div
                                 class="styledComponents__Container-sc-1u6w09d-1 bASGBa"

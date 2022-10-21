@@ -15,7 +15,7 @@ import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 import type { History, Transition } from 'history'
 
 function VenueEditTabs () {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
@@ -23,7 +23,8 @@ function VenueEditTabs () {
     editContextData,
     setEditContextData,
     editNetworkingContextData,
-    editRadioContextData
+    editRadioContextData,
+    editSecurityContextData
   } = useContext(VenueEditContext)
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -53,6 +54,8 @@ function VenueEditTabs () {
           setEditContextData,
           editNetworkingContextData,
           editRadioContextData,
+          editSecurityContextData,
+          intl,
           tx.retry
         )
       })
@@ -63,9 +66,9 @@ function VenueEditTabs () {
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Venue Details' })} key='details' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Switch Configuration' })} key='switch' />
+      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Venue Details' })} key='details' />
+      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
+      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Switch Configuration' })} key='switch' />
     </Tabs>
   )
 }

@@ -50,6 +50,8 @@ describe('RadioTab', () => {
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
 
+    const anchor = await screen.findAllByText('External Antenna')
+    await userEvent.click(anchor[0])
     await screen.findByText('No model selected')
     const apModelSelect = screen.getByRole('combobox')
     await userEvent.click(apModelSelect)
@@ -98,6 +100,8 @@ describe('RadioTab', () => {
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
 
+    const anchor = await screen.findAllByText('External Antenna')
+    await userEvent.click(anchor[0])
     await screen.findByText('No model selected')
     const apModelSelect = screen.getByRole('combobox')
     await userEvent.click(apModelSelect)

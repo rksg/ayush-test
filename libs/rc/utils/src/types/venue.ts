@@ -158,6 +158,14 @@ export interface VenueSettings {
   enableClientIsolationAllowlist?: boolean
   id?: string
 }
+
+export interface VenueDosProtection {
+  blockingPeriod: number
+  checkPeriod: number
+  enabled: boolean
+  failThreshold: number
+}
+
 export interface VenueSwitchConfiguration {
   cliApplied?: boolean,
   id?: string,

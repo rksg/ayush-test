@@ -11,7 +11,7 @@ import { CapabilitiesApModel, ExternalAntenna }                                 
 import { useParams }                                                                                              from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../..'
-import ApModelPlaceholder   from '../../../../../assets/images/ap-model-placeholder.png'
+import ApModelPlaceholder   from '../../../../../assets/images/aps/ap-model-placeholder.png'
 
 import { ExternalAntennaForm } from './ExternalAntennaForm'
 
@@ -28,14 +28,15 @@ export function ExternalAntennaSection () {
   const [selectedApCapabilities, setSelectedApCapabilities] = useState(null as CapabilitiesApModel | null)
   const [apiSelectedApExternalAntenna, setApiSelectedApExternalAntenna] = useState(null as ExternalAntenna | null)
   const [selectedApExternalAntenna, setSelectedApExternalAntenna] = useState(null as ExternalAntenna | null)
-  const { allApModelCapabilities } = useGetVenueApCapabilitiesQuery({ params }, {
-    selectFromResult ({ data }) {
+  const { allApModelCapabilities, isLoadingCapabilities } = useGetVenueApCapabilitiesQuery({ params }, {
+    selectFromResult ({ data, isLoading }) {
       return {
-        allApModelCapabilities: data?.apModels
+        allApModelCapabilities: data?.apModels,
+        isLoadingCapabilities: isLoading
       }
     }
   })
-  const { data: allApExternalAntennas } = useGetVenueExternalAntennaQuery({ params })
+  const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } = useGetVenueExternalAntennaQuery({ params })
   const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] = useUpdateVenueExternalAntennaMutation()
 
   const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
@@ -124,7 +125,10 @@ export function ExternalAntennaSection () {
   }
 
   return (
-    <Loader states={[{ isLoading: isUpdatingExternalAntenna }]}>
+    <Loader states={[{
+      isLoading: isLoadingCapabilities || isLoadingExternalAntenna,
+      isFetching: isUpdatingExternalAntenna }]}
+    >
       <Row gutter={24}>
         <Col span={8}>
           <Form.Item
