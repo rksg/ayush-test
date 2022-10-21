@@ -22,8 +22,9 @@ import { KpiRow } from '../styledComponents'
 import BarChart   from '../Threshold/BarChart'
 import Histogram  from '../Threshold/Histogram'
 
-import HealthPill    from './Pill'
-import KpiTimeseries from './Timeseries'
+import HealthPill                                        from './Pill'
+import { KpisHavingThreshold, useGetKpiThresholdsQuery } from './services'
+import KpiTimeseries                                     from './Timeseries'
 export interface KpiThresholdType {
   timeToConnect: number;
   rss: number;
@@ -33,7 +34,23 @@ export interface KpiThresholdType {
   apToSZLatency: number;
   switchPoeUtilization: number;
 }
-const getDefaultThreshold: KpiThresholdType = {
+
+type ValueType = {
+  value: number | null
+}
+
+interface FetchedData {
+  timeToConnectThreshold: ValueType;
+  rssThreshold: ValueType;
+  clientThroughputThreshold: ValueType;
+  apCapacityThreshold: ValueType;
+  apServiceUptimeThreshold: ValueType;
+  apToSZLatencyThreshold: ValueType;
+  switchPoeUtilizationThreshold: ValueType;
+}
+
+
+const defaultData = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
   rss: kpiConfig.rss.histogram.initialThreshold,
   clientThroughput: kpiConfig.clientThroughput.histogram.initialThreshold,
@@ -41,6 +58,24 @@ const getDefaultThreshold: KpiThresholdType = {
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
+}
+
+
+const getDefaultThreshold = (fetchedData: Partial<FetchedData> | undefined) => {
+  let defaultConfig = { ...defaultData }
+
+  if (!fetchedData) return defaultConfig
+
+  for (let key in Object.keys(defaultConfig)) {
+    const target = Object.keys(fetchedData).filter(s => s.includes(key))
+    if (!target.length) continue
+    const data = fetchedData[target[0] as keyof FetchedData]
+    if (!data) continue
+    defaultConfig[key as keyof typeof defaultConfig] = data.value
+      ?? defaultConfig[key as keyof typeof defaultConfig]
+  }
+
+  return defaultConfig
 }
 
 
@@ -53,7 +88,14 @@ export default function KpiSection (props: { tab: HealthTab }) {
   const { timeWindow, setTimeWindow } = healthFilter
   const { filters } = useAnalyticsFilter()
 
-  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(getDefaultThreshold)
+  const defaultQuery = useGetKpiThresholdsQuery({
+    ...filters,
+    kpis: Object.keys(defaultData) as unknown as KpisHavingThreshold[]
+  })
+
+  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(
+    () => getDefaultThreshold(defaultQuery.data as unknown as Partial<FetchedData>)
+  )
   const thresholdPermission = useFetchThresholdPermissionQuery({ path: filters.path })
   const [ triggerSave ] = useSaveThresholdMutation()
 
@@ -76,9 +118,15 @@ export default function KpiSection (props: { tab: HealthTab }) {
     isLoading: thresholdPermission.isLoading
   }), [thresholdPermission])
 
+  const fetchingDefault = {
+    isFetching: defaultQuery.isFetching,
+    isLoading: defaultQuery.isLoading
+  }
+
   const onReset = (kpi: keyof KpiThresholdType) => {
     // todo, use data base fetching
-    const defaultConfig = getDefaultThreshold[kpi]
+    const defaultConfig =
+      getDefaultThreshold(defaultQuery.data as unknown as Partial<FetchedData>)[kpi]
     return defaultConfig
   }
 
@@ -123,6 +171,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
                   onReset={() => onReset(kpi as keyof KpiThresholdType)}
                   onApply={() => onApply(kpi as keyof KpiThresholdType)}
                   canSave={canSave}
+                  fetchingDefault={fetchingDefault}
                 />
               ) : (
                 <BarChart filters={filters}

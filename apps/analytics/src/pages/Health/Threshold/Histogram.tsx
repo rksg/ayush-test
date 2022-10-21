@@ -51,7 +51,8 @@ function Histogram ({
   thresholds,
   onReset,
   onApply,
-  canSave
+  canSave,
+  fetchingDefault
 }: {
   filters: AnalyticsFilter;
   kpi: string;
@@ -62,6 +63,10 @@ function Histogram ({
   onApply?: onApplyType,
   canSave: {
     data: { allowedSave: boolean | undefined },
+    isFetching: boolean,
+    isLoading: boolean
+  },
+  fetchingDefault: {
     isFetching: boolean,
     isLoading: boolean
   }
@@ -159,7 +164,7 @@ function Histogram ({
   }
 
   return (
-    <Loader states={[queryResults, canSave]} key={kpi}>
+    <Loader states={[queryResults, canSave, fetchingDefault]} key={kpi}>
       <GridRow>
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
