@@ -197,7 +197,7 @@ export function LanPorts () {
       </Col>
     </Row>
     <Row gutter={24}>
-      <Col span={12}> {
+      <Col span={24}> {
         selectedModel?.lanPorts && <Tabs
           type='third'
           onChange={onTabChange}
@@ -209,16 +209,18 @@ export function LanPorts () {
               key={`lan-${index+1}`}
               forceRender={true}
             >
-              <Col span={16}>
-                <LanPortSettings
-                  selectedPortCaps={selectedPortCaps}
-                  selectedModel={selectedModel}
-                  setSelectedPortCaps={setSelectedPortCaps}
-                  selectedModelCaps={selectedModelCaps}
-                  isDhcpEnabled={isDhcpEnabled}
-                  index={index}
-                />
-              </Col>
+              <Row>
+                <Col span={8}>
+                  <LanPortSettings
+                    selectedPortCaps={selectedPortCaps}
+                    selectedModel={selectedModel}
+                    setSelectedPortCaps={setSelectedPortCaps}
+                    selectedModelCaps={selectedModelCaps}
+                    isDhcpEnabled={isDhcpEnabled}
+                    index={index}
+                  />
+                </Col>
+              </Row>
             </Tabs.TabPane>
           ) }
         </Tabs>

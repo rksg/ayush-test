@@ -267,7 +267,7 @@ exports[`NetworkingTab should render correctly 1`] = `
                             style="margin-left: -12px; margin-right: -12px;"
                           >
                             <div
-                              class="ant-col ant-col-12"
+                              class="ant-col ant-col-24"
                               style="padding-left: 12px; padding-right: 12px;"
                             >
                                 
