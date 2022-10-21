@@ -3,8 +3,9 @@ import { BrowserRouter } from 'react-router-dom'
 import { dataApiURL }                                     from '@acx-ui/analytics/services'
 import { fakeIncidentContReboot, fakeIncident }           from '@acx-ui/analytics/utils'
 import { store }                                          from '@acx-ui/store'
-import { mockDOMWidth, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
+import { buffer6hr }               from '../__tests__/fixtures'
 import { TimeSeriesChartTypes }    from '../config'
 import { Api }                     from '../services'
 import { TimeSeriesChartResponse } from '../types'
@@ -49,7 +50,6 @@ const expectedResult = {
 afterEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('ApRebootBySystemChart', () => {
-  mockDOMWidth()
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
@@ -57,6 +57,7 @@ describe('ApRebootBySystemChart', () => {
           chartRef={()=>{}}
           incident={fakeIncidentContReboot}
           data={expectedResult}
+          buffer={buffer6hr}
         />
       </BrowserRouter>
     )
@@ -79,6 +80,7 @@ describe('ApRebootBySystemChart', () => {
           chartRef={()=>{}}
           incident={fakeIncidentContReboot}
           data={noDataResult}
+          buffer={buffer6hr}
         />
       </BrowserRouter>
     )
@@ -95,7 +97,8 @@ describe('apRebootBySystemQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentContReboot,
         charts: [TimeSeriesChartTypes.ApRebootBySystemChart],
-        minGranularity: 'PT180S'
+        minGranularity: 'PT180S',
+        buffer: buffer6hr
       })
     )
     expect(status).toBe('fulfilled')

@@ -4,7 +4,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                              from '@acx-ui/utils'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -41,8 +40,6 @@ export const ApRebootBySystemChart = (
             chartRef={chartRef}
             style={{ height, width }}
             data={chartResults}
-            dataFormatter={formatter('countFormat')}
-            yAxisProps={{ minInterval: 1 }}
             disableLegend={true}
             markers={getMarkers(relatedIncidents!, incident)}
           />

@@ -4,10 +4,8 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                              from '@acx-ui/utils'
 
 import { TimeSeriesChartProps } from '../types'
-
 
 const apPoeImpactQuery = () => gql`
   apInfraImpactedAPsChart: timeSeries(granularity:$granularity){
@@ -37,8 +35,6 @@ export const ApPoeImpactChart = (
             chartRef={chartRef}
             style={{ height, width }}
             data={chartResults}
-            dataFormatter={formatter('countFormat')}
-            yAxisProps={{ minInterval: 1 }}
             disableLegend={true}
           />
           : <NoData />

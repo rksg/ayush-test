@@ -57,7 +57,6 @@ describe('TtcFailureChart', () => {
             buffer={buffer6hr}
             incident={fakeIncidentTtc}
             data={expectedResult}
-
           />
         </BrowserRouter>
       </Provider>
@@ -69,7 +68,7 @@ describe('TtcFailureChart', () => {
   it('handle when data is null', async () => {
     const noDataTtc = [null, null, null, null, null]
     const noDataTtcCounts = [null, null, null, null, null]
-    const expectedResult = {
+    const noDataResult = {
       ttcFailureChart: { time, ttc: noDataTtc }
     } as unknown as TimeSeriesChartResponse
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
@@ -78,7 +77,12 @@ describe('TtcFailureChart', () => {
     const { asFragment } = render(
       <Provider>
         <BrowserRouter>
-          <TtcFailureChart chartRef={()=>{}} incident={fakeIncidentTtc} data={expectedResult}/>
+        <TtcFailureChart
+            chartRef={()=>{}}
+            buffer={buffer6hr}
+            incident={fakeIncidentTtc}
+            data={noDataResult}
+          />
         </BrowserRouter>
       </Provider>
     )
