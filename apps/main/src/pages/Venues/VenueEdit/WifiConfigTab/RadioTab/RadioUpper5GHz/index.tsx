@@ -136,14 +136,6 @@ export function RadioUpper5GHz () {
     setInheritSettings(e.target.value)
   }
 
-  const channelBars = {
-    dfsChannels: defaultChannelsData && defaultChannelsData['5GUpperChannels']['dfs'][channelType]
-     || [],
-    lower5GChannels: [],
-    upper5GChannels: ['100', '104', '108', '112', '116', '120', '124',
-      '128', '132', '136', '140', '144', '149', '153', '157', '161']
-  }
-
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       {$t({ defaultMessage: '5GHz settings:' })}
