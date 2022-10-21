@@ -19,6 +19,9 @@ const createBarChartConfig = (apiMetric: string) => ({
 
 const divideBy1000 = (ms: number) => ms / 1000
 const multipleBy100 = (ms: number) => ms * 100
+export const multipleBy1000 = (ms: number) => ms * 1000
+export const divideBy100 = (ms: number) => ms / 100
+export const noFormat = (x: number) => x
 
 export const kpiConfig = {
   connectionSuccess: {
@@ -165,7 +168,7 @@ export const kpiConfig = {
       splits: [-100, -90, -85, -80, -75, -70, -65, -60, -50],
       xUnit: 'dBm',
       yUnit: 'sessions',
-      shortXFormat: (x: number) => x,
+      shortXFormat: noFormat,
       isReverse: true
     },
     pill: {
