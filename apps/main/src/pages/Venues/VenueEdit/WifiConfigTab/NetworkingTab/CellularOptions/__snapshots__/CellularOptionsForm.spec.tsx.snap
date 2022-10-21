@@ -322,17 +322,17 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                         >
                                           <div>
                                             <span
-                                              class="styledComponents__CurrentCountryLabel-sc-nyixel-2 cLUVoM"
+                                              class="styledComponents__CurrentCountryLabel-sc-nyixel-1 kexUkL"
                                             >
                                               Bands for current country (United States)
                                             </span>
-                                            <div
-                                              class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
+                                            <label
+                                              class="styledComponents__FieldLabel-sc-1ibvcih-5 bVyBXd"
                                               width="25px"
                                             >
                                               3G:
                                               <div
-                                                class="styledComponents__MultiSelect-sc-1ibvcih-5 iDywAN"
+                                                class="styledComponents__MultiSelect-sc-1ibvcih-6 kwcbIu"
                                               >
                                                 <div
                                                   class="ant-form-item"
@@ -418,14 +418,14 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                                   </div>
                                                 </div>
                                               </div>
-                                            </div>
-                                            <div
-                                              class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
+                                            </label>
+                                            <label
+                                              class="styledComponents__FieldLabel-sc-1ibvcih-5 bVyBXd"
                                               width="25px"
                                             >
                                               4G:
                                               <div
-                                                class="styledComponents__MultiSelect-sc-1ibvcih-5 iDywAN"
+                                                class="styledComponents__MultiSelect-sc-1ibvcih-6 kwcbIu"
                                               >
                                                 <div
                                                   class="ant-form-item"
@@ -510,7 +510,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                                   </div>
                                                 </div>
                                               </div>
-                                            </div>
+                                            </label>
                                             <button
                                               class="ant-btn ant-btn-link"
                                               type="button"
@@ -772,17 +772,17 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                       >
                                         <div>
                                           <span
-                                            class="styledComponents__CurrentCountryLabel-sc-nyixel-2 cLUVoM"
+                                            class="styledComponents__CurrentCountryLabel-sc-nyixel-1 kexUkL"
                                           >
                                             Bands for current country (United States)
                                           </span>
-                                          <div
-                                            class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
+                                          <label
+                                            class="styledComponents__FieldLabel-sc-1ibvcih-5 bVyBXd"
                                             width="25px"
                                           >
                                             3G:
                                             <div
-                                              class="styledComponents__MultiSelect-sc-1ibvcih-5 iDywAN"
+                                              class="styledComponents__MultiSelect-sc-1ibvcih-6 kwcbIu"
                                             >
                                               <div
                                                 class="ant-form-item"
@@ -868,14 +868,14 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                                 </div>
                                               </div>
                                             </div>
-                                          </div>
-                                          <div
-                                            class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
+                                          </label>
+                                          <label
+                                            class="styledComponents__FieldLabel-sc-1ibvcih-5 bVyBXd"
                                             width="25px"
                                           >
                                             4G:
                                             <div
-                                              class="styledComponents__MultiSelect-sc-1ibvcih-5 iDywAN"
+                                              class="styledComponents__MultiSelect-sc-1ibvcih-6 kwcbIu"
                                             >
                                               <div
                                                 class="ant-form-item"
@@ -960,7 +960,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                                 </div>
                                               </div>
                                             </div>
-                                          </div>
+                                          </label>
                                           <button
                                             class="ant-btn ant-btn-link"
                                             type="button"

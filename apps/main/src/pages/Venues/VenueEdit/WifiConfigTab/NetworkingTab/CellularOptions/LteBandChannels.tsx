@@ -130,7 +130,7 @@ export function LteBandChannels (
       }
       {(props.isCurrent || (!props.isCurrent && enableRegion && props.isShowOtherLteBands)) &&
         <>
-          <UI.FieldLabel width='25px'>
+          <StepsForm.FieldLabel width='25px'>
             {$t({ defaultMessage: '3G:' })}
             <StepsForm.MultiSelect>
               <Form.Item
@@ -144,9 +144,9 @@ export function LteBandChannels (
                 }
               />
             </StepsForm.MultiSelect>
-          </UI.FieldLabel>
+          </StepsForm.FieldLabel>
 
-          <UI.FieldLabel width='25px'>
+          <StepsForm.FieldLabel width='25px'>
             {$t({ defaultMessage: '4G:' })}
             <StepsForm.MultiSelect>
               <Form.Item
@@ -159,7 +159,7 @@ export function LteBandChannels (
                 }
               />
             </StepsForm.MultiSelect>
-          </UI.FieldLabel></>
+          </StepsForm.FieldLabel></>
       }
     </>
 

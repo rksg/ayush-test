@@ -31,7 +31,6 @@ import {
   VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile,
-  WifiUrlsInfo,
   AvailableLteBands,
   VenueApModelCellular
 } from '@acx-ui/rc/utils'
