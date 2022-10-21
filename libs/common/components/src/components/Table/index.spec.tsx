@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMWidth } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 jest.mock('@acx-ui/icons', ()=> ({
@@ -281,39 +281,6 @@ describe('Table component', () => {
     expect(onChange).toBeCalledTimes(2)
   })
 
-  it('should handle ellipsis', () => {
-    const basicColumns = [
-      { title: 'Name', key: 'name', dataIndex: 'name', width: 1 },
-      { title: 'Age', key: 'age', dataIndex: 'age' },
-      { title: 'Address', key: 'address', dataIndex: 'name' }
-    ]
-    const basicData = [
-      {
-        key: '1',
-        name: 'John Doe',
-        age: 32,
-        address: 'sample address'
-      },
-      {
-        key: '2',
-        name: 'Jane Doe',
-        age: 33,
-        address: 'new address'
-      },
-      {
-        key: '3',
-        name: 'Will Smith',
-        age: 45,
-        address: 'address'
-      }
-    ]
-    const { asFragment } = render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
-      ellipsis={true}
-    />)
-    expect(asFragment()).toMatchSnapshot()
-  })
   it('calls onResetState', async () => {
     const reset = jest.fn()
     render(<Table
@@ -329,8 +296,8 @@ describe('Table component', () => {
   })
 
   describe('resize', () => {
-    mockDOMWidth(99)
     it('should allow column resizing', async () => {
+      mockDOMSize(99, 800)
       const { asFragment } = render(<Table
         columns={basicColumns}
         dataSource={basicData}

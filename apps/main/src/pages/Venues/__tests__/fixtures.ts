@@ -66,10 +66,79 @@ export const venueCaps = {
     model: 'E510'
   }, {
     ledOn: true,
-    model: 'H320'
+    model: 'H320',
+    canSupportPoeMode: false,
+    canSupportPoeOut: false,
+    lanPortPictureDownloadUrl: 'xxxxxxx/h320.jpg',
+    lanPorts: [{
+      defaultType: 'ACCESS',
+      id: '1',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'ACCESS',
+      id: '2',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'TRUNK',
+      id: '3',
+      isPoeOutPort: false,
+      isPoePort: true,
+      supportDisable: false,
+      trunkPortOnly: true,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }]
   }, {
     ledOn: true,
-    model: 'H350'
+    model: 'T750',
+    canSupportPoeMode: true,
+    canSupportPoeOut: true,
+    lanPortPictureDownloadUrl: 'xxxxxxx/t750.jpg',
+    lanPorts: [{
+      defaultType: 'TRUNK',
+      id: '1',
+      isPoeOutPort: true,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }, {
+      defaultType: 'TRUNK',
+      id: '2',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }, {
+      defaultType: 'TRUNK',
+      id: '3',
+      isPoeOutPort: false,
+      isPoePort: true,
+      supportDisable: false,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }],
+    poeModeCapabilities: [
+      'Auto',
+      '802.3at',
+      '802.3bt-Class_5',
+      '802.3bt-Class_6',
+      '802.3bt-Class_7'
+    ]
   }],
   version: '6.0.0.x.xxx'
 }
@@ -99,30 +168,6 @@ export const autocompleteResult = {
         'route'
       ]
     },
-    // {
-    //   long_name: 'Sunnyvale',
-    //   short_name: 'Sunnyvale',
-    //   types: [
-    //     'locality',
-    //     'political'
-    //   ]
-    // },
-    // {
-    //   long_name: 'Santa Clara County',
-    //   short_name: 'Santa Clara County',
-    //   types: [
-    //     'administrative_area_level_2',
-    //     'political'
-    //   ]
-    // },
-    // {
-    //   long_name: 'California',
-    //   short_name: 'CA',
-    //   types: [
-    //     'administrative_area_level_1',
-    //     'political'
-    //   ]
-    // },
     {
       long_name: 'United States',
       short_name: 'US',
@@ -187,6 +232,27 @@ export const timezoneResult = {
   timeZoneId: 'America/Los_Angeles',
   timeZoneName: 'Pacific Daylight Time'
 }
+
+export const venueLanPorts = [{
+  lanPorts: [{ type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true }],
+  model: 'E510'
+}, {
+  lanPorts: [
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '1', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '2', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+  ],
+  model: 'H320'
+}, {
+  lanPorts: [
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '2', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+  ],
+  model: 'T750',
+  poeMode: 'Auto',
+  poeOut: false
+}]
 
 export const venueSetting = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
@@ -514,6 +580,38 @@ export const networkDeepList = {
 }
 
 export const venueApsList = { fields: ['meshRole','serialNumber'],totalCount: 0,page: 1,data: [] }
+
+export const venueDosProtection = {
+  enabled: true,
+  blockingPeriod: 50,
+  failThreshold: 6,
+  checkPeriod: 30
+}
+
+export const venueRougeAp = {
+  enabled: true,
+  reportThreshold: 0,
+  roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
+export const venueRoguePolicy = [{
+  venues: [{ id: '3db73a30cd06490aaf4bca01a1eb8894',name: 'My-Venue' }],
+  name: 'Default profile',
+  rules: [
+    { name: 'Same Network Rule',type: 'SameNetworkRule',classification: 'Malicious',priority: 1 },
+    { name: 'Mac Spoofing Rule',type: 'MacSpoofingRule',classification: 'Malicious',priority: 2 },
+    { name: 'SSID Spoofing Rule',type: 'SsidSpoofingRule',classification: 'Malicious',priority: 3 },
+    { name: 'RTS Abuse Rule',type: 'RTSAbuseRule',classification: 'Malicious',priority: 4 },
+    { name: 'CTS Abuse Rule',type: 'CTSAbuseRule',classification: 'Malicious',priority: 5 },
+    { name: 'Deauth Flood Rule',type: 'DeauthFloodRule',classification: 'Malicious',priority: 6 },
+    { name: 'Disassoc Flood Rule',type: 'DisassocFloodRule',
+      classification: 'Malicious',priority: 7 },
+    { name: 'Excessive Power Rule',type: 'ExcessivePowerRule',
+      classification: 'Malicious',priority: 8 },
+    { name: 'Null SSID Rule',type: 'NullSSIDRule',classification: 'Malicious',priority: 9 },
+    { name: 'Adhoc',type: 'AdhocRule',classification: 'Unclassified',priority: 10 }],
+  id: '9700ca95e4be4a22857f0e4b621a685f' }
+]
 export const configProfiles = [{
   id: '771f6e6b21af43fa8879e10170114fc4',
   name: 'profile-cli01',

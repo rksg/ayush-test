@@ -152,6 +152,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => defaultSort(a.description, b.description)
       },
+      ellipsis: true,
       searchable: true
     },
     {
@@ -244,7 +245,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
-        ellipsis={true}
         indentSize={6}
         onResetState={() => {
           setShowMuted(false)

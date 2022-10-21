@@ -43,11 +43,11 @@ export const aggregateTtc = (
   slowConnections: (number|null)[]
 })
 
-export const TtcFailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps) => {
+export const TtcFailureChart = ({ chartRef, data, incident, buffer }: TimeSeriesChartProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
-  const { start, end } = getIncidentTimeSeriesPeriods(incident)
+  const { start, end } = getIncidentTimeSeriesPeriods(incident, buffer)
   const queryResults = useKpiTimeseriesQuery({
     path: incident.path,
     startDate: start.toISOString(),
@@ -84,7 +84,6 @@ export const TtcFailureChart = ({ chartRef, data, incident }: TimeSeriesChartPro
               chartRef={chartRef}
               style={{ height, width }}
               data={chartResults}
-              dataFormatter={formatter('countFormat')}
               seriesFormatters={seriesFormatters}
               onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
               markers={getMarkers(data.relatedIncidents!, incident)}
