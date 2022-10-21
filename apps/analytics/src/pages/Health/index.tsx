@@ -1,8 +1,7 @@
-import { Tabs }                                      from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { categoryNames }                         from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                      from '@acx-ui/components'
+import { GridCol, GridRow, Tabs }                from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import Header from '../../components/Header'

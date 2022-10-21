@@ -1,10 +1,10 @@
 import { useContext, useState, useEffect } from 'react'
 
-import { Col, Form, Image, Row, Select, Space, Tabs } from 'antd'
-import { isEqual, replace }                           from 'lodash'
-import { useIntl }                                    from 'react-intl'
+import { Col, Form, Image, Row, Select, Space } from 'antd'
+import { isEqual, replace }                     from 'lodash'
+import { useIntl }                              from 'react-intl'
 
-import { Loader, showToast }       from '@acx-ui/components'
+import { Loader, showToast, Tabs } from '@acx-ui/components'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueSettingsQuery,
@@ -199,6 +199,7 @@ export function LanPorts () {
     <Row gutter={24}>
       <Col span={12}> {
         selectedModel?.lanPorts && <Tabs
+          type='third'
           onChange={onTabChange}
         	animated={true}
         >
