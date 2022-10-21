@@ -6,7 +6,7 @@ import {
 
 import { SwitchesTable } from '.'
 
-describe('AP List Table', () => {
+describe('Switch List Table', () => {
   const params = { tenantId: 'tenant-id' }
 
   it('should render table', async () => {
