@@ -16,6 +16,7 @@ import TopSwitchesByErrorWidget       from './components/TopSwitchesByError'
 import TopSwitchesByPoEUsageWidget    from './components/TopSwitchesByPoEUsage'
 import TopSwitchesByTrafficWidget     from './components/TopSwitchesByTraffic'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
+import VenueHealthWidget              from './components/VenueHealthWidget'
 
 const widgetsMap = {
   trafficByVolume: ({ filters }: { filters: AnalyticsFilter }) => (
@@ -56,6 +57,9 @@ const widgetsMap = {
   ),
   venueIncidentsDonut: ({ filters }: { filters: AnalyticsFilter }) => (
     <VenueIncidentsWidget filters={filters}/>
+  ),
+  venueHealth: ({ filters }: { filters: AnalyticsFilter }) => (
+    <VenueHealthWidget filters={filters}/>
   ),
   health: ({ filters }: { filters: AnalyticsFilter }) => (
     <HealthWidget filters={filters}/>
