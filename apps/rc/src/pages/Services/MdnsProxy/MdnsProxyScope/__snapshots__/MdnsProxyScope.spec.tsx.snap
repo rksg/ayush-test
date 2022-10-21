@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MdnsProxyScope should render table with the givien data 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <h3
+      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+    >
+      Scope
+    </h3>
+    <p>
+      Select the venues and APs where the mDNS Proxy Service will be applied:
+    </p>
+    <div
+      class="ant-form-item"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              <div
+                class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+              >
+                <div
+                  class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                >
+                  <span
+                    aria-label="loader"
+                    role="img"
+                  >
+                    <div
+                      aria-busy="true"
+                      aria-live="polite"
+                      class="ant-spin ant-spin-lg ant-spin-spinning"
+                    >
+                      <span
+                        class="ant-spin-dot ant-spin-dot-spin"
+                      >
+                        <i
+                          class="ant-spin-dot-item"
+                        />
+                        <i
+                          class="ant-spin-dot-item"
+                        />
+                        <i
+                          class="ant-spin-dot-item"
+                        />
+                        <i
+                          class="ant-spin-dot-item"
+                        />
+                      </span>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;
