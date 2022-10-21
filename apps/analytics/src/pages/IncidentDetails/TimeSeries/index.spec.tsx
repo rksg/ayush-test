@@ -10,6 +10,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
+import { buffer6hr }            from './__tests__/fixtures'
 import { TimeSeriesChartTypes } from './config'
 import { Api }                  from './services'
 
@@ -61,6 +62,7 @@ describe('Timeseries component', () => {
           incident={fakeIncident1}
           charts={charts}
           minGranularity='PT180S'
+          buffer={buffer6hr}
         />
       </Provider>
     </BrowserRouter>
