@@ -102,7 +102,7 @@ export function getExternalAntennaPayload (apModels: { [index: string]: External
     return data
   }
   const extPayload = [] as ExternalAntenna[]
-  Object.keys(apModels).map(key => {
+  Object.keys(apModels).forEach(key => {
     const model = cleanExtModel(apModels[key] as ExternalAntenna)
     extPayload.push(model)
   })
