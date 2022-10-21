@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BetaNotAvailable should render correctly 1`] = `
+exports[`NotAvailable should render correctly 1`] = `
 <DocumentFragment>
   <div
     style="height: 150px;"

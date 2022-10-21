@@ -29,7 +29,7 @@ export function Button ({ type = 'default', ...props }: ButtonProps) {
 }
 
 
-export function BetaDisabledButton (
+export function DisabledButton (
   props: ButtonProps & { tooltipPlacement?: TooltipProps['placement'] }
 ) {
   // workaround for showing tooltip when button disabled

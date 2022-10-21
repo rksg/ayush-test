@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BetaDisabledButton should render disabled button with tooltip 1`] = `
+exports[`DisabledButton should render disabled button with tooltip 1`] = `
 <DocumentFragment>
   <span
     class="ant-tooltip-open"

@@ -5,10 +5,10 @@ import { isEmpty }      from 'lodash'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { Button, BetaDisabledButton, Loader, showActionModal } from '@acx-ui/components'
-import { BulbOutlined }                                        from '@acx-ui/icons'
-import { useDeleteFloorPlanMutation, useFloorPlanListQuery }   from '@acx-ui/rc/services'
-import { FloorPlanDto }                                        from '@acx-ui/rc/utils'
+import { Button, DisabledButton, Loader, showActionModal }   from '@acx-ui/components'
+import { BulbOutlined }                                      from '@acx-ui/icons'
+import { useDeleteFloorPlanMutation, useFloorPlanListQuery } from '@acx-ui/rc/services'
+import { FloorPlanDto }                                      from '@acx-ui/rc/utils'
 
 import GalleryView from './GalleryView/GalleryView'
 import PlainView   from './PlainView/PlainView'
@@ -72,12 +72,12 @@ export default function FloorPlan () {
               deleteFloorPlan={onDeleteFloorPlan}/>
           }
           <UI.StyledSpace size={24}>
-            <BetaDisabledButton size='small' type='link'>
+            <DisabledButton size='small' type='link'>
               {$t({ defaultMessage: '+ Add Floor Plan' })}
-            </BetaDisabledButton>
-            <BetaDisabledButton size='small' type='link'>
+            </DisabledButton>
+            <DisabledButton size='small' type='link'>
               {$t({ defaultMessage: 'Unplaced Devices (0)' })}
-            </BetaDisabledButton>
+            </DisabledButton>
           </UI.StyledSpace>
         </UI.FloorPlanContainer>
         :

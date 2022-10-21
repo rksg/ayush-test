@@ -1,6 +1,6 @@
 import { render } from '@acx-ui/test-utils'
 
-import { NoData, BetaNotAvailable } from '.'
+import { NoData, NotAvailable } from '.'
 
 describe('NoData', () => {
   it('should render correctly', () => {
@@ -13,9 +13,9 @@ describe('NoData', () => {
   })
 })
 
-describe('BetaNotAvailable', () => {
+describe('NotAvailable', () => {
   it('should render correctly', () => {
-    const { asFragment } = render(<BetaNotAvailable/>)
+    const { asFragment } = render(<NotAvailable/>)
     expect(asFragment()).toMatchSnapshot()
   })
 })

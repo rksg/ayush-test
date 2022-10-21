@@ -78,7 +78,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                   type="button"
                 >
                   <span>
-                    Entire Organization
+                    All Active Venues
                   </span>
                   <svg>
                     ArrowExpand.svg

@@ -17,7 +17,7 @@ export function NoData ({ text }: NoDataWrapperProps) {
   )
 }
 
-export function BetaNotAvailable (props: { height?: number }) {
+export function NotAvailable (props: { height?: number }) {
   const { $t } = useIntl()
   return (
     <div style={{ height: props.height || 150 }}>

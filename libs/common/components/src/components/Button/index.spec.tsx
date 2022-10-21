@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import { IntlProvider }   from 'react-intl'
 
-import { Button, BetaDisabledButton } from '.'
+import { Button, DisabledButton } from '.'
 
 describe('Button', () => {
   it('should render default button', () => {
@@ -23,11 +23,11 @@ describe('Button', () => {
   })
 })
 
-describe('BetaDisabledButton', () => {
+describe('DisabledButton', () => {
   it('should render disabled button with tooltip', async () => {
     const { asFragment } = render(
       <IntlProvider locale='en'>
-        <BetaDisabledButton>Button</BetaDisabledButton>
+        <DisabledButton>Button</DisabledButton>
       </IntlProvider>)
     await userEvent.hover(screen.getAllByText((_, element) => {
       return element!.tagName.toLowerCase() === 'span'

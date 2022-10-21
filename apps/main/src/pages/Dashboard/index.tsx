@@ -4,7 +4,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
-  BetaDisabledButton,
+  DisabledButton,
   GridRow,
   GridCol,
   PageHeader,
@@ -62,7 +62,7 @@ function DashboardPageHeader () {
           showTimePicker
           selectionType={range}
         />,
-        <BetaDisabledButton
+        <DisabledButton
           tooltipPlacement='topRight'
           key='download'
           icon={<DownloadOutlined />} />
