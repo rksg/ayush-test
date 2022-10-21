@@ -1,4 +1,5 @@
-import { useIntl } from 'react-intl'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
 import {
   calculateSeverity,
@@ -43,6 +44,11 @@ export const ApinfraPoeLow = (incident: Incident) => {
     TimeSeriesChartTypes.ApPoeImpactChart
   ]
 
+  const buffer = {
+    front: { value: 6, unit: 'hours' as unitOfTime.Base },
+    back: { value: 6, unit: 'hours' as unitOfTime.Base }
+  }
+
   return (
     <>
       <PageHeader
@@ -71,6 +77,7 @@ export const ApinfraPoeLow = (incident: Incident) => {
           incident={incident}
           charts={timeSeriesCharts}
           minGranularity='PT180S'
+          buffer={buffer}
         />
         <GridCol col={{ offset: 4, span: 20 }}>
           <div>Impacted Entities Section</div>

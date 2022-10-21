@@ -5,7 +5,7 @@ import {
   fakeIncident1,
   fakeIncident
 } from '@acx-ui/analytics/utils'
-import { store }                                          from '@acx-ui/store'
+import { store }                            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { buffer6hr }            from '../__tests__/fixtures'
