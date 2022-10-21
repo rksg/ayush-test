@@ -111,7 +111,7 @@ export function RadioUpper5GHz () {
     if(channelInheritSettings){
       setInheritSettings(channelInheritSettings)
     }
-  }, [defaultChannelsData, channelBandwidth, channelInheritSettings])
+  }, [defaultChannelsData, channelBandwidth, channelInheritSettings, groupSize, channelType])
 
   function formatter (value: any) {
     return `${value}%`

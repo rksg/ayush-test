@@ -105,7 +105,7 @@ export function Radio5GHz () {
         upper5GChannels: outdoorUpper5GChannels
       })
     }
-  }, [defaultChannelsData, channelBandwidth])
+  }, [defaultChannelsData, channelBandwidth, groupSize, channelType])
 
   function formatter (value: any) {
     return `${value}%`

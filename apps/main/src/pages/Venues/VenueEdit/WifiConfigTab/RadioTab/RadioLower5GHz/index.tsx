@@ -112,7 +112,7 @@ export function RadioLower5GHz () {
       setInheritSettings(channelInheritSettings)
     }
 
-  }, [defaultChannelsData, channelBandwidth, channelInheritSettings, defaultIndoorChannels])
+  }, [defaultChannelsData, channelBandwidth, channelInheritSettings, groupSize, channelType])
 
   function formatter (value: any) {
     return `${value}%`

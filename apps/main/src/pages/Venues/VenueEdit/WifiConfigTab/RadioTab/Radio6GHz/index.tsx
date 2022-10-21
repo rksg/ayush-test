@@ -57,7 +57,7 @@ export function Radio6GHz () {
           break
       }
     }
-  }, [defaultChannelsData, channelBandwidth])
+  }, [defaultChannelsData, channelBandwidth, groupSize])
 
   function formatter (value: any) {
     return `${value}%`

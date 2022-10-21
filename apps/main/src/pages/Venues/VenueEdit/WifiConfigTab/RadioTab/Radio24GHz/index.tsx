@@ -47,7 +47,6 @@ export function Radio24GHz () {
       setDefaultChannels(
         defaultChannelsData['2.4GChannels'][channelType]
       )
-      console.log(defaultChannels)
     }
   }, [defaultChannelsData, channelBandwidth])
 
