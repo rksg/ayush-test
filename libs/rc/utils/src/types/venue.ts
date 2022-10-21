@@ -9,7 +9,7 @@ import { VenueRadioCustomization }   from '../models/VenueRadioCustomization'
 import { VenueRogueAp }              from '../models/VenueRogueAp'
 import { VenueSyslog }               from '../models/VenueSyslog'
 
-import { ApStatusDetails, ApModel } from './ap'
+import { ApStatusDetails, ApModel, LanPort } from './ap'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
@@ -94,6 +94,12 @@ export interface VenueApModels {
 	models: string[]
 }
 
+export interface VenueLanPorts {
+	model: string,
+	lanPorts: LanPort[],
+	poeMode?: string,
+	poeOut?: boolean
+}
 
 export interface Address {
   addressLine?: string

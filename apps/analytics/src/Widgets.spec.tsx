@@ -216,6 +216,25 @@ test('should render Incidents Dashboard Widget', async () => {
   await screen.findByText('Incidents')
 })
 
+test('should render Venue health Widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+    data: {
+      timeToConnectThreshold: {
+        value: 1000
+      },
+      clientThroughputThreshold: {
+        value: 5000
+      }
+    }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='venueHealth'
+    filters={filters}
+  /></Provider>)
+
+  await screen.findByText('Client Experience')
+})
+
 test('should render Venue Overview Incidents Widget', async () => {
   const sample = { P1: 0, P2: 2, P3: 3, P4: 4 }
   mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {

@@ -1,5 +1,5 @@
-import { Provider  }            from '@acx-ui/store'
-import { mockDOMWidth, render } from '@acx-ui/test-utils'
+import { Provider  } from '@acx-ui/store'
+import { render }    from '@acx-ui/test-utils'
 
 import TopologyFloorPlanWidget from '.'
 
@@ -9,8 +9,6 @@ jest.mock('../FloorPlan', () => ({
 }))
 
 describe('TopologyFloorPlanWidget', () => {
-  mockDOMWidth()
-
   it('should render correctly', () => {
     const { asFragment } = render(<Provider><TopologyFloorPlanWidget /></Provider>)
     expect(asFragment()).toMatchSnapshot()

@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent } from '@testing-library/react'
 
-import { BulbOutlined } from '@acx-ui/icons'
+import { BulbOutlined }              from '@acx-ui/icons'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { Drawer } from '.'
+
 
 
 jest.mock('@acx-ui/icons', ()=> ({
@@ -99,5 +100,48 @@ describe('Drawer', () => {
 
     fireEvent.click(backButton)
     expect(handleBackClick).toBeCalled()
+  })
+
+  describe('FormFooter', () => {
+    it('should render form footer', async () => {
+      const mockOnCancel = jest.fn()
+      const mockOnSave = jest.fn()
+      const { asFragment } = render(
+        <Drawer.FormFooter
+          onCancel={mockOnCancel}
+          onSave={mockOnSave}
+        />
+      )
+      expect(asFragment()).toMatchSnapshot()
+      fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+      expect(mockOnSave).toBeCalledWith(false)
+      fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+      expect(mockOnCancel).toBeCalled()
+    })
+
+    it('should handle add another checkbox events', async () => {
+      const mockOnCancel = jest.fn()
+      const mockOnSave = jest.fn()
+      render(
+        <Drawer.FormFooter
+          showAddAnother={true}
+          onCancel={mockOnCancel}
+          onSave={mockOnSave}
+          buttonLabel={{
+            addAnother: 'Checkbox',
+            cancel: 'Back',
+            save: 'OK'
+          }}
+        />
+      )
+      const addAnother = screen.getByRole('checkbox', { name: 'Checkbox' })
+      expect(addAnother).not.toBeChecked()
+      fireEvent.click(addAnother)
+      expect(addAnother).toBeChecked()
+      fireEvent.click(screen.getByRole('button', { name: 'OK' }))
+      expect(mockOnSave).toBeCalledWith(true)
+      fireEvent.click(screen.getByRole('button', { name: 'Back' }))
+      expect(mockOnCancel).toBeCalled()
+    })
   })
 })
