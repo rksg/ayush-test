@@ -22,19 +22,26 @@ const DHCPInstance = () => {
     setTabPosition(e.target.value)
   }
 
+  const [poolsNum, setPoolsNum] = useState(0)
+  const [leaseNum, setLeaseNum] = useState(0)
+
   return <>
     <BasicInfo />
     <DivContainer>
       <Radio.Group value={tabPosition} onChange={changeTabPosition}>
-        <Radio.Button value='pools'>{$t({ defaultMessage: 'Pools' })+` (${6})`} </Radio.Button>
+        <Radio.Button value='pools'>
+          {$t({ defaultMessage: 'Pools' })+` (${poolsNum})`}
+        </Radio.Button>
         <Radio.Button value='lease'>
           {$t({ defaultMessage: 'Lease Table' }) +
-          ` (${34} ` + $t({ defaultMessage: 'Online' }) + ')' }
+          ` (${leaseNum} ` + $t({ defaultMessage: 'Online' }) + ')' }
         </Radio.Button>
       </Radio.Group>
     </DivContainer>
-    { tabPosition === 'pools' && <PoolTable/>}
-    { tabPosition === 'lease' && <LeaseTable/>}
+    { tabPosition === 'pools' && <PoolTable setPoolsNumFn={setPoolsNum} />}
+
+    <LeaseTable style={{ display: tabPosition === 'lease' ? '':'none' }}
+      setLeaseNumFn={setLeaseNum} />
   </>
 }
 

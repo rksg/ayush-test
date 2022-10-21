@@ -9,13 +9,14 @@ import { useVenuesLeasesListQuery } from '@acx-ui/rc/services'
 import { DHCPLeases }               from '@acx-ui/rc/utils'
 
 
-export default function DHCPInstancesLeaseTable (){
+export default function VenueLeaseTable (props: { setLeaseNumFn: Function, style: object } ){
   const params = useParams()
   const { $t } = useIntl()
 
   const { data: leasesList } = useVenuesLeasesListQuery({
     params: { venueId: params.venueId }
   })
+  props.setLeaseNumFn(leasesList?.length)
 
   const columns: TableProps<DHCPLeases>['columns'] = [
     {
@@ -55,14 +56,16 @@ export default function DHCPInstancesLeaseTable (){
   ]
 
   return (
-    <Card>
-      <div style={{ width: '100%' }}>
-        <Table
-          columns={columns}
-          dataSource={leasesList}
-          rowKey='id'
-        />
-      </div>
-    </Card>
+    <div style={props.style}>
+      <Card>
+        <div style={{ width: '100%' }}>
+          <Table
+            columns={columns}
+            dataSource={leasesList}
+            rowKey='id'
+          />
+        </div>
+      </Card>
+    </div>
   )
 }

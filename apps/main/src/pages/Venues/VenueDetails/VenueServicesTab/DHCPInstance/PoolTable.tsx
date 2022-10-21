@@ -16,7 +16,7 @@ import { DHCPPool }   from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 
-export default function DHCPInstancesPoolTable (){
+export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
   const params = useParams()
   const { $t } = useIntl()
 
@@ -33,19 +33,19 @@ export default function DHCPInstancesPoolTable (){
     params: { serviceId: venueDHCPProfile?.serviceProfileId, venueId: params.venueId }
   })
 
-  const [activateDHCPPool] = useActivateDHCPPoolMutation()
 
+  const [activateDHCPPool] = useActivateDHCPPoolMutation()
   const setActivePool = async (dhcppoolId:string)=>{
     await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
   }
 
-
+  props.setPoolsNumFn(dhcpProfile?.dhcpPools.length)
   const tableData = dhcpProfile?.dhcpPools.map( item => {
     const index = _.findIndex(activeList, poolId => poolId === item.id)
-    if(index!==-1){
-      item.activated = index!==-1
+    return {
+      ...item,
+      activated: index!==-1
     }
-    return item
   })
 
   const columns: TableProps<DHCPPool>['columns'] = [
@@ -93,21 +93,26 @@ export default function DHCPInstancesPoolTable (){
       key: 'id',
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'id',
-      render: (data) =>{
-        const switchStatus = Boolean(data)
-        const switchRef = <Switch checkedChildren={$t({ defaultMessage: 'ON' })}
-          unCheckedChildren={$t({ defaultMessage: 'OFF' })}
-          defaultChecked={switchStatus ? switchStatus : false}
-          onChange={()=>{
-            setActivePool(data as string)
-          }}/>
-        return switchRef
+      render: (id, row) => {
+        if(activeList){
+          const switchRef = <Switch
+            checkedChildren={$t({ defaultMessage: 'ON' })}
+            unCheckedChildren={$t({ defaultMessage: 'OFF' })}
+            defaultChecked={row.activated}
+            onChange={()=>{
+              setActivePool(id as string)
+            }}/>
+          return switchRef
+        }else{
+          return ''
+        }
+
       }
     }
   ]
 
   return (
-    <Card>
+    <Card >
       <div style={{ width: '100%' }}>
         <Table
           columns={columns}

@@ -12,12 +12,12 @@ export function VenueServicesTab () {
 
 
   //FIXME: check service status
-  const colorByStatus = cssStr('--acx-semantics-green-50')
+
 
   return (
     <Tabs>
       <Tabs.TabPane tab={<span>
-        <CheckCircleFilled style={{ color: colorByStatus }}/>
+        <CheckCircleFilled style={{ color: cssStr('--acx-semantics-green-50') }}/>
         {$t({ defaultMessage: 'DHCP' })}</span>}
       key={ServiceType.DHCP}>
         <DHCPInstance/>
