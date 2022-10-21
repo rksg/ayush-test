@@ -5,7 +5,7 @@ import {
   Incident,
   shortDescription
 } from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
+import { PageHeader, SeverityPill, GridRow, GridCol, Card, BetaNotAvailable } from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
@@ -62,10 +62,14 @@ export const ApinfraPoeLow = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Charts</div>
+          <Card title={$t({ defaultMessage: 'APs POE Impact' })} type='no-border' >
+            <BetaNotAvailable/>
+          </Card>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Impacted Entities Section</div>
+          <Card title={$t({ defaultMessage: 'Impacted APs' })} type='no-border'>
+            <BetaNotAvailable/>
+          </Card>
         </GridCol>
       </GridRow>
     </>

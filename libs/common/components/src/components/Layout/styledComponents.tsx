@@ -18,6 +18,13 @@ export const Wrapper = styled.div`
     .ant-layout.ant-layout-has-sider {
       .ant-layout-sider {
         overflow: visible !important;
+        &.ant-layout-sider-collapsed {
+          .ant-menu-item-disabled {
+            .ant-pro-menu-item-title {
+              display: none;
+            }
+          }
+        }
         .ant-layout-sider-children {
           .ant-pro-sider-logo {
             width: var(--acx-sider-width);
@@ -101,6 +108,12 @@ export const Wrapper = styled.div`
         font-size: var(--acx-headline-4-font-size);
         font-weight: var(--acx-headline-4-font-weight);
         line-height: 38px;
+        &-disabled {
+          .ant-pro-menu-item-title {
+            color: var(--acx-primary-white);
+            opacity: 0.35;
+          }
+        }
         &-selected {
           font-weight: var(--acx-headline-4-font-weight-bold);
           border-left-color: var(--acx-accents-orange-50);
@@ -219,6 +232,14 @@ export const RightHeaderContentWrapper = styled.div`
   align-items: center;
   gap: var(--acx-header-button-margin);
   height: 100%;
+
+  .ant-tooltip-disabled-compatible-wrapper{
+    display: flex !important;
+    svg {
+      fill: none;
+      stroke: var(--acx-neutrals-40);
+    }
+  }
 `
 
 const MenuIcon = styled.span`

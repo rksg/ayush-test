@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { ButtonProps as AntButtonProps, Tooltip } from 'antd'
-import { useIntl }                                from 'react-intl'
+import { ButtonProps as AntButtonProps, Tooltip, TooltipProps } from 'antd'
+import { useIntl }                                              from 'react-intl'
 
 import { notAvailableMsg } from '@acx-ui/utils'
 
@@ -29,10 +29,14 @@ export function Button ({ type = 'default', ...props }: ButtonProps) {
 }
 
 
-export function DisabledButton ( props: ButtonProps) {
-  // workaround for showing tooltip when button disabled,
+export function BetaDisabledButton (
+  props: ButtonProps & { tooltipPlacement?: TooltipProps['placement'] }
+) {
+  // workaround for showing tooltip when button disabled
   // ref: https://github.com/react-component/tooltip/issues/18
-  return <Tooltip title={useIntl().$t(notAvailableMsg)}>
+  return <Tooltip
+    placement={props.tooltipPlacement || 'top'}
+    title={useIntl().$t(notAvailableMsg)}>
     <span style={{ cursor: 'not-allowed' }}>
       <Button {...props} disabled style={{ pointerEvents: 'none' }}/>
     </span>

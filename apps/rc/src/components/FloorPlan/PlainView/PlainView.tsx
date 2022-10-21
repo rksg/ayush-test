@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Col, Divider, Row, Space, Typography } from 'antd'
 import { useIntl }                              from 'react-intl'
 
-import { Button, DisabledButton, Loader } from '@acx-ui/components'
+import { Button, BetaDisabledButton, Loader } from '@acx-ui/components'
 import {
   ApplicationsSolid,
   MagnifyingGlassMinusOutlined,
@@ -163,9 +163,9 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
         </Col>
         <Col>
           <Space split={<Divider type='vertical' />}>
-            <DisabledButton key='editBtn' type='link'>
+            <BetaDisabledButton key='editBtn' type='link'>
               {$t({ defaultMessage: 'Edit' })}
-            </DisabledButton>
+            </BetaDisabledButton>
             <Button key='deleteBtn' type='link' onClick={deleteHandler} >
               {$t({ defaultMessage: 'Delete' })}
             </Button>
