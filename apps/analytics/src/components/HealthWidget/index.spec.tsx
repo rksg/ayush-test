@@ -11,6 +11,7 @@ import { api }                 from './services'
 import HealthWidget from './index'
 
 describe('HealthWidget', () => {
+  let params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   const filters:AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -27,7 +28,9 @@ describe('HealthWidget', () => {
     mockGraphqlQuery(dataApiURL, 'HealthWidget', {
       data: { network: { hierarchyNode: healthWidgetFixture } }
     })
-    render( <Provider> <HealthWidget filters={filters}/></Provider>)
+    render( <Provider> <HealthWidget filters={filters}/></Provider>, {
+      route: { params, path: '/:tenantId/venues' }
+    })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
@@ -39,7 +42,9 @@ describe('HealthWidget', () => {
     })
     const { asFragment } = render( <Provider>
       <HealthWidget filters={filters}/>
-    </Provider>)
+    </Provider>, {
+      route: { params, path: '/:tenantId/venues' }
+    })
     await screen.findByText('Top 5 Venues/Services with poor experience')
     expect(asFragment()).toMatchSnapshot('NoData')
   })
@@ -49,7 +54,9 @@ describe('HealthWidget', () => {
       data: { network: { hierarchyNode: healthWidgetFixture } }
     })
     const { asFragment } = render( <Provider> <HealthWidget
-      filters={filters}/></Provider>)
+      filters={filters}/></Provider>, {
+      route: { params, path: '/:tenantId/venues' }
+    })
     await screen.findByText('Top 5 Venues/Services with poor experience')
     expect(asFragment()).toMatchSnapshot()
   })

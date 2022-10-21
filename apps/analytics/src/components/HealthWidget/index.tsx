@@ -2,7 +2,7 @@ import { mean }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import {
   Card,
   Loader,
@@ -12,9 +12,11 @@ import {
   ContentSwitcherProps,
   NoData
 } from '@acx-ui/components'
-import { intlFormats } from '@acx-ui/utils'
+import { TenantLink }             from '@acx-ui/react-router-dom'
+import { intlFormats, formatter } from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
+import * as UI                        from './styledComponents'
 
 export default function HealthWidget ({
   filters
@@ -24,13 +26,22 @@ export default function HealthWidget ({
   const { $t } = useIntl()
   const queryResults = useHealthQuery(filters)
   const { data } = queryResults
-  // eslint-disable-next-line no-console
-  console.log('Data:', data)
   const columns=[
     {
       title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'zoneName',
-      key: 'zoneName'
+      key: 'zoneName',
+      render: function (text:unknown, row:HealthData) {
+        return (
+          <UI.VenueName>
+            <TenantLink
+              to={`/venues/${row.zoneId ?? text}/venue-details/overview`}
+              title={text as string}>
+              {text as string}
+            </TenantLink>
+          </UI.VenueName>
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Client Experience' }),
@@ -56,15 +67,19 @@ export default function HealthWidget ({
       width: 80,
       align: 'center' as const,
       render: (value:unknown,row:HealthData)=>{
+        const thresholdText = $t({ defaultMessage: 'Under {threshold}' },
+          { threshold: formatter('durationFormat')(row.timeToConnectThreshold ??
+           kpiConfig.timeToConnect.histogram.initialThreshold) })
         if(value === '-')
           return <span>{value}</span>
         else
           return (<><span>
             {value as string}
           </span>
-          <br/><span style={{ fontSize: '9px' }}>
-            {`Under ${Number(row.timeToConnectThreshold) / 1000} Secs`}
-          </span></>
+          <br/>
+          <UI.ThresholdText>
+            {thresholdText}
+          </UI.ThresholdText></>
           )
       }
     },
@@ -75,15 +90,19 @@ export default function HealthWidget ({
       width: 90,
       align: 'center' as const,
       render: (value:unknown,row:HealthData)=>{
+        const thresholdText = $t({ defaultMessage: 'Above {threshold}' },
+          { threshold: formatter('networkSpeedFormat')(row.clientThroughputThreshold ??
+           kpiConfig.clientThroughput.histogram.initialThreshold) })
         if(value === '-')
           return <span>{value}</span>
         else
           return (<><span>
             {value as string}
           </span>
-          <br/><span style={{ fontSize: '9px' }}>
-            {`Above ${Number(row.clientThroughputThreshold) / 1000} Mbps`}
-          </span></>)
+          <br/>
+          <UI.ThresholdText>
+            {thresholdText}
+          </UI.ThresholdText></>)
       }
     },
     {
@@ -139,13 +158,13 @@ export default function HealthWidget ({
       .sort((a,b)=>(a.clientExperience as number) - (b.clientExperience as number))
       .slice(0,5)
   }
-  const clientExpTab = data ? <Table
+  const clientExpTab = data ? <UI.Wrapper><Table
     columns={columns}
     dataSource={getHealthData(data.health)}
     pagination={false}
     type={'compact'}
     rowKey='zoneName'
-  /> : <NoData/>
+  /></UI.Wrapper> : <NoData/>
   const tabDetails:ContentSwitcherProps['tabDetails']=[
     { label: $t({ defaultMessage: 'Venues' }) ,
       children: clientExpTab, value: 'clientExp' },

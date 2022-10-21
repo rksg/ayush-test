@@ -10,6 +10,7 @@ export type HierarchyNodeData = {
 
 export type HealthData = {
     systemId: string
+    zoneId: string
     zoneName: string
     timeToConnectSLA: [number, number]
     timeToConnectThreshold: string
@@ -41,8 +42,9 @@ export const api = dataApi.injectEndpoints({
             network(filter: $filter, start: $start, end: $end) {
               hierarchyNode(path: $path) {
                 health{
-                    systemId,
-                    zoneName,
+                    systemId
+                    zoneId
+                    zoneName
                     timeToConnectSLA
                     timeToConnectThreshold
                     clientThroughputSLA

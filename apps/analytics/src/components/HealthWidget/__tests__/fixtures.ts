@@ -1,729 +1,579 @@
 export const healthWidgetFixture = {
-  health: [{
-    systemId: 'acx',
-    zoneName: 'A-T-Venue',
-    timeToConnectSLA: [
-      787,
-      853
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      291,
-      515
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      2983,
-      3133
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'ABHI-Dev-Home',
-    timeToConnectSLA: [
-      9,
-      11
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      1,
-      1
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      142,
-      202
-    ],
-    onlineApsSLA: [
-      2,
-      2
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'BCD-CIOT',
-    timeToConnectSLA: [
-      64,
-      69
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      29,
-      29
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      145,
-      145
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'BDC-SZ',
-    timeToConnectSLA: [
-      11,
-      14
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      15,
-      16
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      66,
-      68
-    ],
-    onlineApsSLA: [
-      3,
-      3
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'BDCSZ',
-    timeToConnectSLA: [
-      529,
-      580
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      330,
-      358
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      43188,
-      63069
-    ],
-    onlineApsSLA: [
-      5,
-      5
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'Ben-Venue-US',
-    timeToConnectSLA: [
-      701,
-      785
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      138,
-      156
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      1531,
-      1563
-    ],
-    onlineApsSLA: [
-      2,
-      2
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'Hanley-Venue',
-    timeToConnectSLA: [
-      90,
-      90
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      69,
-      70
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      327,
-      330
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'Jas-Venue',
-    timeToConnectSLA: [
-      2772,
-      2779
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      652,
-      652
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      6655,
-      6658
-    ],
-    onlineApsSLA: [
-      2,
-      3
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'My-Venue',
-    timeToConnectSLA: [
-      981,
-      1052
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      512,
-      527
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      10072,
-      15219
-    ],
-    onlineApsSLA: [
-      14,
-      14
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'Sherry-venue',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      null,
-      null
-    ],
-    onlineApsSLA: [
-      2,
-      2
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'StevenChu_Venue',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      0,
-      0
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'Test-Venue',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      0,
-      0
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'Vaibhav-venue',
-    timeToConnectSLA: [
-      81,
-      106
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      28,
-      48
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      339,
-      415
-    ],
-    onlineApsSLA: [
-      4,
-      5
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'Venue-UK',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      0,
-      0
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'Weichih-Venue',
-    timeToConnectSLA: [
-      28,
-      28
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      14,
-      14
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      361,
-      522
-    ],
-    onlineApsSLA: [
-      4,
-      5
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'White, Hane and King',
-    timeToConnectSLA: [
-      2,
-      8
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      4,
-      5
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      107,
-      147
-    ],
-    onlineApsSLA: [
-      4,
-      4
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'Xang',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      0,
-      0
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'acx-venue-0yoDT1iD',
-    timeToConnectSLA: [
-      3,
-      4
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      4,
-      4
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      17,
-      20
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'acx-venue-Ar5YTrZx',
-    timeToConnectSLA: [
-      0,
-      1
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      3,
-      4
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      21,
-      22
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'acx-venue-kyM90vuu',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      3,
-      3
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      16,
-      17
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'acx-venue-reyydefY',
-    timeToConnectSLA: [
-      1,
-      2
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      4,
-      4
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      19,
-      20
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'bdcPerformanceVenue2',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      0,
-      1095
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      0,
-      0
-    ],
-    onlineApsSLA: [
-      408,
-      408
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'f0997ab93fa24670a961c98446d47ae6',
-    timeToConnectSLA: [
-      795,
-      2518
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      956,
-      956
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      28763,
-      91782
-    ],
-    onlineApsSLA: [
-      2,
-      2
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'kathy-Venue',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      0,
-      4160
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      0,
-      0
-    ],
-    onlineApsSLA: [
-      502,
-      607
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'leonard-venue',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      null,
-      null
-    ],
-    onlineApsSLA: [
-      398,
-      492
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'leonard-venue2',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      0,
-      395
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      0,
-      0
-    ],
-    onlineApsSLA: [
-      300,
-      596
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'outdoor-germany',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      254,
-      376
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'outdoor-germany-venue-4OWa8oQz',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      0,
-      0
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'rsyslog_venue_jo',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      0,
-      0
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'test-Venue',
-    timeToConnectSLA: [
-      99,
-      112
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      73,
-      79
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      382,
-      410
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'acx',
-    zoneName: 'venue-1',
-    timeToConnectSLA: [
-      24,
-      24
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      10,
-      11
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      158,
-      180
-    ],
-    onlineApsSLA: [
-      1,
-      1
-    ]
-  },
-  {
-    systemId: 'ruckus-cloud-alto-vsz',
-    zoneName: 'My-Venue',
-    timeToConnectSLA: [
-      null,
-      null
-    ],
-    timeToConnectThreshold: null,
-    clientThroughputSLA: [
-      null,
-      null
-    ],
-    clientThroughputThreshold: null,
-    connectionSuccessSLA: [
-      163,
-      163
-    ],
-    onlineApsSLA: [
-      1,
-      2
-    ]
-  },
-  {
-    systemId: '6f6cadca-f642-4886-9fd1-247d23fea00a',
-    zoneName: 'My-Venue',
-    timeToConnectSLA: [
-      26,
-      51
-    ],
-    timeToConnectThreshold: '2000',
-    clientThroughputSLA: [
-      32,
-      32
-    ],
-    clientThroughputThreshold: '10000',
-    connectionSuccessSLA: [
-      null,
-      null
-    ],
-    onlineApsSLA: [
-      null,
-      null
-    ]
-  }
+  health: [
+    {
+      systemId: '6f6cadca-f642-4886-9fd1-247d23fea00a',
+      zoneId: '8d01a979dc964e6297e5cd5e3ae61994',
+      zoneName: 'My-Venue',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        null,
+        null
+      ],
+      onlineApsSLA: [
+        null,
+        null
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: 'e5d28cb30cb44be9bea1c8e7135da928',
+      zoneName: 'My-Venue',
+      timeToConnectSLA: [
+        27,
+        29
+      ],
+      timeToConnectThreshold: '2000',
+      clientThroughputSLA: [
+        15,
+        15
+      ],
+      clientThroughputThreshold: '10000',
+      connectionSuccessSLA: [
+        251,
+        354
+      ],
+      onlineApsSLA: [
+        12,
+        12
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '075c1f37abba434a8d3266cfbad45aea',
+      zoneName: 'Sherry-venue',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        null,
+        null
+      ],
+      onlineApsSLA: [
+        1,
+        2
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '1302b06c2de245c7b6e2fd0fa58d853a',
+      zoneName: 'BDC-SZ',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        null,
+        null
+      ],
+      onlineApsSLA: [
+        3,
+        3
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '1c0683276dce48679013dea12bf6abe0',
+      zoneName: 'test-Venue',
+      timeToConnectSLA: [
+        2,
+        2
+      ],
+      timeToConnectThreshold: '2000',
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        4,
+        5
+      ],
+      onlineApsSLA: [
+        1,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '217d6eb2b49e418cba06010795179d65',
+      zoneName: 'White, Hane and King',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        3,
+        3
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '3f278d546b7d433f8855aedc95a6f3de',
+      zoneName: 'Hanley-Venue',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        1,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '4654aca43c7340159af6291b2622b3b4',
+      zoneName: 'Xang',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        1,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '4ca20c8311024ac5956d366f15d96e0c',
+      zoneName: 'leonard-venue',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        null,
+        null
+      ],
+      onlineApsSLA: [
+        0,
+        88
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '51316c36a45b417595a99a40609e490f',
+      zoneName: 'kathy-Venue',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        null,
+        null
+      ],
+      onlineApsSLA: [
+        0,
+        100
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '555548721e264115bda45a75043f65d7',
+      zoneName: 'BDCSZ',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        4,
+        4
+      ],
+      clientThroughputThreshold: '10000',
+      connectionSuccessSLA: [
+        22,
+        27
+      ],
+      onlineApsSLA: [
+        5,
+        5
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '5a1fd3e7e4d04606a13f8b557a1d448e',
+      zoneName: 'venue-1',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        1,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '5da9e268a5dc4a2caf12d35530b2de25',
+      zoneName: 'A-T-Venue',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        1,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '7d609a516d7d4ad787fac3e08a734731',
+      zoneName: 'rsyslog_venue_jo',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        null,
+        null
+      ],
+      onlineApsSLA: [
+        0,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '89fc1ab5825a45c9ab577d630be4d357',
+      zoneName: 'leonard-venue2',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        1,
+        595
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '9307b9b26543431b8edcecf0256412fa',
+      zoneName: 'Ben-Venue-US',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        1,
+        2
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: '96bf314d575341cf95942caa2b072106',
+      zoneName: 'Vaibhav-venue',
+      timeToConnectSLA: [
+        27,
+        27
+      ],
+      timeToConnectThreshold: '2000',
+      clientThroughputSLA: [
+        2,
+        11
+      ],
+      clientThroughputThreshold: '10000',
+      connectionSuccessSLA: [
+        68,
+        72
+      ],
+      onlineApsSLA: [
+        2,
+        4
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: 'dc75a39778f241cb88d11fcd47cc6db5',
+      zoneName: 'ABHI-Dev-Home',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        null,
+        null
+      ],
+      onlineApsSLA: [
+        0,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: 'e05fcf8c8f0e4b3387574469c8fe10f6',
+      zoneName: 'Venue-UK',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        1,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: 'ebd9f3a74f0042efba53fcbfff5c4920',
+      zoneName: 'BCD-CIOT',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        null,
+        null
+      ],
+      onlineApsSLA: [
+        1,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: 'f0997ab93fa24670a961c98446d47ae6',
+      zoneName: null,
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        null,
+        null
+      ],
+      onlineApsSLA: [
+        null,
+        null
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: 'f201474c26144e68b19ada4eb0210d9a',
+      zoneName: 'Weichih-Venue',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        3,
+        4
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: null,
+      zoneName: 'f0997ab93fa24670a961c98446d47ae6',
+      timeToConnectSLA: [
+        20,
+        1441
+      ],
+      timeToConnectThreshold: '2000',
+      clientThroughputSLA: [
+        675,
+        675
+      ],
+      clientThroughputThreshold: '10000',
+      connectionSuccessSLA: [
+        11294,
+        26517
+      ],
+      onlineApsSLA: [
+        1,
+        1
+      ]
+    },
+    {
+      systemId: 'acx',
+      zoneId: null,
+      zoneName: 'bdcPerformanceVenue2',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        null,
+        null
+      ]
+    },
+    {
+      systemId: 'ruckus-cloud-alto-vsz',
+      zoneId: null,
+      zoneName: 'My-Venue',
+      timeToConnectSLA: [
+        null,
+        null
+      ],
+      timeToConnectThreshold: null,
+      clientThroughputSLA: [
+        null,
+        null
+      ],
+      clientThroughputThreshold: null,
+      connectionSuccessSLA: [
+        0,
+        0
+      ],
+      onlineApsSLA: [
+        1,
+        2
+      ]
+    }
   ]
 }
