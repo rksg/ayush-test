@@ -37,9 +37,7 @@ export type FormatDateProps = {
 
 export const FormatDate = (props: FormatDateProps) => {
   const { datetimestamp } = props
-  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
-  if (formattedDatetime === null) return <span>{noDataSymbol}</span>
-  const timeStamp = formattedDatetime as string
+  const timeStamp = formatter('dateTimeFormat')(datetimestamp)
   return <span>{timeStamp}</span>
 }
 

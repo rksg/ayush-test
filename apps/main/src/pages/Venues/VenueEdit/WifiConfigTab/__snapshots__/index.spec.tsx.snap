@@ -3,7 +3,7 @@
 exports[`WifiConfigTab should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="ant-tabs ant-tabs-top ant-tabs-card"
+    class="ant-tabs ant-tabs-top ant-tabs-card styledComponents__Tabs-sc-1afcsfc-0 jHmORd"
   >
     <div
       class="ant-tabs-nav"
@@ -250,7 +250,7 @@ exports[`WifiConfigTab should render correctly 1`] = `
                                       >
                                         <span
                                           class="ant-anchor-ink-ball visible"
-                                          style="top: -4.5px;"
+                                          style="top: 395.5px;"
                                         />
                                       </div>
                                       <div

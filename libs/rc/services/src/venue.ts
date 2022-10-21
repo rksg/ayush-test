@@ -19,6 +19,7 @@ import {
   VenueApModels,
   ExternalAntenna,
   CapabilitiesApModel,
+  VenueLanPorts,
   VenueDosProtection,
   VenueRogueAp,
   RogueClassificationPolicy,
@@ -212,6 +213,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueLedOn, params)
         return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueLanPorts, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueLanPorts: build.mutation<VenueLanPorts[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueLanPorts, params)
+        return{
           ...req,
           body: payload
         }
@@ -422,6 +440,8 @@ export const {
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useGetVenueLanPortsQuery,
+  useUpdateVenueLanPortsMutation,
   useVenueSwitchAAAServerListQuery,
   useGetAaaSettingQuery,
   useAddAAAServerMutation,
