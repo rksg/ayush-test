@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import type { TimeStamp } from '@acx-ui/types'
 
 import type { TimeSeriesChartData } from './types/timeseries'
@@ -16,10 +18,7 @@ export function getSeriesData (
   if (checkNoData(data)) return []
   return seriesMapping.map((mapping) => ({
     ...mapping,
-    data: (data!['time'] as TimeStamp[]).map((t, index) => {
-      const value = data![mapping.key][index] as number
-      return [t, value === null ? '-' : value]
-    })
+    data: _.zip(data!['time'], _.get(data, mapping.key)) as [TimeStamp, number | null][]
   }))
 }
 

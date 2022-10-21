@@ -16,9 +16,9 @@ import { ResizableColumn }                                          from './Resi
 import * as UI                                                      from './styledComponents'
 import { settingsKey, useColumnsState }                             from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
-import type { ParamsType }                                                  from '@ant-design/pro-provider'
-import type { SettingOptionType }                                           from '@ant-design/pro-table/lib/components/ToolBar'
+import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
+import type { ParamsType }                                                                    from '@ant-design/pro-provider'
+import type { SettingOptionType }                                                             from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
@@ -89,7 +89,11 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProps<RecordType>) {
+// following the same typing from antd
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Table <RecordType extends Record<string, any>> (
+  { type = 'tall', columnState, ...props }: TableProps<RecordType>
+) {
   const intl = useIntl()
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
@@ -141,6 +145,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
           onClick={() => {
             columnsState.resetState()
             props.onResetState?.()
+            setColWidth({})
           }}
           children={$t({ defaultMessage: 'Reset to default' })}
         />
@@ -296,7 +301,13 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       })): columns) as typeof columns}
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
-      columnsState={columnsState}
+      columnsState={{
+        ...columnsState,
+        onChange: (state: TableColumnState) => {
+          columnsState.onChange(state)
+          setColWidth({})
+        }
+      }}
       scroll={{ x: hasEllipsisColumn ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'

@@ -85,6 +85,7 @@ function processWifiTab (
       break
     case 'networking':
       editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
+      editNetworkingContextData?.updateLanPorts?.()
       editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       break
     case 'security':
@@ -120,17 +121,26 @@ export function showUnsavedModal (
     closeAfterAction: true,
     handler: async () => {
       const { setData, oldData, tabKey } = editContextData
-      setEditContextData({
-        ...editContextData,
-        isDirty: false,
-        newData: undefined,
-        oldData: undefined,
-        tempData: {
-          ...editContextData.tempData,
-          [tabKey as keyof EditContext]: oldData
-        }
-      })
-      setData && oldData && setData(oldData)
+      if(editContextData?.unsavedTabKey === 'networking'){
+        editNetworkingContextData?.discardLanPorts?.()
+        setEditContextData({
+          ...editContextData,
+          isDirty: false,
+          hasError: false
+        })
+      } else {
+        setEditContextData({
+          ...editContextData,
+          isDirty: false,
+          newData: undefined,
+          oldData: undefined,
+          tempData: {
+            ...editContextData.tempData,
+            [tabKey as keyof EditContext]: oldData
+          }
+        })
+        setData && oldData && setData(oldData)
+      }
       callback?.()
     }
   }, {

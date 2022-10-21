@@ -8,6 +8,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
+import { LanPorts }    from './LanPorts'
 import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
 import { MeshNetwork }         from './MeshNetwork'
 
@@ -16,7 +17,9 @@ export interface NetworkingSettingContext {
   cellularData: VenueApModelCellular,
   meshData: { mesh: boolean },
   updateCellular: ((cellularData: VenueApModelCellular) => void),
-  updateMesh: ((check: boolean) => void)
+  updateMesh: ((check: boolean) => void),
+  updateLanPorts: (() => void),
+  discardLanPorts?: (() => void)
 }
 
 export function NetworkingTab () {
@@ -33,9 +36,14 @@ export function NetworkingTab () {
   } = useContext(VenueEditContext)
 
   const items = [{
-  //   title: $t({ defaultMessage: 'LAN Ports' }),
-  //   content: 'LAN Ports Content'
-  // }, {
+    title: $t({ defaultMessage: 'LAN Ports' }),
+    content: <>
+      <StepsForm.SectionTitle id='lan-ports'>
+        { $t({ defaultMessage: 'LAN Ports' }) }
+      </StepsForm.SectionTitle>
+      <LanPorts />
+    </>
+  }, {
     title: $t({ defaultMessage: 'Cellular Options' }),
     content: <>
       <StepsForm.SectionTitle id='cellular-options'>
@@ -59,6 +67,7 @@ export function NetworkingTab () {
   const handleUpdateAllSettings = async () => {
     try {
       await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
+      await editNetworkingContextData?.updateLanPorts?.()
       await editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       setEditContextData({
         ...editContextData,

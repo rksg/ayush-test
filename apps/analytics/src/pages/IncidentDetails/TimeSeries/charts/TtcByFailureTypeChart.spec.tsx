@@ -5,6 +5,7 @@ import { fakeIncidentTtc }          from '@acx-ui/analytics/utils'
 import { store }                    from '@acx-ui/store'
 import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
+import { buffer6hr }            from '../__tests__/fixtures'
 import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
 
@@ -37,7 +38,12 @@ describe('TtcByFailureTypeChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <TtcByFailureTypeChart chartRef={()=>{}} incident={fakeIncidentTtc} data={expectedResult}/>
+        <TtcByFailureTypeChart
+          chartRef={()=>{}}
+          buffer={buffer6hr}
+          incident={fakeIncidentTtc}
+          data={expectedResult}
+        />
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -51,6 +57,7 @@ describe('ttcByFailureTypeChartQuery', () => {
     }, true)
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
+        buffer: buffer6hr,
         incident: fakeIncidentTtc,
         charts: [TimeSeriesChartTypes.TtcByFailureTypeChart],
         minGranularity: 'PT180S'
