@@ -230,7 +230,9 @@ export function LanPorts () {
           <Space style={{ padding: '16px 0' }}>
             <Image
               alt={selectedModelCaps?.lanPortPictureDownloadUrl
-                ? `${$t({ defaultMessage: 'AP LAN port image' })} - ${selectedModelCaps?.model}`
+                ? $t({ defaultMessage: 'AP LAN port image - {apModel}' }, {
+                  apModel: selectedModelCaps?.model
+                })
                 : $t({ defaultMessage: 'AP LAN port default image' })}
               preview={false}
               src={selectedModelCaps?.lanPortPictureDownloadUrl || DefaultApModelDiagram}
