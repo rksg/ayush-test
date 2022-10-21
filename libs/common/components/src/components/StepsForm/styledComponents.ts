@@ -230,3 +230,10 @@ export const SectionTitle = styled(Subtitle).attrs({ level: 3 })`
     margin-bottom: 32px;
   }
 `
+
+export const FieldLabel = styled.label<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: ${props => props.width} 1fr;
+  align-items: baseline;
+`

@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Loader }            from '@acx-ui/components'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
-import { Outlet }            from '@acx-ui/react-router-dom'
+import { Loader }                      from '@acx-ui/components'
+import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Outlet }                      from '@acx-ui/react-router-dom'
 
 
 function Services () {
-  const isServicesEnabled = useSplitTreatment('acx-ui-services')
+  const isServicesEnabled = useSplitTreatment(Features.SERVICES)
   const { $t } = useIntl()
 
   if (!isServicesEnabled) {
