@@ -2,9 +2,9 @@ import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, TimeSeriesDataType } from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart }    from '@acx-ui/components'
-import { formatter }                         from '@acx-ui/utils'
+import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { formatter }                              from '@acx-ui/utils'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -36,15 +36,17 @@ export const ApRebootBySystemChart = (
   return <Card title={$t({ defaultMessage: 'Reboot By System Event' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <MultiLineTimeSeriesChart
-          chartRef={chartRef}
-          style={{ height, width }}
-          data={chartResults}
-          dataFormatter={formatter('countFormat')}
-          yAxisProps={{ minInterval: 1 }}
-          disableLegend={true}
-          markers={getMarkers(relatedIncidents!, incident)}
-        />
+        chartResults.length ?
+          <MultiLineTimeSeriesChart
+            chartRef={chartRef}
+            style={{ height, width }}
+            data={chartResults}
+            dataFormatter={formatter('countFormat')}
+            yAxisProps={{ minInterval: 1 }}
+            disableLegend={true}
+            markers={getMarkers(relatedIncidents!, incident)}
+          />
+          : <NoData />
       )}
     </AutoSizer>
   </Card>

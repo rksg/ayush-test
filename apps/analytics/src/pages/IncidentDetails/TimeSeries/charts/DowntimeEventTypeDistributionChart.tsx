@@ -2,9 +2,9 @@ import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, TimeSeriesDataType } from '@acx-ui/analytics/utils'
-import { Card, cssStr, StackedAreaChart }    from '@acx-ui/components'
-import { formatter }                         from '@acx-ui/utils'
+import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
+import { Card, cssStr, NoData, StackedAreaChart } from '@acx-ui/components'
+import { formatter }                              from '@acx-ui/utils'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -49,16 +49,18 @@ export const DowntimeEventTypeDistributionChart = (
   return <Card title={$t({ defaultMessage: 'Events' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <StackedAreaChart
-          chartRef={chartRef}
-          type='step'
-          style={{ height, width }}
-          stackColors={stackColors}
-          data={chartResults}
-          dataFormatter={formatter('countFormat')}
-          yAxisProps={{ minInterval: 1 }}
-          tooltipTotalTitle={$t({ defaultMessage: 'Total Events' })}
-        />
+        chartResults.length ?
+          <StackedAreaChart
+            chartRef={chartRef}
+            type='step'
+            style={{ height, width }}
+            stackColors={stackColors}
+            data={chartResults}
+            dataFormatter={formatter('countFormat')}
+            yAxisProps={{ minInterval: 1 }}
+            tooltipTotalTitle={$t({ defaultMessage: 'Total Events' })}
+          />
+          : <NoData />
       )}
     </AutoSizer>
   </Card>

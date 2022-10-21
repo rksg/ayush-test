@@ -2,10 +2,10 @@ import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, TimeSeriesDataType } from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart }    from '@acx-ui/components'
-import { useNavigate, useTenantLink }        from '@acx-ui/react-router-dom'
-import { formatter }                         from '@acx-ui/utils'
+import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
+import { formatter }                              from '@acx-ui/utils'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -39,16 +39,18 @@ export const ApDisconnectionCountChart = (
   return <Card title={$t({ defaultMessage: 'AP-RUCKUS Cloud Disconnections' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <MultiLineTimeSeriesChart
-          chartRef={chartRef}
-          style={{ height, width }}
-          data={chartResults}
-          dataFormatter={formatter('countFormat')}
-          yAxisProps={{ minInterval: 1 }}
-          disableLegend={true}
-          onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
-          markers={getMarkers(relatedIncidents!, incident)}
-        />
+        chartResults.length ?
+          <MultiLineTimeSeriesChart
+            chartRef={chartRef}
+            style={{ height, width }}
+            data={chartResults}
+            dataFormatter={formatter('countFormat')}
+            yAxisProps={{ minInterval: 1 }}
+            disableLegend={true}
+            onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
+            markers={getMarkers(relatedIncidents!, incident)}
+          />
+          : <NoData />
       )}
     </AutoSizer>
   </Card>

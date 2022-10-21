@@ -2,9 +2,9 @@ import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, TimeSeriesDataType } from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart }    from '@acx-ui/components'
-import { formatter }                         from '@acx-ui/utils'
+import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { formatter }                              from '@acx-ui/utils'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -32,14 +32,16 @@ export const ApPoeImpactChart = (
   return <Card title={$t({ defaultMessage: 'APs Poe Impact' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <MultiLineTimeSeriesChart
-          chartRef={chartRef}
-          style={{ height, width }}
-          data={chartResults}
-          dataFormatter={formatter('countFormat')}
-          yAxisProps={{ minInterval: 1 }}
-          disableLegend={true}
-        />
+        chartResults.length ?
+          <MultiLineTimeSeriesChart
+            chartRef={chartRef}
+            style={{ height, width }}
+            data={chartResults}
+            dataFormatter={formatter('countFormat')}
+            yAxisProps={{ minInterval: 1 }}
+            disableLegend={true}
+          />
+          : <NoData />
       )}
     </AutoSizer>
   </Card>

@@ -10,8 +10,8 @@ import {
   codeToFailureTypeMap,
   TimeSeriesDataType
 } from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { formatter }                      from '@acx-ui/utils'
+import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { formatter }                              from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -45,12 +45,14 @@ export const AttemptAndFailureChart = ({ chartRef, data, incident }: TimeSeriesC
   return <Card title={$t({ defaultMessage: 'Failures' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <MultiLineTimeSeriesChart
-          chartRef={chartRef}
-          style={{ height, width }}
-          data={chartResults}
-          dataFormatter={formatter('countFormat')}
-        />
+        chartResults.length ?
+          <MultiLineTimeSeriesChart
+            chartRef={chartRef}
+            style={{ height, width }}
+            data={chartResults}
+            dataFormatter={formatter('countFormat')}
+          />
+          : <NoData />
       )}
     </AutoSizer>
   </Card>
