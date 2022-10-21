@@ -1,15 +1,16 @@
 import { Key } from 'react'
 
-import { BandBalancing }             from '../models/BandBalancing'
-import { DenialOfServiceProtection } from '../models/DenialOfServiceProtection'
-import { LteBandLockChannel }        from '../models/LteBandLockChannel'
-import { Mesh }                      from '../models/Mesh'
-import { VenueDhcpServiceSetting }   from '../models/VenueDhcpServiceSetting'
-import { VenueRadioCustomization }   from '../models/VenueRadioCustomization'
-import { VenueRogueAp }              from '../models/VenueRogueAp'
-import { VenueSyslog }               from '../models/VenueSyslog'
+import { CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
+import { BandBalancing }                                                      from '../models/BandBalancing'
+import { DenialOfServiceProtection }                                          from '../models/DenialOfServiceProtection'
+import { Mesh }                                                               from '../models/Mesh'
+import { VenueDhcpServiceSetting }                                            from '../models/VenueDhcpServiceSetting'
+import { VenueRadioCustomization }                                            from '../models/VenueRadioCustomization'
+import { VenueRogueAp }                                                       from '../models/VenueRogueAp'
+import { VenueSyslog }                                                        from '../models/VenueSyslog'
 
-import { ApStatusDetails, ApModel } from './ap'
+
+import { ApStatusDetails, ApModel, LanPort } from './ap'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
@@ -94,6 +95,12 @@ export interface VenueApModels {
 	models: string[]
 }
 
+export interface VenueLanPorts {
+	model: string,
+	lanPorts: LanPort[],
+	poeMode?: string,
+	poeOut?: boolean
+}
 
 export interface Address {
   addressLine?: string
@@ -237,6 +244,47 @@ export interface ConfigurationProfile {
 	vlans?: Vlan[],
 	acls?: Acl[],
 	venues?: string[]
+}
+
+export interface AvailableLteBands {
+	band3G?: string[],
+	band4G?: string[],
+	region: LteBandRegionEnum,
+	countryCodes?: string[]
+  }
+
+export interface VenueApModelCellular {
+	model?: string,
+	primarySim: SimSettings,
+	secondarySim: SimSettings,
+	wanConnection?: WanConnectionEnum,
+	primaryWanRecoveryTimer: number
+  }
+
+export interface SimSettings {
+	lteBands?: LteBandLockChannel[];
+	enabled?: boolean;
+	apn?: string;
+	roaming?: boolean;
+	networkSelection?: CellularNetworkSelectionEnum;
+}
+
+export interface LteBandLockChannel {
+	band3G?: string[];
+	band4G?: string[];
+	region: LteBandRegionEnum;
+}
+
+export interface AvailableLteBandOptions {
+	value: string,
+	label: string
+}
+
+export interface LteBandLockCountriesJson {
+	[LteBandRegionEnum.DOMAIN_1]: { name: string, countries: string },
+	[LteBandRegionEnum.DOMAIN_2]: { name: string, countries: string },
+	[LteBandRegionEnum.JAPAN]: { name: string, countries: string },
+	[LteBandRegionEnum.USA_CANADA]: { name: string, countries: string }
 }
 
 export enum AAAServerTypeEnum {
