@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Radio, RadioChangeEvent, Select, Slider, Space } from 'antd'
 import { useIntl }                                                                  from 'react-intl'
 
-import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
-import { useParams }                              from '@acx-ui/react-router-dom'
+import {
+  useGetVenueRadioCustomizationQuery,
+  useVenueDefaultRegulatoryChannelsQuery
+} from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import {
   ChannelBars,
@@ -47,6 +50,18 @@ export function RadioLower5GHz () {
 
   const { data: defaultChannelsData } =
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
+
+  const { allowedIndoorChannels, allowedOutdoorChannels } =
+    useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } }, {
+      selectFromResult ({ data }) {
+        return {
+          allowedIndoorChannels:
+            data?.radioParamsDual5G?.radioParamsLower5G?.allowedIndoorChannels || [],
+          allowedOutdoorChannels:
+            data?.radioParamsDual5G?.radioParamsLower5G?.allowedOutdoorChannels || []
+        }
+      }
+    })
 
   useEffect(() => {
     if(defaultChannelsData){
@@ -229,8 +244,10 @@ export function RadioLower5GHz () {
           <RadioSettingsChannels
             formName={['radioParamsDual5G', 'radioParamsLower5G', 'allowedIndoorChannels']}
             groupSize={groupSize}
-            channelList={defaultIndoorChannels.map(item =>
-              ({ value: item, selected: false }))}
+            channelList={defaultIndoorChannels.map(item => ({
+              value: item,
+              selected: allowedIndoorChannels.includes(item)
+            }))}
             displayBarSettings={['5G', 'DFS']}
             channelBars={indoorChannelBars}
             disabled={inheritSettings}
@@ -244,8 +261,10 @@ export function RadioLower5GHz () {
           <RadioSettingsChannels
             formName={['radioParamsDual5G', 'radioParamsLower5G', 'allowedOutdoorChannels']}
             groupSize={groupSize}
-            channelList={defaultOutdoorChannels.map(item =>
-              ({ value: item, selected: false }))}
+            channelList={defaultOutdoorChannels.map(item => ({
+              value: item,
+              selected: allowedOutdoorChannels.includes(item)
+            }))}
             displayBarSettings={['5G', 'DFS']}
             channelBars={outdoorChannelBars}
             disabled={inheritSettings}

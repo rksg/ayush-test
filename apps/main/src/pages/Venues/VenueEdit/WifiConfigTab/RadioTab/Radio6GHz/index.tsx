@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Select, Slider, Space } from 'antd'
 import { useIntl }                                         from 'react-intl'
 
-import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
-import { useParams }                              from '@acx-ui/react-router-dom'
+import {
+  useGetVenueRadioCustomizationQuery,
+  useVenueDefaultRegulatoryChannelsQuery
+} from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import {
   channelSelectionMethodsOptions,
@@ -32,6 +35,15 @@ export function Radio6GHz () {
 
   const { data: defaultChannelsData } =
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
+
+  const { allowedChannels } =
+    useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } }, {
+      selectFromResult ({ data }) {
+        return {
+          allowedChannels: data?.radioParams6G?.allowedChannels || []
+        }
+      }
+    })
 
   useEffect(() => {
     const channelType = channelBandwidth === 'AUTO' ?
@@ -155,8 +167,10 @@ export function Radio6GHz () {
           <RadioSettingsChannels
             formName={['radioParams6G', 'allowedChannels']}
             groupSize={groupSize}
-            channelList={defaultChannels.map(item =>
-              ({ value: item, selected: false }))}
+            channelList={defaultChannels.map(item => ({
+              value: item,
+              selected: allowedChannels?.includes(item)
+            }))}
             displayBarSettings={[]}
             channelBars={channelBars}
             disabled={false}

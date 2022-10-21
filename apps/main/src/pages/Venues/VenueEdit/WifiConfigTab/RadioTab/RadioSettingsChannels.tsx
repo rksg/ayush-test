@@ -27,7 +27,6 @@ export function RadioSettingsChannels (props: {
   groupSize: number,
   channelList: RadioChannel[],
   displayBarSettings: string[],
-  checkedValues?: string[],
   disabled?: boolean,
   readonly?: boolean,
   channelBars: {
@@ -73,17 +72,19 @@ export function RadioSettingsChannels (props: {
       ? oldSelected.filter(item => !avaliableBarChannels[barType].includes(item))
       : oldSelected.concat(avaliableBarChannels[barType])
     form.setFieldValue(props.formName, uniq(newSelected))
+    updateChannelGroupList(uniq(newSelected))
   }
 
   const handleClickGroupChannels = async (checkedValues: any) => {
     const selectedValue = await getSelectedValues(channelGroupValueList, checkedValues)
     form.setFieldValue(props.formName, selectedValue)
+    updateChannelGroupList(selectedValue)
   }
 
   useEffect(() => {
     if(props.channelList && props.groupSize){
-      setChannelValueList(props.channelList.map((channelItem: RadioChannel) => channelItem.value))
       const channelGroupListArray = getChannelGroupListArray(props.channelList, props.groupSize)
+      setChannelValueList(props.channelList.map((channelItem: RadioChannel) => channelItem.value))
       setChannelGroupList(getChannelGroupList(channelGroupListArray as RadioChannel[][]))
     }
   }, [props.channelList, props.groupSize])
@@ -221,6 +222,13 @@ export function RadioSettingsChannels (props: {
       }
       return result
     }
+  }
+
+  function updateChannelGroupList (selectedValues: string[]) {
+    setChannelGroupList(channelGroupList.map(group => ({
+      ...group,
+      selected: selectedValues.includes(group.channels.map(c => c.value)[0])
+    })))
   }
 
   async function getSelectedValues (groupValueList: string[][], selectedValues: string[]) {

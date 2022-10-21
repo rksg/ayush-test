@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Select, Slider, Space } from 'antd'
 import { useIntl }                                         from 'react-intl'
 
-import { useVenueDefaultRegulatoryChannelsQuery } from '@acx-ui/rc/services'
-import { useParams }                              from '@acx-ui/react-router-dom'
+import {
+  useGetVenueRadioCustomizationQuery,
+  useVenueDefaultRegulatoryChannelsQuery
+} from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import {
   channelSelectionMethodsOptions,
@@ -43,6 +46,16 @@ export function Radio5GHz () {
 
   const { data: defaultChannelsData } =
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
+
+  const { allowedIndoorChannels, allowedOutdoorChannels } =
+    useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } }, {
+      selectFromResult ({ data }) {
+        return {
+          allowedIndoorChannels: data?.radioParams50G?.allowedIndoorChannels || [],
+          allowedOutdoorChannels: data?.radioParams50G?.allowedOutdoorChannels || []
+        }
+      }
+    })
 
   useEffect(() => {
     if(defaultChannelsData){
@@ -193,8 +206,10 @@ export function Radio5GHz () {
           <RadioSettingsChannels
             formName={['radioParams50G', 'allowedIndoorChannels']}
             groupSize={groupSize}
-            channelList={defaultIndoorChannels.map(item =>
-              ({ value: item, selected: false }))}
+            channelList={defaultIndoorChannels.map(item => ({
+              value: item,
+              selected: allowedIndoorChannels?.includes(item)
+            }))}
             displayBarSettings={['5G', 'DFS']}
             channelBars={indoorChannelBars}
             disabled={false}
@@ -208,8 +223,10 @@ export function Radio5GHz () {
           <RadioSettingsChannels
             formName={['radioParams50G', 'allowedOutdoorChannels']}
             groupSize={groupSize}
-            channelList={defaultOutdoorChannels.map(item =>
-              ({ value: item, selected: false }))}
+            channelList={defaultOutdoorChannels.map(item => ({
+              value: item,
+              selected: allowedOutdoorChannels?.includes(item)
+            }))}
             displayBarSettings={['5G', 'DFS']}
             channelBars={outdoorChannelBars}
             disabled={false}

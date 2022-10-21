@@ -4,6 +4,7 @@ import { Form, InputNumber, Select, Slider, Space } from 'antd'
 import { useIntl }                                  from 'react-intl'
 
 import {
+  useGetVenueRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -34,6 +35,15 @@ export function Radio24GHz () {
 
   const { data: defaultChannelsData } =
     useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
+
+  const { allowedChannels } =
+    useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } }, {
+      selectFromResult ({ data }) {
+        return {
+          allowedChannels: data?.radioParams24G?.allowedChannels || []
+        }
+      }
+    })
 
 
   useEffect(() => {
@@ -139,8 +149,10 @@ export function Radio24GHz () {
         <RadioSettingsChannels
           formName={['radioParams24G', 'allowedChannels']}
           groupSize={1}
-          channelList={defaultChannels.map(item =>
-            ({ value: item, selected: false }))}
+          channelList={defaultChannels.map(item => ({
+            value: item,
+            selected: allowedChannels?.includes(item)
+          }))}
           displayBarSettings={[]}
           channelBars={channelBars}
           disabled={false}

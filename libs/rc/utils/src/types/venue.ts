@@ -276,58 +276,58 @@ export interface VenueDefaultRegulatoryChannels {
 
 export interface VenueDefaultRegulatoryChannelsForm {
   radioParams24G: {
-	allowedChannels: string[],
-	channelBandwidth: string,
-	method: string,
-	changeInterval: number,
-	scanInterval: number,
-	txPower: string
+		allowedChannels: string[],
+		channelBandwidth: string,
+		method: string,
+		changeInterval: number,
+		scanInterval: number,
+		txPower: string
   },
   radioParams50G: {
-	combineChannels: boolean,
-	allowedIndoorChannels: string[],
-	allowedOutdoorChannels: string[],
-	channelBandwidth: string,
-	method: string,
-	changeInterval: number,
-	scanInterval: number,
-	txPower: string
+		combineChannels: boolean,
+		allowedIndoorChannels: string[],
+		allowedOutdoorChannels: string[],
+		channelBandwidth: string,
+		method: string,
+		changeInterval: number,
+		scanInterval: number,
+		txPower: string
   },
   radioParamsDual5G: {
-	enabled: boolean,
-	inheritParamsLower5G: boolean,
-	radioParamsLower5G: {
-	  combineChannels: boolean,
-	  allowedIndoorChannels: string[],
-	  allowedOutdoorChannels: string[],
-	  channelBandwidth: string,
-	  method: string,
-	  changeInterval: number,
-	  scanInterval: number,
-	  txPower: string
-	},
-	inheritParamsUpper5G: boolean,
-	radioParamsUpper5G: {
-	  combineChannels: boolean,
-	  allowedIndoorChannels: string[],
-	  allowedOutdoorChannels: string[],
-	  channelBandwidth: string,
-	  method: string,
-	  changeInterval: number,
-	  scanInterval: number,
-	  txPower: string
-	},
+		enabled: boolean,
+		inheritParamsLower5G: boolean,
+		radioParamsLower5G: {
+			combineChannels: boolean,
+			allowedIndoorChannels: string[],
+			allowedOutdoorChannels: string[],
+			channelBandwidth: string,
+			method: string,
+			changeInterval: number,
+			scanInterval: number,
+			txPower: string
+		},
+		inheritParamsUpper5G: boolean,
+		radioParamsUpper5G: {
+			combineChannels: boolean,
+			allowedIndoorChannels: string[],
+			allowedOutdoorChannels: string[],
+			channelBandwidth: string,
+			method: string,
+			changeInterval: number,
+			scanInterval: number,
+			txPower: string
+		}
+  },
 	radioParams6G: {
 	  method: string,
 	  scanInterval: number,
-	  allowedIndoorChannels: string[],
+	  allowedChannels: string[],
 	  channelBandwidth: string,
 	  bssMinRate6G: string,
 	  mgmtTxRate6G: string,
 	  changeInterval: number,
 	  txPower: string
 	}
-  }
 }
 
 export enum AAAServerTypeEnum {
