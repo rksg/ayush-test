@@ -33,15 +33,23 @@ export default function KpiSection (props: { tab: HealthTab }) {
   const healthFilter = useContext(HealthPageContext)
   const { timeWindow, setTimeWindow } = healthFilter
   const { filters } = useAnalyticsFilter()
-
+  const {
+    timeToConnect,
+    rss,
+    clientThroughput,
+    apCapacity,
+    apServiceUptime,
+    apToSZLatency,
+    switchPoeUtilization
+  } = kpiConfig
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>({
-    timeToConnect: 2000,
-    rss: -75,
-    clientThroughput: 10000,
-    apCapacity: 50,
-    apServiceUptime: 0.995,
-    apToSZLatency: 200,
-    switchPoeUtilization: 0.8
+    timeToConnect: timeToConnect.histogram.initialThreshold,
+    rss: rss.histogram.initialThreshold,
+    clientThroughput: clientThroughput.histogram.initialThreshold,
+    apCapacity: apCapacity.histogram.initialThreshold,
+    apServiceUptime: apServiceUptime.histogram.initialThreshold,
+    apToSZLatency: apToSZLatency.histogram.initialThreshold,
+    switchPoeUtilization: switchPoeUtilization.histogram.initialThreshold
   })
 
   const connectChart = (chart: ReactECharts | null) => {

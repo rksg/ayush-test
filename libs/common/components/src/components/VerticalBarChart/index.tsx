@@ -52,7 +52,10 @@ export const tooltipFormatter = (
       && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
     return renderToString(
       <TooltipWrapper>
-        {showTooltipName ? `${name}:` : ''} <b>{dataFormatter(value)}</b>
+        {showTooltipName
+          ? `${(name as string)?.charAt(0).toUpperCase() + (name as string)?.slice(1)}:`
+          : ''}{' '}
+        <b>{dataFormatter(value)}</b>
       </TooltipWrapper>
     )
   }
