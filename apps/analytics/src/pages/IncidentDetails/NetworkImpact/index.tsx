@@ -17,7 +17,7 @@ import {
 import { NetworkImpactChartData, useNetworkImpactChartsQuery } from './services'
 
 const colors = [
-  // TODO
+  // TODO: change color when confirmed
   cssStr('--acx-semantics-red-60'),
   cssStr('--acx-semantics-yellow-40'),
   cssStr('--acx-neutrals-50'),

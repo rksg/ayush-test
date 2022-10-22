@@ -44,5 +44,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   UpdateVenueExternalAntenna: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna'
+  },
+  getLteBandLockChannel: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lte-band-lock-channel'
+  },
+  getAvailableLteBands: {
+    method: 'get',
+    url: '/api/tenant/:venueId/wifi/lte-band'
+  },
+  getVenueApModelCellular: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
+  },
+  updateVenueCellularSettings: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
   }
 }
