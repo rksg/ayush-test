@@ -7,6 +7,7 @@ import {
 } from 'echarts'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { FormatXMLElementFn } from 'intl-messageformat'
+import moment                 from 'moment-timezone'
 import { renderToString }     from 'react-dom/server'
 import {
   MessageDescriptor,
@@ -77,6 +78,17 @@ export const legendTextStyleOptions = () => ({
   lineHeight: cssNumber('--acx-body-5-line-height'),
   fontWeight: cssNumber('--acx-body-font-weight')
 })
+
+export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
+  id: 'zoom',
+  type: 'inside',
+  zoomLock: true,
+  minValueSpan: 2 * Math.max(...data.map(datum =>
+    moment.duration(moment(datum.data[1][0])
+      .diff(moment(datum.data[0][0])))
+      .asMilliseconds()
+  ))
+}]
 
 export const xAxisOptions = () => ({
   axisLine: {
