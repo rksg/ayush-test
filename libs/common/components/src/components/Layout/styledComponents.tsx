@@ -184,7 +184,7 @@ export const Content = styled.div`
     - var(--acx-sider-width)
     - var(--acx-content-horizontal-space) * 2
   );
-  min-height: 0;
+  min-height: calc(100vh - var(--acx-header-height) - var(--acx-content-vertical-space) * 2);
   position: relative;
   display: flex;
   flex-direction: column;
