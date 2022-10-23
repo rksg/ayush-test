@@ -60,7 +60,7 @@ exports[`CalenderRangePicker should render default CalenderRangePicker 1`] = `
       </div>
       <div
         class="ant-picker-active-bar"
-        style="left: 0px; width: 0px; position: absolute;"
+        style="left: 0px; width: 1280px; position: absolute;"
       />
       <span
         class="ant-picker-suffix"

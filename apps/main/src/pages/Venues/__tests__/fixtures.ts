@@ -69,20 +69,85 @@ export const venueData = {
 }
 
 export const venueCaps = {
-  apModels: [
-    {
-      ledOn: true,
-      model: 'E510'
-    },
-    {
-      ledOn: true,
-      model: 'H320'
-    },
-    {
-      ledOn: true,
-      model: 'H350'
-    }
-  ],
+  apModels: [{
+    ledOn: true,
+    model: 'E510'
+  }, {
+    ledOn: true,
+    model: 'H320',
+    canSupportPoeMode: false,
+    canSupportPoeOut: false,
+    lanPortPictureDownloadUrl: 'xxxxxxx/h320.jpg',
+    lanPorts: [{
+      defaultType: 'ACCESS',
+      id: '1',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'ACCESS',
+      id: '2',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'TRUNK',
+      id: '3',
+      isPoeOutPort: false,
+      isPoePort: true,
+      supportDisable: false,
+      trunkPortOnly: true,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }]
+  }, {
+    ledOn: true,
+    model: 'T750',
+    canSupportPoeMode: true,
+    canSupportPoeOut: true,
+    lanPortPictureDownloadUrl: 'xxxxxxx/t750.jpg',
+    lanPorts: [{
+      defaultType: 'TRUNK',
+      id: '1',
+      isPoeOutPort: true,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }, {
+      defaultType: 'TRUNK',
+      id: '2',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }, {
+      defaultType: 'TRUNK',
+      id: '3',
+      isPoeOutPort: false,
+      isPoePort: true,
+      supportDisable: false,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }],
+    poeModeCapabilities: [
+      'Auto',
+      '802.3at',
+      '802.3bt-Class_5',
+      '802.3bt-Class_6',
+      '802.3bt-Class_7'
+    ]
+  }],
   version: '6.0.0.x.xxx'
 }
 
@@ -168,6 +233,27 @@ export const timezoneResult = {
   timeZoneId: 'America/Los_Angeles',
   timeZoneName: 'Pacific Daylight Time'
 }
+
+export const venueLanPorts = [{
+  lanPorts: [{ type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true }],
+  model: 'E510'
+}, {
+  lanPorts: [
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '1', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '2', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+  ],
+  model: 'H320'
+}, {
+  lanPorts: [
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '2', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+  ],
+  model: 'T750',
+  poeMode: 'Auto',
+  poeOut: false
+}]
 
 export const venueSetting = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',

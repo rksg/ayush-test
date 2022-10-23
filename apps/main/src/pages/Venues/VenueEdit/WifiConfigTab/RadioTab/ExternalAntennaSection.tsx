@@ -149,14 +149,10 @@ export function ExternalAntennaSection () {
                 selectedApExternalAntenna={selectedApExternalAntenna}
                 readOnly={readOnly}
               /> :
-              (
-                <Row style={{ marginTop: '60px' }}>
-                  <img
-                    src={selectedApCapabilities?.lanPortPictureDownloadUrl || ApModelPlaceholder}
-                    alt={imageTitle}
-                  />
-                </Row>
-              )
+              <img style={{ marginTop: '60px' }}
+                src={selectedApCapabilities?.lanPortPictureDownloadUrl || ApModelPlaceholder}
+                alt={imageTitle}
+              />
           }
         </Col>
       </Row>

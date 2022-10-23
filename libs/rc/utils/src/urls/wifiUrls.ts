@@ -68,5 +68,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   UpdateVenueTripleBandRadioSettings: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
+  },
+  getLteBandLockChannel: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lte-band-lock-channel'
+  },
+  getAvailableLteBands: {
+    method: 'get',
+    url: '/api/tenant/:venueId/wifi/lte-band'
+  },
+  getVenueApModelCellular: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
+  },
+  updateVenueCellularSettings: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
   }
 }

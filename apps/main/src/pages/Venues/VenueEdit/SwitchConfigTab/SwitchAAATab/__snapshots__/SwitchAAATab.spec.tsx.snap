@@ -29,7 +29,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                 >
                   <span
                     class="ant-anchor-ink-ball visible"
-                    style="top: -4.5px;"
+                    style="top: 395.5px;"
                   />
                 </div>
                 <div

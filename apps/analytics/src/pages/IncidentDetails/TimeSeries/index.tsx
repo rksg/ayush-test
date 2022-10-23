@@ -24,7 +24,12 @@ export const TimeSeries: React.FC<ChartDataProps> = (props) => {
         {props.charts.map((chart) => {
           const Chart = timeSeriesCharts[chart].chart!
           return <GridCol col={{ span: 24 }} style={{ height: '250px' }} key={chart}>
-            <Chart chartRef={connectChart} data={queryResults.data!} incident={props.incident} />
+            <Chart
+              chartRef={connectChart}
+              data={queryResults.data!}
+              incident={props.incident}
+              buffer={props.buffer}
+            />
           </GridCol>
         })}
       </GridRow>
