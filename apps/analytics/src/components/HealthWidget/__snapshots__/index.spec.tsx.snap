@@ -157,7 +157,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                                           style="width: 90px;"
                                         />
                                         <col
-                                          style="width: 80px;"
+                                          style="width: 40px;"
                                         />
                                       </colgroup>
                                       <thead
@@ -471,7 +471,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                           style="width: 90px;"
                                         />
                                         <col
-                                          style="width: 80px;"
+                                          style="width: 40px;"
                                         />
                                       </colgroup>
                                       <thead
@@ -586,7 +586,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-1rvolyi-0 bCNWHt"
+                                              class="styledComponents__VenueName-sc-1rvolyi-0 lgLrIR"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/f0997ab93fa24670a961c98446d47ae6/venue-details/overview"
@@ -678,7 +678,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-1rvolyi-0 bCNWHt"
+                                              class="styledComponents__VenueName-sc-1rvolyi-0 lgLrIR"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/96bf314d575341cf95942caa2b072106/venue-details/overview"
@@ -770,7 +770,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-1rvolyi-0 bCNWHt"
+                                              class="styledComponents__VenueName-sc-1rvolyi-0 lgLrIR"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/e5d28cb30cb44be9bea1c8e7135da928/venue-details/overview"
@@ -862,7 +862,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-1rvolyi-0 bCNWHt"
+                                              class="styledComponents__VenueName-sc-1rvolyi-0 lgLrIR"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/1c0683276dce48679013dea12bf6abe0/venue-details/overview"
@@ -948,7 +948,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-1rvolyi-0 bCNWHt"
+                                              class="styledComponents__VenueName-sc-1rvolyi-0 lgLrIR"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/555548721e264115bda45a75043f65d7/venue-details/overview"

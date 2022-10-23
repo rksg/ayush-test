@@ -73,13 +73,14 @@ export default function HealthWidget ({
         if(value === '-')
           return <span>{value}</span>
         else
-          return (<><span>
-            {value as string}
-          </span>
-          <br/>
-          <UI.ThresholdText>
-            {thresholdText}
-          </UI.ThresholdText></>
+          return (<>
+            <span>
+              {value as string}
+            </span>
+            <br/>
+            <UI.ThresholdText>
+              {thresholdText}
+            </UI.ThresholdText></>
           )
       }
     },
@@ -96,13 +97,14 @@ export default function HealthWidget ({
         if(value === '-')
           return <span>{value}</span>
         else
-          return (<><span>
-            {value as string}
-          </span>
-          <br/>
-          <UI.ThresholdText>
-            {thresholdText}
-          </UI.ThresholdText></>)
+          return (<>
+            <span>
+              {value as string}
+            </span>
+            <br/>
+            <UI.ThresholdText>
+              {thresholdText}
+            </UI.ThresholdText></>)
       }
     },
     {
@@ -110,7 +112,7 @@ export default function HealthWidget ({
       dataIndex: 'onlineApsPercent',
       key: 'onlineApsPercent',
       align: 'center' as const,
-      width: 80
+      width: 40
     }
   ]
   const calcPercent = (values:[number,number]|[null,null]) => {

@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 export const VenueName = styled.div`
     white-space: nowrap;
-    width: 140px;
+    width: 155px;
     overflow: hidden;
     text-overflow: ellipsis;
 `
