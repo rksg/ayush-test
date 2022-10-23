@@ -113,7 +113,7 @@ describe('RadioTab', () => {
     await userEvent.click(within(screen.getByText(/Enable 2.4 GHz:/i)).getByRole('switch'))
     const gain51024G = screen.getByTestId('gain24G')
     expect(gain51024G).toHaveValue('3') // reset to API value
-  })
+  }, 20000)
 
   it('should render External Antenna: T350SE & T300E correctly', async () => {
     render(<Provider>
@@ -148,7 +148,7 @@ describe('RadioTab', () => {
     await userEvent.click(within(viewT300ESingleEnable).getByRole('switch'))
 
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
-  })
+  }, 20000)
 
   it('should render Wi-Fi Radio Settings correctly', async () => {
     render(<Provider>
@@ -167,7 +167,6 @@ describe('RadioTab', () => {
     </Provider>, { route: { params } })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const ChannelMethod = screen.getAllByRole('combobox')[0]
 
     const triBand = screen.getAllByRole('switch')[0]
     await userEvent.click(triBand)
@@ -175,24 +174,6 @@ describe('RadioTab', () => {
     await userEvent.click(screen.getByRole('radio', { name: /Use 5 and 6 Ghz bands/ }))
     await userEvent.click(screen.getByRole('radio',
       { name: /Split 5GHz into lower and upper bands/ }))
-
-    await userEvent.click(screen.getByRole('tab', { name: '5 GHz' }))
-    await userEvent.click(screen.getByRole('tab', { name: 'Lower 5 GHz' }))
-    await userEvent.click(screen.getByRole('tab', { name: 'Upper 5 GHz' }))
-    await userEvent.click(screen.getByRole('tab', { name: '6 GHz' }))
-    await userEvent.click(screen.getByRole('tab', { name: '2.4 GHz' }))
-    await userEvent.click(ChannelMethod)
-
-    const selectionMethod = screen.getAllByRole('combobox')[0]
-    userEvent.click(selectionMethod)
-    await screen.findAllByText('Channel Fly')
-    const option = await screen.findAllByText('Channel Fly')
-    await userEvent.click(option[0])
-
-    await userEvent.click(screen.getByRole('tab', { name: '5 GHz' }))
-    await userEvent.click(screen.getAllByRole('button', { name: 'Lower 5G' })[0])
-    await userEvent.click(screen.getAllByRole('button', { name: 'Upper 5G' })[0])
-    await userEvent.click(screen.getAllByRole('button', { name: 'DFS' })[0])
 
     await userEvent.click(screen.getAllByRole('button', { name: 'Save' })[0])
   })
