@@ -128,6 +128,7 @@ export function RadioUpper5GHz () {
     }
   }, [defaultChannelsData, channelBandwidth, channelInheritSettings, groupSize, channelType])
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
     return `${value}%`
   }

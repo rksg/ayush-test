@@ -136,6 +136,7 @@ export function ExternalAntennaSection () {
             name={['external', 'apModel', 'selected']}
           >
             <Select
+              data-testid='apModelSelect'
               onChange={onSelectModel}
               options={selectOptions}
             />

@@ -383,6 +383,7 @@ exports[`WifiConfigTab should render correctly 1`] = `
                                               >
                                                 <div
                                                   class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                                  data-testid="apModelSelect"
                                                 >
                                                   <div
                                                     class="ant-select-selector"

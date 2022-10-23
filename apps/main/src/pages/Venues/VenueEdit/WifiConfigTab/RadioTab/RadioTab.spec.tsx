@@ -2,15 +2,21 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                  from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
-import { mockServer, screen, render, within, fireEvent } from '@acx-ui/test-utils'
+import { venueApi }                                                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, VenueDefaultRegulatoryChannelsForm, WifiUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider, store }                                                          from '@acx-ui/store'
+import { mockServer, screen, render, within, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { VenueEditContext }                                  from '../..'
+import { VenueEditContext }       from '../..'
 import {
+  venueData,
+  venueSetting,
+  validChannelsData,
+  venueExternalAntenna,
+  radioCustomizationData,
   externalAntennaApModels,
-  venueData, venueExternalAntenna, venueExternalAntennaCap
+  venueExternalAntennaCap,
+  defaultRadioCustomizationData
 } from '../../../__tests__/fixtures'
 
 import { RadioTab } from './RadioTab'
@@ -30,8 +36,32 @@ describe('RadioTab', () => {
       rest.get(
         WifiUrlsInfo.GetVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueExternalAntennaCap))),
+      rest.get(
+        CommonUrlsInfo.getDashboardOverview.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))),
+      rest.get(
+        CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json(venueSetting))),
+      rest.get(
+        WifiUrlsInfo.GetVenueTripleBandRadioSettings.url,
+        (_, res, ctx) => res(ctx.json({ enabled: true }))),
+      rest.get(
+        WifiUrlsInfo.GetDefaultRadioCustomization.url,
+        (_, res, ctx) => res(ctx.json(defaultRadioCustomizationData))),
+      rest.get(
+        WifiUrlsInfo.GetVenueRadioCustomization.url,
+        (_, res, ctx) => res(ctx.json(radioCustomizationData))),
+      rest.get(
+        WifiUrlsInfo.GetVenueDefaultRegulatoryChannels.url,
+        (_, res, ctx) => res(ctx.json(validChannelsData))),
       rest.put(
         WifiUrlsInfo.UpdateVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.put(
+        WifiUrlsInfo.UpdateVenueRadioCustomization.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -42,7 +72,8 @@ describe('RadioTab', () => {
         setEditContextData: jest.fn(),
         editRadioContextData: {
           apiApModels: externalAntennaApModels,
-          apModels: externalAntennaApModels
+          apModels: externalAntennaApModels,
+          radioData: radioCustomizationData as VenueDefaultRegulatoryChannelsForm
         },
         setEditRadioContextData: jest.fn()
       }}>
@@ -50,10 +81,9 @@ describe('RadioTab', () => {
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
 
-    const anchor = await screen.findAllByText('External Antenna')
-    await userEvent.click(anchor[0])
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByText('No model selected')
-    const apModelSelect = screen.getByRole('combobox')
+    const apModelSelect = screen.getAllByRole('combobox')[3]
     await userEvent.click(apModelSelect)
     userEvent.click(screen.getByTitle('E510'))
     expect(await screen.findByText('Enable 2.4 GHz:')).toBeVisible()
@@ -92,7 +122,8 @@ describe('RadioTab', () => {
         setEditContextData: jest.fn(),
         editRadioContextData: {
           apiApModels: externalAntennaApModels,
-          apModels: externalAntennaApModels
+          apModels: externalAntennaApModels,
+          radioData: radioCustomizationData as VenueDefaultRegulatoryChannelsForm
         },
         setEditRadioContextData: jest.fn()
       }}>
@@ -100,10 +131,9 @@ describe('RadioTab', () => {
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
 
-    const anchor = await screen.findAllByText('External Antenna')
-    await userEvent.click(anchor[0])
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByText('No model selected')
-    const apModelSelect = screen.getByRole('combobox')
+    const apModelSelect = screen.getAllByRole('combobox')[3]
     await userEvent.click(apModelSelect)
 
     userEvent.click(screen.getByTitle('T350SE'))
@@ -118,5 +148,52 @@ describe('RadioTab', () => {
     await userEvent.click(within(viewT300ESingleEnable).getByRole('switch'))
 
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+  })
+
+  it('should render Wi-Fi Radio Settings correctly', async () => {
+    render(<Provider>
+      <VenueEditContext.Provider value={{
+        editContextData: {},
+        setEditContextData: jest.fn(),
+        editRadioContextData: {
+          apiApModels: externalAntennaApModels,
+          apModels: externalAntennaApModels,
+          radioData: radioCustomizationData as VenueDefaultRegulatoryChannelsForm
+        },
+        setEditRadioContextData: jest.fn()
+      }}>
+        <RadioTab />
+      </VenueEditContext.Provider>
+    </Provider>, { route: { params } })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const ChannelMethod = screen.getAllByRole('combobox')[0]
+
+    const triBand = screen.getAllByRole('switch')[0]
+    await userEvent.click(triBand)
+
+    await userEvent.click(screen.getByRole('radio', { name: /Use 5 and 6 Ghz bands/ }))
+    await userEvent.click(screen.getByRole('radio',
+      { name: /Split 5GHz into lower and upper bands/ }))
+
+    await userEvent.click(screen.getByRole('tab', { name: '5 GHz' }))
+    await userEvent.click(screen.getByRole('tab', { name: 'Lower 5 GHz' }))
+    await userEvent.click(screen.getByRole('tab', { name: 'Upper 5 GHz' }))
+    await userEvent.click(screen.getByRole('tab', { name: '6 GHz' }))
+    await userEvent.click(screen.getByRole('tab', { name: '2.4 GHz' }))
+    await userEvent.click(ChannelMethod)
+
+    const selectionMethod = screen.getAllByRole('combobox')[0]
+    userEvent.click(selectionMethod)
+    await screen.findAllByText('Channel Fly')
+    const option = await screen.findAllByText('Channel Fly')
+    await userEvent.click(option[0])
+
+    await userEvent.click(screen.getByRole('tab', { name: '5 GHz' }))
+    await userEvent.click(screen.getAllByRole('button', { name: 'Lower 5G' })[0])
+    await userEvent.click(screen.getAllByRole('button', { name: 'Upper 5G' })[0])
+    await userEvent.click(screen.getAllByRole('button', { name: 'DFS' })[0])
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'Save' })[0])
   })
 })

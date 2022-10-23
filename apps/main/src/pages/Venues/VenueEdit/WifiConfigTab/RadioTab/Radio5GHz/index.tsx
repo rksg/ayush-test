@@ -120,6 +120,7 @@ export function Radio5GHz () {
     }
   }, [defaultChannelsData, channelBandwidth, groupSize, channelType])
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
     return `${value}%`
   }

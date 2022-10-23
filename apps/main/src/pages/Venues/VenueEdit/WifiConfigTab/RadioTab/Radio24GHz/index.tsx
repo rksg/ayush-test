@@ -60,6 +60,7 @@ export function Radio24GHz () {
     }
   }, [defaultChannelsData, channelBandwidth])
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
     return `${value}%`
   }

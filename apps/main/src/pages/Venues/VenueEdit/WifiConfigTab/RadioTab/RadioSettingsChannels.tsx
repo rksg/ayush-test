@@ -75,6 +75,7 @@ export function RadioSettingsChannels (props: {
     updateChannelGroupList(uniq(newSelected))
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickGroupChannels = async (checkedValues: any) => {
     const selectedValue = await getSelectedValues(channelGroupValueList, checkedValues)
     form.setFieldValue(props.formName, selectedValue)

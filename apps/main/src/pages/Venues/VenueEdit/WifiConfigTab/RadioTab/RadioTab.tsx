@@ -33,7 +33,8 @@ export function RadioTab () {
         <RadioSettings />
       </>
     )
-  }, {
+  },
+  {
     title: externalTitle,
     content: (
       <>
