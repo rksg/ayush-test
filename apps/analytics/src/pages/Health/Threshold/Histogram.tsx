@@ -1,20 +1,18 @@
-import React, { useState } from 'react'
+import { useState, useCallback } from 'react'
 
 import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig }                                    from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast } from '@acx-ui/components'
-import type { TimeStamp }                                                from '@acx-ui/types'
+import { AnalyticsFilter, kpiConfig }                                            from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
+import type { TimeStamp }                                                        from '@acx-ui/types'
 
 import { KpiThresholdType, onApplyType }               from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
-import  HistogramSlider    from './HistogramSlider'
-import { ThresholdConfig } from './ThresholdConfig'
-
-
+import  HistogramSlider from './HistogramSlider'
+import  ThresholdConfig from './ThresholdConfigContent'
 
 const getGoalPercent = (
   { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue : string }
@@ -38,11 +36,10 @@ const transformHistogramResponse = ({
   shortXFormat
 }: KPIHistogramResponse & { splits: number[], shortXFormat: CallableFunction }) => {
   return data.map((datum, index) => [
-    splits[index] ? shortXFormat(splits[index]) : null,
+    splits[index] ? shortXFormat(splits[index]) : '',
     datum
   ]) as [TimeStamp, number][]
 }
-
 function Histogram ({
   filters,
   kpi,
@@ -79,9 +76,9 @@ function Histogram ({
     splits.indexOf(thresholdValue) + 0.5
   )
 
-  const onSliderChange = (newValue: number) => {
+  /* istanbul ignore next */
+  const onSliderChange = useCallback((newValue: number) => {
     if (
-      newValue === 0 ||
       newValue === splits.length + 0.5 ||
       newValue % 1 === 0
     )
@@ -89,7 +86,7 @@ function Histogram ({
     setSliderValue(newValue)
     setThresholdValue(histogram?.splits[newValue - 0.5])
     setKpiThreshold({ ...thresholds, [kpi]: histogram?.splits[newValue - 0.5] })
-  }
+  },[kpi, histogram?.splits, setKpiThreshold, thresholds, splits.length])
   const queryResults = useKpiHistogramQuery(
     { ...filters, kpi, threshold: histogram?.initialThreshold },
     {
@@ -105,6 +102,17 @@ function Histogram ({
       })
     }
   )
+
+  /* istanbul ignore next */
+  const onBarClick = ( barData: [number, number] ) =>{
+    const reformattedBarData = histogram?.reFormatFromBarChart(barData?.[0])
+    if(splits.indexOf(reformattedBarData) === -1)
+      return
+    setSliderValue(splits.indexOf(reformattedBarData) + 0.5)
+    setThresholdValue(reformattedBarData as unknown as string)
+    setKpiThreshold({ ...thresholds, [kpi]: reformattedBarData })
+  }
+
   const data = {
     dimensions: [histogram.xUnit, histogram.yUnit],
     source: queryResults?.data?.[0]?.data ?? [],
@@ -168,25 +176,32 @@ function Histogram ({
       <GridRow>
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
-            {({ width, height }) => (
-              <>
-                <VerticalBarChart
-                  style={{ height: height, width }}
-                  data={data}
-                  xAxisName={`(${histogram?.xUnit})`}
-                  barWidth={30}
-                  xAxisOffset={10}
-                  barColors={barColors}
-                />
-                <HistogramSlider
-                  splits={splits}
-                  width={width}
-                  height={height}
-                  onSliderChange={onSliderChange}
-                  sliderValue={sliderValue}
-                />
-              </>
-            )}
+            {({ width, height }) =>
+              queryResults?.data?.[0]?.data.length
+                ? (
+                  <>
+                    <VerticalBarChart
+                      style={{ height: height, width }}
+                      data={data}
+                      xAxisName={`(${histogram?.xUnit})`}
+                      barWidth={30}
+                      xAxisOffset={10}
+                      barColors={barColors}
+                      onBarAreaClick={onBarClick}
+                    />
+                    <HistogramSlider
+                      splits={splits}
+                      width={width}
+                      height={height}
+                      onSliderChange={onSliderChange}
+                      sliderValue={sliderValue}
+                    />
+                  </> )
+                :
+                (
+                  <NoData />
+                )
+            }
           </AutoSizer>
         </GridCol>
         <GridCol col={{ span: 6 }}>

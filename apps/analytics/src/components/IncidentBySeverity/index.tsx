@@ -70,8 +70,6 @@ function IncidentBySeverityWidget ({ filters }: { filters: IncidentFilter }) {
       cssStr(incidentSeverities[p as keyof typeof incidentSeverities].color)
     )
   }
-
-
   return <Loader states={[prevResult, currentResult]}>
     <Card title={$t({ defaultMessage: 'Total Incidents' })} type='no-border'>
       <UI.Container>

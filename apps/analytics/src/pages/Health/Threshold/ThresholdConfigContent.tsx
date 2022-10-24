@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-
 import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
 
@@ -15,7 +12,7 @@ const thresholdDescText = {
   resetBtn: defineMessage({ defaultMessage: 'Reset' }),
   applyBtn: defineMessage({ defaultMessage: 'Apply' })
 }
-export function ThresholdConfig ({
+function ThresholdConfig ({
   thresholdValue,
   percent,
   unit,
@@ -38,7 +35,8 @@ export function ThresholdConfig ({
       <UI.HistogramSpanContent>
         {$t(thresholdDescText.goal)}
         <UI.HistogramBoldContent>
-          {shortXFormat?.(thresholdValue)}{unit !== '%' ? ` ${unit}` : unit }
+          {shortXFormat?.(thresholdValue)}
+          {unit !== '%' ? ` ${unit}` : unit}
         </UI.HistogramBoldContent>
       </UI.HistogramSpanContent>
       <UI.HistogramGoalPercentage>

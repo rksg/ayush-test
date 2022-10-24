@@ -1,3 +1,5 @@
+import { useRef, useEffect,   RefObject } from 'react'
+
 import ReactECharts       from 'echarts-for-react'
 import { GridOption }     from 'echarts/types/dist/shared'
 import { renderToString } from 'react-dom/server'
@@ -16,9 +18,11 @@ import {
 } from '../Chart/helper'
 import { TooltipWrapper } from '../Chart/styledComponents'
 
-import type { EChartsOption, TooltipComponentFormatterCallbackParams  } from 'echarts'
-import type { EChartsReactProps }                                       from 'echarts-for-react'
+import type { EChartsOption, TooltipComponentFormatterCallbackParams, ECharts  } from 'echarts'
+import type { EChartsReactProps }                                                from 'echarts-for-react'
 
+
+type BarData = [number, number]
 export interface VerticalBarChartProps
   <TChartData extends BarChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
@@ -34,6 +38,7 @@ export interface VerticalBarChartProps
   xAxisOffset?: number
   showTooltipName?: Boolean,
   grid?: GridOption,
+  onBarAreaClick?: (data: BarData) => void
 }
 
 export const tooltipFormatter = (
@@ -47,11 +52,30 @@ export const tooltipFormatter = (
       && Array.isArray(params[0].data) && params[0].dimensionNames?.[1]
     return renderToString(
       <TooltipWrapper>
-        {showTooltipName ? `${name}:` : ''} <b>{dataFormatter(value)}</b>
+        {showTooltipName
+          ? `${(name as string)?.charAt(0).toUpperCase() + (name as string)?.slice(1)}:`
+          : ''}{' '}
+        <b>{dataFormatter(value)}</b>
       </TooltipWrapper>
     )
   }
 }
+export function useOnBarAreaClick <BarData> (
+  eChartsRef: RefObject<ReactECharts>, onBarAreaClick?: (data: BarData) => void
+) {
+  useEffect(() => {
+    if (!eChartsRef?.current) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
+    echartInstance.on('mousemove', 'series.bar', function () {
+      echartInstance.getZr().setCursorStyle('pointer')
+    })
+    echartInstance.on('click','series.bar', function (event) {
+      const barData = event?.data as unknown as BarData
+      onBarAreaClick?.(barData)
+    })
+  }, [eChartsRef, onBarAreaClick])
+}
+
 
 export function VerticalBarChart<TChartData extends BarChartData>
 ({
@@ -64,8 +88,12 @@ export function VerticalBarChart<TChartData extends BarChartData>
   xAxisOffset,
   showTooltipName = true,
   grid: gridProps,
+  onBarAreaClick,
   ...props
 }: VerticalBarChartProps<TChartData>) {
+
+  const eChartsRef = useRef<ReactECharts>(null)
+  useOnBarAreaClick(eChartsRef, onBarAreaClick)
   const option: EChartsOption = {
     grid: { ...gridOptions({
       disableLegend: true,
@@ -120,6 +148,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
 
   return (
     <ReactECharts
+      ref={eChartsRef}
       {...props}
       opts={{ renderer: 'svg' }}
       option={option} />

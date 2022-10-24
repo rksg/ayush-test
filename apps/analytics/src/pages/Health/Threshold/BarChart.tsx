@@ -3,9 +3,9 @@ import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
 import AutoSizer         from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { Loader, VerticalBarChart }   from '@acx-ui/components'
-import { formatter }                  from '@acx-ui/utils'
+import { AnalyticsFilter, kpiConfig }       from '@acx-ui/analytics/utils'
+import { Loader, VerticalBarChart, NoData } from '@acx-ui/components'
+import { formatter }                        from '@acx-ui/utils'
 
 
 import { KPITimeseriesResponse, useKpiTimeseriesQuery } from '../Kpi/services'
@@ -60,7 +60,7 @@ function BarChart ({
     }
   )
   const data = {
-    dimensions: ['x', 'y'],
+    dimensions: ['date', 'Percentage'],
     source: queryResults?.data?.[0]?.data ?? [],
     seriesEncode: [
       {
@@ -73,20 +73,25 @@ function BarChart ({
   return (
     <Loader states={[queryResults]} key={kpi}>
       <AutoSizer>
-        {({ width, height }) => (
-          <VerticalBarChart
-            style={{ height: height, width }}
-            data={data}
-            xAxisName={`(${$t(barChartText.title)})`}
-            barWidth={30}
-            dataFormatter={formatYDataPoint}
-            showTooltipName={false}
-            yAxisProps={{
-              max: 100,
-              min: 0
-            }}
-          />
-        )}
+        {({ width, height }) =>
+          queryResults?.data?.[0]?.data.length
+            ? (
+              <VerticalBarChart
+                style={{ height, width }}
+                data={data}
+                xAxisName={`(${$t(barChartText.title)})`}
+                barWidth={30}
+                dataFormatter={formatYDataPoint}
+                showTooltipName={false}
+                yAxisProps={{
+                  max: 100,
+                  min: 0
+                }}
+              />):
+            (
+              <NoData />
+            )
+        }
       </AutoSizer>
     </Loader>
   )

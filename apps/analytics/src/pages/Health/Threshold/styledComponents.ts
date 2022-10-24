@@ -6,8 +6,8 @@ export const StyledSlider = styled(Slider)`
 font-size: var(--acx-subtitle-5-font-size);
 position: absolute;
 .ant-slider-handle {
-  min-width: 15px !important; 
-  height: 15px !important;
+  min-width: 12px !important; 
+  height: 12px !important;
   &:before {
     content: none !important;
   }
@@ -40,11 +40,6 @@ display: flex;
 flex-direction: column;
 -webkit-box-pack: start;
 justify-content: flex-start;
-`
-export const HistogramInfo = styled.span`
-  margin: 2.5px 10px;
-  font-size: var(--acx-subtitle-6-font-size);
-  color: var(--acx-neutrals-40);
 `
 export const HistogramBoldContent = styled.span`
   color: var(--acx-primary-black);
