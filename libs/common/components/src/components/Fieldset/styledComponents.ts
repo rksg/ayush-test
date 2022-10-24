@@ -14,6 +14,7 @@ export const Legend = styled.legend`
     margin: 0;
 
     &, & > label {
+      padding: 0 4px;
       font-size: var(--acx-subtitle-5-font-size);
       font-weight: var(--acx-subtitle-5-font-weight);
       line-height: var(--acx-subtitle-5-line-height);

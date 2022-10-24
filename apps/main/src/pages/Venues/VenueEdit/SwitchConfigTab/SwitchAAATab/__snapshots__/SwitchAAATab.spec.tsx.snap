@@ -1359,7 +1359,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                             style="margin-bottom: 20px; width: 840px;"
                           >
                             <legend
-                              class="styledComponents__Legend-sc-azs30w-1 jfnLPP"
+                              class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
                             >
                               <label>
                                 Log-in Authentication
@@ -1699,7 +1699,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                             style="margin-bottom: 20px; width: 840px;"
                           >
                             <legend
-                              class="styledComponents__Legend-sc-azs30w-1 jfnLPP"
+                              class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
                             >
                               <label>
                                 Authorization
@@ -1817,7 +1817,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                             style="margin-bottom: 20px; width: 840px;"
                           >
                             <legend
-                              class="styledComponents__Legend-sc-azs30w-1 jfnLPP"
+                              class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
                             >
                               <label>
                                 Accounting
