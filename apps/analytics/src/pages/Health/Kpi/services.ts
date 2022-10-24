@@ -139,7 +139,8 @@ export const getThresholdsApi = dataApi.injectEndpoints({
             path: payload.path
           }
         }
-      }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'KPI_THRESHOLD_CONFIG' }]
     })
   })
 })

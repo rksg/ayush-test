@@ -101,7 +101,8 @@ export const configApi = dataApi.injectEndpoints({
           name: payload.name,
           value: payload.value
         }
-      })
+      }),
+      invalidatesTags: [{ type: 'Monitoring', id: 'KPI_THRESHOLD_CONFIG' }]
     })
   })
 })
