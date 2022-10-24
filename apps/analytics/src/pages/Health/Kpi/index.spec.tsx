@@ -139,7 +139,7 @@ describe('Kpi Section', () => {
     const applyBtn = applys[0]
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(applyBtn) })
-  })
+  }, 20000)
 
   describe('getDefaultThreshold', () => {
     it('should match defaultData on undefined fetchedData', () => {

@@ -139,14 +139,11 @@ export default function KpiSection (props: { tab: HealthTab }) {
   }
 
   const onReset = getResetCallback(defaultQuery.data)
-
   const onApply = getApplyCallback(triggerSave, filters)
 
   return (
     <>
       {kpis.map((kpi) => {
-        const onResetHandle = () => onReset(kpi as keyof KpiThresholdType)
-        const onApplyHandle = () => onApply(kpi as keyof KpiThresholdType)
         return (
           <KpiRow key={kpi + defaultZoom}>
             <GridCol col={{ span: 16 }}>
@@ -177,8 +174,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
                   setKpiThreshold={setKpiThreshold}
                   thresholds={kpiThreshold}
-                  onReset={onResetHandle}
-                  onApply={onApplyHandle}
+                  onReset={() => onReset(kpi as keyof KpiThresholdType)}
+                  onApply={() => onApply(kpi as keyof KpiThresholdType)}
                   canSave={canSave}
                   fetchingDefault={fetchingDefault}
                 />
