@@ -102,7 +102,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__Wrapper-sc-1rvolyi-1 kZxgNs"
+                class="styledComponents__Wrapper-sc-1rvolyi-1 bWFybo"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 bzjxMS"
@@ -166,14 +166,12 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                                         <tr>
                                           <th
                                             class="ant-table-cell"
-                                          >
-                                            Venue Name
-                                          </th>
+                                          />
                                           <th
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            Client Experience
+                                            Score
                                           </th>
                                           <th
                                             class="ant-table-cell"
@@ -416,7 +414,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__Wrapper-sc-1rvolyi-1 kZxgNs"
+                class="styledComponents__Wrapper-sc-1rvolyi-1 bWFybo"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 bzjxMS"
@@ -480,14 +478,12 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                         <tr>
                                           <th
                                             class="ant-table-cell"
-                                          >
-                                            Venue Name
-                                          </th>
+                                          />
                                           <th
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            Client Experience
+                                            Score
                                           </th>
                                           <th
                                             class="ant-table-cell"
@@ -642,12 +638,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             <span>
                                               1%
                                             </span>
-                                            <br />
-                                            <span
-                                              class="styledComponents__ThresholdText-sc-1rvolyi-2 fCdEol"
+                                            <div
+                                              class="styledComponents__KpiShortText-sc-1oa5sqt-5 styledComponents__ThresholdText-sc-1rvolyi-2 eSwREI jPRfJf"
                                             >
                                               Under 2 s
-                                            </span>
+                                            </div>
                                           </td>
                                           <td
                                             class="ant-table-cell"
@@ -656,12 +651,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             <span>
                                               100%
                                             </span>
-                                            <br />
-                                            <span
-                                              class="styledComponents__ThresholdText-sc-1rvolyi-2 fCdEol"
+                                            <div
+                                              class="styledComponents__KpiShortText-sc-1oa5sqt-5 styledComponents__ThresholdText-sc-1rvolyi-2 eSwREI jPRfJf"
                                             >
                                               Above 10 Mbps
-                                            </span>
+                                            </div>
                                           </td>
                                           <td
                                             class="ant-table-cell"
@@ -734,12 +728,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             <span>
                                               100%
                                             </span>
-                                            <br />
-                                            <span
-                                              class="styledComponents__ThresholdText-sc-1rvolyi-2 fCdEol"
+                                            <div
+                                              class="styledComponents__KpiShortText-sc-1oa5sqt-5 styledComponents__ThresholdText-sc-1rvolyi-2 eSwREI jPRfJf"
                                             >
                                               Under 2 s
-                                            </span>
+                                            </div>
                                           </td>
                                           <td
                                             class="ant-table-cell"
@@ -748,12 +741,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             <span>
                                               18%
                                             </span>
-                                            <br />
-                                            <span
-                                              class="styledComponents__ThresholdText-sc-1rvolyi-2 fCdEol"
+                                            <div
+                                              class="styledComponents__KpiShortText-sc-1oa5sqt-5 styledComponents__ThresholdText-sc-1rvolyi-2 eSwREI jPRfJf"
                                             >
                                               Above 10 Mbps
-                                            </span>
+                                            </div>
                                           </td>
                                           <td
                                             class="ant-table-cell"
@@ -826,12 +818,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             <span>
                                               93%
                                             </span>
-                                            <br />
-                                            <span
-                                              class="styledComponents__ThresholdText-sc-1rvolyi-2 fCdEol"
+                                            <div
+                                              class="styledComponents__KpiShortText-sc-1oa5sqt-5 styledComponents__ThresholdText-sc-1rvolyi-2 eSwREI jPRfJf"
                                             >
                                               Under 2 s
-                                            </span>
+                                            </div>
                                           </td>
                                           <td
                                             class="ant-table-cell"
@@ -840,12 +831,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             <span>
                                               100%
                                             </span>
-                                            <br />
-                                            <span
-                                              class="styledComponents__ThresholdText-sc-1rvolyi-2 fCdEol"
+                                            <div
+                                              class="styledComponents__KpiShortText-sc-1oa5sqt-5 styledComponents__ThresholdText-sc-1rvolyi-2 eSwREI jPRfJf"
                                             >
                                               Above 10 Mbps
-                                            </span>
+                                            </div>
                                           </td>
                                           <td
                                             class="ant-table-cell"
@@ -918,12 +908,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             <span>
                                               100%
                                             </span>
-                                            <br />
-                                            <span
-                                              class="styledComponents__ThresholdText-sc-1rvolyi-2 fCdEol"
+                                            <div
+                                              class="styledComponents__KpiShortText-sc-1oa5sqt-5 styledComponents__ThresholdText-sc-1rvolyi-2 eSwREI jPRfJf"
                                             >
                                               Under 2 s
-                                            </span>
+                                            </div>
                                           </td>
                                           <td
                                             class="ant-table-cell"
@@ -1012,12 +1001,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             <span>
                                               100%
                                             </span>
-                                            <br />
-                                            <span
-                                              class="styledComponents__ThresholdText-sc-1rvolyi-2 fCdEol"
+                                            <div
+                                              class="styledComponents__KpiShortText-sc-1oa5sqt-5 styledComponents__ThresholdText-sc-1rvolyi-2 eSwREI jPRfJf"
                                             >
                                               Above 10 Mbps
-                                            </span>
+                                            </div>
                                           </td>
                                           <td
                                             class="ant-table-cell"

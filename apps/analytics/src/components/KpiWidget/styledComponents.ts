@@ -40,7 +40,7 @@ export const KpiTitle = styled.span`
   text-align: left;
 `
 
-export const KpiShortText = styled.span`
+export const KpiShortText = styled.div`
   font-family: var(--acx-neutral-brand-font);
   font-size: var(--acx-body-6-font-size);
   line-height: var(--acx-body-6-line-height);

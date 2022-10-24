@@ -28,7 +28,6 @@ export default function HealthWidget ({
   const { data } = queryResults
   const columns=[
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'zoneName',
       key: 'zoneName',
       render: function (text:unknown, row:HealthData) {
@@ -44,7 +43,7 @@ export default function HealthWidget ({
       }
     },
     {
-      title: $t({ defaultMessage: 'Client Experience' }),
+      title: $t({ defaultMessage: 'Score' }),
       dataIndex: 'clientExperience',
       key: 'clientExperience',
       width: 40,
@@ -69,7 +68,7 @@ export default function HealthWidget ({
       render: (value:unknown,row:HealthData)=>{
         const thresholdText = $t({ defaultMessage: 'Under {threshold}' },
           { threshold: formatter('durationFormat')(row.timeToConnectThreshold ??
-           kpiConfig.timeToConnect.histogram.initialThreshold) })
+            kpiConfig.timeToConnect.histogram.initialThreshold) })
         if(value === '-')
           return <span>{value}</span>
         else
@@ -77,7 +76,6 @@ export default function HealthWidget ({
             <span>
               {value as string}
             </span>
-            <br/>
             <UI.ThresholdText>
               {thresholdText}
             </UI.ThresholdText></>
@@ -93,7 +91,7 @@ export default function HealthWidget ({
       render: (value:unknown,row:HealthData)=>{
         const thresholdText = $t({ defaultMessage: 'Above {threshold}' },
           { threshold: formatter('networkSpeedFormat')(row.clientThroughputThreshold ??
-           kpiConfig.clientThroughput.histogram.initialThreshold) })
+            kpiConfig.clientThroughput.histogram.initialThreshold) })
         if(value === '-')
           return <span>{value}</span>
         else
@@ -101,7 +99,6 @@ export default function HealthWidget ({
             <span>
               {value as string}
             </span>
-            <br/>
             <UI.ThresholdText>
               {thresholdText}
             </UI.ThresholdText></>)

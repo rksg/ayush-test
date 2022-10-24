@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { KpiShortText } from '../KpiWidget/styledComponents'
+
 export const VenueName = styled.div`
     white-space: nowrap;
     width: 155px;
@@ -17,9 +19,15 @@ export const Wrapper = styled.div`
     .ant-table-tbody > tr:first-child > td, .ant-table-tbody > tr:last-child > td {
         border-bottom: 0px !important;
     }
+    .ant-table-tbody > tr:first-child {
+        display: none;
+    }
+    .ant-table-tbody > tr > td {
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+    }
 `
 
-export const ThresholdText = styled.span`
-    font-size: 9px;
-    color: var(--acx-neutrals-60);
+export const ThresholdText = styled(KpiShortText)`
+    margin-bottom: -12px;
 `
