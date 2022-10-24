@@ -43,28 +43,6 @@ export type ThresholdMutationResponse = {
 
 export const configApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    fetchThreshold: build.query<
-    ThresholdResponse,
-    ThresholdPayload
-    >({
-      query: (payload) => ({
-        document: gql`
-          query KPIThresholdQuery($path: [HierarchyNodeInput], $name: String) {
-            ${payload.configCode.map((code) => `
-              ${code}: KPIThreshold(name: $name, networkPath: $path) {
-              value
-              updatedBy
-              updatedAt
-              }`)
-          .join('\n')
-        }
-        }`,
-        variables: {
-          path: payload.path,
-          name: payload.configCode
-        }
-      })
-    }),
     fetchThresholdPermission: build.query<
     ThresholdPermissionResponse,
     ThresholdPermissionPayload
@@ -108,7 +86,6 @@ export const configApi = dataApi.injectEndpoints({
 })
 
 export const {
-  useFetchThresholdQuery,
   useFetchThresholdPermissionQuery,
   useSaveThresholdMutation
 } = configApi
