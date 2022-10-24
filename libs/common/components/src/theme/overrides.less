@@ -107,9 +107,21 @@
           padding: 16px 20px 16px 20px;
         }
         .ant-drawer-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           border-top: 0;
-          padding: 16px 0px;
+          padding: 20px 0px;
           margin: 0px 20px;
+          .ant-checkbox-wrapper {
+            font-size: var(--acx-body-4-font-size);
+            font-weight: var(--acx-body-font-weight);
+            height: 20px;
+            align-items: center;
+            .ant-checkbox {
+              top: 0;
+            }
+          }
           .ant-btn + .ant-btn {
             margin-left: 12px;
           }
@@ -776,51 +788,6 @@
         &-selected {
           opacity: 100%;
           font-weight: var(--acx-headline-5-font-weight-bold);
-        }
-      }
-    }
-  }
-
-  .ant-tabs {
-    &:not(.ant-tabs-card) {
-      .ant-tabs-tab {
-        padding: 4px 0 14px 0;
-        &.ant-tabs-tab-active .ant-tabs-tab-btn {
-          font-weight: var(--acx-subtitle-4-font-weight);
-        }
-      }
-      .ant-tabs-tab + .ant-tabs-tab {
-        margin-left: 30px;
-      }
-      .ant-tabs-nav {
-        border-bottom: 1px solid var(--acx-neutrals-30);
-      }
-    }
-
-    &.ant-tabs-card {
-      .ant-tabs-nav {
-        padding-left: 15px;
-        &:before {
-          border-bottom: 1px solid var(--acx-accents-orange-50);
-        }
-        .ant-tabs-tab {
-          background: transparent;
-          border-color: transparent;
-          border-radius: 0;
-          .ant-tabs-tab-btn {
-            font-size: var(--acx-body-3-font-size);
-            font-weight: var(--acx-body-font-weight);
-          }
-          &.ant-tabs-tab-active {
-            border-color: var(--acx-accents-orange-50);
-            border-bottom-color: var(--acx-primary-white);
-            .ant-tabs-tab-btn {
-              font-size: var(--acx-subtitle-4-font-size);
-              font-weight: var(--acx-subtitle-4-font-weight);
-              color: var(--acx-accents-orange-50);
-              text-shadow: none;
-            }
-          }
         }
       }
     }

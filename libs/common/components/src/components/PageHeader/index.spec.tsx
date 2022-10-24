@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
-import { Tabs }   from 'antd'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
+
+import { Tabs } from '../Tabs'
 
 import { PageHeader } from '.'
 

@@ -10,6 +10,7 @@ const { setUpIntl } = require('@acx-ui/utils')
 const { mockInstances } = require('@googlemaps/jest-mocks')
 const { Loader } = require('@googlemaps/js-api-loader')
 const { rest } = require('msw')
+const nodeCrypto = require('crypto')
 
 jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
@@ -56,6 +57,12 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn()
   }))
 })
+
+window.crypto = {
+  getRandomValues: function (buffer) {
+    return nodeCrypto.randomFillSync(buffer)
+  }
+}
 
 jest.mock('libs/common/components/src/theme/helper', () => ({
   __esModule: true,

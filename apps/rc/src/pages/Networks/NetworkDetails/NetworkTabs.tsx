@@ -1,7 +1,7 @@
-import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
+import { Tabs }                                  from '@acx-ui/components'
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
