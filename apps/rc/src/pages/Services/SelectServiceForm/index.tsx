@@ -5,9 +5,15 @@ import { PageHeader, StepsForm }            from '@acx-ui/components'
 import { ServiceType }                      from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { RadioDescription }                                from '../../Networks/NetworkForm/styledComponents'
-import { serviceTypeDescMapping, serviceTypeLabelMapping } from '../contentsMap'
-import { getServiceRoutePath, ServiceOperation }           from '../serviceRouteUtils'
+import {
+  serviceTypeDescMapping,
+  serviceTypeLabelMapping
+} from '../contentsMap'
+import {
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation
+} from '../serviceRouteUtils'
 
 import * as UI from './styledComponents'
 
@@ -15,7 +21,7 @@ import * as UI from './styledComponents'
 export function SelectServiceForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const servicesTablePath: Path = useTenantLink('/services')
+  const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
@@ -35,12 +41,12 @@ export function SelectServiceForm () {
       <PageHeader
         title={$t({ defaultMessage: 'Add Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />
       <StepsForm
         onCancel={() => navigate(servicesTablePath)}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Next' }) }}
       >
         <StepsForm.StepForm
           name='selectService'
@@ -58,15 +64,15 @@ export function SelectServiceForm () {
                 <Space>
                   <Radio key={ServiceType.DHCP} value={ServiceType.DHCP}>
                     {$t(serviceTypeLabelMapping[ServiceType.DHCP])}
-                    <RadioDescription>
+                    <UI.RadioDescription>
                       {$t(serviceTypeDescMapping[ServiceType.DHCP])}
-                    </RadioDescription>
+                    </UI.RadioDescription>
                   </Radio>
                   <Radio key={ServiceType.DPSK} value={ServiceType.DPSK}>
                     {$t(serviceTypeLabelMapping[ServiceType.DPSK])}
-                    <RadioDescription>
+                    <UI.RadioDescription>
                       {$t(serviceTypeDescMapping[ServiceType.DPSK])}
-                    </RadioDescription>
+                    </UI.RadioDescription>
                   </Radio>
                 </Space>
               </UI.CategoryContainer>
@@ -77,15 +83,15 @@ export function SelectServiceForm () {
                 <Space>
                   <Radio key={ServiceType.MDNS_PROXY} value={ServiceType.MDNS_PROXY}>
                     {$t(serviceTypeLabelMapping[ServiceType.MDNS_PROXY])}
-                    <RadioDescription>
+                    <UI.RadioDescription>
                       {$t(serviceTypeDescMapping[ServiceType.MDNS_PROXY])}
-                    </RadioDescription>
+                    </UI.RadioDescription>
                   </Radio>
                   <Radio key={ServiceType.WIFI_CALLING} value={ServiceType.WIFI_CALLING}>
                     {$t(serviceTypeLabelMapping[ServiceType.WIFI_CALLING])}
-                    <RadioDescription>
+                    <UI.RadioDescription>
                       {$t(serviceTypeDescMapping[ServiceType.WIFI_CALLING])}
-                    </RadioDescription>
+                    </UI.RadioDescription>
                   </Radio>
                 </Space>
               </UI.CategoryContainer>
@@ -95,9 +101,9 @@ export function SelectServiceForm () {
                 </Typography.Title>
                 <Radio key={ServiceType.PORTAL} value={ServiceType.PORTAL}>
                   {$t(serviceTypeLabelMapping[ServiceType.PORTAL])}
-                  <RadioDescription>
+                  <UI.RadioDescription>
                     {$t(serviceTypeDescMapping[ServiceType.PORTAL])}
-                  </RadioDescription>
+                  </UI.RadioDescription>
                 </Radio>
               </UI.CategoryContainer>
             </Radio.Group>

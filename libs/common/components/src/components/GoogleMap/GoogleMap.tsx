@@ -22,6 +22,7 @@ export const GoogleMap: React.FC<MapProps> = ({
   const { $t } = useIntl()
   return <Wrapper
     apiKey={get('GOOGLE_MAPS_KEY')}
+    language={'en'}
     libraries={libraries}
     render={(status) => {
       switch (status) {

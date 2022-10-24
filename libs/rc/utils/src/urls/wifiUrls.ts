@@ -32,5 +32,33 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   deleteNetworkVenue: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId'
+  },
+  GetVenueExternalAntenna: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna'
+  },
+  GetVenueApCapabilities: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
+  },
+  UpdateVenueExternalAntenna: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna'
+  },
+  getLteBandLockChannel: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lte-band-lock-channel'
+  },
+  getAvailableLteBands: {
+    method: 'get',
+    url: '/api/tenant/:venueId/wifi/lte-band'
+  },
+  getVenueApModelCellular: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
+  },
+  updateVenueCellularSettings: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
   }
 }
