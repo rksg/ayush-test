@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
@@ -65,7 +65,8 @@ function Histogram ({
   },
   fetchingDefault: {
     isFetching: boolean,
-    isLoading: boolean
+    isLoading: boolean,
+    data: Object | undefined
   }
 }) {
   const { $t } = useIntl()
@@ -75,6 +76,7 @@ function Histogram ({
   const [sliderValue, setSliderValue] = useState(
     splits.indexOf(thresholdValue) + 0.5
   )
+  const [isInitialRender, setIsInitialRender] = useState(true)
 
   /* istanbul ignore next */
   const onSliderChange = useCallback((newValue: number) => {
@@ -87,6 +89,7 @@ function Histogram ({
     setThresholdValue(histogram?.splits[newValue - 0.5])
     setKpiThreshold({ ...thresholds, [kpi]: histogram?.splits[newValue - 0.5] })
   },[kpi, histogram?.splits, setKpiThreshold, thresholds, splits.length])
+
   const queryResults = useKpiHistogramQuery(
     { ...filters, kpi, threshold: histogram?.initialThreshold },
     {
@@ -143,12 +146,12 @@ function Histogram ({
     })
     : 0
 
-  const onButtonReset = () => {
+  const onButtonReset = useCallback(() => {
     const defaultConfig: unknown = onReset && onReset()
     setSliderValue(splits.indexOf(defaultConfig) + 0.5)
     setThresholdValue(defaultConfig as string)
     setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
-  }
+  }, [kpi, onReset, setKpiThreshold, splits, thresholds])
 
   const onButtonApply = async () => {
     if (onApply) {
@@ -170,6 +173,18 @@ function Histogram ({
       }
     }
   }
+
+  useEffect(() => {
+    if (
+      isInitialRender &&
+      !fetchingDefault.isFetching &&
+      !fetchingDefault.isLoading &&
+      fetchingDefault.data
+    ) {
+      onButtonReset()
+      setIsInitialRender(false)
+    }
+  }, [fetchingDefault, isInitialRender, onButtonReset])
 
   return (
     <Loader states={[queryResults, canSave, fetchingDefault]} key={kpi}>

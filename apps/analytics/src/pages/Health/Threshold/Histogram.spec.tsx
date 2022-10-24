@@ -48,6 +48,16 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect'] as unknown as string}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          canSave={{
+            data: { allowedSave: true },
+            isFetching: false,
+            isLoading: false
+          }}
+          fetchingDefault={{
+            data: {},
+            isFetching: false,
+            isLoading: false
+          }}
         />
       </Provider>
     )
@@ -65,6 +75,16 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect'] as unknown as string}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          canSave={{
+            data: { allowedSave: true },
+            isFetching: false,
+            isLoading: false
+          }}
+          fetchingDefault={{
+            data: {},
+            isFetching: false,
+            isLoading: false
+          }}
         />
       </Provider>
     )
@@ -83,6 +103,16 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['rss'] as unknown as string}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          canSave={{
+            data: { allowedSave: true },
+            isFetching: false,
+            isLoading: false
+          }}
+          fetchingDefault={{
+            data: {},
+            isFetching: false,
+            isLoading: false
+          }}
         />
       </Provider>
     )
@@ -100,6 +130,16 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect'] as unknown as string}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          canSave={{
+            data: { allowedSave: true },
+            isFetching: false,
+            isLoading: false
+          }}
+          fetchingDefault={{
+            data: {},
+            isFetching: false,
+            isLoading: false
+          }}
         />
       </Provider>
     )
@@ -118,18 +158,29 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect'] as unknown as string}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          canSave={{
+            data: { allowedSave: true },
+            isFetching: false,
+            isLoading: false
+          }}
+          fetchingDefault={{
+            data: {},
+            isFetching: false,
+            isLoading: false
+          }}
         />
       </Provider>
     )
     fireEvent.mouseDown(await screen.findByRole('slider'))
     fireEvent.mouseMove(await screen.findByRole('slider'))
     fireEvent.mouseUp(await screen.findByRole('slider'))
-    expect(setKpiThreshold).not.toBeCalled()
+    expect(setKpiThreshold).toBeCalled()
   })
   it('should call setKpiThreshold on clicking reset btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
+    const onReset = jest.fn()
     render(
       <Provider>
         <Histogram
@@ -138,12 +189,93 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect'] as unknown as string}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          onReset={onReset}
+          canSave={{
+            data: { allowedSave: true },
+            isFetching: false,
+            isLoading: false
+          }}
+          fetchingDefault={{
+            data: {},
+            isFetching: false,
+            isLoading: false
+          }}
         />
       </Provider>
     )
 
-    fireEvent.click(await screen.findByText('Reset'))
-    expect(setKpiThreshold).toBeCalled()
+    fireEvent.click(await screen.findByRole('button', { name: 'Reset' }))
+    expect(onReset).toBeCalled()
+  })
+
+  it('should call setKpiThreshold on clicking apply btn', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+    })
+    const onApply = jest.fn()
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+          onApply={() => onApply}
+          canSave={{
+            data: { allowedSave: true },
+            isFetching: false,
+            isLoading: false
+          }}
+          fetchingDefault={{
+            data: {},
+            isFetching: false,
+            isLoading: false
+          }}
+        />
+      </Provider>
+    )
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(onApply).toBeCalledTimes(1)
+  })
+
+  it('should see error setKpiThreshold on clicking apply btn', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+    })
+    const applyCounter = jest.fn()
+    const onApply = () => {
+      return async () => {
+        applyCounter()
+        return Promise.reject('failed apply fn')
+      }
+    }
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+          onApply={onApply}
+          canSave={{
+            data: { allowedSave: true },
+            isFetching: false,
+            isLoading: false
+          }}
+          fetchingDefault={{
+            data: {},
+            isFetching: false,
+            isLoading: false
+          }}
+        />
+      </Provider>
+    )
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(applyCounter).toBeCalledTimes(1)
   })
 })
 
