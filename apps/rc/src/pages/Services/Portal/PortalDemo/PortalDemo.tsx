@@ -1,21 +1,38 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import {
-  QuestionCircleOutlined
-} from '@ant-design/icons'
 import { Col, Row, Tooltip }         from 'antd'
+import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { defaultComDisplay, PortalViewEnum } from '@acx-ui/rc/utils'
+import { Demo, PortalViewEnum } from '@acx-ui/rc/utils'
 
-import * as UI from '../styledComponents'
+import Mobile        from '../../../../assets/images/portal-demo/mobile.svg'
+import Mobile_select from '../../../../assets/images/portal-demo/mobile_selected.svg'
+import Tablet        from '../../../../assets/images/portal-demo/pad.svg'
+import Tablet_select from '../../../../assets/images/portal-demo/pad_selected.svg'
+import Desk          from '../../../../assets/images/portal-demo/pc.svg'
+import Desk_select   from '../../../../assets/images/portal-demo/pc_selected.svg'
+import Question      from '../../../../assets/images/portal-demo/question.svg'
+import * as UI       from '../styledComponents'
 
-import PortalBackground       from './PortalBackground'
-import PortalComponents       from './PortalComponents'
-import PortalLanguageSettings from './PortalLanguageSettings'
-import PortalViewContent      from './PortalViewContent'
+import PortalBackground         from './PortalBackground'
+import PortalComponents         from './PortalComponents'
+import PortalLanguageSettings   from './PortalLanguageSettings'
+import PortalViewContent        from './PortalViewContent'
+import PortalViewContentPreview from './PortalViewContentPreview'
 
-export default function PortalDemo () {
+
+type PortalDemoProps = {
+  isPreview?: boolean
+  value?: Demo
+  onChange?: (data: Demo) => void
+}
+export default function PortalDemo ({
+  isPreview,
+  value,
+  onChange
+}: PortalDemoProps) {
+  const [prevValue] = useState(_.cloneDeep(value as Demo))
   const { $t } = useIntl()
   const { Option } = UI.Select
   const [screen, setScreen] = useState('desk')
@@ -26,25 +43,35 @@ export default function PortalDemo () {
   })
   const [showLanguage, setShowLanguage] = useState(false)
   const [showComponent, setShowComponent] = useState(false)
-  const [backgroundImg, setBackgroundImg] = useState('')
-  const [backgroundColor, setBackgroundColor] = useState('#FFFFFF')
   const [view, setView] = useState(PortalViewEnum.ClickThrough)
-  const [componentDisplay, setComponentDisplay] =
-    useState({ ...defaultComDisplay } as { [key:string]: boolean })
-  const [alternativeLang, setAlternativeLang] = useState({})
-  const [isReset, setIsReset] = useState(false)
+  const [demoValue, setDemoValue]=useState(value as Demo)
+  useEffect(()=>{
+    if(demoValue){
+      onChange?.(demoValue)
+    }
+  },[demoValue])
+  const langContent = <PortalLanguageSettings
+    demoValue={demoValue}
+    onClose={() => setShowLanguage(false)}
+    updateViewContent={(data)=>setDemoValue({ ...demoValue, ...data })}
+  />
+  const compContent = <PortalComponents
+    onClose={() => setShowComponent(false)}
+    demoValue={demoValue}
+    updateViewContent={(data)=>setDemoValue({ ...demoValue, ...data })}
+  />
   return (
     <>
       <UI.LayoutHeader>
         <Row >
-          <Col flex='345px'>
+          <Col flex={isPreview? '305px':'345px'}>
             <UI.Label>
               {$t({ defaultMessage: 'View as:' })}
             </UI.Label>
             <UI.Select
-              onChange={(value) => {setView(value as PortalViewEnum)}}
+              onChange={(data) => {setView(data as PortalViewEnum)}}
               defaultValue={PortalViewEnum.ClickThrough}
-              style={{ width: 300 }}>
+              style={{ width: isPreview? 250:300 }}>
               {Object.keys(PortalViewEnum).map((key =>
                 <Option key={key} value={PortalViewEnum[key as keyof typeof PortalViewEnum]}>
                   {PortalViewEnum[key as keyof typeof PortalViewEnum]}</Option>
@@ -56,78 +83,77 @@ export default function PortalDemo () {
               <Tooltip
                 placement='bottom'
                 title={<FormattedMessage
-                  defaultMessage={`test
+                  defaultMessage={`tips here
                 `}
                   values={{ p: (chunks) => <p>{chunks}</p> }}
                 />}
-                children={<QuestionCircleOutlined />}
+                children={<UI.Img src={Question} />}
               />
             </UI.FieldExtraTooltip>
           </Col>
           <Col flex='157px'>
-            <UI.DesktopOutlined $marked={marked.desk}
+            <UI.ImgDesk src={marked.desk?Desk_select:Desk}
               onClick={()=>{
                 setScreen('desk')
                 setMarked({ desk: true, tablet: false, mobile: false })
               }}/>
-            <UI.TabletOutlined $marked={marked.tablet}
+            <UI.ImgTablet src={marked.tablet?Tablet_select:Tablet}
               onClick={()=>{
                 setScreen('tablet')
                 setMarked({ desk: false, tablet: true, mobile: false })
               }}/>
-            <UI.MobileOutlined $marked={marked.mobile}
+            <UI.ImgMobile src={marked.mobile?Mobile_select:Mobile}
               onClick={()=>{
                 setScreen('mobile')
                 setMarked({ desk: false, tablet: false, mobile: true })
               }}/>
           </Col>
-          <Col flex='auto' style={{ textAlign: 'right', paddingRight: 5 }}>
+          {!isPreview&&<Col flex='auto' style={{ textAlign: 'right', paddingRight: 5 }}>
+            <UI.Popover
+              overlayClassName='uipopover'
+              content={langContent}
+              trigger='click'
+              placement='bottomLeft'
+              visible={showLanguage}
+              onVisibleChange={(data)=>setShowLanguage(data)}
+            ><UI.Button onClick={(e)=>{
+                e.preventDefault()
+              }}>
+                {$t({ defaultMessage: 'Language Settings' })}</UI.Button></UI.Popover>
+            <UI.Popover
+              overlayClassName='uipopover'
+              content={compContent}
+              trigger='click'
+              placement='bottomLeft'
+              visible={showComponent}
+              onVisibleChange={(data)=>setShowComponent(data)}
+            ><UI.Button onClick={(e)=>{
+                e.preventDefault()
+              }}>{$t({ defaultMessage: 'Components' })}</UI.Button></UI.Popover>
             <UI.Button onClick={(e)=>{
               e.preventDefault()
-              setShowLanguage(true)
-              setShowComponent(false)
-              setIsReset(false)
-            }}>
-              {$t({ defaultMessage: 'Language Settings' })}</UI.Button>
-            <UI.Button onClick={(e)=>{
-              e.preventDefault()
-              setShowComponent(true)
-              setShowLanguage(false)
-              setIsReset(false)
-            }}>{$t({ defaultMessage: 'Components' })}</UI.Button>
-            <UI.Button onClick={(e)=>{
-              e.preventDefault()
-              setComponentDisplay(defaultComDisplay)
-              setAlternativeLang({})
-              setIsReset(true)
+              setDemoValue(_.cloneDeep(prevValue as Demo))
             }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
-          </Col>
+          </Col>}
         </Row>
       </UI.LayoutHeader>
       <UI.LayoutContent>
-        <PortalBackground $isDesk={marked.desk}
-          backgroundColor={backgroundColor}
-          updateBackgroundImg={(value: string) => setBackgroundImg(value)}
-          updateBackgroundColor={(value: string) => setBackgroundColor(value)}/>
+        {!isPreview&&<PortalBackground $isDesk={marked.desk}
+          backgroundColor={demoValue?.backgroundColor || '#FFFFFF'}
+          updateBackgroundImg={(data: string) =>
+            setDemoValue({ ...demoValue, backgroundImage: data })}
+          updateBackgroundColor={(data: string) =>
+            setDemoValue({ ...demoValue, backgroundColor: data })}/>}
         <UI.LayoutView $type={screen}
-          style={{ backgroundImage: 'url("'+backgroundImg+'")',
-            backgroundColor: backgroundColor }}>
-          <PortalViewContent view={view}
-            componentDisplay={componentDisplay}
-            alternativeLang={alternativeLang}/>
+          style={{ backgroundImage: 'url("'+(isPreview?value:demoValue)?.backgroundImage+'")',
+            backgroundColor: (isPreview?value:demoValue)?.backgroundColor }}>
+          {isPreview?<PortalViewContentPreview view={view}
+            demoValue={value as Demo}/>:
+            <PortalViewContent view={view}
+              demoValue={demoValue}
+              updateViewContent={(data)=>setDemoValue({ ...demoValue, ...data })}
+            />}
         </UI.LayoutView>
-        <div style={{ width: '95%', position: 'absolute' }}>
-          <PortalLanguageSettings isShow={showLanguage}
-            isReset={isReset}
-            onClose={() => setShowLanguage(false)}
-            updateAlternativeLanguage={(value) => setAlternativeLang(value)}
-          />
-          <PortalComponents isShow={showComponent}
-            isReset={isReset}
-            onClose={() => setShowComponent(false)}
-            updateComponentDisplay={(value) => setComponentDisplay(value)}
-          />
-        </div>
       </UI.LayoutContent>
     </>)
 }

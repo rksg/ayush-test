@@ -1,9 +1,18 @@
 import { useIntl } from 'react-intl'
 
-import * as UI from '../styledComponents'
-export default function PortalViewHostApproval () {
-  const { $t } = useIntl()
+import { Demo } from '@acx-ui/rc/utils'
 
+import * as UI from '../styledComponents'
+
+import PortalButtonContent from './PortalContent/PortalButtonContent'
+export default function PortalViewHostApproval (props:{
+  demoValue: Demo,
+  isPreview?:boolean,
+  updateBtn?: (value: { url?: string, size?: number, show?: boolean,
+    color?:string, text?:string }) => void
+}) {
+  const { $t } = useIntl()
+  const { demoValue, updateBtn, isPreview } = props
   return (
     <UI.ViewSection>
       <UI.ViewSectionTabsBig
@@ -34,7 +43,11 @@ export default function PortalViewHostApproval () {
           <UI.ViewSectionText style={{ marginLeft: -94 }}>{$t({
             defaultMessage: 'Maximum length is 200 characters'
           })}</UI.ViewSectionText>
-          <UI.PortalButton>{$t({ defaultMessage: 'Register' })}</UI.PortalButton>
+          <PortalButtonContent
+            demoValue={demoValue}
+            isPreview={isPreview}
+            updateButton={(data)=>updateBtn?.(data)}
+          >{$t({ defaultMessage: 'Register' })}</PortalButtonContent>
 
         </UI.ViewSectionTabsBig.TabPane>
         <UI.ViewSectionTabsBig.TabPane tab={$t({ defaultMessage: 'Login' })} key='login'>
@@ -42,7 +55,11 @@ export default function PortalViewHostApproval () {
           <UI.FieldInput></UI.FieldInput>
           <UI.ViewSectionLink>
             {$t({ defaultMessage: 'Forgot your password?' })}</UI.ViewSectionLink>
-          <UI.PortalButton>{$t({ defaultMessage: 'Connect To Wi-Fi' })}</UI.PortalButton>
+          <PortalButtonContent
+            demoValue={demoValue}
+            isPreview={isPreview}
+            updateButton={(data)=>updateBtn?.(data)}
+          >{$t({ defaultMessage: 'Connect To Wi-Fi' })}</PortalButtonContent>
         </UI.ViewSectionTabsBig.TabPane>
       </UI.ViewSectionTabsBig>
     </UI.ViewSection>

@@ -15,7 +15,8 @@ import {
   DHCPSaveData,
   WifiCallingUrls,
   WifiUrlsInfo,
-  Portal
+  Portal,
+  PortalUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -166,47 +167,28 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    getPortalService: build.query<TableResult<Portal>, RequestPayload>({
+    getPortal: build.query<Portal | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
+        if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        return result as QueryReturnValue<Portal,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    savePortal: build.mutation<Service, RequestPayload>({
       query: ({ params, payload }) => {
-        const wifiCallingServiceReq = createHttpRequest(
-          CommonUrlsInfo.getWifiCallingService, params
+        const createPortalReq = createHttpRequest(
+          PortalUrlsInfo.savePortal, params
         )
         return {
-          ...wifiCallingServiceReq,
+          ...createPortalReq,
           body: payload
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    createPortalService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const createWifiCallingServiceReq = createHttpRequest(
-          CommonUrlsInfo.addWifiCallingService, params
-        )
-        return {
-          ...createWifiCallingServiceReq,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    updatePortalService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          CommonUrlsInfo.updateWifiCallingService, params
-        )
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    deletePortalService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.deleteWifiCallingService, params)
-        return {
-          ...req
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
@@ -227,5 +209,6 @@ export const {
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
   useDeleteWifiCallingServiceMutation,
-  useCreatePortalServiceMutation
+  useGetPortalQuery,
+  useSavePortalMutation
 } = serviceApi

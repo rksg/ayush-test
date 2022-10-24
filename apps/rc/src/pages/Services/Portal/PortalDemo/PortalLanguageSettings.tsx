@@ -1,41 +1,27 @@
-import { useEffect, useState } from 'react'
-
 import { Checkbox } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { PortalLanguageEnum } from '@acx-ui/rc/utils'
+import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
 export default function PortalLanguageSettings (props:{
-  isShow: boolean,
-  isReset: boolean,
+  demoValue: Demo,
   onClose: () => void,
-  updateAlternativeLanguage: (value: { [key: string]: boolean; }) => void
+  updateViewContent:(value:Demo)=>void,
 }) {
   const { $t } = useIntl()
   const { Option } = UI.Select
-  const { isShow, onClose, updateAlternativeLanguage, isReset } = props
-  const [ alternativeLang, setAlternativeLang]=
-    useState({} as { [key:string]: boolean })
-  const [ displayLang, setDisplayLang]=
-    useState('English')
-  useEffect(() => {
-    if (isReset) {
-      setAlternativeLang({})
-      setDisplayLang('English')
-    }
-  }, [isReset])
+  const { onClose, updateViewContent, demoValue } = props
   return (
-    <UI.CommonContainer $isShow={isShow}
+    <div
       onMouseLeave={onClose}>
       <UI.CommonLabel>{$t({ defaultMessage: 'Display Language' })}</UI.CommonLabel>
-      <UI.Select value={isReset ? 'English' : displayLang}
+      <UI.Select value={demoValue.displayLang}
         onChange={(value)=>{
-          setDisplayLang(value as string)
-          alternativeLang[value as keyof typeof PortalLanguageEnum] = false
-          setAlternativeLang({ ...alternativeLang })
-          updateAlternativeLanguage(alternativeLang)
+          demoValue.displayLang = value as string
+          demoValue.alternativeLang[value as keyof typeof PortalLanguageEnum] = false
+          updateViewContent({ ...demoValue })
         }}>
         {Object.keys(PortalLanguageEnum).map(
           (key => <Option key={key}>{PortalLanguageEnum[key as keyof typeof PortalLanguageEnum]}
@@ -45,16 +31,16 @@ export default function PortalLanguageSettings (props:{
       <UI.CommonLabel>{$t({ defaultMessage: 'Alternative languages' })}</UI.CommonLabel>
       {Object.keys(PortalLanguageEnum).map((key => <UI.CommonLabel key={key+'label'}>
         <Checkbox key={key+'checkbox'}
-          disabled={key === displayLang}
-          checked={isReset ? false : key === displayLang ? false: alternativeLang[key]}
+          disabled={key === demoValue.displayLang}
+          checked={key === demoValue.displayLang ? false:
+            demoValue.alternativeLang[key]}
           onChange={(e)=>{
-            alternativeLang[key] = e.target.checked
-            setAlternativeLang({ ...alternativeLang })
-            updateAlternativeLanguage({ ...alternativeLang })
+            demoValue.alternativeLang[key] = e.target.checked
+            updateViewContent({ ...demoValue })
           }}>
           {PortalLanguageEnum[key as keyof typeof PortalLanguageEnum]} </Checkbox>
       </UI.CommonLabel>
       ))}
-    </UI.CommonContainer>
+    </div>
   )
 }

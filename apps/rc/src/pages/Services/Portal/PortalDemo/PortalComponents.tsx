@@ -1,28 +1,22 @@
-
-import { useEffect, useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
-import { defaultComDisplay, PortalComponentsEnum } from '@acx-ui/rc/utils'
+import { Demo, PortalComponentsEnum } from '@acx-ui/rc/utils'
+
 
 import * as UI from '../styledComponents'
+
+import PortalTermsModal   from './PortalTermsModal'
+import PortalWifi4euModal from './PortalWifi4euModal'
 export default function PortalComponents (props:{
-  isShow: boolean,
-  isReset: boolean,
   onClose: () => void,
-  updateComponentDisplay: (value: { [key: string]: boolean; }) => void
+  demoValue:Demo,
+  updateViewContent:(value:Demo)=>void,
 }) {
+
   const { $t } = useIntl()
-  const { isShow, onClose, updateComponentDisplay, isReset } = props
-  const [ componentStatus, setComponentStatus]=
-  useState({ ...defaultComDisplay } as { [key:string]: boolean })
-  useEffect(() => {
-    if(isReset){
-      setComponentStatus({ ...defaultComDisplay })
-    }
-  },[isReset])
+  const { onClose, updateViewContent, demoValue } = props
   return (
-    <UI.CommonContainer $isShow={isShow}
+    <div
       onMouseLeave={onClose}>
       <UI.CommonLabel>{$t({ defaultMessage: 'Manage Components' })}</UI.CommonLabel>
 
@@ -32,16 +26,20 @@ export default function PortalComponents (props:{
         </UI.ComponentLabel>
         <UI.Switch checkedChildren={$t({ defaultMessage: 'ON' })}
           key={key+'switch'}
-          checked={isReset ? defaultComDisplay[key as keyof typeof PortalComponentsEnum]
-            : componentStatus[key]}
+          checked={demoValue?.componentDisplay?.[key]}
           onClick={(value)=>{
-            componentStatus[key] = value
-            setComponentStatus({ ...componentStatus })
-            updateComponentDisplay({ ...componentStatus })
+            demoValue.componentDisplay[key] = value
+            updateViewContent({ ...demoValue })
           }}
           unCheckedChildren={$t({ defaultMessage: 'OFF' })}/>
+        {key === 'TermsConditions'&&<PortalTermsModal
+          terms={demoValue?.termsCondition}
+          updateTermsConditions={(value)=>
+            updateViewContent({ ...demoValue, termsCondition: value })}/>}
+        {key === 'WiFi4EU'&&<PortalWifi4euModal wifi4eu={demoValue?.wifi4EU}
+          updateWiFi4EU={(value)=> updateViewContent({ ...demoValue, wifi4EU: value })}/>}
       </UI.CommonLabel>
       ))}
-    </UI.CommonContainer>
+    </div>
   )
 }

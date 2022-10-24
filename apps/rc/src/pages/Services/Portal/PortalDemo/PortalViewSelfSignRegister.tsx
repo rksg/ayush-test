@@ -1,9 +1,18 @@
 import { useIntl } from 'react-intl'
 
-import * as UI from '../styledComponents'
-export default function PortalViewSelfSignRegister () {
-  const { $t } = useIntl()
+import { Demo } from '@acx-ui/rc/utils'
 
+import * as UI from '../styledComponents'
+
+import PortalButtonContent from './PortalContent/PortalButtonContent'
+export default function PortalViewSelfSignRegister (props:{
+  demoValue: Demo,
+  isPreview?:boolean,
+  updateBtn?: (value: { url?: string, size?: number, show?: boolean,
+    color?:string, text?:string }) => void
+}) {
+  const { $t } = useIntl()
+  const { demoValue, updateBtn, isPreview } = props
   return (
     <UI.ViewSection>
       <UI.ViewSectionTabsBig
@@ -25,7 +34,11 @@ export default function PortalViewSelfSignRegister () {
           </UI.ViewSectionText>
           <UI.ViewSectionMailOutlined/><UI.FieldInputSmall
             placeholder={$t({ defaultMessage: 'Your Email' })}></UI.FieldInputSmall>
-          <UI.PortalButton>{$t({ defaultMessage: 'Register' })}</UI.PortalButton>
+          <PortalButtonContent
+            isPreview={isPreview}
+            demoValue={demoValue}
+            updateButton={(data)=>updateBtn?.(data)}
+          >{$t({ defaultMessage: 'Register' })}</PortalButtonContent>
           <UI.ViewSectionText style={{ marginLeft: 68, display: 'flex' }}>{$t({
             defaultMessage: 'By registering, you are accepting the'
           })}&nbsp;&nbsp;
@@ -38,7 +51,11 @@ export default function PortalViewSelfSignRegister () {
           <UI.FieldInput></UI.FieldInput>
           <UI.ViewSectionLink>
             {$t({ defaultMessage: 'Forgot your password?' })}</UI.ViewSectionLink>
-          <UI.PortalButton>{$t({ defaultMessage: 'Connect To Wi-Fi' })}</UI.PortalButton>
+          <PortalButtonContent
+            demoValue={demoValue}
+            isPreview={isPreview}
+            updateButton={(data)=>updateBtn?.(data)}
+          >{$t({ defaultMessage: 'Connect To Wi-Fi' })}</PortalButtonContent>
         </UI.ViewSectionTabsBig.TabPane>
       </UI.ViewSectionTabsBig>
       <UI.FieldTextLink>{$t({ defaultMessage: 'Back' })}</UI.FieldTextLink>

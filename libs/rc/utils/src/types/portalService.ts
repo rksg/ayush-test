@@ -1,7 +1,7 @@
 import { Network } from './index'
 
 export interface Portal{
-  id: string
+  id?: string
   serviceName: string
   tags?: string[]
   network: PortalNetwork[]
@@ -10,27 +10,29 @@ export interface Portal{
 export interface PortalNetwork extends Network{
 }
 export interface Demo{
-  color: string
-  image: string
-  logo: string
-  welcomeText: string
-  photo: string
-  secondaryText: string
-  termsCondition: string
-  powerBy: string
-  wifi4EU: string
-  view: View
-  comp: Comp
-  language: Language
-}
-export interface View{
-
-}
-export interface Language{
-
-}
-export interface Comp{
-
+  backgroundColor?: string
+  backgroundImage?: string
+  logo?: string
+  logoSize?: number
+  welcomeText?: string
+  welcomeSize?: number
+  welcomeColor?: string
+  photo?: string
+  photoSize?: number
+  secondaryText?: string
+  secondarySize?: number
+  secondaryColor?: string
+  buttonColor?:string
+  termsCondition?: string
+  poweredBackgroundColor?:string
+  poweredColor?:string
+  poweredSize?:number
+  poweredImg?:string
+  poweredImgSize?:number
+  wifi4EU?: string
+  componentDisplay: { [key:string]:boolean }
+  displayLang: string
+  alternativeLang: { [key:string]:boolean }
 }
 export enum PortalViewEnum{
   ClickThrough = 'Click Through',
@@ -79,7 +81,7 @@ export const defaultComDisplay = {
   WelcomeText: true,
   Photo: true,
   SecondaryText: true,
-  TermsConditions: true,
+  TermsConditions: false,
   PoweredBy: true,
-  WiFi4EU: true
+  WiFi4EU: false
 }

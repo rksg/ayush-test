@@ -1,10 +1,18 @@
 import { useIntl } from 'react-intl'
 
+import { Demo } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
-export default function PortalViewGuestForget () {
-  const { $t } = useIntl()
 
+import PortalButtonContent from './PortalContent/PortalButtonContent'
+export default function PortalViewGuestForget (props:{
+  demoValue: Demo,
+  isPreview?:boolean,
+  updateBtn?: (value: { url?: string, size?: number, show?: boolean,
+    color?:string, text?:string }) => void
+}) {
+  const { $t } = useIntl()
+  const { demoValue, updateBtn, isPreview } = props
   return (
     <UI.ViewSection>
       <UI.ViewSectionTitle>{$t({ defaultMessage: 'Forget Your Password?' })}</UI.ViewSectionTitle>
@@ -22,7 +30,11 @@ export default function PortalViewGuestForget () {
           ' received the original password to recieve a new one:' })}</UI.FieldText>
           <UI.FieldInput
             placeholder={$t({ defaultMessage: 'Mobile phone number' })}></UI.FieldInput>
-          <UI.PortalButton>{$t({ defaultMessage: 'Get Password' })}</UI.PortalButton>
+          <PortalButtonContent
+            demoValue={demoValue}
+            isPreview={isPreview}
+            updateButton={(data)=>updateBtn?.(data)}
+          >{$t({ defaultMessage: 'Get Password' })}</PortalButtonContent>
         </UI.ViewSectionTabs.TabPane>
         <UI.ViewSectionTabs.TabPane tab={$t({ defaultMessage: 'Email Message' })} key='email'>
           <UI.FieldText style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
@@ -30,7 +42,11 @@ export default function PortalViewGuestForget () {
           ' the original password to receive a new one:' })}</UI.FieldText>
           <UI.FieldInput
             placeholder={$t({ defaultMessage: 'E-mail address' })}></UI.FieldInput>
-          <UI.PortalButton>{$t({ defaultMessage: 'Get Password' })}</UI.PortalButton>
+          <PortalButtonContent
+            demoValue={demoValue}
+            isPreview={isPreview}
+            updateButton={(data)=>updateBtn?.(data)}
+          >{$t({ defaultMessage: 'Get Password' })}</PortalButtonContent>
         </UI.ViewSectionTabs.TabPane>
         <UI.ViewSectionTabs.TabPane tab={$t({ defaultMessage: 'Other' })} key='other'>
           <UI.FieldText style={{ textAlign: 'left', padding: '0 20px 0 20px' }}>

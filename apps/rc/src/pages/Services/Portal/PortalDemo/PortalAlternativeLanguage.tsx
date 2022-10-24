@@ -2,12 +2,12 @@ import { PortalLanguageEnum } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 export default function PortalAlternativeLanguage (props:{
-  alternativeLang: { [key:string]: boolean }
+  alternativeLang?: { [key:string]: boolean }
 }) {
   const { alternativeLang } = props
   let langs = ''
-  Object.keys(alternativeLang).map((key) =>{
-    return langs+=alternativeLang[key]?PortalLanguageEnum[key as keyof typeof PortalLanguageEnum]+
+  Object.keys(alternativeLang || {}).map((key) =>{
+    return langs+=alternativeLang?.[key]?PortalLanguageEnum[key as keyof typeof PortalLanguageEnum]+
     '&nbsp;&nbsp; ':''
   }
   )

@@ -3,17 +3,19 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PortalViewEnum } from '@acx-ui/rc/utils'
+import { Demo, PortalViewEnum } from '@acx-ui/rc/utils'
 
-
-import Photo   from '../../../../assets/images/portal-demo/main-photo.svg'
-import Powered from '../../../../assets/images/portal-demo/powered-logo-img.svg'
-import Logopng from '../../../../assets/images/portal-demo/small-logo-img.png'
-import Logosvg from '../../../../assets/images/portal-demo/small-logo-img.svg'
-import * as UI from '../styledComponents'
+import Wifi4eu                   from '../../../../assets/images/portal-demo/wifi4eu-banner.png'
+import { PortalDemoDefaultSize } from '../../commonUtils'
+import * as UI                   from '../styledComponents'
 
 import PortalAlternativeLanguage  from './PortalAlternativeLanguage'
-import PortalTermsModal           from './PortalTermsModal'
+import PortalPhotoContent         from './PortalContent/PortalPhotoContent'
+import PortalPoweredByContent     from './PortalContent/PortalPoweredByContent'
+import PortalSecondaryTextContent from './PortalContent/PortalSecondaryTextContent'
+import PortalWelcomeContent       from './PortalContent/PortalWelcomeContent'
+import PortalImageTools           from './PortalImageTools'
+import PortalPopover              from './PortalPopover'
 import PortalViewConfirm          from './PortalViewConfirm'
 import PortalViewGoThrough        from './PortalViewGoThrough'
 import PortalViewGuestConnect     from './PortalViewGuestConnect'
@@ -22,59 +24,126 @@ import PortalViewHostApproval     from './PortalViewHostApproval'
 import PortalViewSelfSignConnect  from './PortalViewSelfSignConnect'
 import PortalViewSelfSignRegister from './PortalViewSelfSignRegister'
 import PortalViewTerms            from './PortalViewTerms'
-import PortalWifi4euModal         from './PortalWifi4euModal'
 export default function PortalViewContent (props:{
   view: PortalViewEnum,
-  alternativeLang:{ [key:string]: boolean },
-  componentDisplay:{ [key:string]: boolean }
+  demoValue: Demo,
+  updateViewContent:(value:Demo)=>void
 }) {
+  const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
+  const { view, demoValue, updateViewContent } = props
   const { $t } = useIntl()
-  const [logo, setLogo]=useState(Logopng)
-  const [welcomeText, setWelcomeText]=useState('Welcome to the Guest Access login page')
-  const [secondaryText]=useState('Lorem ipsum dolor sit amet, '+
-    'consectetur adipiscing elit. Aenean euismod bibendum laoreet.')
   const [cursor, setCursor]=useState('none')
-  const { view, alternativeLang, componentDisplay } = props
+  const [outline, setOutline]=useState('none')
+  const alternativeLang = demoValue?.alternativeLang
+  const componentDisplay = demoValue?.componentDisplay
+  const [clicked, setClicked]=useState(false)
+  const logoTools = <PortalImageTools
+    url={demoValue.logo as string}
+    size={demoValue.logoSize as number}
+    defaultSize={PortalDemoDefaultSize.logoSize}
+    showText={false}
+    showColorPic={false}
+    updateDemoImg={(data)=>{
+      demoValue.componentDisplay.Logo = data.show as boolean
+      updateViewContent({ ...demoValue, logo: data.url, logoSize: data.size })
+    }}
+  />
   return (
     <UI.LayoutViewContent>
-      {componentDisplay.WiFi4EU && <PortalWifi4euModal/>}
+      {componentDisplay?.WiFi4EU && <UI.Img src={Wifi4eu}
+        alt={$t({ defaultMessage: 'Wifi4eu' })}
+        height={120} />}
       <PortalAlternativeLanguage alternativeLang={alternativeLang}/>
-      {componentDisplay.Logo && <UI.Img src={logo}
-        alt={$t({ defaultMessage: 'Logo' })}
-        height={105}
-        style={{ cursor: cursor }}
-        onMouseOver={()=>{setLogo(Logosvg); setCursor('pointer')}}
-        onMouseLeave={()=>{setLogo(Logopng); setCursor('none')}}
-        onMouseDown={()=>{setLogo(Logosvg); setCursor('pointer')}}
+      {componentDisplay?.Logo &&<PortalPopover
+        content={logoTools}
+        visible={clicked}
+        onVisibleChange={(value)=>setClicked(value)}
+      >
+        <UI.Img src={demoValue.logo}
+          alt={$t({ defaultMessage: 'Logo' })}
+          style={{ height: (demoValue.logoSize||PortalDemoDefaultSize.logoSize),
+            cursor: cursor, outline: outline,maxWidth: 425 }}
+          onMouseOver={()=>{setCursor('pointer')
+            setOutline(dashedOutline)}}
+          onMouseLeave={()=>{
+            if(!clicked){setCursor('none')
+              setOutline('none')}}}
+          onClick={()=>{setCursor('pointer')
+            setClicked(true)
+            setOutline(dashedOutline)}}
+        /></PortalPopover>}
+      {componentDisplay?.WelcomeText && <PortalWelcomeContent
+        demoValue={demoValue}
+        updateWelcome={(data)=>{
+          demoValue.componentDisplay.WelcomeText = data.show as boolean
+          updateViewContent({ ...demoValue, welcomeSize: data.size||demoValue.welcomeSize,
+            welcomeText: data.text||demoValue.welcomeText,
+            welcomeColor: data.color||demoValue.welcomeColor })}}
       />}
-      {componentDisplay.WelcomeText && <UI.Input type='text'
-        defaultValue={welcomeText}
-        onChange={(e)=>setWelcomeText(e.target.value)}
+      {componentDisplay?.Photo &&
+        <PortalPhotoContent
+          demoValue={demoValue}
+          updatePhoto={(data)=>{
+            demoValue.componentDisplay.Photo = data.show as boolean
+            updateViewContent({ ...demoValue, photo: data.url, photoSize: data.size })}}
+        />}
+      {componentDisplay?.SecondaryText &&
+        <PortalSecondaryTextContent
+          demoValue={demoValue}
+          updateSecText={(data)=>{
+            demoValue.componentDisplay.SecondaryText = data.show as boolean
+            updateViewContent({ ...demoValue, secondarySize: data.size,
+              secondaryColor: data.color })}}
+        />}
+      {view === PortalViewEnum.ClickThrough && <PortalViewGoThrough
+        demoValue={demoValue}
+        updateBtn={(data)=>{
+          updateViewContent({ ...demoValue, buttonColor: data.color })}}
       />}
-      {componentDisplay.Photo &&
-      <UI.Img src={Photo} alt={$t({ defaultMessage: 'Photo png' })}/>}
-      {componentDisplay.SecondaryText &&
-      <UI.FieldText>{secondaryText}</UI.FieldText>}
-      {view === PortalViewEnum.ClickThrough && <PortalViewGoThrough/>}
-      {view === PortalViewEnum.GuestPassConnect && <PortalViewGuestConnect/>}
-      {view === PortalViewEnum.GuestPassForgot && <PortalViewGuestForget/>}
+      {view === PortalViewEnum.GuestPassConnect && <PortalViewGuestConnect
+        demoValue={demoValue}
+        updateBtn={(data)=>{
+          updateViewContent({ ...demoValue, buttonColor: data.color })}}
+      />}
+      {view === PortalViewEnum.GuestPassForgot && <PortalViewGuestForget
+        demoValue={demoValue}
+        updateBtn={(data)=>{
+          updateViewContent({ ...demoValue, buttonColor: data.color })}}
+      />}
       {view === PortalViewEnum.SelfSignIn &&
       <PortalViewSelfSignConnect/>}
       {view === PortalViewEnum.SelfSignInRegister &&
-      <PortalViewSelfSignRegister/>}
+      <PortalViewSelfSignRegister
+        demoValue={demoValue}
+        updateBtn={(data)=>{
+          updateViewContent({ ...demoValue, buttonColor: data.color })}}
+      />}
       {view === PortalViewEnum.HostApproval &&
-      <PortalViewHostApproval/>}
+      <PortalViewHostApproval
+        demoValue={demoValue}
+        updateBtn={(data)=>{
+          updateViewContent({ ...demoValue, buttonColor: data.color })}}
+      />}
       {view === PortalViewEnum.ConnectionConfirmed &&
       <PortalViewConfirm/>}
       {view === PortalViewEnum.TermCondition &&
       <PortalViewTerms/>}
-      {componentDisplay.TermsConditions &&<PortalTermsModal/>}
-      {componentDisplay.PoweredBy &&<UI.FieldText>
-        {$t({ defaultMessage: 'Powered By' })}</UI.FieldText>}
-      {componentDisplay.PoweredBy &&<UI.Img src={Powered}
-        alt={$t({ defaultMessage: 'Powered by' })}
-        style={{ height: 50, marginLeft: 180 }}
-      ></UI.Img>}
+      {componentDisplay?.TermsConditions &&<UI.FieldText>{$t({
+        defaultMessage: 'By clicking the connect button, you are accepting the'
+      })}&nbsp;&nbsp;
+      <UI.FieldTextLink>
+        {$t({ defaultMessage: 'terms & conditions' })}
+      </UI.FieldTextLink></UI.FieldText>}
+      {componentDisplay.PoweredBy &&<PortalPoweredByContent
+        demoValue={demoValue}
+        updatePoweredBy={(data)=>{
+          demoValue.componentDisplay.PoweredBy = data.show as boolean
+          updateViewContent({ ...demoValue, poweredImg: data.url||demoValue.poweredImg,
+            poweredImgSize: data.size||demoValue.poweredImgSize,
+            poweredBackgroundColor: data.bgcolor||demoValue.poweredBackgroundColor,
+            poweredColor: data.color||demoValue.poweredColor,
+            poweredSize: data.textsize||demoValue.poweredSize })}}
+      />}
     </UI.LayoutViewContent>
   )
 }

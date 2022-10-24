@@ -1,4 +1,3 @@
-
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
@@ -7,12 +6,8 @@ import { StepsForm } from '@acx-ui/components'
 import PortalDemo from '../PortalDemo/PortalDemo'
 
 
-
-
-
 const PortalSettingForm = () => {
   const { $t } = useIntl()
-
   return (
     <>
       <Row gutter={20}>
@@ -30,16 +25,12 @@ const PortalSettingForm = () => {
             hasFeedback
             children={<Input />}
           />
-          <Form.Item
-            name='tags'
-            label={$t({ defaultMessage: 'Tags' })}
-            children={<Input />}
-          />
         </Col>
       </Row>
       <Row>
         <Col flex={1}>
           <Form.Item
+            name='demo'
             label={$t({ defaultMessage: 'Demo' })}
             children={<PortalDemo/>}
           />

@@ -1,13 +1,14 @@
 import {
-  DesktopOutlined as AntDesktopOutlined,
-  TabletOutlined as AntTabletOutlined,
   MobileOutlined as AntMobileOutlined,
-  PictureOutlined as AntPictureOutlined,
   UserOutlined as AntUserOutlined,
   MailOutlined as AntMailOutlined,
-  EditOutlined as AntEditOutlined
+  EditOutlined as AntEditOutlined,
+  SettingFilled as AntSettingOutlined,
+  PlusOutlined as AntPlusOutlined,
+  MinusOutlined as AntMinusOutlined,
+  EyeInvisibleOutlined as AntEyeInvisibleOutlined
 } from '@ant-design/icons'
-import { Tabs as AntTabs,
+import { Tabs as AntTabs, Popover as AntPopover,
   Select as AntSelect, Layout as AntLayout, Switch as AntSwitch, Modal as AntModal } from 'antd'
 import styled, { css  } from 'styled-components/macro'
 export const CommonLabel = styled.div`
@@ -41,65 +42,38 @@ export const CommonContainer= styled.div<{ $isShow: boolean | null }>`
   background-color: var(--acx-primary-white);
   width: 300px;
 `
-export const BackgroundContainer= styled.div<{ $isShow: boolean | null }>`
-  ${props => props.$isShow ? css`
-  display:'';
-  `:css`
-  display: none;
-  `}
-  position: absolute;
-  left: 20px;
-  top: 70px;
-  background-color: var(--acx-neutrals-20);
-  width: 300px;
-`
-export const DesktopOutlined = styled(AntDesktopOutlined)<{ $marked: boolean | null }>`
-  ${props => props.$marked ? css`
-    color:var(--acx-accents-orange-50);
-  ` : css`
-  color:var(--acx-primary-black);
-  `}
-  margin-left: 50px;
-  font-size: 32px;
+export const ImgDesk = styled.img`
+  &:hover{
+    cursor:pointer;
+  }
+  margin-left: 40px;
 `
 
-export const TabletOutlined = styled(AntTabletOutlined)<{ $marked: boolean | null }>`
-${props => props.$marked ? css`
-  color:var(--acx-accents-orange-50);
-  ` : css`
-  color:var(--acx-primary-black);
-  `}
-  margin-left: 5px;
-  font-size: 32px;
+export const ImgTablet =styled.img`
+  &:hover{
+    cursor:pointer;
+  }
 `
 
-export const MobileOutlined = styled(AntMobileOutlined)<{ $marked: boolean | null }>`
-${props => props.$marked ? css`
-  color:var(--acx-accents-orange-50);
-  ` : css`
-  color:var(--acx-primary-black);
-  `}
-  margin-left: 5px;
-  font-size: 32px;
+export const ImgMobile = styled.img`
+  &:hover{
+    cursor:pointer;
+  }
 `
-export const PictureOutlined = styled(AntPictureOutlined)<{ $isDesk: boolean | null }>`
-  position: absolute;
-  left: 10px;
-  top: 60px;
-  font-size: 32px;
-  ${props => props.$isDesk ? css`
-  color:var(--acx-primary-black);
-  ` : css`
-  color:var(--acx-primary-white);
-  `}
-`
-export const Button = styled.button`
+const buttonStyle= css`
   margin-left: 10px;
   border: 0;
   padding-top:5px;
   color: var(--acx-accents-blue-60);
   background-color: var(--acx-neutrals-20);
   cursor: pointer;
+`
+export const Button = styled.button`
+  ${buttonStyle}
+`
+export const PopoverButton = styled.button`
+  ${buttonStyle}
+  background-color: var(--acx-primary-white);
 `
 export const LayoutContent = styled(AntLayout)`
   border: 1px solid var(--acx-neutrals-50);
@@ -127,6 +101,7 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   background-repeat: no-repeat;
 `
 export const LayoutViewContent = styled(AntLayout)`
+  padding-top:3px;
   width:425px;
   max-width:600px;
   min-height: 700px;
@@ -147,6 +122,8 @@ export const LayoutHeader = styled.div`
   width: 95%;
   height: 50px;
   padding: 10px 0 0 10px;
+  border: 1px solid var(--acx-neutrals-50);
+  border-bottom:0px;
 `
 
 export const FieldExtraTooltip = styled.div`
@@ -155,13 +132,20 @@ export const FieldExtraTooltip = styled.div`
 `
 export const Img = styled.img`
   margin-bottom:10px;
+  margin-top:5px;
+`
+export const ToolImg = styled.img`
+  margin-right:5px;
+  &:hover{
+    cursor:pointer;
+  }
 `
 export const Input=styled.input`
   border:0;
   width:280px;
   text-align:center;
   height:25px;
-  &:focus{
+  &:focus,&:hover{
     outline:1px dashed var(--acx-neutrals-50);
   }
 `
@@ -230,7 +214,7 @@ export const Modal = styled(AntModal)`
       border-radius: 0px;
     border:0;
     .ant-modal-body {
-      overflow-y:hidden;
+      overflow-y:auto;
     }
   }
   .ant-modal-footer {
@@ -283,7 +267,7 @@ export const ViewSectionTabs = styled(AntTabs)`
           &.ant-tabs-tab-active {
             background: var(--acx-neutrals-20);
             border:2px solid var(--acx-accents-orange-50);
-            border-bottom:6px solid var(--acx-primary-white);
+            border-bottom:8px solid var(--acx-primary-white);
             margin-bottom: -3px;
           }
       }
@@ -395,4 +379,28 @@ export const ViewTextArea = styled.div`
  text-align: left;
  padding: 5px 5px 0 20px;
 `
+export const Popover = styled(AntPopover)`
 
+
+
+`
+export const SettingOutlined = styled(AntSettingOutlined)`
+  color: var(--acx-accents-blue-50);
+  &.anticon-setting {
+    font-size: 16px;
+    padding-top:2px;
+  }
+`
+export const SelectedDiv = styled.div`
+  width: 100%;
+  padding-left: 200px;
+  padding-right: 73px;
+`
+export const PlusOutlined = styled(AntPlusOutlined)`
+  margin-right:5px;
+`
+export const MinusOutlined = styled(AntMinusOutlined)`
+  margin-right:5px;
+`
+export const EyeInvisibleOutlined = styled(AntEyeInvisibleOutlined)`
+`
