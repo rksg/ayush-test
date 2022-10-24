@@ -107,7 +107,7 @@ interface ThresholdData {
   value: number | null
 }
 
-interface ThresholdsApiResponse {
+export interface ThresholdsApiResponse {
   timeToConnectThreshold?: ThresholdData
   clientThroughputThreshold?: ThresholdData
 }

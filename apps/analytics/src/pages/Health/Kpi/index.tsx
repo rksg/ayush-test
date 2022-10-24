@@ -1,13 +1,15 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
+import _            from 'lodash'
 import moment       from 'moment-timezone'
 
 import {
   kpisForTab,
   useAnalyticsFilter,
-  kpiConfig
+  kpiConfig,
+  AnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow } from '@acx-ui/components'
 
@@ -22,9 +24,9 @@ import { KpiRow } from '../styledComponents'
 import BarChart   from '../Threshold/BarChart'
 import Histogram  from '../Threshold/Histogram'
 
-import HealthPill                                        from './Pill'
-import { KpisHavingThreshold, useGetKpiThresholdsQuery } from './services'
-import KpiTimeseries                                     from './Timeseries'
+import HealthPill                                                               from './Pill'
+import { KpisHavingThreshold, useGetKpiThresholdsQuery, ThresholdsApiResponse } from './services'
+import KpiTimeseries                                                            from './Timeseries'
 export interface KpiThresholdType {
   timeToConnect: number;
   rss: number;
@@ -50,7 +52,7 @@ interface FetchedData {
 }
 
 
-const defaultData = {
+export const defaultData = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
   rss: kpiConfig.rss.histogram.initialThreshold,
   clientThroughput: kpiConfig.clientThroughput.histogram.initialThreshold,
@@ -61,23 +63,37 @@ const defaultData = {
 }
 
 
-const getDefaultThreshold = (fetchedData: Partial<FetchedData> | undefined) => {
-  let defaultConfig = { ...defaultData }
+export const getDefaultThreshold = (fetchedData: Partial<FetchedData> | undefined) => {
+  const defaultConfig = { ...defaultData }
 
   if (!fetchedData) return defaultConfig
 
-  for (let key in Object.keys(defaultConfig)) {
-    const target = Object.keys(fetchedData).filter(s => s.includes(key))
-    if (!target.length) continue
-    const data = fetchedData[target[0] as keyof FetchedData]
-    if (!data) continue
-    defaultConfig[key as keyof typeof defaultConfig] = data.value
-      ?? defaultConfig[key as keyof typeof defaultConfig]
+  const fetchedValuesArr = Object.entries(fetchedData).map(([key, val]) =>
+    [ key.replace('Threshold', ''), val.value ])
+  const fetchValues = Object.fromEntries(fetchedValuesArr)
+
+  const resultConfig = {
+    ...defaultConfig,
+    ..._.omitBy(fetchValues, _.isNull)
   }
 
-  return defaultConfig
+  return resultConfig
 }
 
+export function getResetCallback (data: ThresholdsApiResponse | undefined) {
+  return (kpi: keyof KpiThresholdType) => {
+    const defaultConfig =
+    getDefaultThreshold(data as unknown as Partial<FetchedData>)[kpi]
+    return defaultConfig
+  }
+}
+
+export function getApplyCallback (triggerSave: CallableFunction, filters: AnalyticsFilter) {
+  return (kpi: keyof KpiThresholdType) => {
+    return async (value: number) =>
+      await triggerSave({ path: filters.path, name: kpi, value }).unwrap()
+  }
+}
 
 export type onApplyType = () =>
    (value: number) => Promise<ThresholdMutationResponse>
@@ -93,9 +109,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
     kpis: Object.keys(defaultData) as unknown as KpisHavingThreshold[]
   })
 
-  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(
-    () => getDefaultThreshold(defaultQuery.data as unknown as Partial<FetchedData>)
-  )
+  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(defaultData)
   const thresholdPermission = useFetchThresholdPermissionQuery({ path: filters.path })
   const [ triggerSave ] = useSaveThresholdMutation()
 
@@ -112,32 +126,27 @@ export default function KpiSection (props: { tab: HealthTab }) {
 
   useEffect(() => { connect('timeSeriesGroup') }, [])
 
-  const canSave = useMemo(() => ({
+  const canSave = {
     data: { allowedSave: thresholdPermission.data?.mutationAllowed as boolean | undefined },
     isFetching: thresholdPermission.isFetching,
     isLoading: thresholdPermission.isLoading
-  }), [thresholdPermission])
+  }
 
   const fetchingDefault = {
     isFetching: defaultQuery.isFetching,
-    isLoading: defaultQuery.isLoading
+    isLoading: defaultQuery.isLoading,
+    data: defaultQuery.data
   }
 
-  const onReset = (kpi: keyof KpiThresholdType) => {
-    // todo, use data base fetching
-    const defaultConfig =
-      getDefaultThreshold(defaultQuery.data as unknown as Partial<FetchedData>)[kpi]
-    return defaultConfig
-  }
+  const onReset = getResetCallback(defaultQuery.data)
 
-  const onApply = (kpi: keyof KpiThresholdType) => {
-    return async (value: number) =>
-      await triggerSave({ path: filters.path, name: kpi, value }).unwrap()
-  }
+  const onApply = getApplyCallback(triggerSave, filters)
 
   return (
     <>
       {kpis.map((kpi) => {
+        const onResetHandle = () => onReset(kpi as keyof KpiThresholdType)
+        const onApplyHandle = () => onApply(kpi as keyof KpiThresholdType)
         return (
           <KpiRow key={kpi + defaultZoom}>
             <GridCol col={{ span: 16 }}>
@@ -168,8 +177,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
                   setKpiThreshold={setKpiThreshold}
                   thresholds={kpiThreshold}
-                  onReset={() => onReset(kpi as keyof KpiThresholdType)}
-                  onApply={() => onApply(kpi as keyof KpiThresholdType)}
+                  onReset={onResetHandle}
+                  onApply={onApplyHandle}
                   canSave={canSave}
                   fetchingDefault={fetchingDefault}
                 />
