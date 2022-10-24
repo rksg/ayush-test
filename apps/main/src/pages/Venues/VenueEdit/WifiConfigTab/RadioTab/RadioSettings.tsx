@@ -27,7 +27,6 @@ import { Radio5GHz }      from './Radio5GHz'
 import { Radio6GHz }      from './Radio6GHz'
 import { RadioLower5GHz } from './RadioLower5GHz'
 import { RadioUpper5GHz } from './RadioUpper5GHz'
-import { FieldLabel }     from './styledComponents'
 
 export function RadioSettings () {
   const { $t } = useIntl()
@@ -183,29 +182,32 @@ export function RadioSettings () {
           wrapperCol={{ span: 12 }}
         >
           <div>
-            {$t({ defaultMessage: 'Tri-band radio settings' })}
-            <Switch
-              disabled={!triBandRadioFeatureFlag}
-              checked={triBandRadio}
-              onClick={(checked, event) => {
-                event.stopPropagation()
-                setTriBandRadio(checked)
-                setEditContextData({
-                  ...editContextData,
-                  unsavedTabKey: 'radio',
-                  isDirty: true
-                })
-              }}
-              style={{ marginLeft: '20px' }}
-            />
-            <Tooltip
-            // eslint-disable-next-line max-len
-              title={$t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })}
-              placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
-            {triBandRadio &&
+            {triBandRadioFeatureFlag &&
+              <>
+                {$t({ defaultMessage: 'Tri-band radio settings' })}
+                <Switch
+                  checked={triBandRadio}
+                  onClick={(checked, event) => {
+                    event.stopPropagation()
+                    setTriBandRadio(checked)
+                    setEditContextData({
+                      ...editContextData,
+                      unsavedTabKey: 'radio',
+                      isDirty: true
+                    })
+                  }}
+                  style={{ marginLeft: '20px' }}
+                />
+                <Tooltip
+                // eslint-disable-next-line max-len
+                  title={$t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })}
+                  placement='bottom'
+                >
+                  <QuestionMarkCircleOutlined />
+                </Tooltip>
+              </>
+            }
+            {triBandRadioFeatureFlag && triBandRadio &&
               <div style={{ marginTop: '1em' }}>
                 <span>{$t({ defaultMessage: 'R760 radio bands management' })}</span>
                 <Form.Item
@@ -213,22 +215,20 @@ export function RadioSettings () {
                   initialValue={true}
                 >
                   <Radio.Group onChange={onRadioChange}>
-                    <FieldLabel width='300px'>
-                      <Radio value={true}>
-                        {$t({ defaultMessage: 'Split 5GHz into lower and upper bands' })}
-                      </Radio>
-                    </FieldLabel>
+                    <Radio value={true}>
+                      {$t({ defaultMessage: 'Split 5GHz into lower and upper bands' })}
+                    </Radio>
 
-                    <FieldLabel width='300px'>
-                      <Radio value={false}>
-                        {$t({ defaultMessage: 'Use 5 and 6 Ghz bands' })}
-                      </Radio>
-                    </FieldLabel>
+                    <Radio value={false}>
+                      {$t({ defaultMessage: 'Use 5 and 6 Ghz bands' })}
+                    </Radio>
                   </Radio.Group>
                 </Form.Item>
               </div>
             }
-            <Tabs onChange={onTabChange} activeKey={currentTab} style={{ marginTop: '5em' }}>
+            <Tabs onChange={onTabChange}
+              activeKey={currentTab}
+              style={{ marginTop: triBandRadioFeatureFlag ? '5em' : '' }}>
               <Tabs.TabPane tab={$t({ defaultMessage: '2.4 GHz' })} key='Normal24GHz' />
               <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key='Normal5GHz' />
               { triBandRadio && radioBandManagement &&

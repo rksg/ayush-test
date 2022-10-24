@@ -2,10 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useSplitTreatment }                                                from '@acx-ui/feature-toggle'
 import { venueApi }                                                         from '@acx-ui/rc/services'
 import { CommonUrlsInfo, VenueDefaultRegulatoryChannelsForm, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                  from '@acx-ui/store'
-import { mockServer, screen, render, waitForElementToBeRemoved }            from '@acx-ui/test-utils'
+import { mockServer, screen, render, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
 
 import { VenueEditContext }       from '../..'
 import {
@@ -148,6 +149,7 @@ describe('RadioTab', () => {
   }, 20000)
 
   it('should render Wi-Fi Radio Settings correctly', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
         editContextData: {},
@@ -168,10 +170,17 @@ describe('RadioTab', () => {
     const triBand = screen.getAllByRole('switch')[0]
     await userEvent.click(triBand)
 
-    await userEvent.click(screen.getByRole('radio', { name: /Use 5 and 6 Ghz bands/ }))
-    await userEvent.click(screen.getByRole('radio',
-      { name: /Split 5GHz into lower and upper bands/ }))
-
+    const channelSelect = screen.getAllByRole('combobox')[0]
+    await userEvent.click(channelSelect)
+    await userEvent.click(screen.getAllByTitle('Channel Fly')[0])
+    const scanIntervalInput = screen.getAllByLabelText('Run background scan every')[0]
+    fireEvent.change(scanIntervalInput, { target: { value: '40' } })
+    const bandwidthSelect = screen.getAllByRole('combobox')[1]
+    await userEvent.click(bandwidthSelect)
+    await userEvent.click(screen.getAllByTitle('40MHz')[0])
+    const transmitSelect = screen.getAllByRole('combobox')[2]
+    await userEvent.click(transmitSelect)
+    await userEvent.click(screen.getAllByTitle('Auto')[0])
     await userEvent.click(screen.getAllByRole('button', { name: 'Save' })[0])
   })
 })

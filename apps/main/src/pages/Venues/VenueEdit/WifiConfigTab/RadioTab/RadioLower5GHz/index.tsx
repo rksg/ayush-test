@@ -160,77 +160,63 @@ export function RadioLower5GHz () {
           </Radio.Group>
         </Form.Item>
       </div>
-      <FieldLabel width='200px'>
-        { $t({ defaultMessage: 'Channel selection method:' }) }
-        <Form.Item
-          name={['radioParamsDual5G', 'radioParamsLower5G', 'method']}>
-          <Select
-            options={channelSelectionMethodsOptions?.map(p => ({ label: p.label, value: p.value }))}
-            defaultValue={channelSelectionMethodsOptions[1].value}
-            disabled={inheritSettings}
-          />
-        </Form.Item>
-      </FieldLabel>
-      <FieldLabel
-        width='200px'
+      <Form.Item
+        label={$t({ defaultMessage: 'Channel selection method:' })}
+        name={['radioParamsDual5G', 'radioParamsLower5G', 'method']}>
+        <Select
+          options={channelSelectionMethodsOptions?.map(p => ({ label: p.label, value: p.value }))}
+          defaultValue={channelSelectionMethodsOptions[1].value}
+          disabled={inheritSettings}
+        />
+      </Form.Item>
+      <Form.Item
+        label={$t({ defaultMessage: 'Channel Change Frequency:' })}
+        name={['radioParamsDual5G', 'radioParamsLower5G', 'changeInterval']}
         style={{ display: channelMethod === channelSelectionMethodsOptions[0].value ?
           'block' : 'none' }}
       >
-        { $t({ defaultMessage: 'Channel Change Frequency:' }) }
-        <Form.Item
-          name={['radioParamsDual5G', 'radioParamsLower5G', 'changeInterval']}
-        >
-          <Slider
-            tipFormatter={formatter}
-            style={{ width: '240px' }}
-            defaultValue={33}
-            min={1}
-            max={100}
-            marks={{ 1: '1%', 100: '100%' }}
-          />
-        </Form.Item>
-      </FieldLabel>
-      <FieldLabel width='200px'>
-        {$t({ defaultMessage: 'Run background scan every:' })}
-        <Form.Item
-          name={['radioParamsDual5G', 'radioParamsLower5G', 'scanInterval']}
-          rules={[
-            { required: true },
-            { type: 'number', min: 1 },
-            { type: 'number', max: 65535 }
-          ]}
-          initialValue={20}
-          children={<InputNumber min={1} max={65535} disabled={inheritSettings} />}
+        <Slider
+          tipFormatter={formatter}
+          style={{ width: '240px' }}
+          defaultValue={33}
+          min={1}
+          max={100}
+          marks={{ 1: '1%', 100: '100%' }}
         />
-      </FieldLabel>
+      </Form.Item>
+      <Form.Item
+        label={$t({ defaultMessage: 'Run background scan every:' })}
+        name={['radioParamsDual5G', 'radioParamsLower5G', 'scanInterval']}
+        rules={[
+          { required: true },
+          { type: 'number', min: 1 },
+          { type: 'number', max: 65535 }
+        ]}
+        initialValue={20}
+        children={<InputNumber min={1} max={65535} disabled={inheritSettings} />}
+      />
+      <Form.Item
+        label={$t({ defaultMessage: 'Bandwidth:' })}
+        name={['radioParamsDual5G', 'radioParamsLower5G', 'channelBandwidth']}>
+        <Select
+          options={defaultChannelsData &&
+            Object.keys(defaultChannelsData['5GLowerChannels']['dfs'])
+              .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+          defaultValue={'auto'}
+          disabled={inheritSettings}
+        />
+      </Form.Item>
+      <Form.Item
+        label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
+        name={['radioParamsDual5G', 'radioParamsLower5G', 'txPower']}>
+        <Select
+          options={txPowerAdjustmentOptions?.map(p => ({ label: p.label, value: p.value }))}
+          defaultValue={txPowerAdjustmentOptions[1].value}
+          disabled={inheritSettings}
+        />
+      </Form.Item>
 
-      <FieldLabel width='200px'>
-        {$t({ defaultMessage: 'Bandwidth:' })}
-        <Form.Item
-          name={['radioParamsDual5G', 'radioParamsLower5G', 'channelBandwidth']}>
-          <Select
-            options={defaultChannelsData &&
-              Object.keys(defaultChannelsData['5GLowerChannels']['dfs'])
-                .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
-            defaultValue={'auto'}
-            disabled={inheritSettings}
-          />
-        </Form.Item>
-      </FieldLabel>
-
-      <FieldLabel width='200px'>
-        {$t({ defaultMessage: 'Transmit Power adjustment:' })}
-        <Form.Item
-          name={['radioParamsDual5G', 'radioParamsLower5G', 'txPower']}>
-          <Select
-            options={txPowerAdjustmentOptions?.map(p => ({ label: p.label, value: p.value }))}
-            defaultValue={txPowerAdjustmentOptions[1].value}
-            disabled={inheritSettings}
-          />
-        </Form.Item>
-      </FieldLabel>
-
-      <div>{$t({ defaultMessage: 'Channel selection:' })}</div>
+      <div style={{ marginTop: '1em' }}>{$t({ defaultMessage: 'Channel selection:' })}</div>
 
       <div>
         {

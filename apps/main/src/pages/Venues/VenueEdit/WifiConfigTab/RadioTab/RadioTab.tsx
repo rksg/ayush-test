@@ -51,20 +51,19 @@ export function RadioTab () {
       if (editRadioContextData.apModels) {
         const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
         await editRadioContextData?.updateExternalAntenna?.(extPayload)
-        setEditContextData({
-          ...editContextData,
-          unsavedTabKey: 'radio',
-          isDirty: false
-        })
       }
       if (editRadioContextData.radioData) {
         await editRadioContextData?.updateWifiRadio?.(editRadioContextData.radioData)
+      }
+
+      if (editRadioContextData.apModels || editRadioContextData.radioData) {
         setEditContextData({
           ...editContextData,
           unsavedTabKey: 'radio',
           isDirty: false
         })
       }
+
       if (redirect) {
         navigate({
           ...basePath,
