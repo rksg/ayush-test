@@ -36,7 +36,7 @@ const transformHistogramResponse = ({
   shortXFormat
 }: KPIHistogramResponse & { splits: number[], shortXFormat: CallableFunction }) => {
   return data.map((datum, index) => [
-    splits[index] ? shortXFormat(splits[index]) : null,
+    splits[index] ? shortXFormat(splits[index]) : '',
     datum
   ]) as [TimeStamp, number][]
 }
