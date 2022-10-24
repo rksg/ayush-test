@@ -140,7 +140,7 @@ export function VenuesForm () {
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
 
   useEffect(() => {
-    if(data){
+    if (data) {
       formRef.current?.setFieldsValue({
         name: data?.name,
         description: data?.description,
@@ -148,7 +148,7 @@ export function VenuesForm () {
       })
       updateAddress(data?.address as Address)
 
-      if(isMapEnabled){
+      if (isMapEnabled) {
         const latlng = new google.maps.LatLng({
           lat: Number(data?.address?.latitude),
           lng: Number(data?.address?.longitude)
@@ -158,7 +158,12 @@ export function VenuesForm () {
         setZoom(16)
       }
     }
-  }, [data])
+
+    if ( action !== 'edit') { // Add mode
+      const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
+      formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
+    }
+  }, [data, isMapEnabled])
 
   const venuesListPayload = {
     searchString: '',
@@ -233,14 +238,12 @@ export function VenuesForm () {
 
   return (
     <>
-      <PageHeader
-        title={action === 'edit' ?
-          intl.$t({ defaultMessage: 'Edit New Venue' }):
-          intl.$t({ defaultMessage: 'Add New Venue' })}
+      {action !== 'edit' && <PageHeader
+        title={intl.$t({ defaultMessage: 'Add New Venue' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
-      />
+      />}
       <StepsForm
         formRef={formRef}
         onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
@@ -296,10 +299,10 @@ export function VenuesForm () {
                     validator: () => addressValidator(),
                     validateTrigger: 'onChange'
                   }]}
-                  initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
                 >
                   <Input
                     allowClear
+                    placeholder={intl.$t({ defaultMessage: 'Set address here' })}
                     prefix={<SearchOutlined />}
                     onChange={addressOnChange}
                     data-testid='address-input'

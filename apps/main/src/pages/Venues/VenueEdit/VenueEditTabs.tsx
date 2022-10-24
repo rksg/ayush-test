@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef } from 'react'
 
-import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tabs }                                   from '@acx-ui/components'
 import {
   useNavigate,
   useParams,
@@ -23,6 +23,7 @@ function VenueEditTabs () {
     editContextData,
     setEditContextData,
     editNetworkingContextData,
+    editRadioContextData,
     editSecurityContextData
   } = useContext(VenueEditContext)
   const onTabChange = (tab: string) => {
@@ -43,6 +44,9 @@ function VenueEditTabs () {
     if (editContextData.isDirty) {
       unblockRef.current?.()
       unblockRef.current = blockNavigator.block((tx: Transition) => {
+        if (tx.location.hash) {
+          return
+        }
         // do not trigger modal twice
         setEditContextData({
           ...editContextData,
@@ -52,6 +56,7 @@ function VenueEditTabs () {
           editContextData,
           setEditContextData,
           editNetworkingContextData,
+          editRadioContextData,
           editSecurityContextData,
           intl,
           tx.retry
