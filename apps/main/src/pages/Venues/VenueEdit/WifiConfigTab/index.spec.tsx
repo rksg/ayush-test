@@ -18,16 +18,21 @@ describe('WifiConfigTab', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(
       <Provider>
-        <VenueEditContext.Provider value={{ editContextData: {}, setEditContextData: jest.fn() }}>
+        <VenueEditContext.Provider value={{
+          editContextData: {},
+          setEditContextData: jest.fn(),
+          setEditRadioContextData: jest.fn()
+        }}>
           <WifiConfigTab />
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
     await screen.findByRole('tab', { name: 'Radio' })
     await screen.findByRole('tab', { name: 'Networking' })
     await screen.findByRole('tab', { name: 'Security' })
     await screen.findByRole('tab', { name: 'External Servers' })
     await screen.findByRole('tab', { name: 'Advanced Settings' })
+    await screen.findByText('AP Model')
+    expect(asFragment()).toMatchSnapshot()
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Security' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({

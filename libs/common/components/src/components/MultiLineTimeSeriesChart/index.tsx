@@ -20,6 +20,7 @@ import {
   gridOptions,
   legendOptions,
   legendTextStyleOptions,
+  dataZoomOptions,
   xAxisOptions,
   yAxisOptions,
   axisLabelOptions,
@@ -227,13 +228,7 @@ export function MultiLineTimeSeriesChart <
           brush: { type: ['rect'], icon: { rect: 'path://' } }
         }
       },
-      dataZoom: [
-        {
-          id: 'zoom',
-          type: 'inside',
-          zoomLock: true
-        }
-      ]
+      dataZoom: dataZoomOptions(data)
     } : {
       toolbox: { show: false },
       brush: {

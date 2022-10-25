@@ -13,7 +13,7 @@ export type BufferConfig = {
 export type BufferType = { front: BufferConfig, back: BufferConfig }
 
 export type TimeSeriesChartResponse = {
-  relatedIncidents?: Incident[],
+  relatedIncidents?: Incident[]
 } & Record<string, TimeSeriesData>
 
 export type TimeSeriesChartProps = {
