@@ -93,7 +93,7 @@ exports[`PageHeader should render page header with tabs 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
         >
           <div
             class="ant-tabs-nav"
