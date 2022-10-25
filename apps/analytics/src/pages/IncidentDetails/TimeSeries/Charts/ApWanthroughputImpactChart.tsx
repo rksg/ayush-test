@@ -10,7 +10,7 @@ import { TimeSeriesChartProps } from '../types'
 const apWanthroughputImpactQuery = () => gql`
   apInfraImpactedAPsChart: timeSeries(granularity:$granularity){
     time
-    impactedAPs: apInfraAPCount(code: $code)
+    apInfraAPCount(code: $code)
   }
 `
 export const ApWanthroughputImpactChart = (
@@ -20,7 +20,7 @@ export const ApWanthroughputImpactChart = (
   const { $t } = useIntl()
 
   const seriesMapping = [{
-    key: 'impactedAPs',
+    key: 'apInfraAPCount',
     name: $t({ defaultMessage: 'Impacted APs' })
   }]
 

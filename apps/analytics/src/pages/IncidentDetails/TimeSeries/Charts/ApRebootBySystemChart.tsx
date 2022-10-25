@@ -15,7 +15,7 @@ const apRebootBySystemQuery = () => gql`
   }
   apRebootBySystem: timeSeries(granularity:$granularity){
     time
-    apRebootBySystem: apRebootBySystemCount
+    apRebootBySystemCount
   }
   `
 export const ApRebootBySystemChart = (
@@ -25,7 +25,7 @@ export const ApRebootBySystemChart = (
   const { $t } = useIntl()
 
   const seriesMapping = [{
-    key: 'apRebootBySystem',
+    key: 'apRebootBySystemCount',
     name: $t({ defaultMessage: 'Reboot by System Event' })
   }]
 

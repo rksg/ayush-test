@@ -73,12 +73,14 @@ export const ApinfraPoeLow = (incident: Incident) => {
         <GridCol col={{ offset: 4, span: 20 }}>
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
-        <TimeSeries
-          incident={incident}
-          charts={timeSeriesCharts}
-          minGranularity='PT180S'
-          buffer={buffer}
-        />
+        <GridCol col={{ offset: 4, span: 20 }}>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+            buffer={buffer}
+          />
+        </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
           <div>Impacted Entities Section</div>
         </GridCol>
