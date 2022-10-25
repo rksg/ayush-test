@@ -129,4 +129,18 @@ describe('formatTimeWindow', () => {
     const formattedWindow = formatTimeWindow(numericTimeWindow)
     expect(formattedWindow).toMatchObject(stringTimeWindow)
   })
+  it('sorts start and end', () => {
+    const stringTimeWindow: TimeStampRange = [
+      '2022-09-25T12:15:57.462Z',
+      '2022-09-26T09:00:00.000Z'
+    ]
+
+    const numericTimeWindow: TimeStampRange = [
+      1664182800000,
+      1664108157462
+    ]
+
+    const formattedWindow = formatTimeWindow(numericTimeWindow)
+    expect(formattedWindow).toMatchObject(stringTimeWindow)
+  })
 })
