@@ -18,7 +18,7 @@ export default function VenueLeaseTable (props: { setLeaseNumFn: Function, style
   })
 
   useEffect(() => {
-    props.setLeaseNumFn(leasesList?.length)
+    props.setLeaseNumFn(leasesList?.length || 0)
   },[leasesList, props])
 
   const columns: TableProps<DHCPLeases>['columns'] = [

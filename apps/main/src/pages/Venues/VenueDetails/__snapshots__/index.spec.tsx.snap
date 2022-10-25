@@ -1705,12 +1705,14 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
               role="tab"
               tabindex="0"
             >
-              <span>
+              <span
+                style="margin-right: 10px;"
+              >
                 <span
                   aria-label="check-circle"
                   class="anticon anticon-check-circle"
                   role="img"
-                  style="color: rgb(35, 171, 54);"
+                  style="color: rgb(35, 171, 54); margin-right: 5px;"
                 >
                   <svg
                     aria-hidden="true"
@@ -1950,6 +1952,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                 <div>
                   <button
                     class="ant-btn ant-btn-link ant-btn-block"
+                    style="padding-left: 0px;"
                     type="button"
                   >
                     <span>
@@ -1983,7 +1986,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                   />
                 </span>
                 <span>
-                  Pools (undefined)
+                  Pools (0)
                 </span>
               </label>
               <label
@@ -2002,7 +2005,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                   />
                 </span>
                 <span>
-                  Lease Table (undefined Online)
+                  Lease Table (0 Online)
                 </span>
               </label>
             </div>

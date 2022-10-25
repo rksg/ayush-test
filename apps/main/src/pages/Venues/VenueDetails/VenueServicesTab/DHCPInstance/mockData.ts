@@ -314,13 +314,13 @@ const dhcpProfileList = [{
   venueIds: ['venueId1', 'venueId2']
 }]
 const leaseList = [{
-  "hostName": "alamb1",
-  "ipAddress": "66.80.84.216",
-  "dhcpPoolId": "poolId1",
-  "dhcpPoolName": "DHCP-3",
-  "macAddress": "90:83:93:a1:78:48",
-  "status": "Online",
-  "leaseExpiration": "10:23:00"
+  hostName: 'alamb1',
+  ipAddress: '66.80.84.216',
+  dhcpPoolId: 'poolId1',
+  dhcpPoolName: 'DHCP-3',
+  macAddress: '90:83:93:a1:78:48',
+  status: 'Online',
+  leaseExpiration: '10:23:00'
 }]
 
 const pools = ['PoolId1']

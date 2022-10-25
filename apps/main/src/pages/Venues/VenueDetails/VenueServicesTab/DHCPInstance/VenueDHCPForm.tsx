@@ -8,13 +8,15 @@ import {
   FormInstance,
   Space
 } from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import _                   from 'lodash'
+import { useIntl }         from 'react-intl'
+import { useParams, Link } from 'react-router-dom'
 
 import { useGetDHCPProfileListQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
 import {  DHCPProfileAps }                                                      from '@acx-ui/rc/utils'
-import { TenantLink }                                                           from '@acx-ui/react-router-dom'
+import {
+  useTenantLink
+} from '@acx-ui/react-router-dom'
 
 import { AntSelect, AntLabel, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
 
@@ -58,9 +60,14 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
 
 
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
+    const currentVal = form.getFieldsValue().gateways[index]
     return <><Row key={index}>
       <StyledForm.Item name={['gateways', index, 'serialNumber']}>
-        <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
+        <AntSelect onChange={() => {
+          const gatewayRawData = form.getFieldsValue().gateways
+          setGateways([...gatewayRawData])
+        }}
+        placeholder={$t({ defaultMessage: 'Select AP...' })}>
           {apList?.data?.map(ap =>
             <Option value={ap.serialNumber}>
               {ap.name}
@@ -80,12 +87,13 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
       </IconContainer>}
     </Row>
     {(gateways?.length===index+1) && <AddBtnContainer>
-      <Button onClick={()=>{
-        form.setFieldsValue({ gateways: [...form.getFieldsValue().gateways, { }] })
-        setGateways([...gateways, { serialNumber: '' , role: '' }])
-      }}
-      type='link'
-      block>
+      <Button disabled={_.isEmpty(currentVal?.serialNumber)}
+        onClick={()=>{
+          form.setFieldsValue({ gateways: [...form.getFieldsValue().gateways, { }] })
+          setGateways([...gateways, { serialNumber: '' , role: '' }])
+        }}
+        type='link'
+        block>
         {$t({ defaultMessage: 'Add gateway' })}
       </Button>
     </AddBtnContainer>}</>
@@ -140,10 +148,16 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
             )}
           </AntSelect>
         </StyledForm.Item>
-        <TenantLink style={{ marginLeft: 10 }}
-          to={`/services/dhcp/${venueDHCPProfile?.serviceProfileId}/detail`}>
+
+        <Link style={{ marginLeft: 10 }}
+          to={useTenantLink('/services/dhcp/create')}
+          state={{
+            origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
+            param: { showConfig: true }
+          }}>
           {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
-        </TenantLink>
+        </Link>
+
       </Space>
     </StyledForm.Item>
 

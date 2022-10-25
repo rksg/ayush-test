@@ -16,7 +16,7 @@ import { DHCPPool }   from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 
-export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
+export default function VenuePoolTable ({ setPoolsNumFn }: { setPoolsNumFn: Function } ){
   const params = useParams()
   const { $t } = useIntl()
 
@@ -39,6 +39,7 @@ export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
   const setActivePool = async (dhcppoolId:string, activated:boolean)=>{
 
     await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+
     const updateActive = tableData?.map((item)=>{
       if(item.id===dhcppoolId){
         return {
@@ -49,12 +50,14 @@ export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
         return item
       }
     })
+
     setTableData(updateActive)
   }
 
-  props.setPoolsNumFn(dhcpProfile?.dhcpPools.length)
+
 
   useEffect(() => {
+    setPoolsNumFn(dhcpProfile?.dhcpPools.length || 0)
     const mergedData = dhcpProfile?.dhcpPools.map( item => {
       const index = _.findIndex(activeList, poolId => poolId === item.id)
       return {
@@ -63,6 +66,7 @@ export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
       }
     })
     setTableData(mergedData)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeList, dhcpProfile])
 
 
@@ -112,34 +116,28 @@ export default function VenuePoolTable (props: { setPoolsNumFn: Function } ){
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'id',
       render: (id, row) => {
-        if(activeList){
-          const switchRef = <Switch
-            checkedChildren={$t({ defaultMessage: 'ON' })}
-            unCheckedChildren={$t({ defaultMessage: 'OFF' })}
-            checked={row.activated}
-            onChange={(checked)=>{
-              const activeMsg =
-              $t({ defaultMessage: 'Are you sure you want to active this DHCP Pool?' })
-              const deactivateMsg =
-              $t({ defaultMessage: 'Are you sure you want to deactivate this DHCP Pool?' })
-              const activeTitle = $t({ defaultMessage: 'Active DHCP Pool' })
-              const deactivateTitle = $t({ defaultMessage: 'Deactivate DHCP Pool' })
-              showActionModal({
-                type: 'confirm',
-                width: 450,
-                title: checked ? activeTitle : deactivateTitle,
-                content: checked ? activeMsg : deactivateMsg,
-                okText: $t({ defaultMessage: 'Confirm' }),
-                onOk () {
-                  setActivePool(id as string, checked)
-                }
-              })
+        const switchRef = <Switch
+          checked={row.activated}
+          onChange={(checked)=>{
+            const activeMsg =
+            $t({ defaultMessage: 'Are you sure you want to active this DHCP Pool?' })
+            const deactivateMsg =
+            $t({ defaultMessage: 'Are you sure you want to deactivate this DHCP Pool?' })
+            const activeTitle = $t({ defaultMessage: 'Active DHCP Pool' })
+            const deactivateTitle = $t({ defaultMessage: 'Deactivate DHCP Pool' })
+            showActionModal({
+              type: 'confirm',
+              width: 450,
+              title: checked ? activeTitle : deactivateTitle,
+              content: checked ? activeMsg : deactivateMsg,
+              okText: $t({ defaultMessage: 'Confirm' }),
+              onOk () {
+                setActivePool(id as string, checked)
+              }
+            })
 
-            }}/>
-          return switchRef
-        }else{
-          return ''
-        }
+          }}/>
+        return switchRef
 
       }
     }

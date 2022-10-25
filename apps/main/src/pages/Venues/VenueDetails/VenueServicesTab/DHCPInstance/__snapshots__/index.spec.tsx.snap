@@ -90,7 +90,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
         <div
           class="ant-typography"
         >
-          2
+          1
         </div>
       </div>
       <div
@@ -163,6 +163,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
         <div>
           <button
             class="ant-btn ant-btn-link ant-btn-block"
+            style="padding-left: 0px;"
             type="button"
           >
             <span>
@@ -196,7 +197,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
           />
         </span>
         <span>
-          Pools (2)
+          Pools (1)
         </span>
       </label>
       <label
@@ -590,64 +591,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                                         />
                                         <span
                                           class="ant-switch-inner"
-                                        >
-                                          ON
-                                        </span>
-                                      </button>
-                                    </td>
-                                    <td
-                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                      style="position: sticky; right: 0px;"
-                                    />
-                                  </tr>
-                                  <tr
-                                    class="ant-table-row ant-table-row-level-0"
-                                    data-row-key="PoolId2"
-                                  >
-                                    <td
-                                      class="ant-table-cell"
-                                    >
-                                      <a
-                                        href="/t/tenant-id/venues/PoolId2/venue-details/overview"
-                                      >
-                                        dhcp pool 2
-                                      </a>
-                                    </td>
-                                    <td
-                                      class="ant-table-cell"
-                                    />
-                                    <td
-                                      class="ant-table-cell"
-                                    >
-                                      255.255.252.0
-                                    </td>
-                                    <td
-                                      class="ant-table-cell"
-                                    >
-                                      12 hrs,50mins
-                                    </td>
-                                    <td
-                                      class="ant-table-cell"
-                                    >
-                                      168.195.2.2, 9.9.9.9
-                                    </td>
-                                    <td
-                                      class="ant-table-cell"
-                                    >
-                                      <button
-                                        aria-checked="false"
-                                        class="ant-switch"
-                                        role="switch"
-                                        type="button"
-                                      >
-                                        <div
-                                          class="ant-switch-handle"
                                         />
-                                        <span
-                                          class="ant-switch-inner"
-                                        >
-                                          OFF
-                                        </span>
                                       </button>
                                     </td>
                                     <td

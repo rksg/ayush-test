@@ -5,7 +5,6 @@ import { Provider } from '@acx-ui/store'
 import { mockServer,
   render,
   screen,
-  waitForElementToBeRemoved,
   fireEvent
 } from '@acx-ui/test-utils'
 

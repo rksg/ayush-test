@@ -16,8 +16,8 @@ export function VenueServicesTab () {
 
   return (
     <Tabs>
-      <Tabs.TabPane tab={<span>
-        <CheckCircleFilled style={{ color: cssStr('--acx-semantics-green-50') }}/>
+      <Tabs.TabPane tab={<span style={{ marginRight: 10 }}>
+        <CheckCircleFilled style={{ color: cssStr('--acx-semantics-green-50'), marginRight: 5 }}/>
         {$t({ defaultMessage: 'DHCP' })}</span>}
       key={ServiceType.DHCP}>
         <DHCPInstance/>

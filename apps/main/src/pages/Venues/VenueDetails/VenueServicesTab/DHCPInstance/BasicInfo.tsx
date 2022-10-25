@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react'
 import { Col, Row, Typography, Button, FormInstance } from 'antd'
 import _                                              from 'lodash'
 import { useIntl }                                    from 'react-intl'
-import { useParams }                                  from 'react-router-dom'
+import { useParams, useLocation }                     from 'react-router-dom'
 
 import { Modal }   from '@acx-ui/components'
 import {
@@ -20,7 +20,13 @@ import VenueDHCPForm  from './VenueDHCPForm'
 export default function BasicInfo () {
   const params = useParams()
   const { Title, Text, Paragraph } = Typography
-  const [visible, setVisible] = useState(false)
+
+  type LocationState = {
+    showConfig?: boolean
+  }
+  const locationState:LocationState = useLocation().state as LocationState
+
+  const [visible, setVisible] = useState(locationState?.showConfig ? true : false)
 
   const { $t } = useIntl()
   const TYPOGRAPHY_LEVEL = 4
@@ -113,11 +119,12 @@ export default function BasicInfo () {
         </Col>
         <Col span={SPAN_NUM}>
           <div>
-            <Button onClick={()=>{
-              setVisible(true)
-            }}
-            type='link'
-            block>
+            <Button style={{ paddingLeft: 0 }}
+              onClick={()=>{
+                setVisible(true)
+              }}
+              type='link'
+              block>
               {$t({ defaultMessage: 'Manage Local Service' })}
             </Button>
           </div>

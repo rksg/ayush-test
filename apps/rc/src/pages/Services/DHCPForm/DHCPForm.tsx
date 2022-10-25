@@ -7,9 +7,9 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useGetDHCPProfileQuery }                from '@acx-ui/rc/services'
-import { DHCPSaveData, DHCPConfigTypeEnum }      from '@acx-ui/rc/utils'
-import { useParams, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
+import { useGetDHCPProfileQuery }                             from '@acx-ui/rc/services'
+import { DHCPSaveData, DHCPConfigTypeEnum }                   from '@acx-ui/rc/utils'
+import { useParams, useTenantLink, useNavigate, useLocation } from '@acx-ui/react-router-dom'
 
 import DHCPFormContext from './DHCPFormContext'
 import { SettingForm } from './DHCPSettingForm'
@@ -21,6 +21,11 @@ export function DHCPForm () {
   const { $t } = useIntl()
 
   const params = useParams()
+  type LocationState = {
+    origin: { pathname: string },
+    param: object
+  }
+  const locationState:LocationState = useLocation().state as LocationState
 
   const editMode = params.action === 'edit'
 
@@ -71,7 +76,14 @@ export function DHCPForm () {
           formRef={formRef}
           editMode={editMode}
           onCancel={() => navigate(linkToServices)}
-          // onFinish={editMode ? handleEditDHCP : handleAddDHCP}
+          onFinish={
+            // editMode ? handleEditDHCP : handleAddDHCP
+            async ()=>{
+              if(locationState.origin){
+                navigate(locationState.origin.pathname, { state: locationState.param })
+              }
+            }
+          }
         >
           <StepsForm.StepForm
             name='settings'
