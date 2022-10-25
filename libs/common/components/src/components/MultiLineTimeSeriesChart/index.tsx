@@ -11,22 +11,24 @@ import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
 import { useIntl }  from 'react-intl'
 
-import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStampRange }      from '@acx-ui/types'
-import { formatter }                from '@acx-ui/utils'
+import type { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
+import type { TimeStamp, TimeStampRange } from '@acx-ui/types'
+import { formatter }                      from '@acx-ui/utils'
 
-import { cssStr }       from '../../theme/helper'
+import { cssStr }    from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
   legendTextStyleOptions,
+  dataZoomOptions,
   xAxisOptions,
   yAxisOptions,
   axisLabelOptions,
   dateAxisFormatter,
   tooltipOptions,
   timeSeriesTooltipFormatter,
-  getTimeSeriesSymbol
+  getTimeSeriesSymbol,
+  ChartFormatterFn
 }                       from '../Chart/helper'
 import { ResetButton }            from '../Chart/styledComponents'
 import { useDataZoom }            from '../Chart/useDataZoom'
@@ -59,8 +61,8 @@ export interface MultiLineTimeSeriesChartProps <
     data: TChartData[]
     legendProp?: keyof TChartData /** @default 'name' */
     lineColors?: string[]
-    dataFormatter?: ReturnType<typeof formatter>
-    seriesFormatters?: Record<string, ReturnType<typeof formatter>>
+    dataFormatter?: ChartFormatterFn
+    seriesFormatters?: Record<string, ChartFormatterFn>
     yAxisProps?: {
       max?: number
       min?: number
@@ -164,7 +166,9 @@ export function MultiLineTimeSeriesChart <
       legend: {
         ...legendOptions(),
         textStyle: legendTextStyleOptions(),
-        data: data.map(datum => datum[legendProp]) as unknown as string[]
+        data: data
+          .filter(datum=> datum.show !== false )
+          .map(datum => datum[legendProp]) as unknown as string[]
       }
     }),
     tooltip: {
@@ -198,7 +202,7 @@ export function MultiLineTimeSeriesChart <
       .filter(datum=> datum.show !== false )
       .map((datum, i) => ({
         name: datum[legendProp] as unknown as string,
-        data: datum.data,
+        data: datum.data as [TimeStamp, number][],
         type: 'line',
         smooth: true,
         symbol: getTimeSeriesSymbol(data),
@@ -225,13 +229,7 @@ export function MultiLineTimeSeriesChart <
           brush: { type: ['rect'], icon: { rect: 'path://' } }
         }
       },
-      dataZoom: [
-        {
-          id: 'zoom',
-          type: 'inside',
-          zoomLock: true
-        }
-      ]
+      dataZoom: dataZoomOptions(data)
     } : {
       toolbox: { show: false },
       brush: {

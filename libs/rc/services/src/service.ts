@@ -4,6 +4,8 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
   FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import _                from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 
 import {
   CommonUrlsInfo,
@@ -12,9 +14,12 @@ import {
   TableResult,
   Service,
   CommonResult,
+  MdnsProxyFormData,
+  MdnsProxyUrls,
   DHCPSaveData,
   WifiCallingUrls,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  MdnsProxyForwardingRule
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -25,8 +30,6 @@ import {
   VlanPool,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
-
-
 
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -138,6 +141,72 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
+    getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mdnsProxyReq = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
+        return {
+          ...mdnsProxyReq,
+          body: payload
+        }
+      },
+      transformResponse (result: MdnsProxyFormData) {
+        if (!result.forwardingRules) {
+          return result
+        }
+
+        result.forwardingRules = result.forwardingRules.map((rule: MdnsProxyForwardingRule) => {
+          return {
+            ...rule,
+            id: uuidv4()
+          }
+        })
+        return result
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.updateMdnsProxy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    deleteMdnsProxyList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxyList, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.addMdnsProxy, params)
+
+        if (payload?.forwardingRules) {
+          payload.forwardingRules = payload.forwardingRules.map(r => _.omit(r, 'id'))
+        }
+
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
     getDHCP: build.query<DHCPSaveData | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
         if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
@@ -179,5 +248,10 @@ export const {
   useSaveDHCPMutation,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
+  useGetMdnsProxyQuery,
+  useAddMdnsProxyMutation,
+  useUpdateMdnsProxyMutation,
+  useDeleteMdnsProxyMutation,
+  useDeleteMdnsProxyListMutation,
   useDeleteWifiCallingServiceMutation
 } = serviceApi
