@@ -1,7 +1,6 @@
 export const healthWidgetFixture = {
   health: [
     {
-      systemId: '6f6cadca-f642-4886-9fd1-247d23fea00a',
       zoneId: '8d01a979dc964e6297e5cd5e3ae61994',
       zoneName: 'My-Venue',
       timeToConnectSLA: [
@@ -24,7 +23,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: 'e5d28cb30cb44be9bea1c8e7135da928',
       zoneName: 'My-Venue',
       timeToConnectSLA: [
@@ -47,7 +45,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '075c1f37abba434a8d3266cfbad45aea',
       zoneName: 'Sherry-venue',
       timeToConnectSLA: [
@@ -70,7 +67,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '1302b06c2de245c7b6e2fd0fa58d853a',
       zoneName: 'BDC-SZ',
       timeToConnectSLA: [
@@ -93,7 +89,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '1c0683276dce48679013dea12bf6abe0',
       zoneName: 'test-Venue',
       timeToConnectSLA: [
@@ -116,7 +111,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '217d6eb2b49e418cba06010795179d65',
       zoneName: 'White, Hane and King',
       timeToConnectSLA: [
@@ -139,7 +133,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '3f278d546b7d433f8855aedc95a6f3de',
       zoneName: 'Hanley-Venue',
       timeToConnectSLA: [
@@ -162,7 +155,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '4654aca43c7340159af6291b2622b3b4',
       zoneName: 'Xang',
       timeToConnectSLA: [
@@ -185,7 +177,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '4ca20c8311024ac5956d366f15d96e0c',
       zoneName: 'leonard-venue',
       timeToConnectSLA: [
@@ -208,7 +199,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '51316c36a45b417595a99a40609e490f',
       zoneName: 'kathy-Venue',
       timeToConnectSLA: [
@@ -231,7 +221,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '555548721e264115bda45a75043f65d7',
       zoneName: 'BDCSZ',
       timeToConnectSLA: [
@@ -254,7 +243,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '5a1fd3e7e4d04606a13f8b557a1d448e',
       zoneName: 'venue-1',
       timeToConnectSLA: [
@@ -277,7 +265,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '5da9e268a5dc4a2caf12d35530b2de25',
       zoneName: 'A-T-Venue',
       timeToConnectSLA: [
@@ -300,7 +287,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '7d609a516d7d4ad787fac3e08a734731',
       zoneName: 'rsyslog_venue_jo',
       timeToConnectSLA: [
@@ -323,7 +309,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '89fc1ab5825a45c9ab577d630be4d357',
       zoneName: 'leonard-venue2',
       timeToConnectSLA: [
@@ -346,7 +331,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '9307b9b26543431b8edcecf0256412fa',
       zoneName: 'Ben-Venue-US',
       timeToConnectSLA: [
@@ -369,7 +353,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: '96bf314d575341cf95942caa2b072106',
       zoneName: 'Vaibhav-venue',
       timeToConnectSLA: [
@@ -392,7 +375,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: 'dc75a39778f241cb88d11fcd47cc6db5',
       zoneName: 'ABHI-Dev-Home',
       timeToConnectSLA: [
@@ -415,7 +397,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: 'e05fcf8c8f0e4b3387574469c8fe10f6',
       zoneName: 'Venue-UK',
       timeToConnectSLA: [
@@ -438,7 +419,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: 'ebd9f3a74f0042efba53fcbfff5c4920',
       zoneName: 'BCD-CIOT',
       timeToConnectSLA: [
@@ -461,9 +441,8 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: 'f0997ab93fa24670a961c98446d47ae6',
-      zoneName: null,
+      zoneName: 'f0997ab93fa24670a961c98446d47ae6',
       timeToConnectSLA: [
         null,
         null
@@ -484,7 +463,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: 'f201474c26144e68b19ada4eb0210d9a',
       zoneName: 'Weichih-Venue',
       timeToConnectSLA: [
@@ -507,7 +485,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: null,
       zoneName: 'f0997ab93fa24670a961c98446d47ae6',
       timeToConnectSLA: [
@@ -530,7 +507,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'acx',
       zoneId: null,
       zoneName: 'bdcPerformanceVenue2',
       timeToConnectSLA: [
@@ -553,7 +529,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      systemId: 'ruckus-cloud-alto-vsz',
       zoneId: null,
       zoneName: 'My-Venue',
       timeToConnectSLA: [

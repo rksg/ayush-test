@@ -36,7 +36,7 @@ export default function HealthWidget ({
         return (
           <UI.VenueName>
             <TenantLink
-              to={`/venues/${row.zoneId ?? text}/venue-details/overview`}
+              to={`/venues/${row.zoneId}/venue-details/overview`}
               title={text as string}>
               {text as string}
             </TenantLink>
@@ -147,7 +147,10 @@ export default function HealthWidget ({
       .sort((a,b)=>(a.clientExperience as number) - (b.clientExperience as number))
       .slice(0,5)
   }
-
+  if(data){
+    // eslint-disable-next-line no-console
+    console.log(getHealthData(data.health))
+  }
   const clientExpTab = data
     ? <UI.Wrapper>
       <Table
