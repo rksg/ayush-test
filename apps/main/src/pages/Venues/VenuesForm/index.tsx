@@ -1,6 +1,7 @@
 import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
 import { Row, Col, Form, Input, Typography } from 'antd'
+import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
 import {
@@ -173,12 +174,26 @@ export function VenuesForm () {
     pageSize: 10000
   }
   const [venuesList] = useLazyVenuesListQuery()
+  const [sameCountry, setSameCountry] = useState(true)
   const nameValidator = async (value: string) => {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
+  const addressValidator = async (value: string) => {
+    const isEdit = action === 'edit'
+    const isSameValue = value ===
+      formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
+
+    if (isEdit && !_.isEmpty(value) && isSameValue && !sameCountry) {
+      return Promise.reject(
+        `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`
+      )
+    }
+    return Promise.resolve()
+  }
+
 
   const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     updateAddress({})
@@ -186,9 +201,11 @@ export function VenuesForm () {
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
       const { latlng, address } = await addressParser(place)
+      const isSameCountry = data && (data?.address.country === address.country) || false
+      setSameCountry(isSameCountry)
       let errorList = []
 
-      if (data && (data?.address.country !== address.country)) {
+      if (action === 'edit' && !isSameCountry) {
         errorList.push(
           `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`)
       }
@@ -293,7 +310,11 @@ export function VenuesForm () {
                   name={['address', 'addressLine']}
                   rules={[{
                     required: isMapEnabled ? true : false
-                  }]}
+                  }, {
+                    validator: (_, value) => addressValidator(value),
+                    validateTrigger: 'onBlur'
+                  }
+                  ]}
                 >
                   <Input
                     allowClear
