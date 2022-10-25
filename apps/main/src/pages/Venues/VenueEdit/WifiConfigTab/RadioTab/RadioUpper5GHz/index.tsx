@@ -16,7 +16,6 @@ import {
   txPowerAdjustmentOptions
 } from '../contents'
 import { RadioSettingsChannels } from '../RadioSettingsChannels'
-import { FieldLabel }            from '../styledComponents'
 
 const { useWatch } = Form
 
@@ -139,26 +138,20 @@ export function RadioUpper5GHz () {
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-      {$t({ defaultMessage: '5GHz settings:' })}
-      <div style={{ paddingBottom: '2em' }}>
-        <Form.Item
-          name={['radioParamsDual5G', 'inheritParamsUpper5G']}
-        >
-          <Radio.Group defaultValue={true} onChange={on5GHzSettingChange}>
-            <FieldLabel width='300px'>
-              <Radio value={true}>
-                {$t({ defaultMessage: 'Inherit from 5GHz' })}
-              </Radio>
-            </FieldLabel>
+      <Form.Item
+        label={$t({ defaultMessage: '5GHz settings:' })}
+        name={['radioParamsDual5G', 'inheritParamsUpper5G']}
+      >
+        <Radio.Group defaultValue={true} onChange={on5GHzSettingChange}>
+          <Radio value={true}>
+            {$t({ defaultMessage: 'Inherit from 5GHz' })}
+          </Radio>
 
-            <FieldLabel width='300px'>
-              <Radio value={false}>
-                {$t({ defaultMessage: 'Custom Settings' })}
-              </Radio>
-            </FieldLabel>
-          </Radio.Group>
-        </Form.Item>
-      </div>
+          <Radio value={false}>
+            {$t({ defaultMessage: 'Custom Settings' })}
+          </Radio>
+        </Radio.Group>
+      </Form.Item>
       <Form.Item
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={['radioParamsDual5G', 'radioParamsUpper5G', 'method']}>

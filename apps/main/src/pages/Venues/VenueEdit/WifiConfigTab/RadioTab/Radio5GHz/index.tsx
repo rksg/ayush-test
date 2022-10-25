@@ -134,10 +134,11 @@ export function Radio5GHz () {
           defaultValue={channelSelectionMethodsOptions[1].value}
         />
       </Form.Item>
-      { channelMethod === channelSelectionMethodsOptions[0].value &&
       <Form.Item
         label={$t({ defaultMessage: 'Channel Change Frequency:' })}
         name={['radioParams50G', 'changeInterval']}
+        style={{ display: channelMethod === channelSelectionMethodsOptions[0].value ?
+          'block' : 'none' }}
       >
         <Slider
           tipFormatter={formatter}
@@ -148,7 +149,6 @@ export function Radio5GHz () {
           marks={{ 1: '1%', 100: '100%' }}
         />
       </Form.Item>
-      }
       <Form.Item
         label={$t({ defaultMessage: 'Run background scan every:' })}
         name={['radioParams50G', 'scanInterval']}

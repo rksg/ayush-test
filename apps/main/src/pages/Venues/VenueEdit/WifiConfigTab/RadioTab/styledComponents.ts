@@ -17,13 +17,6 @@ export const RadioDescription = styled.div`
   margin-top: 4px;
 `
 
-export const FieldLabel = styled.div<{ width: string }>`
-font-size: var(--acx-body-4-font-size);
-display: block;
-line-height: 32px;
-grid-template-columns: ${props => props.width} 1fr;
-`
-
 export const MultiSelect = styled.div`
 div.ant-checkbox-group {
   display: inline-block;
