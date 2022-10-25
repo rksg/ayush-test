@@ -8,6 +8,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol, Card, NotAvailable } from '@acx-ui/components'
 
+import { RssDistributionChart }              from '../Charts/RssDistributionChart'
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
@@ -80,7 +81,7 @@ export const CovClientrssiLow = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <NetworkImpact incident={incident} charts={networkImpactCharts}/>
+          <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
           <TimeSeries
@@ -91,9 +92,7 @@ export const CovClientrssiLow = (incident: Incident) => {
           />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border' >
-            <NotAvailable/>
-          </Card>
+          <RssDistributionChart incident={incident} />
         </GridCol>
       </GridRow>
     </>

@@ -174,7 +174,7 @@ test('should render Top 5 Switches by Error widget', async () => {
   expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
 })
 
-test('should render Traffic By Application Widget', async () => {
+test('should render Traffic by Application Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
     data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
   })
@@ -184,7 +184,7 @@ test('should render Traffic By Application Widget', async () => {
   await screen.findByText('Top 5 Applications by Traffic')
 })
 
-test('should render Traffic By SSID Widget', async () => {
+test('should render Traffic by SSID Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
     data: { network: { hierarchyNode: topSSIDsByTrafficFixture } }
   })
@@ -194,7 +194,7 @@ test('should render Traffic By SSID Widget', async () => {
   await screen.findByText('Top 5 SSIDs by Traffic')
 })
 
-test('should render Clients By SSID Widget', async () => {
+test('should render Clients by SSID Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TopSSIDsByClientWidget', {
     data: { network: { hierarchyNode: topSSIDsByClientFixture } }
   })

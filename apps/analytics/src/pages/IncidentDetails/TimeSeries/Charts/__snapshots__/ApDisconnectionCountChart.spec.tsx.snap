@@ -1,25 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`downtimeEventTypeDistributionChartQuery should call corresponding api 1`] = `
+exports[`apDisconnectionCountChartQuery should call corresponding api 1`] = `
 "
             query IncidentTimeSeries(
-              $path: [HierarchyNodeInput],
-              $start: DateTime,
-              $end: DateTime,
-              $granularity: String,
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
               
+              $code: String
             ) {
               network(start: $start, end: $end) {
                 hierarchyNode(path: $path) {
                   
-  downtimeEventTypeDistributionChart: timeSeries(granularity: $granularity) {
+  relatedIncidents: incidents(filter: {code: [$code]}) {
+    id severity code startTime endTime
+  }
+  apDisconnectionCountChart: timeSeries(granularity: \\"PT3M\\") {
     time
-    apDisconnectionEvents {
-      apHeartbeatLost
-      apRebootBySystem
-      apConnectionLost
-      apRebootByUser
-    }
+    apDisconnectionCount
   }
   
                 }
@@ -28,7 +26,7 @@ exports[`downtimeEventTypeDistributionChartQuery should call corresponding api 1
           "
 `;
 
-exports[`downtimeEventTypeDistributionChartQuery should call corresponding api 2`] = `
+exports[`apDisconnectionCountChartQuery should call corresponding api 2`] = `
 Object {
   "code": "i-apserv-downtime-high",
   "codeMap": Array [
