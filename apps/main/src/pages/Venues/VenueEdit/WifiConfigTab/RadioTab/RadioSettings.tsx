@@ -62,7 +62,7 @@ export function RadioSettings () {
 
   // const [apList] = useLazyApListQuery()
 
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO) || true
+  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
 
   // const triBandApModelNames = _.isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
   // let filters = { model: triBandApModelNames }
