@@ -82,15 +82,20 @@ export function useBrush<TChartData extends TimeSeriesChartData> (
   brush?: TimeStampRange,
   onBrushChange?: (range: TimeStampRange) => void
 ) {
+  const copiedRef = eChartsRef.current
   const onBrushendCallback = useCallback((e: unknown) => {
     const event = e as unknown as OnBrushendEvent
     onBrushChange && onBrushChange(event.areas[0].coordRange)
   }, [onBrushChange])
+
   useEffect(() => {
     if (!eChartsRef?.current) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
     echartInstance.on('brushend', onBrushendCallback)
-  })
+    return () => {
+      copiedRef && copiedRef.forceUpdate()
+    }
+  }, [copiedRef, eChartsRef, onBrushendCallback])
 
   useEffect(() => {
     if (!eChartsRef?.current || isEmpty(brush)) return
@@ -104,7 +109,11 @@ export function useBrush<TChartData extends TimeSeriesChartData> (
         echartInstance.getZr().setCursorStyle('default')
       }
     })
-  }, [eChartsRef, brush, data])
+
+    return () => {
+      copiedRef && copiedRef.forceUpdate()
+    }
+  }, [brush, copiedRef, eChartsRef])
 }
 
 export function useOnMarkAreaClick <MarkerData> (

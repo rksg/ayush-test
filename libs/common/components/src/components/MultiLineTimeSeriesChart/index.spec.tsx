@@ -144,9 +144,10 @@ describe('useBrush', () => {
             on: mockGetZrOn,
             setCursorStyle: mockSetCursorStyle
           })
-        })
+        }),
+        forceUpdate: jest.fn()
       }
-    } as RefObject<ReactECharts>
+    } as unknown as RefObject<ReactECharts>
   })
 
   it('handles null echart ref', () => {
