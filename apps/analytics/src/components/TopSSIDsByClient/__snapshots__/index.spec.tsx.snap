@@ -146,7 +146,11 @@ Array [
     <td
       class="ant-table-cell"
     >
-      birdywlan-dev
+      <a
+        href="/t/undefined/networks/TBD/network-details/overview"
+      >
+        birdywlan-dev
+      </a>
     </td>,
     <td
       class="ant-table-cell"
@@ -246,7 +250,11 @@ Array [
     <td
       class="ant-table-cell"
     >
-      Home-550
+      <a
+        href="/t/undefined/networks/TBD/network-details/overview"
+      >
+        Home-550
+      </a>
     </td>,
     <td
       class="ant-table-cell"
@@ -346,7 +354,11 @@ Array [
     <td
       class="ant-table-cell"
     >
-      psk_test
+      <a
+        href="/t/undefined/networks/TBD/network-details/overview"
+      >
+        psk_test
+      </a>
     </td>,
     <td
       class="ant-table-cell"
@@ -446,7 +458,11 @@ Array [
     <td
       class="ant-table-cell"
     >
-      A-T-Wlan-01
+      <a
+        href="/t/undefined/networks/TBD/network-details/overview"
+      >
+        A-T-Wlan-01
+      </a>
     </td>,
     <td
       class="ant-table-cell"
@@ -546,7 +562,11 @@ Array [
     <td
       class="ant-table-cell"
     >
-      testGoogleZ
+      <a
+        href="/t/undefined/networks/TBD/network-details/overview"
+      >
+        testGoogleZ
+      </a>
     </td>,
     <td
       class="ant-table-cell"

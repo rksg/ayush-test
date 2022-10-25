@@ -18,15 +18,14 @@ export default function TopSwitchesByErrorWidget ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useTopSwitchesByErrorQuery(filters
-  )
+  const queryResults = useTopSwitchesByErrorQuery(filters)
 
   const columns=[
     {
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'name',
       key: 'name',
-      render: (name:unknown) => {
+      render: (name: unknown) => {
         // TODO Actual path to be updated later
         return (
           <TenantLink to={'/switches/TBD'}>

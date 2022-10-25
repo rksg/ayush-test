@@ -9,11 +9,11 @@ import {
   Table,
   NoData,
   SparklineChart } from '@acx-ui/components'
+import { TenantLink }             from '@acx-ui/react-router-dom'
 import { formatter, intlFormats } from '@acx-ui/utils'
 
 import { useTopSSIDsByClientQuery, TopSSIDsByClient } from './services'
 import { TrafficPercent }                             from './styledComponents'
-
 
 export default function TopSSIDsByClientWidget ({
   filters
@@ -27,7 +27,11 @@ export default function TopSSIDsByClientWidget ({
     {
       title: $t({ defaultMessage: 'SSID Name' }),
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      render: (data: unknown) =>
+        <TenantLink to={'/networks/TBD/network-details/overview'}>
+          { data as string }
+        </TenantLink>
     },
     {
       title: $t({ defaultMessage: 'Total Traffic' }),
