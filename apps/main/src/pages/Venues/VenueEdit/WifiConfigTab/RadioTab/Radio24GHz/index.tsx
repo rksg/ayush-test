@@ -81,6 +81,7 @@ export function Radio24GHz () {
         />
       </Form.Item>
       <Form.Item
+        label={$t({ defaultMessage: 'Channel Change Frequency:' })}
         name={['radioParams24G', 'changeInterval']}
         style={{ display: channelMethod === channelSelectionMethodsOptions[0].value ?
           'block' : 'none' }}
