@@ -26,13 +26,13 @@ export const ApRebootBySystemChart = (
 
   const seriesMapping = [{
     key: 'apRebootBySystem',
-    name: $t({ defaultMessage: 'Reboot By System Event' })
+    name: $t({ defaultMessage: 'Reboot by System Event' })
   }]
 
   const chartResults = getSeriesData(
     apRebootBySystem as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'Reboot By System Event' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'Reboot by System Event' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         chartResults.length ?

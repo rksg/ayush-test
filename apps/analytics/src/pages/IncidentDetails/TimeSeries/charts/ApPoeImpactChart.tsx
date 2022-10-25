@@ -27,7 +27,7 @@ export const ApPoeImpactChart = (
   const chartResults = getSeriesData(
     apInfraImpactedAPsChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'APs Poe Impact' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'APs PoE Impact' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         chartResults.length ?

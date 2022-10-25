@@ -27,7 +27,7 @@ export const ApWanthroughputImpactChart = (
   const chartResults = getSeriesData(
     apInfraImpactedAPsChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'APs Wan Throughput Impact' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'APs WAN Throughput Impact' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         chartResults.length ?
