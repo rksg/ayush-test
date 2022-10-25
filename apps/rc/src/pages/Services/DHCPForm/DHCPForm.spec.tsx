@@ -77,5 +77,5 @@ describe('DHCPForm', () => {
     await userEvent.click(screen.getByText('Finish'))
 
 
-  })
+  }, 25000)
 })
