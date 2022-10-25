@@ -160,7 +160,7 @@ function Histogram ({
                     <VerticalBarChart
                       style={{ height: height, width }}
                       data={data}
-                      xAxisName={unit !== '%' ? ` ${$t(unit)}` : unit}
+                      xAxisName={unit !== '%' ? ` (${$t(unit)})` : `(${unit})`}
                       barWidth={30}
                       xAxisOffset={10}
                       barColors={barColors}
