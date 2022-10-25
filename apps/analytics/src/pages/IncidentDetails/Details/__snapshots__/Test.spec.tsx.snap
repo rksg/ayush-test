@@ -3,7 +3,7 @@
 exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -181,7 +181,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -359,7 +359,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -535,7 +535,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -718,7 +718,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -894,7 +894,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1091,7 +1091,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1277,7 +1277,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1463,7 +1463,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
 exports[`Test Details should render FailureTemplate correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1649,7 +1649,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
 exports[`Test Details should render FailureTemplate correctly 4`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1835,7 +1835,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
 exports[`Test Details should render FailureTemplate correctly 5`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2021,7 +2021,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
 exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2176,7 +2176,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 exports[`Test Details should render SwitchPoePd correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2319,7 +2319,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
 exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2462,7 +2462,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 exports[`Test Details should render Ttc correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gfmcir"
+    class="styledComponents__Wrapper-sc-xov27h-0 lgruds"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"

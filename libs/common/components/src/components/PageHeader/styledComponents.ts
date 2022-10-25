@@ -19,6 +19,9 @@ export const Wrapper = styled.div`
       }
       &-extra {
         margin: 0;
+        > .ant-space {
+          gap: 12px !important;
+        }
       }
       &-title {
         width: 100%;
