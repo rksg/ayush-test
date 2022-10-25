@@ -218,7 +218,7 @@ export function RadioUpper5GHz () {
       </div>
 
       <div>
-        <div>{$t({ defaultMessage: 'Indoor Aps' })}</div>
+        <div>{$t({ defaultMessage: 'Indoor APs' })}</div>
         {defaultIndoorChannels &&
           <RadioSettingsChannels
             formName={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedIndoorChannels']}
@@ -235,7 +235,7 @@ export function RadioUpper5GHz () {
       </div>
 
       <div>
-        <div>{$t({ defaultMessage: 'Outdoor Aps' })}</div>
+        <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
         {defaultOutdoorChannels &&
           <RadioSettingsChannels
             formName={['radioParamsDual5G', 'radioParamsUpper5G', 'allowedOutdoorChannels']}
