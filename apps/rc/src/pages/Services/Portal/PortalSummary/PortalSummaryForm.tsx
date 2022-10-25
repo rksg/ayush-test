@@ -57,7 +57,7 @@ export function PortalSummaryForm (props: {
       return langs+=alternativeLang?.[key]?PortalLanguageEnum[key as keyof typeof PortalLanguageEnum]+
       '  ':''
     })
-    return langs
+    return langs || transformDisplayText()
   }
   return (
     <>
@@ -68,26 +68,31 @@ export function PortalSummaryForm (props: {
         </Subtitle>
       </Row>
       <Row gutter={20}>
-        <Col span={10}>
+        <Col span={5}>
 
           <Form.Item label={$t({ defaultMessage: 'Service Name:' })} children={summaryData?.serviceName} />
         </Col>
-        <Col span={10}>
+        <Col span={5}>
           <Form.Item
             label={$t({ defaultMessage: 'Language:' })}
             children={PortalLanguageEnum[summaryData?.demo?.displayLang as keyof typeof PortalLanguageEnum]}
           />
         </Col>
-
-      </Row>
-      <Row gutter={20}>
         <Col span={10}>
           <Form.Item
             label={$t({ defaultMessage: 'Alternative languages:' })}
             children={getAlternativeLang(summaryData?.demo?.alternativeLang as { [key:string]: boolean })}
           />
         </Col>
-        <Col span={10}>
+      </Row>
+      <Row gutter={20}>
+        <Col span={5}>
+          <Form.Item
+            label={$t({ defaultMessage: 'WiFi4EU :' })}
+            children={summaryData?.demo?.componentDisplay.WiFi4EU?'ON':'OFF'}
+          />
+        </Col>
+        <Col span={5}>
           <PortalPreviewModal demoValue={summaryData?.demo}/>
         </Col>
       </Row>

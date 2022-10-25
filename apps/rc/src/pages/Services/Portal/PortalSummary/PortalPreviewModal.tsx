@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button } from '@acx-ui/components'
@@ -28,9 +27,9 @@ export default function PortalPreviewModal (props:{
 
   return (
     <>
-      <div onClick={()=>setVisible(true)}>
-        <Form.Item label={$t({ defaultMessage: 'Preview' })}/>
-      </div>
+      <UI.FieldTextLink onClick={()=>setVisible(true)}>
+        {$t({ defaultMessage: 'Preview' })}
+      </UI.FieldTextLink>
       <UI.Modal
         title={$t({ defaultMessage: 'Preview' })}
         visible={visible}

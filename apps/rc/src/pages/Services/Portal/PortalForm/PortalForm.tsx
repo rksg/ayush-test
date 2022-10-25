@@ -58,6 +58,7 @@ const PortalForm = () => {
   const params = useParams()
   const editMode = params.action === 'edit'
   const [portalData, setPortalData]=useState<Portal>(initialPortalData)
+  const [error, setError]=useState(false)
   const formRef = useRef<StepsFormInstance<Portal>>()
 
   const { data } = useGetPortalQuery({ params })
@@ -92,7 +93,7 @@ const PortalForm = () => {
           { text: $t({ defaultMessage: 'Service' }), link: '/service' }
         ]}
       />
-      <PortalFormContext.Provider value={{ editMode, portalData, setPortalData }}>
+      <PortalFormContext.Provider value={{ editMode, portalData, setPortalData, error }}>
         <StepsForm<Portal>
           formRef={formRef}
           onCancel={() => navigate(linkToServices)}
@@ -103,14 +104,11 @@ const PortalForm = () => {
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialPortalData}
             onFinish={async (data) => {
-              if(data.demo.componentDisplay.TermsConditions && !data.demo.termsCondition){
-                alert('Terms & conditions is enabled but not configured')
-                return false
-              }
               if(data.demo.componentDisplay.WiFi4EU && !data.demo.wifi4EU){
-                alert('WiFi4EU is enabled but not configured')
+                setError(true)
                 return false
               }
+              setError(false)
               setPortalData({ ...portalData, ...data })
               return true
             }}
@@ -129,12 +127,12 @@ const PortalForm = () => {
             <PortalScopeForm />
           </StepsForm.StepForm>
 
-          <StepsForm.StepForm
+          {!editMode&&<StepsForm.StepForm
             name='summary'
             title={$t({ defaultMessage: 'Summary' })}
           >
             <PortalSummaryForm summaryData={portalData}/>
-          </StepsForm.StepForm>
+          </StepsForm.StepForm>}
         </StepsForm>
       </PortalFormContext.Provider>
     </>

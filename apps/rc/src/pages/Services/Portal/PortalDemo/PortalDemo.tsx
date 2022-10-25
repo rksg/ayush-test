@@ -1,25 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { Col, Row, Tooltip }         from 'antd'
-import _                             from 'lodash'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Col, Row, Tooltip }                        from 'antd'
+import _                                            from 'lodash'
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
+import { Alert }                from '@acx-ui/components'
 import { Demo, PortalViewEnum } from '@acx-ui/rc/utils'
 
-import Mobile        from '../../../../assets/images/portal-demo/mobile.svg'
-import Mobile_select from '../../../../assets/images/portal-demo/mobile_selected.svg'
-import Tablet        from '../../../../assets/images/portal-demo/pad.svg'
-import Tablet_select from '../../../../assets/images/portal-demo/pad_selected.svg'
-import Desk          from '../../../../assets/images/portal-demo/pc.svg'
-import Desk_select   from '../../../../assets/images/portal-demo/pc_selected.svg'
-import Question      from '../../../../assets/images/portal-demo/question.svg'
-import * as UI       from '../styledComponents'
+import Mobile            from '../../../../assets/images/portal-demo/mobile.svg'
+import Mobile_select     from '../../../../assets/images/portal-demo/mobile_selected.svg'
+import Tablet            from '../../../../assets/images/portal-demo/pad.svg'
+import Tablet_select     from '../../../../assets/images/portal-demo/pad_selected.svg'
+import Desk              from '../../../../assets/images/portal-demo/pc.svg'
+import Desk_select       from '../../../../assets/images/portal-demo/pc_selected.svg'
+import Question          from '../../../../assets/images/portal-demo/question.svg'
+import PortalFormContext from '../PortalForm/PortalFormContext'
+import * as UI           from '../styledComponents'
 
 import PortalBackground         from './PortalBackground'
 import PortalComponents         from './PortalComponents'
 import PortalLanguageSettings   from './PortalLanguageSettings'
 import PortalViewContent        from './PortalViewContent'
 import PortalViewContentPreview from './PortalViewContentPreview'
+
 
 
 type PortalDemoProps = {
@@ -41,6 +44,7 @@ export default function PortalDemo ({
     tablet: false,
     mobile: false
   })
+  const { error } = useContext(PortalFormContext)
   const [showLanguage, setShowLanguage] = useState(false)
   const [showComponent, setShowComponent] = useState(false)
   const [view, setView] = useState(PortalViewEnum.ClickThrough)
@@ -62,6 +66,11 @@ export default function PortalDemo ({
   />
   return (
     <>
+      {error && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
+        message={$t(defineMessage({
+          defaultMessage: 'WiFi4EU is enabled but not configured!' }))}
+        type='error'
+        showIcon/>}
       <UI.LayoutHeader>
         <Row >
           <Col flex={isPreview? '305px':'345px'}>
