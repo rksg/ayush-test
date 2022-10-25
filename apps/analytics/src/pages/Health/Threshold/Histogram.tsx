@@ -186,6 +186,12 @@ function Histogram ({
     }
   }, [fetchingDefault, isInitialRender, onButtonReset])
 
+  useEffect(() => {
+    if (fetchingDefault.data) {
+      setIsInitialRender(true)
+    }
+  }, [fetchingDefault.data])
+
   return (
     <Loader states={[queryResults, canSave, fetchingDefault]} key={kpi}>
       <GridRow>
