@@ -171,6 +171,10 @@ export function RadioSettings () {
       unsavedTabKey: 'radio',
       isDirty: true
     })
+    setEditRadioContextData({
+      radioData: formRef.current?.getFieldsValue(),
+      updateWifiRadio: handleUpdateRadioSettings
+    })
   }
 
   return (
