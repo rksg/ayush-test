@@ -30,8 +30,11 @@ import {
   CommonResult,
   VenueSettings,
   VenueSwitchConfiguration,
-  ConfigurationProfile
+  ConfigurationProfile,
+  AvailableLteBands,
+  VenueApModelCellular
 } from '@acx-ui/rc/utils'
+
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -127,6 +130,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueCellularSettings, params)
         return {
           ...req,
           body: payload
@@ -232,6 +244,22 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req,
           body: payload
+        }
+      }
+    }),
+    getAvailableLteBands: build.query<AvailableLteBands[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getAvailableLteBands, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueApModelCellular: build.query<VenueApModelCellular, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueApModelCellular, params)
+        return{
+          ...req
         }
       }
     }),
@@ -432,6 +460,7 @@ export const {
   useVenueDetailsHeaderQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
+  useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
   useDeleteVenueMutation,
   useFloorPlanListQuery,
@@ -459,5 +488,7 @@ export const {
   useSwitchConfigProfileQuery,
   useGetVenueExternalAntennaQuery,
   useGetVenueApCapabilitiesQuery,
-  useUpdateVenueExternalAntennaMutation
+  useUpdateVenueExternalAntennaMutation,
+  useGetAvailableLteBandsQuery,
+  useGetVenueApModelCellularQuery
 } = venueApi

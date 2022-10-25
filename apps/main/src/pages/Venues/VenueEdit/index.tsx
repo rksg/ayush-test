@@ -120,7 +120,7 @@ function processWifiTab (
       editContextData?.updateChanges?.()
       break
     case 'networking':
-      editNetworkingContextData?.updateCellular?.()
+      editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       editNetworkingContextData?.updateLanPorts?.()
       editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       break
