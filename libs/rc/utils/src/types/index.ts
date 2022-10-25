@@ -6,7 +6,7 @@ import {
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
-  NetworkTypeEnum
+  NetworkTypeEnum, QosPriorityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
@@ -22,6 +22,7 @@ export * from './network'
 export * from './user'
 export * from './service'
 export * from './msp'
+export * from './wifiCallingService'
 
 export interface CommonResult {
   requestId: string
@@ -346,4 +347,16 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+}
+
+export interface WifiCallingSetting {
+  id: string,
+  serviceName: string,
+  description: string | undefined,
+  qosPriority: QosPriorityEnum
+}
+
+export interface WifiCallingSettingContextType {
+  wifiCallingSettingList: WifiCallingSetting[],
+  setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
 }
