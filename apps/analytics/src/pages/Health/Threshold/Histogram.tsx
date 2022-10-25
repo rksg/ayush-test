@@ -133,6 +133,9 @@ function Histogram ({
     })
     : 0
 
+  const hasData = (queryResults?.data?.[0]?.rawData?.data)?.every(
+    (datum: number) => datum !== null
+  )
   return (
     <Loader states={[queryResults]} key={kpi}>
       <GridRow>
@@ -150,6 +153,7 @@ function Histogram ({
                       xAxisOffset={10}
                       barColors={barColors}
                       onBarAreaClick={onBarClick}
+                      yAxisProps={!hasData ? { max: 100, min: 0 } : undefined}
                     />
                     <HistogramSlider
                       splits={splits}
