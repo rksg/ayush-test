@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Form, Radio, RadioChangeEvent, Switch, Tooltip } from 'antd'
-import { useIntl }                                        from 'react-intl'
+import { Col, Form, Radio, RadioChangeEvent, Row, Switch, Tooltip } from 'antd'
+import { useIntl }                                                  from 'react-intl'
 
 import { Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
 import { Features, useSplitTreatment }                from '@acx-ui/feature-toggle'
@@ -62,7 +62,7 @@ export function RadioSettings () {
 
   // const [apList] = useLazyApListQuery()
 
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO) || true
 
   // const triBandApModelNames = _.isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
   // let filters = { model: triBandApModelNames }
@@ -179,14 +179,10 @@ export function RadioSettings () {
         formRef={formRef}
         onFormChange={handleChange}
       >
-        <StepsForm.StepForm
-          layout='horizontal'
-          labelAlign='left'
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 12 }}
-        >
-          <div>
-            {triBandRadioFeatureFlag &&
+        <StepsForm.StepForm>
+          <Row gutter={20}>
+            <Col span={10}>
+              {triBandRadioFeatureFlag &&
               <>
                 {$t({ defaultMessage: 'Tri-band radio settings' })}
                 <Switch
@@ -199,6 +195,7 @@ export function RadioSettings () {
                       unsavedTabKey: 'radio',
                       isDirty: true
                     })
+                    onTabChange('Normal24GHz')
                   }}
                   style={{ marginLeft: '20px' }}
                 />
@@ -210,8 +207,8 @@ export function RadioSettings () {
                   <QuestionMarkCircleOutlined />
                 </Tooltip>
               </>
-            }
-            {triBandRadioFeatureFlag && triBandRadio &&
+              }
+              {triBandRadioFeatureFlag && triBandRadio &&
               <div style={{ marginTop: '1em' }}>
                 <span>{$t({ defaultMessage: 'R760 radio bands management' })}</span>
                 <Form.Item
@@ -229,14 +226,16 @@ export function RadioSettings () {
                   </Radio.Group>
                 </Form.Item>
               </div>
-            }
-            <Tabs onChange={onTabChange}
-              activeKey={currentTab}
-              type='third'
-              style={{ marginTop: triBandRadioFeatureFlag ? '5em' : '' }}>
-              <Tabs.TabPane tab={$t({ defaultMessage: '2.4 GHz' })} key='Normal24GHz' />
-              <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key='Normal5GHz' />
-              { triBandRadio && radioBandManagement &&
+              }
+            </Col>
+          </Row>
+          <Tabs onChange={onTabChange}
+            activeKey={currentTab}
+            type='third'
+            style={{ marginTop: triBandRadioFeatureFlag ? '5em' : '' }}>
+            <Tabs.TabPane tab={$t({ defaultMessage: '2.4 GHz' })} key='Normal24GHz' />
+            <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key='Normal5GHz' />
+            { triBandRadio && radioBandManagement &&
                   <>
                     <Tabs.TabPane
                       tab={$t({ defaultMessage: 'Lower 5 GHz' })}
@@ -245,31 +244,30 @@ export function RadioSettings () {
                       tab={$t({ defaultMessage: 'Upper 5 GHz' })}
                       key='Upper5GHz' />
                   </>
-              }
-              { triBandRadio &&
+            }
+            { triBandRadio &&
                 <Tabs.TabPane tab={$t({ defaultMessage: '6 GHz' })} key='Normal6GHz' />
-              }
-            </Tabs>
-            <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
-              <Radio24GHz />
-            </div>
-            <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
-              <Radio5GHz />
-            </div>
-            <div style={{ display: triBandRadio &&
+            }
+          </Tabs>
+          <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
+            <Radio24GHz />
+          </div>
+          <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
+            <Radio5GHz />
+          </div>
+          <div style={{ display: triBandRadio &&
                 currentTab === 'Normal6GHz' ? 'block' : 'none' }}>
-              <Radio6GHz />
-            </div>
-            <div style={{ display:
+            <Radio6GHz />
+          </div>
+          <div style={{ display:
             triBandRadio && radioBandManagement &&
             currentTab === 'Lower5GHz' ? 'block' : 'none' }}>
-              <RadioLower5GHz />
-            </div>
-            <div style={{ display:
+            <RadioLower5GHz />
+          </div>
+          <div style={{ display:
             triBandRadio && radioBandManagement &&
             currentTab === 'Upper5GHz' ? 'block' : 'none' }}>
-              <RadioUpper5GHz />
-            </div>
+            <RadioUpper5GHz />
           </div>
         </StepsForm.StepForm>
       </StepsForm>

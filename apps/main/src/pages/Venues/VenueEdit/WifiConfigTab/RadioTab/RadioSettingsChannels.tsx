@@ -152,7 +152,6 @@ export function RadioSettingsChannels (props: {
             }))}
           />
         }
-        style={{ width: '100vw', height: '50px' }}
       />
 
     </Space>

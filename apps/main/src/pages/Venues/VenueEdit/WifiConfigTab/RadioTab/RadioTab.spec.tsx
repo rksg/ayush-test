@@ -173,7 +173,7 @@ describe('RadioTab', () => {
     const channelSelect = screen.getAllByRole('combobox')[0]
     await userEvent.click(channelSelect)
     await userEvent.click(screen.getAllByTitle('Channel Fly')[0])
-    const scanIntervalInput = screen.getAllByLabelText('Run background scan every')[0]
+    const scanIntervalInput = screen.getAllByLabelText('Run background scan every:')[0]
     fireEvent.change(scanIntervalInput, { target: { value: '40' } })
     const bandwidthSelect = screen.getAllByRole('combobox')[1]
     await userEvent.click(bandwidthSelect)

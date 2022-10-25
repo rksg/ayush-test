@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Input, InputNumber, Select, Slider, Space } from 'antd'
-import { useIntl }                                         from 'react-intl'
+import { Col, Form, Input, InputNumber, Row, Select, Slider } from 'antd'
+import { defineMessage, useIntl }                             from 'react-intl'
 
 import {
   useGetVenueRadioCustomizationQuery,
@@ -125,72 +125,79 @@ export function Radio5GHz () {
   }
 
   return (
-    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-      <Form.Item
-        label={$t({ defaultMessage: 'Channel selection method:' })}
-        name={['radioParams50G', 'method']}>
-        <Select
-          options={channelSelectionMethodsOptions?.map(p => ({ label: p.label, value: p.value }))}
-          defaultValue={channelSelectionMethodsOptions[1].value}
-        />
-      </Form.Item>
-      <Form.Item
-        label={$t({ defaultMessage: 'Channel Change Frequency:' })}
-        name={['radioParams50G', 'changeInterval']}
-        style={{ display: channelMethod === channelSelectionMethodsOptions[0].value ?
-          'block' : 'none' }}
-      >
-        <Slider
-          tipFormatter={formatter}
-          style={{ width: '240px' }}
-          defaultValue={33}
-          min={1}
-          max={100}
-          marks={{ 1: '1%', 100: '100%' }}
-        />
-      </Form.Item>
-      <Form.Item
-        label={$t({ defaultMessage: 'Run background scan every:' })}
-        name={['radioParams50G', 'scanInterval']}
-        rules={[
-          { required: true },
-          { type: 'number', min: 1 },
-          { type: 'number', max: 65535 }
-        ]}
-        initialValue={20}
-        children={<InputNumber min={1} max={65535} />}
-      />
-      <Form.Item
-        label={$t({ defaultMessage: 'Bandwidth:' })}
-        name={['radioParams50G', 'channelBandwidth']}>
-        <Select
-          options={defaultChannelsData &&
+    <>
+      <Row gutter={20}>
+        <Col span={8}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Channel selection method:' })}
+            name={['radioParams50G', 'method']}>
+            <Select
+              options={channelSelectionMethodsOptions?.map(p =>
+                ({ label: $t(defineMessage({ defaultMessage: '{label}' }), { label: p.label }),
+                  value: p.value }))}
+              defaultValue={channelSelectionMethodsOptions[1].value}
+            />
+          </Form.Item>
+          <Form.Item
+            label={$t({ defaultMessage: 'Channel Change Frequency:' })}
+            name={['radioParams50G', 'changeInterval']}
+            style={{ display: channelMethod === channelSelectionMethodsOptions[0].value ?
+              'block' : 'none' }}
+          >
+            <Slider
+              tipFormatter={formatter}
+              style={{ width: '240px' }}
+              defaultValue={33}
+              min={1}
+              max={100}
+              marks={{ 1: '1%', 100: '100%' }}
+            />
+          </Form.Item>
+          <Form.Item
+            label={$t({ defaultMessage: 'Run background scan every:' })}
+            name={['radioParams50G', 'scanInterval']}
+            rules={[
+              { required: true },
+              { type: 'number', min: 1 },
+              { type: 'number', max: 65535 }
+            ]}
+            initialValue={20}
+            children={<InputNumber min={1} max={65535} />}
+          />
+          <Form.Item
+            label={$t({ defaultMessage: 'Bandwidth:' })}
+            name={['radioParams50G', 'channelBandwidth']}>
+            <Select
+              options={defaultChannelsData &&
             Object.keys(defaultChannelsData['5GChannels']['dfs'])
               .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
-          defaultValue={'auto'}
-        />
-      </Form.Item>
-      <Form.Item
-        label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
-        name={['radioParams50G', 'txPower']}>
-        <Select
-          options={txPowerAdjustmentOptions?.map(p => ({ label: p.label, value: p.value }))}
-          defaultValue={txPowerAdjustmentOptions[1].value}
-        />
-      </Form.Item>
+              defaultValue={'auto'}
+            />
+          </Form.Item>
+          <Form.Item
+            label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
+            name={['radioParams50G', 'txPower']}>
+            <Select
+              options={txPowerAdjustmentOptions?.map(p => ({ label: p.label, value: p.value }))}
+              defaultValue={txPowerAdjustmentOptions[1].value}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={20}>
+        <Col span={24}>
+          <div>{$t({ defaultMessage: 'Channel selection:' })}</div>
 
-      <div style={{ marginTop: '1em' }}>{$t({ defaultMessage: 'Channel selection:' })}</div>
+          <div>
+            {
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Selected channels will be available for radio broadcasting in this venue. Hover to see overlapping channels' })
+            }
+          </div>
 
-      <div>
-        {
-          // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'Selected channels will be available for radio broadcasting in this venue. Hover to see overlapping channels' })
-        }
-      </div>
-
-      <div>
-        <div>{$t({ defaultMessage: 'Indoor APs' })}</div>
-        { defaultIndoorChannels &&
+          <div>
+            <div>{$t({ defaultMessage: 'Indoor APs' })}</div>
+            { defaultIndoorChannels &&
           <RadioSettingsChannels
             formName={['radioParams50G', 'allowedIndoorChannels']}
             groupSize={groupSize}
@@ -202,12 +209,12 @@ export function Radio5GHz () {
             channelBars={indoorChannelBars}
             disabled={false}
           />
-        }
-      </div>
+            }
+          </div>
 
-      <div>
-        <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
-        {defaultOutdoorChannels &&
+          <div>
+            <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
+            {defaultOutdoorChannels &&
           <RadioSettingsChannels
             formName={['radioParams50G', 'allowedOutdoorChannels']}
             groupSize={groupSize}
@@ -219,14 +226,16 @@ export function Radio5GHz () {
             channelBars={outdoorChannelBars}
             disabled={false}
           />
-        }
-        <Form.Item
-          name={['radioParams50G', 'combineChannels']}
-          initialValue={false}
-        >
-          <Input type='hidden'></Input>
-        </Form.Item>
-      </div>
-    </Space>
+            }
+            <Form.Item
+              name={['radioParams50G', 'combineChannels']}
+              initialValue={false}
+            >
+              <Input type='hidden'></Input>
+            </Form.Item>
+          </div>
+        </Col>
+      </Row>
+    </>
   )
 }
