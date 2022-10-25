@@ -147,6 +147,7 @@ function Histogram ({
   const hasData = (queryResults?.data?.[0]?.rawData?.data)?.every(
     (datum: number) => datum !== null
   )
+  const unit = histogram?.xUnit
   return (
     <Loader states={[queryResults]} key={kpi}>
       <GridRow>
@@ -159,7 +160,7 @@ function Histogram ({
                     <VerticalBarChart
                       style={{ height: height, width }}
                       data={data}
-                      xAxisName={`(${histogram?.xUnit})`}
+                      xAxisName={unit !== '%' ? ` ${$t(unit)}` : unit}
                       barWidth={30}
                       xAxisOffset={10}
                       barColors={barColors}
