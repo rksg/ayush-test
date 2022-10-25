@@ -148,11 +148,13 @@ export default function HealthWidget ({
       .slice(0,5)
   }
 
-  const clientExpTab = data
+  const healthData = data && data.health.length ? getHealthData(data.health) : null
+
+  const clientExpTab = healthData && healthData.length
     ? <UI.Wrapper>
       <Table
         columns={columns}
-        dataSource={getHealthData(data.health)}
+        dataSource={healthData}
         pagination={false}
         type={'compactBordered'}
         rowKey='zoneName'
