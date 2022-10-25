@@ -14,7 +14,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { emptyList, mockAaaSetting, mockAaaSetting_with_order, radiusList } from '../../../__tests__/fixtures'
+import { emptyList, mockAaaSetting, mockAaaSettingWithOrder, radiusList } from '../../../__tests__/fixtures'
 
 import { SwitchAAATab } from './SwitchAAATab'
 
@@ -70,7 +70,7 @@ describe('SwitchAAATab', () => {
 
     mockServer.use(
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
-        res(ctx.json(mockAaaSetting_with_order))
+        res(ctx.json(mockAaaSettingWithOrder))
       ),
       rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: string }

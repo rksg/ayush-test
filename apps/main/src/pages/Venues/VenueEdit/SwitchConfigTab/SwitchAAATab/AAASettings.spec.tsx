@@ -15,10 +15,9 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { emptyList, mockAaaSetting_with_order, radiusList } from '../../../__tests__/fixtures'
+import { emptyList, mockAaaSettingWithOrder, radiusList } from '../../../__tests__/fixtures'
 
 import { AAASettings } from './AAASettings'
-
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
@@ -33,7 +32,7 @@ describe('AAASettings', () => {
 
     mockServer.use(
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>
-        res(ctx.json(mockAaaSetting_with_order))
+        res(ctx.json(mockAaaSettingWithOrder))
       ),
       rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
         const body = req.body as { serverType: string }

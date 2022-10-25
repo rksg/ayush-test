@@ -1089,7 +1089,7 @@ export const mockAaaSetting = {
   id: '3d0e71c087e743feaaf6f6a19ea955f2'
 }
 
-export const mockAaaSetting_with_order = {
+export const mockAaaSettingWithOrder = {
   authnEnabledSsh: false,
   authnEnableTelnet: false,
   authzEnabledCommand: true,
