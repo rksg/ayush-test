@@ -88,7 +88,7 @@ exports[`WifiConfigTab should render correctly 1`] = `
           </div>
           <div
             class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
-            style="left: 0px; width: 1280px;"
+            style="left: 0px; width: 0px;"
           />
         </div>
       </div>
