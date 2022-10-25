@@ -105,10 +105,10 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__Wrapper-sc-1rvolyi-1 bWFybo"
+                class="styledComponents__Wrapper-sc-1rvolyi-1 cNZCcd"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-13 bzjxMS"
+                  class="styledComponents__Wrapper-sc-1abm7iv-13 iSNocV"
                 >
                   <div
                     class="ant-pro-table"
@@ -420,10 +420,10 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__Wrapper-sc-1rvolyi-1 bWFybo"
+                class="styledComponents__Wrapper-sc-1rvolyi-1 cNZCcd"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-13 bzjxMS"
+                  class="styledComponents__Wrapper-sc-1abm7iv-13 iSNocV"
                 >
                   <div
                     class="ant-pro-table"

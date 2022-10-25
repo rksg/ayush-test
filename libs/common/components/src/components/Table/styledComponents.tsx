@@ -143,7 +143,7 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
 const actionsHeight = '36px'
 
 type StyledTable = {
-  $type: 'tall' | 'compact' | 'tooltip' | 'form',
+  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'rowBorders',
   $rowSelectionActive: boolean
 }
 
@@ -317,11 +317,45 @@ const formStyle = css`
   }
 `
 
+const rowBordersStyle = css`
+  .ant-pro-table {
+    .ant-table {
+      &-thead > tr:first-child > th,
+      &-thead > tr:last-child > th {
+        font-size: var(--acx-body-5-font-size);
+        line-height: var(--acx-body-5-line-height);
+        font-weight: var(--acx-body-font-weight-bold);
+        padding-top: 6px;
+        padding-bottom: 6px;
+      }
+
+      &-tbody > tr > td {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+        padding-top: 6px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--acx-neutrals-30) !important;
+      }
+      
+      .ant-table-thead > tr:last-child > th, .ant-table-tbody > tr:last-child > td {
+        border-bottom: 0px !important;
+      }
+      
+      .ant-table-tbody > tr:first-child {
+        display: none;
+      }
+    }
+  }
+  
+`
+
 const styles = {
   tall: tallStyle,
   compact: compactStyle,
   tooltip: tooltipStyle,
-  form: formStyle
+  form: formStyle,
+  rowBorders: rowBordersStyle
 }
 
 export const Header = styled.div`
