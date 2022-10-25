@@ -154,7 +154,7 @@ export default function HealthWidget ({
         columns={columns}
         dataSource={getHealthData(data.health)}
         pagination={false}
-        type={'rowBorders'}
+        type={'compactBordered'}
         rowKey='zoneName'
       />
     </UI.Wrapper>

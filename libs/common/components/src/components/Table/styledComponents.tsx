@@ -143,7 +143,7 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
 const actionsHeight = '36px'
 
 type StyledTable = {
-  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'rowBorders',
+  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered',
   $rowSelectionActive: boolean
 }
 
@@ -317,7 +317,7 @@ const formStyle = css`
   }
 `
 
-const rowBordersStyle = css`
+const compactBorderedStyle = css`
   .ant-pro-table {
     .ant-table {
       &-thead > tr:first-child > th,
@@ -355,7 +355,7 @@ const styles = {
   compact: compactStyle,
   tooltip: tooltipStyle,
   form: formStyle,
-  rowBorders: rowBordersStyle
+  compactBordered: compactBorderedStyle
 }
 
 export const Header = styled.div`
