@@ -102,8 +102,13 @@ function Histogram ({
   /* istanbul ignore next */
   const onBarClick = ( barData: [number, number] ) =>{
     const reformattedBarData = histogram?.reFormatFromBarChart(barData?.[0])
-    if(splits.indexOf(reformattedBarData) === -1)
+    if(splits.indexOf(reformattedBarData) === -1){
+      const selectSecondLastBar = splits.length - 1
+      setSliderValue(selectSecondLastBar + 0.5)
+      setThresholdValue(splits[selectSecondLastBar] as unknown as string)
+      setKpiThreshold({ ...thresholds, [kpi]: splits[selectSecondLastBar] })
       return
+    }
     setSliderValue(splits.indexOf(reformattedBarData) + 0.5)
     setThresholdValue(reformattedBarData as unknown as string)
     setKpiThreshold({ ...thresholds, [kpi]: reformattedBarData })
