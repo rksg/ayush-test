@@ -49,7 +49,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
     setGateways(natGatewayList)
 
     form.setFieldsValue({
-      serviceId: 'serviceProfileId1',
+      serviceId: venueDHCPProfile?.serviceProfileId,
       primaryServerSN: primaryServerSN,
       backupServerSN: backupServerSN,
       gateways: natGatewayList
@@ -57,7 +57,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
   }, [venueDHCPProfile, dhcpProfileList, apList, primaryServerSN, backupServerSN, form])
 
 
-  const gatewaysList = gateways?.map((item,index)=>{
+  const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
     return <><Row key={index}>
       <StyledForm.Item name={['gateways', index, 'serialNumber']}>
         <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
@@ -68,16 +68,16 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
           )}
         </AntSelect>
       </StyledForm.Item>
-      <IconContainer>
-        <DeleteTwoTone onClick={()=>{
-          const gatewayRawData = form.getFieldsValue().gateways
-
-          _.pullAt(gatewayRawData, [index])
-          form.setFieldsValue({ gateways: gatewayRawData })
-          setGateways([...gatewayRawData])
-        }}
-        style={{ fontSize: 17, marginLeft: 10, cursor: 'pointer' }} />
-      </IconContainer>
+      {(gateways?.length > 1) && <IconContainer>
+        <Button type='text'
+          onClick={()=>{
+            const gatewayRawData = form.getFieldsValue().gateways
+            _.pullAt(gatewayRawData, [index])
+            form.setFieldsValue({ gateways: gatewayRawData })
+            setGateways([...gatewayRawData])
+          }}
+          icon={<DeleteTwoTone />} />
+      </IconContainer>}
     </Row>
     {(gateways?.length===index+1) && <AddBtnContainer>
       <Button onClick={()=>{
@@ -89,7 +89,27 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
         {$t({ defaultMessage: 'Add gateway' })}
       </Button>
     </AddBtnContainer>}</>
-  })
+  }) : <><Row>
+    <StyledForm.Item name={['gateways', 0, 'serialNumber']}>
+      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
+        {apList?.data?.map(ap =>
+          <Option value={ap.serialNumber}>
+            {ap.name}
+          </Option>
+        )}
+      </AntSelect>
+    </StyledForm.Item>
+  </Row>
+  <AddBtnContainer>
+    <Button onClick={()=>{
+      form.setFieldsValue({ gateways: [...form.getFieldsValue().gateways, { }] })
+      setGateways([{ serialNumber: '' , role: '' }, { serialNumber: '' , role: '' }])
+    }}
+    type='link'
+    block>
+      {$t({ defaultMessage: 'Add gateway' })}
+    </Button>
+  </AddBtnContainer></>
 
   return <StyledForm
     layout='vertical'

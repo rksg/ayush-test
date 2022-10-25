@@ -11,7 +11,7 @@ export function VenueServicesTab () {
   const { $t } = useIntl()
 
 
-  //FIXME: check service status
+  //FIXME: check service status when API ready
 
 
   return (

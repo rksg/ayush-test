@@ -138,7 +138,7 @@ export default function BasicInfo () {
         const form = formRef as React.MutableRefObject<FormInstance>
         form.current.getFieldsValue()
         form.current.submit()
-
+        setVisible(false)
       }}
     >
       <VenueDHCPForm ref={formRef} />

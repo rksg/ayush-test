@@ -1,8 +1,8 @@
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                             from '@acx-ui/components'
-import { DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
+import { StepsForm }          from '@acx-ui/components'
+import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
@@ -15,7 +15,7 @@ export function SettingForm () {
   const intl = useIntl()
 
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
-  const createType = useWatch<ServiceTechnology>('createType')
+  // const createType = useWatch<ServiceTechnology>('createType')
 
   const types = Object.values(DHCPConfigTypeEnum)
 
@@ -43,7 +43,6 @@ export function SettingForm () {
           children={<Input />}
         />
 
-        {createType === ServiceTechnology.WIFI &&
         <Form.Item
           name='dhcpConfig'
           initialValue={DHCPConfigTypeEnum.SIMPLE}
@@ -63,12 +62,12 @@ export function SettingForm () {
               ))}
             </Space>
           </Radio.Group>
-        </Form.Item>}
+        </Form.Item>
 
       </Col>
-      {createType === ServiceTechnology.WIFI && <Col span={10}>
+      <Col span={10}>
         <DHCPDiagram type={type}/>
-      </Col>}
+      </Col>
     </Row>
     <Row gutter={20}>
       <Col span={20}>

@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -16,11 +16,14 @@ export default function VenueLeaseTable (props: { setLeaseNumFn: Function, style
   const { data: leasesList } = useVenuesLeasesListQuery({
     params: { venueId: params.venueId }
   })
-  props.setLeaseNumFn(leasesList?.length)
+
+  useEffect(() => {
+    props.setLeaseNumFn(leasesList?.length)
+  },[leasesList, props])
 
   const columns: TableProps<DHCPLeases>['columns'] = [
     {
-      key: 'name',
+      key: 'hostName',
       searchable: true,
       title: $t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostName',
@@ -62,7 +65,7 @@ export default function VenueLeaseTable (props: { setLeaseNumFn: Function, style
           <Table
             columns={columns}
             dataSource={leasesList}
-            rowKey='id'
+            rowKey='hostName'
           />
         </div>
       </Card>
