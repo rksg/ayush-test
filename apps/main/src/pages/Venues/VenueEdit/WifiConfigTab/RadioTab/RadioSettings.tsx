@@ -1,11 +1,11 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Form, Radio, RadioChangeEvent, Switch, Tabs, Tooltip } from 'antd'
-import { useIntl }                                              from 'react-intl'
+import { Form, Radio, RadioChangeEvent, Switch, Tooltip } from 'antd'
+import { useIntl }                                        from 'react-intl'
 
-import { Loader, StepsForm, StepsFormInstance }   from '@acx-ui/components'
-import { Features, useSplitTreatment }            from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
+import { Features, useSplitTreatment }                from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
 import {
   // useLazyApListQuery,
   // useGetVenueCapabilitiesQuery,
@@ -228,6 +228,7 @@ export function RadioSettings () {
             }
             <Tabs onChange={onTabChange}
               activeKey={currentTab}
+              type='third'
               style={{ marginTop: triBandRadioFeatureFlag ? '5em' : '' }}>
               <Tabs.TabPane tab={$t({ defaultMessage: '2.4 GHz' })} key='Normal24GHz' />
               <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key='Normal5GHz' />
