@@ -17,10 +17,12 @@ const Template: ComponentStory<typeof Fieldset> = (args: FieldsetProps) => {
       <Form.Item label='Field 1' children={<Input />} />
       <Form.Item label='Field 2' children={<Input />} />
     </Fieldset>
-    <Fieldset {...noSwitchArgs}> test </Fieldset>
   </Form>
 }
 
 export const Default = Template.bind({})
 Default.args = { label: 'Group 1' }
-const noSwitchArgs = { label: 'Group 2', switchStyle: { display: 'none' }, checked: true }
+
+export const NoSwitch = Template.bind({})
+NoSwitch.storyName = 'Without Switch'
+NoSwitch.args = { ...Default.args, switchStyle: { display: 'none' }, checked: true }
