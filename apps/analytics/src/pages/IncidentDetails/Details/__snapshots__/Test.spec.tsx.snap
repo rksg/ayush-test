@@ -1088,6 +1088,18 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="rssDistributionChart"
+        />
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;

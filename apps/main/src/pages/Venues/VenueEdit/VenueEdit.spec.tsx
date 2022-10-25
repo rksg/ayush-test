@@ -55,7 +55,8 @@ async function updateAdvancedSettings (selectModel) {
 }
 
 async function updateLanPorts () {
-  fireEvent.mouseDown(await screen.findByRole('combobox'))
+  const view = screen.getByTestId('apModelSelect')
+  fireEvent.mouseDown(within(view).getByText(/no model selected/i))
   const option = screen.getByText('T750')
   await userEvent.click(option)
   expect(await screen.findByAltText(/AP LAN port image - T750/)).toBeVisible()

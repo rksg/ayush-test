@@ -35,9 +35,9 @@ export const DowntimeEventTypeDistributionChart = (
 
   const seriesMapping = [
     { key: 'apHeartbeatLost', name: $t({ defaultMessage: 'AP Heartbeat Lost' }) },
-    { key: 'apRebootBySystem', name: $t({ defaultMessage: 'AP Reboot By System' }) },
+    { key: 'apRebootBySystem', name: $t({ defaultMessage: 'AP Reboot by System' }) },
     { key: 'apConnectionLost', name: $t({ defaultMessage: 'AP Connection Lost' }) },
-    { key: 'apRebootByUser', name: $t({ defaultMessage: 'AP Reboot By User' }) }
+    { key: 'apRebootByUser', name: $t({ defaultMessage: 'AP Reboot by User' }) }
   ]
 
   const chartResults = getSeriesData({

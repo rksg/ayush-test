@@ -86,7 +86,7 @@ export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
     return [chartData, seriesFormatters]
   }, [$t, items])
 
-  return <Card title={$t({ defaultMessage: 'RSS Quality By Clients' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'RSS Quality by Clients' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         <StackedAreaChart
