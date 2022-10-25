@@ -8,7 +8,7 @@ const pillDescCommom = `
   color: var(--acx-neutrals-40);
 `
 export const ThresholdTitle = styled(Subtitle).attrs({ level: 4 })`
-  padding-top: 3px;
+  padding-top: 16px;
 `
 
 export const PillTitle = styled(Subtitle).attrs({ level: 5 })`
