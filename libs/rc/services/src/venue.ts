@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
+  WifiUrlsInfo,
   SwitchUrlsInfo,
   createHttpRequest,
   FloorPlanDto,
@@ -16,6 +17,9 @@ import {
   VenueCapabilities,
   VenueLed,
   VenueApModels,
+  ExternalAntenna,
+  CapabilitiesApModel,
+  VenueLanPorts,
   VenueDosProtection,
   VenueRogueAp,
   RogueClassificationPolicy,
@@ -26,13 +30,16 @@ import {
   CommonResult,
   VenueSettings,
   VenueSwitchConfiguration,
-  ConfigurationProfile
+  ConfigurationProfile,
+  AvailableLteBands,
+  VenueApModelCellular
 } from '@acx-ui/rc/utils'
+
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -129,6 +136,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueCellularSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     meshAps: build.query<TableResult<APMesh>, RequestPayload>({
       query: ({ params, payload }) => {
         const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
@@ -214,6 +230,39 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueLanPorts, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueLanPorts: build.mutation<VenueLanPorts[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueLanPorts, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getAvailableLteBands: build.query<AvailableLteBands[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getAvailableLteBands, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueApModelCellular: build.query<VenueApModelCellular, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueApModelCellular, params)
+        return{
+          ...req
+        }
+      }
+    }),
     configProfiles: build.query<ConfigurationProfile[], RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getConfigProfiles, params)
@@ -234,20 +283,20 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
+        return{
+          ...req
+        }
+      }
+    }),
     updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params)
         return {
           ...req,
           body: payload
-        }
-      }
-    }),
-    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
-        return{
-          ...req
         }
       }
     }),
@@ -317,6 +366,44 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
+    getVenueExternalAntenna: build.query<ExternalAntenna[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.GetVenueExternalAntenna, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg,
+            ['UpdateVenueExternalAntenna'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    getVenueApCapabilities: build.query<{
+      version: string,
+      apModels:CapabilitiesApModel[] }, RequestPayload>({
+        query: ({ params }) => {
+          const req = createHttpRequest(WifiUrlsInfo.GetVenueApCapabilities, params)
+          return {
+            ...req
+          }
+        },
+        providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
+      }),
+    UpdateVenueExternalAntenna: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.UpdateVenueExternalAntenna, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
+    }),
     getDenialOfServiceProtection: build.query<VenueDosProtection, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getDenialOfServiceProtection, params)
@@ -373,6 +460,7 @@ export const {
   useVenueDetailsHeaderQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
+  useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
   useDeleteVenueMutation,
   useFloorPlanListQuery,
@@ -381,6 +469,8 @@ export const {
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useGetVenueLanPortsQuery,
+  useUpdateVenueLanPortsMutation,
   useVenueSwitchAAAServerListQuery,
   useGetAaaSettingQuery,
   useAddAAAServerMutation,
@@ -395,5 +485,10 @@ export const {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
-  useSwitchConfigProfileQuery
+  useSwitchConfigProfileQuery,
+  useGetVenueExternalAntennaQuery,
+  useGetVenueApCapabilitiesQuery,
+  useUpdateVenueExternalAntennaMutation,
+  useGetAvailableLteBandsQuery,
+  useGetVenueApModelCellularQuery
 } = venueApi

@@ -18,6 +18,7 @@ import {
   gridOptions,
   legendOptions,
   legendTextStyleOptions,
+  dataZoomOptions,
   xAxisOptions,
   yAxisOptions,
   axisLabelOptions,
@@ -163,13 +164,7 @@ export function StackedAreaChart <
         brush: { type: ['rect'], icon: { rect: 'path://' } }
       }
     },
-    dataZoom: [
-      {
-        id: 'zoom',
-        type: 'inside',
-        zoomLock: true
-      }
-    ]
+    dataZoom: dataZoomOptions(initialData)
   }
 
   return (

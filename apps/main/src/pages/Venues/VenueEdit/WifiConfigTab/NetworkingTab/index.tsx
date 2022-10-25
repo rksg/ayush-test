@@ -3,17 +3,23 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
+import { VenueApModelCellular }                  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
-import { MeshNetwork } from './MeshNetwork'
+import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
+import { LanPorts }            from './LanPorts'
+import { MeshNetwork }         from './MeshNetwork'
+
 
 export interface NetworkingSettingContext {
-  cellularData: unknown,
+  cellularData: VenueApModelCellular,
   meshData: { mesh: boolean },
-  updateCellular: (() => void),
-  updateMesh: ((check: boolean) => void)
+  updateCellular: ((cellularData: VenueApModelCellular) => void),
+  updateMesh: ((check: boolean) => void),
+  updateLanPorts: (() => void),
+  discardLanPorts?: (() => void)
 }
 
 export function NetworkingTab () {
@@ -30,14 +36,29 @@ export function NetworkingTab () {
   } = useContext(VenueEditContext)
 
   const items = [{
-  //   title: $t({ defaultMessage: 'LAN Ports' }),
-  //   content: 'LAN Ports Content'
-  // }, {
-  //   title: $t({ defaultMessage: 'Cellular Options' }),
-  //   content: (<CellularOptionsForm></CellularOptionsForm>)
-  // }, {
+    title: $t({ defaultMessage: 'LAN Ports' }),
+    content: <>
+      <StepsForm.SectionTitle id='lan-ports'>
+        { $t({ defaultMessage: 'LAN Ports' }) }
+      </StepsForm.SectionTitle>
+      <LanPorts />
+    </>
+  }, {
+    title: $t({ defaultMessage: 'Cellular Options' }),
+    content: <>
+      <StepsForm.SectionTitle id='cellular-options'>
+        { $t({ defaultMessage: 'Cellular Options' }) }
+      </StepsForm.SectionTitle>
+      <CellularOptionsForm />
+    </>
+  }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
-    content: (<MeshNetwork />)
+    content: <>
+      <StepsForm.SectionTitle id='mesh-network'>
+        { $t({ defaultMessage: 'Mesh Network' }) }
+      </StepsForm.SectionTitle>
+      <MeshNetwork />
+    </>
   // }, {
   //   title: $t({ defaultMessage: 'Client Isolation Allowlist' }),
   //   content: 'Client Isolation Allowlist Content'
@@ -45,7 +66,8 @@ export function NetworkingTab () {
 
   const handleUpdateAllSettings = async () => {
     try {
-      editNetworkingContextData?.updateCellular?.()
+      await editNetworkingContextData?.updateLanPorts?.()
+      await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       await editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       setEditContextData({
         ...editContextData,

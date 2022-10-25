@@ -84,7 +84,7 @@ storiesOf('VerticalBarChart', module)
       <VerticalBarChart
         style={{ width: '100%', height: '100%' }}
         data={data}
-        xAxisName={'(RSS, in dBm)'}
+        xAxisName={'(dBm)'}
         barColors={colors}
       />
     </div>
@@ -96,7 +96,7 @@ storiesOf('VerticalBarChart', module)
         data={percentData}
         dataFormatter={formatter('percentFormat')}
         yAxisProps={{ max: 1, min: 0 }}
-        xAxisName={'(Last 7 days)'}
+        xAxisName={'(last 7 days)'}
         showTooltipName={false}
       />
     </div>
