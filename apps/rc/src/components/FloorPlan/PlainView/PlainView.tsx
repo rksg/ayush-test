@@ -10,10 +10,13 @@ import {
   MagnifyingGlassPlusOutlined,
   SearchFitOutlined, SearchFullOutlined
 } from '@acx-ui/icons'
-import { FloorPlanDto } from '@acx-ui/rc/utils'
+import { FloorPlanDto, FloorPlanFormDto } from '@acx-ui/rc/utils'
+
+import AddEditFloorplanModal from '../FloorPlanModal'
 
 import * as UI   from './styledComponents'
 import Thumbnail from './Thumbnail'
+
 
 export enum ImageMode {
   FIT = 'fit',
@@ -52,8 +55,10 @@ export function getImageFitPercentage (containerCoordsX: number,
 export default function PlainView (props: { floorPlans: FloorPlanDto[],
   toggleGalleryView: Function,
   defaultFloorPlan: FloorPlanDto,
-  deleteFloorPlan: Function }) {
-  const { floorPlans, toggleGalleryView, defaultFloorPlan, deleteFloorPlan } = props
+  deleteFloorPlan: Function,
+  onAddEditFloorPlan: Function }) {
+  const { floorPlans,
+    toggleGalleryView, defaultFloorPlan, deleteFloorPlan, onAddEditFloorPlan } = props
   const { $t } = useIntl()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
@@ -85,6 +90,10 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   function onImageLoad () {
     fitFloorplanImage()
     setImageLoaded(true)
+  }
+
+  function onEditFloorPlanHandler (floorPlan: FloorPlanFormDto) {
+    onAddEditFloorPlan(floorPlan, true)
   }
 
   function zoom (mode: ImageMode) {
@@ -163,9 +172,10 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
         </Col>
         <Col>
           <Space split={<Divider type='vertical' />}>
-            <Button key='editBtn' type='link'>
-              {$t({ defaultMessage: 'Edit' })}
-            </Button>
+            <AddEditFloorplanModal
+              onAddEditFloorPlan={onEditFloorPlanHandler}
+              isEditMode={true}
+              selectedFloorPlan={selectedFloorPlan}/>
             <Button key='deleteBtn' type='link' onClick={deleteHandler} >
               {$t({ defaultMessage: 'Delete' })}
             </Button>

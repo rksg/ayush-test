@@ -80,6 +80,24 @@ export interface FloorPlanImage {
 	name: string
 }
 
+export interface UploadUrlResponse {
+	fileId: string;
+	signedUrl: string;
+}
+export interface FloorPlanFormDto {
+	floorNumber: number;
+	id: string;
+	imageId: string;
+	imageName: string;
+	name: string;
+}
+
+export interface FileValidation {
+	file: File,
+	isValidfileType: boolean,
+	isValidFileSize: boolean
+}
+
 export interface VenueCapabilities {
 	apModels: ApModel[]
 	version: string

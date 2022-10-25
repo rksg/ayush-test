@@ -123,9 +123,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
   },
+  addFloorplan: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
+  },
+  updateFloorplan: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+  },
   deleteFloorPlan: {
     method: 'delete',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+  },
+  getUploadURL: {
+    method: 'post',
+    url: '/api/file/tenant/:tenantId/upload-url'
   },
   getVenueCapabilities: {
     method: 'get',
