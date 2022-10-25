@@ -147,10 +147,7 @@ export default function HealthWidget ({
       .sort((a,b)=>(a.clientExperience as number) - (b.clientExperience as number))
       .slice(0,5)
   }
-  if(data){
-    // eslint-disable-next-line no-console
-    console.log(getHealthData(data.health))
-  }
+
   const clientExpTab = data
     ? <UI.Wrapper>
       <Table

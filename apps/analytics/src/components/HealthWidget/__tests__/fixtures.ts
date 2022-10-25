@@ -441,28 +441,6 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      zoneId: 'f0997ab93fa24670a961c98446d47ae6',
-      zoneName: 'f0997ab93fa24670a961c98446d47ae6',
-      timeToConnectSLA: [
-        null,
-        null
-      ],
-      timeToConnectThreshold: null,
-      clientThroughputSLA: [
-        null,
-        null
-      ],
-      clientThroughputThreshold: null,
-      connectionSuccessSLA: [
-        null,
-        null
-      ],
-      onlineApsSLA: [
-        null,
-        null
-      ]
-    },
-    {
       zoneId: 'f201474c26144e68b19ada4eb0210d9a',
       zoneName: 'Weichih-Venue',
       timeToConnectSLA: [
@@ -485,7 +463,7 @@ export const healthWidgetFixture = {
       ]
     },
     {
-      zoneId: null,
+      zoneId: 'f0997ab93fa24670a961c98446d47ae6',
       zoneName: 'f0997ab93fa24670a961c98446d47ae6',
       timeToConnectSLA: [
         20,
