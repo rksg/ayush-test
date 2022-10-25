@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { Subtitle, GridRow } from '@acx-ui/components'
+import { Subtitle } from '@acx-ui/components'
 
 const pillDescCommom = `
   font-size: var(--acx-subtitle-6-font-size);
@@ -30,13 +30,6 @@ export const PillWrap = styled.div`
   padding: 0 10px 0 0;
 `
 
-export const KpiRow = styled(GridRow)`
-  border-bottom: 1px solid var(--acx-neutrals-30);
-  &:not(:first-of-type){
-    padding-top: 20px;
-  }
-  padding-bottom: 20px;
-`
 export const PillDesc = styled.div`
   ${pillDescCommom}
   margin-top: 10px;

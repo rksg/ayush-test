@@ -5,6 +5,8 @@ export const Wrapper = styled.div`
   top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
   z-index: 5;
   background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
   .ant-page-header {
     padding: 0;
     margin: 4px 0 var(--acx-content-vertical-space);
