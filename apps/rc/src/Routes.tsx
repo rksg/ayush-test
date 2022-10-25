@@ -3,6 +3,7 @@ import { ServiceType }       from '@acx-ui/rc/utils'
 import { rootRoutes, Route } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
+import Edges                                     from './pages/Devices/Edge'
 import { NetworkDetails }                        from './pages/Networks/NetworkDetails/NetworkDetails'
 import { NetworkForm }                           from './pages/Networks/NetworkForm/NetworkForm'
 import { NetworksTable }                         from './pages/Networks/NetworksTable'
@@ -16,6 +17,7 @@ export default function RcRoutes () {
     <Route path='t/:tenantId'>
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
+      <Route path='devices/*' element={<DeviceRoutes />} />
     </Route>
   )
   return (
@@ -85,6 +87,14 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<h1>DHCP details page</h1>}
       />
+    </Route>
+  )
+}
+
+function DeviceRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )
 }
