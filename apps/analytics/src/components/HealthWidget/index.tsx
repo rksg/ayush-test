@@ -7,13 +7,14 @@ import {
   Card,
   Loader,
   Table,
+  TableProps,
   ProgressBar,
   ContentSwitcher,
   ContentSwitcherProps,
   NoData
 } from '@acx-ui/components'
-import { TenantLink }             from '@acx-ui/react-router-dom'
-import { intlFormats, formatter } from '@acx-ui/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+import { formatter }  from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
@@ -26,11 +27,11 @@ export default function HealthWidget ({
   const { $t } = useIntl()
   const queryResults = useHealthQuery(filters)
   const { data } = queryResults
-  const columns=[
+  const columns: TableProps<HealthData>['columns'] = [
     {
       dataIndex: 'zoneName',
       key: 'zoneName',
-      render: function (text:unknown, row:HealthData) {
+      render: function (text: unknown, row) {
         return (
           <UI.VenueName>
             <TenantLink
@@ -48,8 +49,8 @@ export default function HealthWidget ({
       key: 'clientExperience',
       width: 40,
       align: 'center' as const,
-      render: (value:unknown)=>{
-        return <ProgressBar percent={(value as number)*100}/>
+      render: (value: unknown)=>{
+        return <ProgressBar percent={(value as number) * 100}/>
       }
     },
     {
@@ -65,21 +66,18 @@ export default function HealthWidget ({
       key: 'timeToConnectPercent',
       width: 80,
       align: 'center' as const,
-      render: (value:unknown,row:HealthData)=>{
+      render: (value: unknown, row)=>{
+        const threshold = row.timeToConnectThreshold ??
+          kpiConfig.timeToConnect.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: 'Under {threshold}' },
-          { threshold: formatter('durationFormat')(row.timeToConnectThreshold ??
-            kpiConfig.timeToConnect.histogram.initialThreshold) })
-        if(value === '-')
-          return <span>{value}</span>
-        else
-          return (<>
-            <span>
-              {value as string}
-            </span>
-            <UI.ThresholdText>
-              {thresholdText}
-            </UI.ThresholdText></>
-          )
+          { threshold: formatter('durationFormat')(threshold) })
+        if(value === '-') return <span>{value}</span>
+        return (<>
+          <span>{value as string}</span>
+          <UI.ThresholdText>
+            {thresholdText}
+          </UI.ThresholdText>
+        </>)
       }
     },
     {
@@ -88,20 +86,18 @@ export default function HealthWidget ({
       key: 'clientThroughputPercent',
       width: 90,
       align: 'center' as const,
-      render: (value:unknown,row:HealthData)=>{
+      render: (value: unknown, row)=>{
+        const threshold = row.clientThroughputThreshold ??
+          kpiConfig.clientThroughput.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: 'Above {threshold}' },
-          { threshold: formatter('networkSpeedFormat')(row.clientThroughputThreshold ??
-            kpiConfig.clientThroughput.histogram.initialThreshold) })
-        if(value === '-')
-          return <span>{value}</span>
-        else
-          return (<>
-            <span>
-              {value as string}
-            </span>
-            <UI.ThresholdText>
-              {thresholdText}
-            </UI.ThresholdText></>)
+          { threshold: formatter('networkSpeedFormat')(threshold) })
+        if(value === '-') return <span>{value}</span>
+        return (<>
+          <span>{value as string}</span>
+          <UI.ThresholdText>
+            {thresholdText}
+          </UI.ThresholdText>
+        </>)
       }
     },
     {
@@ -112,18 +108,9 @@ export default function HealthWidget ({
       width: 40
     }
   ]
-  const calcPercent = (values:[number,number]|[null,null]) => {
-    if(values[0] && values[1]){
-      const percent = values[0]/values[1]
-      return {
-        formatted: $t(intlFormats.percentFormatRound, { value: percent }),
-        percent
-      }
-    }
-    return {
-      formatted: '-',
-      percent: null
-    }
+  const calcPercent = ([val, sum]:(number | null)[]) => {
+    const percent = val && sum ? val / sum : null
+    return { percent, formatted: formatter('percentFormatRound')(percent) }
   }
   const calculateClientExp = (slas:(number|null)[]) => {
     const arr = slas.filter(sla => sla !== null)
@@ -137,11 +124,11 @@ export default function HealthWidget ({
         clientThroughputSLA,
         onlineApsSLA
       } = row
-      const connectionSuccessPercent=calcPercent(connectionSuccessSLA)
-      const timeToConnectPercent= calcPercent(timeToConnectSLA)
-      const clientThroughputPercent=calcPercent(clientThroughputSLA)
-      const onlineApsPercent=calcPercent(onlineApsSLA)
-      const clientExperience=calculateClientExp([
+      const connectionSuccessPercent = calcPercent(connectionSuccessSLA)
+      const timeToConnectPercent = calcPercent(timeToConnectSLA)
+      const clientThroughputPercent = calcPercent(clientThroughputSLA)
+      const onlineApsPercent = calcPercent(onlineApsSLA)
+      const clientExperience = calculateClientExp([
         connectionSuccessPercent.percent,
         timeToConnectPercent.percent,
         clientThroughputPercent.percent
@@ -164,7 +151,7 @@ export default function HealthWidget ({
     type={'compact'}
     rowKey='zoneName'
   /></UI.Wrapper> : <NoData/>
-  const tabDetails:ContentSwitcherProps['tabDetails']=[
+  const tabDetails:ContentSwitcherProps['tabDetails'] = [
     { label: $t({ defaultMessage: 'Venues' }) ,
       children: clientExpTab, value: 'clientExp' },
     { label: $t({ defaultMessage: 'Services' }), children: <>
