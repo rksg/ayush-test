@@ -6,7 +6,7 @@ import {
   Incident,
   shortDescription
 } from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill, GridRow, GridCol, Card, NotAvailable } from '@acx-ui/components'
+import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { RssDistributionChart }              from '../Charts/RssDistributionChart'
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
