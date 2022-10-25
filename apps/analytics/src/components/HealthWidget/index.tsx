@@ -1,3 +1,4 @@
+import { Tooltip } from 'antd'
 import { mean }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -13,8 +14,8 @@ import {
   ContentSwitcherProps,
   NoData
 } from '@acx-ui/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { formatter }  from '@acx-ui/utils'
+import { TenantLink }                 from '@acx-ui/react-router-dom'
+import { formatter, notAvailableMsg } from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
@@ -112,10 +113,12 @@ export default function HealthWidget ({
     const percent = val && sum ? val / sum : null
     return { percent, formatted: formatter('percentFormatRound')(percent) }
   }
+
   const calculateClientExp = (slas:(number|null)[]) => {
     const arr = slas.filter(sla => sla !== null)
     return arr.length ? mean(arr) : null
   }
+
   const getHealthData = (healthData:HealthData[])=>{
     return healthData.map((row)=>{
       const {
@@ -144,19 +147,35 @@ export default function HealthWidget ({
       .sort((a,b)=>(a.clientExperience as number) - (b.clientExperience as number))
       .slice(0,5)
   }
-  const clientExpTab = data ? <UI.Wrapper><Table
-    columns={columns}
-    dataSource={getHealthData(data.health)}
-    pagination={false}
-    type={'compact'}
-    rowKey='zoneName'
-  /></UI.Wrapper> : <NoData/>
-  const tabDetails:ContentSwitcherProps['tabDetails'] = [
-    { label: $t({ defaultMessage: 'Venues' }) ,
-      children: clientExpTab, value: 'clientExp' },
-    { label: $t({ defaultMessage: 'Services' }), children: <>
-      {$t({ defaultMessage: 'Coming Soon' })}
-    </>, value: 'services' }
+
+  const clientExpTab = data
+    ? <UI.Wrapper>
+      <Table
+        columns={columns}
+        dataSource={getHealthData(data.health)}
+        pagination={false}
+        type={'compact'}
+        rowKey='zoneName'
+      />
+    </UI.Wrapper>
+    : <NoData/>
+
+  const tabDetails:ContentSwitcherProps['tabDetails']=[
+    {
+      label: $t({ defaultMessage: 'Venue' }),
+      children: clientExpTab,
+      value: 'clientExp'
+    },
+    {
+      label: <Tooltip title={$t(notAvailableMsg)}>
+        {$t({ defaultMessage: 'Service' })}
+      </Tooltip>,
+      children: <>
+        {$t({ defaultMessage: 'Coming Soon' })}
+      </>,
+      value: 'services',
+      disabled: true
+    }
   ]
   return (
     <Loader states={[queryResults]}>
