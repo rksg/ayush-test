@@ -33,9 +33,15 @@ const getGoalPercent = (
 const transformHistogramResponse = ({
   data,
   splits,
-  shortXFormat
-}: KPIHistogramResponse & { splits: number[], shortXFormat: CallableFunction }) => {
-  return data.map((datum, index) => [
+  shortXFormat,
+  isReverse
+}: KPIHistogramResponse & {
+  splits: number[];
+  shortXFormat: CallableFunction;
+  isReverse: boolean;
+}) => {
+  const dataAfterIsReverseCheck = isReverse ? data.slice().reverse() : data
+  return dataAfterIsReverseCheck.map((datum, index) => [
     splits[index] ? shortXFormat(splits[index]) : '',
     datum
   ]) as [TimeStamp, number][]
