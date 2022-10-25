@@ -180,26 +180,24 @@ export function VenuesForm () {
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
 
-  const addressValidator = async () => {
-    if(Object.keys(address).length === 0){
-      return Promise.reject(
-        intl.$t({ defaultMessage: 'Please select address from suggested list' })
-      )
-    }
-    return Promise.resolve()
-  }
-
   const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     updateAddress({})
     const autocomplete = new google.maps.places.Autocomplete(event.target)
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
-
-      formRef.current?.setFieldsValue({
-        address: { addressLine: place.formatted_address }
-      })
-
       const { latlng, address } = await addressParser(place)
+      let errorList = []
+
+      if (data && (data?.address.country !== address.country)) {
+        errorList.push(
+          `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`)
+      }
+
+      formRef.current?.setFields([{
+        name: ['address', 'addressLine'],
+        value: place.formatted_address,
+        errors: errorList
+      }])
 
       setMarker(latlng)
       setCenter(latlng.toJSON())
@@ -295,9 +293,6 @@ export function VenuesForm () {
                   name={['address', 'addressLine']}
                   rules={[{
                     required: isMapEnabled ? true : false
-                  },{
-                    validator: () => addressValidator(),
-                    validateTrigger: 'onChange'
                   }]}
                 >
                   <Input
