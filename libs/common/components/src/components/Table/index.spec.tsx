@@ -27,8 +27,15 @@ jest.mock('react-resizable', () => ({
   ))
 }))
 
+type TestRow = {
+  key: string,
+  name: string,
+  age: number,
+  address: string
+}
+
 describe('Table component', () => {
-  const basicColumns = [
+  const basicColumns: TableProps<TestRow>['columns'] = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Age', dataIndex: 'age', key: 'age', tooltip: 'tooltip' },
     { title: 'Address', dataIndex: 'address', key: 'address' }
@@ -127,7 +134,7 @@ describe('Table component', () => {
   })
 
   it('allow action to clear selection', async () => {
-    const rowActions: TableProps<{ key: string, name: string }>['rowActions'] = [
+    const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Delete', onClick: (selected, clear) => clear() }
     ]
 
@@ -163,7 +170,7 @@ describe('Table component', () => {
       { key: '3', name: 'Will Smith' }
     ]
 
-    const rowActions: TableProps<{ key: string, name: string }>['rowActions'] = [
+    const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Delete', onClick: (selected, clear) => clear() }
     ]
 
@@ -259,7 +266,7 @@ describe('Table component', () => {
     expect(selectedRow.filter(el => el.checked)).toHaveLength(0)
   })
 
-  it('multible select row click', async () => {
+  it('multiple select row click', async () => {
     const onChange = jest.fn()
     render(<Table
       columns={basicColumns}
@@ -305,9 +312,29 @@ describe('Table component', () => {
       // eslint-disable-next-line testing-library/no-node-access
       expect(asFragment().querySelector('col')?.style.width).toBe('')
       await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
-      //screen.debug()
       // eslint-disable-next-line testing-library/no-node-access
       expect(asFragment().querySelector('col')?.style.width).toBe('99px')
+    })
+    it('should allow column resizing when there is a column with ellipsis', async () => {
+      mockDOMSize(99, 800)
+      const columns = basicColumns.map((column, i) => {
+        column.ellipsis = i === 0 ? true : false
+        column.width = i === 0 ? 100 : 80
+        return column
+      })
+      const { asFragment } = render(<Table
+        columns={columns}
+        dataSource={basicData}
+      />)
+      // eslint-disable-next-line testing-library/no-node-access
+      let cols = asFragment().querySelectorAll('col')
+      expect(cols[0].style.width).toBe('100px')
+      expect(cols[1].style.width).toBe('80px')
+      await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
+      // eslint-disable-next-line testing-library/no-node-access
+      cols = asFragment().querySelectorAll('col')
+      expect(cols[0].style.width).toBe('99px')
+      expect(cols[1].style.width).toBe('80px')
     })
   })
 
@@ -361,7 +388,7 @@ describe('Table component', () => {
 
   it('hides rowAction when visible(items) == false', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
-    const rowActions: TableProps<typeof basicData[number]>['rowActions'] = [
+    const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Edit', onClick: onEdit, visible: (items) => items.length === 1 },
       { label: 'Delete', onClick: onDelete }
     ]
@@ -384,7 +411,7 @@ describe('Table component', () => {
 
   it('disabled row action button and add tooltip', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
-    const rowActions: TableProps<typeof basicData[number]>['rowActions'] = [
+    const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Edit', onClick: onEdit },
       { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' }
     ]
@@ -404,7 +431,7 @@ describe('Table component', () => {
 
   it('add row action button tooltip', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
-    const rowActions: TableProps<typeof basicData[number]>['rowActions'] = [
+    const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Edit', onClick: onEdit },
       { label: 'Delete', onClick: onDelete, tooltip: 'test delete' }
     ]

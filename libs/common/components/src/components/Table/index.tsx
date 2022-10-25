@@ -241,8 +241,10 @@ function Table <RecordType extends Record<string, any>> (
       ? col.width
       : colWidth[col.key as keyof typeof colWidth] || col.width,
     onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+      hasEllipsisColumn,
       width: colWidth[column.key],
-      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
+      definedWidth: col.width
     })
   })
 

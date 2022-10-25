@@ -377,8 +377,9 @@ export const Wrapper = styled.div<StyledTable>`
 
         &.ant-table-column-has-sorters {
           .ant-table-column-sorters {
-            display: unset;
-            white-space: nowrap;
+            display: flex;
+            justify-content: left;
+            align-items: center;
 
             .ant-table-column-title { flex: unset; }
 
@@ -418,6 +419,15 @@ export const Wrapper = styled.div<StyledTable>`
 
         a {
           font-size: unset;
+        }
+
+        .ant-badge.ant-badge-status {
+          display: flex;
+          justify-content: left;
+          align-items: center;
+          .ant-badge-status-dot {
+            flex-shrink: 0;
+          }
         }
       }
     }
