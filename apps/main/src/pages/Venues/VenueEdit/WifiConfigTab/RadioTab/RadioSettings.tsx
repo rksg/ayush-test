@@ -105,10 +105,18 @@ export function RadioSettings () {
       setEditRadioContextData({ radioData: venueSavedChannelsData })
       formRef?.current?.setFieldsValue(venueSavedChannelsData)
       setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
+      setEditRadioContextData({
+        radioData: formRef.current?.getFieldsValue(),
+        updateWifiRadio: handleUpdateRadioSettings
+      })
     }else if(defaultChannelsData){
       setEditRadioContextData({ radioData: defaultChannelsData })
       formRef?.current?.setFieldsValue(defaultChannelsData)
       setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
+      setEditRadioContextData({
+        radioData: formRef.current?.getFieldsValue(),
+        updateWifiRadio: handleUpdateRadioSettings
+      })
     }
   }, [tripleBandRadioSettingsData,
     defaultChannelsData, venueSavedChannelsData,
@@ -162,10 +170,6 @@ export function RadioSettings () {
       ...editContextData,
       unsavedTabKey: 'radio',
       isDirty: true
-    })
-    setEditRadioContextData({
-      radioData: formRef.current?.getFieldsValue(),
-      updateWifiRadio: handleUpdateRadioSettings
     })
   }
 

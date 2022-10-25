@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Space, Tooltip, Form }               from 'antd'
 import { intersection, findIndex, map, uniq } from 'lodash'
 import { useIntl }                            from 'react-intl'
+
+import { VenueEditContext } from '../..'
 
 import { Button5G, ButtonDFS, CheckboxGroup } from './styledComponents'
 
@@ -37,6 +39,12 @@ export function RadioSettingsChannels (props: {
 }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+
+  const {
+    editContextData,
+    setEditContextData
+  } = useContext(VenueEditContext)
+
   // TODO: rbacService
   const isAllowUpdate = true // rbacService.isRoleAllowed('updateVenueRadioCustomization') || rbacService.isRoleAllowed('UpdateApRadioButton')
   const disabled = props?.disabled || props?.readonly || !isAllowUpdate
@@ -73,6 +81,12 @@ export function RadioSettingsChannels (props: {
       : oldSelected.concat(avaliableBarChannels[barType])
     form.setFieldValue(props.formName, uniq(newSelected))
     updateChannelGroupList(uniq(newSelected))
+
+    setEditContextData({
+      ...editContextData,
+      unsavedTabKey: 'radio',
+      isDirty: true
+    })
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
