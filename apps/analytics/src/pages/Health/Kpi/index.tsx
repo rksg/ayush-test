@@ -15,14 +15,14 @@ import { GridCol, GridRow } from '@acx-ui/components'
 
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
+import { KpiRow }            from '../styledComponents'
+import BarChart              from '../Threshold/BarChart'
+import Histogram             from '../Threshold/Histogram'
 import {
   ThresholdMutationResponse,
   useFetchThresholdPermissionQuery,
   useSaveThresholdMutation
-} from '../services'
-import { KpiRow } from '../styledComponents'
-import BarChart   from '../Threshold/BarChart'
-import Histogram  from '../Threshold/Histogram'
+} from '../Threshold/services'
 
 import HealthPill                                                               from './Pill'
 import { KpisHavingThreshold, useGetKpiThresholdsQuery, ThresholdsApiResponse } from './services'
