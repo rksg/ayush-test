@@ -4,17 +4,19 @@ require('@testing-library/jest-dom')
 const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
-const { mockServer, mockLightTheme } = require('@acx-ui/test-utils')
+const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
 const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
 const { mockInstances } = require('@googlemaps/jest-mocks')
 const { Loader } = require('@googlemaps/js-api-loader')
 const { rest } = require('msw')
+const nodeCrypto = require('crypto')
 
 jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
     hasListeners: jest.fn().mockReturnValue(true),
     on: jest.fn(),
+    off: jest.fn(),
     send: jest.fn()
   }))
 }))
@@ -27,6 +29,7 @@ beforeAll(() => {
   })
 })
 beforeEach(async () => {
+  mockDOMSize(1280, 800)
   const env = require('./apps/main/src/env.json')
   mockServer.use(rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))))
   await config.initialize()
@@ -54,6 +57,12 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn()
   }))
 })
+
+window.crypto = {
+  getRandomValues: function (buffer) {
+    return nodeCrypto.randomFillSync(buffer)
+  }
+}
 
 jest.mock('libs/common/components/src/theme/helper', () => ({
   __esModule: true,

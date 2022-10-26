@@ -1,3 +1,4 @@
+import { APMeshRole } from '../constants'
 
 export interface APRadio {
   channel?: number,
@@ -37,7 +38,46 @@ export interface ApStatusDetails {
   name: string,
   serialNumber: string
 }
-
+export interface APMesh {
+  IP?: string
+  apMac?: string
+  apStatusData?: {
+    APRadio?: Array<APRadio>
+  },
+  clients?: { count: number, names: string[] },
+  deviceGroupId?: string,
+  deviceGroupName?: string,
+  deviceStatus?: string,
+  meshRole: APMeshRole,
+  hops?: number,
+  downlink?: APMesh[],
+  uplink?: Uplink[],
+  model: string,
+  name?: string,
+  serialNumber: string,
+  tags?: string,
+  venueId: string,
+  venueName: string,
+  apUpRssi?: number,
+  apDownRssi?: number,
+  rssi?: number,
+  children?: APMesh[],
+  txFrames?: string,
+  rxBytes?: string,
+  txBytes?: string,
+  rxFrames?: string,
+  type?: number,
+  upMac?: string
+}
+interface Uplink{
+  txFrames: string,
+  rssi: number,
+  rxBytes: string,
+  txBytes: string,
+  rxFrames: string,
+  type: number,
+  upMac: string
+}
 export interface LanPort {
 	defaultType: string
 	id: string
@@ -46,7 +86,10 @@ export interface LanPort {
 	supportDisable: boolean
 	trunkPortOnly: boolean
 	untagId: number
-	vlanMembers: string
+	vlanMembers: string,
+	enabled?: boolean,
+	portId?: string,
+	type?: 'ACCESS' | 'GENERAL' | 'TRUNK'
 }
 
 export interface ApModel {
@@ -67,6 +110,8 @@ export interface ApModel {
 	lldpMgmtEnable: boolean,
 	model: string,
 	pictureDownloadUrl: string,
+	poeModeCapabilities?: string[],
+	trunkPortOnly?: boolean,
 	requireOneEnabledTrunkPort: boolean,
 	simCardPrimaryEnabled: boolean,
 	simCardPrimaryRoaming: boolean,

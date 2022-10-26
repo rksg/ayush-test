@@ -1,4 +1,5 @@
-import { useIntl } from 'react-intl'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
 import {
   calculateSeverity,
@@ -7,8 +8,12 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
+import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
+import { Insights }                          from '../Insights'
+import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
+import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import { TimeSeries }                        from '../TimeSeries'
+import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -25,6 +30,35 @@ export const ApservHighNumReboots = (incident: Incident) => {
     Attributes.EventStartTime,
     Attributes.EventEndTime
   ]
+
+  const networkImpactCharts: NetworkImpactProps['charts'] = [{
+    chart: NetworkImpactChartTypes.APModelByAP,
+    type: 'apReboot',
+    dimension: 'apModel'
+  }, {
+    chart: NetworkImpactChartTypes.APFwVersionByAP,
+    type: 'apReboot',
+    dimension: 'apFwVersion'
+  }, {
+    chart: NetworkImpactChartTypes.RebootReasonByAP,
+    type: 'apReboot',
+    dimension: 'reason'
+  }, {
+    chart: NetworkImpactChartTypes.RebootReasonsByEvent,
+    type: 'apRebootEvent',
+    dimension: 'reason'
+  }]
+
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.ApRebootBySystemChart,
+    TimeSeriesChartTypes.ConnectedClientsChart,
+    TimeSeriesChartTypes.RebootedApsCountChart
+  ]
+
+  const buffer = {
+    front: { value: 6, unit: 'hours' as unitOfTime.Base },
+    back: { value: 6, unit: 'hours' as unitOfTime.Base }
+  }
 
   return (
     <>
@@ -48,10 +82,15 @@ export const ApservHighNumReboots = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Network Impact</div>
+          <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Chart</div>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+            buffer={buffer}
+          />
         </GridCol>
       </GridRow>
     </>

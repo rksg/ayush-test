@@ -5,7 +5,7 @@ import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { timeseriesApi, histogramApi } from './services'
+import { timeseriesApi, histogramApi, getThresholdsApi } from './services'
 
 describe('Services for health kpis', () => {
   const store = configureStore({
@@ -83,6 +83,58 @@ describe('Services for health kpis', () => {
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(expectedResult.histogram)
       expect(error).toBe(undefined)
+    })
+  })
+  describe('Get Thresholds', () => {
+    afterEach(() => {
+      store.dispatch(getThresholdsApi.util.resetApiState())
+    })
+    it('should return correct data', async () => {
+      const expectedResult = {
+        timeToConnectThreshold: {
+          value: 1000
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+        data: expectedResult
+      })
+      const { status, data, error } = await store.dispatch(
+        getThresholdsApi.endpoints.getKpiThresholds.initiate(props)
+      )
+      expect(status).toBe('fulfilled')
+      expect(data).toStrictEqual(expectedResult)
+      expect(error).toBe(undefined)
+    })
+    it('should return correct data for no result', async () => {
+      const expectedResult = {
+        timeToConnectThreshold: {
+          value: null
+        },
+        clientThroughputThreshold: {
+          value: null
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+        data: expectedResult
+      })
+      const { status, data, error } = await store.dispatch(
+        getThresholdsApi.endpoints.getKpiThresholds.initiate({ ...props,
+          kpis: ['timeToConnect', 'clientThroughput'] })
+      )
+      expect(status).toBe('fulfilled')
+      expect(data).toStrictEqual(expectedResult)
+      expect(error).toBe(undefined)
+    })
+    it('should return error', async () => {
+      mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+        error: new Error('something went wrong!')
+      })
+      const { status, data, error } = await store.dispatch(
+        getThresholdsApi.endpoints.getKpiThresholds.initiate(props)
+      )
+      expect(status).toBe('rejected')
+      expect(data).toBe(undefined)
+      expect(error).not.toBe(undefined)
     })
   })
 })

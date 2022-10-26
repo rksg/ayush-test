@@ -1,9 +1,8 @@
-import { Tabs }                                      from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { useAnalyticsFilter }                           from '@acx-ui/analytics/utils'
 import { categoryNames, categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol }                             from '@acx-ui/components'
+import { GridRow, GridCol, Tabs }                       from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
 
 import Header                   from '../../components/Header'
@@ -70,7 +69,8 @@ function Incidents () {
     <>
       <Header
         title={$t({ defaultMessage: 'Incidents' })}
-        shouldQuerySwitch={true}
+        shouldQuerySwitch
+        withIncidents
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>
             {incidentTabs.map((tabInfo) => (

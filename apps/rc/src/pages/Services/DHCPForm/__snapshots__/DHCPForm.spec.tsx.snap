@@ -481,7 +481,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="styledComponents__Wrapper-sc-1abm7iv-13 btWYyq"
+                                class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
                               >
                                 <div
                                   class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1180,7 +1180,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
+                  class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
                 >
                   <div
                     class="ant-pro-table"

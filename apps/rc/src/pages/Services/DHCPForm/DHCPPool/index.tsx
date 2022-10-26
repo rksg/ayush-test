@@ -86,7 +86,7 @@ export default function DHCPPoolTable ({
     setVisible(false)
   }
 
-  const isEdit = () => String(form.getFieldValue('id')) > initPoolData.id!
+  const isEdit = () => form.getFieldValue('id')!=='0' && !_.isUndefined(form.getFieldValue('id'))
 
   const getContent = <Form
     form={form}

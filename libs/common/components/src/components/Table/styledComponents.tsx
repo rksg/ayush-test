@@ -66,6 +66,10 @@ export const ActionButton = styled.button.attrs({ type: 'button' })`
   background-color: transparent;
   color: var(--acx-accents-blue-50);
   cursor: pointer;
+  &[disabled] {
+    color: var(--acx-neutrals-50);
+    cursor: not-allowed;
+  }
 `
 
 export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })`
@@ -372,8 +376,6 @@ export const Wrapper = styled.div<StyledTable>`
         }
 
         &.ant-table-column-has-sorters {
-          background: unset;
-
           .ant-table-column-sorters {
             display: unset;
             white-space: nowrap;

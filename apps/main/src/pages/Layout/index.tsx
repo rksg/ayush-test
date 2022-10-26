@@ -8,8 +8,7 @@ import {
   QuestionMarkCircleSolid,
   SearchOutlined
 } from '@acx-ui/icons'
-import { Outlet }             from '@acx-ui/react-router-dom'
-import { DateFilterProvider } from '@acx-ui/utils'
+import { Outlet } from '@acx-ui/react-router-dom'
 
 import { AlarmsHeaderButton } from '../../components/Alarms/HeaderButton'
 
@@ -18,19 +17,17 @@ import { useMenuConfig } from './menuConfig'
 function Layout () {
   return (
     <SplitProvider>
-      <DateFilterProvider>
-        <LayoutComponent
-          menuConfig={useMenuConfig()}
-          content={<Outlet />}
-          rightHeaderContent={<>
-            <LayoutUI.ButtonOutlined shape='circle' icon={<SearchOutlined />} />
-            <LayoutUI.Divider />
-            <AlarmsHeaderButton />
-            <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
-            <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
-          </>}
-        />
-      </DateFilterProvider>
+      <LayoutComponent
+        menuConfig={useMenuConfig()}
+        content={<Outlet />}
+        rightHeaderContent={<>
+          <LayoutUI.ButtonOutlined shape='circle' icon={<SearchOutlined />} />
+          <LayoutUI.Divider />
+          <AlarmsHeaderButton />
+          <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
+          <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+        </>}
+      />
     </SplitProvider>
   )
 }

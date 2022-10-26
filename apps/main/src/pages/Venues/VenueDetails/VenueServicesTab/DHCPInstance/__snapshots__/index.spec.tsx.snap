@@ -257,7 +257,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
           style="width: 100%;"
         >
           <div
-            class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
+            class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
           >
             <div
               class="ant-pro-table"
@@ -734,7 +734,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
             style="width: 100%;"
           >
             <div
-              class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
+              class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
             >
               <div
                 class="styledComponents__Header-sc-1abm7iv-11 lWiiO"

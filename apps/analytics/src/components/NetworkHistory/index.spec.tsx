@@ -1,8 +1,8 @@
-import { dataApiURL }                                     from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                                from '@acx-ui/analytics/utils'
-import { Provider, store }                                from '@acx-ui/store'
-import { mockGraphqlQuery, mockDOMWidth, render, screen } from '@acx-ui/test-utils'
-import { DateRange }                                      from '@acx-ui/utils'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { Provider, store }                  from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { DateRange }                        from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -42,7 +42,6 @@ const filters = {
 } as AnalyticsFilter
 
 describe('NetworkHistoryWidget', () => {
-  mockDOMWidth()
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
@@ -76,8 +75,6 @@ describe('NetworkHistoryWidget', () => {
   })
 })
 describe('Handle No Data', () => {
-  mockDOMWidth()
-
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )

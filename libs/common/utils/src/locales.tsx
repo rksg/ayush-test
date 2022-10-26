@@ -109,11 +109,11 @@ function LocaleProvider (props: LocaleProviderProps) {
 
   useEffect(() => {
     loadLocale(lang).then((message) => {
-      setMessages(() => message)
       setUpIntl({
         locale: lang,
         messages: message
       })
+      setMessages(() => message)
     })
   }, [lang])
 
