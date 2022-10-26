@@ -4,38 +4,35 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
 
 import { TimeSeriesChartProps } from '../types'
 
-import { onMarkAreaClick, getMarkers } from './incidentTimeSeriesMarker'
+import { getMarkers } from './incidentTimeSeriesMarker'
 
-const apDisconnectionCountChartQuery = () => gql`
+const apRebootBySystemQuery = () => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {
     id severity code startTime endTime
   }
-  apDisconnectionCountChart: timeSeries(granularity: "PT3M") {
+  apRebootBySystem: timeSeries(granularity:$granularity){
     time
-    apDisconnectionCount
+    apRebootBySystemCount
   }
   `
-export const ApDisconnectionCountChart = (
+export const ApRebootBySystemChart = (
   { chartRef, incident, data }: TimeSeriesChartProps
 ) => {
-  const { apDisconnectionCountChart, relatedIncidents } = data
+  const { apRebootBySystem, relatedIncidents } = data
   const { $t } = useIntl()
-  const navigate = useNavigate()
-  const basePath = useTenantLink('/analytics/incidents/')
 
   const seriesMapping = [{
-    key: 'apDisconnectionCount',
-    name: $t({ defaultMessage: 'Disconnections' })
+    key: 'apRebootBySystemCount',
+    name: $t({ defaultMessage: 'Reboot by System Event' })
   }]
 
   const chartResults = getSeriesData(
-    apDisconnectionCountChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
+    apRebootBySystem as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'AP-RUCKUS Cloud Disconnections' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'Reboot by System Event' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         chartResults.length ?
@@ -44,7 +41,6 @@ export const ApDisconnectionCountChart = (
             style={{ height, width }}
             data={chartResults}
             disableLegend={true}
-            onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
             markers={getMarkers(relatedIncidents!, incident)}
           />
           : <NoData />
@@ -53,5 +49,5 @@ export const ApDisconnectionCountChart = (
   </Card>
 }
 
-const chartConfig = { chart: ApDisconnectionCountChart, query: apDisconnectionCountChartQuery }
+const chartConfig = { chart: ApRebootBySystemChart, query: apRebootBySystemQuery }
 export default chartConfig
