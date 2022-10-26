@@ -35,12 +35,12 @@ type TestRow = {
 }
 
 describe('Table component', () => {
-  const basicColumns: TableProps<TestRow>['columns'] = [
+  const testColumns: TableProps<TestRow>['columns'] = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Age', dataIndex: 'age', key: 'age', tooltip: 'tooltip' },
     { title: 'Address', dataIndex: 'address', key: 'address' }
   ]
-  const basicData = [
+  const testData = [
     {
       key: '1',
       name: 'John Doe',
@@ -62,8 +62,8 @@ describe('Table component', () => {
   ]
   it('should render correctly', () => {
     const { asFragment } = render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -71,8 +71,8 @@ describe('Table component', () => {
   it('renders compact table', () => {
     const { asFragment } = render(<Table
       type='compact'
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -80,8 +80,8 @@ describe('Table component', () => {
   it('renders form table', () => {
     const { asFragment } = render(<Table
       type='form'
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -94,8 +94,8 @@ describe('Table component', () => {
     ]
 
     const { asFragment } = render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowActions={rowActions}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />)
@@ -120,10 +120,10 @@ describe('Table component', () => {
     expect(onDelete).not.toHaveBeenCalled()
 
     fireEvent.click(editButton)
-    expect(onEdit).toBeCalledWith(basicData.slice(0, 2), expect.anything())
+    expect(onEdit).toBeCalledWith(testData.slice(0, 2), expect.anything())
 
     fireEvent.click(deleteButton)
-    expect(onDelete).toBeCalledWith(basicData.slice(0, 2), expect.anything())
+    expect(onDelete).toBeCalledWith(testData.slice(0, 2), expect.anything())
 
     fireEvent.click(closeButton)
     expect(closeButton).not.toBeVisible()
@@ -135,12 +135,12 @@ describe('Table component', () => {
 
   it('allow action to clear selection', async () => {
     const rowActions: TableProps<TestRow>['rowActions'] = [
-      { label: 'Delete', onClick: (selected, clear) => clear() }
+      { label: 'Delete', onClick: (_selected, clear) => clear() }
     ]
 
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowActions={rowActions}
       rowSelection={{ defaultSelectedRowKeys: ['1', '2'] }}
     />)
@@ -170,8 +170,8 @@ describe('Table component', () => {
       { key: '3', name: 'Will Smith' }
     ]
 
-    const rowActions: TableProps<TestRow>['rowActions'] = [
-      { label: 'Delete', onClick: (selected, clear) => clear() }
+    const rowActions: TableProps<{ key: string, name: string }>['rowActions'] = [
+      { label: 'Delete', onClick: (_selected, clear) => clear() }
     ]
 
     const { rerender } = render(<Table
@@ -222,8 +222,8 @@ describe('Table component', () => {
   it('single select row click', async () => {
     const onChange = jest.fn()
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowSelection={{ type: 'radio', onChange }}
     />)
 
@@ -233,9 +233,9 @@ describe('Table component', () => {
     expect(tbody).toBeVisible()
 
     const body = within(tbody)
-    fireEvent.click(await body.findByText(basicData[1].name))
+    fireEvent.click(await body.findByText(testData[1].name))
     // to ensure it doesn't get unselected
-    fireEvent.click(await body.findByText(basicData[1].name))
+    fireEvent.click(await body.findByText(testData[1].name))
     const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
     expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
     expect(onChange).toBeCalledTimes(1)
@@ -243,8 +243,8 @@ describe('Table component', () => {
 
   it('single select disabled row click', async () => {
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowSelection={{
         type: 'radio',
         getCheckboxProps: () => ({
@@ -269,8 +269,8 @@ describe('Table component', () => {
   it('multiple select row click', async () => {
     const onChange = jest.fn()
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowSelection={{ defaultSelectedRowKeys: ['1', '3'], onChange }}
     />)
 
@@ -291,8 +291,8 @@ describe('Table component', () => {
   it('calls onResetState', async () => {
     const reset = jest.fn()
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       extraSettings={[<div>setting element</div>]}
       onResetState={reset}
     />)
@@ -306,8 +306,8 @@ describe('Table component', () => {
     it('should allow column resizing', async () => {
       mockDOMSize(99, 800)
       const { asFragment } = render(<Table
-        columns={basicColumns}
-        dataSource={basicData}
+        columns={testColumns}
+        dataSource={testData}
       />)
       // eslint-disable-next-line testing-library/no-node-access
       expect(asFragment().querySelector('col')?.style.width).toBe('')
@@ -317,14 +317,14 @@ describe('Table component', () => {
     })
     it('should allow column resizing when there is a column with ellipsis', async () => {
       mockDOMSize(99, 800)
-      const columns = basicColumns.map((column, i) => {
+      const columns = testColumns.map((column, i) => {
         column.ellipsis = i === 0 ? true : false
         column.width = i === 0 ? 100 : 80
         return column
       })
       const { asFragment } = render(<Table
         columns={columns}
-        dataSource={basicData}
+        dataSource={testData}
       />)
       // eslint-disable-next-line testing-library/no-node-access
       let cols = asFragment().querySelectorAll('col')
@@ -346,8 +346,8 @@ describe('Table component', () => {
 
     render(<Table
       actions={actions}
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
     />)
 
     const action1 = await screen.findByRole('button', { name: actions[0].label })
@@ -369,8 +369,8 @@ describe('Table component', () => {
       return <>
         <button onClick={() => setVisible(false)}>show</button>
         <Table
-          columns={basicColumns}
-          dataSource={basicData}
+          columns={testColumns}
+          dataSource={testData}
           rowActions={rowActions}
           rowSelection={{ defaultSelectedRowKeys: ['1'] }}
         />
@@ -394,8 +394,8 @@ describe('Table component', () => {
     ]
 
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowActions={rowActions}
       rowSelection={{ }}
     />)
@@ -417,8 +417,8 @@ describe('Table component', () => {
     ]
 
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowActions={rowActions}
       rowSelection={{ }}
     />)
@@ -437,8 +437,8 @@ describe('Table component', () => {
     ]
 
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowActions={rowActions}
       rowSelection={{ }}
     />)
