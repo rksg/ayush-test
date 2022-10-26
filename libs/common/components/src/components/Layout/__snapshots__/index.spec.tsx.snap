@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 lmAMIJ"
+    class="styledComponents__Wrapper-sc-iwostn-0 jDOcHX"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -26,9 +26,14 @@ exports[`Layout should render correctly 1`] = `
               class="ant-pro-sider-logo"
               id="logo"
             >
-              <div
-                data-testid="logo"
-              />
+              <a
+                class=""
+                href="/t/undefined/dashboard"
+              >
+                <div
+                  data-testid="logo"
+                />
+              </a>
             </div>
             <div
               style="flex: 1; overflow-y: auto; overflow-x: hidden;"
@@ -559,7 +564,7 @@ exports[`Layout should render correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-iwostn-1 fUEvKU"
+              class="styledComponents__Content-sc-iwostn-1 haxZGN"
             >
               <div>
                 content
@@ -576,7 +581,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 lmAMIJ"
+    class="styledComponents__Wrapper-sc-iwostn-0 jDOcHX"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -599,9 +604,14 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
               class="ant-pro-sider-logo"
               id="logo"
             >
-              <div
-                data-testid="logo"
-              />
+              <a
+                class=""
+                href="/v/undefined/dashboard"
+              >
+                <div
+                  data-testid="logo"
+                />
+              </a>
             </div>
             <div
               style="flex: 1; overflow-y: auto; overflow-x: hidden;"
@@ -732,7 +742,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-iwostn-1 fUEvKU"
+              class="styledComponents__Content-sc-iwostn-1 haxZGN"
             >
               <div>
                 content
@@ -749,7 +759,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
 exports[`Layout should show tooltip when disabled 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 lmAMIJ"
+    class="styledComponents__Wrapper-sc-iwostn-0 jDOcHX"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -772,9 +782,15 @@ exports[`Layout should show tooltip when disabled 1`] = `
               class="ant-pro-sider-logo"
               id="logo"
             >
-              <div
-                data-testid="logo"
-              />
+              <a
+                aria-current="page"
+                class="active"
+                href="/t/t-id/dashboard"
+              >
+                <div
+                  data-testid="logo"
+                />
+              </a>
             </div>
             <div
               style="flex: 1; overflow-y: auto; overflow-x: hidden;"
@@ -1312,7 +1328,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-iwostn-1 fUEvKU"
+              class="styledComponents__Content-sc-iwostn-1 haxZGN"
             >
               <div>
                 content

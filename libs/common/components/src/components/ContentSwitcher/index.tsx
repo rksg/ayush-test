@@ -2,7 +2,7 @@ import { FC, ReactNode, useState } from 'react'
 
 import { SelectionControl, SelectionControlOptionProps } from '../SelectionControl'
 interface TabDetail {
-  label: React.ReactNode
+  label: ReactNode
   value: string
   children: ReactNode
   icon?: ReactNode

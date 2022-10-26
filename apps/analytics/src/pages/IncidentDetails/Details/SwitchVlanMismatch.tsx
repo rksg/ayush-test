@@ -45,7 +45,7 @@ export const SwitchVlanMismatch = (incident: Incident) => {
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
           <Card title={$t({ defaultMessage: 'Details' })} type='no-border' >
             <NotAvailable/>
           </Card>
