@@ -3,6 +3,7 @@ import { storiesOf } from '@storybook/react'
 import { BasicTable }                 from './BasicTable'
 import { ColumnSortAndShowHideTable } from './ColumnSortAndShowHideTable'
 import { CompactTable }               from './CompactTable'
+import { CompactTableWithBorders }    from './CompactTableWithBorders'
 import { CustomTable }                from './CustomTable'
 import { FilteredTable }              from './FilteredTable'
 import { FormTable }                  from './FormTable'
@@ -19,6 +20,7 @@ storiesOf('Table', module)
   .add('Single Select', SingleSelectTable)
   .add('Column Sort & Show/Hide', ColumnSortAndShowHideTable)
   .add('Compact', CompactTable)
+  .add('Compact Table With Borders in Rows', CompactTableWithBorders)
   .add('Form Table', FormTable)
 
 export {}
