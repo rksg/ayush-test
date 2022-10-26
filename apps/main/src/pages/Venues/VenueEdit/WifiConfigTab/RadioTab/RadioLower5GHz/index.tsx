@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Form, Input, InputNumber, Radio, RadioChangeEvent, Row, Select, Slider } from 'antd'
-import { useIntl, defineMessage }                                                      from 'react-intl'
+import { useIntl }                                                                     from 'react-intl'
 
 import {
   useGetVenueRadioCustomizationQuery,
@@ -160,8 +160,7 @@ export function RadioLower5GHz () {
             name={['radioParamsDual5G', 'radioParamsLower5G', 'method']}>
             <Select
               options={channelSelectionMethodsOptions?.map(p =>
-                ({ label: $t(defineMessage({ defaultMessage: '{label}' }), { label: p.label }),
-                  value: p.value }))}
+                ({ label: $t(p.label), value: p.value }))}
               defaultValue={channelSelectionMethodsOptions[1].value}
               disabled={inheritSettings}
             />
@@ -207,7 +206,7 @@ export function RadioLower5GHz () {
             label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
             name={['radioParamsDual5G', 'radioParamsLower5G', 'txPower']}>
             <Select
-              options={txPowerAdjustmentOptions?.map(p => ({ label: p.label, value: p.value }))}
+              options={txPowerAdjustmentOptions?.map(p => ({ label: $t(p.label), value: p.value }))}
               defaultValue={txPowerAdjustmentOptions[1].value}
               disabled={inheritSettings}
             />

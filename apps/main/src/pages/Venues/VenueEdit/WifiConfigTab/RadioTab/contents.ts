@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 export interface AvailableLteBandOptions {
 	value: string,
 	label: string
@@ -10,24 +12,24 @@ export interface ChannelBars {
 }
 
 export const channelSelectionMethodsOptions = [
-  { label: 'Channel Fly', value: 'CHANNELFLY' },
-  { label: 'Background Scanning', value: 'BACKGROUND_SCANNING' }
+  { label: defineMessage({ defaultMessage: 'Channel Fly' }), value: 'CHANNELFLY' },
+  { label: defineMessage({ defaultMessage: 'Background Scanning' }), value: 'BACKGROUND_SCANNING' }
 ]
 
 export const txPowerAdjustmentOptions = [
-  { label: 'Auto', value: 'Auto' },
-  { label: 'Full', value: 'MAX' },
-  { label: '-1dB', value: '-1' },
-  { label: '-2dB', value: '-2' },
-  { label: '-3dB(1/2)', value: '-3' },
-  { label: '-4dB', value: '-4' },
-  { label: '-5dB', value: '-5' },
-  { label: '-6dB(1/4)', value: '-6' },
-  { label: '-7dB', value: '-7' },
-  { label: '-8dB', value: '-8' },
-  { label: '-9dB(1/8)', value: '-9' },
-  { label: '-10dB', value: '-10' },
-  { label: 'Min', value: 'MIN' }
+  { label: defineMessage({ defaultMessage: 'Auto' }), value: 'Auto' },
+  { label: defineMessage({ defaultMessage: 'Full' }), value: 'MAX' },
+  { label: defineMessage({ defaultMessage: '-1dB' }), value: '-1' },
+  { label: defineMessage({ defaultMessage: '-2dB' }), value: '-2' },
+  { label: defineMessage({ defaultMessage: '-3dB(1/2)' }), value: '-3' },
+  { label: defineMessage({ defaultMessage: '-4dB' }), value: '-4' },
+  { label: defineMessage({ defaultMessage: '-5dB' }), value: '-5' },
+  { label: defineMessage({ defaultMessage: '-6dB(1/4)' }), value: '-6' },
+  { label: defineMessage({ defaultMessage: '-7dB' }), value: '-7' },
+  { label: defineMessage({ defaultMessage: '-8dB' }), value: '-8' },
+  { label: defineMessage({ defaultMessage: '-9dB(1/8)' }), value: '-9' },
+  { label: defineMessage({ defaultMessage: '-10dB' }), value: '-10' },
+  { label: defineMessage({ defaultMessage: 'Min' }), value: 'MIN' }
 ]
 
 export function split5GChannels (radio5GChannels: string[]) {

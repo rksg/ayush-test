@@ -133,6 +133,7 @@ export function RadioSettings () {
     if(e.target.value){
       formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], true)
     }
+    onTabChange('Normal24GHz')
   }
 
   const handleUpdateRadioSettings =
