@@ -5,9 +5,9 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import {
   getSeriesData,
   TimeSeriesDataType
-}                                 from '@acx-ui/analytics/utils'
-import { Card, StackedAreaChart } from '@acx-ui/components'
-import { formatter }              from '@acx-ui/utils'
+}                                         from '@acx-ui/analytics/utils'
+import { Card, NoData, StackedAreaChart } from '@acx-ui/components'
+import { formatter }                      from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -45,13 +45,15 @@ export const TtcByFailureTypeChart = ({ chartRef, data }: TimeSeriesChartProps) 
   return <Card title={$t({ defaultMessage: 'Time To Connect (By Stage)' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <StackedAreaChart
-          chartRef={chartRef}
-          style={{ height, width }}
-          data={chartResults}
-          dataFormatter={formatter('durationFormat')}
-          tooltipTotalTitle={$t({ defaultMessage: 'Total Time To Connect' })}
-        />
+        chartResults.length ?
+          <StackedAreaChart
+            chartRef={chartRef}
+            style={{ height, width }}
+            data={chartResults}
+            dataFormatter={formatter('durationFormat')}
+            tooltipTotalTitle={$t({ defaultMessage: 'Total Time To Connect' })}
+          />
+          : <NoData />
       )}
     </AutoSizer>
   </Card>

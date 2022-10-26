@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData, TimeSeriesDataType } from '@acx-ui/analytics/utils'
-import { Card, StackedAreaChart }            from '@acx-ui/components'
+import { Card, NoData, StackedAreaChart }    from '@acx-ui/components'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -40,13 +40,15 @@ export const DowntimeEventTypeDistributionChart = (
   return <Card title={$t({ defaultMessage: 'Events' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <StackedAreaChart
-          chartRef={chartRef}
-          type='step'
-          style={{ height, width }}
-          data={chartResults}
-          tooltipTotalTitle={$t({ defaultMessage: 'Total Events' })}
-        />
+        chartResults.length ?
+          <StackedAreaChart
+            chartRef={chartRef}
+            type='step'
+            style={{ height, width }}
+            data={chartResults}
+            tooltipTotalTitle={$t({ defaultMessage: 'Total Events' })}
+          />
+          : <NoData />
       )}
     </AutoSizer>
   </Card>
