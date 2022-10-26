@@ -28,7 +28,8 @@ export interface VerticalBarChartProps
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: TChartData,
   barColors?: string[]
-  barWidth?: number
+  barWidth?: number,
+  yAxisOffset?: number,
   dataFormatter?: ReturnType<typeof formatter>
   yAxisProps?: {
     max?: number
@@ -86,6 +87,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
   yAxisProps,
   xAxisName,
   xAxisOffset,
+  yAxisOffset,
   showTooltipName = true,
   grid: gridProps,
   onBarAreaClick,
@@ -98,7 +100,8 @@ export function VerticalBarChart<TChartData extends BarChartData>
     grid: { ...gridOptions({
       disableLegend: true,
       hasXAxisName: Boolean(xAxisName),
-      xAxisOffset
+      xAxisOffset,
+      yAxisOffset
     }),
     ...gridProps },
     dataset: {

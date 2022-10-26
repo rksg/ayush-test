@@ -26,7 +26,7 @@ function HistogramSlider ({
       marks={marks as unknown as SliderMarks}
       value={sliderValue}
       tooltipVisible={false}
-      step={0.5}
+      step={1}
       range={false}
       style={{
         width: width * 0.95,

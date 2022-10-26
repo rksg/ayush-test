@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { sum }     from 'lodash'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { sum, max } from 'lodash'
+import { useIntl }  from 'react-intl'
+import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig }                                 from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, NoData } from '@acx-ui/components'
@@ -65,20 +65,20 @@ function Histogram ({
   const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const [sliderValue, setSliderValue] = useState(
-    splits.indexOf(thresholdValue) + 0.5
+    splits.indexOf(thresholdValue) + 1
   )
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
 
   /* istanbul ignore next */
   const onSliderChange = (newValue: number) => {
     if (
-      newValue === splitsAfterIsReverseCheck.length + 0.5 ||
-      newValue % 1 === 0
+      newValue === splitsAfterIsReverseCheck.length + 1 ||
+      newValue === 0
     )
       return
     setSliderValue(newValue)
-    setThresholdValue(splitsAfterIsReverseCheck[newValue - 0.5])
-    setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 0.5] })
+    setThresholdValue(splitsAfterIsReverseCheck[newValue - 1])
+    setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
   }
   const queryResults = useKpiHistogramQuery(
     { ...filters, kpi, threshold: histogram?.initialThreshold },
@@ -96,7 +96,7 @@ function Histogram ({
     }
   )
   const onReset = () => {
-    setSliderValue(splits.indexOf(histogram?.initialThreshold ) + 0.5)
+    setSliderValue(splits.indexOf(histogram?.initialThreshold ) + 1)
     setThresholdValue(histogram?.initialThreshold )
     setKpiThreshold({ ...thresholds, [kpi]: histogram?.initialThreshold })
   }
@@ -107,12 +107,12 @@ function Histogram ({
 
     if(splitsAfterIsReverseCheck.indexOf(reformattedBarData) === -1){
       const selectSecondLastBar = splitsAfterIsReverseCheck.length - 1
-      setSliderValue(selectSecondLastBar + 0.5)
+      setSliderValue(selectSecondLastBar + 1)
       setThresholdValue(splitsAfterIsReverseCheck[selectSecondLastBar] as unknown as string)
       setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[selectSecondLastBar] })
       return
     }
-    setSliderValue(splitsAfterIsReverseCheck.indexOf(reformattedBarData) + 0.5)
+    setSliderValue(splitsAfterIsReverseCheck.indexOf(reformattedBarData) + 1)
     setThresholdValue(reformattedBarData as unknown as string)
     setKpiThreshold({ ...thresholds, [kpi]: reformattedBarData })
   }
@@ -150,6 +150,7 @@ function Histogram ({
   const hasData = (queryResults?.data?.[0]?.rawData?.data)?.every(
     (datum: number) => datum !== null
   )
+  const yAxisLabelOffset = max(queryResults?.data?.[0]?.rawData?.data)?.toString()?.length
   const unit = histogram?.xUnit
   return (
     <Loader states={[queryResults]} key={kpi}>
@@ -157,31 +158,34 @@ function Histogram ({
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
             {({ width, height }) =>
-              queryResults?.data?.[0]?.data.length
-                ? (
-                  <>
-                    <VerticalBarChart
-                      style={{ height, width }}
-                      data={data}
-                      xAxisName={unit !== '%' ? ` (${$t(unit)})` : `(${unit})`}
-                      barWidth={30}
-                      xAxisOffset={10}
-                      barColors={barColors}
-                      onBarAreaClick={onBarClick}
-                      yAxisProps={!hasData ? { max: 100, min: 0 } : undefined}
-                    />
-                    <HistogramSlider
-                      splits={splits}
-                      width={width}
-                      height={height}
-                      onSliderChange={onSliderChange}
-                      sliderValue={sliderValue}
-                    />
-                  </> )
-                :
-                (
-                  <NoData />
-                )
+              queryResults?.data?.[0]?.data.length ? (
+                <>
+                  <VerticalBarChart
+                    style={{ height, width }}
+                    data={data}
+                    xAxisName={unit !== '%' ? ` (${$t(unit)})` : `(${unit})`}
+                    barWidth={30}
+                    xAxisOffset={10}
+                    barColors={barColors}
+                    onBarAreaClick={onBarClick}
+                    yAxisOffset={
+                      yAxisLabelOffset
+                        ? 100 / (yAxisLabelOffset * splitsAfterIsReverseCheck.length)
+                        : 0
+                    }
+                    yAxisProps={!hasData ? { max: 100, min: 0 } : undefined}
+                  />
+                  <HistogramSlider
+                    splits={splits}
+                    width={width}
+                    height={height}
+                    onSliderChange={onSliderChange}
+                    sliderValue={sliderValue}
+                  />
+                </>
+              ) : (
+                <NoData />
+              )
             }
           </AutoSizer>
         </GridCol>
