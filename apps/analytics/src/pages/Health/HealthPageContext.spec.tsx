@@ -1,11 +1,11 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 
-import { useSearchParams } from 'react-router-dom'
+import moment from 'moment'
 
-import { BrowserRouter as Router }      from '@acx-ui/react-router-dom'
-import { act, renderHook }              from '@acx-ui/test-utils'
-import { TimeStampRange }               from '@acx-ui/types'
-import { DateFilterContext, DateRange } from '@acx-ui/utils'
+import { BrowserRouter as Router }  from '@acx-ui/react-router-dom'
+import { act, renderHook }          from '@acx-ui/test-utils'
+import { TimeStampRange }           from '@acx-ui/types'
+import { DateRange, useDateFilter } from '@acx-ui/utils'
 
 import {
   HealthPageContext,
@@ -13,10 +13,13 @@ import {
   formatTimeWindow
 } from './HealthPageContext'
 
+const original = Date.now
 describe('HealthPageContextProvider', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
+
+  afterAll(() => Date.now = original)
   const expectedTimeWindow: TimeStampRange = [
     '2021-12-31T00:00:00.000Z',
     '2022-01-01T00:00:00.000Z'
@@ -69,25 +72,14 @@ describe('HealthPageContextProvider', () => {
 
   it('update timeWindow when analytic filter start/end changed', () => {
     const Wrapper = ({ children }: { children: JSX.Element }) => {
-      const [search, setSearch] = useSearchParams()
-      const [dateFilter, setDate] = useState({
-        range: DateRange.custom,
-        startDate: '2022-01-01T00:00:00.000Z',
-        endDate: '2022-01-02T00:00:00.000Z'
-      })
-      const setDateFilter = (date: { range: DateRange, startDate: string, endDate: string }) => {
-        search.set('some', 'param')
-        setSearch(search)
-        setDate(date)
-      }
-      return <DateFilterContext.Provider value={{ dateFilter, setDateFilter }}>
-        <HealthPageContextProvider children={children} />
-      </DateFilterContext.Provider>
+      return <HealthPageContextProvider children={children} />
     }
 
     const { result, rerender } = renderHook(() => {
-      const { setDateFilter } = useContext(DateFilterContext)
-      return { ...useContext(HealthPageContext), setDateFilter }
+      const filters = useDateFilter()
+      const startDate = moment(filters.startDate).utc().toISOString()
+      const endDate = moment(filters.endDate).utc().toISOString()
+      return { ...useContext(HealthPageContext), ...filters, startDate, endDate }
     }, {
       wrapper: ({ children }) => <Router><Wrapper children={children} /></Router>
     })
@@ -98,8 +90,8 @@ describe('HealthPageContextProvider', () => {
     ])
 
     const nextTimeWindow = [
-      '2022-01-01T01:00:00.000Z',
-      '2022-01-01T02:00:00.000Z'
+      moment('2021-01-01T00:00:00+00:00').utc().toISOString(),
+      moment('2021-12-31T00:00:00+00:00').utc().toISOString()
     ]
 
     act(() => result.current.setDateFilter!({

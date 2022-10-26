@@ -191,19 +191,27 @@
       margin-left: 5px;
     }
 
-    &-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
-      flex-direction: row-reverse;
+    &.ant-form-vertical {
+      .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
+        flex-direction: row-reverse;
 
+        &::before {
+          margin-right: 0;
+          margin-left: 3px;
+        }
+        
+        > svg {
+          order: -1
+        }
+      }
+    }
+
+    &-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
       &::before {
-        margin-right: 0;
-        margin-left: 3px;
         color: var(--acx-accents-orange-50);
         font-family: var(--acx-neutral-brand-font);
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
-      }
-      > svg {
-        order: -1
       }
     }
 
