@@ -38,7 +38,7 @@ function VenueFilter () {
           defaultValue={value}
           value={value}
           options={queryResults.data}
-          onApply={(selectedOptions) => setNodeFilter(selectedOptions)}
+          onApply={(selectedOptions) => setNodeFilter(selectedOptions as string[][])}
           placement='bottomRight'
         />
       </Loader>
