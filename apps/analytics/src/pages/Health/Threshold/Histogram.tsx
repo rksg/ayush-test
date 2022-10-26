@@ -164,10 +164,11 @@ function Histogram ({
                     style={{ height, width }}
                     data={data}
                     xAxisName={unit !== '%' ? ` (${$t(unit)})` : `(${unit})`}
-                    barWidth={30}
+                    barWidth={20}
                     xAxisOffset={10}
                     barColors={barColors}
                     onBarAreaClick={onBarClick}
+                    xAxisPadding={[5,0,0,30]}
                     yAxisOffset={
                       yAxisLabelOffset
                         ? 60 / (yAxisLabelOffset * splitsAfterIsReverseCheck.length)
