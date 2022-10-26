@@ -77,9 +77,8 @@ export interface MultiLineTimeSeriesChartProps <
     onMarkAreaClick?: (data: MarkerData) => void
   }
 
-export function useBrush<TChartData extends TimeSeriesChartData> (
+export function useBrush (
   eChartsRef: RefObject<ReactECharts>,
-  data: TChartData[],
   brush?: TimeStampRange,
   onBrushChange?: (range: TimeStampRange) => void
 ) {
@@ -158,7 +157,7 @@ export function MultiLineTimeSeriesChart <
   const zoomEnabled = !Boolean(props.brush)
   const [canResetZoom, resetZoomCallback] =
     useDataZoom<TChartData>(eChartsRef, zoomEnabled, data, props.zoom, props.onDataZoom)
-  useBrush(eChartsRef, data, props.brush, props.onBrushChange)
+  useBrush(eChartsRef, props.brush, props.onBrushChange)
   useOnMarkAreaClick(eChartsRef, props.markers, onMarkAreaClick)
   useLegendSelectChanged(eChartsRef)
 
