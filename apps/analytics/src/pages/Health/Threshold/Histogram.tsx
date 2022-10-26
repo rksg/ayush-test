@@ -41,8 +41,9 @@ const transformHistogramResponse = ({
   isReverse: boolean;
 }) => {
   const dataAfterIsReverseCheck = isReverse ? data.slice().reverse() : data
+  const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
   return dataAfterIsReverseCheck.map((datum, index) => [
-    splits[index] ? shortXFormat(splits[index]) : '',
+    splitsAfterIsReverseCheck[index] ? shortXFormat(splitsAfterIsReverseCheck[index]) : '',
     datum
   ]) as [TimeStamp, number][]
 }
