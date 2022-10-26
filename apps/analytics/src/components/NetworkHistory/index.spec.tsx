@@ -67,7 +67,7 @@ describe('NetworkHistoryWidget', () => {
       <Provider>
         <NetworkHistoryWidget hideTitle filters={filters}/>
       </Provider>)
-    await screen.findByText('Impacted Clients')
+    await screen.findByText('3')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access

@@ -75,7 +75,7 @@ describe('Threshold barchart', () => {
         />
       </Provider>
     )
-    expect(await screen.findByText('(last 7 days)')).toBeVisible()
+    expect(await screen.findByText('80%')).toBeVisible()
   })
   it('should render chart with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {

@@ -48,10 +48,10 @@ describe('Kpi timeseries', () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleTS }
     })
-    const { asFragment } = render(
+    render(
       <Provider> <KpiTimeseries filters={filters} kpi={'onlineAPs'}/></Provider>
     )
-    expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(await screen.findByText('80%')).toBeVisible()
   })
   it('should render chart with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {

@@ -86,7 +86,7 @@ describe('Threshold Histogram chart', () => {
         />
       </Provider>
     )
-    expect(await screen.findByText('(dbm)')).toBeVisible()
+    expect(await screen.findByText('10')).toBeVisible()
   })
   it('should handle data greater than the splits size', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
