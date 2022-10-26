@@ -110,6 +110,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...venueDetailReq
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
