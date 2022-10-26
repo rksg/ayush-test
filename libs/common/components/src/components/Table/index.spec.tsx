@@ -86,6 +86,25 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('renders table with ellipsis column', async () => {
+    const columns = testColumns.map((column, i) => {
+      column = { ...column }
+      if (i === 0) {
+        column.ellipsis = true
+      } else if (i === 1) {
+        column.width = 100
+      }
+      return column
+    })
+    render(<Table
+      columns={columns}
+      dataSource={testData}
+    />)
+    const table = screen.getByRole('table')
+    expect(table).toHaveStyle('width: 100%')
+    expect(table).toHaveStyle('table-layout: fixed')
+  })
+
   it('should render multi select table and render action buttons correctly', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
     const rowActions = [
@@ -302,40 +321,17 @@ describe('Table component', () => {
     expect(reset).toHaveBeenCalled()
   })
 
-  describe('resize', () => {
-    it('should allow column resizing', async () => {
-      mockDOMSize(99, 800)
-      const { asFragment } = render(<Table
-        columns={testColumns}
-        dataSource={testData}
-      />)
-      // eslint-disable-next-line testing-library/no-node-access
-      expect(asFragment().querySelector('col')?.style.width).toBe('')
-      await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
-      // eslint-disable-next-line testing-library/no-node-access
-      expect(asFragment().querySelector('col')?.style.width).toBe('99px')
-    })
-    it('should allow column resizing when there is a column with ellipsis', async () => {
-      mockDOMSize(99, 800)
-      const columns = testColumns.map((column, i) => {
-        column.ellipsis = i === 0 ? true : false
-        column.width = i === 0 ? 100 : 80
-        return column
-      })
-      const { asFragment } = render(<Table
-        columns={columns}
-        dataSource={testData}
-      />)
-      // eslint-disable-next-line testing-library/no-node-access
-      let cols = asFragment().querySelectorAll('col')
-      expect(cols[0].style.width).toBe('100px')
-      expect(cols[1].style.width).toBe('80px')
-      await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
-      // eslint-disable-next-line testing-library/no-node-access
-      cols = asFragment().querySelectorAll('col')
-      expect(cols[0].style.width).toBe('99px')
-      expect(cols[1].style.width).toBe('80px')
-    })
+  it('should allow column resizing', async () => {
+    mockDOMSize(99, 800)
+    const { asFragment } = render(<Table
+      columns={testColumns}
+      dataSource={testData}
+    />)
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('col')?.style.width).toBe('')
+    await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('col')?.style.width).toBe('99px')
   })
 
   it('renders action items', async () => {

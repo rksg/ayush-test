@@ -36,7 +36,7 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
     width={width}
     height={0}
     minConstraints={
-      (hasEllipsisColumn && definedWidth && [Math.min(definedWidth, 90), 0]) || undefined
+      (hasEllipsisColumn && [Math.min(definedWidth || 99, 90), 0]) || undefined
     }
     handle={<ResizableHandle />}
     onResizeStart={() => {
