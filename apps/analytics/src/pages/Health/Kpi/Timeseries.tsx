@@ -4,14 +4,12 @@ import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig }                       from '@acx-ui/analytics/utils'
-import { Loader, MultiLineTimeSeriesChart, cssStr, NoData } from '@acx-ui/components'
-import type { TimeStamp, TimeStampRange }                   from '@acx-ui/types'
-import { formatter }                                        from '@acx-ui/utils'
+import { AnalyticsFilter, kpiConfig }               from '@acx-ui/analytics/utils'
+import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
+import { formatter }                                from '@acx-ui/utils'
 
 import { KPITimeseriesResponse, useKpiTimeseriesQuery } from './services'
-
-const lineColors = [cssStr('--acx-accents-blue-30')]
 
 const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   .map((datum, index) => ([
@@ -52,7 +50,6 @@ function KpiTimeseries ({ filters, kpi, chartRef, setTimeWindow, timeWindow }: {
             <MultiLineTimeSeriesChart
               style={{ height, width }}
               data={queryResults.data}
-              lineColors={lineColors}
               dataFormatter={formatYDataPoint}
               yAxisProps={{ min: 0, max: 1 }}
               disableLegend

@@ -71,13 +71,13 @@ describe('MultiLineTimeSeriesChart', () => {
       disableLegend={true}
     />)
 
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-30')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-1')}"]`))
       .not.toBeNull()
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-50')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-2')}"]`))
       .not.toBeNull()
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-orange-50')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-3')}"]`))
       .not.toBeNull()
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-semantics-yellow-40')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-4')}"]`))
       .toBeNull()
   })
 

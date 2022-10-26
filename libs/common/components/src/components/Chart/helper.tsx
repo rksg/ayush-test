@@ -30,6 +30,19 @@ import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
+export const qualitativeColorSet = () => [
+  cssStr('--acx-viz-qualitative-1'),
+  cssStr('--acx-viz-qualitative-2'),
+  cssStr('--acx-viz-qualitative-3'),
+  cssStr('--acx-viz-qualitative-4'),
+  cssStr('--acx-viz-qualitative-5'),
+  cssStr('--acx-viz-qualitative-6'),
+  cssStr('--acx-viz-qualitative-7'),
+  cssStr('--acx-viz-qualitative-8'),
+  cssStr('--acx-viz-qualitative-9'),
+  cssStr('--acx-viz-qualitative-10')
+]
+
 export type TooltipFormatterParams = Exclude<
   TooltipComponentFormatterCallbackParams,
   Array<unknown>

@@ -15,7 +15,6 @@ import type { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
 import type { TimeStamp, TimeStampRange } from '@acx-ui/types'
 import { formatter }                      from '@acx-ui/utils'
 
-import { cssStr }    from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
@@ -28,7 +27,8 @@ import {
   tooltipOptions,
   timeSeriesTooltipFormatter,
   getTimeSeriesSymbol,
-  ChartFormatterFn
+  ChartFormatterFn,
+  qualitativeColorSet
 }                       from '../Chart/helper'
 import { ResetButton }            from '../Chart/styledComponents'
 import { useDataZoom }            from '../Chart/useDataZoom'
@@ -154,12 +154,7 @@ export function MultiLineTimeSeriesChart <
   useLegendSelectChanged(eChartsRef)
 
   const option: EChartsOption = {
-    color: props.lineColors || [
-      cssStr('--acx-accents-blue-30'),
-      cssStr('--acx-accents-blue-50'),
-      cssStr('--acx-accents-orange-50'),
-      cssStr('--acx-semantics-yellow-40')
-    ],
+    color: props.lineColors || qualitativeColorSet(),
     grid: { ...gridOptions({ disableLegend }) },
     ...(disableLegend ? {} : {
       legend: {
@@ -207,7 +202,7 @@ export function MultiLineTimeSeriesChart <
         symbol: getTimeSeriesSymbol(data),
         z: 1,
         zlevel: 1,
-        lineStyle: { width: 1 },
+        lineStyle: { width: 1.2 },
         ...(i === 0 ? {
           markArea: props.markers ? {
             data: props.markers?.map(marker => [
