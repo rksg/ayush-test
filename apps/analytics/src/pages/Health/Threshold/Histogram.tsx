@@ -133,8 +133,8 @@ function Histogram ({
   const hightlightBelowColor = highlightAbove
     ? cssStr('--acx-accents-blue-50')
     : cssStr('--acx-neutrals-40')
-  const barColors = Array.from({ length: splits.length + 1 }, (_, index) =>
-    index < splits.indexOf(thresholdValue) + 1
+  const barColors = Array.from({ length: splitsAfterIsReverseCheck.length + 1 }, (_, index) =>
+    index < splitsAfterIsReverseCheck.indexOf(thresholdValue) + 1
       ? hightlightAboveColor
       : hightlightBelowColor
   )
@@ -161,7 +161,7 @@ function Histogram ({
                 ? (
                   <>
                     <VerticalBarChart
-                      style={{ height: height, width }}
+                      style={{ height, width }}
                       data={data}
                       xAxisName={unit !== '%' ? ` (${$t(unit)})` : `(${unit})`}
                       barWidth={30}
