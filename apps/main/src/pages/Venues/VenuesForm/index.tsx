@@ -149,7 +149,7 @@ export function VenuesForm () {
       })
       updateAddress(data?.address as Address)
 
-      if (isMapEnabled) {
+      if (isMapEnabled && window.google) {
         const latlng = new google.maps.LatLng({
           lat: Number(data?.address?.latitude),
           lng: Number(data?.address?.longitude)
@@ -164,7 +164,7 @@ export function VenuesForm () {
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
     }
-  }, [data, isMapEnabled])
+  }, [data, isMapEnabled, window.google])
 
   const venuesListPayload = {
     searchString: '',
