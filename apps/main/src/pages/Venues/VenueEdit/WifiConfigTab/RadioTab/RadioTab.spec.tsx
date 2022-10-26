@@ -182,5 +182,5 @@ describe('RadioTab', () => {
     await userEvent.click(transmitSelect)
     await userEvent.click(screen.getAllByTitle('Auto')[0])
     await userEvent.click(screen.getAllByRole('button', { name: 'Save' })[0])
-  })
+  }, 20000)
 })
