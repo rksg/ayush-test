@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }         from '@acx-ui/components'
-import { ClockOutlined }              from '@acx-ui/icons'
-import { useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
+import { Button, DisabledButton, PageHeader } from '@acx-ui/components'
+import { ClockOutlined }                      from '@acx-ui/icons'
+import { useVenueDetailsHeaderQuery }         from '@acx-ui/rc/services'
 import {
   useNavigate,
   useTenantLink,
@@ -26,9 +26,9 @@ function VenuePageHeader () {
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
       extra={[
-        <Button key='date-filter' icon={<ClockOutlined />}>
+        <DisabledButton key='date-filter' icon={<ClockOutlined />}>
           {$t({ defaultMessage: 'Last 24 Hours' })}
-        </Button>,
+        </DisabledButton>,
         <Button
           key='configure'
           type='primary'
