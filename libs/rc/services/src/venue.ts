@@ -33,7 +33,6 @@ import {
   ConfigurationProfile,
   VenueDHCPProfile,
   DHCPLeases,
-  CommonResult,
   AvailableLteBands,
   VenueApModelCellular
 } from '@acx-ui/rc/utils'
