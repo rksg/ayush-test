@@ -56,11 +56,9 @@ export default function PortalDemo ({
   },[demoValue])
   const langContent = <PortalLanguageSettings
     demoValue={demoValue}
-    onClose={() => setShowLanguage(false)}
     updateViewContent={(data)=>setDemoValue({ ...demoValue, ...data })}
   />
   const compContent = <PortalComponents
-    onClose={() => setShowComponent(false)}
     demoValue={demoValue}
     updateViewContent={(data)=>setDemoValue({ ...demoValue, ...data })}
   />

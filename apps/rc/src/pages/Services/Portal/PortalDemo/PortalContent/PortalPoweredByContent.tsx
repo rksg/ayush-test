@@ -64,8 +64,10 @@ export default function PortalPoweredByContent (props: {
     }}
   />
   return (
-    <UI.SelectedDiv style={{ paddingLeft: 200/((demoValue.poweredImgSize ||
-      PortalDemoDefaultSize.poweredImgSize)/PortalDemoDefaultSize.poweredImgSize) }}
+    <UI.SelectedDiv style={{ paddingLeft: Math.min(200/((demoValue.poweredImgSize ||
+      PortalDemoDefaultSize.poweredImgSize)/PortalDemoDefaultSize.poweredImgSize),
+    200/((demoValue.poweredSize||PortalDemoDefaultSize.poweredSize)
+      /PortalDemoDefaultSize.poweredSize))+'px' }}
     ><PortalPopover
         content={poweredTools}
         visible={poweredClicked}
@@ -96,6 +98,8 @@ export default function PortalPoweredByContent (props: {
           onVisibleChange={(value) => setPoweredTextClicked(value)}>
           <UI.FieldText style={{ fontSize: (demoValue.poweredSize||
             PortalDemoDefaultSize.poweredSize),
+          width: 152*((demoValue.poweredSize||PortalDemoDefaultSize.poweredSize)
+          /PortalDemoDefaultSize.poweredSize)+'px' ,
           lineHeight: 24 * ((demoValue.poweredSize||PortalDemoDefaultSize.poweredSize)
           /PortalDemoDefaultSize.poweredSize)+'px' ,
           maxWidth: 425, color: demoValue.poweredColor,textAlign: 'left',
@@ -131,8 +135,7 @@ export default function PortalPoweredByContent (props: {
             <UI.Img src={demoValue.poweredImg}
               alt={$t({ defaultMessage: 'Powered by' })}
               style={{
-                marginLeft: 40/((demoValue.poweredImgSize ||
-                  PortalDemoDefaultSize.poweredImgSize)/PortalDemoDefaultSize.poweredImgSize),
+                marginLeft: 50,
                 cursor: cursorTwoImg, outline: outlineTwoImg,
                 height: (demoValue.poweredImgSize || PortalDemoDefaultSize.poweredImgSize),
                 maxWidth: 425

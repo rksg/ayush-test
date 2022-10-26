@@ -35,9 +35,10 @@ export default function PortalImageTools (props:{
   const [showColorPicker, setShowColorPicker]=useState(false)
   return (
     <>
-      <div onClick={(e)=>{e.stopPropagation()
-        setShowColorPicker(false)
-      }}>
+      <div style={{ marginTop: -6 }}
+        onClick={(e)=>{e.stopPropagation()
+          setShowColorPicker(false)
+        }}>
         <Upload accept='.png,.jpg,.jpeg'
           showUploadList={false}
           customRequest={async ({ file }) => {
@@ -83,6 +84,7 @@ export default function PortalImageTools (props:{
       </div>
       {showColorPic!==false && showColorPicker &&<div
         style={{ marginTop: 10 }}
+        onClick={(e)=>e.stopPropagation()}
         onMouseLeave={()=>setShowColorPicker(false)}>
         <SketchPicker
           color={color}

@@ -12,7 +12,11 @@ import { Tabs as AntTabs, Popover as AntPopover,
   Select as AntSelect, Layout as AntLayout, Switch as AntSwitch, Modal as AntModal } from 'antd'
 import styled, { css  } from 'styled-components/macro'
 export const CommonLabel = styled.div`
-  padding: 10px 0 5px 10px;
+  padding: 10px 10px;
+`
+export const CommonHints = styled.div`
+  font-size:12px;
+  color:var(--acx-neutrals-50);
 `
 export const Switch = styled(AntSwitch)`
   &.ant-switch {
@@ -73,16 +77,20 @@ export const Button = styled.button`
 `
 export const PopoverButton = styled.button`
   ${buttonStyle}
+  margin-left:0px;
+  padding-left:0px;
   background-color: var(--acx-primary-white);
 `
 export const LayoutContent = styled(AntLayout)`
   border: 1px solid var(--acx-neutrals-50);
   width: 95%;
-  min-height: 700px;
   background-color: var(--acx-primary-black);
   background-position: center;
   background-repeat: no-repeat;
   align-items: center;
+  min-width:900px;
+  height:auto;
+  margin-bottom:10px;
 `
 export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   ${props => props.$type === 'desk' ? css`
@@ -95,21 +103,23 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   max-width:600px;
   `}
   align-items:center;
-  min-height: 700px;
   background-color: var(--acx-primary-white);
   background-position: center;
   background-repeat: no-repeat;
+  height:auto;
 `
 export const LayoutViewContent = styled(AntLayout)<{ isBg: boolean | null }>`
   ${props=>props.isBg?css`opacity:0.8;`:css`opacity:1;`}
   padding-top:3px;
   width:425px;
   max-width:600px;
-  min-height: 700px;
   align-items:center;
   background-color: var(--acx-primary-white);
   background-position: center;
   background-repeat: no-repeat;
+  height:auto;
+  min-height:150px;
+  padding-bottom:10px;
 `
 export const Label = styled.label`
 
@@ -125,6 +135,7 @@ export const LayoutHeader = styled.div`
   padding: 10px 0 0 10px;
   border: 1px solid var(--acx-neutrals-50);
   border-bottom:0px;
+  min-width:900px;
 `
 
 export const FieldExtraTooltip = styled.div`

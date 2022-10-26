@@ -7,15 +7,13 @@ import * as UI from '../styledComponents'
 
 export default function PortalLanguageSettings (props:{
   demoValue: Demo,
-  onClose: () => void,
   updateViewContent:(value:Demo)=>void,
 }) {
   const { $t } = useIntl()
   const { Option } = UI.Select
-  const { onClose, updateViewContent, demoValue } = props
+  const { updateViewContent, demoValue } = props
   return (
-    <div
-      onMouseLeave={onClose}>
+    <div>
       <UI.CommonLabel>{$t({ defaultMessage: 'Display Language' })}</UI.CommonLabel>
       <UI.Select value={demoValue.displayLang}
         onChange={(value)=>{

@@ -8,16 +8,14 @@ import * as UI from '../styledComponents'
 import PortalTermsModal   from './PortalTermsModal'
 import PortalWifi4euModal from './PortalWifi4euModal'
 export default function PortalComponents (props:{
-  onClose: () => void,
   demoValue:Demo,
   updateViewContent:(value:Demo)=>void,
 }) {
 
   const { $t } = useIntl()
-  const { onClose, updateViewContent, demoValue } = props
+  const { updateViewContent, demoValue } = props
   return (
-    <div
-      onMouseLeave={onClose}>
+    <div>
       <UI.CommonLabel>{$t({ defaultMessage: 'Manage Components' })}</UI.CommonLabel>
 
       {Object.keys(PortalComponentsEnum).map((key => <UI.CommonLabel key={key+'label'}>

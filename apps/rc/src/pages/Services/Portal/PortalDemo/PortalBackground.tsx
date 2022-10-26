@@ -10,6 +10,7 @@ import PictureSec from '../../../../assets/images/portal-demo/icon_pic.svg'
 import PictureOut from '../../../../assets/images/portal-demo/imgToggle.svg'
 import * as Utils from '../../commonUtils'
 import * as UI    from '../styledComponents'
+
 export default function PortalBackground (props:{
   $isDesk: boolean,
   backgroundColor: string,
@@ -20,13 +21,13 @@ export default function PortalBackground (props:{
   const { $isDesk, updateBackgroundColor, updateBackgroundImg, backgroundColor } = props
   const [showColorPicker, setShowColorPicker] = useState(false)
   const [clicked, setClicked]=useState(false)
-  const content = <div onMouseLeave={()=>setClicked(false)}>
+  const content = <div>
     <UI.PopoverButton style={{ marginBottom: 10 }}
       onClick={(e)=>{
         e.preventDefault()
         setShowColorPicker(true)
       }}>{$t({ defaultMessage: 'Set background color' })}</UI.PopoverButton><br/>
-    {showColorPicker && <div style={{ margin: '5px 0 20px 15px' }}>
+    {showColorPicker && <div style={{ marginBottom: 10 }}>
       <SketchPicker color={backgroundColor}
         disableAlpha={true}
         onChangeComplete={(color)=> updateBackgroundColor(color.hex)}/>
@@ -43,9 +44,9 @@ export default function PortalBackground (props:{
         e.preventDefault()
       }}>{$t({ defaultMessage: 'Select image' })}</UI.PopoverButton>
     </Upload>
-    <UI.CommonLabel style={{ marginLeft: 10, paddingLeft: 6, paddingTop: 0 }}>
+    <UI.CommonHints>
       {$t({ defaultMessage: 'Recommended size: 1920*1080 ' })}
-    </UI.CommonLabel></div>
+    </UI.CommonHints></div>
 
   return (
     <UI.Popover content={content}
@@ -58,7 +59,7 @@ export default function PortalBackground (props:{
         setClicked(value)}}>
       <UI.Img src={$isDesk?PictureOut:PictureSec}
         alt='background setting'
-        style={{ position: 'absolute',left: 10,top: 60 }}
+        style={{ position: 'absolute',left: 10,top: 60, cursor: 'pointer' }}
       />
     </UI.Popover>
   )
