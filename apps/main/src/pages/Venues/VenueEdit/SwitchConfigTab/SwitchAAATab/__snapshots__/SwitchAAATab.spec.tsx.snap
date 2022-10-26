@@ -194,7 +194,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 <span
                                   class="ant-collapse-header-text"
                                 >
-                                  RADIUS Servers (0)
+                                  RADIUS Servers (1)
                                 </span>
                               </div>
                               <div

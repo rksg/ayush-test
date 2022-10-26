@@ -47,7 +47,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
             <span
               class="ant-collapse-header-text"
             >
-              RADIUS Servers (0)
+              RADIUS Servers (1)
             </span>
           </div>
           <div
