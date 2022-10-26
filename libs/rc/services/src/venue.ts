@@ -321,6 +321,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
+      providesTags: [{ type: 'AAA', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg,
@@ -329,6 +330,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })
         })
       }
+    }),
+    updateAAASetting: build.mutation<AAASetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateAaaSetting, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
       query: ({ params, payload }) => {
@@ -539,6 +550,7 @@ export const {
   useUpdateVenueLanPortsMutation,
   useVenueSwitchAAAServerListQuery,
   useGetAaaSettingQuery,
+  useUpdateAAASettingMutation,
   useAddAAAServerMutation,
   useUpdateAAAServerMutation,
   useDeleteAAAServerMutation,

@@ -1345,6 +1345,21 @@ export const mockAaaSetting = {
   id: '3d0e71c087e743feaaf6f6a19ea955f2'
 }
 
+export const mockAaaSettingWithOrder = {
+  authnEnabledSsh: false,
+  authnEnableTelnet: false,
+  authzEnabledCommand: true,
+  authzEnabledExec: true,
+  acctEnabledCommand: true,
+  acctEnabledExec: true,
+  authzCommonsLevel: 'READ_ONLY',
+  authzCommonsFirstServer: 'RADIUS',
+  authzExecFirstServer: 'RADIUS',
+  acctCommonsLevel: 'READ_WRITE',
+  acctCommonsFirstServer: 'RADIUS',
+  acctExecFirstServer: 'RADIUS'
+}
+
 export const radiusList = {
   data: [
     {
