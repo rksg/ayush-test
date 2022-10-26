@@ -1,6 +1,7 @@
 import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
 import { Row, Col, Form, Input, Typography } from 'antd'
+import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
 import {
@@ -140,7 +141,7 @@ export function VenuesForm () {
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
 
   useEffect(() => {
-    if(data){
+    if (data) {
       formRef.current?.setFieldsValue({
         name: data?.name,
         description: data?.description,
@@ -148,7 +149,7 @@ export function VenuesForm () {
       })
       updateAddress(data?.address as Address)
 
-      if(isMapEnabled){
+      if (isMapEnabled) {
         const latlng = new google.maps.LatLng({
           lat: Number(data?.address?.latitude),
           lng: Number(data?.address?.longitude)
@@ -158,7 +159,12 @@ export function VenuesForm () {
         setZoom(16)
       }
     }
-  }, [data])
+
+    if ( action !== 'edit') { // Add mode
+      const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
+      formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
+    }
+  }, [data, isMapEnabled])
 
   const venuesListPayload = {
     searchString: '',
@@ -168,33 +174,47 @@ export function VenuesForm () {
     pageSize: 10000
   }
   const [venuesList] = useLazyVenuesListQuery()
+  const [sameCountry, setSameCountry] = useState(true)
   const nameValidator = async (value: string) => {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
+  const addressValidator = async (value: string) => {
+    const isEdit = action === 'edit'
+    const isSameValue = value ===
+      formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
 
-  const addressValidator = async () => {
-    if(Object.keys(address).length === 0){
+    if (isEdit && !_.isEmpty(value) && isSameValue && !sameCountry) {
       return Promise.reject(
-        intl.$t({ defaultMessage: 'Please select address from suggested list' })
+        `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`
       )
     }
     return Promise.resolve()
   }
+
 
   const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     updateAddress({})
     const autocomplete = new google.maps.places.Autocomplete(event.target)
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
-
-      formRef.current?.setFieldsValue({
-        address: { addressLine: place.formatted_address }
-      })
-
       const { latlng, address } = await addressParser(place)
+      const isSameCountry = data && (data?.address.country === address.country) || false
+      setSameCountry(isSameCountry)
+      let errorList = []
+
+      if (action === 'edit' && !isSameCountry) {
+        errorList.push(
+          `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`)
+      }
+
+      formRef.current?.setFields([{
+        name: ['address', 'addressLine'],
+        value: place.formatted_address,
+        errors: errorList
+      }])
 
       setMarker(latlng)
       setCenter(latlng.toJSON())
@@ -233,14 +253,12 @@ export function VenuesForm () {
 
   return (
     <>
-      <PageHeader
-        title={action === 'edit' ?
-          intl.$t({ defaultMessage: 'Edit New Venue' }):
-          intl.$t({ defaultMessage: 'Add New Venue' })}
+      {action !== 'edit' && <PageHeader
+        title={intl.$t({ defaultMessage: 'Add New Venue' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
-      />
+      />}
       <StepsForm
         formRef={formRef}
         onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
@@ -292,14 +310,15 @@ export function VenuesForm () {
                   name={['address', 'addressLine']}
                   rules={[{
                     required: isMapEnabled ? true : false
-                  },{
-                    validator: () => addressValidator(),
-                    validateTrigger: 'onChange'
-                  }]}
-                  initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
+                  }, {
+                    validator: (_, value) => addressValidator(value),
+                    validateTrigger: 'onBlur'
+                  }
+                  ]}
                 >
                   <Input
                     allowClear
+                    placeholder={intl.$t({ defaultMessage: 'Set address here' })}
                     prefix={<SearchOutlined />}
                     onChange={addressOnChange}
                     data-testid='address-input'

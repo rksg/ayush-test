@@ -6,6 +6,7 @@ import { renderHook }          from '@acx-ui/test-utils'
 import { TimeStamp }           from '@acx-ui/types'
 
 import {
+  dataZoomOptions,
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
   stackedBarTooltipFormatter,
@@ -15,6 +16,29 @@ import {
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
+
+describe('dataZoomOptions', () => {
+  it('should return correct dataZoom options', () => {
+    const data = [
+      {
+        key: 'series1',
+        name: 'series1',
+        data: [['2022-04-07T09:15:00.000Z', '-'], ['2022-04-07T09:30:00.000Z', '-']]
+      },
+      {
+        key: 'series2',
+        name: 'series2',
+        data: [['2022-04-07T09:15:00.000Z', '-'], ['2022-04-07T09:45:00.000Z', '-']]
+      }
+    ] as TimeSeriesChartData[]
+    expect(dataZoomOptions(data)).toEqual([{
+      id: 'zoom',
+      type: 'inside',
+      zoomLock: true,
+      minValueSpan: 2 * 30 * 60 * 1000
+    }])
+  })
+})
 
 describe('dateAxisFormatter', () => {
   it('formats date time correctly', () => {
@@ -91,24 +115,24 @@ describe('timeSeriesTooltipFormatter', () => {
 
   it('should return correct Html string for single value', async () => {
     const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
-    expect(timeSeriesTooltipFormatter(singleSeries, dataFormatters)(singleparameters))
-      .toMatchSnapshot()
+    const result = timeSeriesTooltipFormatter(singleSeries, dataFormatters)(singleparameters)
+    expect(result).toMatchSnapshot()
     expect(dataFormatters.default).toBeCalledTimes(1)
   })
   it('should return correct Html string for multiple value', async () => {
     const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
-    expect(timeSeriesTooltipFormatter(multiSeries, dataFormatters)(multiParameters))
-      .toMatchSnapshot()
-    expect(dataFormatters.default).toBeCalledTimes(multiParameters.length)
-  })
-  it('should handle when no formatter', async () => {
-    expect(timeSeriesTooltipFormatter(singleSeries, {})(singleparameters)).toMatchSnapshot()
-    expect(timeSeriesTooltipFormatter(multiSeries, {})(multiParameters)).toMatchSnapshot()
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(multiParameters)
+    expect(result).toMatchSnapshot()
+    expect(dataFormatters.default).toBeCalledTimes(multiSeries.length)
   })
   it('should hide row when legend deselected', async () => {
-    expect(timeSeriesTooltipFormatter(multiSeries, {})(singleparameters)).toMatchSnapshot()
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(singleparameters)
+    expect(result).toMatchSnapshot()
+    expect(dataFormatters.default).toBeCalledTimes(1)
   })
   it('should hide badge when show is false (only show in tooltip not in chart)', async () => {
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
     const noBadgeSeries = [
       ...singleSeries, {
         key: 'key2',
@@ -122,7 +146,13 @@ describe('timeSeriesTooltipFormatter', () => {
         data: [[1605628800000, 2672] as [TimeStamp, number]]
       }
     ]
-    expect(timeSeriesTooltipFormatter(noBadgeSeries, {})(singleparameters)).toMatchSnapshot()
+    const result = timeSeriesTooltipFormatter(noBadgeSeries, dataFormatters)(singleparameters)
+    expect(result).toMatchSnapshot()
+  })
+  it('accept custom formatter which includes index in param', () => {
+    const dataFormatters = { default: jest.fn((value, tz, index) => `formatted-${value}-${index}`) }
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(multiParameters)
+    expect(result).toMatchSnapshot()
   })
 })
 

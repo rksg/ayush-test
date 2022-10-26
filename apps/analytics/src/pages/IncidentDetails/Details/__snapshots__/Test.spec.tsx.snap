@@ -92,7 +92,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -106,7 +106,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -157,8 +157,12 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Charts
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApPoeImpactChart"
+          />
         </div>
       </div>
     </div>
@@ -270,7 +274,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -284,7 +288,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -335,8 +339,12 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Charts
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApWanThroughputImpactChart"
+          />
         </div>
       </div>
     </div>
@@ -448,7 +456,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -462,7 +470,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -523,8 +531,15 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApRebootBySystemChart"
+          />
+          <div
+            data-testid="timeseries-ConnectedClientsChart"
+          />
         </div>
       </div>
     </div>
@@ -624,7 +639,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -638,7 +653,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -807,7 +822,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -821,7 +836,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -882,8 +897,18 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApRebootBySystemChart"
+          />
+          <div
+            data-testid="timeseries-ConnectedClientsChart"
+          />
+          <div
+            data-testid="timeseries-RebootedApsCountChart"
+          />
         </div>
       </div>
     </div>
@@ -983,7 +1008,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -997,7 +1022,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1063,9 +1088,25 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-RssQualityByClientsChart"
+          />
         </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="rssDistributionChart"
+        />
       </div>
     </div>
   </div>
@@ -1164,7 +1205,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1178,7 +1219,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1350,7 +1391,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1364,7 +1405,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1536,7 +1577,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1550,7 +1591,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1722,7 +1763,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1736,7 +1777,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1908,7 +1949,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1922,7 +1963,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -2094,7 +2135,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -2108,7 +2149,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -2249,7 +2290,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -2263,7 +2304,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -2392,7 +2433,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -2406,7 +2447,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -2535,7 +2576,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -2549,7 +2590,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
