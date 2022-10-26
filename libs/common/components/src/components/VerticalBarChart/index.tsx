@@ -36,8 +36,8 @@ export interface VerticalBarChartProps
   }
   xAxisName?: string
   xAxisOffset?: number
-  showTooltipName?: Boolean,
-  grid?: GridOption,
+  showTooltipName?: Boolean
+  grid?: GridOption
   onBarAreaClick?: (data: BarData) => void
 }
 
@@ -98,9 +98,9 @@ export function VerticalBarChart<TChartData extends BarChartData>
     grid: { ...gridOptions({
       disableLegend: true,
       hasXAxisName: Boolean(xAxisName),
-      xAxisOffset,
-      ...gridProps
-    }) },
+      xAxisOffset
+    }),
+    ...gridProps },
     dataset: {
       dimensions: data.dimensions,
       source: data.source

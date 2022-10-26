@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 
 import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
@@ -62,23 +62,24 @@ function Histogram ({
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-  const { splits, highlightAbove } = histogram
+  const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const [sliderValue, setSliderValue] = useState(
     splits.indexOf(thresholdValue) + 0.5
   )
+  const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
 
   /* istanbul ignore next */
-  const onSliderChange = useCallback((newValue: number) => {
+  const onSliderChange = (newValue: number) => {
     if (
-      newValue === splits.length + 0.5 ||
+      newValue === splitsAfterIsReverseCheck.length + 0.5 ||
       newValue % 1 === 0
     )
       return
     setSliderValue(newValue)
-    setThresholdValue(histogram?.splits[newValue - 0.5])
-    setKpiThreshold({ ...thresholds, [kpi]: histogram?.splits[newValue - 0.5] })
-  },[kpi, histogram?.splits, setKpiThreshold, thresholds, splits.length])
+    setThresholdValue(splitsAfterIsReverseCheck[newValue - 0.5])
+    setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 0.5] })
+  }
   const queryResults = useKpiHistogramQuery(
     { ...filters, kpi, threshold: histogram?.initialThreshold },
     {
@@ -103,14 +104,15 @@ function Histogram ({
   /* istanbul ignore next */
   const onBarClick = ( barData: [number, number] ) =>{
     const reformattedBarData = histogram?.reFormatFromBarChart(barData?.[0])
-    if(splits.indexOf(reformattedBarData) === -1){
-      const selectSecondLastBar = splits.length - 1
+
+    if(splitsAfterIsReverseCheck.indexOf(reformattedBarData) === -1){
+      const selectSecondLastBar = splitsAfterIsReverseCheck.length - 1
       setSliderValue(selectSecondLastBar + 0.5)
-      setThresholdValue(splits[selectSecondLastBar] as unknown as string)
-      setKpiThreshold({ ...thresholds, [kpi]: splits[selectSecondLastBar] })
+      setThresholdValue(splitsAfterIsReverseCheck[selectSecondLastBar] as unknown as string)
+      setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[selectSecondLastBar] })
       return
     }
-    setSliderValue(splits.indexOf(reformattedBarData) + 0.5)
+    setSliderValue(splitsAfterIsReverseCheck.indexOf(reformattedBarData) + 0.5)
     setThresholdValue(reformattedBarData as unknown as string)
     setKpiThreshold({ ...thresholds, [kpi]: reformattedBarData })
   }
