@@ -11,37 +11,35 @@ import {
   NotificationSolid,
   QuestionMarkCircleSolid,
   SearchOutlined
-}                                              from '@acx-ui/icons'
-import { Outlet }                              from '@acx-ui/react-router-dom'
-import { DateFilterProvider, notAvailableMsg } from '@acx-ui/utils'
+}                          from '@acx-ui/icons'
+import { Outlet }          from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 
 function Layout () {
   return (
     <SplitProvider>
-      <DateFilterProvider>
-        <LayoutComponent
-          menuConfig={useMenuConfig()}
-          content={<Outlet />}
-          rightHeaderContent={<>
-            <Tooltip title={useIntl().$t(notAvailableMsg)}>
-              <LayoutUI.ButtonOutlined disabled shape='circle' icon={<SearchOutlined />} />
-            </Tooltip>
-            <LayoutUI.Divider />
-            <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-              {/* TODO: add back <AlarmsHeaderButton/> when remove disable */}
-              <LayoutUI.ButtonSolid disabled icon={<NotificationSolid />} />
-            </Tooltip>
-            <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-              <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
-            </Tooltip>
-            <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-              <LayoutUI.ButtonSolid disabled icon={<AccountCircleSolid />} />
-            </Tooltip>
-          </>}
-        />
-      </DateFilterProvider>
+      <LayoutComponent
+        menuConfig={useMenuConfig()}
+        content={<Outlet />}
+        rightHeaderContent={<>
+          <Tooltip title={useIntl().$t(notAvailableMsg)}>
+            <LayoutUI.ButtonOutlined disabled shape='circle' icon={<SearchOutlined />} />
+          </Tooltip>
+          <LayoutUI.Divider />
+          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+            {/* TODO: add back <AlarmsHeaderButton/> when remove disable */}
+            <LayoutUI.ButtonSolid disabled icon={<NotificationSolid />} />
+          </Tooltip>
+          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+            <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
+          </Tooltip>
+          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+            <LayoutUI.ButtonSolid disabled icon={<AccountCircleSolid />} />
+          </Tooltip>
+        </>}
+      />
     </SplitProvider>
   )
 }

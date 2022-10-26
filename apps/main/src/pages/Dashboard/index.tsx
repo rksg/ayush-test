@@ -15,7 +15,7 @@ import {
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { useDateFilter, dateRangeForLast, DashboardFilterProvider, useDashboardFilter } from '@acx-ui/utils'
+import { useDateFilter, dateRangeForLast, useDashboardFilter } from '@acx-ui/utils'
 
 import VenueFilter from '../../components/VenueFilter'
 
@@ -37,11 +37,11 @@ export default function Dashboard () {
     }
   ]
   return (
-    <DashboardFilterProvider>
+    <>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
       <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
-    </DashboardFilterProvider>
+    </>
   )
 }
 

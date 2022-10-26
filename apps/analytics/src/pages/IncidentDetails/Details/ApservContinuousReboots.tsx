@@ -1,16 +1,15 @@
-import { useIntl } from 'react-intl'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
-import {
-  calculateSeverity,
-  Incident,
-  shortDescription
-} from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill, GridRow, GridCol, Card, NotAvailable } from '@acx-ui/components'
+import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
+import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import { TimeSeries }                        from '../TimeSeries'
+import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -46,6 +45,16 @@ export const ApservContinuousReboots = (incident: Incident) => {
     dimension: 'reason'
   }]
 
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.ApRebootBySystemChart,
+    TimeSeriesChartTypes.ConnectedClientsChart
+  ]
+
+  const buffer = {
+    front: { value: 6, unit: 'hours' as unitOfTime.Base },
+    back: { value: 6, unit: 'hours' as unitOfTime.Base }
+  }
+
   return (
     <>
       <PageHeader
@@ -71,12 +80,12 @@ export const ApservContinuousReboots = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <Card title={$t({ defaultMessage: 'Reboot by System Event' })} type='no-border' >
-            <NotAvailable/>
-          </Card>
-          <Card title={$t({ defaultMessage: 'Connected Clients' })} type='no-border' >
-            <NotAvailable/>
-          </Card>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+            buffer={buffer}
+          />
         </GridCol>
       </GridRow>
     </>
