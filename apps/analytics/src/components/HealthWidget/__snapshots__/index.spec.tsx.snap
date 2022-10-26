@@ -249,7 +249,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                 class="styledComponents__Wrapper-sc-1rvolyi-1 cNZCcd"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-13 iSNocV"
+                  class="styledComponents__Wrapper-sc-1abm7iv-13 cRNKWo"
                 >
                   <div
                     class="ant-pro-table"
