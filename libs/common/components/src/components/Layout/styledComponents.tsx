@@ -244,6 +244,7 @@ export const RightHeaderContentWrapper = styled.div`
 
 const MenuIcon = styled.span`
   margin-right: 8px;
+  color: var(--acx-primary-white) !important;
   > svg {
     vertical-align: middle;
     height: 20px;

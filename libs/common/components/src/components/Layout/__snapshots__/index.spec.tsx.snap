@@ -55,7 +55,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/dashboard"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="speed-indicator-outlined"
@@ -93,7 +93,7 @@ exports[`Layout should render correctly 1`] = `
                         href="/t/undefined/analytics"
                       >
                         <span
-                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                         >
                           <div
                             data-testid="ai-outlined"
@@ -127,7 +127,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/timeline"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="calendar-date-outlined"
@@ -160,7 +160,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/reports"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="reports-outlined"
@@ -219,7 +219,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/venues"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="location-outlined"
@@ -252,7 +252,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/devices"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="devices-outlined"
@@ -285,7 +285,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/networks"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="networks-outlined"
@@ -318,7 +318,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/services"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="services-outlined"
@@ -351,7 +351,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/policies"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="policies-outlined"
@@ -385,7 +385,7 @@ exports[`Layout should render correctly 1`] = `
                         href="/t/undefined/users"
                       >
                         <span
-                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                         >
                           <div
                             data-testid="account-circle-outlined"
@@ -445,7 +445,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/administration"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="admin-outlined"
@@ -628,7 +628,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                       href="/v/undefined/dashboard"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="speed-indicator-outlined"
@@ -803,7 +803,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       href="/t/t-id/dashboard"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconSolid-sc-iwostn-7 eXbqRI OWPZI"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconSolid-sc-iwostn-7 bZgxDC OWPZI"
                       >
                         <div
                           data-testid="speed-indicator-solid"
@@ -843,7 +843,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                         href="/t/t-id/analytics"
                       >
                         <span
-                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                         >
                           <div
                             data-testid="ai-outlined"
@@ -878,7 +878,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       href="/t/t-id/timeline"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="calendar-date-outlined"
@@ -912,7 +912,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       href="/t/t-id/reports"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="reports-outlined"
@@ -973,7 +973,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       href="/t/t-id/venues"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="location-outlined"
@@ -1007,7 +1007,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       href="/t/t-id/devices"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="devices-outlined"
@@ -1041,7 +1041,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       href="/t/t-id/networks"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="networks-outlined"
@@ -1075,7 +1075,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       href="/t/t-id/services"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="services-outlined"
@@ -1109,7 +1109,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       href="/t/t-id/policies"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="policies-outlined"
@@ -1146,7 +1146,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                         href="/t/t-id/users"
                       >
                         <span
-                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                         >
                           <div
                             data-testid="account-circle-outlined"
@@ -1208,7 +1208,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       href="/t/t-id/administration"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <div
                           data-testid="admin-outlined"
