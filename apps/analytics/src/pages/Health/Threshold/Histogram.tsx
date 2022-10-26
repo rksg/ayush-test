@@ -170,7 +170,7 @@ function Histogram ({
                     onBarAreaClick={onBarClick}
                     yAxisOffset={
                       yAxisLabelOffset
-                        ? 100 / (yAxisLabelOffset * splitsAfterIsReverseCheck.length)
+                        ? 60 / (yAxisLabelOffset * splitsAfterIsReverseCheck.length)
                         : 0
                     }
                     yAxisProps={!hasData ? { max: 100, min: 0 } : undefined}
