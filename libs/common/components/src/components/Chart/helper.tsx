@@ -4,18 +4,18 @@ import {
   YAXisComponentOption,
   RegisteredSeriesOption,
   TooltipComponentOption
-} from 'echarts'
-import { CallbackDataParams } from 'echarts/types/dist/shared'
-import { FormatXMLElementFn } from 'intl-messageformat'
-import moment                 from 'moment-timezone'
-import { renderToString }     from 'react-dom/server'
+}                                                   from 'echarts'
+import { CallbackDataParams, InsideDataZoomOption } from 'echarts/types/dist/shared'
+import { FormatXMLElementFn }                       from 'intl-messageformat'
+import moment                                       from 'moment-timezone'
+import { renderToString }                           from 'react-dom/server'
 import {
   MessageDescriptor,
   IntlShape,
   RawIntlProvider,
   FormattedMessage,
   defineMessage
-} from 'react-intl'
+}                                                   from 'react-intl'
 
 import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import { TimeStamp }           from '@acx-ui/types'
@@ -83,8 +83,9 @@ export const legendTextStyleOptions = () => ({
 export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
   id: 'zoom',
   type: 'inside',
+  filterMode: 'none' as InsideDataZoomOption['filterMode'],
   zoomLock: true,
-  minValueSpan: 2 * Math.max(...data.map(datum =>
+  minValueSpan: Math.max(...data.map(datum =>
     moment.duration(moment(datum.data[1][0])
       .diff(moment(datum.data[0][0])))
       .asMilliseconds()
