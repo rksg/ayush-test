@@ -6,8 +6,8 @@ import {
   getSeriesData,
   TimeSeriesDataType
 }                                         from '@acx-ui/analytics/utils'
-import { Card, cssStr, NoData, StackedAreaChart } from '@acx-ui/components'
-import { formatter }                              from '@acx-ui/utils'
+import { Card, NoData, StackedAreaChart } from '@acx-ui/components'
+import { formatter }                      from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -29,15 +29,6 @@ export const TtcByFailureTypeChart = ({ chartRef, data }: TimeSeriesChartProps) 
   const intl = useIntl()
   const { $t } = intl
 
-  // TODO: change color when confirmed
-  const stackColors = [
-    cssStr('--acx-semantics-green-50'),
-    cssStr('--acx-semantics-red-30'),
-    cssStr('--acx-accents-blue-50'),
-    cssStr('--acx-accents-orange-70'),
-    cssStr('--acx-accents-orange-30')
-  ]
-
   const seriesMapping = [
     { key: 'ttcByAuth', name: $t({ defaultMessage: 'Authentication' }) },
     { key: 'ttcByAssoc', name: $t({ defaultMessage: 'Association' }) },
@@ -58,7 +49,6 @@ export const TtcByFailureTypeChart = ({ chartRef, data }: TimeSeriesChartProps) 
           <StackedAreaChart
             chartRef={chartRef}
             style={{ height, width }}
-            stackColors={stackColors}
             data={chartResults}
             dataFormatter={formatter('durationFormat')}
             tooltipTotalTitle={$t({ defaultMessage: 'Total Time To Connect' })}
