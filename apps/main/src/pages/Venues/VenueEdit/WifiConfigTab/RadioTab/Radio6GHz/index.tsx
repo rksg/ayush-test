@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Form, Input, InputNumber, Row, Select, Slider } from 'antd'
+import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
 import {
@@ -47,11 +48,13 @@ export function Radio6GHz () {
   useEffect(() => {
     const channelType = channelBandwidth === 'AUTO' ?
       channelBandwidth.toLowerCase() : channelBandwidth
-    if(defaultChannelsData){
+    if (defaultChannelsData
+      && _.get(defaultChannelsData, '6GChannels.' + channelType)) {
       setDefaultChannels(defaultChannelsData['6GChannels'][channelType])
     }
 
-    if(defaultChannelsData && channelBandwidth){
+    if(defaultChannelsData && channelBandwidth &&
+      _.get(defaultChannelsData, '6GChannels.' + channelType) ){
       setDefaultChannels(defaultChannelsData['6GChannels'][channelType])
       switch(channelBandwidth){
         case '40MHz':
@@ -125,6 +128,7 @@ export function Radio6GHz () {
             name={['radioParams6G', 'channelBandwidth']}>
             <Select
               options={defaultChannelsData &&
+                defaultChannelsData['6GChannels'] &&
             Object.keys(defaultChannelsData['6GChannels'])
               .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
               defaultValue={'auto'}
