@@ -21,7 +21,7 @@ export const getData = () => {
   const data = [[base, Math.random() * 3000]]
   for (let i = 1; i < 37; i++) {
     const value = Math.round((Math.random()-0.5) * 250 + data[i - 1][1])
-    const displayValue = (Math.random() > 0.20) ? value : value
+    const displayValue = (Math.random() > 0.20) ? value : null
     data.push([base + oneDay * i, displayValue as number])
   }
   return data as [TimeStamp, number][]
