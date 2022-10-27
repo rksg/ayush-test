@@ -4,8 +4,8 @@ import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
-import { TenantType }                from '@acx-ui/react-router-dom'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { TenantType }                         from '@acx-ui/react-router-dom'
+import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import menuConfig   from './stories/menuConfig'
 import { LayoutUI } from './styledComponents'
@@ -69,6 +69,10 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, { route: true })
     await screen.findByTestId('speed-indicator-outlined')
+    await waitFor(() => {
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(asFragment().querySelector('li[data-menu-id]')).not.toBeNull()
+    })
     expect(asFragment()).toMatchSnapshot()
   })
   it('should collapsed', async () => {
