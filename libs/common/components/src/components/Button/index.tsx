@@ -42,7 +42,7 @@ export function DisabledButton (
     placement={props.tooltipPlacement || 'top'}
     title={props.title || notAvailMsg}>
     <span style={{ cursor: 'not-allowed' }}>
-      <Button {...props} disabled style={{ pointerEvents: 'none' }}/>
+      <Button {...props} disabled style={{ ...props.style, pointerEvents: 'none' }}/>
     </span>
   </Tooltip>
 }

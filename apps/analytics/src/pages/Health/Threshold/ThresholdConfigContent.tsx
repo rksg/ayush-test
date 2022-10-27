@@ -61,6 +61,7 @@ function ThresholdConfig ({
         </Button>
         {(isDisabled)
           ? <DisabledButton
+            style={{ width: 70 }}
             size='small'
             type='secondary'
             title={disabledMsg}
@@ -69,7 +70,7 @@ function ThresholdConfig ({
             {$t(thresholdDescText.applyBtn)}
           </DisabledButton>
           : <Button
-            style={{ width: 70, pointerEvents: (isDisabled) ? 'none' : 'auto' }}
+            style={{ width: 70 }}
             size='small'
             type='secondary'
             onClick={() => onApply && onApply()}
