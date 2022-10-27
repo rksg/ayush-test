@@ -54,7 +54,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                 style="text-align: center; padding: 8px 0px;"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 jQYdes"
                 >
                   <div
                     class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -195,7 +195,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                 style="text-align: center; padding: 8px 0px;"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 jQYdes"
                 >
                   <div
                     class="ant-radio-group ant-radio-group-outline ant-radio-group-small"

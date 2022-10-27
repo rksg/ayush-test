@@ -40,6 +40,7 @@ describe('DonutChart - small', () => {
     const { asFragment } = render(<DonutChart
       style={{ width: 238, height: 176 }}
       data={data}
+      showLegend
       title='Donut Chart'/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Donut Chart').getAttribute('style'))
@@ -74,7 +75,9 @@ describe('DonutChart - small', () => {
     expect(numbers.length).toEqual(1)
   })
   it('should render the legend properly when formatter not available', async () => {
-    const { asFragment } = render(<DonutChart style={{ width: 238, height: 176 }} data={data}/>)
+    const { asFragment } = render(<DonutChart style={{ width: 238, height: 176 }}
+      data={data}
+      showLegend/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('5095').getAttribute('style'))
       .toEqual("font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;")

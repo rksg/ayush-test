@@ -31,9 +31,8 @@ exports[`SparklineChart should render component 1`] = `
       <path
         d="M128 638.8C128 638.8 256 559.2 384 479.6C512 400 512 400 640 320.4C768 240.8 768 240.8 896 161.2C1024 81.6 1152 2 1152 2"
         fill="none"
-        stroke="#23AB36"
+        stroke="#5496EA"
         stroke-linejoin="bevel"
-        stroke-width="0.8"
       />
     </g>
   </g>
@@ -42,7 +41,7 @@ exports[`SparklineChart should render component 1`] = `
       id="zr0-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        d="M-1 1.5l1281 0l0 797l-1281 0Z"
         fill="#000"
       />
     </clippath>
@@ -56,7 +55,7 @@ exports[`SparklineChart should render component 1`] = `
     >
       <stop
         offset="0%"
-        stop-color="#88D392"
+        stop-color="#91BEF8"
       />
       <stop
         offset="100%"
@@ -100,7 +99,6 @@ exports[`SparklineChart should render component with trendLine having green 1`] 
         fill="none"
         stroke="#23AB36"
         stroke-linejoin="bevel"
-        stroke-width="0.8"
       />
     </g>
   </g>
@@ -109,7 +107,7 @@ exports[`SparklineChart should render component with trendLine having green 1`] 
       id="zr2-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        d="M-1 1.5l1281 0l0 797l-1281 0Z"
         fill="#000"
       />
     </clippath>
@@ -167,7 +165,6 @@ exports[`SparklineChart should render component with trendLine having red 1`] = 
         fill="none"
         stroke="#ED1C24"
         stroke-linejoin="bevel"
-        stroke-width="0.8"
       />
     </g>
   </g>
@@ -176,7 +173,7 @@ exports[`SparklineChart should render component with trendLine having red 1`] = 
       id="zr1-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        d="M-1 1.5l1281 0l0 797l-1281 0Z"
         fill="#000"
       />
     </clippath>
