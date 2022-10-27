@@ -34,6 +34,7 @@ RUN export $(cat ${ENV_FILE}) \
 FROM build-base as acx-ui
 ENV NODE_OPTIONS=--max-old-space-size=8192
 RUN npx nx run-many --target=lint --all --verbose
+RUN tools/docker/tscValidator.sh
 RUN npx nx run rc:test --coverage --maxWorkers=25%
 RUN npx nx run-many --target=test --all --exclude=rc --coverage --runInBand --verbose
 
