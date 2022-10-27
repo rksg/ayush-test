@@ -15,7 +15,6 @@ import { GridCol, GridRow } from '@acx-ui/components'
 
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
-import { KpiRow }            from '../styledComponents'
 import BarChart              from '../Threshold/BarChart'
 import Histogram             from '../Threshold/Histogram'
 import {
@@ -145,7 +144,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
     <>
       {kpis.map((kpi) => {
         return (
-          <KpiRow key={kpi + defaultZoom}>
+          <GridRow key={kpi+defaultZoom} divider>
             <GridCol col={{ span: 16 }}>
               <GridRow style={{ height: '160px' }}>
                 <GridCol col={{ span: 5 }}>
@@ -186,7 +185,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
                 />
               )}
             </GridCol>
-          </KpiRow>
+          </GridRow>
         )
       })}
     </>
