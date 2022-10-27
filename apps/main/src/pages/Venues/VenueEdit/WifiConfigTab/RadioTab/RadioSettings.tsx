@@ -170,6 +170,7 @@ export function RadioSettings () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'radio',
+      tabTitle: $t({ defaultMessage: 'Radio' }),
       isDirty: true
     })
     setEditRadioContextData({
