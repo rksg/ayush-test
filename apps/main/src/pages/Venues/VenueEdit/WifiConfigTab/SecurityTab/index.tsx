@@ -222,7 +222,7 @@ export function SecurityTab () {
             </Form.Item>
             <Form.Item
               name='roguePolicyId'
-              label={$t({ defaultMessage: 'Report SNR Threshold:' })}
+              label={$t({ defaultMessage: 'Rogue AP Classification Profile:' })}
               style={{ width: '200px' }}
               initialValue={selected}
             >
