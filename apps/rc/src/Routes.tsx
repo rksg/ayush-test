@@ -6,6 +6,7 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails }    from './pages/Networks/NetworkDetails/NetworkDetails'
 import { NetworkForm }       from './pages/Networks/NetworkForm/NetworkForm'
 import { NetworksTable }     from './pages/Networks/NetworksTable'
+import RougeAPDetectionForm  from './pages/Policies/RougeAPDetection/RougeAPDetectionForm/RougeAPDetectionForm'
 import { DHCPForm }          from './pages/Services/DHCPForm/DHCPForm'
 import { MdnsProxyForm }     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import { SelectServiceForm } from './pages/Services/SelectServiceForm'
@@ -16,12 +17,15 @@ import {
   ServiceOperation
 } from './pages/Services/serviceRouteUtils'
 import { ServicesTable } from './pages/Services/ServicesTable'
+import RougeAPDetectionDetailView
+  from './pages/Policies/RougeAPDetection/RougeAPDetectionDetail/RougeAPDetectionDetailView';
 
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
+      <Route path='policies/*' element={<PolicyRoutes />} />
     </Route>
   )
   return (
@@ -90,6 +94,25 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<h1>DHCP details page</h1>}
+      />
+    </Route>
+  )
+}
+
+function PolicyRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route
+        path='policies/rougeAPDetection/create'
+        element={<RougeAPDetectionForm edit={false}/>}
+      />
+      <Route
+        path='policies/rougeAPDetection/:policyId/edit'
+        element={<RougeAPDetectionForm edit={true}/>}
+      />
+      <Route
+        path='policies/rougeAPDetection/:policyId/detail'
+        element={<RougeAPDetectionDetailView />}
       />
     </Route>
   )

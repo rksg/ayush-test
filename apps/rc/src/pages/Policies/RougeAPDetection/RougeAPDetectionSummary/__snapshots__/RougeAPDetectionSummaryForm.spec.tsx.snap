@@ -1,0 +1,201 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RougeAPDetectionSummaryForm should render form successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row"
+    style="margin-left: -10px; margin-right: -10px;"
+  >
+    <div
+      class="ant-col ant-col-18"
+      style="padding-left: 10px; padding-right: 10px;"
+    >
+      <h3
+        class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+      >
+        Summary
+      </h3>
+      <div
+        class="ant-row"
+      >
+        <div
+          class="ant-col ant-col-24"
+        >
+          <h4
+            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+          >
+            Settings
+          </h4>
+        </div>
+        <div
+          class="ant-col ant-col-6"
+        >
+          <div
+            class="ant-form-item"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-label"
+              >
+                <label
+                  class=""
+                  for="policyName"
+                  title="Policy Name"
+                >
+                  Policy Name
+                </label>
+              </div>
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <div
+                      class="ant-typography"
+                      id="policyName"
+                    >
+                      policyName1
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-6"
+        >
+          <div
+            class="ant-form-item"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-label"
+              >
+                <label
+                  class=""
+                  for="tags"
+                  title="Tags"
+                >
+                  Tags
+                </label>
+              </div>
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <div
+                      class="ant-typography"
+                      id="tags"
+                    >
+                      tag1, tag2, tag3
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-6"
+        >
+          <div
+            class="ant-form-item"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-label"
+              >
+                <label
+                  class=""
+                  for="classification"
+                  title="Classification Rules"
+                >
+                  Classification Rules
+                </label>
+              </div>
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <div
+                      class="ant-typography"
+                      id="classification"
+                    >
+                      1
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-row"
+      >
+        <div
+          class="ant-col ant-col-24"
+        >
+          <h4
+            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+          >
+            Venues(1)
+          </h4>
+        </div>
+        <div
+          class="ant-col ant-col-6"
+        >
+          <div
+            class="ant-form-item"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <div>
+                      venueName1
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-14"
+      style="padding-left: 10px; padding-right: 10px;"
+    />
+  </div>
+</DocumentFragment>
+`;

@@ -1,7 +1,7 @@
 import { configureStore }                                 from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi }       from '@acx-ui/analytics/services'
+import { dataApi }             from '@acx-ui/analytics/services'
 import {
   baseNetworkApi as networkApi,
   baseVenueApi as venueApi,
@@ -9,7 +9,8 @@ import {
   baseServiceApi as serviceApi,
   apApi,
   baseUserApi as userApi,
-  baseMspApi as mspApi
+  baseMspApi as mspApi,
+  basePolicyApi as policyApi
 } from '@acx-ui/rc/services'
 
 export const store = configureStore({
@@ -22,6 +23,7 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [dataApi.reducerPath]: dataApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
+    [policyApi.reducerPath]: policyApi.reducer,
     [mspApi.reducerPath]: mspApi.reducer
   },
 
@@ -39,6 +41,7 @@ export const store = configureStore({
       userApi.middleware,
       dataApi.middleware,
       serviceApi.middleware,
+      policyApi.middleware,
       mspApi.middleware
     ])
   },
