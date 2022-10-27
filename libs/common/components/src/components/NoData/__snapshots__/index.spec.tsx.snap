@@ -1,34 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NotAvailable should render correctly 1`] = `
-<DocumentFragment>
-  <div
-    style="height: 150px;"
-  >
-    <div
-      class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-    >
-      <div
-        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iVIXiF"
-      >
-        <div
-          class="ant-space-item"
-        >
-          Not available in this Beta version
-        </div>
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`NoData should render correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iVIXiF"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
     >
       <div
         class="ant-space-item"
@@ -46,12 +24,34 @@ exports[`NoData should render correctly with the prop 1`] = `
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iVIXiF"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
     >
       <div
         class="ant-space-item"
       >
         No data available
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NotAvailable should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    style="height: 150px;"
+  >
+    <div
+      class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+    >
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
+      >
+        <div
+          class="ant-space-item"
+        >
+          Not available in this Beta version
+        </div>
       </div>
     </div>
   </div>
