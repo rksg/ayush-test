@@ -5,7 +5,7 @@ import ReactECharts from 'echarts-for-react'
 import moment       from 'moment-timezone'
 
 import { kpisForTab, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }               from '@acx-ui/components'
+import { GridCol, GridRow, NotAvailable } from '@acx-ui/components'
 
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
@@ -49,7 +49,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
         </GridRow>
       </GridCol>
       <GridCol col={{ span: 8 }}>
-        <div>Threshold Content</div>
+        <NotAvailable/>
       </GridCol>
     </GridRow>))
   }</>)

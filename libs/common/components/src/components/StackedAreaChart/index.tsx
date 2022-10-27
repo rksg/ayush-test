@@ -13,7 +13,6 @@ import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import type { TimeStampRange } from '@acx-ui/types'
 import { formatter }           from '@acx-ui/utils'
 
-import { cssStr }    from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
@@ -25,7 +24,8 @@ import {
   dateAxisFormatter,
   tooltipOptions,
   timeSeriesTooltipFormatter,
-  ChartFormatterFn
+  ChartFormatterFn,
+  qualitativeColorSet
 }                             from '../Chart/helper'
 import { ResetWrapper, ResetButton } from '../Chart/styledComponents'
 import { useDataZoom }               from '../Chart/useDataZoom'
@@ -103,11 +103,7 @@ export function StackedAreaChart <
 
   const option: EChartsOption = {
     animation: false,
-    color: props.stackColors || [
-      cssStr('--acx-accents-blue-30'),
-      cssStr('--acx-accents-blue-70'),
-      cssStr('--acx-accents-blue-50')
-    ],
+    color: props.stackColors || qualitativeColorSet(),
     grid: { ...gridOptions({ disableLegend }) },
     ...(disableLegend ? {} : {
       legend: {

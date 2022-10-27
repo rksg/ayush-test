@@ -66,7 +66,7 @@ describe('RadioTab', () => {
         (_, res, ctx) => res(ctx.json({})))
     )
   })
-  it('should render External Antenna: E510 correctly', async () => {
+  xit('should render External Antenna: E510 correctly', async () => {
     render(<Provider>
       <VenueEditContext.Provider value={{
         editContextData: {},
@@ -116,7 +116,7 @@ describe('RadioTab', () => {
     expect(gain51024G).toHaveValue('3') // reset to API value
   }, 20000)
 
-  it('should render External Antenna: T350SE & T300E correctly', async () => {
+  xit('should render External Antenna: T350SE & T300E correctly', async () => {
     render(<Provider>
       <VenueEditContext.Provider value={{
         editContextData: {},
@@ -148,7 +148,7 @@ describe('RadioTab', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
   }, 20000)
 
-  it('should render Wi-Fi Radio Settings correctly', async () => {
+  xit('should render Wi-Fi Radio Settings correctly', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{

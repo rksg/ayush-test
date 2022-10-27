@@ -118,14 +118,14 @@ exports[`NetworkImpact should match snapshot 1`] = `
                                 />
                                 <g>
                                   <path
-                                    d="M640 32A368 368 0 1 1 321.3027 584L369.8001 556A312 312 0 1 0 640 88Z"
-                                    fill="#D61119"
+                                    d="M640 32L640 88Z"
+                                    fill="#66B1E8"
                                     stroke="#FFFFFF"
                                     stroke-linejoin="round"
                                   />
                                   <path
-                                    d="M321.3027 584A368 368 0 0 1 640 32L640 88A312 312 0 0 0 369.8001 556Z"
-                                    fill="#F9C34B"
+                                    d="M640 32L640 88Z"
+                                    fill="#EC7100"
                                     stroke="#FFFFFF"
                                     stroke-linejoin="round"
                                   />
@@ -287,8 +287,8 @@ exports[`NetworkImpact should match snapshot 1`] = `
                                 />
                                 <g>
                                   <path
-                                    d="M640 32A368 368 0 1 1 639.9632 32M640 88A312 312 0 1 0 640.0312 88Z"
-                                    fill="#D61119"
+                                    d="M640 32L640 88Z"
+                                    fill="#66B1E8"
                                     stroke="#FFFFFF"
                                     stroke-linejoin="round"
                                   />
@@ -450,14 +450,14 @@ exports[`NetworkImpact should match snapshot 1`] = `
                                 />
                                 <g>
                                   <path
-                                    d="M640 32A368 368 0 1 1 640 768L640 712A312 312 0 0 0 640 88Z"
-                                    fill="#D61119"
+                                    d="M640 32L640 88Z"
+                                    fill="#66B1E8"
                                     stroke="#FFFFFF"
                                     stroke-linejoin="round"
                                   />
                                   <path
-                                    d="M640 768A368 368 0 1 1 640 32L640 88A312 312 0 0 0 640 712Z"
-                                    fill="#F9C34B"
+                                    d="M640 32L640 88Z"
+                                    fill="#EC7100"
                                     stroke="#FFFFFF"
                                     stroke-linejoin="round"
                                   />
@@ -620,14 +620,14 @@ exports[`NetworkImpact should match snapshot 1`] = `
                                 />
                                 <g>
                                   <path
-                                    d="M640 32A368 368 0 1 1 640 768L640 712A312 312 0 0 0 640 88Z"
-                                    fill="#D61119"
+                                    d="M640 32L640 88Z"
+                                    fill="#66B1E8"
                                     stroke="#FFFFFF"
                                     stroke-linejoin="round"
                                   />
                                   <path
-                                    d="M640 768A368 368 0 1 1 640 32L640 88A312 312 0 0 0 640 712Z"
-                                    fill="#F9C34B"
+                                    d="M640 32L640 88Z"
+                                    fill="#EC7100"
                                     stroke="#FFFFFF"
                                     stroke-linejoin="round"
                                   />
