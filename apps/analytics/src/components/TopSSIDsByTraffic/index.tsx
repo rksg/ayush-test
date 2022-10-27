@@ -28,10 +28,14 @@ export default function TopSSIDsByTrafficWidget ({
       title: $t({ defaultMessage: 'SSID Name' }),
       dataIndex: 'name',
       key: 'name',
-      render: (data: unknown) =>
-        <TenantLink to={'/networks/TBD/network-details/overview'}>
+      render: (data: unknown) => {
+        // TBD: '/networks/:id/network-details/overview
+        // SSID ID is required to make this work, which is currently not supported.
+        // So until then redirecting to the networks page
+        return <TenantLink to={'/networks'}>
           { data as string}
         </TenantLink>
+      }
     },
     {
       title: $t({ defaultMessage: 'Total Traffic' }),
@@ -56,7 +60,7 @@ export default function TopSSIDsByTrafficWidget ({
     return appTrafficData.map((item, index) => {
       const sparkLineData = item.timeSeries.userTraffic
         .map(value => value ? value : 0)
-      const sparklineChartStyle = { height: 22, width: 80, display: 'inline' }
+      const sparklineChartStyle = { height: 22, width: 100, display: 'inline' }
       return {
         ...item,
         traffic: <Space align='start' size={4}>
@@ -70,7 +74,6 @@ export default function TopSSIDsByTrafficWidget ({
         trafficHistory: <SparklineChart
           key={index}
           data={sparkLineData}
-          isTrendLine={true}
           style={sparklineChartStyle}/>
       }
     })

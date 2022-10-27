@@ -131,8 +131,8 @@ export const barChartSeriesLabelOptions = () => ({
   show: true,
   position: 'right',
   fontFamily: cssStr('--acx-neutral-brand-font'),
-  fontSize: cssNumber('--acx-body-3-font-size'),
-  lineHeight: cssNumber('--acx-body-3-line-height'),
+  fontSize: cssNumber('--acx-body-4-font-size'),
+  lineHeight: cssNumber('--acx-body-4-line-height'),
   color: cssStr('--acx-primary-black'),
   fontWeight: cssNumber('--acx-body-font-weight'),
   silent: true

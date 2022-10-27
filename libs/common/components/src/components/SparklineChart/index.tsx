@@ -13,6 +13,10 @@ export interface SparklineChartProps extends Omit<EChartsReactProps, 'option' | 
   isTrendLine?: boolean
 }
 
+SparklineChart.defaultProps = {
+  isTrendLine: false
+}
+
 export function SparklineChart ({
   data,
   ...props
@@ -26,14 +30,17 @@ export function SparklineChart ({
     green: {
       lineColor: cssStr('--acx-semantics-green-50'),
       areaBaseColor: cssStr('--acx-semantics-green-30')
+    },
+    blue: {
+      lineColor: cssStr('--acx-accents-blue-50'),
+      areaBaseColor: cssStr('--acx-accents-blue-40')
     }
   }
 
-  let {
-    lineColor=trendLineColors.green.lineColor,
-    areaBaseColor=trendLineColors.green.areaBaseColor,
-    isTrendLine=false
-  } = props
+  const { isTrendLine } = props
+  let { lineColor, areaBaseColor } = props
+  lineColor = trendLineColors.blue.lineColor
+  areaBaseColor = trendLineColors.blue.areaBaseColor
 
   if(data.length && isTrendLine){
     const first = data[0]
@@ -46,7 +53,7 @@ export function SparklineChart ({
   const colorLinearGradient = new graphic.LinearGradient(0, 0, 0, 1, [
     {
       offset: 0,
-      color: areaBaseColor
+      color: areaBaseColor!
     },
     {
       offset: 1,
@@ -54,6 +61,7 @@ export function SparklineChart ({
     }]
   )
   const option: EChartsOption = {
+    animation: false,
     xAxis: {
       show: false,
       type: 'category'
@@ -77,7 +85,7 @@ export function SparklineChart ({
         areaStyle: { color: colorLinearGradient },
         lineStyle: {
           color: lineColor,
-          width: 0.8
+          width: 1
         },
         smooth: true,
         showSymbol: false
