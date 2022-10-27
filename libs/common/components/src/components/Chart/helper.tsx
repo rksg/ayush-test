@@ -107,8 +107,11 @@ export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
 export const xAxisOptions = () => ({
   axisLine: {
     lineStyle: {
-      color: 'transparent'
+      color: cssStr('--acx-neutrals-40')
     }
+  },
+  axisTick: {
+    show: false
   },
   axisPointer: {
     type: 'line',
@@ -153,7 +156,12 @@ export const barChartSeriesLabelOptions = () => ({
 } as RegisteredSeriesOption['bar']['label'])
 
 export const yAxisOptions = () => ({
-  boundaryGap: [0, '10%']
+  boundaryGap: [0, '10%'],
+  splitLine: {
+    lineStyle: {
+      color: cssStr('--acx-neutrals-20')
+    }
+  }
 } as YAXisComponentOption)
 
 export const axisLabelOptions = () => ({
