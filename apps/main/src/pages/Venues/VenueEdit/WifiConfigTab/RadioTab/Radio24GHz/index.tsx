@@ -114,6 +114,7 @@ export function Radio24GHz () {
             name={['radioParams24G', 'channelBandwidth']}>
             <Select
               options={defaultChannelsData &&
+                defaultChannelsData['2.4GChannels'] &&
             Object.keys(defaultChannelsData['2.4GChannels'])
               .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
               defaultValue={'auto'}
