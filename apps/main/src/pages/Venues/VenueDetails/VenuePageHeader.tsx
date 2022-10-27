@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { Button, DisabledButton, PageHeader } from '@acx-ui/components'
 import { ClockOutlined }                      from '@acx-ui/icons'
 import { useVenueDetailsHeaderQuery }         from '@acx-ui/rc/services'
+import { VenueDetailHeader }                  from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -40,7 +41,7 @@ function VenuePageHeader () {
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
       ]}
-      footer={<VenueTabs />}
+      footer={<VenueTabs venueDetail={data as VenueDetailHeader} />}
     />
   )
 }

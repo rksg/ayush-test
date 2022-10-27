@@ -58,7 +58,7 @@ exports[`VenueTabs should render correctly 1`] = `
               role="tab"
             >
               <span>
-                Clients (0)
+                Clients (2)
               </span>
             </div>
           </div>
@@ -74,7 +74,7 @@ exports[`VenueTabs should render correctly 1`] = `
               role="tab"
             >
               <span>
-                Devices (0)
+                Devices (1)
               </span>
             </div>
           </div>
@@ -89,7 +89,7 @@ exports[`VenueTabs should render correctly 1`] = `
               role="tab"
               tabindex="0"
             >
-              Networks (0)
+              Networks (1)
             </div>
           </div>
           <div
