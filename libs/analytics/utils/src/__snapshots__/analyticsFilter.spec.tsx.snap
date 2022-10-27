@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AnalyticsFilterProvider changes filter value 1`] = `
+exports[`useAnalyticsFilter changes filter value 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","path":[{"type":"network","name":"Network"}]}
@@ -8,7 +8,7 @@ exports[`AnalyticsFilterProvider changes filter value 1`] = `
 </DocumentFragment>
 `;
 
-exports[`AnalyticsFilterProvider gets initial value from search parameters 1`] = `
+exports[`useAnalyticsFilter gets initial value from search parameters 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","path":[{"type":"network","name":"Network"},{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]}
@@ -16,7 +16,7 @@ exports[`AnalyticsFilterProvider gets initial value from search parameters 1`] =
 </DocumentFragment>
 `;
 
-exports[`AnalyticsFilterProvider should render correctly 1`] = `
+exports[`useAnalyticsFilter should render correctly 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","path":[{"type":"network","name":"Network"}]}
@@ -24,7 +24,7 @@ exports[`AnalyticsFilterProvider should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`AnalyticsFilterProvider should set filter to default when select path does not have switch or AP 1`] = `
+exports[`useAnalyticsFilter should set filter to default when select path does not have switch or AP 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","path":[{"type":"network","name":"Network"},{"type":"someType","name":"someValue"},{"type":"randomType","name":"randomValue"}]}
@@ -32,7 +32,7 @@ exports[`AnalyticsFilterProvider should set filter to default when select path d
 </DocumentFragment>
 `;
 
-exports[`AnalyticsFilterProvider should set filter with switchGroup & zone 1`] = `
+exports[`useAnalyticsFilter should set filter with switchGroup & zone 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"switchGroup"}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"}]]},"path":[{"type":"network","name":"Network"}]}
@@ -40,7 +40,7 @@ exports[`AnalyticsFilterProvider should set filter with switchGroup & zone 1`] =
 </DocumentFragment>
 `;
 
-exports[`AnalyticsFilterProvider should set filter with switches when search parameters has switches 1`] = `
+exports[`useAnalyticsFilter should set filter with switches when search parameters has switches 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","path":[{"type":"network","name":"Network"},{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]}
@@ -48,7 +48,7 @@ exports[`AnalyticsFilterProvider should set filter with switches when search par
 </DocumentFragment>
 `;
 
-exports[`AnalyticsFilterProvider should set filters correctly path is health and selected node is zone 1`] = `
+exports[`useAnalyticsFilter should set filters correctly path is health and selected node is zone 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","path":[{"type":"network","name":"Network"},{"type":"zone","name":"Zone"}]}
@@ -56,7 +56,7 @@ exports[`AnalyticsFilterProvider should set filters correctly path is health and
 </DocumentFragment>
 `;
 
-exports[`AnalyticsFilterProvider should set path to default when path is health and selected node is switch 1`] = `
+exports[`useAnalyticsFilter should set path to default when path is health and selected node is switch 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","path":[{"type":"network","name":"Network"}]}

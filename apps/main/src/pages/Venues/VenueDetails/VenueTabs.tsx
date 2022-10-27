@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { useVenueDetailsHeaderQuery }            from '@acx-ui/rc/services'
+import { VenueDetailHeader }                     from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-function VenueTabs () {
+function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
@@ -15,8 +15,7 @@ function VenueTabs () {
       pathname: `${basePath.pathname}/${tab}`
     })
 
-  const { data } = useVenueDetailsHeaderQuery({ params })
-
+  const data = props.venueDetail
   const [clientsCount, devicesCount, networksCount, servicesCount] = [
     data?.totalClientCount ?? 0,
     (data?.aps?.totalApCount ?? 0) + (data?.switches?.totalCount ?? 0),

@@ -194,7 +194,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 <span
                                   class="ant-collapse-header-text"
                                 >
-                                  RADIUS Servers (0)
+                                  RADIUS Servers (1)
                                 </span>
                               </div>
                               <div
@@ -207,7 +207,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
                                   >
                                     <div
-                                      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
+                                      class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -717,7 +717,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
                                   >
                                     <div
-                                      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
+                                      class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1068,7 +1068,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
                                   >
                                     <div
-                                      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
+                                      class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
