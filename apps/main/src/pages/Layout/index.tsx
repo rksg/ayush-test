@@ -29,9 +29,7 @@ function Layout () {
             <LayoutUI.ButtonOutlined disabled shape='circle' icon={<SearchOutlined />} />
           </Tooltip>
           <LayoutUI.Divider />
-          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-            <AlarmsHeaderButton />
-          </Tooltip>
+          <AlarmsHeaderButton />
           <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
             <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
           </Tooltip>
