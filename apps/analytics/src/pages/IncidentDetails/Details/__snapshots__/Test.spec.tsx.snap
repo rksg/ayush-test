@@ -3,7 +3,7 @@
 exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -133,6 +133,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -156,6 +157,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -172,6 +174,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div>
           Impacted Entities Section
@@ -185,7 +188,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -315,6 +318,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -338,6 +342,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -354,6 +359,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div>
           Impacted Entities Section
@@ -367,7 +373,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -497,6 +503,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -530,6 +537,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -550,7 +558,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -680,6 +688,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -713,6 +722,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -733,7 +743,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -863,6 +873,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -896,6 +907,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -919,7 +931,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1049,6 +1061,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -1087,6 +1100,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -1103,6 +1117,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="rssDistributionChart"
@@ -1116,7 +1131,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1246,6 +1261,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -1279,6 +1295,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -1302,7 +1319,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1432,6 +1449,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -1465,6 +1483,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -1488,7 +1507,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
 exports[`Test Details should render FailureTemplate correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1618,6 +1637,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -1651,6 +1671,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -1674,7 +1695,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
 exports[`Test Details should render FailureTemplate correctly 4`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1804,6 +1825,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -1837,6 +1859,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -1860,7 +1883,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
 exports[`Test Details should render FailureTemplate correctly 5`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1990,6 +2013,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -2023,6 +2047,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"
@@ -2046,7 +2071,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
 exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2176,6 +2201,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div>
           Impacted Entities
@@ -2188,6 +2214,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div>
           Detail Chart
@@ -2201,7 +2228,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 exports[`Test Details should render SwitchPoePd correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2331,6 +2358,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div>
           Impacted Entities
@@ -2344,7 +2372,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
 exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2474,6 +2502,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div>
           Impacted Entities Section
@@ -2487,7 +2516,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 exports[`Test Details should render Ttc correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2617,6 +2646,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
@@ -2645,6 +2675,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
           data-testid="timeseries"

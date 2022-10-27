@@ -70,10 +70,10 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '228px' }}>
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
           <TimeSeries
             incident={incident}
             charts={timeSeriesCharts}
@@ -81,7 +81,7 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
             buffer={buffer}
           />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
           <div>Impacted Entities Section</div>
         </GridCol>
       </GridRow>

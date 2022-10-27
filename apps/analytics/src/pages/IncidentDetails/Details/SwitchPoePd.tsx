@@ -45,7 +45,7 @@ export const SwitchPoePd = (incident: Incident) => {
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
           <div>Impacted Entities</div>
         </GridCol>
       </GridRow>

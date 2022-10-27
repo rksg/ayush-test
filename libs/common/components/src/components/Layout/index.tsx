@@ -88,7 +88,14 @@ export function Layout ({
       fixedHeader={true}
       fixSiderbar={true}
       location={location}
-      menuHeaderRender={() => <Logo />}
+      menuHeaderRender={() =>
+        <TenantNavLink
+          to='/dashboard'
+          tenantType={routes.find(({ path })=> path === '/dashboard')?.tenantType || 't'}
+        >
+          <Logo />
+        </TenantNavLink>
+      }
       subMenuItemRender={menuRender}
       menuItemRender={menuRender}
       headerContentRender={() => leftHeaderContent && <UI.LeftHeaderContentWrapper>
