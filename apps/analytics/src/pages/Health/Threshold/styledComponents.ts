@@ -35,11 +35,11 @@ export const HistogramGoalPercentage = styled.span`
   margin-bottom: 10px
 `
 export const HistogramConfig = styled.div`
-font-size: var(--acx-subtitle-6-font-size);
-display: flex;
-flex-direction: column;
--webkit-box-pack: start;
-justify-content: flex-start;
+  font-size: var(--acx-subtitle-6-font-size);
+  display: flex;
+  flex-direction: column;
+  -webkit-box-pack: start;
+  justify-content: flex-start;
 `
 export const HistogramBoldContent = styled.span`
   color: var(--acx-primary-black);

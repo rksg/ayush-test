@@ -27,8 +27,8 @@ const Container = styled.div`
 `
 
 export const GridRow = styled(AntRow).attrs({ gutter: [20, 20] })<
-  AntRowProps & { divider?: Boolean }
->`${props => props.divider
+  AntRowProps & { divider?: 'false' | 'true' | boolean }
+>`${({ divider }) => divider === 'true'
   ? `
     padding-bottom: 20px;
     &:not(:last-of-type)::after {
@@ -41,9 +41,6 @@ export const GridRow = styled(AntRow).attrs({ gutter: [20, 20] })<
   `
   : ''
 }`
-GridRow.defaultProps = {
-  divider: false
-}
 
 type GridColProps = React.HTMLAttributes<HTMLDivElement> & {
   col: AntColProps

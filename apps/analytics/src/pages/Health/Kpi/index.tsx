@@ -18,7 +18,6 @@ import { HealthPageContext } from '../HealthPageContext'
 import BarChart              from '../Threshold/BarChart'
 import Histogram             from '../Threshold/Histogram'
 import {
-  ThresholdMutationResponse,
   useFetchThresholdPermissionQuery,
   useSaveThresholdMutation
 } from '../Threshold/services'
@@ -62,7 +61,7 @@ export const defaultData = {
 }
 
 
-export const getDefaultThreshold = (fetchedData: Partial<FetchedData> | undefined) => {
+export const getDefaultThreshold = (fetchedData?: Partial<FetchedData> | undefined) => {
   const defaultConfig = { ...defaultData }
 
   if (!fetchedData) return defaultConfig
@@ -81,9 +80,12 @@ export const getDefaultThreshold = (fetchedData: Partial<FetchedData> | undefine
 
 export function getResetCallback (data: ThresholdsApiResponse | undefined) {
   return (kpi: keyof KpiThresholdType) => {
-    const defaultConfig =
-    getDefaultThreshold(data as unknown as Partial<FetchedData>)[kpi]
-    return defaultConfig
+    return (baseConfig?: boolean) => {
+      const defaultConfig = (baseConfig)
+        ? getDefaultThreshold()[kpi]
+        : getDefaultThreshold(data as unknown as Partial<FetchedData>)[kpi]
+      return defaultConfig
+    }
   }
 }
 
@@ -94,8 +96,8 @@ export function getApplyCallback (triggerSave: CallableFunction, filters: Analyt
   }
 }
 
-export type onApplyType = () =>
-   (value: number) => Promise<ThresholdMutationResponse>
+export type onApplyType = () => (value: number) => Promise<unknown>
+export type onResetType = () => (baseConfig?: boolean) => number
 
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
@@ -144,7 +146,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
     <>
       {kpis.map((kpi) => {
         return (
-          <GridRow key={kpi+defaultZoom} divider>
+          <GridRow key={kpi+defaultZoom} divider='true'>
             <GridCol col={{ span: 16 }}>
               <GridRow style={{ height: '160px' }}>
                 <GridCol col={{ span: 5 }}>

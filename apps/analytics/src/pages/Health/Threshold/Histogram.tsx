@@ -8,7 +8,7 @@ import { AnalyticsFilter, kpiConfig }                                           
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import type { TimeStamp }                                                        from '@acx-ui/types'
 
-import { KpiThresholdType, onApplyType }               from '../Kpi'
+import { KpiThresholdType, onApplyType, onResetType }  from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
 
 import  HistogramSlider from './HistogramSlider'
@@ -56,7 +56,7 @@ function Histogram ({
   threshold: string;
   setKpiThreshold: CallableFunction;
   thresholds: KpiThresholdType;
-  onReset?: CallableFunction,
+  onReset?: onResetType,
   onApply?: onApplyType,
   canSave: {
     data: { allowedSave: boolean | undefined },
@@ -146,8 +146,8 @@ function Histogram ({
     })
     : 0
 
-  const onButtonReset = useCallback(() => {
-    const defaultConfig: unknown = onReset && onReset()
+  const onButtonReset = useCallback((baseConfig?: boolean) => {
+    const defaultConfig: unknown = onReset && onReset()(baseConfig)
     setSliderValue(splits.indexOf(defaultConfig) + 0.5)
     setThresholdValue(defaultConfig as string)
     setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
@@ -235,7 +235,7 @@ function Histogram ({
             percent={percent}
             unit={histogram?.xUnit}
             shortXFormat={histogram?.shortXFormat}
-            onReset={onButtonReset}
+            onReset={() => onButtonReset(true)}
             onApply={onButtonApply}
             canSave={canSave.data?.allowedSave}
           />
