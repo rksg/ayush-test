@@ -37,6 +37,7 @@ export default function PortalButtonContent (props: {
       visible={clicked}
       onVisibleChange={(value) => setClicked(value)}
     ><UI.PortalButton
+        placeholder='buttonsetting'
         style={{ cursor: cursor, outline: outline,backgroundColor: demoValue.buttonColor }}
         onMouseOver={() => {
           setCursor('pointer')

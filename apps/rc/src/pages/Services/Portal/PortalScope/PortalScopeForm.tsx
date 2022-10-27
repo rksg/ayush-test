@@ -10,7 +10,7 @@ const PortalScopeForm = () => {
 
   return (
     <>
-      <StepsForm.Title>{$t({ defaultMessage: 'Scope' })}</StepsForm.Title>
+      <StepsForm.Title>{$t({ defaultMessage: 'Networks' })}</StepsForm.Title>
 
       <Form.Item
         name='network'

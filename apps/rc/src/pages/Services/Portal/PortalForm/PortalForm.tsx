@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import {
-  PageHeader, showToast,
+  PageHeader,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -51,7 +51,7 @@ const initialPortalData : Portal ={
 
 }
 
-const PortalForm = () => {
+export const PortalForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToServices = useTenantLink('/services')
@@ -63,16 +63,16 @@ const PortalForm = () => {
 
   const { data } = useGetPortalQuery({ params })
 
-  const handleAddPortalService = async (data : Portal) => {
-    try {
-      navigate(linkToServices, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
-    }
-  }
+  // const handleAddPortalService = async (data : Portal) => {
+  //   try {
+  //     navigate(linkToServices, { replace: true })
+  //   } catch {
+  //     showToast({
+  //       type: 'error',
+  //       content: $t({ defaultMessage: 'An error occurred' })
+  //     })
+  //   }
+  // }
   const updateSaveData = (saveData: Partial<Portal>) => {
     setPortalData({ ...portalData, ...saveData })
   }
@@ -97,7 +97,7 @@ const PortalForm = () => {
         <StepsForm<Portal>
           formRef={formRef}
           onCancel={() => navigate(linkToServices)}
-          onFinish={(data) => handleAddPortalService(data)}
+          //onFinish={(data) => handleAddPortalService(data)}
         >
           <StepsForm.StepForm
             name='settings'
@@ -109,7 +109,7 @@ const PortalForm = () => {
                 return false
               }
               setError(false)
-              setPortalData({ ...portalData, ...data })
+              updateSaveData(data)
               return true
             }}
           >
@@ -118,7 +118,7 @@ const PortalForm = () => {
 
           <StepsForm.StepForm
             name='scope'
-            title={$t({ defaultMessage: 'Scope' })}
+            title={$t({ defaultMessage: 'Networks' })}
             onFinish={async (data) => {
               setPortalData({ ...portalData, ...data })
               return true

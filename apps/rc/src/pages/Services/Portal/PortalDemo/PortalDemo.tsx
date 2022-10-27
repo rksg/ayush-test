@@ -92,7 +92,6 @@ export default function PortalDemo ({
                 title={<FormattedMessage
                   defaultMessage={`tips here
                 `}
-                  values={{ p: (chunks) => <p>{chunks}</p> }}
                 />}
                 children={<UI.Img src={Question} />}
               />
@@ -100,16 +99,19 @@ export default function PortalDemo ({
           </Col>
           <Col flex='157px'>
             <UI.ImgDesk src={marked.desk?Desk_select:Desk}
+              alt='deskicon'
               onClick={()=>{
                 setScreen('desk')
                 setMarked({ desk: true, tablet: false, mobile: false })
               }}/>
             <UI.ImgTablet src={marked.tablet?Tablet_select:Tablet}
+              alt='tableticon'
               onClick={()=>{
                 setScreen('tablet')
                 setMarked({ desk: false, tablet: true, mobile: false })
               }}/>
             <UI.ImgMobile src={marked.mobile?Mobile_select:Mobile}
+              alt='mobileicon'
               onClick={()=>{
                 setScreen('mobile')
                 setMarked({ desk: false, tablet: false, mobile: true })

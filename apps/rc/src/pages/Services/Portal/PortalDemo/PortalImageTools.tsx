@@ -47,42 +47,51 @@ export default function PortalImageTools (props:{
             })
           }}
         >
-          {showImg !== false && <UI.ToolImg src={PictureOut}/>}
+          {showImg !== false && <UI.ToolImg src={PictureOut} alt='pictureout'/>}
         </Upload>
         {showImg!==false && size !== maxSize*(defaultSize as number)
         &&<UI.ToolImg src={PlusEn}
+          alt='plusen'
           onClick={()=>{
             updateDemoImg({ url: url||'', size: (size as number)*1.5, show: true })
           }}/>}
-        {showImg!==false && size === maxSize*(defaultSize as number) && <UI.ToolImg src={PlusDis}/>}
-        {showImg!==false && size !== minSize*(defaultSize as number) && <UI.ToolImg src={MinusEn}
+        {showImg!==false && size === maxSize*(defaultSize as number) &&
+         <UI.ToolImg src={PlusDis} alt='plusdis'/>}
+        {showImg!==false && size !== minSize*(defaultSize as number) &&
+        <UI.ToolImg src={MinusEn}
+          alt='minusen'
           onClick={() => {
             updateDemoImg({ url: url||'', size: (size as number)/1.5, show: true })
           }} />}
         {showImg!==false && size === minSize*(defaultSize as number)
-         && <UI.ToolImg src={MinusDis}/>}
+         && <UI.ToolImg src={MinusDis} alt='minusdis'/>}
         {showText!==false && <UI.ToolImg src={TextPlus}
+          alt='textplus'
           onClick={()=>{
             if(size !== maxSize*(defaultSize as number))updateDemoImg({ size: (size as number)*1.5,
               show: true, color: color })
           }}/>}
         {showText!==false && <UI.ToolImg src={TextMinus}
+          alt='textminus'
           onClick={()=>{
             if(size!==minSize*(defaultSize as number))updateDemoImg({ size: (size as number)/1.5,
               show: true, color: color })
           }}/>}
         {showColorPic!==false && <UI.ToolImg src={ColorPick}
+          alt='colorpick'
           onClick={(e)=>{
             setShowColorPicker(true)
             e.stopPropagation()
           }}
         />}
         {showEye !== false &&<UI.ToolImg src={EyeHide}
+          alt='eyehide'
           onClick={()=>{
             updateDemoImg({ url: url||'', size: size, show: false } )
           }}/>}
       </div>
       {showColorPic!==false && showColorPicker &&<div
+        placeholder='colorpickcontainer'
         style={{ marginTop: 10 }}
         onClick={(e)=>e.stopPropagation()}
         onMouseLeave={()=>setShowColorPicker(false)}>

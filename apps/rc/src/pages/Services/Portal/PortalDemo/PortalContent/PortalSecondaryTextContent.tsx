@@ -34,6 +34,7 @@ export default function PortalSecondaryTextContent (props: {
       visible={clicked}
       onVisibleChange={(value) => setClicked(value)}
     ><UI.FieldText
+        placeholder='sectexthere'
         style={{ cursor: cursor, outline: outline,
           lineHeight: 24 * ((demoValue.secondarySize||
             PortalDemoDefaultSize.secondarySize)/PortalDemoDefaultSize.secondarySize)+'px' ,

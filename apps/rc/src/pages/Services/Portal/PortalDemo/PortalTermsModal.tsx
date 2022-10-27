@@ -50,7 +50,6 @@ export default function PortalTermsModal (props:{
       <UI.Modal
         title={$t({ defaultMessage: 'Terms & Conditions' })}
         visible={visible}
-        onCancel={()=>setVisible(false)}
         width={400}
         footer={footer}
         closable={false}

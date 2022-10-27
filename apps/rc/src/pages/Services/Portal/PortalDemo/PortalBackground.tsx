@@ -27,7 +27,7 @@ export default function PortalBackground (props:{
         e.preventDefault()
         setShowColorPicker(true)
       }}>{$t({ defaultMessage: 'Set background color' })}</UI.PopoverButton><br/>
-    {showColorPicker && <div style={{ marginBottom: 10 }}>
+    {showColorPicker && <div style={{ marginBottom: 10 }} placeholder='bgcolorpicker'>
       <SketchPicker color={backgroundColor}
         disableAlpha={true}
         onChangeComplete={(color)=> updateBackgroundColor(color.hex)}/>

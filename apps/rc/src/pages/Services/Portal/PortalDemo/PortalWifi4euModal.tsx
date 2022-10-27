@@ -47,7 +47,6 @@ export default function PortalWifi4euModal (props:{
       <UI.Modal
         title={$t({ defaultMessage: 'WiFi4EU Snippet Settings' })}
         visible={visible}
-        onCancel={()=>setVisible(false)}
         width={400}
         footer={footer}
         closable={false}

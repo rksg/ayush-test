@@ -35,6 +35,7 @@ export default function PortalWelcomeContent (props: {
       onVisibleChange={(value) => setClicked(value)}
     ><UI.Input type='text'
         defaultValue={demoValue.welcomeText}
+        placeholder='welcometext'
         style={{ cursor: cursor, outline: outline, height: 25 * ((demoValue.welcomeSize||
           PortalDemoDefaultSize.welcomeSize)/PortalDemoDefaultSize.welcomeSize) ,
         width: 280*((demoValue.welcomeSize||PortalDemoDefaultSize.welcomeSize)

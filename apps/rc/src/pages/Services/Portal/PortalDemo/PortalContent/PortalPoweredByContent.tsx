@@ -78,6 +78,7 @@ export default function PortalPoweredByContent (props: {
           setCursorTwo('pointer')
           setOutlineTwo(dashedOutline)
         }}
+        placeholder='poweredbackground'
         onMouseLeave={() => {
           if (!poweredClicked) {
             setCursorTwo('none')
@@ -105,6 +106,7 @@ export default function PortalPoweredByContent (props: {
           maxWidth: 425, color: demoValue.poweredColor,textAlign: 'left',
           cursor: cursorTwoText, outline: outlineTwoText
           }}
+          placeholder='poweredtext'
           onMouseOver={(e)=>{
             e.stopPropagation()
             closeDivPopover()
@@ -133,7 +135,7 @@ export default function PortalPoweredByContent (props: {
             visible={poweredImgClicked}
             onVisibleChange={(value) => setPoweredImgClicked(value)}>
             <UI.Img src={demoValue.poweredImg}
-              alt={$t({ defaultMessage: 'Powered by' })}
+              alt={$t({ defaultMessage: 'poweredimage' })}
               style={{
                 marginLeft: 50,
                 cursor: cursorTwoImg, outline: outlineTwoImg,

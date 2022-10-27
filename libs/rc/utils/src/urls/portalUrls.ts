@@ -18,8 +18,8 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer'
   },
   savePortal: {
-    method: 'put',
-    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/portal/deep?quickAck=true'
   },
   deleteAaaServer: {
     method: 'delete',

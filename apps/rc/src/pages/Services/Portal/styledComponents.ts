@@ -261,39 +261,6 @@ export const ViewSectionTitle = styled.div`
   font-weight:700;
   color:var(--acx-primary-black);
 `
-export const ViewSectionTabs = styled(AntTabs)`
-  margin-top:11px;
-  margin-bottom:10px;
-  width:400px;
-  padding-left:10px;
-  &.ant-tabs-card {
-    .ant-tabs-nav::before {
-      display: none;
-
-    }
-    .ant-tabs-nav {
-      .ant-tabs-nav-list{
-        .ant-tabs-tab {
-          background: var(--acx-neutrals-20);
-          margin-bottom:1px;
-          &.ant-tabs-tab-active {
-            background: var(--acx-neutrals-20);
-            border:2px solid var(--acx-accents-orange-50);
-            border-bottom:8px solid var(--acx-primary-white);
-            margin-bottom: -3px;
-          }
-      }
-    }
-  }
-  .ant-tabs-content {
-    margin-top: -17px;
-    margin-left: 15px;
-    height: auto;
-    min-height:200px;
-    border: 2px solid var(--acx-accents-orange-50);
-    width: 380px;
-  }
-`
 export const ViewSectionTabsBig = styled(AntTabs)`
 
   margin-top:10px;
