@@ -2616,6 +2616,16 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
+      >
         <div
           class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
           type="no-border"
@@ -2865,6 +2875,16 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
+      >
         <div
           class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
           type="no-border"
