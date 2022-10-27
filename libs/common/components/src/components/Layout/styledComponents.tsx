@@ -21,18 +21,17 @@ export const Wrapper = styled.div`
       &.ant-layout-has-sider {
         .ant-layout-sider {
           overflow: visible !important;
-          &.ant-layout-sider-collapsed {
-            .ant-menu-item-disabled {
-              .ant-pro-menu-item-title {
-                display: none;
-              }
-            }
-          }
           .ant-layout-sider-children {
             .ant-pro-sider-logo {
+              a {
+                min-height: unset;
+              }
+              padding: 0;
               width: var(--acx-sider-width);
-              padding: 18px 20px;
-              margin-bottom: 10px;
+              height: var(--acx-header-height);
+              margin-bottom: 13px;
+              align-items: center;
+              justify-content: center;
             }
             .ant-menu-submenu-arrow {
               display: none;
@@ -56,6 +55,7 @@ export const Wrapper = styled.div`
         }
         .ant-menu-title-content {
           a {
+            display: block;
             color: var(--acx-primary-white);
           }
         }
@@ -173,25 +173,26 @@ export const Wrapper = styled.div`
           .ant-menu-sub {
             background-color: var(--acx-neutrals-80);
           }
+        }
       }
     }
-  }
 
-  .ant-layout-header {
-    width: 100% !important;
-    height: var(--acx-header-height) !important;
-    line-height: var(--acx-header-height) !important;
-    .ant-pro-global-header {
-      background-color: var(--acx-primary-black);
-      color: var(--acx-primary-white);
-      padding: 0 20px 0 var(--acx-sider-width);
-      font-size: var(--acx-body-4-font-size);
+    .ant-layout-header {
+      width: 100% !important;
+      height: var(--acx-header-height) !important;
+      line-height: var(--acx-header-height) !important;
+      .ant-pro-global-header {
+        background-color: var(--acx-primary-black);
+        color: var(--acx-primary-white);
+        padding: 0 20px 0 var(--acx-sider-width);
+        font-size: var(--acx-body-4-font-size);
+      }
     }
-  }
 
-  .ant-layout-content {
-    margin: 0;
-    background-color: var(--acx-primary-white);
+    .ant-layout-content {
+      margin: 0;
+      background-color: var(--acx-primary-white);
+    }
   }
 `
 
@@ -238,11 +239,10 @@ export const RightHeaderContentWrapper = styled.div`
   gap: var(--acx-header-button-margin);
   height: 100%;
 
-  .ant-tooltip-disabled-compatible-wrapper{
+  .ant-tooltip-disabled-compatible-wrapper {
     display: flex !important;
-    svg {
-      fill: none;
-      stroke: var(--acx-neutrals-40);
+    button[disabled] {
+      background-color: var(--acx-neutrals-70);
     }
   }
 `

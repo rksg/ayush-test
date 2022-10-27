@@ -8,12 +8,13 @@ import {
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   AccountCircleSolid,
-  NotificationSolid,
   QuestionMarkCircleSolid,
   SearchOutlined
 }                          from '@acx-ui/icons'
 import { Outlet }          from '@acx-ui/react-router-dom'
 import { notAvailableMsg } from '@acx-ui/utils'
+
+import { AlarmsHeaderButton } from '../../components/Alarms/HeaderButton'
 
 import { useMenuConfig } from './menuConfig'
 
@@ -29,8 +30,7 @@ function Layout () {
           </Tooltip>
           <LayoutUI.Divider />
           <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-            {/* TODO: add back <AlarmsHeaderButton/> when remove disable */}
-            <LayoutUI.ButtonSolid disabled icon={<NotificationSolid />} />
+            <AlarmsHeaderButton />
           </Tooltip>
           <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
             <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
