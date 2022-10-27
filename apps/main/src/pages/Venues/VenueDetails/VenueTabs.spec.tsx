@@ -23,13 +23,6 @@ describe('VenueTabs', () => {
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
     </Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
-    await screen.findByText('Overview')
-    await screen.findByText('AI Analytics')
-    await screen.findByText('Clients (2)')
-    await screen.findByText('Devices (1)')
-    await screen.findByText('Networks (1)')
-    await screen.findByText('Services (0)')
-    await screen.findByText('Timeline')
   })
 
   it('should handle tab changes', async () => {
