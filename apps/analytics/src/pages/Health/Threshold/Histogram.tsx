@@ -168,20 +168,22 @@ function Histogram ({
                     xAxisOffset={10}
                     barColors={barColors}
                     onBarAreaClick={onBarClick}
-                    xAxisPadding={[5,0,0,30]}
+                    grid={{ bottom: '35%' }}
                     yAxisOffset={
                       yAxisLabelOffset
                         ? 60 / (yAxisLabelOffset * splitsAfterIsReverseCheck.length)
                         : 0
                     }
+                    showXaxisLabel={false}
                     yAxisProps={!hasData ? { max: 100, min: 0 } : undefined}
                   />
                   <HistogramSlider
-                    splits={splits}
+                    splits={splitsAfterIsReverseCheck}
                     width={width}
                     height={height}
                     onSliderChange={onSliderChange}
                     sliderValue={sliderValue}
+                    shortXFormat={histogram?.shortXFormat}
                   />
                 </>
               ) : (

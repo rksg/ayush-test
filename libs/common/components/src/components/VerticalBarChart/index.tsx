@@ -39,7 +39,7 @@ export interface VerticalBarChartProps
   xAxisOffset?: number
   showTooltipName?: Boolean
   grid?: GridOption
-  xAxisPadding?: number[]
+  showXaxisLabel?: boolean
   onBarAreaClick?: (data: BarData) => void
 }
 
@@ -91,7 +91,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
   yAxisOffset,
   showTooltipName = true,
   grid: gridProps,
-  xAxisPadding,
+  showXaxisLabel = true,
   onBarAreaClick,
   ...props
 }: VerticalBarChartProps<TChartData>) {
@@ -126,9 +126,9 @@ export function VerticalBarChart<TChartData extends BarChartData>
       axisPointer: { type: 'shadow' },
       type: 'category',
       axisLabel: {
-        ...axisLabelOptions(Boolean(xAxisPadding)),
+        ...axisLabelOptions(),
         formatter: (value: string) => value.trim(),
-        padding: xAxisPadding
+        show: showXaxisLabel
       }
     },
     yAxis: {

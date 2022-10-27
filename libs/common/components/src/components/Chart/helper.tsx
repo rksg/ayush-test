@@ -144,11 +144,11 @@ export const yAxisOptions = () => ({
   boundaryGap: [0, '10%']
 } as YAXisComponentOption)
 
-export const axisLabelOptions = (hasLabelPadding? : boolean) => ({
+export const axisLabelOptions = () => ({
   color: cssStr('--acx-neutrals-50'),
   fontFamily: cssStr('--acx-neutral-brand-font'),
   fontSize: cssNumber('--acx-body-5-font-size'),
-  lineHeight: !hasLabelPadding ? cssNumber('--acx-body-5-line-height') : undefined,
+  lineHeight: cssNumber('--acx-body-5-line-height'),
   fontWeight: cssNumber('--acx-body-font-weight')
 })
 
