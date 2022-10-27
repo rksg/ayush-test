@@ -1,10 +1,12 @@
-import { venueApi }                  from '@acx-ui/rc/services'
-import { Provider, store }           from '@acx-ui/store'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { rest } from 'msw'
 
-// import { venueDetailHeaderData } from '../__tests__/fixtures'
+import { apApi }                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
+import { Provider, store }                       from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import ApPageHeader from './ApPageHeader'
+import { apDetailData } from './__tests__/fixtures'
+import ApPageHeader     from './ApPageHeader'
 
 const mockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -13,22 +15,22 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('ApPageHeader', () => {
-  beforeEach(() => store.dispatch(venueApi.util.resetApiState()))
+  beforeEach(() => store.dispatch(apApi.util.resetApiState()))
 
   it('navigate to edit when configure clicked', async () => {
 
-    // mockServer.use(
-    //   rest.get(
-    //     CommonUrlsInfo.getVenueDetailsHeader.url,
-    //     (_, res, ctx) => res(ctx.json(venueDetailHeaderData))
-    //   )
-    // )
-    const params = { tenantId: 't1', venueId: 'v1' }
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getApDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(apDetailData))
+      )
+    )
+    const params = { tenantId: 't1', apId: 'v1' }
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
     expect(mockNavigate).toBeCalledWith(expect.objectContaining({
-      pathname: '/t/t1/venues/v1/edit/details'
+      pathname: '/t/t1/devices/aps/v1/edit'
     }))
   })
 })

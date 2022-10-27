@@ -1,10 +1,11 @@
+/* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { useVenueDetailsHeaderQuery }            from '@acx-ui/rc/services'
+import { ApDetailHeader }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-function ApTabs () {
+function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/devices/aps/${params.apId}/details/`)
@@ -15,14 +16,7 @@ function ApTabs () {
       pathname: `${basePath.pathname}/${tab}`
     })
 
-  const { data } = useVenueDetailsHeaderQuery({ params })
-
-  const [clientsCount, networksCount, servicesCount] = [
-    data?.totalClientCount ?? 0,
-    (data?.aps?.totalApCount ?? 0) + (data?.switches?.totalCount ?? 0),
-    data?.activeNetworkCount ?? 0,
-    0
-  ]
+  const { apDetail } = props
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
@@ -31,15 +25,15 @@ function ApTabs () {
       <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })} key='troubleshooting' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })} key='reports' />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
+        tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount: apDetail?.headers?.networks })}
         key='networks'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount })}
+        tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: apDetail?.headers?.clients })}
         key='clients'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
+        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: apDetail?.headers?.services || 0 })} // TODO: API support
         key='services'
       />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />

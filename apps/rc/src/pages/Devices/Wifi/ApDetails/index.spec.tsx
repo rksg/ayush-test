@@ -1,8 +1,13 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { apApi }                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+
+import { apDetailData } from './__tests__/fixtures'
 
 import { ApDetails } from '.'
 
@@ -18,128 +23,124 @@ jest.mock(
 
 
 describe('ApDetails', () => {
-  // beforeEach(() => {
-  //   store.dispatch(venueApi.util.resetApiState())
-  //   mockServer.use(
-  //     rest.get(
-  //       CommonUrlsInfo.getApDetailsHeader.url,
-  //       (req, res, ctx) => res(ctx.json(venueDetailHeaderData))
-  //     ),
-  //     rest.get(
-  //       CommonUrlsInfo.getDashboardOverview.url,
-  //       (req, res, ctx) => res(ctx.json(data))
-  //     ),
-  //     rest.post(
-  //       CommonUrlsInfo.getVenueNetworkList.url,
-  //       (req, res, ctx) => res(ctx.json(venueNetworkList))
-  //     ),
-  //     rest.post(
-  //       CommonUrlsInfo.getNetworkDeepList.url,
-  //       (req, res, ctx) => res(ctx.json(networkDeepList))
-  //     ),
-  //     rest.post(
-  //       CommonUrlsInfo.venueNetworkApGroup.url,
-  //       (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
-  //     )
-  //   )
-  // })
+  beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getApDetailHeader.url,
+        (req, res, ctx) => res(ctx.json(apDetailData))
+      )
+    )
+  })
 
   it('should render correctly', async () => {
     const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
       activeTab: 'overview'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
     })
 
-    expect(await screen.findByText('testVenue')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(7)
+    expect(await screen.findByText('test-ap')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(8)
 
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('should navigate to analytic tab correctly', async () => {
     const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
       activeTab: 'analytics'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should navigate to client tab correctly', async () => {
+  it('should navigate to troubleshooting tab correctly', async () => {
     const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
-      activeTab: 'clients'
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
+      activeTab: 'troubleshooting'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should navigate to device tab correctly', async () => {
+  it('should navigate to reports tab correctly', async () => {
     const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
-      activeTab: 'devices'
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
+      activeTab: 'reports'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should navigate to network tab correctly', async () => {
+  it('should navigate to networks tab correctly', async () => {
     const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
       activeTab: 'networks'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should navigate to service tab correctly', async () => {
+  it('should navigate to clients tab correctly', async () => {
     const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
+      activeTab: 'clients'
+    }
+    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+    })
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should navigate to services tab correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
       activeTab: 'services'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('should navigate to timeline tab correctly', async () => {
     const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
       activeTab: 'timeline'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('should not navigate to non-existent tab', async () => {
     const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
       activeTab: 'not-exist'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
     })
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
@@ -147,12 +148,12 @@ describe('ApDetails', () => {
   })
   it('should go to edit page', async () => {
     const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      tenantId: 'tenant-id',
+      apId: 'ap-id',
       activeTab: 'overview'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))

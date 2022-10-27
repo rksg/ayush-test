@@ -3,7 +3,8 @@ import { useIntl }               from 'react-intl'
 
 import { Button, PageHeader }         from '@acx-ui/components'
 import { ClockOutlined, ArrowExpand } from '@acx-ui/icons'
-import { useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
+import { useApDetailHeaderQuery }     from '@acx-ui/rc/services'
+import { ApDetailHeader }             from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -14,11 +15,11 @@ import ApTabs from './ApTabs'
 
 function ApPageHeader () {
   const { $t } = useIntl()
-  const { tenantId, venueId } = useParams()
-  const { data } = useVenueDetailsHeaderQuery({ params: { tenantId, venueId } })
+  const { tenantId, apId } = useParams()
+  const { data } = useApDetailHeaderQuery({ params: { tenantId, apId } })
 
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/venues/${venueId}`)
+  const basePath = useTenantLink(`/devices/aps/${apId}`)
 
   // const handleMenuClick: MenuProps['onClick'] = (e) => { TODO:
   //   // console.log('click', e)
@@ -52,7 +53,7 @@ function ApPageHeader () {
   )
   return (
     <PageHeader
-      title={data?.venue?.name || ''}
+      title={data?.title || ''}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
       ]}
@@ -74,12 +75,12 @@ function ApPageHeader () {
           onClick={() =>
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/edit/details`
+              pathname: `${basePath.pathname}/edit`
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
       ]}
-      footer={<ApTabs />}
+      footer={<ApTabs apDetail={data as ApDetailHeader} />}
     />
   )
 }
