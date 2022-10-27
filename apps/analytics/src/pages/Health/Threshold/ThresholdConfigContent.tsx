@@ -1,9 +1,8 @@
-import { Tooltip }       from 'antd'
 import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
 
-import { Button }    from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+import { Button, DisabledButton } from '@acx-ui/components'
+import { formatter }              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -61,25 +60,25 @@ function ThresholdConfig ({
         <Button style={{ width: 70 }} size='small' onClick={() => onReset && onReset()}>
           {$t(thresholdDescText.resetBtn)}
         </Button>
-        <Tooltip
-          placement='left'
-          arrowPointAtCenter
-          title={(isDisabled) ? disabledMsg : undefined}
-        >
-          <div
-            style={{ cursor: (isDisabled) ? 'not-allowed': 'pointer' }}
+        {(isDisabled)
+          ? <DisabledButton
+            size='small'
+            type='secondary'
+            title={disabledMsg}
+            tooltipPlacement='left'
           >
-            <Button
-              style={{ width: 70, pointerEvents: (isDisabled) ? 'none' : 'auto' }}
-              size='small'
-              type='secondary'
-              onClick={() => onApply && onApply()}
-              disabled={isDisabled}
-            >
-              {$t(thresholdDescText.applyBtn)}
-            </Button>
-          </div>
-        </Tooltip>
+            {$t(thresholdDescText.applyBtn)}
+          </DisabledButton>
+          : <Button
+            style={{ width: 70, pointerEvents: (isDisabled) ? 'none' : 'auto' }}
+            size='small'
+            type='secondary'
+            onClick={() => onApply && onApply()}
+            disabled={isDisabled}
+          >
+            {$t(thresholdDescText.applyBtn)}
+          </Button>
+        }
       </UI.BtnWrapper>
     </UI.HistogramConfig>
   )
