@@ -81,7 +81,7 @@ describe('MultiLineTimeSeriesChart', () => {
       .toBeNull()
   })
 
-  it.only('should render brush if enabled', async () => {
+  it('should render brush if enabled', async () => {
     const { asFragment } = render(<MultiLineTimeSeriesChart
       data={getSeriesData()}
       brush={['2022-09-07', '2022-09-07']}
