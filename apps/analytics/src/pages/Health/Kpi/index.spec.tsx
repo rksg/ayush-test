@@ -155,11 +155,13 @@ describe('Kpi Section', () => {
 
   describe('onResetClick', () => {
     it('should match default timeToConnect for undefined data', () => {
-      expect(getResetCallback(undefined)('timeToConnect')).toBe(2000)
+      expect(getResetCallback(undefined)('timeToConnect')(false)).toBe(2000)
     })
 
     it('should return supplied threshold value data', () => {
-      expect(getResetCallback({ timeToConnectThreshold: { value: 10 } })('timeToConnect')).toBe(10)
+      expect(
+        getResetCallback({ timeToConnectThreshold: { value: 10 } })('timeToConnect')(false)
+      ).toBe(10)
     })
   })
 

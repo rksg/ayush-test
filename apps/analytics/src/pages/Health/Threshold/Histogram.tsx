@@ -49,25 +49,27 @@ function Histogram ({
   onReset,
   onApply,
   canSave,
-  fetchingDefault
+  fetchingDefault,
+  isNetwork
 }: {
   filters: AnalyticsFilter;
   kpi: string;
   threshold: string;
   setKpiThreshold: CallableFunction;
   thresholds: KpiThresholdType;
-  onReset?: onResetType,
-  onApply?: onApplyType,
   canSave: {
-    data: { allowedSave: boolean | undefined },
-    isFetching: boolean,
-    isLoading: boolean
-  },
+    data: { allowedSave: boolean | undefined };
+    isFetching: boolean;
+    isLoading: boolean;
+  };
   fetchingDefault: {
-    isFetching: boolean,
-    isLoading: boolean,
-    data: Object | undefined
-  }
+    isFetching: boolean;
+    isLoading: boolean;
+    data: Object | undefined;
+  };
+  onReset?: onResetType;
+  onApply?: onApplyType;
+  isNetwork?: boolean;
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
@@ -238,6 +240,7 @@ function Histogram ({
             onReset={() => onButtonReset(true)}
             onApply={onButtonApply}
             canSave={canSave.data?.allowedSave}
+            isNetwork={isNetwork}
           />
         </GridCol>
       </GridRow>

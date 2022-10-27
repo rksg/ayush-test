@@ -1,3 +1,4 @@
+import { Tooltip }       from 'antd'
 import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
 
@@ -12,6 +13,13 @@ const thresholdDescText = {
   resetBtn: defineMessage({ defaultMessage: 'Reset' }),
   applyBtn: defineMessage({ defaultMessage: 'Apply' })
 }
+
+const getDisabledToolTip = (isNetwork?: boolean) => (isNetwork)
+  // eslint-disable-next-line max-len
+  ? defineMessage({ defaultMessage: 'Cannot save threshold at organisation level.{ br } Please select a Venue or AP to set a threshold.' })
+  // eslint-disable-next-line max-len
+  : defineMessage({ defaultMessage: 'You don\'t have permission to set threshold for selected network node.' })
+
 function ThresholdConfig ({
   thresholdValue,
   percent,
@@ -19,17 +27,21 @@ function ThresholdConfig ({
   shortXFormat,
   onReset,
   onApply,
-  canSave
+  canSave,
+  isNetwork
 }: {
   thresholdValue: string;
   percent: number;
   unit: string;
-  shortXFormat: CallableFunction
-  onReset?: CallableFunction,
-  onApply?: CallableFunction,
-  canSave?: boolean
+  shortXFormat: CallableFunction;
+  onReset?: CallableFunction;
+  onApply?: CallableFunction;
+  canSave?: boolean;
+  isNetwork?: boolean;
 }) {
   const { $t } = useIntl()
+  const isDisabled = !Boolean(canSave)
+  const disabledMsg = $t(getDisabledToolTip(isNetwork), { br: '\n' })
   return (
     <UI.HistogramConfig>
       <UI.HistogramSpanContent>
@@ -49,14 +61,25 @@ function ThresholdConfig ({
         <Button style={{ width: 70 }} size='small' onClick={() => onReset && onReset()}>
           {$t(thresholdDescText.resetBtn)}
         </Button>
-        <Button style={{ width: 70 }}
-          size='small'
-          type='secondary'
-          onClick={() => onApply && onApply()}
-          disabled={!Boolean(canSave)}
+        <Tooltip
+          placement='left'
+          arrowPointAtCenter
+          title={(isDisabled) ? disabledMsg : undefined}
         >
-          {$t(thresholdDescText.applyBtn)}
-        </Button>
+          <div
+            style={{ cursor: (isDisabled) ? 'not-allowed': 'pointer' }}
+          >
+            <Button
+              style={{ width: 70, pointerEvents: (isDisabled) ? 'none' : 'auto' }}
+              size='small'
+              type='secondary'
+              onClick={() => onApply && onApply()}
+              disabled={isDisabled}
+            >
+              {$t(thresholdDescText.applyBtn)}
+            </Button>
+          </div>
+        </Tooltip>
       </UI.BtnWrapper>
     </UI.HistogramConfig>
   )

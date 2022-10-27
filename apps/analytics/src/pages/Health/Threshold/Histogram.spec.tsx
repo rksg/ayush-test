@@ -1,3 +1,5 @@
+import { act } from 'react-dom/test-utils'
+
 import { dataApiURL }      from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -9,7 +11,8 @@ import {
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { histogramApi } from '../Kpi/services'
+import { getDefaultThreshold, onResetType, onApplyType } from '../Kpi'
+import { histogramApi }                                  from '../Kpi/services'
 
 import Histogram from './Histogram'
 
@@ -171,16 +174,22 @@ describe('Threshold Histogram chart', () => {
         />
       </Provider>
     )
-    fireEvent.mouseDown(await screen.findByRole('slider'))
-    fireEvent.mouseMove(await screen.findByRole('slider'))
-    fireEvent.mouseUp(await screen.findByRole('slider'))
+    const slider = await screen.findByRole('slider')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.mouseDown(slider)
+      fireEvent.mouseMove(slider)
+      fireEvent.mouseUp(slider)
+    })
     expect(setKpiThreshold).toBeCalled()
   })
   it('should call setKpiThreshold on clicking reset btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
-    const onReset = jest.fn()
+    const onReset = jest.fn().mockImplementation(
+      (() => () => getDefaultThreshold()['timeToConnect']) as onResetType
+    )
     render(
       <Provider>
         <Histogram
@@ -204,7 +213,9 @@ describe('Threshold Histogram chart', () => {
       </Provider>
     )
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Reset' }))
+    const resetBtn = await screen.findByRole('button', { name: 'Reset' })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => { fireEvent.click(resetBtn) })
     expect(onReset).toBeCalled()
   })
 
@@ -212,7 +223,7 @@ describe('Threshold Histogram chart', () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
-    const onApply = jest.fn()
+    const onApply = jest.fn().mockImplementation((() => {}) as onApplyType)
     render(
       <Provider>
         <Histogram
@@ -236,7 +247,9 @@ describe('Threshold Histogram chart', () => {
       </Provider>
     )
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => { fireEvent.click(applyBtn) })
     expect(onApply).toBeCalledTimes(1)
   })
 
@@ -273,8 +286,9 @@ describe('Threshold Histogram chart', () => {
         />
       </Provider>
     )
-
-    fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => { fireEvent.click(applyBtn) })
     expect(applyCounter).toBeCalledTimes(1)
   })
 })

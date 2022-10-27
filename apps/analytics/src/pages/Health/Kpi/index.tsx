@@ -142,6 +142,10 @@ export default function KpiSection (props: { tab: HealthTab }) {
   const onReset = getResetCallback(defaultQuery.data)
   const onApply = getApplyCallback(triggerSave, filters)
 
+  const isNetwork = (filters.path[0].name === 'Network' && filters.path[0].type === 'network')
+    ? true
+    : undefined
+
   return (
     <>
       {kpis.map((kpi) => {
@@ -179,6 +183,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
                   onApply={() => onApply(kpi as keyof KpiThresholdType)}
                   canSave={canSave}
                   fetchingDefault={fetchingDefault}
+                  isNetwork={isNetwork}
                 />
               ) : (
                 <BarChart filters={filters}
