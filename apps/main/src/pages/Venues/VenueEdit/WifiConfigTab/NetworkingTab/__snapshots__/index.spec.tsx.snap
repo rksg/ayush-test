@@ -421,7 +421,7 @@ exports[`NetworkingTab should render correctly 1`] = `
                                                     class="styledComponents__Fieldset-sc-azs30w-0"
                                                   >
                                                     <legend
-                                                      class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
+                                                      class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
                                                     >
                                                       <label>
                                                         1 Primary SIM
@@ -466,7 +466,7 @@ exports[`NetworkingTab should render correctly 1`] = `
                                                   class="styledComponents__Fieldset-sc-azs30w-0"
                                                 >
                                                   <legend
-                                                    class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
+                                                    class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
                                                   >
                                                     <label>
                                                       2 Secondary SIM

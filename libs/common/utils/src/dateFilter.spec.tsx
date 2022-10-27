@@ -4,24 +4,29 @@ import { renderHook, render } from '@testing-library/react'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDateFilter, DateFilterProvider }            from './dateFilterContext'
+
+import { useDateFilter }                                from './dateFilter'
 import { defaultRanges, DateRange, getDateRangeFilter } from './dateUtil'
 
+const original = Date.now
 describe('useDateFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
+
+  afterAll(() => Date.now = original)
+
   it('should return correctly value', () => {
-    const { result } = renderHook(useDateFilter)
+    const { result } = renderHook(() => useDateFilter(), {
+      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>
+    })
     expect(result.current).toMatchObject({
       startDate: '2021-12-31T00:00:00+00:00',
       endDate: '2022-01-01T00:00:00+00:00',
       range: 'Last 24 Hours'
     })
   })
-})
 
-describe('DateFilterProvider', () => {
   it('should render correctly', () => {
     function Component () {
       const filters = useDateFilter()
@@ -29,9 +34,7 @@ describe('DateFilterProvider', () => {
     }
     const { asFragment } = render(
       <BrowserRouter>
-        <DateFilterProvider>
-          <Component />
-        </DateFilterProvider>
+        <Component />
       </BrowserRouter>
     )
     expect(asFragment()).toMatchSnapshot()
@@ -43,11 +46,10 @@ describe('DateFilterProvider', () => {
       return <div>{JSON.stringify(filters)}</div>
     }
     const component = (update: boolean) => <BrowserRouter>
-      <DateFilterProvider>
-        <Component update={update} />
-      </DateFilterProvider>
+      <Component update={update} />
     </BrowserRouter>
     const { asFragment, rerender } = render(component(true))
+    expect(asFragment()).toMatchSnapshot()
     rerender(component(false))
     expect(asFragment()).toMatchSnapshot()
   })
@@ -68,19 +70,20 @@ describe('DateFilterProvider', () => {
     })
     const { asFragment } = render(
       <BrowserRouter window={window}>
-        <DateFilterProvider>
-          <Component />
-        </DateFilterProvider>
+        <Component />
       </BrowserRouter>
     )
     expect(asFragment()).toMatchSnapshot()
   })
 })
 
+
 describe('defaultRanges', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
+
+  afterAll(() => Date.now = original)
 
   it('should return defaultRange when no subRange', () => {
     const result = defaultRanges()
@@ -116,6 +119,7 @@ describe('getDateRangeFilter', () => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
 
+  afterAll(() => Date.now = original)
   it('should return correct dateFilter for the given range', () => {
     expect(getDateRangeFilter(DateRange.last1Hour)).toStrictEqual({
       startDate: '2021-12-31T23:00:00+00:00',

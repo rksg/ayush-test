@@ -22,3 +22,7 @@ const Template: ComponentStory<typeof Fieldset> = (args: FieldsetProps) => {
 
 export const Default = Template.bind({})
 Default.args = { label: 'Group 1' }
+
+export const NoSwitch = Template.bind({})
+NoSwitch.storyName = 'Without Switch'
+NoSwitch.args = { ...Default.args, switchStyle: { display: 'none' }, checked: true }
