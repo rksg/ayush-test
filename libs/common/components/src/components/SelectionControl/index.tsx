@@ -5,7 +5,7 @@ import { Radio, RadioChangeEvent } from 'antd'
 import { Wrapper } from './styledComponents'
 
 export interface SelectionControlOptionProps {
-  label: string
+  label: React.ReactNode
   value: string
   icon?: React.ReactNode
   disabled?: boolean

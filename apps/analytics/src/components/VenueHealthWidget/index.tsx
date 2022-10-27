@@ -39,7 +39,7 @@ export default function VenueHealthWidget ({
               <KpiWidget filters={filters}
                 name='timeToConnect'
                 threshold={data?.timeToConnectThreshold?.value ??
-                 kpiConfig.timeToConnect.histogram.initialThreshold}/>
+                  kpiConfig.timeToConnect.histogram.initialThreshold}/>
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>
@@ -47,7 +47,7 @@ export default function VenueHealthWidget ({
               <KpiWidget filters={filters}
                 name='clientThroughput'
                 threshold={data?.clientThroughputThreshold?.value ??
-                 kpiConfig.clientThroughput.histogram.initialThreshold}/>
+                  kpiConfig.clientThroughput.histogram.initialThreshold}/>
             </UI.Wrapper>
           </GridCol>
         </GridRow>
