@@ -29,10 +29,10 @@ describe('VenueTabs', () => {
     render(<Provider>
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader}/>
     </Provider>, { route: { params } })
-    await waitFor(() => screen.findByText('Clients (2)'))
-    fireEvent.click(await screen.findByText('Clients (2)'))
+    await waitFor(() => screen.findByText('Networks (1)'))
+    fireEvent.click(await screen.findByText('Networks (1)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/clients`,
+      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/networks`,
       hash: '',
       search: ''
     })
