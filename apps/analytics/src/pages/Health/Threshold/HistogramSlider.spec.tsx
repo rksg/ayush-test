@@ -25,6 +25,7 @@ describe('Threshold Histogram chart', () => {
           height={100}
           onSliderChange={onSliderChange}
           sliderValue={2}
+          shortXFormat={jest.fn()}
         />
       </Provider>
     )

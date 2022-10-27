@@ -1,32 +1,29 @@
-import { Slider  } from 'antd'
-import styled      from 'styled-components/macro'
+import { Slider } from 'antd'
+import styled     from 'styled-components/macro'
 
 
 export const StyledSlider = styled(Slider)`
-font-size: var(--acx-subtitle-5-font-size);
-position: absolute;
-.ant-slider-handle {
-  min-width: 12px !important; 
-  height: 12px !important;
-  &:before {
-    content: none !important;
+  font-size: var(--acx-subtitle-5-font-size);
+  position: absolute;
+  .ant-slider-handle {
+    min-width: 12px !important;
+    height: 12px !important;
+    &:before {
+      content: none !important;
+    }
+    border: 2px solid  var(--acx-neutrals-20) !important;
+    padding: 0 !important;
   }
-  border: 2px solid  var(--acx-neutrals-20) !important;
-  padding: 0 !important;
-}
-.ant-slider-mark{
-  display: none;
-}
-.ant-slider-rail,
-&:hover .ant-slider-rail {
-  height: 1px !important;
-  background-color: var(--acx-primary-black) !important;
-}
-.ant-slider-track,
-&:hover .ant-slider-track {
-  height: 1px !important;
-  background-color: var(--acx-primary-black) !important;
-}
+  .ant-slider-rail,
+  &:hover .ant-slider-rail {
+    height: 1px !important;
+    background-color: var(--acx-primary-black) !important;
+  }
+  .ant-slider-track,
+  &:hover .ant-slider-track {
+    height: 1px !important;
+    background-color: var(--acx-primary-black) !important;
+  }
 `
 export const HistogramGoalPercentage = styled.span`
   color: var(--acx-primary-black);
@@ -56,4 +53,16 @@ export const BtnWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px
+`
+export const SliderLabel = styled.span<{ isSelected: boolean }>`
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  ${props => props.isSelected ? `
+    color: var(--acx-primary-black);
+    font-weight: var(--acx-body-font-weight-bold);
+  ` : `
+    color: var(--acx-neutrals-50);
+    font-weight: var(--acx-body-font-weight);
+  `}
 `

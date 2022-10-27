@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
 
-import { sum }     from 'lodash'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { sum, max } from 'lodash'
+import { useIntl }  from 'react-intl'
+import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig }                                            from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
@@ -33,10 +33,17 @@ const getGoalPercent = (
 const transformHistogramResponse = ({
   data,
   splits,
-  shortXFormat
-}: KPIHistogramResponse & { splits: number[], shortXFormat: CallableFunction }) => {
-  return data.map((datum, index) => [
-    splits[index] ? shortXFormat(splits[index]) : '',
+  shortXFormat,
+  isReverse
+}: KPIHistogramResponse & {
+  splits: number[];
+  shortXFormat: CallableFunction;
+  isReverse: boolean;
+}) => {
+  const dataAfterIsReverseCheck = isReverse ? data.slice().reverse() : data
+  const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
+  return dataAfterIsReverseCheck.map((datum, index) => [
+    splitsAfterIsReverseCheck[index] ? shortXFormat(splitsAfterIsReverseCheck[index]) : '',
     datum
   ]) as [TimeStamp, number][]
 }
@@ -73,25 +80,25 @@ function Histogram ({
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-  const { splits, highlightAbove } = histogram
+  const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const [sliderValue, setSliderValue] = useState(
-    splits.indexOf(thresholdValue) + 0.5
+    splits.indexOf(thresholdValue) + 1
   )
   const [isInitialRender, setIsInitialRender] = useState(true)
+  const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
 
   /* istanbul ignore next */
-  const onSliderChange = useCallback((newValue: number) => {
+  const onSliderChange = (newValue: number) => {
     if (
-      newValue === splits.length + 0.5 ||
-      newValue % 1 === 0
+      newValue === splitsAfterIsReverseCheck.length + 1 ||
+      newValue === 0
     )
       return
     setSliderValue(newValue)
-    setThresholdValue(histogram?.splits[newValue - 0.5])
-    setKpiThreshold({ ...thresholds, [kpi]: histogram?.splits[newValue - 0.5] })
-  },[kpi, histogram?.splits, setKpiThreshold, thresholds, splits.length])
-
+    setThresholdValue(splitsAfterIsReverseCheck[newValue - 1])
+    setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
+  }
   const queryResults = useKpiHistogramQuery(
     { ...filters, kpi, threshold: histogram?.initialThreshold },
     {
@@ -111,9 +118,15 @@ function Histogram ({
   /* istanbul ignore next */
   const onBarClick = ( barData: [number, number] ) =>{
     const reformattedBarData = histogram?.reFormatFromBarChart(barData?.[0])
-    if(splits.indexOf(reformattedBarData) === -1)
+
+    if(splitsAfterIsReverseCheck.indexOf(reformattedBarData) === -1){
+      const selectSecondLastBar = splitsAfterIsReverseCheck.length - 1
+      setSliderValue(selectSecondLastBar + 1)
+      setThresholdValue(splitsAfterIsReverseCheck[selectSecondLastBar] as unknown as string)
+      setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[selectSecondLastBar] })
       return
-    setSliderValue(splits.indexOf(reformattedBarData) + 0.5)
+    }
+    setSliderValue(splitsAfterIsReverseCheck.indexOf(reformattedBarData) + 1)
     setThresholdValue(reformattedBarData as unknown as string)
     setKpiThreshold({ ...thresholds, [kpi]: reformattedBarData })
   }
@@ -134,8 +147,8 @@ function Histogram ({
   const hightlightBelowColor = highlightAbove
     ? cssStr('--acx-accents-blue-50')
     : cssStr('--acx-neutrals-40')
-  const barColors = Array.from({ length: splits.length + 1 }, (_, index) =>
-    index < splits.indexOf(thresholdValue) + 1
+  const barColors = Array.from({ length: splitsAfterIsReverseCheck.length + 1 }, (_, index) =>
+    index < splitsAfterIsReverseCheck.indexOf(thresholdValue) + 1
       ? hightlightAboveColor
       : hightlightBelowColor
   )
@@ -197,37 +210,45 @@ function Histogram ({
   const hasData = (queryResults?.data?.[0]?.rawData?.data)?.every(
     (datum: number) => datum !== null
   )
+  const yAxisLabelOffset = max(queryResults?.data?.[0]?.rawData?.data)?.toString()?.length
+  const unit = histogram?.xUnit
   return (
     <Loader states={[queryResults, canSave, fetchingDefault]} key={kpi}>
       <GridRow>
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
             {({ width, height }) =>
-              queryResults?.data?.[0]?.data.length
-                ? (
-                  <>
-                    <VerticalBarChart
-                      style={{ height: height, width }}
-                      data={data}
-                      xAxisName={`(${histogram?.xUnit})`}
-                      barWidth={30}
-                      xAxisOffset={10}
-                      barColors={barColors}
-                      onBarAreaClick={onBarClick}
-                      yAxisProps={!hasData ? { max: 100, min: 0 } : undefined}
-                    />
-                    <HistogramSlider
-                      splits={splits}
-                      width={width}
-                      height={height}
-                      onSliderChange={onSliderChange}
-                      sliderValue={sliderValue}
-                    />
-                  </> )
-                :
-                (
-                  <NoData />
-                )
+              queryResults?.data?.[0]?.data.length ? (
+                <>
+                  <VerticalBarChart
+                    style={{ height, width }}
+                    data={data}
+                    xAxisName={unit !== '%' ? ` (${$t(unit)})` : `(${unit})`}
+                    barWidth={20}
+                    xAxisOffset={10}
+                    barColors={barColors}
+                    onBarAreaClick={onBarClick}
+                    grid={{ bottom: '35%' }}
+                    yAxisOffset={
+                      yAxisLabelOffset
+                        ? 60 / (yAxisLabelOffset * splitsAfterIsReverseCheck.length)
+                        : 0
+                    }
+                    showXaxisLabel={false}
+                    yAxisProps={!hasData ? { max: 100, min: 0 } : undefined}
+                  />
+                  <HistogramSlider
+                    splits={splitsAfterIsReverseCheck}
+                    width={width}
+                    height={height}
+                    onSliderChange={onSliderChange}
+                    sliderValue={sliderValue}
+                    shortXFormat={histogram?.shortXFormat}
+                  />
+                </>
+              ) : (
+                <NoData />
+              )
             }
           </AutoSizer>
         </GridCol>

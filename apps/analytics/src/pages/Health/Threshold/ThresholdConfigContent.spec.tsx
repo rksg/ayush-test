@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 import { Provider, store } from '@acx-ui/store'
 import {
   render,
@@ -20,8 +22,9 @@ describe('Threshold Histogram chart', () => {
         <ThresholdConfig
           thresholdValue={'10'}
           percent={100}
-          unit={'seconds'}
+          unit={defineMessage({ defaultMessage: 'seconds' })}
           shortXFormat={shortXFormat}
+          onReset={jest.fn()}
         />
       </Provider>
     )

@@ -1,5 +1,4 @@
-import { useIntl }       from 'react-intl'
-import { defineMessage } from 'react-intl'
+import { useIntl,  defineMessage, MessageDescriptor } from 'react-intl'
 
 import { Button, DisabledButton } from '@acx-ui/components'
 import { formatter }              from '@acx-ui/utils'
@@ -31,12 +30,12 @@ function ThresholdConfig ({
 }: {
   thresholdValue: string;
   percent: number;
-  unit: string;
   shortXFormat: CallableFunction;
   onReset?: CallableFunction;
   onApply?: CallableFunction;
   canSave?: boolean;
   isNetwork?: boolean;
+  unit: MessageDescriptor;
 }) {
   const { $t } = useIntl()
   const isDisabled = !Boolean(canSave)
@@ -47,7 +46,7 @@ function ThresholdConfig ({
         {$t(thresholdDescText.goal)}
         <UI.HistogramBoldContent>
           {shortXFormat?.(thresholdValue)}
-          {unit !== '%' ? ` ${unit}` : unit}
+          {unit !== '%' ? ` ${$t(unit)}` : unit}
         </UI.HistogramBoldContent>
       </UI.HistogramSpanContent>
       <UI.HistogramGoalPercentage>

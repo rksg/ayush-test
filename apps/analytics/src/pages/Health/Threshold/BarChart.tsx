@@ -80,7 +80,7 @@ function BarChart ({
                 style={{ height, width }}
                 data={data}
                 xAxisName={`(${$t(barChartText.title)})`}
-                barWidth={30}
+                barWidth={20}
                 dataFormatter={formatYDataPoint}
                 showTooltipName={false}
                 yAxisProps={{
