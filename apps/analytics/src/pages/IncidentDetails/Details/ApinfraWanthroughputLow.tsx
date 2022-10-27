@@ -1,4 +1,5 @@
-import { useIntl } from 'react-intl'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
 import {
   calculateSeverity,
@@ -11,6 +12,8 @@ import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import { TimeSeries }                        from '../TimeSeries'
+import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -37,6 +40,15 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
     dimension: 'apFwVersions'
   }]
 
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.ApWanThroughputImpactChart
+  ]
+
+  const buffer = {
+    front: { value: 6, unit: 'hours' as unitOfTime.Base },
+    back: { value: 6, unit: 'hours' as unitOfTime.Base }
+  }
+
   return (
     <>
       <PageHeader
@@ -58,13 +70,18 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '228px' }}>
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Charts</div>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT15M'
+            buffer={buffer}
+          />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
           <div>Impacted Entities Section</div>
         </GridCol>
       </GridRow>

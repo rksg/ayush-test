@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DashboardFilterProvider changes filter value 1`] = `
+exports[`useDashboardFilter changes filter value 1`] = `
 <DocumentFragment>
   <div>
-    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{}}
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"venue1"}]],"switchNodes":[[{"type":"switchGroup","name":"venue1"}]]}}
   </div>
 </DocumentFragment>
 `;
 
-exports[`DashboardFilterProvider gets initial value from search parameters 1`] = `
+exports[`useDashboardFilter gets initial value from search parameters 1`] = `
 <DocumentFragment>
   <div>
     {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"venue1"}],[{"type":"zone","name":"venue2"}]],"switchNodes":[[{"type":"switchGroup","name":"venue1"}],[{"type":"switchGroup","name":"venue2"}]]}}
@@ -16,7 +16,7 @@ exports[`DashboardFilterProvider gets initial value from search parameters 1`] =
 </DocumentFragment>
 `;
 
-exports[`DashboardFilterProvider set empty array when path is empty 1`] = `
+exports[`useDashboardFilter set empty array when path is empty 1`] = `
 <DocumentFragment>
   <div>
     {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{}}
@@ -24,7 +24,7 @@ exports[`DashboardFilterProvider set empty array when path is empty 1`] = `
 </DocumentFragment>
 `;
 
-exports[`DashboardFilterProvider should render correctly 1`] = `
+exports[`useDashboardFilter should render correctly 1`] = `
 <DocumentFragment>
   <div>
     {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{}}

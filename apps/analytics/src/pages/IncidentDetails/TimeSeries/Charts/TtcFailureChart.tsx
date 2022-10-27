@@ -3,10 +3,10 @@ import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import AutoSizer       from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, kpiConfig }               from '@acx-ui/analytics/utils'
-import { Card, Loader, MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { useTenantLink }                          from '@acx-ui/react-router-dom'
-import { formatter }                              from '@acx-ui/utils'
+import { getSeriesData, kpiConfig }                       from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { useTenantLink }                                  from '@acx-ui/react-router-dom'
+import { formatter }                                      from '@acx-ui/utils'
 
 import { useKpiTimeseriesQuery, KpiPayload } from '../../../Health/Kpi/services'
 import { getIncidentTimeSeriesPeriods }      from '../services'
@@ -80,14 +80,16 @@ export const TtcFailureChart = ({ chartRef, data, incident, buffer }: TimeSeries
       <Card title={$t({ defaultMessage: 'Connection Events' })} type='no-border'>
         <AutoSizer>
           {({ height, width }) => (
-            <MultiLineTimeSeriesChart
-              chartRef={chartRef}
-              style={{ height, width }}
-              data={chartResults}
-              seriesFormatters={seriesFormatters}
-              onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
-              markers={getMarkers(data.relatedIncidents!, incident)}
-            />
+            chartResults.length ?
+              <MultiLineTimeSeriesChart
+                chartRef={chartRef}
+                style={{ height, width }}
+                data={chartResults}
+                seriesFormatters={seriesFormatters}
+                onMarkAreaClick={onMarkAreaClick(navigate, basePath, incident)}
+                markers={getMarkers(data.relatedIncidents!, incident)}
+              />
+              : <NoData />
           )}
         </AutoSizer>
       </Card>

@@ -14,6 +14,7 @@ export const Legend = styled.legend`
     margin: 0;
 
     &, & > label {
+      padding: 0 4px;
       font-size: var(--acx-subtitle-5-font-size);
       font-weight: var(--acx-subtitle-5-font-weight);
       line-height: var(--acx-subtitle-5-line-height);
@@ -23,5 +24,9 @@ export const Legend = styled.legend`
     }
   }
 
-  .ant-switch { margin-left: 50px; }
+  .ant-switch { 
+    margin-left: 50px;
+    position: absolute;
+    background: var(--acx-primary-white); 
+  }
 `
