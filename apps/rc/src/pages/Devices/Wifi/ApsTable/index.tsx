@@ -1,7 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader } from '@acx-ui/components'
-// import { ApTable } from '../../../../components/ApTable'
+import {
+  Button,
+  PageHeader
+} from '@acx-ui/components'
+import { TenantLink } from '@acx-ui/react-router-dom'
+
+import { ApTable } from '../../../../components/ApTable'
 
 export function ApsTable () {
   const { $t } = useIntl()
@@ -11,16 +16,16 @@ export function ApsTable () {
       <PageHeader
         title={$t({ defaultMessage: 'WiFi' })}
         extra={[
-          <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+          <TenantLink to='/devices/aps/add' key='add'>
+            <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+          </TenantLink>
         ]}
       />
-      {/* TODO:  */}
-      {/* <ApTable
+      <ApTable
         rowSelection={{
-          type: 'checkbox',
-          ...rowSelection(useIntl())
+          type: 'checkbox'
         }}
-      /> */}
+      />
     </>
   )
 }

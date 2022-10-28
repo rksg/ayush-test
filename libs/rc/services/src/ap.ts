@@ -8,7 +8,9 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   RequestPayload,
-  TableResult
+  TableResult,
+  WifiUrlsInfo,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -29,8 +31,59 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
+      providesTags: [{ type: 'Ap', id: 'LIST' }],
       transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
+      }
+    }),
+    deleteAp: build.mutation<AP, RequestPayload>({
+      query: ({ params, payload }) => {
+        if(payload){ //delete multiple rows
+          const req = createHttpRequest(WifiUrlsInfo.deleteAps, params)
+          return {
+            ...req,
+            body: payload
+          }
+        }else{ //delete single row
+          const req = createHttpRequest(WifiUrlsInfo.deleteAp, params)
+          return {
+            ...req
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    getDhcpAp: build.query<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    downloadApLog: build.mutation<{ fileURL: string }, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.downloadApLog, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    rebootAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    factoryResetAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.factoryResetAp, params)
+        return{
+          ...req
+        }
       }
     })
   })
@@ -38,6 +91,11 @@ export const apApi = baseApApi.injectEndpoints({
 
 export const {
   useApListQuery,
+  useDeleteApMutation,
+  useDownloadApLogMutation,
+  useRebootApMutation,
+  useFactoryResetApMutation,
+  useLazyGetDhcpApQuery,
   useLazyApListQuery
 } = apApi
 
