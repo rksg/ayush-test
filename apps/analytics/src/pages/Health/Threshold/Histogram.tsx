@@ -122,9 +122,9 @@ function Histogram ({
   }
   const hightlightAboveColor = highlightAbove
     ? cssStr('--acx-neutrals-40')
-    : cssStr('--acx-accents-blue-50')
+    : cssStr('--acx-viz-qualitative-1')
   const hightlightBelowColor = highlightAbove
-    ? cssStr('--acx-accents-blue-50')
+    ? cssStr('--acx-viz-qualitative-1')
     : cssStr('--acx-neutrals-40')
   const barColors = Array.from({ length: splitsAfterIsReverseCheck.length + 1 }, (_, index) =>
     index < splitsAfterIsReverseCheck.indexOf(thresholdValue) + 1
@@ -175,7 +175,7 @@ function Histogram ({
                     width={width}
                     height={height}
                     onSliderChange={onSliderChange}
-                    sliderValue={splits.indexOf(thresholdValue) + 1}
+                    sliderValue={splitsAfterIsReverseCheck.indexOf(thresholdValue) + 1}
                     shortXFormat={histogram?.shortXFormat}
                   />
                 </>
