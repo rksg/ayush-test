@@ -82,7 +82,7 @@ function Histogram ({
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
-  const [sliderValue, setSliderValue] = useState(
+  const [, setSliderValue] = useState(
     splits.indexOf(thresholdValue) + 1
   )
   const [isInitialRender, setIsInitialRender] = useState(true)
