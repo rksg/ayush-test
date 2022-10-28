@@ -143,5 +143,5 @@ describe('NetworkForm', () => {
     const button = screen.getByRole('button', { name: /venues/i })
     await button.click()
     await userEvent.click(screen.getByText('Finish'))
-  }, 20000)
+  })
 })
