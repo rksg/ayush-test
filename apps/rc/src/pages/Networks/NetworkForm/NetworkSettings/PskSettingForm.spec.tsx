@@ -2,15 +2,16 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
+import { Provider }                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venuesResponse,
   venueListResponse,
   networksResponse,
-  successResponse
+  successResponse,
+  networkDeepResponse
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
@@ -24,13 +25,15 @@ async function fillInBeforeSettings (networkName: string) {
   await userEvent.click(screen.getByRole('radio', { name: /defined for the network/ }))
   await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-  await screen.findByRole('heading', { level: 3, name: 'Settings' })
+  await waitFor(async () => {
+    expect(await screen.findByRole('heading', { level: 3, name: 'Settings' })).toBeVisible()
+  })
 }
 
 async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?: boolean) {
   await userEvent.click(screen.getByRole('button', { name: 'Next' }))
   if (waitForIpValidation) {
-    const validating = await screen.findByRole('img', { name: 'loading' })
+    const validating = await screen.findAllByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
   }
   await screen.findByRole('heading', { level: 3, name: 'Venues' })
@@ -46,6 +49,7 @@ async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?
 
 describe('NetworkForm', () => {
   beforeEach(() => {
+    networkDeepResponse.name = 'PSK network test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -60,7 +64,11 @@ describe('NetworkForm', () => {
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json([]))),
       rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse)))
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
     )
   })
 
@@ -78,14 +86,14 @@ describe('NetworkForm', () => {
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
     })
-  })
+  }, 20000)
 
   it('should create PSK network with WPA2 and mac auth', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')
 
-    const passphraseTextbox = screen.getByLabelText('Passphrase')
+    const passphraseTextbox = screen.getByLabelText(/Passphrase/)
     fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
 
     await userEvent.click(screen.getByRole('switch'))
@@ -103,7 +111,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
-    })
+    }, true)
   }, 20000)
 
 
@@ -116,7 +124,7 @@ describe('NetworkForm', () => {
 
     fireEvent.mouseDown(securityProtocols)
 
-    const option = screen.getAllByLabelText('WPA3')[0]
+    const option = screen.getAllByText('WPA3')[0]
 
     await userEvent.click(option)
 
@@ -133,12 +141,6 @@ describe('NetworkForm', () => {
 
     const secretTextbox = screen.getByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
-
-    await fillInAfterSettings(async () => {
-      expect(screen.getByText('PSK network test')).toBeVisible()
-      expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
-      expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
-    })
   }, 20000)
 
   it('should create PSK network with WEP security protocol', async () => {
@@ -192,7 +194,6 @@ describe('NetworkForm', () => {
 
     const secretTextboxAcc = screen.getAllByLabelText('Shared secret')[2]
     fireEvent.change(secretTextboxAcc, { target: { value: 'secret-3' } })
-
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
@@ -201,6 +202,6 @@ describe('NetworkForm', () => {
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
       expect(screen.getByText('192.168.3.3:3333')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-3')).toHaveLength(2)
-    })
+    }, true)
   }, 20000)
 })

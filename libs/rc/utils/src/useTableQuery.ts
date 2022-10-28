@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { TableProps }        from '@acx-ui/components'
 import { useParams, Params } from '@acx-ui/react-router-dom'
@@ -28,7 +29,7 @@ export interface TABLE_QUERY <
     { params: Params<string>, payload: Payload }
   >
   apiParams?: Record<string, string>
-  pagination?: PAGINATION
+  pagination?: Partial<PAGINATION>
   sorter?: SORTER
   rowKey?: string
 }
@@ -111,8 +112,10 @@ export function useTableQuery <
       ? sorters[0]
       : sorters
 
+    const sorterKey = Array.isArray(sorter.field) ? sorter.columnKey : sorter.field
+
     const tableProps = {
-      sortField: sorter.field || DEFAULT_SORTER.sortField,
+      sortField: sorterKey || DEFAULT_SORTER.sortField,
       sortOrder: sorter.order ? transferSorter(sorter.order) : DEFAULT_SORTER.sortOrder,
       page: pagination.current,
       pageSize: pagination.pageSize

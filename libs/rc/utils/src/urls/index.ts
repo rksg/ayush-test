@@ -1,4 +1,6 @@
-export * from './wifiCallingUrls'
+export * from './services/mdnsProxyUrls'
+export * from './services/wifiCallingUrls'
 export * from './commonUrls'
 export * from './wifiUrls'
 export * from './switchUrls'
+export * from './mspUrls'

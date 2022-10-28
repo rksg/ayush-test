@@ -1,69 +1,123 @@
-import ReactECharts from 'echarts-for-react'
+import {
+  RefCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef
+} from 'react'
 
-import { TimeStamp } from '@acx-ui/types'
+import ReactECharts       from 'echarts-for-react'
+import { isEmpty, sumBy } from 'lodash'
+import { useIntl }        from 'react-intl'
 
-import { cssStr }              from '../../theme/helper'
+import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import type { TimeStampRange } from '@acx-ui/types'
+import { formatter }           from '@acx-ui/utils'
+
 import {
   gridOptions,
   legendOptions,
   legendTextStyleOptions,
+  dataZoomOptions,
   xAxisOptions,
   yAxisOptions,
   axisLabelOptions,
   dateAxisFormatter,
   tooltipOptions,
-  timeSeriesTooltipFormatter
-} from '../Chart/helper'
+  timeSeriesTooltipFormatter,
+  ChartFormatterFn,
+  qualitativeColorSet
+}                             from '../Chart/helper'
+import { ResetWrapper, ResetButton } from '../Chart/styledComponents'
+import { useDataZoom }               from '../Chart/useDataZoom'
+import { useLegendSelectChanged }    from '../Chart/useLegendSelectChanged'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
-interface ChartData extends Object {
-  /**
-   * Multi dimensional array which first item is timestamp and 2nd item is value
-   * @example
-   * [
-   *   [1603900800000, 64.12186646508322],
-   *   [1603987200000, 76]
-   * ]
-   */
-  value: [TimeStamp, number][]
-}
-
 export interface StackedAreaChartProps
-  <TChartData extends ChartData>
+  <TChartData extends TimeSeriesChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
+    type?: 'smooth' | 'step'
     data: TChartData[]
-    /** @default 'name' */
-    legendProp?: keyof TChartData,
-    lineColors?: string[],
-    dataFormatter?: (value: unknown) => string | null
+    legendProp?: keyof TChartData /** @default 'name' */
+    yAxisProps?: {
+      max?: number
+      min?: number
+    }
+    stackColors?: string[]
+    dataFormatter?: ChartFormatterFn
+    seriesFormatters?: Record<string, ChartFormatterFn>
+    tooltipTotalTitle?: string
+    disableLegend?: boolean
+    chartRef?: RefCallback<ReactECharts>
+    zoom?: TimeStampRange
+    onDataZoom?: (range: TimeStampRange) => void
   }
 
+export function getSeriesTotal <DataType extends TimeSeriesChartData> (
+  series: DataType[],
+  tooltipTotalTitle: string
+) {
+  return {
+    key: 'total',
+    name: tooltipTotalTitle,
+    show: false,
+    data: series[0].data.map((point, index)=>{
+      const total = sumBy(series, (datum) => {
+        const value = datum.data[index][1]
+        return typeof value === 'number' ? value : 0
+      })
+      return [ point[0], total ]
+    })
+  } as DataType
+}
+
 export function StackedAreaChart <
-  TChartData extends ChartData = { name: string, value: [TimeStamp, number][] }
+  TChartData extends TimeSeriesChartData,
 > ({
-  data,
+  type = 'smooth',
+  data: initialData,
   legendProp = 'name' as keyof TChartData,
-  dataFormatter,
+  yAxisProps,
+  dataFormatter = formatter('countFormat'),
+  seriesFormatters,
+  tooltipTotalTitle,
+  disableLegend,
   ...props
 }: StackedAreaChartProps<TChartData>) {
+  const eChartsRef = useRef<ReactECharts>(null)
+  useImperativeHandle(props.chartRef, () => eChartsRef.current!)
+  useLegendSelectChanged(eChartsRef)
+
+  const { $t } = useIntl()
+
+  disableLegend = Boolean(disableLegend)
+  const [canResetZoom, resetZoomCallback] =
+    useDataZoom<TChartData>(eChartsRef, true, initialData, props.zoom, props.onDataZoom)
+
+  const data = useMemo(() => {
+    return tooltipTotalTitle && !isEmpty(initialData)
+      ? initialData.concat(getSeriesTotal<TChartData>(initialData, tooltipTotalTitle))
+      : initialData
+  }, [tooltipTotalTitle, initialData])
+
   const option: EChartsOption = {
-    color: props.lineColors || [
-      cssStr('--acx-accents-blue-30'),
-      cssStr('--acx-accents-blue-70'),
-      cssStr('--acx-accents-blue-50')
-    ],
-    grid: { ...gridOptions() },
-    legend: {
-      ...legendOptions(),
-      textStyle: legendTextStyleOptions(),
-      data: data.map(datum => datum[legendProp]) as unknown as string[]
-    },
+    color: props.stackColors || qualitativeColorSet(),
+    grid: { ...gridOptions({ disableLegend }) },
+    ...(disableLegend ? {} : {
+      legend: {
+        ...legendOptions(),
+        textStyle: legendTextStyleOptions(),
+        data: initialData.map(datum => datum[legendProp]) as unknown as string[]
+      }
+    }),
     tooltip: {
       ...tooltipOptions(),
       trigger: 'axis',
-      formatter: timeSeriesTooltipFormatter(dataFormatter)
+      formatter: timeSeriesTooltipFormatter(
+        data,
+        { ...seriesFormatters, default: dataFormatter }
+      )
     },
     xAxis: {
       ...xAxisOptions(),
@@ -75,31 +129,54 @@ export function StackedAreaChart <
     },
     yAxis: {
       ...yAxisOptions(),
+      ...(yAxisProps || { minInterval: 1 }),
       type: 'value',
       axisLabel: {
         ...axisLabelOptions(),
         formatter: function (value: number) {
-          return (dataFormatter && dataFormatter(value)) || `${value}`
+          return dataFormatter(value)
         }
       }
     },
-    series: data.map(datum => ({
+    series: initialData.map(datum => ({
       name: datum[legendProp] as unknown as string,
-      data: datum.value,
+      data: datum.data.map(([time, value]) => [time, (value === null) ? 0 : value]),
       type: 'line',
       silent: true,
-      stack: 'Total',
+      stack: 'value',
       smooth: true,
+      step: type === 'step' ? 'start' : false,
       symbol: 'none',
       lineStyle: { width: 0 },
       areaStyle: { opacity: 1 }
-    }))
+    })),
+    toolbox: {
+      feature: {
+        dataZoom: {
+          yAxisIndex: 'none',
+          brushStyle: { color: 'rgba(0, 0, 0, 0.05)' },
+          icon: { back: 'path://', zoom: 'path://' }
+        },
+        brush: { type: ['rect'], icon: { rect: 'path://' } }
+      }
+    },
+    dataZoom: dataZoomOptions(initialData)
   }
 
   return (
-    <ReactECharts
-      {...props}
-      opts={{ renderer: 'svg' }}
-      option={option} />
+    <ResetWrapper>
+      <ReactECharts
+        {...props}
+        ref={eChartsRef}
+        opts={{ renderer: 'svg' }}
+        option={option}
+      />
+      {canResetZoom && <ResetButton
+        size='small'
+        onClick={resetZoomCallback}
+        children={$t({ defaultMessage: 'Reset Zoom' })}
+        $disableLegend={disableLegend}
+      />}
+    </ResetWrapper>
   )
 }

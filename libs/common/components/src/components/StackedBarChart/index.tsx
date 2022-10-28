@@ -1,6 +1,6 @@
-import ReactECharts                   from 'echarts-for-react'
-import _                              from 'lodash'
-import { useIntl, MessageDescriptor } from 'react-intl'
+import ReactECharts          from 'echarts-for-react'
+import _                     from 'lodash'
+import { MessageDescriptor } from 'react-intl'
 
 import { incidentSeverities } from '@acx-ui/analytics/utils'
 
@@ -179,7 +179,6 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       ...tooltipOptions(),
       trigger: 'item',
       formatter: stackedBarTooltipFormatter(
-        useIntl(),
         dataFormatter,
         props.tooltipFormat),
       show: showTooltip

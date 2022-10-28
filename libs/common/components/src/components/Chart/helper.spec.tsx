@@ -1,16 +1,45 @@
+import { CallbackDataParams }     from 'echarts/types/dist/shared'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { renderHook } from '@acx-ui/test-utils'
+import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { renderHook }          from '@acx-ui/test-utils'
+import { TimeStamp }           from '@acx-ui/types'
 
 import {
+  dataZoomOptions,
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
   stackedBarTooltipFormatter,
   donutChartTooltipFormatter,
-  getDeviceConnectionStatusColors
+  getDeviceConnectionStatusColors,
+  getTimeSeriesSymbol
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
+
+describe('dataZoomOptions', () => {
+  it('should return correct dataZoom options', () => {
+    const data = [
+      {
+        key: 'series1',
+        name: 'series1',
+        data: [['2022-04-07T09:15:00.000Z', 1], ['2022-04-07T09:30:00.000Z', 2]]
+      },
+      {
+        key: 'series2',
+        name: 'series2',
+        data: [['2022-04-07T09:15:00.000Z', 3], ['2022-04-07T09:45:00.000Z', 4]]
+      }
+    ] as TimeSeriesChartData[]
+    expect(dataZoomOptions(data)).toEqual([{
+      id: 'zoom',
+      type: 'inside',
+      filterMode: 'none',
+      zoomLock: true,
+      minValueSpan: 30 * 60 * 1000
+    }])
+  })
+})
 
 describe('dateAxisFormatter', () => {
   it('formats date time correctly', () => {
@@ -24,29 +53,107 @@ describe('dateAxisFormatter', () => {
   })
 })
 
+describe('getTimeSeriesSymbol', () => {
+  it('should return none for symbol', () => {
+    const series = [{
+      key: 'series1',
+      name: 'series1',
+      data: [
+        ['2022-04-07T09:15:00.000Z', 1],
+        ['2022-04-07T09:30:00.000Z', 2],
+        ['2022-04-07T09:45:00.000Z', 3],
+        ['2022-04-07T10:00:00.000Z', 4],
+        ['2022-04-07T10:15:00.000Z', 5]
+      ] as TimeSeriesChartData['data']
+    }]
+    expect(
+      getTimeSeriesSymbol(series)([], { seriesIndex: 0, dataIndex: 2 } as CallbackDataParams)
+    ).toEqual('none')
+  })
+  it('should return circle for symbol when single data point', () => {
+    const series = [{
+      key: 'series1',
+      name: 'series1',
+      data: [
+        ['2022-04-07T09:15:00.000Z', '-'],
+        ['2022-04-07T09:30:00.000Z', '-'],
+        ['2022-04-07T09:45:00.000Z', 3],
+        ['2022-04-07T10:00:00.000Z', '-'],
+        ['2022-04-07T10:15:00.000Z', '-']
+      ] as TimeSeriesChartData['data']
+    }]
+    expect(
+      getTimeSeriesSymbol(series)([], { seriesIndex: 0, dataIndex: 2 } as CallbackDataParams)
+    ).toEqual('circle')
+  })
+})
+
 describe('timeSeriesTooltipFormatter', () => {
+  const singleSeries = [{
+    key: 'key1',
+    name: 'seriesName1',
+    data: [[1605628800000, 518] as [TimeStamp, number]]
+  }]
+  const multiSeries = [
+    ...singleSeries, {
+      key: 'key2',
+      name: 'seriesName2',
+      data: [[1605628800000, 1416] as [TimeStamp, number]]
+    }, {
+      key: 'key3',
+      name: 'seriesName3',
+      data: [[1605628800000, 2672] as [TimeStamp, number]]
+    }
+  ]
   const singleparameters = {
-    data: [1605628800000, 518], color: 'color1', seriesName: 'seriesName1'
+    data: [1605628800000, 518], color: 'color1', seriesName: 'seriesName1', dataIndex: 0
   } as TooltipFormatterParams
   const multiParameters = [
     singleparameters,
-    { data: [1605628800000, 1416], color: 'color2', seriesName: 'seriesName2' },
-    { data: [1605628800000, 2672], color: 'color3', seriesName: 'seriesName3' }
+    { data: [1605628800000, 1416], color: 'color2', seriesName: 'seriesName2', dataIndex: 0 },
+    { data: [1605628800000, 2672], color: 'color3', seriesName: 'seriesName3', dataIndex: 0 }
   ] as TooltipFormatterParams[]
 
   it('should return correct Html string for single value', async () => {
-    const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(timeSeriesTooltipFormatter(formatter)(singleparameters)).toMatchSnapshot()
-    expect(formatter).toBeCalledTimes(1)
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
+    const result = timeSeriesTooltipFormatter(singleSeries, dataFormatters)(singleparameters)
+    expect(result).toMatchSnapshot()
+    expect(dataFormatters.default).toBeCalledTimes(1)
   })
   it('should return correct Html string for multiple value', async () => {
-    const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(timeSeriesTooltipFormatter(formatter)(multiParameters)).toMatchSnapshot()
-    expect(formatter).toBeCalledTimes(multiParameters.length)
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(multiParameters)
+    expect(result).toMatchSnapshot()
+    expect(dataFormatters.default).toBeCalledTimes(multiSeries.length)
   })
-  it('should handle when no formatter', async () => {
-    expect(timeSeriesTooltipFormatter()(singleparameters)).toMatchSnapshot()
-    expect(timeSeriesTooltipFormatter()(multiParameters)).toMatchSnapshot()
+  it('should hide row when legend deselected', async () => {
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(singleparameters)
+    expect(result).toMatchSnapshot()
+    expect(dataFormatters.default).toBeCalledTimes(1)
+  })
+  it('should hide badge when show is false (only show in tooltip not in chart)', async () => {
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
+    const noBadgeSeries = [
+      ...singleSeries, {
+        key: 'key2',
+        name: 'seriesName2',
+        show: false,
+        data: [[1605628800000, 1416] as [TimeStamp, number]]
+      }, {
+        key: 'key3',
+        name: 'seriesName3',
+        show: false,
+        data: [[1605628800000, 2672] as [TimeStamp, number]]
+      }
+    ]
+    const result = timeSeriesTooltipFormatter(noBadgeSeries, dataFormatters)(singleparameters)
+    expect(result).toMatchSnapshot()
+  })
+  it('accept custom formatter which includes index in param', () => {
+    const dataFormatters = { default: jest.fn((value, tz, index) => `formatted-${value}-${index}`) }
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(multiParameters)
+    expect(result).toMatchSnapshot()
   })
 })
 
@@ -56,10 +163,8 @@ describe('stackedBarTooltipFormatter', () => {
   } as TooltipFormatterParams
   it('should return correct Html string for single value', async () => {
     const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(renderHook(() => stackedBarTooltipFormatter(
-      useIntl(),
-      formatter
-    )(singleparameters)).result.current).toMatchSnapshot()
+    expect(stackedBarTooltipFormatter(formatter)(singleparameters))
+      .toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
   })
   it('should handle custom format', async () => {
@@ -72,18 +177,15 @@ describe('stackedBarTooltipFormatter', () => {
       `
     })
     const formatter = jest.fn(value => `formatted-${value}`)
-    expect(renderHook(() => stackedBarTooltipFormatter(
-      useIntl(),
+    expect(stackedBarTooltipFormatter(
       formatter,
       format
-    )({ ...singleparameters, percent: 10 })).result.current).toMatchSnapshot()
+    )({ ...singleparameters, percent: 10 })).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
   })
   it('should handle when dataFormatter is null', async () => {
     const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(renderHook(() => stackedBarTooltipFormatter(
-      useIntl()
-    )(singleparameters)).result.current).toMatchSnapshot()
+    expect(stackedBarTooltipFormatter()(singleparameters)).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(0)
   })
 })

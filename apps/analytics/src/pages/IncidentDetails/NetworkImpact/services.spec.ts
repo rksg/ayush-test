@@ -1,27 +1,30 @@
-import { configureStore } from '@reduxjs/toolkit'
-
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { mockGraphqlQuery }    from '@acx-ui/test-utils'
+import { dataApiURL }       from '@acx-ui/analytics/services'
+import { store }            from '@acx-ui/store'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { NetworkImpactChartTypes  }                from './config'
 import { networkImpactChartsApi, RequestPayload  } from './services'
 
 describe('networkImpactChartsApi', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataApi.middleware])
-  })
   const payload = {
     incident: { id: 'id', metadata: { dominant: { } } },
-    charts: [
-      NetworkImpactChartTypes.WLAN,
-      NetworkImpactChartTypes.Radio,
-      NetworkImpactChartTypes.Reason,
-      NetworkImpactChartTypes.ClientManufacturer
-    ]
+    charts: [{
+      chart: NetworkImpactChartTypes.WLAN,
+      type: 'client',
+      dimension: 'ssids'
+    }, {
+      chart: NetworkImpactChartTypes.Radio,
+      type: 'client',
+      dimension: 'radios'
+    }, {
+      chart: NetworkImpactChartTypes.Reason,
+      type: 'client',
+      dimension: 'reasonCodes'
+    }, {
+      chart: NetworkImpactChartTypes.ClientManufacturer,
+      type: 'client',
+      dimension: 'manufacturer'
+    }]
   } as RequestPayload
   afterEach(() =>
     store.dispatch(networkImpactChartsApi.util.resetApiState())

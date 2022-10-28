@@ -1,8 +1,14 @@
 import '@testing-library/jest-dom'
 
+import {
+  SpeedIndicatorOutlined,
+  SpeedIndicatorSolid
+} from '@acx-ui/icons'
+import { TenantType }                from '@acx-ui/react-router-dom'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import menuConfig from './stories/menuConfig'
+import menuConfig   from './stories/menuConfig'
+import { LayoutUI } from './styledComponents'
 
 import { Layout } from '.'
 
@@ -11,19 +17,22 @@ jest.mock('@acx-ui/icons', ()=>({
   Logo: () => <div data-testid='logo'/>,
   ArrowChevronLeft: () => <div data-testid='arrow-left'/>,
   ArrowChevronRight: () => <div data-testid='arrow-right'/>,
-  AI: () => <div data-testid='ai'/>,
-  AccountCircleOutlined: () => <div data-testid='acccount-circle-outlined'/>,
-  AccountCircleSolid: () => <div data-testid='acccount-circle-solid'/>,
+  AIOutlined: () => <div data-testid='ai-outlined'/>,
+  AISolid: () => <div data-testid='ai-solid'/>,
+  AccountCircleOutlined: () => <div data-testid='account-circle-outlined'/>,
+  AccountCircleSolid: () => <div data-testid='account-circle-solid'/>,
+  AdminOutlined: () => <div data-testid='admin-outlined'/>,
+  AdminSolid: () => <div data-testid='admin-solid'/>,
   CalendarDateOutlined: () => <div data-testid='calendar-date-outlined'/>,
   CalendarDateSolid: () => <div data-testid='calendar-date-solid'/>,
-  ConfigurationOutlined: () => <div data-testid='configuration-outlined'/>,
-  ConfigurationSolid: () => <div data-testid='configuration-solid'/>,
   DevicesOutlined: () => <div data-testid='devices-outlined'/>,
   DevicesSolid: () => <div data-testid='devices-solid'/>,
   LocationOutlined: () => <div data-testid='location-outlined'/>,
   LocationSolid: () => <div data-testid='location-solid'/>,
   NetworksOutlined: () => <div data-testid='networks-outlined'/>,
   NetworksSolid: () => <div data-testid='networks-solid'/>,
+  PoliciesOutlined: () => <div data-testid='policies-outlined'/>,
+  PoliciesSolid: () => <div data-testid='policies-solid'/>,
   ReportsOutlined: () => <div data-testid='reports-outlined'/>,
   ReportsSolid: () => <div data-testid='reports-solid'/>,
   ServicesOutlined: () => <div data-testid='services-outlined'/>,
@@ -36,29 +45,48 @@ describe('Layout', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(<Layout
       menuConfig={menuConfig}
+      leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
       rightHeaderContent={<div>Right header</div>}
-      leftHeaderContent={<div>Left header</div>}
       content={<div>content</div>}
     />, { route: true })
-    await screen.findByTestId('ai')
+    await screen.findByTestId('ai-outlined')
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render with custom tenant type correctly', async () => {
+    const mspConfig = [
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        tenantType: 'v' as TenantType,
+        inactiveIcon: SpeedIndicatorOutlined,
+        activeIcon: SpeedIndicatorSolid
+      }
+    ]
+    const { asFragment } = render(<Layout
+      menuConfig={mspConfig}
+      leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, { route: true })
+    await screen.findByTestId('speed-indicator-outlined')
     expect(asFragment()).toMatchSnapshot()
   })
   it('should collapsed', async () => {
     render(<Layout
       menuConfig={menuConfig}
-      rightHeaderContent={<div>Right header</div>}
       leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, { route: true })
-    await screen.findByTestId('ai')
+    await screen.findByTestId('ai-outlined')
     fireEvent.click(screen.getByText('Collapse'))
     await screen.findByTestId('arrow-right')
   })
   it('should render corresponding icons', async () => {
     render(<Layout
       menuConfig={menuConfig}
-      rightHeaderContent={<div>Right header</div>}
       leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, {
       route: {
@@ -66,8 +94,25 @@ describe('Layout', () => {
         params: { tenantId: 't-id', page: 'dashboard' }
       }
     })
-    await screen.findByTestId('ai')
-    fireEvent.click(screen.getByTestId('acccount-circle-outlined'))
-    await screen.findByTestId('acccount-circle-solid')
+    await screen.findByTestId('ai-outlined')
+    fireEvent.click(screen.getByTestId('account-circle-outlined'))
+    await screen.findByTestId('account-circle-solid')
+  })
+  it('should show tooltip when disabled', async () => {
+    const { asFragment } = render(<Layout
+      menuConfig={menuConfig}
+      leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/t/:tenantId/:page',
+        params: { tenantId: 't-id', page: 'dashboard' }
+      }
+    })
+    await screen.findByTestId('ai-outlined')
+    fireEvent.mouseOver(screen.getByTestId('account-circle-outlined'))
+    await screen.findByRole('tooltip', { hidden: true })
+    expect(asFragment()).toMatchSnapshot()
   })
 })

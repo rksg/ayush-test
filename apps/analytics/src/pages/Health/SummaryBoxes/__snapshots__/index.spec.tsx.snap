@@ -1,0 +1,409 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Incidents Page should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 dDtnzP"
+            type="button"
+          >
+            <div
+              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Successful Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  50.8K
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
+                >
+                  /107K
+                </span>
+              </div>
+            </div>
+            <div
+              data-testid="down-arrow"
+            />
+          </button>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 ihItkv"
+            type="button"
+          >
+            <div
+              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Failed Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  56.5K
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
+                >
+                  /107K
+                </span>
+              </div>
+            </div>
+            <div
+              data-testid="down-arrow"
+            />
+          </button>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 hjaQGp"
+            type="button"
+          >
+            <div
+              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Connection Success Ratio
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  47.34%
+                </span>
+              </div>
+            </div>
+            <div
+              data-testid="down-arrow"
+            />
+          </button>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 hcpWvL"
+            type="button"
+          >
+            <div
+              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 hAiNJH"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Avg Time To Connect
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  39.5 s
+                </span>
+              </div>
+            </div>
+            <div
+              data-testid="down-arrow"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Incidents Page should show - when no data 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 dDtnzP"
+            type="button"
+          >
+            <div
+              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Successful Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  -
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
+                >
+                  /-
+                </span>
+              </div>
+            </div>
+            <div
+              data-testid="down-arrow"
+            />
+          </button>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 ihItkv"
+            type="button"
+          >
+            <div
+              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Failed Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  -
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
+                >
+                  /-
+                </span>
+              </div>
+            </div>
+            <div
+              data-testid="down-arrow"
+            />
+          </button>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 hjaQGp"
+            type="button"
+          >
+            <div
+              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Connection Success Ratio
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  -
+                </span>
+              </div>
+            </div>
+            <div
+              data-testid="down-arrow"
+            />
+          </button>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 hcpWvL"
+            type="button"
+          >
+            <div
+              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 hAiNJH"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Avg Time To Connect
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  -
+                </span>
+              </div>
+            </div>
+            <div
+              data-testid="down-arrow"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`box should render correctly 1`] = `
+<DocumentFragment>
+  <button
+    class="styledComponents__Wrapper-sc-9l0oc9-0 eLiTEU"
+    type="button"
+  >
+    <div
+      class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+    >
+      <div
+        class="ant-statistic-title"
+      >
+        test box
+      </div>
+      <div
+        class="ant-statistic-content"
+      >
+        <span
+          class="ant-statistic-content-value"
+        >
+          <span
+            class="ant-statistic-content-value-int"
+          >
+            100
+          </span>
+        </span>
+        <span
+          class="ant-statistic-content-suffix"
+        >
+          /suffix
+        </span>
+      </div>
+    </div>
+    <div
+      data-testid="up-arrow"
+    />
+  </button>
+</DocumentFragment>
+`;
+
+exports[`box should render correctly when disabled 1`] = `
+<DocumentFragment>
+  <button
+    class="styledComponents__Wrapper-sc-9l0oc9-0 dDtnzP"
+    type="button"
+  >
+    <div
+      class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+    >
+      <div
+        class="ant-statistic-title"
+      >
+        test box
+      </div>
+      <div
+        class="ant-statistic-content"
+      >
+        <span
+          class="ant-statistic-content-value"
+        >
+          <span
+            class="ant-statistic-content-value-int"
+          >
+            100
+          </span>
+        </span>
+        <span
+          class="ant-statistic-content-suffix"
+        >
+          /suffix
+        </span>
+      </div>
+    </div>
+    <div
+      data-testid="down-arrow"
+    />
+  </button>
+</DocumentFragment>
+`;

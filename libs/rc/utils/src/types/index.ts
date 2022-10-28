@@ -21,6 +21,7 @@ export * from './venue'
 export * from './network'
 export * from './user'
 export * from './service'
+export * from './msp'
 
 export interface CommonResult {
   requestId: string
@@ -94,6 +95,7 @@ export interface Venue {
   disabledActivation: boolean
   networkId? : string
   vlanPoolId?: string
+  activatedApsId?: string[]
 }
 
 export interface AlarmBase {
@@ -297,7 +299,7 @@ export interface CloudpathServer {
     id: string
     primary: RadiusService
   }
-  accountingRadiu?: {
+  accountingRadius?: {
     id: string
     primary: RadiusService
   }

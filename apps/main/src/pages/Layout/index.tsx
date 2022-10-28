@@ -1,39 +1,43 @@
-import React from 'react'
-
+import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Layout as LayoutComponent } from '@acx-ui/components'
-import { SplitProvider }             from '@acx-ui/feature-toggle'
-import { Outlet }                    from '@acx-ui/react-router-dom'
-import { DateFilterProvider }        from '@acx-ui/utils'
+import {
+  Layout as LayoutComponent,
+  LayoutUI
+}                        from '@acx-ui/components'
+import { SplitProvider } from '@acx-ui/feature-toggle'
+import {
+  AccountCircleSolid,
+  QuestionMarkCircleSolid,
+  SearchOutlined
+}                          from '@acx-ui/icons'
+import { Outlet }          from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
-import HeaderButtons     from './HeaderButtons'
-import HeaderDropDown    from './HeaderDropDown'
+import { AlarmsHeaderButton } from '../../components/Alarms/HeaderButton'
+
 import { useMenuConfig } from './menuConfig'
-import * as UI           from './styledComponents'
 
 function Layout () {
-  const { $t } = useIntl()
-  const headerDropdownList = [
-    $t({ defaultMessage: 'MSP Space' })
-  ]
   return (
     <SplitProvider>
-      <DateFilterProvider>
-        <UI.Wrapper>
-          <LayoutComponent
-            menuConfig={useMenuConfig()}
-            content={<Outlet />}
-            leftHeaderContent={
-              <HeaderDropDown
-                list={headerDropdownList}
-                selected={headerDropdownList[0]}
-              />
-            }
-            rightHeaderContent={<HeaderButtons />}
-          />
-        </UI.Wrapper>
-      </DateFilterProvider>
+      <LayoutComponent
+        menuConfig={useMenuConfig()}
+        content={<Outlet />}
+        rightHeaderContent={<>
+          <Tooltip title={useIntl().$t(notAvailableMsg)}>
+            <LayoutUI.ButtonOutlined disabled shape='circle' icon={<SearchOutlined />} />
+          </Tooltip>
+          <LayoutUI.Divider />
+          <AlarmsHeaderButton />
+          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+            <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
+          </Tooltip>
+          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+            <LayoutUI.ButtonSolid disabled icon={<AccountCircleSolid />} />
+          </Tooltip>
+        </>}
+      />
     </SplitProvider>
   )
 }

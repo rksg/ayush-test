@@ -10,7 +10,8 @@ import {
   render,
   screen,
   fireEvent,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -18,7 +19,8 @@ import {
   venueListResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse
+  cloudpathResponse,
+  networkDeepResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -36,6 +38,7 @@ export const dhcpResponse = {
 describe('NetworkForm', () => {
 
   beforeEach(() => {
+    networkDeepResponse.name = 'open network test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -50,7 +53,11 @@ describe('NetworkForm', () => {
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
-        (_, res, ctx) => res(ctx.json(dhcpResponse)))
+        (_, res, ctx) => res(ctx.json(dhcpResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
     )
   })
 
@@ -104,7 +111,8 @@ describe('NetworkForm', () => {
     await userEvent.click(useCloudpathOption)
 
     const cloudpathServer = screen.getByRole('combobox')
-    fireEvent.mouseDown(cloudpathServer)
+    userEvent.click(cloudpathServer)
+    await waitFor(() => screen.findByText('cloud_01'))
     const option = screen.getByText('cloud_01')
     await userEvent.click(option)
 
@@ -153,7 +161,7 @@ describe('NetworkForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Finish'))
-  })
+  }, 20000)
 
   it('should create captive portal without redirect url successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -190,5 +198,5 @@ describe('NetworkForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Finish'))
-  })
+  }, 20000)
 })

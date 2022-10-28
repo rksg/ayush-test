@@ -3,7 +3,7 @@
 exports[`NetworkForm should create captive portal successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -246,7 +246,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                       Network Details
                     </h3>
                     <div
-                      class="ant-form-item"
+                      class="ant-form-item ant-form-item-has-feedback ant-form-item-has-success"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -275,17 +275,41 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                               class="ant-form-item-control-input-content"
                             >
                               <span
-                                class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
+                                class="ant-input-affix-wrapper ant-input-affix-wrapper-status-success ant-input-affix-wrapper-has-feedback"
                               >
                                 <input
                                   class="ant-input"
                                   id="details_name"
                                   type="text"
-                                  value=""
+                                  value="open network test"
                                 />
                                 <span
                                   class="ant-input-suffix"
-                                />
+                                >
+                                  <span
+                                    class="ant-form-item-feedback-icon ant-form-item-feedback-icon-success"
+                                  >
+                                    <span
+                                      aria-label="check-circle"
+                                      class="anticon anticon-check-circle"
+                                      role="img"
+                                    >
+                                      <svg
+                                        aria-hidden="true"
+                                        data-icon="check-circle"
+                                        fill="currentColor"
+                                        focusable="false"
+                                        height="1em"
+                                        viewBox="64 64 896 896"
+                                        width="1em"
+                                      >
+                                        <path
+                                          d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"
+                                        />
+                                      </svg>
+                                    </span>
+                                  </span>
+                                </span>
                               </span>
                             </div>
                           </div>
@@ -344,7 +368,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="ant-form-item"
+                                class="ant-form-item ant-form-item-has-success"
                               >
                                 <div
                                   class="ant-row ant-form-item-row"
@@ -381,12 +405,13 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                               style="margin-bottom: 8px;"
                                             >
                                               <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
                                               >
                                                 <span
-                                                  class="ant-radio"
+                                                  class="ant-radio ant-radio-checked"
                                                 >
                                                   <input
+                                                    checked=""
                                                     class="ant-radio-input"
                                                     type="radio"
                                                     value="psk"
@@ -558,7 +583,8 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                           class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                         >
                           <img
-                            src="none.png"
+                            alt="Pre-Shared Key (PSK)"
+                            src="psk.png"
                           />
                         </div>
                       </div>
@@ -587,57 +613,258 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                     class="ant-col ant-col-10"
                     style="padding-left: 10px; padding-right: 10px;"
                   >
-                    <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
-                    >
-                      Open Settings
-                    </h3>
                     <div
-                      class="ant-form-item"
+                      class="ant-space ant-space-vertical"
+                      style="display: flex;"
                     >
                       <div
-                        class="ant-row ant-form-item-row"
+                        class="ant-space-item"
+                        style="margin-bottom: 16px;"
                       >
-                        <div
-                          class="ant-col ant-form-item-control"
+                        <h3
+                          class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
                         >
+                          Settings
+                        </h3>
+                      </div>
+                      <div
+                        class="ant-space-item"
+                        style="margin-bottom: 16px;"
+                      >
+                        <div>
                           <div
-                            class="ant-form-item-control-input"
+                            class="ant-form-item"
                           >
                             <div
-                              class="ant-form-item-control-input-content"
+                              class="ant-row ant-form-item-row"
                             >
-                              <button
-                                aria-checked="false"
-                                class="ant-switch"
-                                id="settings_isCloudpathEnabled"
-                                role="switch"
-                                type="button"
+                              <div
+                                class="ant-col ant-form-item-label"
+                              >
+                                <label
+                                  class="ant-form-item-required"
+                                  for="settings_wlan_passphrase"
+                                  title="Passphrase"
+                                >
+                                  Passphrase
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-form-item-control"
                               >
                                 <div
-                                  class="ant-switch-handle"
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <span
+                                      class="ant-input-affix-wrapper ant-input-password"
+                                    >
+                                      <input
+                                        action="click"
+                                        class="ant-input"
+                                        id="settings_wlan_passphrase"
+                                        type="password"
+                                        value=""
+                                      />
+                                      <span
+                                        class="ant-input-suffix"
+                                      >
+                                        <span
+                                          aria-label="eye-invisible"
+                                          class="anticon anticon-eye-invisible ant-input-password-icon"
+                                          role="img"
+                                          tabindex="-1"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="eye-invisible"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M942.2 486.2Q889.47 375.11 816.7 305l-50.88 50.88C807.31 395.53 843.45 447.4 874.7 512 791.5 684.2 673.4 766 512 766q-72.67 0-133.87-22.38L323 798.75Q408 838 512 838q288.3 0 430.2-300.3a60.29 60.29 0 000-51.5zm-63.57-320.64L836 122.88a8 8 0 00-11.32 0L715.31 232.2Q624.86 186 512 186q-288.3 0-430.2 300.3a60.3 60.3 0 000 51.5q56.69 119.4 136.5 191.41L112.48 835a8 8 0 000 11.31L155.17 889a8 8 0 0011.31 0l712.15-712.12a8 8 0 000-11.32zM149.3 512C232.6 339.8 350.7 258 512 258c54.54 0 104.13 9.36 149.12 28.39l-70.3 70.3a176 176 0 00-238.13 238.13l-83.42 83.42C223.1 637.49 183.3 582.28 149.3 512zm246.7 0a112.11 112.11 0 01146.2-106.69L401.31 546.2A112 112 0 01396 512z"
+                                            />
+                                            <path
+                                              d="M508 624c-3.46 0-6.87-.16-10.25-.47l-52.82 52.82a176.09 176.09 0 00227.42-227.42l-52.82 52.82c.31 3.38.47 6.79.47 10.25a111.94 111.94 0 01-112 112z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </span>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item-extra"
+                                >
+                                  8 characters minimum
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-form-item ant-form-item-has-success"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-label"
+                              >
+                                <label
+                                  class=""
+                                  for="settings_wlan_wlanSecurity"
+                                  title="Security Protocol"
+                                >
+                                  Security Protocol
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <div
+                                      class="ant-select ant-select-in-form-item ant-select-status-success ant-select-single ant-select-show-arrow"
+                                    >
+                                      <div
+                                        class="ant-select-selector"
+                                      >
+                                        <span
+                                          class="ant-select-selection-search"
+                                        >
+                                          <input
+                                            aria-activedescendant="settings_wlan_wlanSecurity_list_0"
+                                            aria-autocomplete="list"
+                                            aria-controls="settings_wlan_wlanSecurity_list"
+                                            aria-haspopup="listbox"
+                                            aria-owns="settings_wlan_wlanSecurity_list"
+                                            autocomplete="off"
+                                            class="ant-select-selection-search-input"
+                                            id="settings_wlan_wlanSecurity"
+                                            readonly=""
+                                            role="combobox"
+                                            style="opacity: 0;"
+                                            type="search"
+                                            unselectable="on"
+                                            value=""
+                                          />
+                                        </span>
+                                        <span
+                                          class="ant-select-selection-placeholder"
+                                        />
+                                      </div>
+                                      <span
+                                        aria-hidden="true"
+                                        class="ant-select-arrow"
+                                        style="user-select: none;"
+                                        unselectable="on"
+                                      >
+                                        <span
+                                          aria-label="down"
+                                          class="anticon anticon-down ant-select-suffix"
+                                          role="img"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="down"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item-extra"
                                 />
-                                <span
-                                  class="ant-switch-inner"
-                                />
-                              </button>
-                              <span>
-                                Use Cloudpath Server
-                              </span>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                        type="button"
+                      <div
+                        class="ant-space-item"
                       >
-                        <span>
-                          Show more settings
-                        </span>
-                      </button>
+                        <div>
+                          <div
+                            class="ant-form-item"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <div
+                                      class="ant-form-item"
+                                    >
+                                      <div
+                                        class="ant-row ant-form-item-row"
+                                      >
+                                        <div
+                                          class="ant-col ant-form-item-control"
+                                        >
+                                          <div
+                                            class="ant-form-item-control-input"
+                                          >
+                                            <div
+                                              class="ant-form-item-control-input-content"
+                                            >
+                                              <button
+                                                aria-checked="false"
+                                                class="ant-switch"
+                                                id="settings_wlan_macAddressAuthentication"
+                                                role="switch"
+                                                type="button"
+                                              >
+                                                <div
+                                                  class="ant-switch-handle"
+                                                />
+                                                <span
+                                                  class="ant-switch-inner"
+                                                />
+                                              </button>
+                                              <span>
+                                                Use MAC Auth
+                                              </span>
+                                              <svg>
+                                                QuestionMarkCircleOutlined.svg
+                                              </svg>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div
@@ -654,8 +881,8 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                           class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                         >
                           <img
-                            alt="Open Network"
-                            src="open.png"
+                            alt="Pre-Shared Key (PSK)"
+                            src="psk.png"
                           />
                         </div>
                       </div>
@@ -734,7 +961,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                              class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
                             >
                               <div
                                 class="ant-pro-table"
@@ -831,7 +1058,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                         class="ant-table-cell ant-table-selection-column react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
                                                           class="ant-table-selection"
@@ -854,7 +1081,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                           </label>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
@@ -862,7 +1089,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                         tabindex="0"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
                                                           class="ant-table-column-sorters"
@@ -920,7 +1147,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                           </span>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
@@ -928,7 +1155,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                         tabindex="0"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
                                                           class="ant-table-column-sorters"
@@ -986,7 +1213,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                           </span>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
@@ -994,7 +1221,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                         tabindex="0"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
                                                           class="ant-table-column-sorters"
@@ -1052,73 +1279,73 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                           </span>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Networks
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Wi-Fi APs
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Activated
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         APs
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Radios
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Scheduling
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
@@ -1126,10 +1353,10 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                         style="position: sticky; right: 0px;"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                     </tr>
@@ -1554,7 +1781,9 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                           >
                             <div
                               class="ant-form-item-control-input-content"
-                            />
+                            >
+                              open network test
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1615,7 +1844,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                             <div
                               class="ant-form-item-control-input-content"
                             >
-                              Open Network
+                              Pre-Shared Key (PSK)
                             </div>
                           </div>
                         </div>
@@ -1632,9 +1861,38 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use Cloudpath Server:"
+                            title="Security Protocol:"
                           >
-                            Use Cloudpath Server:
+                            Security Protocol:
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            title="Use MAC Auth:"
+                          >
+                            Use MAC Auth:
                           </label>
                         </div>
                         <div
@@ -1646,7 +1904,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                             <div
                               class="ant-form-item-control-input-content"
                             >
-                              No
+                              Disabled
                             </div>
                           </div>
                         </div>
@@ -1758,7 +2016,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
 exports[`NetworkForm should create captive portal without redirect url successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2001,7 +2259,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                       Network Details
                     </h3>
                     <div
-                      class="ant-form-item"
+                      class="ant-form-item ant-form-item-has-feedback ant-form-item-has-success"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -2030,17 +2288,41 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                               class="ant-form-item-control-input-content"
                             >
                               <span
-                                class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
+                                class="ant-input-affix-wrapper ant-input-affix-wrapper-status-success ant-input-affix-wrapper-has-feedback"
                               >
                                 <input
                                   class="ant-input"
                                   id="details_name"
                                   type="text"
-                                  value=""
+                                  value="open network test"
                                 />
                                 <span
                                   class="ant-input-suffix"
-                                />
+                                >
+                                  <span
+                                    class="ant-form-item-feedback-icon ant-form-item-feedback-icon-success"
+                                  >
+                                    <span
+                                      aria-label="check-circle"
+                                      class="anticon anticon-check-circle"
+                                      role="img"
+                                    >
+                                      <svg
+                                        aria-hidden="true"
+                                        data-icon="check-circle"
+                                        fill="currentColor"
+                                        focusable="false"
+                                        height="1em"
+                                        viewBox="64 64 896 896"
+                                        width="1em"
+                                      >
+                                        <path
+                                          d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z"
+                                        />
+                                      </svg>
+                                    </span>
+                                  </span>
+                                </span>
                               </span>
                             </div>
                           </div>
@@ -2099,7 +2381,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="ant-form-item"
+                                class="ant-form-item ant-form-item-has-success"
                               >
                                 <div
                                   class="ant-row ant-form-item-row"
@@ -2136,12 +2418,13 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                               style="margin-bottom: 8px;"
                                             >
                                               <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
                                               >
                                                 <span
-                                                  class="ant-radio"
+                                                  class="ant-radio ant-radio-checked"
                                                 >
                                                   <input
+                                                    checked=""
                                                     class="ant-radio-input"
                                                     type="radio"
                                                     value="psk"
@@ -2313,7 +2596,8 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                           class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                         >
                           <img
-                            src="none.png"
+                            alt="Pre-Shared Key (PSK)"
+                            src="psk.png"
                           />
                         </div>
                       </div>
@@ -2342,57 +2626,258 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                     class="ant-col ant-col-10"
                     style="padding-left: 10px; padding-right: 10px;"
                   >
-                    <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
-                    >
-                      Open Settings
-                    </h3>
                     <div
-                      class="ant-form-item"
+                      class="ant-space ant-space-vertical"
+                      style="display: flex;"
                     >
                       <div
-                        class="ant-row ant-form-item-row"
+                        class="ant-space-item"
+                        style="margin-bottom: 16px;"
                       >
-                        <div
-                          class="ant-col ant-form-item-control"
+                        <h3
+                          class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
                         >
+                          Settings
+                        </h3>
+                      </div>
+                      <div
+                        class="ant-space-item"
+                        style="margin-bottom: 16px;"
+                      >
+                        <div>
                           <div
-                            class="ant-form-item-control-input"
+                            class="ant-form-item"
                           >
                             <div
-                              class="ant-form-item-control-input-content"
+                              class="ant-row ant-form-item-row"
                             >
-                              <button
-                                aria-checked="false"
-                                class="ant-switch"
-                                id="settings_isCloudpathEnabled"
-                                role="switch"
-                                type="button"
+                              <div
+                                class="ant-col ant-form-item-label"
+                              >
+                                <label
+                                  class="ant-form-item-required"
+                                  for="settings_wlan_passphrase"
+                                  title="Passphrase"
+                                >
+                                  Passphrase
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-form-item-control"
                               >
                                 <div
-                                  class="ant-switch-handle"
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <span
+                                      class="ant-input-affix-wrapper ant-input-password"
+                                    >
+                                      <input
+                                        action="click"
+                                        class="ant-input"
+                                        id="settings_wlan_passphrase"
+                                        type="password"
+                                        value=""
+                                      />
+                                      <span
+                                        class="ant-input-suffix"
+                                      >
+                                        <span
+                                          aria-label="eye-invisible"
+                                          class="anticon anticon-eye-invisible ant-input-password-icon"
+                                          role="img"
+                                          tabindex="-1"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="eye-invisible"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M942.2 486.2Q889.47 375.11 816.7 305l-50.88 50.88C807.31 395.53 843.45 447.4 874.7 512 791.5 684.2 673.4 766 512 766q-72.67 0-133.87-22.38L323 798.75Q408 838 512 838q288.3 0 430.2-300.3a60.29 60.29 0 000-51.5zm-63.57-320.64L836 122.88a8 8 0 00-11.32 0L715.31 232.2Q624.86 186 512 186q-288.3 0-430.2 300.3a60.3 60.3 0 000 51.5q56.69 119.4 136.5 191.41L112.48 835a8 8 0 000 11.31L155.17 889a8 8 0 0011.31 0l712.15-712.12a8 8 0 000-11.32zM149.3 512C232.6 339.8 350.7 258 512 258c54.54 0 104.13 9.36 149.12 28.39l-70.3 70.3a176 176 0 00-238.13 238.13l-83.42 83.42C223.1 637.49 183.3 582.28 149.3 512zm246.7 0a112.11 112.11 0 01146.2-106.69L401.31 546.2A112 112 0 01396 512z"
+                                            />
+                                            <path
+                                              d="M508 624c-3.46 0-6.87-.16-10.25-.47l-52.82 52.82a176.09 176.09 0 00227.42-227.42l-52.82 52.82c.31 3.38.47 6.79.47 10.25a111.94 111.94 0 01-112 112z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </span>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item-extra"
+                                >
+                                  8 characters minimum
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-form-item ant-form-item-has-success"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-label"
+                              >
+                                <label
+                                  class=""
+                                  for="settings_wlan_wlanSecurity"
+                                  title="Security Protocol"
+                                >
+                                  Security Protocol
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <div
+                                      class="ant-select ant-select-in-form-item ant-select-status-success ant-select-single ant-select-show-arrow"
+                                    >
+                                      <div
+                                        class="ant-select-selector"
+                                      >
+                                        <span
+                                          class="ant-select-selection-search"
+                                        >
+                                          <input
+                                            aria-activedescendant="settings_wlan_wlanSecurity_list_0"
+                                            aria-autocomplete="list"
+                                            aria-controls="settings_wlan_wlanSecurity_list"
+                                            aria-haspopup="listbox"
+                                            aria-owns="settings_wlan_wlanSecurity_list"
+                                            autocomplete="off"
+                                            class="ant-select-selection-search-input"
+                                            id="settings_wlan_wlanSecurity"
+                                            readonly=""
+                                            role="combobox"
+                                            style="opacity: 0;"
+                                            type="search"
+                                            unselectable="on"
+                                            value=""
+                                          />
+                                        </span>
+                                        <span
+                                          class="ant-select-selection-placeholder"
+                                        />
+                                      </div>
+                                      <span
+                                        aria-hidden="true"
+                                        class="ant-select-arrow"
+                                        style="user-select: none;"
+                                        unselectable="on"
+                                      >
+                                        <span
+                                          aria-label="down"
+                                          class="anticon anticon-down ant-select-suffix"
+                                          role="img"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="down"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item-extra"
                                 />
-                                <span
-                                  class="ant-switch-inner"
-                                />
-                              </button>
-                              <span>
-                                Use Cloudpath Server
-                              </span>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                        type="button"
+                      <div
+                        class="ant-space-item"
                       >
-                        <span>
-                          Show more settings
-                        </span>
-                      </button>
+                        <div>
+                          <div
+                            class="ant-form-item"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <div
+                                      class="ant-form-item"
+                                    >
+                                      <div
+                                        class="ant-row ant-form-item-row"
+                                      >
+                                        <div
+                                          class="ant-col ant-form-item-control"
+                                        >
+                                          <div
+                                            class="ant-form-item-control-input"
+                                          >
+                                            <div
+                                              class="ant-form-item-control-input-content"
+                                            >
+                                              <button
+                                                aria-checked="false"
+                                                class="ant-switch"
+                                                id="settings_wlan_macAddressAuthentication"
+                                                role="switch"
+                                                type="button"
+                                              >
+                                                <div
+                                                  class="ant-switch-handle"
+                                                />
+                                                <span
+                                                  class="ant-switch-inner"
+                                                />
+                                              </button>
+                                              <span>
+                                                Use MAC Auth
+                                              </span>
+                                              <svg>
+                                                QuestionMarkCircleOutlined.svg
+                                              </svg>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div
@@ -2409,8 +2894,8 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                           class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                         >
                           <img
-                            alt="Open Network"
-                            src="open.png"
+                            alt="Pre-Shared Key (PSK)"
+                            src="psk.png"
                           />
                         </div>
                       </div>
@@ -2489,7 +2974,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                              class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
                             >
                               <div
                                 class="ant-pro-table"
@@ -2586,7 +3071,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                         class="ant-table-cell ant-table-selection-column react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
                                                           class="ant-table-selection"
@@ -2609,7 +3094,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                           </label>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
@@ -2617,7 +3102,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                         tabindex="0"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
                                                           class="ant-table-column-sorters"
@@ -2675,7 +3160,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                           </span>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
@@ -2683,7 +3168,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                         tabindex="0"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
                                                           class="ant-table-column-sorters"
@@ -2741,7 +3226,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                           </span>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
@@ -2749,7 +3234,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                         tabindex="0"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
                                                           class="ant-table-column-sorters"
@@ -2807,73 +3292,73 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                           </span>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Networks
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Wi-Fi APs
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Activated
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         APs
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Radios
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         Scheduling
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                       <th
@@ -2881,10 +3366,10 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                         style="position: sticky; right: 0px;"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                                         />
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                                         />
                                                       </th>
                                                     </tr>
@@ -3309,7 +3794,9 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                           >
                             <div
                               class="ant-form-item-control-input-content"
-                            />
+                            >
+                              open network test
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -3370,7 +3857,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                             <div
                               class="ant-form-item-control-input-content"
                             >
-                              Open Network
+                              Pre-Shared Key (PSK)
                             </div>
                           </div>
                         </div>
@@ -3387,9 +3874,38 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                         >
                           <label
                             class=""
-                            title="Use Cloudpath Server:"
+                            title="Security Protocol:"
                           >
-                            Use Cloudpath Server:
+                            Security Protocol:
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            title="Use MAC Auth:"
+                          >
+                            Use MAC Auth:
                           </label>
                         </div>
                         <div
@@ -3401,7 +3917,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                             <div
                               class="ant-form-item-control-input-content"
                             >
-                              No
+                              Disabled
                             </div>
                           </div>
                         </div>
@@ -3513,7 +4029,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"

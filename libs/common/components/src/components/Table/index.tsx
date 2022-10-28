@@ -1,10 +1,11 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space }                                       from 'antd'
+import { Space, Tooltip }                              from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
+import AutoSizer                                       from 'react-virtualized-auto-sizer'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
@@ -15,13 +16,14 @@ import { ResizableColumn }                                          from './Resi
 import * as UI                                                      from './styledComponents'
 import { settingsKey, useColumnsState }                             from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
-import type { ParamsType }                                                  from '@ant-design/pro-provider'
-import type { SettingOptionType }                                           from '@ant-design/pro-table/lib/components/ToolBar'
+import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
+import type { ParamsType }                                                                    from '@ant-design/pro-provider'
+import type { SettingOptionType }                                                             from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
 } from 'antd'
+import type { RowSelectMethod } from 'antd/lib/table/interface'
 
 export type {
   ColumnType,
@@ -40,8 +42,7 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip' | 'form'
-    ellipsis?: boolean
+    type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
@@ -50,6 +51,9 @@ export interface TableProps <RecordType>
     }>
     rowActions?: Array<{
       label: string,
+      disabled?: boolean,
+      tooltip?: string,
+      visible?: boolean | ((selectedItems: RecordType[]) => boolean),
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
@@ -57,7 +61,9 @@ export interface TableProps <RecordType>
       & AntTableProps<RecordType>['rowSelection']
       & {
       alwaysShowAlert?: boolean;
-  })
+    })
+    extraSettings?: React.ReactNode[]
+    onResetState?: CallableFunction
   }
 
 const defaultPagination = {
@@ -83,7 +89,11 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProps<RecordType>) {
+// following the same typing from antd
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Table <RecordType extends Record<string, any>> (
+  { type = 'tall', columnState, ...props }: TableProps<RecordType>
+) {
   const intl = useIntl()
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
@@ -125,12 +135,21 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     checkedReset: false,
     extra: <div>
       <UI.TableSettingTitle children={$t({ defaultMessage: 'Select Columns' })} />
-      <Button
-        type='link'
-        size='small'
-        onClick={columnsState.resetState}
-        children={$t({ defaultMessage: 'Reset to default' })}
-      />
+      {props.extraSettings?.map((section, i) =>
+        <UI.SettingSection key={i}>{section}</UI.SettingSection>
+      )}
+      <UI.SettingSection>
+        <Button
+          type='link'
+          size='small'
+          onClick={() => {
+            columnsState.resetState()
+            props.onResetState?.()
+            setColWidth({})
+          }}
+          children={$t({ defaultMessage: 'Reset to default' })}
+        />
+      </UI.SettingSection>
     </div>,
     children: <SettingsOutlined/>
   } : false
@@ -152,17 +171,24 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     const key = record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)
 
+    let newKeys: Key[] | undefined
+    let type: RowSelectMethod
     if (props.rowSelection.type === 'radio') {
+      type = 'single'
       if (!isSelected) {
-        setSelectedRowKeys([key])
+        newKeys = [key]
       }
     } else {
-      setSelectedRowKeys(isSelected
+      type = 'multiple'
+      newKeys = isSelected
         // remove if selected
         ? selectedRowKeys.filter(k => k !== key)
         // add into collection if not selected
-        : [...selectedRowKeys, key])
+        : [...selectedRowKeys, key]
     }
+    if (!newKeys) return
+    setSelectedRowKeys(newKeys)
+    props.rowSelection?.onChange?.(newKeys, getSelectedRows(newKeys), { type })
   }
   columns = columns.map(column => column.searchable && searchValue
     ? {
@@ -197,7 +223,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
-
+  const hasEllipsisColumn = columns.some(column => column.ellipsis)
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
     const defaultOnRow = props.onRow?.(record)
     return {
@@ -215,13 +241,15 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       ? col.width
       : colWidth[col.key as keyof typeof colWidth] || col.width,
     onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+      hasEllipsisColumn,
       width: colWidth[column.key],
-      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
-    }),
-    ...((props.ellipsis && col.key !== settingsKey) && { ellipsis: true })
+      definedWidth: col.width
+    })
   })
 
-  return <UI.Wrapper
+  const WrappedTable = (style: { width?: number }) => <UI.Wrapper
+    style={style}
     $type={type}
     $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
   >
@@ -275,8 +303,14 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       })): columns) as typeof columns}
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
-      columnsState={columnsState}
-      scroll={props.ellipsis ? {} : { x: 'max-content' }}
+      columnsState={{
+        ...columnsState,
+        onChange: (state: TableColumnState) => {
+          columnsState.onChange(state)
+          setColWidth({})
+        }
+      }}
+      scroll={{ x: hasEllipsisColumn ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
@@ -294,22 +328,39 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
             <UI.CloseButton
               onClick={onCleanSelected}
               title={$t({ defaultMessage: 'Clear selection' })}
+              data-id='table-clear-btn'
             />
           </Space>
           <Space size={0} split={<UI.Divider type='vertical' />}>
-            {props.rowActions?.map((option) =>
-              <UI.ActionButton
+            {props.rowActions?.map((option) => {
+              const rows = getSelectedRows(selectedRowKeys)
+              const label = option.tooltip
+                ? <Tooltip placement='top' title={option.tooltip}>{option.label}</Tooltip>
+                : option.label
+              let visible = typeof option.visible === 'function'
+                ? option.visible(rows)
+                : option.visible ?? true
+
+              if (!visible) return null
+              return <UI.ActionButton
                 key={option.label}
+                disabled={option.disabled}
                 onClick={() =>
                   option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
-                children={option.label}
-              />
-            )}
+              >
+                {label}
+              </UI.ActionButton>
+            })}
           </Space>
         </Space>
       )}
     />
   </UI.Wrapper>
+  if (hasEllipsisColumn) {
+    return <AutoSizer>{({ width }) => WrappedTable({ width })}</AutoSizer>
+  } else {
+    return WrappedTable({})
+  }
 }
 
 Table.SubTitle = UI.SubTitle

@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { CommonUrlsInfo, WifiUrlsInfo  } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
 import {
   mockServer,
   render, screen,
@@ -14,7 +14,9 @@ import {
 import {
   venuesResponse,
   networksResponse,
-  successResponse
+  successResponse,
+  venueListResponse,
+  policyListResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -104,6 +106,22 @@ describe('NetworkForm', () => {
       rest.post(WifiUrlsInfo.updateNetworkDeep.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.post(CommonUrlsInfo.getL2AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getL3AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getDevicePolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getApplicationPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(CommonUrlsInfo.getVlanPoolList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(CommonUrlsInfo.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json([])))
     )
   })
@@ -125,5 +143,5 @@ describe('NetworkForm', () => {
     const button = screen.getByRole('button', { name: /venues/i })
     await button.click()
     await userEvent.click(screen.getByText('Finish'))
-  })
+  }, 20000)
 })

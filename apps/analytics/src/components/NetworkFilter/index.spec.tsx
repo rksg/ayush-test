@@ -144,7 +144,7 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter /></Provider>)
+    render(<Provider><NetworkFilter shouldQuerySwitch/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render network filter', async () => {
@@ -154,7 +154,7 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
+    const { asFragment } = render(<Provider><NetworkFilter shouldQuerySwitch/></Provider>)
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('span[class="ant-select-arrow"]')).not.toBeNull()
@@ -168,7 +168,7 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter /></Provider>)
+    render(<Provider><NetworkFilter shouldQuerySwitch/></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getByText('venue1'))
@@ -194,7 +194,7 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter /></Provider>)
+    render(<Provider><NetworkFilter shouldQuerySwitch/></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.type(screen.getByRole('combobox'), 'swg')
     await screen.findByText('swg')
@@ -243,7 +243,7 @@ describe('Network Filter with incident severity', () => {
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter />
+        <NetworkFilter shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')
@@ -261,7 +261,7 @@ describe('Network Filter with incident severity', () => {
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter />
+        <NetworkFilter shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')
@@ -290,7 +290,7 @@ describe('Network Filter with incident severity', () => {
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter />
+        <NetworkFilter shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')
@@ -319,7 +319,7 @@ describe('Network Filter with incident severity', () => {
     })
     const { asFragment } = render(
       <Provider>
-        <NetworkFilter />
+        <NetworkFilter shouldQuerySwitch withIncidents/>
       </Provider>
     )
     await screen.findByText('Entire Organization')

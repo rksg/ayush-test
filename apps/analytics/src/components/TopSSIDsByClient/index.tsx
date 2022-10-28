@@ -30,12 +30,6 @@ export default function TopSSIDsByClientWidget ({
       key: 'name'
     },
     {
-      title: $t({ defaultMessage: 'Clients' }),
-      dataIndex: 'clientCount',
-      key: 'clientCount',
-      align: 'right' as const
-    },
-    {
       title: $t({ defaultMessage: 'Total Traffic' }),
       dataIndex: 'traffic',
       key: 'traffic'
@@ -44,6 +38,12 @@ export default function TopSSIDsByClientWidget ({
       title: $t({ defaultMessage: 'Traffic History' }),
       dataIndex: 'trafficHistory',
       key: 'trafficHistory'
+    },
+    {
+      title: $t({ defaultMessage: 'Clients' }),
+      dataIndex: 'clientCount',
+      key: 'clientCount',
+      align: 'right' as const
     }
   ]
 
@@ -77,8 +77,9 @@ export default function TopSSIDsByClientWidget ({
   const ssidTable = data && data.topNSSIDByClient && data.topNSSIDByClient.length ? <Table
     columns={columns}
     dataSource={getDataSource(data.topNSSIDByClient, data.totalUserTraffic)}
-    type={'compact'}
+    type='compact'
     pagination={false}
+    rowKey='name'
   /> : <NoData/>
 
 

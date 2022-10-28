@@ -1,7 +1,7 @@
 import { configureStore }                                 from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi }         from '@acx-ui/analytics/services'
+import { dataApi }       from '@acx-ui/analytics/services'
 import {
   baseNetworkApi as networkApi,
   baseVenueApi as venueApi,
@@ -9,7 +9,8 @@ import {
   baseServiceApi as serviceApi,
   apApi,
   baseUserApi as userApi,
-  baseDhcpApi as dhcpApi
+  baseDhcpApi as dhcpApi,
+  baseMspApi as mspApi
 } from '@acx-ui/rc/services'
 
 export const store = configureStore({
@@ -22,11 +23,16 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [dataApi.reducerPath]: dataApi.reducer,
     [dhcpApi.reducerPath]: dhcpApi.reducer,
-    [serviceApi.reducerPath]: serviceApi.reducer
+    [serviceApi.reducerPath]: serviceApi.reducer,
+    [mspApi.reducerPath]: mspApi.reducer
   },
 
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([
+  middleware: (getDefaultMiddleware) => {
+    const isDev = process.env['NODE_ENV'] === 'development'
+    return getDefaultMiddleware({
+      serializableCheck: isDev ? undefined : false,
+      immutableCheck: isDev ? undefined : false
+    }).concat([
       networkApi.middleware,
       venueApi.middleware,
       eventAlarmApi.middleware,
@@ -35,8 +41,10 @@ export const store = configureStore({
       userApi.middleware,
       dataApi.middleware,
       dhcpApi.middleware,
-      serviceApi.middleware
-    ]),
+      serviceApi.middleware,
+      mspApi.middleware
+    ])
+  },
 
   devTools: process.env['NODE_ENV'] !== 'production'
 })
