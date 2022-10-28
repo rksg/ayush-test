@@ -53,18 +53,6 @@ export const successResponse = { requestId: 'request-id' }
 
 describe('PortalForm', () => {
   it('should create Portal successfully', async () => {
-
-    // mockServer.use(
-    //   rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
-    //     res(ctx.json({ COMMON: '{}' }))
-    //   ),
-    //   rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
-    //     res(ctx.json(networkResponse))
-    //   ),
-    //   rest.post(PortalUrlsInfo.savePoral.url.replace('?quickAck=true', ''),
-    //     (_, res, ctx) => res(ctx.json(successResponse))
-    //   ))
-
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))

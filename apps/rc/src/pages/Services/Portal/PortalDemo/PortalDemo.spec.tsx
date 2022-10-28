@@ -60,10 +60,12 @@ describe('PortalDemo', () => {
       </PortalFormContext.Provider>
     )
     expect(asFragment()).toMatchSnapshot()
+    const file = new File(['hello'], '/Users/sdcui/Desktop/back.jpg', { type: 'image/jpg' })
     await userEvent.click(screen.getByRole('img',{ name: 'background setting' }))
     await userEvent.click(screen.getByText('Set background color'))
     await userEvent.click(screen.getByTitle('#D0021B'))
 
+    await userEvent.upload(screen.getByLabelText('Select image'),file)
     await userEvent.click(screen.getByText('Select image'))
 
 
@@ -160,6 +162,8 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getByRole('img',{ name: 'plusen' }))
     await userEvent.click(screen.getByRole('img',{ name: 'minusen' }))
     await userEvent.click(screen.getByRole('img',{ name: 'minusen' }))
+    await userEvent.upload(screen.getByPlaceholderText('contentimageupload'), file)
+    await userEvent.click(screen.getByRole('img',{ name: 'pictureout' }))
     await userEvent.click(screen.getByRole('img',{ name: 'Logo' }))
     fireEvent.mouseLeave(screen.getByRole('img',{ name: 'Logo' }))
     await userEvent.click(screen.getByRole('img',{ name: 'Photo png' }))

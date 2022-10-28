@@ -33,6 +33,7 @@ export default function PortalBackground (props:{
         onChangeComplete={(color)=> updateBackgroundColor(color.hex)}/>
     </div>}
     <Upload accept='.png,.jpg,.jpeg'
+      id='bgimageupload'
       showUploadList={false}
       customRequest={async ({ file }) => {
         Utils.getBase64(file as RcFile, url => {
@@ -42,7 +43,8 @@ export default function PortalBackground (props:{
     >
       <UI.PopoverButton onClick={(e)=>{
         e.preventDefault()
-      }}>{$t({ defaultMessage: 'Select image' })}</UI.PopoverButton>
+      }}><label htmlFor='bgimageupload'>
+          {$t({ defaultMessage: 'Select image' })}</label></UI.PopoverButton>
     </Upload>
     <UI.CommonHints>
       {$t({ defaultMessage: 'Recommended size: 1920*1080 ' })}

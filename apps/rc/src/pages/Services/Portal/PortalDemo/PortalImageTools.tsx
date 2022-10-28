@@ -40,6 +40,7 @@ export default function PortalImageTools (props:{
           setShowColorPicker(false)
         }}>
         <Upload accept='.png,.jpg,.jpeg'
+          id='contentimageupload'
           showUploadList={false}
           customRequest={async ({ file }) => {
             Utils.getBase64(file as RcFile, url => {
@@ -47,8 +48,13 @@ export default function PortalImageTools (props:{
             })
           }}
         >
-          {showImg !== false && <UI.ToolImg src={PictureOut} alt='pictureout'/>}
+          {showImg !== false && <label htmlFor='contentimageupload'
+            placeholder='contentimageupload'>
+            <UI.ToolImg src={PictureOut}
+              alt='pictureout'
+              onClick={(e)=>e.stopPropagation()}/></label>}
         </Upload>
+
         {showImg!==false && size !== maxSize*(defaultSize as number)
         &&<UI.ToolImg src={PlusEn}
           alt='plusen'
