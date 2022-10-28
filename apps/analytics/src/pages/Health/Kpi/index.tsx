@@ -5,11 +5,10 @@ import ReactECharts from 'echarts-for-react'
 import moment       from 'moment-timezone'
 
 import { kpisForTab, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }               from '@acx-ui/components'
+import { GridCol, GridRow, NotAvailable } from '@acx-ui/components'
 
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
-import { KpiRow }            from '../styledComponents'
 
 import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
@@ -32,7 +31,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
   return (<>{
-    kpis.map((kpi) => (<KpiRow key={kpi + defaultZoom}>
+    kpis.map((kpi) => (<GridRow key={kpi + defaultZoom} divider>
       <GridCol col={{ span: 16 }}>
         <GridRow style={{ height: '150px' }}>
           <GridCol col={{ span: 5 }}>
@@ -50,8 +49,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
         </GridRow>
       </GridCol>
       <GridCol col={{ span: 8 }}>
-        <div>Threshold Content</div>
+        <NotAvailable/>
       </GridCol>
-    </KpiRow>))
+    </GridRow>))
   }</>)
 }

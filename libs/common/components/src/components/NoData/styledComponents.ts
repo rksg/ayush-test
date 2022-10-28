@@ -9,11 +9,12 @@ export const NoDataWrapper = styled.div`
 `
 
 export const TextWrapper = styled(Space)`
+  text-align: center;
   justify-content: center;
   width: 100%;
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-4-font-weight);
   font-size: var(--acx-subtitle-4-font-size);
   line-height: var(--acx-subtitle-4-line-height);
-  color: var(--acx-neutrals-60); 
+  color: var(--acx-neutrals-60);
 `

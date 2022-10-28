@@ -1,4 +1,5 @@
-import userEvent from '@testing-library/user-event'
+import userEvent         from '@testing-library/user-event'
+import { defineMessage } from 'react-intl'
 
 import { dataApiURL }                                                  from '@acx-ui/analytics/services'
 import { BrowserRouter as Router }                                     from '@acx-ui/react-router-dom'
@@ -8,13 +9,40 @@ import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery } from '@ac
 import { fakeSummary, fakeEmptySummary } from './__tests__/fixtures'
 import { api }                           from './services'
 
-import { SummaryBoxes } from '.'
+import { SummaryBoxes, Box } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
   ...jest.requireActual('@acx-ui/icons'),
   CaretDoubleUpOutlined: () => <div data-testid='up-arrow'/>,
   CaretDoubleDownOutlined: () => <div data-testid='down-arrow'/>
 }), { virtual: true })
+
+describe('box', () => {
+  const boxProps = {
+    type: 'successCount',
+    title: defineMessage({ defaultMessage: 'test box' }),
+    suffix: '/suffix',
+    isOpen: false,
+    value: '100'
+  }
+  it('should render correctly', async () => {
+    const onClick = jest.fn()
+    const { asFragment } = render(<Box {...boxProps} isOpen onClick={onClick}/>)
+    expect(asFragment()).toMatchSnapshot()
+    await userEvent.click(screen.getByTestId('up-arrow'))
+    expect(onClick).toBeCalledTimes(1)
+  })
+  it('should render correctly when disabled', async () => {
+    const onClick = jest.fn()
+    const { asFragment } = render(<Box {...boxProps} disabled onClick={onClick}/>)
+    expect(asFragment()).toMatchSnapshot()
+    await userEvent.click(screen.getByTestId('down-arrow'))
+    expect(onClick).toBeCalledTimes(0)
+    await userEvent.hover(screen.getByTestId('down-arrow'))
+    expect(await screen.findByRole('tooltip', { hidden: true })).not.toBe(null)
+  })
+})
+
 describe('Incidents Page', () => {
   beforeEach(()=>{
     store.dispatch(api.util.resetApiState())
@@ -32,7 +60,8 @@ describe('Incidents Page', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  describe('toggle stats', () => {
+  // TODO: remove skip after feature available
+  describe.skip('toggle stats', () => {
     it('should handle toggle stats', async () => {
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
       render(<Router><Provider><SummaryBoxes/></Provider></Router>)

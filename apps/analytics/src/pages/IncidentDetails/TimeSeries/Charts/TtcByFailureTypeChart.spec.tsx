@@ -1,9 +1,9 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }               from '@acx-ui/analytics/services'
-import { fakeIncidentTtc }          from '@acx-ui/analytics/utils'
-import { store }                    from '@acx-ui/store'
-import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { fakeIncidentTtc }                  from '@acx-ui/analytics/utils'
+import { store }                            from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { buffer6hr }            from '../__tests__/fixtures'
 import { TimeSeriesChartTypes } from '../config'
@@ -48,6 +48,38 @@ describe('TtcByFailureTypeChart', () => {
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+  it('handle when data is null', () => {
+    const noDataResult = {
+      ttcByFailureTypeChart: {
+        time: [
+          '2022-04-07T09:15:00.000Z',
+          '2022-04-07T09:30:00.000Z',
+          '2022-04-07T09:45:00.000Z',
+          '2022-04-07T10:00:00.000Z',
+          '2022-04-07T10:15:00.000Z'
+        ],
+        ttcByFailureTypes: {
+          ttcByEap: [null, null, null, null, null],
+          ttcByDhcp: [null, null, null, null, null],
+          ttcByAuth: [null, null, null, null, null],
+          ttcByAssoc: [null, null, null, null, null],
+          ttcByRadius: [null, null, null, null, null]
+        }
+      }
+    }
+    const { asFragment } = render(
+      <BrowserRouter>
+        <TtcByFailureTypeChart
+          chartRef={()=>{}}
+          buffer={buffer6hr}
+          incident={fakeIncidentTtc}
+          data={noDataResult}
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).toBeNull()
+    expect(screen.getByText('No data to display')).toBeVisible()
   })
 })
 describe('ttcByFailureTypeChartQuery', () => {

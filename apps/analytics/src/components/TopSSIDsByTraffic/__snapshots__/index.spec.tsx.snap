@@ -49,7 +49,7 @@ exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
                 class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iVIXiF"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
                 >
                   <div
                     class="ant-space-item"

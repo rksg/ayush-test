@@ -4,7 +4,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
 <div
   aria-labelledby="test-id"
   aria-modal="true"
-  class="ant-modal"
+  class="ant-modal styledComponents__Modal-sc-k3durc-0 fZVPqM"
   role="dialog"
   style="width: 840px;"
 >
@@ -25,7 +25,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
       >
         Select APs
         <div
-          class="styledComponents__SubTitleWrapper-sc-k3durc-0 kpjPwS"
+          class="styledComponents__SubTitleWrapper-sc-k3durc-1 fnfMFP"
         >
           Define how this network will be activated on venue "My-Venue"
         </div>
