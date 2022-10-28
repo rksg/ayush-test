@@ -17,14 +17,16 @@ import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
 import BarChart              from '../Threshold/BarChart'
 import Histogram             from '../Threshold/Histogram'
+
+import HealthPill            from './Pill'
 import {
+  KpisHavingThreshold,
+  useGetKpiThresholdsQuery,
+  ThresholdsApiResponse,
   useFetchThresholdPermissionQuery,
   useSaveThresholdMutation
-} from '../Threshold/services'
-
-import HealthPill                                                               from './Pill'
-import { KpisHavingThreshold, useGetKpiThresholdsQuery, ThresholdsApiResponse } from './services'
-import KpiTimeseries                                                            from './Timeseries'
+} from './services'
+import KpiTimeseries from './Timeseries'
 export interface KpiThresholdType {
   timeToConnect: number;
   rss: number;

@@ -1,11 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, SerializedError } from '@reduxjs/toolkit'
 
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
-import { mockGraphqlQuery }    from '@acx-ui/test-utils'
-import { DateRange }           from '@acx-ui/utils'
+import { dataApi, dataApiURL }                   from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                       from '@acx-ui/analytics/utils'
+import { mockGraphqlMutation, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange, NetworkPath, NodeType }      from '@acx-ui/utils'
 
-import { timeseriesApi, histogramApi, getThresholdsApi } from './services'
+import { timeseriesApi, histogramApi, thresholdApi } from './services'
 
 describe('Services for health kpis', () => {
   const store = configureStore({
@@ -60,6 +60,107 @@ describe('Services for health kpis', () => {
       expect(data).toStrictEqual(expectedResult.timeSeries)
       expect(error).toBe(undefined)
     })
+
+    it('should return correct data for fetchThresholdPermission query', async () => {
+      const validPayload = {
+        path: [{ name: 'Network', type: 'Network' as NodeType }] as NetworkPath
+      }
+
+      const validData = {
+        ThresholdMutationAllowed: true
+      }
+
+      mockGraphqlQuery(dataApiURL, 'KPI', {
+        data: validData
+      })
+
+      const { status, data, error } = await store.dispatch(
+        thresholdApi.endpoints.fetchThresholdPermission.initiate({
+          path: validPayload.path
+        })
+      )
+
+      expect(status).toBe('fulfilled')
+      expect(data).toStrictEqual(validData)
+      expect(error).toBeUndefined()
+    })
+
+    it('should return error for fetchThresholdPermission query', async () => {
+      const validPayload = {
+        path: [{ name: 'Network', type: 'Network' as NodeType }] as NetworkPath
+      }
+
+      const invalidData = undefined
+
+      const mockedError = 'unexpected permission fetch error'
+
+      mockGraphqlQuery(dataApiURL, 'KPI', {
+        data: invalidData,
+        error: mockedError
+      })
+
+      const { status, data, error } = await store.dispatch(
+        thresholdApi.endpoints.fetchThresholdPermission.initiate({
+          path: validPayload.path
+        })
+      )
+
+      expect(status).toBe('rejected')
+      expect(data).toBeUndefined()
+      expect(error?.message).toMatch(mockedError)
+    })
+
+    it('should return correct data for saveThreshold mutation', async () => {
+      const validPayload = {
+        path: [{ name: 'Network', type: 'Network' as NodeType }] as NetworkPath
+      }
+
+      const validData = {
+        mutationAllowed: true
+      }
+
+      mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+        data: validData
+      })
+
+      const response = await store.dispatch(
+        thresholdApi.endpoints.saveThreshold.initiate({
+          path: validPayload.path,
+          name: 'apCapacity',
+          value: 30
+        })
+      )
+
+      expect(response).toBeDefined()
+      expect(response).toMatchObject({ data: validData })
+    })
+
+    it('should return error for saveThreshold mutation', async () => {
+      const validPayload = {
+        path: [{ name: 'Network', type: 'Network' as NodeType }] as NetworkPath
+      }
+
+      const invalidData = undefined
+
+      const mockedError = 'unexpected permission fetch error'
+
+      mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+        data: invalidData,
+        error: mockedError
+      })
+
+      const response = await store.dispatch(
+        thresholdApi.endpoints.saveThreshold.initiate({
+          path: validPayload.path,
+          name: 'apCapacity',
+          value: 30
+        })
+      )
+
+      const errResponse = response as unknown as SerializedError
+      expect(errResponse).toBeDefined()
+      expect(errResponse.message).toBeUndefined()
+    })
   })
   describe('Histogram', () => {
     const expectedResult = {
@@ -87,7 +188,7 @@ describe('Services for health kpis', () => {
   })
   describe('Get Thresholds', () => {
     afterEach(() => {
-      store.dispatch(getThresholdsApi.util.resetApiState())
+      store.dispatch(thresholdApi.util.resetApiState())
     })
     it('should return correct data', async () => {
       const expectedResult = {
@@ -99,7 +200,7 @@ describe('Services for health kpis', () => {
         data: expectedResult
       })
       const { status, data, error } = await store.dispatch(
-        getThresholdsApi.endpoints.getKpiThresholds.initiate(props)
+        thresholdApi.endpoints.getKpiThresholds.initiate(props)
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(expectedResult)
@@ -118,7 +219,7 @@ describe('Services for health kpis', () => {
         data: expectedResult
       })
       const { status, data, error } = await store.dispatch(
-        getThresholdsApi.endpoints.getKpiThresholds.initiate({ ...props,
+        thresholdApi.endpoints.getKpiThresholds.initiate({ ...props,
           kpis: ['timeToConnect', 'clientThroughput'] })
       )
       expect(status).toBe('fulfilled')
@@ -130,7 +231,7 @@ describe('Services for health kpis', () => {
         error: new Error('something went wrong!')
       })
       const { status, data, error } = await store.dispatch(
-        getThresholdsApi.endpoints.getKpiThresholds.initiate(props)
+        thresholdApi.endpoints.getKpiThresholds.initiate(props)
       )
       expect(status).toBe('rejected')
       expect(data).toBe(undefined)

@@ -2,6 +2,7 @@ import { gql } from 'graphql-request'
 
 import { dataApi }                    from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
+import { NetworkPath }                from '@acx-ui/utils'
 
 import { calculateGranularity } from '../../../utils'
 
@@ -26,6 +27,43 @@ export type KpiPayload = AnalyticsFilter & {
   kpi: string;
   threshold?: string;
   granularity?: string;
+}
+
+export type ConfigCode = keyof typeof kpiConfig
+
+export type ThresholdResponse = Partial<{
+  [k in ConfigCode]: {
+      value: number | null,
+      updateBy: string | null,
+      updateAt: string | null
+  }
+}>
+
+export type ThresholdPayload = {
+  path: NetworkPath,
+  configCode: ConfigCode[]
+}
+
+export type ThresholdPermissionResponse = {
+  mutationAllowed: boolean
+}
+
+export type ThresholdPermissionPayload = {
+  path: NetworkPath
+}
+
+export type ThresholdMutationPayload = {
+  path: NetworkPath,
+  name: ConfigCode,
+  value: number
+}
+
+export type ThresholdMutationResponse = {
+  data?: Partial<{
+    [k in ConfigCode]: {
+      success: boolean
+    }
+  }>
 }
 
 const getKPIMetric = (kpi: string, threshold?: string) : string => {
@@ -120,7 +158,7 @@ export type KpisHavingThreshold = 'timeToConnect' | 'clientThroughput'
 
 export type KpiThresholsPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
 
-export const getThresholdsApi = dataApi.injectEndpoints({
+export const thresholdApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     getKpiThresholds: build.query<
       ThresholdsApiResponse,
@@ -145,10 +183,53 @@ export const getThresholdsApi = dataApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'KPI_THRESHOLD_CONFIG' }]
+    }),
+    fetchThresholdPermission: build.query<
+    ThresholdPermissionResponse,
+    ThresholdPermissionPayload
+    >({
+      query: (payload) => ({
+        document: gql`
+        query KPI($path: [HierarchyNodeInput]) {
+          mutationAllowed: ThresholdMutationAllowed(networkPath: $path)
+        }
+        `,
+        variables: {
+          path: payload.path
+        }
+      })
+    }),
+    saveThreshold: build.mutation<
+    ThresholdMutationResponse,
+    ThresholdMutationPayload
+    >({
+      query: (payload) => ({
+        document: gql`
+        mutation SaveThreshold(
+            $name: String!
+            $value: Float!
+            $networkPath: [HierarchyNodeInput]
+          ) {
+            saveThreshold: KPIThreshold(name: $name, value: $value, networkPath: $networkPath) {
+              success
+            }
+          }
+        `,
+        variables: {
+          networkPath: payload.path,
+          name: payload.name,
+          value: payload.value
+        }
+      }),
+      invalidatesTags: [{ type: 'Monitoring', id: 'KPI_THRESHOLD_CONFIG' }]
     })
   })
 })
 
 export const { useKpiTimeseriesQuery } = timeseriesApi
 export const { useKpiHistogramQuery } = histogramApi
-export const { useGetKpiThresholdsQuery } = getThresholdsApi
+export const {
+  useGetKpiThresholdsQuery,
+  useFetchThresholdPermissionQuery,
+  useSaveThresholdMutation
+} = thresholdApi

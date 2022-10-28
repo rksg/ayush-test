@@ -4,7 +4,7 @@ import { Provider, store }                  from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { getThresholdsApi } from '../../pages/Health/Kpi/services'
+import { thresholdApi } from '../../pages/Health/Kpi/services'
 
 import VenueHealthWidget from './index'
 
@@ -23,7 +23,7 @@ describe('Health Widget', () => {
   }
 
   beforeEach(() =>
-    store.dispatch(getThresholdsApi.util.resetApiState())
+    store.dispatch(thresholdApi.util.resetApiState())
   )
 
   it('should render loader', () => {
