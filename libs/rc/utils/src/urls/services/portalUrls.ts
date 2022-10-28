@@ -1,4 +1,4 @@
-import { ApiInfo } from '../apiService'
+import { ApiInfo } from '../../apiService'
 
 export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   getAaaSetting: {

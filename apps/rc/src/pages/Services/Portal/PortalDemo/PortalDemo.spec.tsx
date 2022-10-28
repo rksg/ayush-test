@@ -191,7 +191,7 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getByRole('img',{ name: 'poweredimage' }))
     fireEvent.mouseLeave(screen.getByRole('img',{ name: 'poweredimage' }))
 
-    await userEvent.click(screen.getByText('Reset'))
+    fireEvent.click(screen.getByText('Reset'))
   })
 
   it('should render portal demo preview successfully', async () => {
@@ -220,6 +220,6 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getAllByText('Host Approval - Register/Confirm')[1])
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
-    await userEvent.click(screen.getAllByText('Terms & Conditions')[1])
-  })
+    fireEvent.click(screen.getAllByText('Terms & Conditions')[1])
+  }, 16000)
 })
