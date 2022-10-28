@@ -1,8 +1,5 @@
-import { useIntl } from 'react-intl'
-
-import { Card }              from '@acx-ui/components'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
-import { Provider }          from '@acx-ui/store'
+import { Card }     from '@acx-ui/components'
+import { Provider } from '@acx-ui/store'
 
 import AlarmWidget             from './components/AlarmWidget'
 import VenueAlarmDonut         from './components/AlarmWidget/VenueAlarmDonut'
@@ -12,8 +9,6 @@ import VenueDevicesWidget      from './components/DevicesDonut/VenueWidget'
 import Map                     from './components/Map'
 import TopologyFloorPlanWidget from './components/TopologyFloorPlanWidget'
 import Venues                  from './components/VenuesDonut'
-
-const SPLIT_NAME = 'sara-demo-toggle' // this is sample splitName, needs to be switched based on the epic level FF name
 
 const widgetsMap = {
   alarms: () => <AlarmWidget />,
@@ -29,16 +24,13 @@ const widgetsMap = {
 }
 
 function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {
-  const { $t } = useIntl()
-  const treatment = useSplitTreatment(SPLIT_NAME)
   const Widget = widgetsMap[name]
 
   return <Provider>
     { Widget
       ? <Widget />
       : <Card>
-        { treatment && name }
-        { !treatment && $t({ defaultMessage: 'Coming soon...' }) }
+        { name }
       </Card>
     }
   </Provider>
