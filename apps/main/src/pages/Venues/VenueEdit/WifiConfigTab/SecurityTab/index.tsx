@@ -1,6 +1,7 @@
 import { ReactNode, useContext, useEffect, useRef } from 'react'
 
 import { Form, FormItemProps, InputNumber, Select, Space, Tooltip } from 'antd'
+import _                                                            from 'lodash'
 import { FormattedMessage, useIntl }                                from 'react-intl'
 
 import { Fieldset, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
@@ -59,6 +60,14 @@ export function SecurityTab () {
       }
     }
   })
+
+  useEffect(() => {
+    if (selectOptions.length > 0) {
+      if (_.isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
+        formRef.current?.setFieldValue('roguePolicyId', selectOptions[0].key)
+      }
+    }
+  }, [selectOptions])
 
   useEffect(() => {
     if(dosProctectionData && venueRogueApData){
@@ -213,7 +222,7 @@ export function SecurityTab () {
             </Form.Item>
             <Form.Item
               name='roguePolicyId'
-              label={$t({ defaultMessage: 'Report SNR Threshold:' })}
+              label={$t({ defaultMessage: 'Rogue AP Classification Profile:' })}
               style={{ width: '200px' }}
               initialValue={selected}
             >

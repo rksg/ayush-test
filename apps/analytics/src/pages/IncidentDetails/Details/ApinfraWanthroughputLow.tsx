@@ -1,12 +1,8 @@
 import { unitOfTime } from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
-import {
-  calculateSeverity,
-  Incident,
-  shortDescription
-} from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
+import { calculateSeverity, Incident, shortDescription }                  from '@acx-ui/analytics/utils'
+import { PageHeader, SeverityPill, GridRow, GridCol, Card, NotAvailable } from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
@@ -70,10 +66,10 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '228px' }}>
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
           <TimeSeries
             incident={incident}
             charts={timeSeriesCharts}
@@ -81,8 +77,10 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
             buffer={buffer}
           />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Impacted Entities Section</div>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
+          <Card title={$t({ defaultMessage: 'Impacted APs' })} type='no-border'>
+            <NotAvailable/>
+          </Card>
         </GridCol>
       </GridRow>
     </>
