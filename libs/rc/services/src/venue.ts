@@ -203,7 +203,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
     }),
-    addFloorPlan: build.mutation<CommonResult, RequestPayload>({
+    addFloorPlan: build.mutation<FloorPlanDto, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addFloorplan,
           params)
@@ -230,12 +230,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateFloorPlan: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateFloorPlan, params)
+        const req = createHttpRequest(CommonUrlsInfo.updateFloorplan, params)
         return {
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
     }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {

@@ -86,8 +86,8 @@ export interface UploadUrlResponse {
 }
 export interface FloorPlanFormDto {
 	floorNumber: number;
-	id: string;
-	imageId: string;
+	id?: string;
+	imageId?: string;
 	imageName: string;
 	name: string;
 }

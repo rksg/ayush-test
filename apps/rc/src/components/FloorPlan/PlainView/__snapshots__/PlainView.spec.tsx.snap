@@ -25,20 +25,24 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
           class="ant-space-item"
           style="margin-right: 4px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </span>
+            <span>
+              Edit
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <span
           class="ant-space-item-split"
@@ -328,20 +332,24 @@ exports[`Floor Plan Plain View Should load image 1`] = `
           class="ant-space-item"
           style="margin-right: 4px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </span>
+            <span>
+              Edit
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <span
           class="ant-space-item-split"
@@ -376,7 +384,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
     class="styledComponents__ImageContainerWrapper-rlzd0s-6 jcaOhg"
   >
     <div
-      class="styledComponents__ImageContainer-rlzd0s-7 jWJHGm"
+      class="styledComponents__ImageContainer-rlzd0s-7 gGnYHE"
       data-testid="image-container"
     >
       <img
@@ -599,20 +607,24 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
           class="ant-space-item"
           style="margin-right: 4px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </span>
+            <span>
+              Edit
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <span
           class="ant-space-item-split"
@@ -903,20 +915,24 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
           class="ant-space-item"
           style="margin-right: 4px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </span>
+            <span>
+              Edit
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <span
           class="ant-space-item-split"
@@ -1206,20 +1222,24 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
           class="ant-space-item"
           style="margin-right: 4px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </span>
+            <span>
+              Edit
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <span
           class="ant-space-item-split"
@@ -1509,20 +1529,24 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
           class="ant-space-item"
           style="margin-right: 4px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </span>
+            <span>
+              Edit
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <span
           class="ant-space-item-split"
@@ -1557,7 +1581,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
     class="styledComponents__ImageContainerWrapper-rlzd0s-6 jcaOhg"
   >
     <div
-      class="styledComponents__ImageContainer-rlzd0s-7 ifQLMF"
+      class="styledComponents__ImageContainer-rlzd0s-7 gGnYHE"
       data-testid="image-container"
     >
       <img
@@ -1812,20 +1836,24 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
           class="ant-space-item"
           style="margin-right: 4px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </span>
+            <span>
+              Edit
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <span
           class="ant-space-item-split"
@@ -2115,20 +2143,24 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
           class="ant-space-item"
           style="margin-right: 4px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </span>
+            <span>
+              Edit
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <span
           class="ant-space-item-split"
@@ -2418,20 +2450,24 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
           class="ant-space-item"
           style="margin-right: 4px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Edit
-              </span>
-            </button>
-          </span>
+            <span>
+              Edit
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <span
           class="ant-space-item-split"
@@ -2466,7 +2502,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
     class="styledComponents__ImageContainerWrapper-rlzd0s-6 jcaOhg"
   >
     <div
-      class="styledComponents__ImageContainer-rlzd0s-7 jyYzPl"
+      class="styledComponents__ImageContainer-rlzd0s-7 jlAFgK"
       data-testid="image-container"
     >
       <img

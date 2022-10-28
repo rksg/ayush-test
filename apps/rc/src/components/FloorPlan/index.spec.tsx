@@ -5,7 +5,7 @@ import { CommonUrlsInfo, FloorPlanDto }                                     from
 import { Provider }                                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import FloorPlan from '.'
+import FloorPlan, { sortByFloorNumber } from '.'
 
 const list: FloorPlanDto[] = [
   {
@@ -46,6 +46,10 @@ describe('Floor Plans', () => {
       rest.delete(
         CommonUrlsInfo.deleteFloorPlan.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
+      ),
+      rest.put(
+        CommonUrlsInfo.updateFloorplan.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
     params = {
@@ -71,6 +75,9 @@ describe('Floor Plans', () => {
     fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
     await screen.findByText('Are you sure you want to delete this Floor Plan?')
 
+    fireEvent.click(screen.getByRole('button', { name: /Edit/i }))
+    await screen.findByText('Edit Floor Plan')
+
     const deleteFloorplanButton = await screen.findByText('Delete Floor Plan')
     fireEvent.click(deleteFloorplanButton)
 
@@ -83,4 +90,10 @@ describe('Floor Plans', () => {
 
     expect(asFragment()).toMatchSnapshot()
   })
+  it('test sortByFloorNumber function', async () => {
+    expect(sortByFloorNumber(list[1], list[0])).toEqual(1)
+    expect(sortByFloorNumber(list[0], list[1])).toEqual(-1)
+    expect(sortByFloorNumber(list[0], { ...list[1], floorNumber: 0 })).toEqual(0)
+  })
+
 })

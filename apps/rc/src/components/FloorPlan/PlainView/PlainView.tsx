@@ -135,11 +135,11 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
 
   function fitFloorplanImage () {
     if (imageMode !== ImageMode.FIT) {
-      const containerCoordsX = imageContainerRef?.current?.parentElement?.offsetWidth || 0
-      const containerCoordsY = imageContainerRef?.current?.parentElement?.offsetHeight || 0
+      const containerCoordsX = imageContainerRef?.current?.parentElement?.offsetWidth as number
+      const containerCoordsY = imageContainerRef?.current?.parentElement?.offsetHeight as number
 
-      const imageCoordsX = imageRef?.current?.offsetWidth || 0
-      const imageCoordsY = imageRef?.current?.offsetHeight || 0
+      const imageCoordsX = imageRef?.current?.offsetWidth as number
+      const imageCoordsY = imageRef?.current?.offsetHeight as number
 
 
       const differencePercentage = getImageFitPercentage(containerCoordsX,
@@ -173,6 +173,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
         <Col>
           <Space split={<Divider type='vertical' />}>
             <AddEditFloorplanModal
+              buttonTitle={$t({ defaultMessage: 'Edit' })}
               onAddEditFloorPlan={onEditFloorPlanHandler}
               isEditMode={true}
               selectedFloorPlan={selectedFloorPlan}/>

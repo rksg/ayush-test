@@ -62,20 +62,24 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 4px;"
             >
-              <span
-                style="cursor: not-allowed;"
+              <button
+                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                data-testid="AddEditLinks"
+                type="button"
               >
-                <button
-                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                  disabled=""
-                  style="pointer-events: none;"
-                  type="button"
-                >
-                  <span>
-                    Edit
-                  </span>
-                </button>
-              </span>
+                <span>
+                  Edit
+                </span>
+              </button>
+              <div
+                class="ant-modal-root"
+              >
+                <div
+                  class="ant-modal-wrap"
+                  style="display: none;"
+                  tabindex="-1"
+                />
+              </div>
             </div>
             <span
               class="ant-space-item-split"
@@ -344,38 +348,36 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           class="ant-space-item"
           style="margin-right: 24px;"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                + Add Floor Plan
-              </span>
-            </button>
-          </span>
+            <span>
+              + Add Floor Plan
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
         </div>
         <div
           class="ant-space-item"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Unplaced Devices (0)
-              </span>
-            </button>
-          </span>
+            <span>
+              Unplaced Devices (0)
+            </span>
+          </button>
         </div>
       </div>
     </div>

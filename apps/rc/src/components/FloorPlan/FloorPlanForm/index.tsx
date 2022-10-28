@@ -15,7 +15,7 @@ export default function FloorPlanForm ({ form, onFormSubmit, imageFile }: {
     onFormSubmit: Function,
     imageFile?: string }) {
 
-  const [file, setFile] = useState<File>()
+  const [file, setFile] = useState<File>({} as File)
   const { $t } = getIntl()
 
   const layout = {
@@ -33,10 +33,10 @@ export default function FloorPlanForm ({ form, onFormSubmit, imageFile }: {
     <Form {...layout}
       form={form}
       name='floor-plan-form'
+      data-testid='floor-plan-form'
       labelAlign='left'
       colon={false}
       onFinish={(values) => {
-        // TODO: upload file and then on upload success get url and add floorplan
         onFormSubmit({ formValues: values, file })
       }}>
       <Row gutter={[0, 24]}>
@@ -87,7 +87,9 @@ export default function FloorPlanForm ({ form, onFormSubmit, imageFile }: {
               { required: true, message: 'This field is required' }
             ]}
           >
-            <FloorplanUpload validateFile={validateFile} imageFile={imageFile}/>
+            <FloorplanUpload
+              validateFile={validateFile}
+              imageFile={imageFile}/>
           </Form.Item>
         </Col>
       </Row>

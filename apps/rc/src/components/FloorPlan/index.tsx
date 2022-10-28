@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { Empty, Space } from 'antd'
-import { isEmpty }      from 'lodash'
-import { useIntl }      from 'react-intl'
-import { useParams }    from 'react-router-dom'
+import { Empty, Space }   from 'antd'
+import { clone, isEmpty } from 'lodash'
+import { useIntl }        from 'react-intl'
+import { useParams }      from 'react-router-dom'
 
 import { Button, Loader, showActionModal }                                                                        from '@acx-ui/components'
 import { BulbOutlined }                                                                                           from '@acx-ui/icons'
@@ -15,6 +15,15 @@ import GalleryView           from './GalleryView/GalleryView'
 import PlainView             from './PlainView/PlainView'
 import * as UI               from './styledComponents'
 
+export function sortByFloorNumber (floor1: FloorPlanDto, floor2: FloorPlanDto) {
+  if (floor1.floorNumber < floor2.floorNumber) {
+    return -1
+  }
+  if (floor1.floorNumber > floor2.floorNumber) {
+    return 1
+  }
+  return 0
+}
 
 export default function FloorPlan () {
   const params = useParams()
@@ -24,12 +33,21 @@ export default function FloorPlan () {
 
   const [floorPlans, setFloorPlans] = useState<FloorPlanDto[]>()
   const [selectedFloorPlan, setSelectedFloorPlan] = useState({} as FloorPlanDto)
+  const [updatedFloorPlanName, setUpdatedFloorPlanName] = useState<string>()
 
   useEffect(() => {
     setFloorPlans([])
     if(floorPlanQuery?.data){
-      setFloorPlans(floorPlanQuery?.data)
-      setSelectedFloorPlan(floorPlanQuery?.data[0])
+      const queryData: FloorPlanDto[] = clone(floorPlanQuery?.data)
+      queryData.sort(sortByFloorNumber)
+      const _selectedFP = updatedFloorPlanName ?
+        queryData.filter((floor) => floor.name === updatedFloorPlanName)[0]
+        : queryData[0]
+
+      setTimeout(() => {
+        setFloorPlans(queryData)
+        setSelectedFloorPlan(_selectedFP)
+      }, 200)
     }
   }, [floorPlanQuery?.data])
 
@@ -69,7 +87,10 @@ export default function FloorPlan () {
     })
   }
 
-  const onAddEditFloorPlan = (floorPlan: FloorPlanFormDto, isEditMode: boolean) => {
+  const onAddEditFloorPlan = async (floorPlan: FloorPlanFormDto, isEditMode: boolean) => {
+
+    setUpdatedFloorPlanName(floorPlan.name)
+
     isEditMode ?
       updateFloorPlan({ params: { ...params, floorPlanId: floorPlan.id } , payload: floorPlan })
       : addFloorPlan({ params: { ...params } , payload: floorPlan })
@@ -77,12 +98,10 @@ export default function FloorPlan () {
 
   return (
     <Loader states={[floorPlanQuery,
-      {
-        isLoading: false,
-        isFetching: (
-          isDeleteFloorPlanUpdating || isAddFloorPlanUpdating || isUpdateFloorPlanUpdating
-        )
-      }]}>
+      { isLoading: false, isFetching: isDeleteFloorPlanUpdating },
+      { isLoading: false, isFetching: isAddFloorPlanUpdating },
+      { isLoading: false, isFetching: isUpdateFloorPlanUpdating }
+    ]}>
       {floorPlans?.length ?
         <UI.FloorPlanContainer>
           { showGalleryView ?
@@ -96,6 +115,7 @@ export default function FloorPlan () {
           }
           <UI.StyledSpace size={24}>
             <AddEditFloorplanModal
+              buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
               onAddEditFloorPlan={onAddEditFloorPlan}
               isEditMode={false}/>
             <Button size='small' type='link'>
@@ -113,6 +133,7 @@ export default function FloorPlan () {
             })}
           </Space>}>
           <AddEditFloorplanModal
+            buttonTitle={$t({ defaultMessage: 'Add Floor Plan' })}
             onAddEditFloorPlan={onAddEditFloorPlan}
             isEditMode={false}/>
         </Empty>

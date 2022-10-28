@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 
 import { Form, Modal }  from 'antd'
 import { FormInstance } from 'antd/es/form/Form'
+import { isEmpty }      from 'lodash'
 import { useParams }    from 'react-router-dom'
 
 import { Button }                                            from '@acx-ui/components'
@@ -10,8 +11,6 @@ import { FloorPlanDto, FloorPlanFormDto, UploadUrlResponse } from '@acx-ui/rc/ut
 import { getIntl }                                           from '@acx-ui/utils'
 
 import FloorPlanForm from '../FloorPlanForm'
-
-
 
 const useResetFormOnCloseModal = ({ form, open }: {
     form: FormInstance
@@ -28,15 +27,29 @@ const useResetFormOnCloseModal = ({ form, open }: {
   }, [form, prevOpen, open])
 }
 
-
-export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
-  isEditMode, selectedFloorPlan }: {
-  onAddEditFloorPlan: Function, isEditMode: boolean, selectedFloorPlan?: FloorPlanDto }) {
-  const [form] = Form.useForm()
-  const [open, setOpen] = useState(false)
-  const params = useParams()
+export const getFileExtension = function (fileName: string) {
   // eslint-disable-next-line max-len
   const extensionsRegex: RegExp = /(png|jpeg|jpg|gif|bmp|svg|log|txt|csv|pdf|doc|docx|xls|xlsx|xml|json|jfif|tiff)$/i
+  const matched = extensionsRegex.exec(fileName)
+  if (matched) {
+    return matched[0]
+  } else {
+    return ''
+  }
+}
+
+export const ModalContext = createContext({ clearOldFile: false })
+
+export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
+  isEditMode, selectedFloorPlan, buttonTitle }: {
+  onAddEditFloorPlan: Function,
+  isEditMode: boolean,
+  selectedFloorPlan?: FloorPlanDto,
+  buttonTitle: string }) {
+  const [form] = Form.useForm()
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const params = useParams()
 
   const { $t } = getIntl()
 
@@ -69,8 +82,10 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
     setOpen(false)
   }
 
-  const onFormSubmit = async function ({ formValues, file }: { formValues: any, file: File }) {
-    if (file) {
+  const onFormSubmit = async function ({ formValues, file }: {
+    formValues: FloorPlanFormDto, file: File }) {
+    setLoading(true)
+    if (!isEmpty(file)) {
       const extension: string = getFileExtension(file.name)
       const uploadUrl = await getUploadURL({
         params: { ...params },
@@ -86,7 +101,7 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
             imageName: formValues.imageName,
             name: formValues.name,
             floorNumber: formValues.floorNumber,
-            id: ''
+            id: selectedFloorPlan?.id as string || ''
           }
           onAddEditFloorPlan(floorPlan, isEditMode)
           setOpen(false)
@@ -105,31 +120,31 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
     }
   }
 
-  const getFileExtension = function (fileName: string) {
-    const matched = extensionsRegex.exec(fileName)
-    if (matched) {
-      return matched[0]
-    } else {
-      return ''
-    }
-  }
-
   return (
-    <Form.Provider>
-      <Button size={isEditMode ? 'middle' : 'small'} type='link' onClick={showUserModal}>
-        { !isEditMode ? $t({ defaultMessage: 'Add Floor Plan' })
-          : $t({ defaultMessage: 'Edit' })}</Button>
-      <Modal
-        title={!isEditMode ? $t({ defaultMessage: 'Add Floor Plan' })
-          : $t({ defaultMessage: 'Edit Floor Plan' })}
-        visible={open}
-        onOk={onOk}
-        okText={$t({ defaultMessage: 'Save' })}
-        onCancel={hideUserModal}>
-        <FloorPlanForm form={form}
-          onFormSubmit={onFormSubmit}
-          imageFile={isEditMode ? selectedFloorPlan?.imageUrl: ''}/>
-      </Modal>
-    </Form.Provider>
+    <ModalContext.Provider value={{ clearOldFile: !open }}>
+      <Form.Provider>
+        <Button data-testid='AddEditLinks'
+          size={isEditMode ? 'middle' : 'small'}
+          type='link'
+          onClick={showUserModal}>
+          { buttonTitle }
+        </Button>
+        <Modal
+          title={!isEditMode ? $t({ defaultMessage: 'Add Floor Plan' })
+            : $t({ defaultMessage: 'Edit Floor Plan' })}
+          visible={open}
+          onOk={onOk}
+          confirmLoading={loading}
+          okText={$t({ defaultMessage: 'Save' })}
+          onCancel={hideUserModal}
+          cancelButtonProps={{ disabled: loading }}
+          maskClosable={false}
+          getContainer={false}>
+          <FloorPlanForm form={form}
+            onFormSubmit={onFormSubmit}
+            imageFile={isEditMode ? selectedFloorPlan?.imageUrl: ''}/>
+        </Modal>
+      </Form.Provider>
+    </ModalContext.Provider>
   )
 }
