@@ -118,7 +118,7 @@ describe('RadioTab', () => {
     await userEvent.click(await section.findByRole('switch', { name: 'Enable 2.4 GHz:' }))
     const gain51024G = await section.findByTestId('gain24G')
     expect(gain51024G).toHaveValue('3') // reset to API value
-  }, 20000)
+  })
 
   it('should render External Antenna: T350SE & T300E correctly', async () => {
     render(<Provider>
@@ -153,7 +153,7 @@ describe('RadioTab', () => {
     await userEvent.click(await screen.findByRole('switch', { name: /Enable:/i }))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
-  }, 20000)
+  })
 
   it('should render Wi-Fi Radio Settings correctly', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(true)
@@ -195,5 +195,5 @@ describe('RadioTab', () => {
     await userEvent.click(transmitSelect)
     await userEvent.click((await screen.findAllByTitle('Auto'))[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
-  }, 20000)
+  })
 })
