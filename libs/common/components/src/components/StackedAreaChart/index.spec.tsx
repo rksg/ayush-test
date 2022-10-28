@@ -79,13 +79,13 @@ describe('StackedAreaChart',() => {
       tooltipTotalTitle={'total'}
     />)
     // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-30')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-1')}"]`))
       .not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-70')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-2')}"]`))
       .not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-50')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-3')}"]`))
       .toBeNull()
   })
 
