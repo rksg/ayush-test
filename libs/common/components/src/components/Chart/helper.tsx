@@ -4,18 +4,18 @@ import {
   YAXisComponentOption,
   RegisteredSeriesOption,
   TooltipComponentOption
-} from 'echarts'
-import { CallbackDataParams } from 'echarts/types/dist/shared'
-import { FormatXMLElementFn } from 'intl-messageformat'
-import moment                 from 'moment-timezone'
-import { renderToString }     from 'react-dom/server'
+}                                                   from 'echarts'
+import { CallbackDataParams, InsideDataZoomOption } from 'echarts/types/dist/shared'
+import { FormatXMLElementFn }                       from 'intl-messageformat'
+import moment                                       from 'moment-timezone'
+import { renderToString }                           from 'react-dom/server'
 import {
   MessageDescriptor,
   IntlShape,
   RawIntlProvider,
   FormattedMessage,
   defineMessage
-} from 'react-intl'
+}                                                   from 'react-intl'
 
 import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import { TimeStamp }           from '@acx-ui/types'
@@ -29,6 +29,19 @@ import {
 import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
+
+export const qualitativeColorSet = () => [
+  cssStr('--acx-viz-qualitative-1'),
+  cssStr('--acx-viz-qualitative-2'),
+  cssStr('--acx-viz-qualitative-3'),
+  cssStr('--acx-viz-qualitative-4'),
+  cssStr('--acx-viz-qualitative-5'),
+  cssStr('--acx-viz-qualitative-6'),
+  cssStr('--acx-viz-qualitative-7'),
+  cssStr('--acx-viz-qualitative-8'),
+  cssStr('--acx-viz-qualitative-9'),
+  cssStr('--acx-viz-qualitative-10')
+]
 
 export type TooltipFormatterParams = Exclude<
   TooltipComponentFormatterCallbackParams,
@@ -82,8 +95,9 @@ export const legendTextStyleOptions = () => ({
 export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
   id: 'zoom',
   type: 'inside',
+  filterMode: 'none' as InsideDataZoomOption['filterMode'],
   zoomLock: true,
-  minValueSpan: 2 * Math.max(...data.map(datum =>
+  minValueSpan: Math.max(...data.map(datum =>
     moment.duration(moment(datum.data[1][0])
       .diff(moment(datum.data[0][0])))
       .asMilliseconds()
@@ -93,8 +107,11 @@ export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
 export const xAxisOptions = () => ({
   axisLine: {
     lineStyle: {
-      color: 'transparent'
+      color: cssStr('--acx-neutrals-40')
     }
+  },
+  axisTick: {
+    show: false
   },
   axisPointer: {
     type: 'line',
@@ -139,7 +156,12 @@ export const barChartSeriesLabelOptions = () => ({
 } as RegisteredSeriesOption['bar']['label'])
 
 export const yAxisOptions = () => ({
-  boundaryGap: [0, '10%']
+  boundaryGap: [0, '10%'],
+  splitLine: {
+    lineStyle: {
+      color: cssStr('--acx-neutrals-20')
+    }
+  }
 } as YAXisComponentOption)
 
 export const axisLabelOptions = () => ({
