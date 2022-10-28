@@ -47,7 +47,7 @@ describe('Pill with kpi threshold', () => {
       </Provider>
     )
     await screen.findByText('Time To Connect')
-    expect(screen.getByText('20% meets goal')).toBeVisible()
+    expect(await screen.findByText('20% meets goal')).toBeVisible()
   })
   it('should render pill with data (success above threshold)', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
@@ -82,7 +82,7 @@ describe('Pill with kpi threshold', () => {
       </Provider>
     )
     await screen.findByText('Client RSS')
-    expect(screen.getByText('50% meets goal')).toBeVisible()
+    expect(await screen.findByText('50% meets goal')).toBeVisible()
   })
   it('should render pill with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
@@ -99,7 +99,7 @@ describe('Pill with kpi threshold', () => {
       </Provider>
     )
     await screen.findByText('Time To Connect')
-    expect(screen.getByText('0% meets goal')).toBeVisible()
+    expect(await screen.findByText('0% meets goal')).toBeVisible()
   })
 
 })
@@ -125,7 +125,7 @@ describe('Pill without kpi threshold', () => {
 
   })
 
-  it('should render loader', () => {
+  it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleTS }
     })
@@ -139,7 +139,7 @@ describe('Pill without kpi threshold', () => {
         />
       </Provider>
     )
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
   it('should render pill with data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
@@ -156,7 +156,7 @@ describe('Pill without kpi threshold', () => {
       </Provider>
     )
     await screen.findByText('Online APs')
-    expect(screen.getByText('80%')).toBeVisible()
+    expect(await screen.findByText('80%')).toBeVisible()
   })
   it('should render pill with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
@@ -173,7 +173,7 @@ describe('Pill without kpi threshold', () => {
       </Provider>
     )
     await screen.findByText('Online APs')
-    expect(screen.getByText('0%')).toBeVisible()
+    expect(await screen.findByText('0%')).toBeVisible()
   })
   it('should render pill with correct tooltip', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
@@ -192,7 +192,7 @@ describe('Pill without kpi threshold', () => {
     const { tooltip } = kpiConfig['onlineAPs'].pill
     const { $t } = getIntl()
     await screen.findByText('Online APs')
-    const infoIcon = screen.getByText('InformationOutlined.svg')
+    const infoIcon = await screen.findByText('InformationOutlined.svg')
     await userEvent.hover(infoIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent($t(tooltip, { br: '\n' }).replace('\n', '').replace('\n', ' '))
@@ -213,6 +213,6 @@ describe('Pill without kpi threshold', () => {
       </Provider>
     )
     await screen.findByText('Online APs')
-    expect(screen.getByText('80%')).toBeVisible()
+    expect(await screen.findByText('80%')).toBeVisible()
   })
 })

@@ -1,16 +1,21 @@
-import { act } from 'react-dom/test-utils'
-
-import { dataApiURL }                                                       from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                                                  from '@acx-ui/analytics/utils'
-import { BrowserRouter as Router }                                          from '@acx-ui/react-router-dom'
-import { Provider, store }                                                  from '@acx-ui/store'
-import { fireEvent, mockGraphqlMutation, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import { TimeStampRange }                                                   from '@acx-ui/types'
-import { DateRange }                                                        from '@acx-ui/utils'
+import { dataApiURL }              from '@acx-ui/analytics/services'
+import { AnalyticsFilter }         from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+import { Provider, store }         from '@acx-ui/store'
+import {
+  fireEvent,
+  mockGraphqlMutation,
+  mockGraphqlQuery,
+  render,
+  screen,
+  waitFor
+} from '@acx-ui/test-utils'
+import { TimeStampRange } from '@acx-ui/types'
+import { DateRange }      from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import { timeseriesApi, histogramApi } from './services'
+import { timeseriesApi, histogramApi, thresholdApi } from './services'
 
 import KpiSection, { defaultData, getDefaultThreshold, getApplyCallback, getResetCallback } from '.'
 
@@ -19,6 +24,7 @@ describe('Kpi Section', () => {
   beforeEach(() => {
     store.dispatch(histogramApi.util.resetApiState())
     store.dispatch(timeseriesApi.util.resetApiState())
+    store.dispatch(thresholdApi.util.resetApiState())
   })
   const sampleTS = {
     time: [
@@ -33,7 +39,7 @@ describe('Kpi Section', () => {
   const filters = {
     startDate: '2022-04-07T09:15:00.000Z',
     endDate: '2022-04-07T10:15:00.000Z',
-    path: [{ type: 'network', name: 'Network' }],
+    path: [{ type: 'ap', name: 'Network' }],
     range: DateRange.last24Hours
   } as AnalyticsFilter
   const healthContext = {
@@ -60,7 +66,7 @@ describe('Kpi Section', () => {
       </HealthPageContext.Provider>
     </Provider></Router>)
     await screen.findByText('Time To Connect')
-    expect(screen.getByText('20% meets goal')).toBeVisible()
+    expect(await screen.findByText('20% meets goal')).toBeVisible()
   })
 
   it('should render kpis for tab with thresholds', async () => {
@@ -92,7 +98,7 @@ describe('Kpi Section', () => {
       </HealthPageContext.Provider>
     </Provider></Router>)
     await screen.findByText('Time To Connect')
-    expect(screen.getByText('20% meets goal')).toBeVisible()
+    expect(await screen.findByText('20% meets goal')).toBeVisible()
   })
 
 
@@ -126,20 +132,31 @@ describe('Kpi Section', () => {
       </HealthPageContext.Provider>
     </Provider></Router>)
     await screen.findByText('Time To Connect')
-    expect(screen.getByText('20% meets goal')).toBeVisible()
+    expect(await screen.findByText('20% meets goal')).toBeVisible()
 
-    const resets = await screen.findAllByRole('button', { name: 'Reset' })
-    expect(resets.length).toBeGreaterThan(0)
-    const resetBtn = resets[0]
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => { fireEvent.click(resetBtn) })
+    const resetBtns = await screen.findAllByRole('button', { name: 'Reset' })
+    expect(resetBtns.length).toBe(4)
+    const resetBtn = resetBtns[0]
+    expect(resetBtn).toBeDefined()
+    fireEvent.click(resetBtn)
 
-    const applys = await screen.findAllByRole('button', { name: 'Apply' })
-    expect(applys.length).toBeGreaterThan(0)
-    const applyBtn = applys[0]
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => { fireEvent.click(applyBtn) })
-  }, 20000)
+    const sliders = await screen.findAllByRole('slider')
+    expect(sliders.length).toBe(4)
+    const mockedSliders = sliders.map((slider) => slider)
+    const values = mockedSliders.map(slider => slider.style.left)
+    await waitFor(async () => {
+      expect(values.find((val) => val === '50%')).toMatch('50%')
+    })
+
+    const applyBtns = await screen.findAllByRole('button', { name: 'Apply' })
+    expect(applyBtns.length).toBe(4)
+    const applyBtn = applyBtns[0]
+    expect(applyBtn).toBeDefined()
+    fireEvent.click(applyBtn)
+    await waitFor(async () => {
+      expect(await screen.findByText('Threshold set succesfully.')).toBeVisible()
+    })
+  })
 
   describe('getDefaultThreshold', () => {
     it('should match defaultData on undefined fetchedData', () => {

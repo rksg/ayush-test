@@ -49,7 +49,7 @@ describe('Threshold barchart', () => {
 
   })
 
-  it('should render loader', () => {
+  it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleTS }
     })
@@ -60,7 +60,7 @@ describe('Threshold barchart', () => {
         threshold={thresholdMap['timeToConnect']}
       />
     </Provider>)
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {

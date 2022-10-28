@@ -172,14 +172,14 @@ function Histogram ({
         showToast({
           type: 'success',
           content: $t({
-            defaultMessage: 'Threshold set succesfully'
+            defaultMessage: 'Threshold set succesfully.'
           })
         })
       } catch {
         showToast({
           type: 'error',
           content: $t({
-            defaultMessage: 'Error setting threshold, please try again later'
+            defaultMessage: 'Error setting threshold, please try again later.'
           })
         })
       }
