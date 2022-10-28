@@ -27,11 +27,6 @@ import { formatter }                                          from '@acx-ui/util
 
 import { useTopSwitchesByTrafficQuery } from './services'
 
-export const barColors = [
-  cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-30')
-]
-
 const seriesMapping: BarChartData['seriesEncode'] = [
   { x: 'Transmitted', y: 'name', seriesName: 'Transmitted' },
   { x: 'Received', y: 'name', seriesName: 'Received' }
@@ -99,7 +94,6 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
             data && data.source?.length
               ?
               <BarChart
-                barColors={barColors}
                 barWidth={8}
                 data={data}
                 grid={{ right: '7%' }}

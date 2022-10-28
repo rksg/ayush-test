@@ -30,6 +30,19 @@ import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
+export const qualitativeColorSet = () => [
+  cssStr('--acx-viz-qualitative-1'),
+  cssStr('--acx-viz-qualitative-2'),
+  cssStr('--acx-viz-qualitative-3'),
+  cssStr('--acx-viz-qualitative-4'),
+  cssStr('--acx-viz-qualitative-5'),
+  cssStr('--acx-viz-qualitative-6'),
+  cssStr('--acx-viz-qualitative-7'),
+  cssStr('--acx-viz-qualitative-8'),
+  cssStr('--acx-viz-qualitative-9'),
+  cssStr('--acx-viz-qualitative-10')
+]
+
 export type TooltipFormatterParams = Exclude<
   TooltipComponentFormatterCallbackParams,
   Array<unknown>
@@ -95,8 +108,11 @@ export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
 export const xAxisOptions = () => ({
   axisLine: {
     lineStyle: {
-      color: 'transparent'
+      color: cssStr('--acx-neutrals-40')
     }
+  },
+  axisTick: {
+    show: false
   },
   axisPointer: {
     type: 'line',
@@ -141,7 +157,12 @@ export const barChartSeriesLabelOptions = () => ({
 } as RegisteredSeriesOption['bar']['label'])
 
 export const yAxisOptions = () => ({
-  boundaryGap: [0, '10%']
+  boundaryGap: [0, '10%'],
+  splitLine: {
+    lineStyle: {
+      color: cssStr('--acx-neutrals-20')
+    }
+  }
 } as YAXisComponentOption)
 
 export const axisLabelOptions = () => ({
