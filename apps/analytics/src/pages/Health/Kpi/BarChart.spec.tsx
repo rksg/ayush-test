@@ -5,9 +5,9 @@ import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { timeseriesApi } from '../Kpi/services'
-
 import BarChart, { formatYDataPoint } from './BarChart'
+import { timeseriesApi }              from './services'
+
 
 
 const filters = {

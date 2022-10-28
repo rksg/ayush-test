@@ -15,9 +15,9 @@ import { GridCol, GridRow } from '@acx-ui/components'
 
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
-import BarChart              from '../Threshold/BarChart'
-import Histogram             from '../Threshold/Histogram'
 
+import BarChart              from './BarChart'
+import Histogram             from './Histogram'
 import HealthPill            from './Pill'
 import {
   KpisHavingThreshold,
