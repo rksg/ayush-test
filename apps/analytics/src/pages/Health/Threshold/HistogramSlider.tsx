@@ -16,10 +16,13 @@ function HistogramSlider ({
   onSliderChange: ((value: number) => void) | undefined,
   shortXFormat: CallableFunction
 }) {
-
-  const marks = splits.reduce((acc, value,index) => ({
+  const marks = splits.reduce((acc, value, index) => ({
     ...acc,
-    [index+1]: { label: <UI.SliderLabel>{shortXFormat(value)}</UI.SliderLabel> }
+    [index+1]: {
+      label: <UI.SliderLabel isSelected={index + 1 === sliderValue}>
+        {shortXFormat(value)}
+      </UI.SliderLabel>
+    }
   }), {})
   return (
     <UI.StyledSlider

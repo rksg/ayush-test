@@ -64,9 +64,6 @@ function Histogram ({
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
-  const [sliderValue, setSliderValue] = useState(
-    splits.indexOf(thresholdValue) + 1
-  )
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
 
   /* istanbul ignore next */
@@ -76,7 +73,6 @@ function Histogram ({
       newValue === 0
     )
       return
-    setSliderValue(newValue)
     setThresholdValue(splitsAfterIsReverseCheck[newValue - 1])
     setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
   }
@@ -96,7 +92,6 @@ function Histogram ({
     }
   )
   const onReset = () => {
-    setSliderValue(splits.indexOf(histogram?.initialThreshold ) + 1)
     setThresholdValue(histogram?.initialThreshold )
     setKpiThreshold({ ...thresholds, [kpi]: histogram?.initialThreshold })
   }
@@ -107,12 +102,10 @@ function Histogram ({
 
     if(splitsAfterIsReverseCheck.indexOf(reformattedBarData) === -1){
       const selectSecondLastBar = splitsAfterIsReverseCheck.length - 1
-      setSliderValue(selectSecondLastBar + 1)
       setThresholdValue(splitsAfterIsReverseCheck[selectSecondLastBar] as unknown as string)
       setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[selectSecondLastBar] })
       return
     }
-    setSliderValue(splitsAfterIsReverseCheck.indexOf(reformattedBarData) + 1)
     setThresholdValue(reformattedBarData as unknown as string)
     setKpiThreshold({ ...thresholds, [kpi]: reformattedBarData })
   }
@@ -182,7 +175,7 @@ function Histogram ({
                     width={width}
                     height={height}
                     onSliderChange={onSliderChange}
-                    sliderValue={sliderValue}
+                    sliderValue={splits.indexOf(thresholdValue) + 1}
                     shortXFormat={histogram?.shortXFormat}
                   />
                 </>
