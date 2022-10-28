@@ -60,7 +60,9 @@ describe('PortalDemo', () => {
       </PortalFormContext.Provider>
     )
     expect(asFragment()).toMatchSnapshot()
-    const file = new File(['hello'], '/Users/sdcui/Desktop/back.jpg', { type: 'image/jpg' })
+    const file = new File(['logo ruckus'],
+      'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png',
+      { type: 'image/png' })
     await userEvent.click(screen.getByRole('img',{ name: 'background setting' }))
     await userEvent.click(screen.getByText('Set background color'))
     await userEvent.click(screen.getByTitle('#D0021B'))
