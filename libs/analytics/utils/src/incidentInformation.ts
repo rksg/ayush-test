@@ -137,10 +137,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Infrastructure' }),
     subCategory: defineMessage({ defaultMessage: 'Service Availability' }),
     shortDescription: defineMessage({
-      defaultMessage: 'High AP-Controller connection failures in {scope}'
+      defaultMessage: 'High AP-RUCKUS Cloud connection failures in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'High AP-Controller connection failures in {scope}.'
+      defaultMessage: 'High AP-RUCKUS Cloud connection failures in {scope}.'
     }),
     incidentType: 'network'
   },

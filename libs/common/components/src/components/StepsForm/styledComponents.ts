@@ -1,6 +1,8 @@
 import { Typography }                     from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
+import { Subtitle } from '../Subtitle'
+
 const stepCompletedStyle = css`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
     &::after {
@@ -221,3 +223,49 @@ export const Title = styled(Typography.Title).attrs({ level: 3 })`
   margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
 `
 
+export const SectionTitle = styled(Subtitle).attrs({ level: 3 })`
+  &.ant-typography {
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--acx-neutrals-30);
+    margin-bottom: 32px;
+  }
+`
+
+export const FieldLabel = styled.label<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: ${props => props.width} 1fr;
+  align-items: baseline;
+`
+
+
+export const MultiSelect = styled.div`
+  div.ant-checkbox-group {
+    display: flex;
+    > label.ant-checkbox-wrapper {
+      font-size: 12px;
+      align-items: center;
+      margin: 0 3px;
+      width: auto;
+      padding: 4px 12px;
+      border: 1px solid var(--acx-primary-black);
+      border-radius: 4px;
+      background-color: white;
+
+      > span:first-child {
+        display: none;
+      }
+    }
+
+    > label.ant-checkbox-wrapper-checked {
+      border: 1px solid var(--acx-primary-black);
+      border-radius: 4px;
+      background-color: var(--acx-primary-black);
+      color: white;
+    }
+
+    > label.ant-checkbox-wrapper:last-child {
+      border-right-width: 1px;
+    }
+  }
+`

@@ -12,11 +12,11 @@ function testFormat (
   }
 }
 describe('formatter', () => {
-  it('returns null if format is not supported', () => {
-    expect(formatter('something' as keyof typeof formats)(1)).toBe(null)
+  it("returns '-' if format is not supported", () => {
+    expect(formatter('something' as keyof typeof formats)(1)).toBe('-')
   })
-  it('Should take care of null values correctly', () => {
-    expect(formatter('decibelFormat')(null)).toBe(null)
+  it("Should take care of '-' values correctly", () => {
+    expect(formatter('decibelFormat')(null)).toBe('-')
   })
   it('decibelFormat', () => testFormat('decibelFormat', {
     '7.131': '7 dB',
@@ -52,18 +52,18 @@ describe('formatter', () => {
   }))
   it('networkSpeedFormat', () => testFormat('networkSpeedFormat', {
     7.131: '7.13 Kbps',
-    123456: '121 Mbps',
-    1000000000: '954 Gbps',
-    26784000000: '24.9 Tbps',
-    12345: '12.1 Mbps',
-    123456789: '118 Gbps',
-    123000000000: '115 Tbps',
-    123000000000000: '112 Pbps',
-    123000000000000000: '109 Ebps',
-    123000000000000000000: '107 Zbps',
-    1025: '1 Mbps',
-    1024: '1 Mbps',
-    1023: '1020 Kbps'
+    123456: '123 Mbps',
+    1000000000: '1 Tbps',
+    26784000000: '26.8 Tbps',
+    12345: '12.3 Mbps',
+    123456789: '123 Gbps',
+    123000000000: '123 Tbps',
+    123000000000000: '123 Pbps',
+    123000000000000000: '123 Ebps',
+    123000000000000000000: '123 Zbps',
+    1025: '1.02 Mbps',
+    1024: '1.02 Mbps',
+    1023: '1.02 Mbps'
   }))
   it('radioFormat', () => testFormat('radioFormat', {
     2.4: '2.4 GHz',
@@ -165,7 +165,66 @@ describe('formatter', () => {
       [2678400000 + 86400000 * 4]: '1 mo 4 d',
       31622400000: '1 y',
       [31622400000 + 2678400000 * 8 + 86400000 * 4]: '1 y 8 mo',
-      [31622400000 + 2678400000 * 13]: '2 y 1 mo'
+      [31622400000 + 2678400000 * 13]: '2 y 1 mo',
+      [0 +
+        31622400000 + // 2 yr
+        2678400000 * 13 + // 1 mo
+        86400000 * 4 + // 4 d
+        3600000 * 1 + // 1 h
+        60000 * 21 + // 21 m
+        30000 + // 30s
+        500 // 500 ms
+      ]: '2 y 1 mo'
+    })
+  })
+  describe('longDurationFormat', () => {
+    const testFormat = (
+      format: 'longDurationFormat',
+      values: Record<string | number | symbol, string>,
+      tz?: string
+    ) => Object.entries(values).forEach(([value, expected]) => {
+      it(`convert ${value} to ${expected}`, () => {
+        const result = formatter(format)(parseFloat(value), tz)
+        expect(result).toEqual(expected)
+      })
+    })
+    testFormat('longDurationFormat', {
+      0: '0',
+      1: '1 millisecond',
+      2: '2 milliseconds',
+      2.54: '2.54 milliseconds',
+      2.54999: '2.55 milliseconds',
+      41: '41 milliseconds',
+      123: '123 milliseconds',
+      1000: '1 second',
+      1234: '1.23 seconds',
+      1600: '1.6 seconds',
+      7000: '7 seconds',
+      57111: '57.1 seconds',
+      [60000 * 1]: '1 minute',
+      [60000 * 21]: '21 minutes',
+      [60000 * 61]: '1 hour 1 minute',
+      [3600000 * 1]: '1 hour',
+      [3600000 * 23]: '23 hours',
+      [3600000 * 20 + 1000 * 37]: '20 hours', // seconds are not significant here
+      [3600000 * 20 + 60000 * 37]: '20 hours 37 minutes',
+      86400000: '1 day',
+      [86400000 * 8]: '8 days',
+      [86400000 + 3600000 * 3 + 60000 * 4]: '1 day 3 hours', // only 2 significant
+      2678400000: '1 month',
+      [86400000 * 60 + 86400000 * 4]: '2 months 3 days', // weird behavior of moment
+      31622400000: '1 year',
+      [31622400000 + 2678400000 * 8 + 86400000 * 4]: '1 year 8 months',
+      [31622400000 + 2678400000 * 13]: '2 years 1 month',
+      [0 +
+        31622400000 + // 2 yr
+        2678400000 * 13 + // 1 mo
+        86400000 * 4 + // 4 d
+        3600000 * 1 + // 1 h
+        60000 * 21 + // 21 m
+        30000 + // 30s
+        500 // 500 ms
+      ]: '2 years 1 month'
     })
   })
   describe('dateTimeFormats', () => {

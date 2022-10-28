@@ -1,11 +1,12 @@
 import { useState } from 'react'
 
+import { Tooltip }                                   from 'antd'
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { noDataSymbol, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, Loader }         from '@acx-ui/components'
-import { formatter, intlFormats }           from '@acx-ui/utils'
+import { noDataSymbol, useAnalyticsFilter }        from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, Loader }                from '@acx-ui/components'
+import { formatter, intlFormats, notAvailableMsg } from '@acx-ui/utils'
 
 import { useSummaryQuery }                        from './services'
 import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
@@ -17,21 +18,27 @@ interface BoxProps {
   suffix?: string,
   isOpen: boolean,
   onClick: () => void
+  disabled?: boolean
 }
 
-const Box = (props: BoxProps) => {
+export const Box = (props: BoxProps) => {
   const { $t } = useIntl()
-  return (
-    <Wrapper $type={props.type} onClick={props.onClick}>
-      <Statistic
-        $type={props.type}
-        title={$t(props.title)}
-        value={props.value}
-        suffix={props.suffix}
-      />
-      {props.isOpen ? <UpArrow $type={props.type}/> : <DownArrow $type={props.type}/>}
-    </Wrapper>
-  )
+  const box = <Wrapper
+    $type={props.type}
+    $disabled={props.disabled}
+    onClick={props.disabled ? undefined : props.onClick}
+  >
+    <Statistic
+      $type={props.type}
+      title={$t(props.title)}
+      value={props.value}
+      suffix={props.suffix}
+    />
+    {props.isOpen ? <UpArrow $type={props.type}/> : <DownArrow $type={props.type}/>}
+  </Wrapper>
+  return props.disabled
+    ? <Tooltip title={$t(notAvailableMsg)}>{box}</Tooltip>
+    : box
 }
 
 export const SummaryBoxes = () => {
@@ -45,7 +52,10 @@ export const SummaryBoxes = () => {
     end: filters.endDate
   }
 
+  // TODO: remove istanbul after feature available
+  /* istanbul ignore next */
   const toggleStats = () => setOpenType(openType !== 'stats' ? 'stats' : 'none')
+  /* istanbul ignore next */
   const toggleTtc = () => setOpenType(openType !== 'ttc' ? 'ttc' : 'none')
 
   const queryResults = useSummaryQuery(payload, {
@@ -108,7 +118,7 @@ export const SummaryBoxes = () => {
     },
     {
       type: 'averageTtc',
-      title: defineMessage({ defaultMessage: 'Avg. Time to Connect' }),
+      title: defineMessage({ defaultMessage: 'Avg Time To Connect' }),
       isOpen: openType === 'ttc',
       onClick: toggleTtc,
       value: queryResults.data.averageTtc
@@ -120,7 +130,7 @@ export const SummaryBoxes = () => {
       <GridRow>
         {mapping.map((box)=>
           <GridCol key={box.type} col={{ span: 6 }}>
-            <Box {...box} />
+            <Box disabled {...box} />
           </GridCol>
         )}
       </GridRow>

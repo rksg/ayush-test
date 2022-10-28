@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { CommonUrlsInfo, WifiUrlsInfo  } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
 import {
   mockServer,
   render, screen,
@@ -143,5 +143,5 @@ describe('NetworkForm', () => {
     const button = screen.getByRole('button', { name: /venues/i })
     await button.click()
     await userEvent.click(screen.getByText('Finish'))
-  })
+  }, 20000)
 })

@@ -7,10 +7,9 @@ import { Provider, store }         from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render, screen,
-  act,
   fireEvent,
   waitForElementToBeRemoved,
-  cleanup
+  mockGraphqlMutation
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
@@ -127,13 +126,14 @@ const filters : IncidentFilter = {
   range: DateRange.last24Hours,
   filter: {}
 }
+
+const unmutedIncidents = incidentTests.filter(val => !val.isMuted)
+
 describe('IncidentTableWidget', () => {
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
-
-  afterEach(() => cleanup())
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
@@ -158,7 +158,7 @@ describe('IncidentTableWidget', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await screen.findAllByText('P4')
-    expect(screen.getAllByText('P4')).toHaveLength(incidentTests.length)
+    expect(screen.getAllByText('P4')).toHaveLength(unmutedIncidents.length)
   })
 
   it('should render empty table on undefined incidents', async () => {
@@ -166,7 +166,7 @@ describe('IncidentTableWidget', () => {
       data: { network: { hierarchyNode: { incidents: undefined } } }
     })
 
-    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
+    const { container } = render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false
@@ -174,20 +174,21 @@ describe('IncidentTableWidget', () => {
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
-    await screen.findByText('No Data')
-    expect(screen.getByText('No Data').textContent).toBe('No Data')
+    // jest not rendering sticky position
+    // await screen.findByText('No Data')
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.querySelectorAll('.ant-table-expanded-row-fixed')).toHaveLength(1)
   })
 
   const columnHeaders = [
-    'Severity',
-    'Date',
-    'Duration',
-    'Description',
-    'Category',
-    'Client Impact',
-    'Impacted Clients',
-    'Scope'
+    { name: 'Severity', count: 2 },
+    { name: 'Date', count: 1 },
+    { name: 'Duration', count: 1 },
+    { name: 'Description', count: 1 },
+    { name: 'Category', count: 2 },
+    { name: 'Client Impact', count: 1 },
+    { name: 'Impacted Clients', count: 1 },
+    { name: 'Scope', count: 1 }
   ]
 
   it('should render column header', async () => {
@@ -209,8 +210,8 @@ describe('IncidentTableWidget', () => {
 
     for (let i = 0; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
-      await screen.findByText(header)
-      expect(screen.getByText(header).textContent).toMatch(header)
+      const currHeader = await screen.findAllByText(header.name)
+      expect(currHeader).toHaveLength(header.count)
     }
   })
 
@@ -227,32 +228,11 @@ describe('IncidentTableWidget', () => {
         }
       }
     })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
-    const priorityHeader = columnHeaders[0]
-    const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
-    expect(caretDown).toHaveLength(1)
-
-    fireEvent.click(await screen.findByText(priorityHeader))
-    fireEvent.click(await screen.findByText(priorityHeader))
-    const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
-    expect(caretUp).toHaveLength(1)
-
-    fireEvent.click(await screen.findByText(priorityHeader))
-
-    for (let i = 1; i < columnHeaders.length; i++) {
-      const header = columnHeaders[i]
-
-      fireEvent.click(await screen.findByText(header))
-      const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
-      expect(caretUp).toHaveLength(1)
-
-      fireEvent.click(await screen.findByText(header))
-      const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
-      expect(caretDown).toHaveLength(2)
-
-      fireEvent.click(await screen.findByText(header))
+    for (let i = 0; i < columnHeaders.length; i++) {
+      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1))
+      await screen.findAllByRole('img', { hidden: false, name: 'caret-up' })
+      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1))
+      await screen.findAllByRole('img', { hidden: false, name: 'caret-down' })
     }
   })
 
@@ -270,16 +250,22 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
-    const hiddenCheckboxes =
-      await screen.findAllByRole('radio', { hidden: true, checked: false })
-
+    const hiddenCheckboxes = await screen.findAllByRole('radio', { hidden: true, checked: false })
     expect(hiddenCheckboxes).toHaveLength(2)
 
-    fireEvent.click(await screen.findByRole('button', { name: /Mute/i }))
+    fireEvent.click(hiddenCheckboxes[0])
+    mockGraphqlMutation(dataApiURL, 'MutateIncident', {
+      data: {
+        toggleMute: {
+          success: true,
+          errorMsg: 'No Error',
+          errorCode: '0'
+        }
+      }
+    })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Mute' }))
     expect(screen.getByRole('alert')).toBeInTheDocument()
-    // add test case for muting
   })
 
   const hiddenColumnHeaders = [
@@ -302,7 +288,11 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))
+    // reset severity header
+    const headerList = await screen.findAllByText(columnHeaders[0].name)
+    expect(headerList.length).toBeGreaterThan(0)
+    const header = headerList[headerList.length - 1]
+    fireEvent.click(header)
 
     for (let i = 0; i < hiddenColumnHeaders.length; i++) {
       const header = hiddenColumnHeaders[i]
@@ -311,26 +301,75 @@ describe('IncidentTableWidget', () => {
       expect(settingsButton).toBeTruthy()
       fireEvent.click(settingsButton)
 
-      const settingsElem = await screen.findByText(header)
-      expect(settingsElem).toBeTruthy()
-      fireEvent.click(settingsElem)
+      const allHeaderElem = await screen.findAllByText(header)
+      const elems = allHeaderElem.filter(elem => elem.className.includes('setting'))
+      expect(elems.length).toBeGreaterThanOrEqual(1)
+      const exposeTitleCheckbox = elems[0]
 
-      const elems = await screen.findAllByText(header)
-      expect(elems).toHaveLength(2)
-      const titleElem = elems[0]
+      fireEvent.click(exposeTitleCheckbox)
 
-      act(() => titleElem.click())
-      expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-up' }))
-        .toHaveLength(1)
+      const headerElems = await screen.findAllByText(header)
+      expect(headerElems.length).toBeGreaterThanOrEqual(1)
+      const titleElems = headerElems.filter(elem => elem.className.includes('column-title'))
+      expect(titleElems.length).toBeGreaterThanOrEqual(1)
+      const titleElem = titleElems[0]
 
-      act(() => titleElem.click())
-      expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-down' }))
-        .toHaveLength(2)
+      fireEvent.click(titleElem)
 
-      act(() => titleElem.click())
+      const downCaret = await screen.findAllByRole('img', { hidden: false, name: 'caret-up' })
+      expect(downCaret.length).toBe(1)
+
+      fireEvent.click(titleElem)
+
+      const upCaret = await screen.findAllByRole('img', { hidden: false, name: 'caret-down' })
+      expect(upCaret.length).toBe(1)
+      fireEvent.click(titleElem)
     }
 
   })
+
+  it('should render muted incidents & reset to default', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+
+    const before = await screen.findAllByRole('radio', { hidden: true, checked: false })
+    expect(before).toHaveLength(2)
+
+    const settingsButton = await screen.findByText('SettingsOutlined.svg')
+    expect(settingsButton).toBeDefined()
+    fireEvent.click(settingsButton)
+
+    const showMutedIncidents = await screen.findByText('Show Muted Incidents')
+    expect(showMutedIncidents).toBeDefined()
+    fireEvent.click(showMutedIncidents)
+
+    const afterShowMuted = await screen.findAllByRole('radio', { hidden: true, checked: false })
+    expect(afterShowMuted).toHaveLength(3)
+
+    // check the action says umnute:
+    fireEvent.click(afterShowMuted[0])
+    await screen.findByRole('button', { name: 'Unmute' })
+
+    fireEvent.click(settingsButton)
+    const resetButton = await screen.findByText('Reset to default')
+    expect(resetButton).toBeDefined()
+    fireEvent.click(resetButton)
+
+    const afterReset = await screen.findAllByRole('radio', { hidden: true, checked: false })
+    expect(afterReset).toHaveLength(2)
+  })
+
   it('should render drawer when click on description', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
@@ -392,7 +431,7 @@ describe('IncidentTableWidget', () => {
         'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
       )
     )
-    fireEvent.click(await screen.findByRole('button', { name: /close/i }))
+    fireEvent.click(await screen.findByText('CloseSymbol.svg'))
     expect(screen.queryByText('Root cause:')).toBeNull()
   })
 

@@ -19,6 +19,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUseNavigate
 }))
 jest.mock('./ConnectedClientsOverTime', () => () => <div>Summary TimeSeries</div>)
+jest.mock('./Kpi', () => () => <div>Kpi Section</div>)
 
 jest.mock('./SummaryBoxes', () => ({
   SummaryBoxes: () => <div data-testid='Summary Boxes' />
@@ -44,24 +45,23 @@ describe('HealthPage', () => {
     expect(screen.getByText('Summary TimeSeries')).toBeVisible()
     expect(screen.getByText('Overview')).toBeVisible()
     expect(screen.getByText('Customized SLA Threshold')).toBeVisible()
-    expect(screen.getByText('overview')).toBeVisible()
-    expect(screen.getByText('Threshold Content')).toBeVisible()
+    expect(screen.getByText('Kpi Section')).toBeVisible()
   })
   it('should render default tab when activeTab param is not set', async () => {
     const params = { tenantId: 'tenant-id' }
     render(<Provider><HealthPage /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    expect(screen.getByText('overview')).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    expect(screen.getByText('Overview')).toBeVisible()
   })
   it('should render other tab', async () => {
     const params = { activeTab: 'connection', tenantId: 'tenant-id' }
     render(<Provider><HealthPage /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    expect(screen.getByText('connection')).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    expect(screen.getByText('Connection')).toBeVisible()
   })
   it('should handle tab changes', async () => {
     render(<Provider><HealthPage /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     fireEvent.click(screen.getByText('Connection'))
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/analytics/health/tab/connection`,

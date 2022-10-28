@@ -1,28 +1,32 @@
-import { forwardRef, useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
+import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
 import NetworkHistoryWidget  from '../../../components/NetworkHistory'
 import { HealthPageContext } from '../HealthPageContext'
 
 
-const ConnectedClientsOverTime = forwardRef<ReactECharts>((
-  _props,
-  ref
-) => {
+const ConnectedClientsOverTime = () => {
   const healthFilter = useContext(HealthPageContext)
-  const { startDate, endDate, range, path, timeWindow, setTimeWindow } = healthFilter
-  const filters = { startDate, endDate, range, path }
-
+  const { startDate, endDate, range, path, timeWindow, setTimeWindow, filter } = healthFilter
+  const filters = { startDate, endDate, range, path, filter }
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = 'timeSeriesGroup'
+    }
+  }
+  useEffect(() => { connect('timeSeriesGroup') }, [])
   return (
     <NetworkHistoryWidget
       filters={filters}
-      ref={ref}
+      ref={connectChart}
       brush={{ timeWindow, setTimeWindow }}
       type='no-border'
       hideTitle
       hideIncidents
     />
-  )})
+  )}
 
 export default ConnectedClientsOverTime

@@ -5,29 +5,29 @@ import {
 } from 'react-intl'
 
 import {
-  calculateSeverity,
   Incident,
+  IncidentSeverities,
   noDataSymbol,
-  useShortDescription
+  shortDescription
 } from '@acx-ui/analytics/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { formatter }     from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { IncidentTableRow } from './services'
+import * as UI              from './styledComponents'
 
 export type GetIncidentBySeverityProps = {
-  value: number,
+  severityLabel: string,
   id: string
 }
 
 export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
-  const { value, id } = props
+  const { severityLabel, id } = props
   const basePath = useTenantLink('/analytics/incidents/')
-
-  const severity = calculateSeverity(value)
-
   return <UI.UnstyledLink to={{ ...basePath, pathname: `${basePath.pathname}/${id}` }}>
-    <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
+    <UI.SeveritySpan severity={severityLabel as IncidentSeverities}>
+      {severityLabel}
+    </UI.SeveritySpan>
   </UI.UnstyledLink>
 }
 
@@ -37,9 +37,7 @@ export type FormatDateProps = {
 
 export const FormatDate = (props: FormatDateProps) => {
   const { datetimestamp } = props
-  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
-  if (formattedDatetime === null) return <span>{noDataSymbol}</span>
-  const timeStamp = formattedDatetime as string
+  const timeStamp = formatter('dateTimeFormat')(datetimestamp)
   return <span>{timeStamp}</span>
 }
 
@@ -64,7 +62,7 @@ export interface IncidentTableDescriptionProps {
 
 export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) => {
   const { incident, onClickDesc } = props
-  const shortDesc = useShortDescription(incident)
+  const shortDesc = shortDescription(incident)
   return (
     <UI.DescriptionSpan
       onClick={() => onClickDesc(incident)}
@@ -103,4 +101,15 @@ export const severitySort = (a?: unknown, b?: unknown) => {
   if (isDefined && c > d) return 1
   if (isDefined && c < d) return -1
   return 0
+}
+
+export const filterMutedIncidents = (data?: IncidentTableRow[]) => {
+  if (!data) return []
+  const unmutedIncidents = data
+    .filter(incident => !incident.isMuted)
+    .map(datum => ({
+      ...datum,
+      children: datum.children?.filter(child => !child.isMuted)
+    }))
+  return unmutedIncidents
 }

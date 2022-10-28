@@ -9,6 +9,7 @@ import { QuestionMarkCircleOutlined }                                           
 import { useLazyNetworkListQuery }                                                                 from '@acx-ui/rc/services'
 import { NetworkTypeEnum, WifiNetworkMessages, checkObjectNotExists, hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
 import { useParams }                                                                               from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                                                                         from '@acx-ui/utils'
 
 import { networkTypesDescription, networkTypes } from '../contentsMap'
 import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
@@ -102,8 +103,7 @@ export function NetworkDetailForm () {
                     <Radio key={type} value={type} disabled={disabled}>
                       <Tooltip
                         title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
-                          .indexOf(type) > -1 ?
-                          intl.$t({ defaultMessage: 'Not available in Beta1' }) : ''}>
+                          .indexOf(type) > -1 ? intl.$t(notAvailableMsg) : ''}>
                         {intl.$t(networkTypes[type])}
                         <RadioDescription>
                           {intl.$t(networkTypesDescription[type])}

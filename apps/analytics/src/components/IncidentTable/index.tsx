@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 
-import { Tooltip }                                  from 'antd'
+import { Checkbox, Tooltip }                        from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
@@ -8,15 +8,19 @@ import {
   noDataSymbol,
   IncidentFilter,
   getRootCauseAndRecommendations,
-  useShortDescription,
+  shortDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
-import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
-import { formatter }                         from '@acx-ui/utils'
+import { Loader, TableProps, Drawer } from '@acx-ui/components'
+import { useTenantLink, Link }        from '@acx-ui/react-router-dom'
+import { formatter }                  from '@acx-ui/utils'
 
-import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
-import * as UI                                                       from './styledComponents'
+import {
+  useIncidentsListQuery,
+  useMuteIncidentsMutation,
+  IncidentTableRow
+} from './services'
+import * as UI           from './styledComponents'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -24,8 +28,11 @@ import {
   ShortIncidentDescription,
   severitySort,
   dateSort,
-  defaultSort
+  defaultSort,
+  filterMutedIncidents
 } from './utils'
+
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
   const { $t } = useIntl()
@@ -40,7 +47,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   const wlanInfo = (dominant && dominant.ssid)
     ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
     : ''
-  const desc = useShortDescription(props.selectedIncidentToShowDescription)
+  const desc = shortDescription(props.selectedIncidentToShowDescription)
   return (
     <UI.IncidentDrawerContent>
       <UI.IncidentCause>{desc}</UI.IncidentCause>
@@ -61,30 +68,45 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const queryResults = useIncidentsListQuery(filters)
   const basePath = useTenantLink('/analytics/incidents/')
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
+  const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
-  const mutedKeysFilter = (data: IncidentNodeData) => {
-    return data.filter((row) => row.isMuted === true).map((row) => row.id)
-  }
+  const [muteIncident] = useMuteIncidentsMutation()
+  const [selectedRowData, setSelectedRowData] = useState<{
+    id: string,
+    code: string,
+    severityLabel: string,
+    isMuted: boolean
+  }[]>([])
 
-  const rowActions: TableProps<Incident>['rowActions'] = [
+  const selectedIncident = selectedRowData[0]
+  const data = (showMuted)
+    ? queryResults.data
+    : filterMutedIncidents(queryResults.data)
+
+  const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
-      label: $t(defineMessage({ defaultMessage: 'Mute' })),
-      onClick: () => {
-        // TODO: to be updated for muting
+      label: $t(selectedIncident?.isMuted
+        ? defineMessage({ defaultMessage: 'Unmute' })
+        : defineMessage({ defaultMessage: 'Mute' })
+      ),
+      onClick: async () => {
+        const { id, code, severityLabel, isMuted } = selectedIncident
+        await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
+        setSelectedRowData([])
       }
     }
   ]
 
-  const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = [
+  const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = useMemo(() => [
     {
       title: $t(defineMessage({ defaultMessage: 'Severity' })),
       width: 80,
       dataIndex: 'severityLabel',
       key: 'severity',
-      render: (_, value) => <GetIncidentBySeverity value={value.severity} id={value.id}/>,
+      render: (_, value) =>
+        <GetIncidentBySeverity severityLabel={value.severityLabel} id={value.id}/>,
       sorter: {
-        compare: (a, b) => severitySort(a.severity, b.severity),
-        multiple: 1
+        compare: (a, b) => severitySort(a.severity, b.severity)
       },
       defaultSortOrder: 'descend',
       fixed: 'left',
@@ -102,8 +124,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         </Link>
       },
       sorter: {
-        compare: (a, b) => dateSort(a.endTime, b.endTime),
-        multiple: 2
+        compare: (a, b) => dateSort(a.endTime, b.endTime)
       },
       fixed: 'left'
     },
@@ -114,8 +135,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       key: 'duration',
       render: (_, value) => formatter('durationFormat')(value.duration),
       sorter: {
-        compare: (a, b) => defaultSort(b.duration, a.duration),
-        multiple: 3
+        compare: (a, b) => defaultSort(b.duration, a.duration)
       }
     },
     {
@@ -130,9 +150,9 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         />
       ),
       sorter: {
-        compare: (a, b) => defaultSort(a.description, b.description),
-        multiple: 4
+        compare: (a, b) => defaultSort(a.description, b.description)
       },
+      ellipsis: true,
       searchable: true
     },
     {
@@ -141,8 +161,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'category',
       key: 'category',
       sorter: {
-        compare: (a, b) => defaultSort(a.category as string, b.category as string),
-        multiple: 5
+        compare: (a, b) => defaultSort(a.category as string, b.category as string)
       },
       filterable: true
     },
@@ -152,8 +171,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: {
-        compare: (a, b) => defaultSort(a.subCategory as string, b.subCategory as string),
-        multiple: 6
+        compare: (a, b) => defaultSort(a.subCategory as string, b.subCategory as string)
       },
       show: false
     },
@@ -163,8 +181,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'clientImpact',
       key: 'clientImpact',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.clientImpact, b.clientImpact),
-        multiple: 7
+        compare: (a, b) => clientImpactSort(a.clientImpact, b.clientImpact)
       }
     },
     {
@@ -173,8 +190,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'impactedClients',
       key: 'impactedClients',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.impactedClients, b.impactedClients),
-        multiple: 8
+        compare: (a, b) => clientImpactSort(a.impactedClients, b.impactedClients)
       },
       align: 'center'
     },
@@ -184,13 +200,12 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'scope',
       key: 'scope',
       render: (_, value ) => {
-        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue, intl)}>
+        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue)}>
           {value.scope}
         </Tooltip>
       },
       sorter: {
-        compare: (a, b) => defaultSort(a.scope, b.scope),
-        multiple: 9
+        compare: (a, b) => defaultSort(a.scope, b.scope)
       },
       searchable: true
     },
@@ -200,32 +215,49 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'type',
       key: 'type',
       sorter: {
-        compare: (a, b) => defaultSort(a.type, b.type),
-        multiple: 10
+        compare: (a, b) => defaultSort(a.type, b.type)
       },
       show: false,
       filterable: true
     }
-  ]
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], []) // '$t' 'basePath' 'intl' are not changing
 
   return (
     <Loader states={[queryResults]}>
-      <Table
+      <UI.IncidentTableWrapper
         type='tall'
-        dataSource={queryResults?.data}
+        dataSource={data}
         columns={ColumnHeaders}
         rowActions={rowActions}
         rowSelection={{
           type: 'radio',
-          defaultSelectedRowKeys: queryResults.data
-            ? mutedKeysFilter(queryResults.data)
-            : undefined
+          selectedRowKeys: selectedRowData.map(val => val.id),
+          onChange: (_, [row]) => {
+            row && setSelectedRowData([{
+              id: row.id,
+              code: row.code,
+              severityLabel: row.severityLabel,
+              isMuted: row.isMuted
+            }])
+          }
         }}
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
-        ellipsis={true}
         indentSize={6}
+        onResetState={() => {
+          setShowMuted(false)
+          setSelectedRowData([])
+        }}
+        extraSettings={[
+          <Checkbox
+            onChange={(e: CheckboxChangeEvent) => setShowMuted(e.target.checked)}
+            checked={showMuted}
+            children={$t({ defaultMessage: 'Show Muted Incidents' })}
+          />
+        ]}
+        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
       />
       {drawerSelection &&
       <Drawer

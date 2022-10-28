@@ -94,6 +94,7 @@ export interface Venue {
   deepVenue?: NetworkVenue
   disabledActivation: boolean
   networkId? : string
+  activatedApsId?: string[]
 }
 
 export interface AlarmBase {
@@ -297,7 +298,7 @@ export interface CloudpathServer {
     id: string
     primary: RadiusService
   }
-  accountingRadiu?: {
+  accountingRadius?: {
     id: string
     primary: RadiusService
   }

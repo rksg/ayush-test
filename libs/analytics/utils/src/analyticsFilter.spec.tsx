@@ -1,25 +1,23 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
-import { BrowserRouter } from '@acx-ui/react-router-dom'
+import { useAnalyticsFilter } from './analyticsFilter'
 
-import { useAnalyticsFilter, AnalyticsFilterProvider } from './analyticsFilter'
-
+const original = Date.now
 describe('useAnalyticsFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
+
+  afterAll(() => Date.now = original)
+
   it('should return correct value', () => {
-    const { result } = renderHook(useAnalyticsFilter)
-    let isCallableFn = false
-    if (typeof result.current.setNetworkPath === 'function') {
-      result.current.setNetworkPath()
-      isCallableFn = true
-    }
-    expect(isCallableFn).toBeTruthy()
-    result.current.setNetworkPath()
+    const { result } = renderHook(useAnalyticsFilter, {
+      wrapper: ({ children }) => <MemoryRouter>{children}</MemoryRouter>
+    })
+    expect(result.current.setNetworkPath).toBeDefined()
     expect(result.current.filters).toEqual({
       path: [{ name: 'Network', type: 'network' }],
       startDate: '2021-12-31T00:00:00+00:00',
@@ -27,9 +25,7 @@ describe('useAnalyticsFilter', () => {
       range: 'Last 24 Hours'
     })
   })
-})
 
-describe('AnalyticsFilterProvider', () => {
   const filter = {
     path: [
       { type: 'network', name: 'Network' },
@@ -44,11 +40,12 @@ describe('AnalyticsFilterProvider', () => {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
     }
-    const { asFragment } = render(<BrowserRouter>
-      <AnalyticsFilterProvider>
-        <Component />
-      </AnalyticsFilterProvider>
-    </BrowserRouter>)
+    const { asFragment } = render(<MemoryRouter initialEntries={[{
+      pathname: '/analytics/incidents',
+      search: ''
+    }]}>
+      <Component />
+    </MemoryRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('changes filter value', () => {
@@ -56,14 +53,16 @@ describe('AnalyticsFilterProvider', () => {
       const { filters, raw, setNetworkPath } = useAnalyticsFilter()
       useEffect(() => {
         setNetworkPath(filters.path, raw)
-      })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [])
       return <div>{JSON.stringify(filters)}</div>
     }
-    const { asFragment } = render(<BrowserRouter>
-      <AnalyticsFilterProvider>
-        <Component />
-      </AnalyticsFilterProvider>
-    </BrowserRouter>)
+    const { asFragment } = render(<MemoryRouter initialEntries={[{
+      pathname: '/analytics/incidents',
+      search: ''
+    }]}>
+      <Component />
+    </MemoryRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('gets initial value from search parameters', () => {
@@ -73,12 +72,128 @@ describe('AnalyticsFilterProvider', () => {
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
-        pathname: '/incidents',
+        pathname: '/analytics/incidents',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
-        <AnalyticsFilterProvider>
-          <Component />
-        </AnalyticsFilterProvider>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set filter with switches when search parameters has switches', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'switchGroup', name: 'switchGroup' },
+        { type: 'switch', name: 'D8:38:FC:36:78:D0' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/incidents',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set filter with switchGroup & zone', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/incidents',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should set filter to default when select path does not have switch or AP', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'someType', name: 'someValue' },
+        { type: 'randomType', name: 'randomValue' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/incidents',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set path to default when path is health and selected node is switch', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set filters correctly path is health and selected node is zone', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'Zone' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()

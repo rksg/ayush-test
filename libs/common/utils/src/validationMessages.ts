@@ -58,6 +58,42 @@ export const validationMessages = {
   hasDollarSign: defineMessage({
     defaultMessage: '"$(" is not allowed',
     description: 'Validation - dollar sign checks'
+  }),
+  invalidNotAllDigits: defineMessage({
+    defaultMessage: 'Cannot be composed of ALL digits, e.g., 12345',
+    description: 'Validation - Cannot be composed of ALL digits'
+  }),
+  excludeExclamationRegExp: defineMessage({
+    defaultMessage: 'Cannot contain Exclamation mark(!), double quotes and space',
+    description: 'Validation - Cannot contain Exclamation mark(!), double quotes and space'
+  }),
+  excludeQuoteRegExp: defineMessage({
+    defaultMessage: 'Cannot contain double quote and space',
+    description: 'Validation - Cannot contain double quote and space'
+  }),
+  excludeSpaceRegExp: defineMessage({
+    defaultMessage: 'Cannot contain space',
+    description: 'Validation - Cannot contain space'
+  }),
+  excludeSpaceExclamationRegExp: defineMessage({
+    defaultMessage: 'Cannot contain Exclamation mark(!) and space',
+    description: 'Validation - Cannot contain Exclamation mark(!) and space'
+  }),
+  portRegExp: defineMessage({
+    defaultMessage: 'Please enter a valid number between 0 and 65535',
+    description: 'Validation - Please enter a valid port number between 0 and 65535'
+  }),
+  validateUsername: defineMessage({
+    defaultMessage: 'The local username cannot be \'admin\'',
+    description: 'Validation - The local username cannot be \'admin\''
+  }),
+  validateUserPassword: defineMessage({
+    defaultMessage: 'Please enter a valid password',
+    description: 'Validation - Please enter a valid password'
+  }),
+  vlanRange: defineMessage({
+    defaultMessage: 'VLAN ID must be between 1 and 4094',
+    description: 'Validation - VLAN range checks'
   })
 }
 

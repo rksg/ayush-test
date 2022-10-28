@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
-
+import { validationMessages }                                 from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -225,7 +225,7 @@ export function MoreSettingsForm (props: {
               rules={[
                 { required: true }, {
                   type: 'number', max: 4094, min: 1,
-                  message: $t({ defaultMessage: 'VLAN ID must be between 1 and 4094' })
+                  message: $t(validationMessages.vlanRange)
                 }]}
               style={{ marginBottom: '15px' }}
               children={<InputNumber style={{ width: '80px' }} />}
@@ -363,6 +363,7 @@ export function MoreSettingsForm (props: {
             style={{ marginBottom: '15px' }}
             children={
               <Select
+                data-testid='mgmtTxRateSelect'
                 disabled={enableOfdmOnly ||
                   (bssMinimumPhyRate !== BssMinRateEnum.VALUE_NONE)}
                 defaultValue={MgmtTxRateEnum.VALUE_1}
@@ -402,7 +403,7 @@ export function MoreSettingsForm (props: {
           name={['wlan','advancedCustomization','enableNeighborReport']}
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
-          initialValue={false}
+          initialValue={true}
           children={
             <Checkbox children={$t({ defaultMessage: 'Enable 802.11k neighbor reports' })} />
           }
