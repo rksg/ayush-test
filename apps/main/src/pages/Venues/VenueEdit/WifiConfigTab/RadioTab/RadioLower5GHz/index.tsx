@@ -142,7 +142,7 @@ export function RadioLower5GHz () {
 
   return (
     <>
-      <Row gutter={20}>
+      <Row gutter={20} data-testid='radio-l5g-tab'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: '5GHz settings:' })}

@@ -72,7 +72,7 @@ export function Radio24GHz () {
 
   return (
     <>
-      <Row gutter={20}>
+      <Row gutter={20} data-testid='radio-24g-tab'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: 'Channel selection method:' })}
