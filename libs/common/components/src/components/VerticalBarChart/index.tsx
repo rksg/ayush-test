@@ -82,7 +82,7 @@ export function useOnBarAreaClick <BarData> (
 export function VerticalBarChart<TChartData extends BarChartData>
 ({
   data,
-  barColors = [cssStr('--acx-accents-blue-50')],
+  barColors = [cssStr('--acx-viz-qualitative-1')],
   barWidth = 20,
   dataFormatter = formatter('countFormat'),
   yAxisProps,

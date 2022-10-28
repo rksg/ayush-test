@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, DisabledButton } from '@acx-ui/components'
+import { Button, DisabledButton, PageHeader } from '@acx-ui/components'
 import { ClockOutlined }                      from '@acx-ui/icons'
 import { useVenueDetailsHeaderQuery }         from '@acx-ui/rc/services'
 import { VenueDetailHeader }                  from '@acx-ui/rc/utils'

@@ -3,20 +3,13 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, getSeriesData }                         from '@acx-ui/analytics/utils'
-import { Card, Loader, MultiLineTimeSeriesChart, cssStr, NoData } from '@acx-ui/components'
-import { formatter }                                              from '@acx-ui/utils'
+import { AnalyticsFilter, getSeriesData }                 from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { formatter }                                      from '@acx-ui/utils'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 
 type Key = keyof Omit<ConnectedClientsOverTimeData, 'time'>
-
-const lineColors = [
-  cssStr('--acx-accents-blue-30'),
-  cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-50'),
-  cssStr('--acx-semantics-yellow-40')
-]
 
 function ConnectedClientsOverTimeWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
@@ -43,7 +36,6 @@ function ConnectedClientsOverTimeWidget ({ filters }: { filters : AnalyticsFilte
               <MultiLineTimeSeriesChart
                 style={{ width, height }}
                 data={queryResults.data}
-                lineColors={lineColors}
               />
               : <NoData/>
           )}
