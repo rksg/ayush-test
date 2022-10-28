@@ -11,6 +11,9 @@ const { mockInstances } = require('@googlemaps/jest-mocks')
 const { Loader } = require('@googlemaps/js-api-loader')
 const { rest } = require('msw')
 const nodeCrypto = require('crypto')
+const { configure } = require('@testing-library/dom')
+
+configure({ asyncUtilTimeout: 3000 })
 
 jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
