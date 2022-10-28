@@ -15,8 +15,6 @@ import PortalFormContext         from '../PortalForm/PortalFormContext'
 
 import PortalDemo from './PortalDemo'
 
-
-
 const mockDemo = {
   welcomeText: 'Welcome to the Guest Access login page',
   welcomeColor: 'var(--acx-primary-black)',
@@ -50,20 +48,16 @@ const mockDemo = {
   }
 }
 
-
 describe('PortalDemo', () => {
 
   it('should render portal demo successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
     const { asFragment } = render(
       <PortalFormContext.Provider value={{ error: true }}>
         <Form>
           <PortalDemo value={mockDemo} />
         </Form>
-      </PortalFormContext.Provider>,
-      {
-        route: { params }
-      }
+      </PortalFormContext.Provider>
     )
     expect(asFragment()).toMatchSnapshot()
     await userEvent.click(screen.getByRole('img',{ name: 'background setting' }))
@@ -195,16 +189,12 @@ describe('PortalDemo', () => {
   }, 15000)
 
   it('should render portal demo preview successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const { asFragment } = render(
       <Provider>
         <Form>
           <PortalDemo value={mockDemo} isPreview={true}/>
         </Form>
-      </Provider>,
-      {
-        route: { params }
-      }
+      </Provider>
     )
     expect(asFragment()).toMatchSnapshot()
     await userEvent.click(screen.getAllByText('Click Through')[0])

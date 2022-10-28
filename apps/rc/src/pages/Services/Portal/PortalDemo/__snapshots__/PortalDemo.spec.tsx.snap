@@ -126,6 +126,7 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
       >
         <section
           class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-12 jQmKeP"
+          isbg="false"
         >
           <img
             alt="Wifi4eu"
@@ -384,6 +385,7 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
       >
         <section
           class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-12 jQmKeP"
+          isbg="false"
         >
           <img
             alt="Wifi4eu"

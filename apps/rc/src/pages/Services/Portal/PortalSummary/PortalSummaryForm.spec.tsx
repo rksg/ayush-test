@@ -3,12 +3,13 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo,
+import {
+  CommonUrlsInfo,
   defaultComDisplay,
   GuestNetworkTypeEnum
 }     from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
-import { render, mockServer, screen } from '@acx-ui/test-utils'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import Photo                     from '../../../../assets/images/portal-demo/main-photo.svg'
 import Powered                   from '../../../../assets/images/portal-demo/powered-logo-img.svg'
@@ -16,8 +17,6 @@ import Logopng                   from '../../../../assets/images/portal-demo/sma
 import { PortalDemoDefaultSize } from '../../commonUtils'
 
 import { PortalSummaryForm } from './PortalSummaryForm'
-
-
 
 const list = {
   totalCount: 2,
@@ -104,13 +103,13 @@ const mockSummary = {
 describe('SummaryForm', () => {
 
   it('should render portal summary successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
+        CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(list))
       )
     )
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const { asFragment } = render(
       <Provider>
         <Form>
@@ -118,7 +117,7 @@ describe('SummaryForm', () => {
         </Form>
       </Provider>,
       {
-        route: { params }
+        route: { params,path: '/:tenantId/:networkId' }
       }
     )
 

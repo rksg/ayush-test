@@ -108,8 +108,8 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   background-repeat: no-repeat;
   height:auto;
 `
-export const LayoutViewContent = styled(AntLayout)<{ isBg: boolean | null }>`
-  ${props=>props.isBg?css`opacity:0.8;`:css`opacity:1;`}
+export const LayoutViewContent = styled(AntLayout)<{ isbg: string | null }>`
+  ${props=>props.isbg === 'true'?css`opacity:0.8;`:css`opacity:1;`}
   padding-top:3px;
   width:425px;
   max-width:600px;

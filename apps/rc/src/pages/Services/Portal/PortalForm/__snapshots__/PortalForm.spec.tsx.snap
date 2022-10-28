@@ -440,6 +440,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                 >
                                   <section
                                     class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-12 jQmKeP"
+                                    isbg="false"
                                   >
                                     <div
                                       class="styledComponents__FieldTextLink-sc-cby53p-25 jTuPKW"

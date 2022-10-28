@@ -25,9 +25,9 @@ export default function PortalViewContentPreview (props:{
   const { $t } = useIntl()
   const alternativeLang = demoValue?.alternativeLang
   const componentDisplay = demoValue?.componentDisplay
-  const isBg = demoValue?.backgroundImage ? true : false
+  const isbg = demoValue?.backgroundImage ? 'true' : 'false'
   return (
-    <UI.LayoutViewContent isBg={isBg}>
+    <UI.LayoutViewContent isbg={isbg}>
       {componentDisplay?.WiFi4EU && <UI.Img src={Wifi4eu}
         alt={$t({ defaultMessage: 'Wifi4eu' })}
         height={120} />}
