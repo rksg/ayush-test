@@ -1,9 +1,11 @@
 import React from 'react'
 
-import { ButtonProps as AntButtonProps, Tooltip, TooltipProps } from 'antd'
-import { useIntl }                                              from 'react-intl'
+import { ButtonProps as AntButtonProps, TooltipProps } from 'antd'
+import { useIntl }                                     from 'react-intl'
 
 import { notAvailableMsg } from '@acx-ui/utils'
+
+import { Tooltip } from '../Tooltip'
 
 import * as UI from './styledComponents'
 

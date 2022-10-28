@@ -6,12 +6,11 @@ import {
   Form,
   InputNumber,
   Row,
-  Select,
-  Tooltip
+  Select
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Subtitle }                                      from '@acx-ui/components'
+import { StepsForm, Subtitle, Tooltip }                             from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
 import { useCloudpathListQuery }                                    from '@acx-ui/rc/services'
 import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType,

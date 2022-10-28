@@ -1,15 +1,19 @@
 import { useContext } from 'react'
 
-import { Form, Input, Col, Radio, Row, Space, Tooltip } from 'antd'
-import TextArea                                         from 'antd/lib/input/TextArea'
-import { useIntl }                                      from 'react-intl'
+import { Form, Input, Col, Radio, Row, Space } from 'antd'
+import TextArea                                from 'antd/lib/input/TextArea'
+import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                                                                               from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                                              from '@acx-ui/icons'
-import { useLazyNetworkListQuery }                                                                 from '@acx-ui/rc/services'
-import { NetworkTypeEnum, WifiNetworkMessages, checkObjectNotExists, hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
-import { useParams }                                                                               from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                                                                         from '@acx-ui/utils'
+import { StepsForm, Tooltip }         from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useLazyNetworkListQuery }    from '@acx-ui/rc/services'
+import {
+  NetworkTypeEnum,
+  WifiNetworkMessages,
+  checkObjectNotExists,
+  hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
+import { useParams }       from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 import { networkTypesDescription, networkTypes } from '../contentsMap'
 import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'

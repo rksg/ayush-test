@@ -90,7 +90,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                         style="position: fixed; top: 275px; width: 0px; height: 0px;"
                       >
                         <div
-                          class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 gMCsgt"
+                          class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 heWRRH"
                           style="max-height: calc(100vh - 275px);"
                         >
                           <div

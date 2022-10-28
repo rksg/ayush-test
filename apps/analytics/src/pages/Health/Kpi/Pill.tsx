@@ -1,9 +1,9 @@
-import { Tooltip } from 'antd'
 import { sum }     from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
+import { Tooltip }                    from '@acx-ui/components'
 import { ProgressPill, Loader }       from '@acx-ui/components'
 import { InformationOutlined }        from '@acx-ui/icons'
 import { TimeStampRange }             from '@acx-ui/types'

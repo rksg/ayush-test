@@ -7,7 +7,6 @@ import {
   Row,
   Select,
   Switch,
-  Tooltip,
   Input
 } from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
@@ -15,7 +14,8 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import {
   StepsForm,
   Button,
-  Subtitle
+  Subtitle,
+  Tooltip
 } from '@acx-ui/components'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useCloudpathListQuery }                        from '@acx-ui/rc/services'

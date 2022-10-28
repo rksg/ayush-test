@@ -32,8 +32,8 @@ export function SparklineChart ({
       areaBaseColor: cssStr('--acx-semantics-green-30')
     },
     blue: {
-      lineColor: cssStr('--acx-accents-blue-50'),
-      areaBaseColor: cssStr('--acx-accents-blue-40')
+      lineColor: cssStr('--acx-accents-blue-60'),
+      areaBaseColor: cssStr('--acx-accents-blue-50')
     }
   }
 

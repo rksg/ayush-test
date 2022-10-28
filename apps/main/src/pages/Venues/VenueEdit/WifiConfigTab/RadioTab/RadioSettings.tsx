@@ -1,11 +1,11 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Radio, RadioChangeEvent, Row, Switch, Tooltip } from 'antd'
-import { useIntl }                                                  from 'react-intl'
+import { Col, Form, Radio, RadioChangeEvent, Row, Switch } from 'antd'
+import { useIntl }                                         from 'react-intl'
 
-import { Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { Features, useSplitTreatment }                from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
+import { Loader, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useSplitTreatment }                         from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                          from '@acx-ui/icons'
 import {
   // useLazyApListQuery,
   // useGetVenueCapabilitiesQuery,

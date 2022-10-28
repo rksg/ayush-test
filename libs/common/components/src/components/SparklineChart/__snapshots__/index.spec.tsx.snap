@@ -31,7 +31,7 @@ exports[`SparklineChart should render component 1`] = `
       <path
         d="M128 638.8C128 638.8 256 559.2 384 479.6C512 400 512 400 640 320.4C768 240.8 768 240.8 896 161.2C1024 81.6 1152 2 1152 2"
         fill="none"
-        stroke="#5496EA"
+        stroke="#2565B6"
         stroke-linejoin="bevel"
       />
     </g>
@@ -55,7 +55,7 @@ exports[`SparklineChart should render component 1`] = `
     >
       <stop
         offset="0%"
-        stop-color="#91BEF8"
+        stop-color="#5496EA"
       />
       <stop
         offset="100%"

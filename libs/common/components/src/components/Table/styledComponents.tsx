@@ -2,16 +2,16 @@ import {
   Button,
   Divider as AntDivider,
   Input,
-  Select,
-  Tooltip as AntTooltip
+  Select
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { InformationOutlined, CancelCircle, SearchOutlined } from '@acx-ui/icons'
 
 import { Subtitle } from '../Subtitle'
+import { Tooltip }  from '../Tooltip'
 
-export const InformationTooltip = styled(AntTooltip).attrs({ children: <InformationOutlined /> })``
+export const InformationTooltip = styled(Tooltip).attrs({ children: <InformationOutlined /> })``
 
 export const TitleWithTooltip = styled.span`
   display: inline-flex;
@@ -337,17 +337,17 @@ const compactBorderedStyle = css`
         padding-bottom: 6px;
         border-bottom: 1px solid var(--acx-neutrals-30) !important;
       }
-      
+
       .ant-table-thead > tr:last-child > th, .ant-table-tbody > tr:last-child > td {
         border-bottom: 0px !important;
       }
-      
+
       .ant-table-tbody > tr:first-child {
         display: none;
       }
     }
   }
-  
+
 `
 
 const styles = {
