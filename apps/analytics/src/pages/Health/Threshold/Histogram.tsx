@@ -95,7 +95,6 @@ function Histogram ({
       newValue === 0
     )
       return
-    setSliderValue(newValue)
     setThresholdValue(splitsAfterIsReverseCheck[newValue - 1])
     setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
   }
@@ -121,12 +120,10 @@ function Histogram ({
 
     if(splitsAfterIsReverseCheck.indexOf(reformattedBarData) === -1){
       const selectSecondLastBar = splitsAfterIsReverseCheck.length - 1
-      setSliderValue(selectSecondLastBar + 1)
       setThresholdValue(splitsAfterIsReverseCheck[selectSecondLastBar] as unknown as string)
       setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[selectSecondLastBar] })
       return
     }
-    setSliderValue(splitsAfterIsReverseCheck.indexOf(reformattedBarData) + 1)
     setThresholdValue(reformattedBarData as unknown as string)
     setKpiThreshold({ ...thresholds, [kpi]: reformattedBarData })
   }
@@ -143,9 +140,9 @@ function Histogram ({
   }
   const hightlightAboveColor = highlightAbove
     ? cssStr('--acx-neutrals-40')
-    : cssStr('--acx-accents-blue-50')
+    : cssStr('--acx-viz-qualitative-1')
   const hightlightBelowColor = highlightAbove
-    ? cssStr('--acx-accents-blue-50')
+    ? cssStr('--acx-viz-qualitative-1')
     : cssStr('--acx-neutrals-40')
   const barColors = Array.from({ length: splitsAfterIsReverseCheck.length + 1 }, (_, index) =>
     index < splitsAfterIsReverseCheck.indexOf(thresholdValue) + 1
@@ -242,7 +239,7 @@ function Histogram ({
                     width={width}
                     height={height}
                     onSliderChange={onSliderChange}
-                    sliderValue={sliderValue}
+                    sliderValue={splitsAfterIsReverseCheck.indexOf(thresholdValue) + 1}
                     shortXFormat={histogram?.shortXFormat}
                   />
                 </>

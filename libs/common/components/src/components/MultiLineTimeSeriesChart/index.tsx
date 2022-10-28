@@ -167,7 +167,7 @@ export function MultiLineTimeSeriesChart <
 
   const option: EChartsOption = {
     color: props.lineColors || qualitativeColorSet(),
-    grid: { ...gridOptions({ disableLegend }) },
+    grid: { ...gridOptions({ disableLegend }), ...gridProps },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),
