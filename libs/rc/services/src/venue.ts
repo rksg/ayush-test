@@ -31,6 +31,9 @@ import {
   VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile,
+  VenueDefaultRegulatoryChannels,
+  VenueDefaultRegulatoryChannelsForm,
+  TriBandSettings,
   AvailableLteBands,
   VenueApModelCellular,
   UploadUrlResponse
@@ -40,7 +43,7 @@ import {
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -55,6 +58,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -110,6 +114,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...venueDetailReq
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -353,6 +358,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
+      providesTags: [{ type: 'AAA', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg,
@@ -361,6 +367,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })
         })
       }
+    }),
+    updateAAASetting: build.mutation<AAASetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateAaaSetting, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
       query: ({ params, payload }) => {
@@ -416,6 +432,69 @@ export const venueApi = baseVenueApi.injectEndpoints({
               api.dispatch(venueApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
             })
         })
+      }
+    }),
+    venueDefaultRegulatoryChannels: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.GetVenueDefaultRegulatoryChannels, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getDefaultRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.GetDefaultRadioCustomization, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.GetVenueRadioCustomization, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'VenueRadio', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg,
+            ['UpdateVenueRadioCustomization'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueRadio', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    updateVenueRadioCustomization:
+    build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.UpdateVenueRadioCustomization, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueRadio', id: 'LIST' }]
+    }),
+    getVenueTripleBandRadioSettings:
+    build.query<TriBandSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.GetVenueTripleBandRadioSettings, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueTripleBandRadioSettings:
+    build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.UpdateVenueTripleBandRadioSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     }),
     getVenueApCapabilities: build.query<{
@@ -511,6 +590,7 @@ export const {
   useUpdateVenueLanPortsMutation,
   useVenueSwitchAAAServerListQuery,
   useGetAaaSettingQuery,
+  useUpdateAAASettingMutation,
   useAddAAAServerMutation,
   useUpdateAAAServerMutation,
   useDeleteAAAServerMutation,
@@ -524,6 +604,12 @@ export const {
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
   useSwitchConfigProfileQuery,
+  useVenueDefaultRegulatoryChannelsQuery,
+  useGetDefaultRadioCustomizationQuery,
+  useGetVenueRadioCustomizationQuery,
+  useUpdateVenueRadioCustomizationMutation,
+  useGetVenueTripleBandRadioSettingsQuery,
+  useUpdateVenueTripleBandRadioSettingsMutation,
   useGetVenueExternalAntennaQuery,
   useGetVenueApCapabilitiesQuery,
   useUpdateVenueExternalAntennaMutation,

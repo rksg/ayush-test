@@ -101,13 +101,6 @@ export default function FloorPlan () {
             <Button size='small' type='link'>
               {$t({ defaultMessage: 'Unplaced Devices (0)' })}
             </Button>
-            <UI.Button
-              type='default'
-              data-testid='expandIcon'
-              key={'expand-btn'}
-              title={$t({ defaultMessage: 'Expand' })}
-              icon={<UI.ArrowOutIcon />}
-            />
           </UI.StyledSpace>
         </UI.FloorPlanContainer>
         :
