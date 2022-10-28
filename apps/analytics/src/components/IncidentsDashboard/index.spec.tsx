@@ -1,13 +1,14 @@
 import '@testing-library/jest-dom'
-import { dataApiURL }      from '@acx-ui/analytics/services'
-import { IncidentFilter }  from '@acx-ui/analytics/utils'
-import { Provider, store } from '@acx-ui/store'
+import { dataApiURL }         from '@acx-ui/analytics/services'
+import { IncidentFilter }     from '@acx-ui/analytics/utils'
+import { Provider, store }    from '@acx-ui/store'
 import {
   cleanup,
   mockGraphqlQuery,
   render,
-  screen
-} from '@acx-ui/test-utils'
+  screen,
+  waitForElementToBeRemoved
+}                    from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
 import { expectedIncidentDashboardData } from './__tests__/fixtures'
@@ -36,7 +37,7 @@ describe('IncidentDashboard', () => {
     const { asFragment } = render(<Provider>
       <IncidentsDashboardWidget filters={filters} />
     </Provider>)
-    expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('2 clients impacted')
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access

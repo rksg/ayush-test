@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
+import { Provider }                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venuesResponse,
@@ -25,7 +25,9 @@ async function fillInBeforeSettings (networkName: string) {
   await userEvent.click(screen.getByRole('radio', { name: /defined for the network/ }))
   await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-  await screen.findByRole('heading', { level: 3, name: 'Settings' })
+  await waitFor(async () => {
+    expect(await screen.findByRole('heading', { level: 3, name: 'Settings' })).toBeVisible()
+  })
 }
 
 async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?: boolean) {
