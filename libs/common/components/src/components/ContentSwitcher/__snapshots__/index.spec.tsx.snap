@@ -12,14 +12,15 @@ exports[`ContentSwitcher should render component 1`] = `
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
       >
         <label
-          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked ant-radio-button-wrapper-disabled"
         >
           <span
-            class="ant-radio-button ant-radio-button-checked"
+            class="ant-radio-button ant-radio-button-checked ant-radio-button-disabled"
           >
             <input
               checked=""
               class="ant-radio-button-input"
+              disabled=""
               type="radio"
               value="chart"
             />
@@ -109,13 +110,14 @@ exports[`ContentSwitcher should render component with default selection 1`] = `
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
       >
         <label
-          class="ant-radio-button-wrapper"
+          class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
         >
           <span
-            class="ant-radio-button"
+            class="ant-radio-button ant-radio-button-disabled"
           >
             <input
               class="ant-radio-button-input"
+              disabled=""
               type="radio"
               value="chart"
             />
@@ -206,14 +208,15 @@ exports[`ContentSwitcher should render properly with two tabs: chartContent 1`] 
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
       >
         <label
-          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked ant-radio-button-wrapper-disabled"
         >
           <span
-            class="ant-radio-button ant-radio-button-checked"
+            class="ant-radio-button ant-radio-button-checked ant-radio-button-disabled"
           >
             <input
               checked=""
               class="ant-radio-button-input"
+              disabled=""
               type="radio"
               value="chart"
             />
@@ -303,14 +306,15 @@ exports[`ContentSwitcher should render properly with two tabs: tableContent 1`] 
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
       >
         <label
-          class="ant-radio-button-wrapper"
+          class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
         >
           <span
-            class="ant-radio-button"
+            class="ant-radio-button ant-radio-button-disabled"
           >
             <input
               checked=""
               class="ant-radio-button-input"
+              disabled=""
               type="radio"
               value="chart"
             />

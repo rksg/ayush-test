@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import type { TimeStamp } from '@acx-ui/types'
 
 import type { TimeSeriesChartData } from './types/timeseries'
@@ -16,10 +18,7 @@ export function getSeriesData (
   if (checkNoData(data)) return []
   return seriesMapping.map((mapping) => ({
     ...mapping,
-    data: (data!['time'] as TimeStamp[]).map((t, index) => {
-      const value = data![mapping.key][index] as number
-      return [t, value === null ? '-' : value]
-    })
+    data: _.zip(data!['time'], _.get(data, mapping.key)) as [TimeStamp, number | null][]
   }))
 }
 
@@ -27,13 +26,11 @@ export function checkNoData (
   data: Record<string, TimeSeriesDataType[]> | null
 ): boolean {
   if (!data) return true
-  let isNoData = false
-  for (let [key, value] of Object.entries(data)) {
-    if(key !== 'time') {
+  return Object.entries(data).every(([key, value])=>{
+    if(key === 'time') { return true }
+    else {
       const uniqueVal = new Set(value)
-      uniqueVal.size === 1 && uniqueVal.has(null) ?
-        isNoData = true : isNoData = false
+      return (uniqueVal.size === 1 && uniqueVal.has(null))
     }
-  }
-  return isNoData
+  })
 }

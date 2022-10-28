@@ -5,6 +5,7 @@ import { Space, Tooltip }                              from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
+import AutoSizer                                       from 'react-virtualized-auto-sizer'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
@@ -15,9 +16,9 @@ import { ResizableColumn }                                          from './Resi
 import * as UI                                                      from './styledComponents'
 import { settingsKey, useColumnsState }                             from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
-import type { ParamsType }                                                  from '@ant-design/pro-provider'
-import type { SettingOptionType }                                           from '@ant-design/pro-table/lib/components/ToolBar'
+import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
+import type { ParamsType }                                                                    from '@ant-design/pro-provider'
+import type { SettingOptionType }                                                             from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
@@ -41,8 +42,7 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip' | 'form'
-    ellipsis?: boolean
+    type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
@@ -89,7 +89,11 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProps<RecordType>) {
+// following the same typing from antd
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Table <RecordType extends Record<string, any>> (
+  { type = 'tall', columnState, ...props }: TableProps<RecordType>
+) {
   const intl = useIntl()
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
@@ -141,6 +145,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
           onClick={() => {
             columnsState.resetState()
             props.onResetState?.()
+            setColWidth({})
           }}
           children={$t({ defaultMessage: 'Reset to default' })}
         />
@@ -218,7 +223,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
-
+  const hasEllipsisColumn = columns.some(column => column.ellipsis)
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
     const defaultOnRow = props.onRow?.(record)
     return {
@@ -236,13 +241,15 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       ? col.width
       : colWidth[col.key as keyof typeof colWidth] || col.width,
     onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+      hasEllipsisColumn,
       width: colWidth[column.key],
-      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
-    }),
-    ...((props.ellipsis && col.key !== settingsKey) && { ellipsis: true })
+      definedWidth: col.width
+    })
   })
 
-  return <UI.Wrapper
+  const WrappedTable = (style: { width?: number }) => <UI.Wrapper
+    style={style}
     $type={type}
     $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
   >
@@ -296,8 +303,14 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       })): columns) as typeof columns}
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
-      columnsState={columnsState}
-      scroll={props.ellipsis ? {} : { x: 'max-content' }}
+      columnsState={{
+        ...columnsState,
+        onChange: (state: TableColumnState) => {
+          columnsState.onChange(state)
+          setColWidth({})
+        }
+      }}
+      scroll={{ x: hasEllipsisColumn ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
@@ -343,6 +356,11 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       )}
     />
   </UI.Wrapper>
+  if (hasEllipsisColumn) {
+    return <AutoSizer>{({ width }) => WrappedTable({ width })}</AutoSizer>
+  } else {
+    return WrappedTable({})
+  }
 }
 
 Table.SubTitle = UI.SubTitle

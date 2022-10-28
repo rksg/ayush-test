@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
+import { Provider }                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venuesResponse,
@@ -25,7 +25,9 @@ async function fillInBeforeSettings (networkName: string) {
   await userEvent.click(screen.getByRole('radio', { name: /defined for the network/ }))
   await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-  await screen.findByRole('heading', { level: 3, name: 'Settings' })
+  await waitFor(async () => {
+    expect(await screen.findByRole('heading', { level: 3, name: 'Settings' })).toBeVisible()
+  })
 }
 
 async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?: boolean) {
@@ -82,7 +84,7 @@ describe('NetworkForm', () => {
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
     })
-  })
+  }, 20000)
 
   it('should create PSK network with WPA2 and mac auth', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -108,7 +110,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  })
+  }, 20000)
 
 
   it('should create PSK network with WP3 and mac auth security protocol', async () => {
@@ -205,5 +207,5 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.3.3:3333')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-3')).toHaveLength(2)
     })
-  })
+  }, 20000)
 })

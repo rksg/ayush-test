@@ -1,7 +1,7 @@
-import { dataApiURL }                                                                from '@acx-ui/analytics/services'
-import { Incident }                                                                  from '@acx-ui/analytics/utils'
-import { Provider, store }                                                           from '@acx-ui/store'
-import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, mockDOMWidth } from '@acx-ui/test-utils'
+import { dataApiURL }                                                  from '@acx-ui/analytics/services'
+import { Incident }                                                    from '@acx-ui/analytics/utils'
+import { Provider, store }                                             from '@acx-ui/store'
+import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 
 import { NetworkImpactChartTypes, networkImpactChartConfigs } from './config'
 import { networkImpactChartsApi }                             from './services'
@@ -36,8 +36,8 @@ describe('transformData', () => {
       NetworkImpactData.incident.WLAN
     )
     expect(result).toEqual([
-      { color: '#D61119', key: 'ssid1', name: 'ssid1', value: 2 },
-      { color: '#F9C34B', key: 'ssid2', name: 'ssid2', value: 1 }
+      { color: '#66B1E8', key: 'ssid1', name: 'ssid1', value: 2 },
+      { color: '#EC7100', key: 'ssid2', name: 'ssid2', value: 1 }
     ])
   })
 })
@@ -73,7 +73,6 @@ describe('transformSummary', () => {
 })
 
 describe('NetworkImpact', () => {
-  mockDOMWidth()
   const props: NetworkImpactProps = {
     incident: { id: 'id', metadata: { dominant: { } } } as Incident,
     charts: [{

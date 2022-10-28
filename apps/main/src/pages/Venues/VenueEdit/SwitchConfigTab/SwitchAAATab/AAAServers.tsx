@@ -1,8 +1,11 @@
 /* eslint-disable max-len */
-import { Collapse } from 'antd'
-import { useIntl }  from 'react-intl'
+import {  useEffect, useState } from 'react'
 
-import { Alert }                                                   from '@acx-ui/components'
+import { Collapse }               from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
+
+
+import { Alert, Loader }                                           from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
 import { useTableQuery, AAAServerTypeEnum }                        from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
@@ -13,17 +16,18 @@ import * as UI             from './styledComponents'
 
 const { Panel } = Collapse
 
+const PanelHeader = {
+  [AAAServerTypeEnum.RADIUS]: defineMessage({ defaultMessage: 'RADIUS Servers ({count})' }),
+  [AAAServerTypeEnum.TACACS]: defineMessage({ defaultMessage: 'TACACS+ Servers ({count})' }),
+  [AAAServerTypeEnum.LOCAL_USER]: defineMessage({ defaultMessage: 'Local Users ({count})' })
+}
+
 export function AAAServers () {
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
-  const PanelHeader = {
-    [AAAServerTypeEnum.RADIUS]: $t({ defaultMessage: 'RADIUS Servers' }),
-    [AAAServerTypeEnum.TACACS]: $t({ defaultMessage: 'TACACS+ Servers' }),
-    [AAAServerTypeEnum.LOCAL_USER]: $t({ defaultMessage: 'Local Users' })
-  }
 
   const getPanelHeader = (type: AAAServerTypeEnum, count: number) => {
-    return PanelHeader[type] + ' (' + count + ')'
+    return $t(PanelHeader[type] , { count })
   }
 
   const defaultPayload = {
@@ -65,30 +69,56 @@ export function AAAServers () {
     }
   })
 
+  const [aaaServerCount, setAaaServerCount] = useState({
+    localUserTotalCount: 0,
+    tacasTotalCount: 0,
+    radiusTotalCount: 0
+  })
+
+  useEffect(() => {
+    if (localUserTableQuery.data &&
+      tacasTableQuery.data &&
+      radiusTableQuery.data) {
+      setAaaServerCount({
+        localUserTotalCount: localUserTableQuery.data.totalCount,
+        tacasTotalCount: tacasTableQuery.data.totalCount,
+        radiusTotalCount: radiusTableQuery.data.totalCount
+      })
+    }
+  }, [localUserTableQuery.data, tacasTableQuery.data, radiusTableQuery.data])
+
   return (
-    <UI.AAAServers>
+    <Loader states={[
       {
-        radiusTableQuery?.data?.totalCount === 0 && tacasTableQuery?.data?.totalCount === 0 &&
+        isLoading: radiusTableQuery.isLoading ||
+        tacasTableQuery.isLoading ||
+        localUserTableQuery.isLoading
+      }]}
+    >
+      <UI.AAAServers>
+        {
+          radiusTableQuery?.data?.totalCount === 0 && tacasTableQuery?.data?.totalCount === 0 &&
         <Alert message={$t(AAANotification)} type='info' showIcon />
-      }
-      <Collapse
-        defaultActiveKey={['1', '2', '3']}
-        expandIconPosition='end'
-        ghost={true}
-        bordered={false}
-      >
-        <Panel header={getPanelHeader(AAAServerTypeEnum.RADIUS, 0)} key='1' >
-          <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} aaaSetting={aaaSetting} />
-        </Panel>
+        }
+        <Collapse
+          defaultActiveKey={['1', '2', '3']}
+          expandIconPosition='end'
+          ghost={true}
+          bordered={false}
+        >
+          <Panel header={getPanelHeader(AAAServerTypeEnum.RADIUS, aaaServerCount.radiusTotalCount)} key='1' >
+            <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} aaaSetting={aaaSetting} />
+          </Panel>
 
-        <Panel header={getPanelHeader(AAAServerTypeEnum.TACACS, 0)} key='2' >
-          <AAAServerTable type={AAAServerTypeEnum.TACACS} tableQuery={tacasTableQuery} aaaSetting={aaaSetting} />
-        </Panel>
+          <Panel header={getPanelHeader(AAAServerTypeEnum.TACACS, aaaServerCount.tacasTotalCount)} key='2' >
+            <AAAServerTable type={AAAServerTypeEnum.TACACS} tableQuery={tacasTableQuery} aaaSetting={aaaSetting} />
+          </Panel>
 
-        <Panel header={getPanelHeader(AAAServerTypeEnum.LOCAL_USER, 0)} key='3' >
-          <AAAServerTable type={AAAServerTypeEnum.LOCAL_USER} tableQuery={localUserTableQuery} />
-        </Panel>
-      </Collapse>
-    </UI.AAAServers>
+          <Panel header={getPanelHeader(AAAServerTypeEnum.LOCAL_USER, aaaServerCount.localUserTotalCount)} key='3' >
+            <AAAServerTable type={AAAServerTypeEnum.LOCAL_USER} tableQuery={localUserTableQuery} />
+          </Panel>
+        </Collapse>
+      </UI.AAAServers>
+    </Loader>
   )
 }

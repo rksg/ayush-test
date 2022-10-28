@@ -19,7 +19,7 @@ export const HealthPageContext = createContext(null as unknown as HealthFilter)
 const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
 
 export const formatTimeWindow = (window: TimeStampRange) : TimeStampRange => window
-  .sort((a, b) => +isBefore(a, b))
+  .sort((a, b) => isBefore(a, b) ? -1 : 1)
   .map(t => moment(t).utc().toISOString()) as TimeStampRange
 
 export function HealthPageContextProvider (props: { children: ReactNode }) {
@@ -35,8 +35,9 @@ export function HealthPageContextProvider (props: { children: ReactNode }) {
   }, [startDate, endDate])
 
   useEffect(() => {
-    setTimeWindowCallback([startDate, endDate], false)
-  }, [startDate, endDate, setTimeWindowCallback])
+    const formattedWindow = formatTimeWindow([startDate, endDate])
+    setTimeWindow(formattedWindow)
+  }, [startDate, endDate])
 
   const context = useMemo(() => ({
     ...analyticsFilter.filters,

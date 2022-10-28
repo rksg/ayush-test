@@ -39,8 +39,8 @@ describe('VenueOverviewTab', () => {
   it('renders correctly', async () => {
     render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
 
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
-    expect(await screen.findAllByTestId(/^networks/)).toHaveLength(4)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(8)
+    expect(await screen.findAllByTestId(/^networks/)).toHaveLength(3)
   })
 
   it('switches between tabs', async () => {
@@ -72,7 +72,7 @@ describe('VenueOverviewTab', () => {
     render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
 
     fireEvent.click(await screen.findByText('Switch'))
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(6)
-    expect(await screen.findAllByTestId(/^networks/)).toHaveLength(4)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
+    expect(await screen.findAllByTestId(/^networks/)).toHaveLength(3)
   })
 })

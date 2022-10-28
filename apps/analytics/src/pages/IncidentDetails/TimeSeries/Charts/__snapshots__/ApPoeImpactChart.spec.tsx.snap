@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`apPoeImpactQuery should call corresponding api 1`] = `
+"
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              $granularity: String
+              $code: String
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  
+  apInfraImpactedAPsChart: timeSeries(granularity:$granularity){
+    time
+    apInfraAPCount(code: $code)
+  }
+
+                }
+              }
+            }
+          "
+`;
+
+exports[`apPoeImpactQuery should call corresponding api 2`] = `
+Object {
+  "code": "i-apinfra-poe-low",
+  "codeMap": Array [
+    "i-apinfra-poe-low",
+  ],
+  "end": "2022-08-08T06:00:00.000Z",
+  "granularity": "PT1H",
+  "path": Array [
+    Object {
+      "name": "Fong@Home",
+      "type": "zone",
+    },
+    Object {
+      "name": "default",
+      "type": "apGroup",
+    },
+    Object {
+      "name": "20:58:69:08:37:10",
+      "type": "ap",
+    },
+  ],
+  "start": "2022-03-24T18:00:00.000Z",
+}
+`;

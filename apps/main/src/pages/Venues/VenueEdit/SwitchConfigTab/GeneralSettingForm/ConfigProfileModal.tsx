@@ -1,10 +1,10 @@
 import { useState, Key } from 'react'
 
-import { Radio, Space, Tabs, Tooltip, Typography } from 'antd'
-import _                                           from 'lodash'
-import { FormattedMessage }                        from 'react-intl'
+import { Radio, Space, Tooltip, Typography } from 'antd'
+import _                                     from 'lodash'
+import { FormattedMessage }                  from 'react-intl'
 
-import { Button, cssStr, Modal, Table, TableProps }                                       from '@acx-ui/components'
+import { Button, cssStr, Modal, Table, TableProps, Tabs }                                 from '@acx-ui/components'
 import { ConfigurationProfile, ProfileTypeEnum, VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { getIntl }                                                                        from '@acx-ui/utils'
 

@@ -2,9 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { venueApi }                                              from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueData,
@@ -21,6 +22,7 @@ const params = {
 
 describe('MeshNetwork', () => {
   beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getDashboardOverview.url,
@@ -41,21 +43,38 @@ describe('MeshNetwork', () => {
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><MeshNetwork /></Provider>, { route: { params } })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     expect(asFragment()).toMatchSnapshot()
+    await userEvent.click(await screen.findByRole('switch')) // unchecked
+
     await userEvent.click(await screen.findByRole('switch'))
     await userEvent.click(await screen.findByRole('button', { name: 'Enable Mesh' }))
 
-    await userEvent.click(await screen.findByRole('switch'))
+    await userEvent.click(await screen.findByRole('switch')) // unchecked
 
     await userEvent.click(await screen.findByRole('switch'))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
   it('should render disabled switch button correctly', async () => {
-    venueSetting.dhcpServiceSetting.enabled = true
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json({
+          ...venueSetting,
+          dhcpServiceSetting: {
+            ...venueSetting.dhcpServiceSetting,
+            enabled: true
+          },
+          mesh: {
+            enabled: false
+          }
+        })))
+    )
+
     const { asFragment } = render(<Provider><MeshNetwork /></Provider>, { route: { params } })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     expect(asFragment()).toMatchSnapshot()
-    await userEvent.click(await screen.findByRole('switch'))
+    expect(screen.getByTestId('mesh-switch')).toBeDisabled()
   })
 })
