@@ -192,7 +192,7 @@ describe('PortalDemo', () => {
     fireEvent.mouseLeave(screen.getByRole('img',{ name: 'poweredimage' }))
 
     fireEvent.click(screen.getByText('Reset'))
-  })
+  }, 15000)
 
   it('should render portal demo preview successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -221,5 +221,5 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
     fireEvent.click(screen.getAllByText('Terms & Conditions')[1])
-  }, 16000)
+  }, 15000)
 })
