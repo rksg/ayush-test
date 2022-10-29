@@ -72,8 +72,8 @@ function AlarmWidget () {
 
   const onNavigate = (alarm: Alarm) => {
     let path = alarm.entityType === EventTypeEnum.AP
-      ? `aps/${alarm.serialNumber}/TBD`
-      : `switches/${alarm.serialNumber}/TBD`
+      ? `aps/${alarm.serialNumber}/TODO`
+      : `switches/${alarm.serialNumber}/TODO`
 
     navigate({
       ...basePath,

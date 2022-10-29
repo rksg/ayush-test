@@ -29,9 +29,9 @@ export default function TopSSIDsByTrafficWidget ({
       dataIndex: 'name',
       key: 'name',
       render: (data: unknown) => {
-        // TBD: '/networks/:id/network-details/overview
-        // SSID ID is required to make this work, which is currently not supported.
-        // So until then redirecting to the networks page
+        // TODO: Use '/networks/:id/network-details/overview'
+        /* SSID ID is required to make this work, which is currently not supported.
+        So until then redirecting to the networks page. */
         return <TenantLink to={'/networks'}>
           { data as string}
         </TenantLink>

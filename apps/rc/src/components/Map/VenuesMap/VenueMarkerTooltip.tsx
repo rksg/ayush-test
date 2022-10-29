@@ -72,7 +72,7 @@ export function VenueMarkerTooltip (
           <StackedBarChart
             data={apStat}
             {...commonProps}/>
-          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TODO' })}>
             {apsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -81,7 +81,7 @@ export function VenueMarkerTooltip (
         </UI.CellWrapper>,
       clients: clientsCount && clientsCount > 0
         ? <UI.CellWrapper>
-          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TODO' })}>
             {clientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -97,7 +97,7 @@ export function VenueMarkerTooltip (
           <StackedBarChart
             data={switchStat}
             {...commonProps} />
-          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TODO' })}>
             {switchesCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -106,7 +106,7 @@ export function VenueMarkerTooltip (
         </UI.CellWrapper>,
       clients: switchClientsCount && switchClientsCount > 0
         ? <UI.CellWrapper>
-          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TODO' })}>
             {switchClientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
