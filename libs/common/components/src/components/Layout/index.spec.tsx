@@ -52,7 +52,7 @@ describe('Layout', () => {
     await screen.findByTestId('ai-outlined')
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render with custom tenant type correctly', async () => {
+  xit('should render with custom tenant type correctly', async () => {
     const mspConfig = [
       {
         path: '/dashboard',
