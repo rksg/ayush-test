@@ -296,6 +296,7 @@ function Table <RecordType extends Record<string, any>> (
       dataSource={getFilteredData<RecordType>(
         dataSource, filterValues, activeFilters, searchables, searchValue
       )}
+      sortDirections={['ascend', 'descend', 'ascend']}
       bordered={false}
       search={false}
       columns={(type === 'tall' ? columns.map(col=>({

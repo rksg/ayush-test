@@ -68,9 +68,10 @@ const defaultRichTextFormatValues: Record<
 export const gridOptions = ({
   disableLegend = false,
   hasXAxisName = false,
-  xAxisOffset = 0
+  xAxisOffset = 0,
+  yAxisOffset = 0
 } = {}) => ({
-  left: 0,
+  left: yAxisOffset,
   right: 0,
   bottom: hasXAxisName ? 16 + xAxisOffset : 0,
   top: disableLegend ? 6 : '15%',
