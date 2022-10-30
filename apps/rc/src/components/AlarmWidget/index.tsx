@@ -1,12 +1,10 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader }            from '@acx-ui/components'
-import { Card }                      from '@acx-ui/components'
-import { DonutChart }                from '@acx-ui/components'
-import type { DonutChartData }       from '@acx-ui/components'
-import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
-import {  useAlarmsListQuery }       from '@acx-ui/rc/services'
+import { cssStr, Loader , Card, DonutChart, NoActiveData } from '@acx-ui/components'
+import type { DonutChartData }                             from '@acx-ui/components'
+import { useDashboardOverviewQuery }                       from '@acx-ui/rc/services'
+import {  useAlarmsListQuery }                             from '@acx-ui/rc/services'
 import {
   Alarm,
   EventTypeEnum,
@@ -17,7 +15,6 @@ import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { AlarmList } from './AlarmList'
-import * as UI       from './styledComponents'
 
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
@@ -123,10 +120,7 @@ function AlarmWidget () {
                   height={height - (height / 3)}
                   onNavigate={onNavigate} />
               </>
-              : <UI.NoDataWrapper>
-                <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
-                <UI.TextWrapper>{$t({ defaultMessage: 'No active alarms' })}</UI.TextWrapper>
-              </UI.NoDataWrapper>
+              : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })}/>
           )}
         </AutoSizer>
       </Card>
