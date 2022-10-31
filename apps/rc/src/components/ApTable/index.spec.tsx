@@ -351,5 +351,5 @@ describe('Aps', () => {
 
     fireEvent.click(await screen.findByRole('row', { name: /mock-ap-1/i }))
     fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
-  })
+  }, 35000)
 })
