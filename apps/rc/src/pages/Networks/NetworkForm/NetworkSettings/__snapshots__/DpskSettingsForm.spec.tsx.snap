@@ -541,8 +541,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
               class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
             >
               <img
-                alt="Dynamic Pre-Shared Key (DPSK)"
-                src="dpsk.png"
+                src="none.png"
               />
             </div>
           </div>
