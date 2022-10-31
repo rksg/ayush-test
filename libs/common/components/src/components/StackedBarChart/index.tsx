@@ -165,6 +165,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
         show: false
       },
       axisLabel: {
+        show: showLabels,
         formatter: '{label|{value}}',
         rich: {
           label: {
