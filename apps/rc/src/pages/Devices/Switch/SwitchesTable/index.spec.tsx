@@ -18,7 +18,6 @@ describe('Switch List Table', () => {
       })
 
     expect(asFragment()).toMatchSnapshot()
-    await screen.findByText('Switch')
   })
 
 })

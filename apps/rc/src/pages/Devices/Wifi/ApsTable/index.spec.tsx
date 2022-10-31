@@ -18,7 +18,6 @@ describe('AP List Table', () => {
       })
 
     expect(asFragment()).toMatchSnapshot()
-    await screen.findByText('WiFi')
   })
 
 })
