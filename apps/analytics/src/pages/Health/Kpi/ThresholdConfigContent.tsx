@@ -74,7 +74,6 @@ function ThresholdConfig ({
             size='small'
             type='secondary'
             onClick={() => onApply && onApply()}
-            disabled={isDisabled}
           >
             {$t(thresholdDescText.applyBtn)}
           </Button>

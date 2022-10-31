@@ -150,53 +150,51 @@ export default function KpiSection (props: { tab: HealthTab }) {
 
   return (
     <>
-      {kpis.map((kpi) => {
-        return (
-          <GridRow key={kpi+defaultZoom} divider='true'>
-            <GridCol col={{ span: 16 }}>
-              <GridRow style={{ height: '160px' }}>
-                <GridCol col={{ span: 5 }}>
-                  <HealthPill
-                    filters={filters}
-                    kpi={kpi}
-                    timeWindow={timeWindow as [string, string]}
-                    threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
-                  />
-                </GridCol>
-                <GridCol col={{ span: 19 }}>
-                  <KpiTimeseries filters={filters}
-                    kpi={kpi}
-                    threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
-                    chartRef={connectChart}
-                    setTimeWindow={setTimeWindow}
-                    {...(defaultZoom ? {} : { timeWindow })}
-                  />
-                </GridCol>
-              </GridRow>
-            </GridCol>
-            <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
-              {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
-                <Histogram filters={filters}
+      {kpis.map((kpi) => (
+        <GridRow key={kpi+defaultZoom} divider='true'>
+          <GridCol col={{ span: 16 }}>
+            <GridRow style={{ height: '160px' }}>
+              <GridCol col={{ span: 5 }}>
+                <HealthPill
+                  filters={filters}
+                  kpi={kpi}
+                  timeWindow={timeWindow as [string, string]}
+                  threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
+                />
+              </GridCol>
+              <GridCol col={{ span: 19 }}>
+                <KpiTimeseries filters={filters}
                   kpi={kpi}
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
-                  setKpiThreshold={setKpiThreshold}
-                  thresholds={kpiThreshold}
-                  onReset={() => onReset(kpi as keyof KpiThresholdType)}
-                  onApply={() => onApply(kpi as keyof KpiThresholdType)}
-                  canSave={canSave}
-                  fetchingDefault={fetchingDefault}
-                  isNetwork={isNetwork}
+                  chartRef={connectChart}
+                  setTimeWindow={setTimeWindow}
+                  {...(defaultZoom ? {} : { timeWindow })}
                 />
-              ) : (
-                <BarChart filters={filters}
-                  kpi={kpi}
-                  threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
-                />
-              )}
-            </GridCol>
-          </GridRow>
-        )
-      })}
+              </GridCol>
+            </GridRow>
+          </GridCol>
+          <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
+            {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
+              <Histogram filters={filters}
+                kpi={kpi}
+                threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+                setKpiThreshold={setKpiThreshold}
+                thresholds={kpiThreshold}
+                onReset={() => onReset(kpi as keyof KpiThresholdType)}
+                onApply={() => onApply(kpi as keyof KpiThresholdType)}
+                canSave={canSave}
+                fetchingDefault={fetchingDefault}
+                isNetwork={isNetwork}
+              />
+            ) : (
+              <BarChart filters={filters}
+                kpi={kpi}
+                threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+              />
+            )}
+          </GridCol>
+        </GridRow>
+      ))}
     </>
   )
 }
