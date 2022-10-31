@@ -227,7 +227,5 @@ describe('Networks Table', () => {
     await screen.findByText('Delete "network-01"?')
     const deleteNetworkButton = await screen.findByText('Delete Network')
     fireEvent.click(deleteNetworkButton)
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   }, 15000)
 })
