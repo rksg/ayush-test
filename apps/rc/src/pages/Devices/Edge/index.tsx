@@ -7,173 +7,39 @@ import {
   Table,
   TableProps,
   showActionModal } from '@acx-ui/components'
-import { EdgeViewModel }                          from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useDeleteEdgeMutation, useGetEdgeListQuery } from '@acx-ui/rc/services'
+import { EdgeViewModel, useTableQuery }               from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
 
 const EdgesTable = () => {
 
-  // TODO will remove when api is ready
-  const mockEdgeList: EdgeViewModel[] = [
-    {
-      name: 'Mock Edge 1',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000001',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    },
-    {
-      name: 'Mock Edge 2',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000002',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    }
-    ,
-    {
-      name: 'Mock Edge 3',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000003',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    }
-    ,
-    {
-      name: 'Mock Edge 4',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000004',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    }
-    ,
-    {
-      name: 'Mock Edge 5',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000005',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    }
-    ,
-    {
-      name: 'Mock Edge 6',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000006',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    }
-    ,
-    {
-      name: 'Mock Edge 7',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000007',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    }
-    ,
-    {
-      name: 'Mock Edge 8',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000008',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    }
-    ,
-    {
-      name: 'Mock Edge 9',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000009',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    }
-    ,
-    {
-      name: 'Mock Edge 10',
-      status: 'Operational',
-      type: 'Virtual',
-      model: '###',
-      serialNumber: '0000000010',
-      ip: '127.0.0.1',
-      ports: '80',
-      venue: {
-        name: 'Mock Venue 1',
-        id: 'mock_venue_1'
-      },
-      tags: ['Tag1', 'Tag2']
-    }
-  ]
-
-  // TODO will remove when api is ready
-  const mockPagination = {
-    current: 1,
-    pageSize: 10,
-    total: 10
+  const defaultPayload = {
+    fields: [
+      'name',
+      'status',
+      'type',
+      'model',
+      'serialNumber',
+      'ip',
+      'ports',
+      'venueId',
+      'venueName',
+      'edgeGroupId',
+      'tags'
+    ],
+    filters: {},
+    sortField: 'name',
+    sortOrder: 'ASC'
   }
 
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const tableQuery = useTableQuery({
+    useQuery: useGetEdgeListQuery,
+    defaultPayload
+  })
+  const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
 
   const columns: TableProps<EdgeViewModel>['columns'] = [
     {
@@ -232,12 +98,12 @@ const EdgesTable = () => {
     {
       title: $t({ defaultMessage: 'Venue' }),
       key: 'venue',
-      dataIndex: ['venue', 'name'],
+      dataIndex: ['venueName'],
       sorter: true,
       filterable: true,
       render: (data, row) => {
         return (
-          <TenantLink to={`/venues/${row.venue.id}/venue-details/overview`}>
+          <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
             {data}
           </TenantLink>
         )
@@ -278,8 +144,11 @@ const EdgesTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            // TODO should wire up delete edge API
-            clearSelection()
+            rows.length === 1 ?
+              deleteEdge({ params: { serialNumber: rows[0].serialNumber } })
+                .then(clearSelection) :
+              deleteEdge({ payload: rows.map(item => item.serialNumber) })
+                .then(clearSelection)
           }
         })
       }
@@ -293,12 +162,15 @@ const EdgesTable = () => {
   ]
 
   return (
-    <Loader>
+    <Loader states={[
+      tableQuery,
+      { isLoading: false, isFetching: isDeleteEdgeUpdating }
+    ]}>
       <Table
         columns={columns}
-        dataSource={mockEdgeList}
-        pagination={mockPagination}
-        // TODO when api is ready will implement this onChange={tableQuery.handleTableChange}
+        dataSource={tableQuery?.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
         rowKey='serialNumber'
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}

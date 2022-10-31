@@ -6,9 +6,7 @@ export interface EdgeViewModel {
   serialNumber: string
   ip: string
   ports: string
-  venue: {
-    name: string
-    id: string
-  }
+  venueName: string
+  venueId: string
   tags: string[]
 }
