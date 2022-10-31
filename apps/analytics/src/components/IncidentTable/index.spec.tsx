@@ -228,32 +228,12 @@ describe('IncidentTableWidget', () => {
         }
       }
     })
-
-    // reset severity
-    const headerList = await screen.findAllByText(columnHeaders[0].name)
-    expect(headerList.length).toBeGreaterThan(0)
-    const header = headerList[headerList.length - 1]
-
-    fireEvent.click(header)
-
-
     for (let i = 0; i < columnHeaders.length; i++) {
-      const headerList = await screen.findAllByText(columnHeaders[i].name)
-      expect(headerList.length).toBeGreaterThan(0)
-      const header = headerList[headerList.length - 1]
-
-      fireEvent.click(header)
-
-      const downCaret = await screen.findAllByRole('img', { hidden: false, name: 'caret-up' })
-      expect(downCaret.length).toBe(1)
-
-      fireEvent.click(header)
-
-      const upCaret = await screen.findAllByRole('img', { hidden: false, name: 'caret-down' })
-      expect(upCaret.length).toBe(1)
-      fireEvent.click(header)
+      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1))
+      await screen.findAllByRole('img', { hidden: false, name: 'caret-up' })
+      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1))
+      await screen.findAllByRole('img', { hidden: false, name: 'caret-down' })
     }
-
   })
 
   it('should allow for muting', async () => {

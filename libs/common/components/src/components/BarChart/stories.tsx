@@ -56,14 +56,6 @@ export const data = (multiseries = false): BarChartData => ({
 
 })
 
-export const barColors = [
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-accents-orange-25'),
-  cssStr('--acx-accents-orange-50'),
-  cssStr('--acx-accents-blue-40'),
-  cssStr('--acx-accents-blue-50')
-]
-
 function switchUsageLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) ? params.data[1] : params.data
   const utilisation_per = Array.isArray(params.data) ? params.data[2] : params.data
@@ -136,7 +128,6 @@ storiesOf('BarChart', module)
       <BarChart
         style={{ width: '100%', height: '100%' }}
         data={data()}
-        barColors={barColors}
         onClick={clickHandler}
       />))
   .add('Single Series - Custom formatter', () =>
@@ -145,7 +136,6 @@ storiesOf('BarChart', module)
         style={{ width: '100%', height: '100%' }}
         data={data()}
         grid={{ right: '15%' }}
-        barColors={barColors}
         labelFormatter={switchUsageLabelFormatter}
         labelRichStyle={getSwitchUsageRichStyle()}
       />))
@@ -155,10 +145,6 @@ storiesOf('BarChart', module)
         style={{ width: '100%', height: '100%' }}
         data={data(true)}
         barWidth={8}
-        barColors={[
-          cssStr('--acx-accents-blue-50'),
-          cssStr('--acx-accents-orange-30')
-        ]}
         tooltipFormatter={tooltipFormatter}
         labelFormatter={switchTrafficLabelFormatter}
         labelRichStyle={getSwitchTrafficRichStyle()}
@@ -171,7 +157,6 @@ storiesOf('BarChart', module)
         data={object('data', data())}
         barWidth={12}
         grid={{ right: '15%' }}
-        barColors={barColors}
         labelFormatter={switchUsageLabelFormatter}
         labelRichStyle={getSwitchUsageRichStyle()}
       />))

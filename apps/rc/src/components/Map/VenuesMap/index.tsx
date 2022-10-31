@@ -65,6 +65,7 @@ function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps) {
     <Wrapper
       apiKey={get('GOOGLE_MAPS_KEY')}
       libraries={['places']}
+      language={'en'}
       render={render}
     >
       <GMap

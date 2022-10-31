@@ -93,8 +93,8 @@ describe('HealthPageContextProvider', () => {
     ])
 
     const nextTimeWindow = [
-      moment('2021-12-31T00:00:00+00:00').utc().toISOString(),
-      moment('2021-01-01T00:00:00+00:00').utc().toISOString()
+      moment('2021-01-01T00:00:00+00:00').utc().toISOString(),
+      moment('2021-12-31T00:00:00+00:00').utc().toISOString()
     ]
 
     act(() => result.current.setTimeWindow!(nextTimeWindow as TimeStampRange))

@@ -245,6 +245,106 @@ export interface ConfigurationProfile {
 	acls?: Acl[],
 	venues?: string[]
 }
+export interface TriBandSettings {
+  enabled: boolean
+}
+export interface VenueDefaultRegulatoryChannels {
+  '2.4GChannels': {
+	[key: string]: string[]
+  },
+  '5GChannels': {
+	dfs: {
+	  [key: string]: string[]
+	},
+	indoor: {
+	  [key: string]: string[]
+	},
+	outdoor: {
+	  [key: string]: string[]
+	}
+  },
+  '5GLowerChannels': {
+	dfs: {
+	  [key: string]: string[]
+	},
+	indoor: {
+	  [key: string]: string[]
+	},
+	outdoor: {
+	  [key: string]: string[]
+	}
+  },
+  '5GUpperChannels': {
+	dfs: {
+	  [key: string]: string[]
+	},
+	indoor: {
+	  [key: string]: string[]
+	},
+	outdoor: {
+	  [key: string]: string[]
+	}
+  },
+  '6GChannels': {
+	[key: string]: string[]
+  }
+}
+
+export interface VenueDefaultRegulatoryChannelsForm {
+  radioParams24G: {
+		allowedChannels: string[],
+		channelBandwidth: string,
+		method: string,
+		changeInterval: number,
+		scanInterval: number,
+		txPower: string
+  },
+  radioParams50G: {
+		combineChannels: boolean,
+		allowedIndoorChannels: string[],
+		allowedOutdoorChannels: string[],
+		channelBandwidth: string,
+		method: string,
+		changeInterval: number,
+		scanInterval: number,
+		txPower: string
+  },
+  radioParamsDual5G: {
+		enabled: boolean,
+		inheritParamsLower5G: boolean,
+		radioParamsLower5G: {
+			combineChannels: boolean,
+			allowedIndoorChannels: string[],
+			allowedOutdoorChannels: string[],
+			channelBandwidth: string,
+			method: string,
+			changeInterval: number,
+			scanInterval: number,
+			txPower: string
+		},
+		inheritParamsUpper5G: boolean,
+		radioParamsUpper5G: {
+			combineChannels: boolean,
+			allowedIndoorChannels: string[],
+			allowedOutdoorChannels: string[],
+			channelBandwidth: string,
+			method: string,
+			changeInterval: number,
+			scanInterval: number,
+			txPower: string
+		}
+  },
+	radioParams6G: {
+	  method: string,
+	  scanInterval: number,
+	  allowedChannels: string[],
+	  channelBandwidth: string,
+	  bssMinRate6G: string,
+	  mgmtTxRate6G: string,
+	  changeInterval: number,
+	  txPower: string
+	}
+}
 
 export interface AvailableLteBands {
 	band3G?: string[],
@@ -290,7 +390,7 @@ export interface LteBandLockCountriesJson {
 export enum AAAServerTypeEnum {
   RADIUS = 'RADIUS',
   TACACS = 'TACACS_PLUS',
-	LOCAL_USER = 'LOCAL'
+  LOCAL_USER = 'LOCAL'
 }
 
 export enum AAA_SERVER_TYPE {
@@ -301,23 +401,31 @@ export enum AAA_SERVER_TYPE {
 }
 
 export interface AAASetting {
-	authnEnabledSsh: boolean,
-	authnEnableTelnet: boolean,
-	authnFirstPref: AAAServerTypeEnum,
-	authnSecondPref?: AAA_SERVER_TYPE,
-	authzCommonsFirstServer?: AAAServerTypeEnum,
-	authzCommonsSecondServer?: AAA_SERVER_TYPE,
-	authzExecFirstServer?: AAAServerTypeEnum,
-	authzExecSecondServer?: AAA_SERVER_TYPE,
-	acctCommonsFirstServer?: AAAServerTypeEnum,
-	acctCommonsSecondServer?: AAA_SERVER_TYPE,
-	acctExecFirstServer?: AAAServerTypeEnum,
-	acctExecSecondServer?: AAA_SERVER_TYPE,
-	authzEnabledCommand: boolean,
-	authzEnabledExec: boolean,
-	acctEnabledCommand: boolean,
-	acctEnabledExec: boolean,
-	id: string
+  authnEnabledSsh: boolean,
+  authnEnableTelnet: boolean,
+  authnFirstPref: AAAServerTypeEnum,
+  authnSecondPref?: AAA_SERVER_TYPE,
+  authnThirdPref?: AAA_SERVER_TYPE,
+  authnFourthPref?: AAA_SERVER_TYPE,
+  authzCommonsFirstServer?: AAAServerTypeEnum,
+  authzCommonsSecondServer?: AAA_SERVER_TYPE,
+  authzCommonsThirdServer?: AAA_SERVER_TYPE,
+  authzExecFirstServer?: AAAServerTypeEnum,
+  authzExecSecondServer?: AAA_SERVER_TYPE,
+  authzExecThirdServer?: AAA_SERVER_TYPE,
+  acctCommonsFirstServer?: AAAServerTypeEnum,
+  acctCommonsSecondServer?: AAA_SERVER_TYPE,
+  acctCommonsThirdServer?: AAA_SERVER_TYPE,
+  acctExecFirstServer?: AAAServerTypeEnum,
+  acctExecSecondServer?: AAA_SERVER_TYPE,
+  acctExecThirdServer?: AAA_SERVER_TYPE,
+  authzEnabledCommand: boolean,
+  authzEnabledExec: boolean,
+  acctEnabledCommand: boolean,
+  acctEnabledExec: boolean,
+  authzCommonsLevel?: string,
+  acctCommonsLevel?: string,
+  id: string
 }
 
 export interface RadiusServer {

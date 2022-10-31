@@ -22,7 +22,11 @@ interface HistogramResponse <HistogramData> {
   histogram: HistogramData
 }
 
-export type KpiPayload = AnalyticsFilter & { kpi: string, threshold?: string, granularity?: string }
+export type KpiPayload = AnalyticsFilter & {
+  kpi: string;
+  threshold?: string;
+  granularity?: string;
+}
 
 const getKPIMetric = (kpi: string, threshold?: string) : string => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
@@ -39,10 +43,7 @@ const getGranularity = (start: string, end: string, kpi: string) => {
 }
 export const timeseriesApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    kpiTimeseries: build.query<
-    KPITimeseriesResponse,
-    KpiPayload
-    >({
+    kpiTimeseries: build.query<KPITimeseriesResponse, KpiPayload>({
       query: (payload) => ({
         document: gql`
         query timeseriesKPI(
@@ -68,8 +69,9 @@ export const timeseriesApi = dataApi.injectEndpoints({
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
-      transformResponse: (response: TimeseriesResponse<KPITimeseriesResponse>) =>
-        response.timeSeries
+      transformResponse: (
+        response: TimeseriesResponse<KPITimeseriesResponse>
+      ) => response.timeSeries
     })
   })
 })

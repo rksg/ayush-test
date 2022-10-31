@@ -156,7 +156,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  })
+  }, 20000)
 
   it('should create AAA network with secondary server', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -191,7 +191,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.2.2:2222')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
     })
-  })
+  }, 20000)
 
   it('should render Network AAA diagram with AAA buttons', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -211,7 +211,7 @@ describe('NetworkForm', () => {
     expect(authBtn).toBeVisible()
     expect(authBtn).toBeDisabled()
     expect(accBtn).toBeVisible()
-    expect(diagram[1].src).toContain('aaa-proxy.png')
+    expect(diagram[1].src).toContain('aaa.png')
 
     await userEvent.click(accBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
@@ -221,7 +221,7 @@ describe('NetworkForm', () => {
 
     await userEvent.click(authBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
-    expect(diagram[1].src).toContain('aaa-proxy.png')
+    expect(diagram[1].src).toContain('aaa.png')
   })
 
   it('IP address and Port combinations must be unique', async () => {

@@ -101,7 +101,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                                 class="styledComponents__Fieldset-sc-azs30w-0 iIfzQF"
                               >
                                 <legend
-                                  class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
+                                  class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
                                 >
                                   <label>
                                     1 Primary SIM
@@ -551,7 +551,7 @@ exports[`CellularOptionsForm should render Cellular options form successfully 1`
                               class="styledComponents__Fieldset-sc-azs30w-0 iIfzQF"
                             >
                               <legend
-                                class="styledComponents__Legend-sc-azs30w-1 bJPwwG"
+                                class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
                               >
                                 <label>
                                   2 Secondary SIM
