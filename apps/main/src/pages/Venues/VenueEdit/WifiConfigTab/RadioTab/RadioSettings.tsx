@@ -138,27 +138,28 @@ export function RadioSettings () {
 
   const handleUpdateRadioSettings =
   async (formData: VenueDefaultRegulatoryChannelsForm) => {
-    updateVenueTripleBandRadioSettings({
-      params: { tenantId, venueId },
-      payload: { enabled: formData.radioParamsDual5G.enabled }
-    })
-
     formData.radioParams50G.allowedIndoorChannels =
       formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
     formData.radioParams50G.allowedOutdoorChannels =
       formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
-    formData.radioParamsDual5G.radioParamsLower5G.allowedIndoorChannels =
-      formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
-        'allowedIndoorChannels'])
-    formData.radioParamsDual5G.radioParamsLower5G.allowedOutdoorChannels =
-      formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
-        'allowedOutdoorChannels'])
-    formData.radioParamsDual5G.radioParamsUpper5G.allowedIndoorChannels =
-      formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
-        'allowedIndoorChannels'])
-    formData.radioParamsDual5G.radioParamsUpper5G.allowedOutdoorChannels =
-      formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
-        'allowedOutdoorChannels'])
+    if(formData.radioParamsDual5G){
+      updateVenueTripleBandRadioSettings({
+        params: { tenantId, venueId },
+        payload: { enabled: formData.radioParamsDual5G.enabled }
+      })
+      formData.radioParamsDual5G.radioParamsLower5G.allowedIndoorChannels =
+        formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
+          'allowedIndoorChannels'])
+      formData.radioParamsDual5G.radioParamsLower5G.allowedOutdoorChannels =
+        formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
+          'allowedOutdoorChannels'])
+      formData.radioParamsDual5G.radioParamsUpper5G.allowedIndoorChannels =
+        formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
+          'allowedIndoorChannels'])
+      formData.radioParamsDual5G.radioParamsUpper5G.allowedOutdoorChannels =
+        formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
+          'allowedOutdoorChannels'])
+    }
 
     updateVenueRadioCustomization({
       params: { tenantId, venueId },
@@ -261,20 +262,26 @@ export function RadioSettings () {
           <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
             <Radio5GHz />
           </div>
-          <div style={{ display: triBandRadio &&
+          { triBandRadio &&<div style={{ display: triBandRadio &&
                 currentTab === 'Normal6GHz' ? 'block' : 'none' }}>
             <Radio6GHz />
           </div>
-          <div style={{ display:
-            triBandRadio && radioBandManagement &&
-            currentTab === 'Lower5GHz' ? 'block' : 'none' }}>
-            <RadioLower5GHz />
-          </div>
-          <div style={{ display:
-            triBandRadio && radioBandManagement &&
-            currentTab === 'Upper5GHz' ? 'block' : 'none' }}>
-            <RadioUpper5GHz />
-          </div>
+          }
+          { triBandRadio && radioBandManagement &&
+            <>
+              <div style={{
+                display: triBandRadio && radioBandManagement &&
+                  currentTab === 'Lower5GHz' ? 'block' : 'none'
+              }}>
+                <RadioLower5GHz />
+              </div><div style={{
+                display: triBandRadio && radioBandManagement &&
+                  currentTab === 'Upper5GHz' ? 'block' : 'none'
+              }}>
+                <RadioUpper5GHz />
+              </div>
+            </>
+          }
         </StepsForm.StepForm>
       </StepsForm>
     </Loader>
