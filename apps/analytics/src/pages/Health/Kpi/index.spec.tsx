@@ -144,18 +144,14 @@ describe('Kpi Section', () => {
     expect(sliders.length).toBe(4)
     const mockedSliders = sliders.map((slider) => slider)
     const values = mockedSliders.map(slider => slider.style.left)
-    await waitFor(async () => {
-      expect(values.find((val) => val === '50%')).toMatch('50%')
-    })
+    expect(values.find((val) => val === '50%')).toMatch('50%')
 
     const applyBtns = await screen.findAllByRole('button', { name: 'Apply' })
     expect(applyBtns.length).toBe(4)
     const applyBtn = applyBtns[0]
     expect(applyBtn).toBeDefined()
     fireEvent.click(applyBtn)
-    await waitFor(async () => {
-      expect(await screen.findByText('Threshold set succesfully.')).toBeVisible()
-    })
+    expect(await screen.findByText('Threshold set succesfully.')).toBeVisible()
   }, 30000)
 
   describe('getDefaultThreshold', () => {
