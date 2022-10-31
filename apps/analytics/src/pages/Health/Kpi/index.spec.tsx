@@ -156,7 +156,7 @@ describe('Kpi Section', () => {
     await waitFor(async () => {
       expect(await screen.findByText('Threshold set succesfully.')).toBeVisible()
     })
-  })
+  }, 20000)
 
   describe('getDefaultThreshold', () => {
     it('should match defaultData on undefined fetchedData', () => {
