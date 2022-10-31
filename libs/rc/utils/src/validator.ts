@@ -230,6 +230,14 @@ export function checkVlanMember (value: string) {
   return Promise.reject($t(validationMessages.invalid))
 }
 
+export function checkValuesNotEqual (value: string, checkValue: string) {
+  const { $t } = getIntl()
+  if (value && isEqual(value, checkValue)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function apNameRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp('(?=^((?!`|\\$\\()[ -_a-~]){2,32}$)^(\\S.*\\S)$')
@@ -246,14 +254,6 @@ export function gpsRegExp (lat: string, lng: string) {
 
   if (!latitudeRe.test(lat) || !longitudeRe.test(lng)) {
     return Promise.reject($t(validationMessages.gpsCoordinates))
-  }
-  return Promise.resolve()
-}
-
-export function checkValueIsEqual (value: string, checkValue: string) {
-  const { $t } = getIntl()
-  if (value && isEqual(value, checkValue)) {
-    return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()
 }

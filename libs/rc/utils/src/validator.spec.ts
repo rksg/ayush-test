@@ -4,7 +4,12 @@ import {
   passphraseRegExp,
   checkObjectNotExists,
   checkItemNotIncluded,
-  hasGraveAccentAndDollarSign
+  hasGraveAccentAndDollarSign,
+  checkVlanMember,
+  checkValuesNotEqual,
+  apNameRegExp,
+  gpsRegExp,
+  serialNumberRegExp
 } from './validator'
 
 describe('validator', () => {
@@ -85,6 +90,65 @@ describe('validator', () => {
     it('Should return false when item includes', async () => {
       const result1 = checkItemNotIncluded(mockdata, 'excluded1 test', 'entityName', exclusionItems)
       await expect(result1).rejects.toEqual('The entityName can not include excluded1, excluded2')
+    })
+  })
+
+  describe('checkVlanMember', () => {
+    it('Should take care of Vlan Member values correctly', async () => {
+      const result = checkVlanMember('2,3,4')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of Vlan Member range values correctly', async () => {
+      const result = checkVlanMember('1,2-99')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if Vlan Member values incorrectly', async () => {
+      const result1 = checkVlanMember('1-5000')
+      await expect(result1).rejects.toEqual('This field is invalid')
+    })
+  })
+
+  describe('checkValuesNotEqual', () => {
+    it('Should not display error if values are not equal', async () => {
+      const result = checkValuesNotEqual('name', 'test')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should return false when values are equal', async () => {
+      const result1 = checkValuesNotEqual('test', 'test')
+      await expect(result1).rejects.toEqual('This field is invalid')
+    })
+  })
+
+  describe('apNameRegExp', () => {
+    it('Should take care of AP name values correctly', async () => {
+      const result = apNameRegExp('test apname')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if AP name values incorrectly', async () => {
+      const result = apNameRegExp('test apname ')
+      await expect(result).rejects.toEqual('This field is invalid')
+    })
+  })
+
+  describe('gpsRegExp', () => {
+    it('Should take care of GPS values correctly', async () => {
+      const result = gpsRegExp('51.507558', '-0.126095')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if GPS values incorrectly', async () => {
+      const result = gpsRegExp('51.507558', '-0.126095xxxx')
+      await expect(result).rejects.toEqual('Please enter the valid GPS coordinates')
+    })
+  })
+
+  describe('serialNumberRegExp', () => {
+    it('Should take care of Serial Number values correctly', async () => {
+      const result = serialNumberRegExp('123456789000')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if Serial Number values incorrectly', async () => {
+      const result1 = serialNumberRegExp('1234567890000')
+      await expect(result1).rejects.toEqual('This field is invalid')
     })
   })
 })

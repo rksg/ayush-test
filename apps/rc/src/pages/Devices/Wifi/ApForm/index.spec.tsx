@@ -1,4 +1,3 @@
-
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
@@ -29,7 +28,6 @@ import {
 
 import { ApForm } from '.'
 
-const params = { tenantId: 'tenant-id' }
 const validCoordinates = ['40.769141, -101.629519', '51.508506, -0.124915']
 const invalidCoordinates = '51.508506, -0.12xxxx'
 const mockedUsedNavigate = jest.fn()
@@ -80,7 +78,8 @@ async function changeCoordinates (data, applyData) {
   }
 }
 
-describe('AP Form', () => {
+describe('AP Form - Add', () => {
+  const params = { tenantId: 'tenant-id', action: 'add' }
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -103,7 +102,7 @@ describe('AP Form', () => {
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><ApForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/add' }
+      route: { params, path: '/:tenantId/devices/aps/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -126,7 +125,7 @@ describe('AP Form', () => {
 
     it('should handle Add AP', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/aps/add' }
+        route: { params, path: '/:tenantId/devices/aps/:action' }
       })
       await changeVenue()
       await fillInForm()
@@ -142,7 +141,7 @@ describe('AP Form', () => {
 
     it('should handle Add AP with custom coordinates', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/aps/add' }
+        route: { params, path: '/:tenantId/devices/aps/:action' }
       })
       await changeVenue()
       await fillInForm()
@@ -157,15 +156,15 @@ describe('AP Form', () => {
 
     it('should handle disacrd coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/aps/add' }
+        route: { params, path: '/:tenantId/devices/aps/:action' }
       })
       await changeVenue()
       await changeCoordinates(validCoordinates[0], false)
     })
 
-    it('should handle correct coordinates input', async () => {
+    it('should handle valid coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/aps/add' }
+        route: { params, path: '/:tenantId/devices/aps/:action' }
       })
       await changeVenue()
       await changeCoordinates(validCoordinates[1], true)
@@ -178,9 +177,9 @@ describe('AP Form', () => {
       expect(await screen.findByText('40.769141, -73.9429713 (As venue)')).toBeVisible()
     })
 
-    it('should handle wrong coordinates input', async () => {
+    it('should handle invalid coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/aps/add' }
+        route: { params, path: '/:tenantId/devices/aps/:action' }
       })
       await changeVenue()
       await changeCoordinates(invalidCoordinates, true)

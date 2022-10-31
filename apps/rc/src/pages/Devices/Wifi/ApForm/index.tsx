@@ -30,7 +30,7 @@ import {
   ApDeep,
   apNameRegExp,
   checkObjectNotExists,
-  checkValueIsEqual,
+  checkValuesNotEqual,
   DeviceGps,
   gpsRegExp,
   hasGraveAccentAndDollarSign,
@@ -142,15 +142,12 @@ export function ApForm () {
   }
 
   return <>
-    <PageHeader
-      title={action === 'edit'
-        ? $t({ defaultMessage: 'Edit AP' })
-        : $t({ defaultMessage: 'Add AP' })
-      }
+    { action === 'add' && <PageHeader
+      title={$t({ defaultMessage: 'Add AP' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
       ]}
-    />
+    />}
     <StepsForm
       formRef={formRef}
       onFinish={handleAddAp}
@@ -159,9 +156,9 @@ export function ApForm () {
         pathname: `${basePath.pathname}/aps`
       })}
       buttonLabel={{
-        submit: action === 'edit'
-          ? $t({ defaultMessage: 'Save' })
-          : $t({ defaultMessage: 'Add' })
+        submit: action === 'add'
+          ? $t({ defaultMessage: 'Add' })
+          : $t({ defaultMessage: 'Apply' })
       }}
     >
       <StepsForm.StepForm>
@@ -229,7 +226,7 @@ export function ApForm () {
                   { required: true },
                   { min: 2, transform: (value) => value.trim() },
                   { max: 32, transform: (value) => value.trim() },
-                  { validator: (_, value) => checkValueIsEqual(value, 'aaaa') },
+                  { validator: (_, value) => checkValuesNotEqual(value, 'aaaa') },
                   { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
                   { validator: (_, value) => apNameRegExp(value) },
                   { validator: (_, value) => {
@@ -432,7 +429,7 @@ function CoordinatesModal (props: {
       label={false}
       name={fieldName}
       rules={[{
-        required: isMapEnabled ? true : false
+        required: isMapEnabled
       }, {
         validator: (_, value) => {
           const cord = value.split(',')
