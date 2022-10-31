@@ -28,12 +28,13 @@ export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
   const {
-    setNetworkType: setSettingStepTitle,
     editMode,
-    cloneMode
+    cloneMode,
+    data,
+    setData
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
-    setSettingStepTitle(e.target.value as NetworkTypeEnum)
+    setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
   }
   const networkListPayload = {
     searchString: '',
@@ -130,8 +131,10 @@ export function NetworkDetailForm () {
       </Col>
 
       <Col span={14}>
-        <NetworkDiagram type={type}/>
+        <NetworkDiagram />
       </Col>
     </Row>
   )
 }
+
+
