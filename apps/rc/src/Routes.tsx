@@ -1,8 +1,10 @@
-import { ConfigProvider }    from '@acx-ui/components'
-import { ServiceType }       from '@acx-ui/rc/utils'
-import { rootRoutes, Route } from '@acx-ui/react-router-dom'
-import { Provider }          from '@acx-ui/store'
+import { ConfigProvider }                    from '@acx-ui/components'
+import { ServiceType }                       from '@acx-ui/rc/utils'
+import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
+import { Provider }                          from '@acx-ui/store'
 
+import { SwitchesTable }     from './pages/Devices/Switch/SwitchesTable'
+import { ApsTable }          from './pages/Devices/Wifi/ApsTable'
 import { NetworkDetails }    from './pages/Networks/NetworkDetails/NetworkDetails'
 import { NetworkForm }       from './pages/Networks/NetworkForm/NetworkForm'
 import { NetworksTable }     from './pages/Networks/NetworksTable'
@@ -20,6 +22,7 @@ import { ServicesTable } from './pages/Services/ServicesTable'
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
+      <Route path='devices/*' element={<DeviceRoutes />} />
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
     </Route>
@@ -28,6 +31,16 @@ export default function RcRoutes () {
     <ConfigProvider>
       <Provider children={routes} />
     </ConfigProvider>
+  )
+}
+
+function DeviceRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
+      <Route path='devices/aps' element={<ApsTable />} />
+      <Route path='devices/switches' element={<SwitchesTable />} />
+    </Route>
   )
 }
 
