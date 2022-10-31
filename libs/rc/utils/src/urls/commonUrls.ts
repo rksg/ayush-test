@@ -35,6 +35,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps'
   },
+  getApGroupList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/ap-group'
+  },
   getAllUserSettings: {
     method: 'get',
     url: '/api/tenant/:tenantId/admin-settings/ui'

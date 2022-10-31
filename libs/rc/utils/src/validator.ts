@@ -229,3 +229,40 @@ export function checkVlanMember (value: string) {
   }
   return Promise.reject($t(validationMessages.invalid))
 }
+
+export function checkValuesNotEqual (value: string, checkValue: string) {
+  const { $t } = getIntl()
+  if (value && isEqual(value, checkValue)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
+export function apNameRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('(?=^((?!`|\\$\\()[ -_a-~]){2,32}$)^(\\S.*\\S)$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
+export function gpsRegExp (lat: string, lng: string) {
+  const { $t } = getIntl()
+  const latitudeRe = new RegExp('^$|^(-?(?:90(?:\\.0{1,6})?|(?:[1-8]?\\d(?:\\.\\d{1,6})?)))$')
+  const longitudeRe = new RegExp('^$|^(-?(?:180(?:\\.0{1,6})?|(?:[1-9]?\\d(?:\\.\\d{1,6})?)|(?:1[0-7]?\\d(?:\\.\\d{1,6})?)))$')
+
+  if (!latitudeRe.test(lat) || !longitudeRe.test(lng)) {
+    return Promise.reject($t(validationMessages.gpsCoordinates))
+  }
+  return Promise.resolve()
+}
+
+export function serialNumberRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^[1-9][0-9]{11}$')
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}

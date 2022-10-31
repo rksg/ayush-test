@@ -1,3 +1,6 @@
+export * from './ApDeep'
+export * from './ApLanPortTypeEnum'
+export * from './DeviceGps'
 export * from './VlanPool'
 export * from './NetworkVenue'
 export * from './NetworkApGroup'

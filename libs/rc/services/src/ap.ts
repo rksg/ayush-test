@@ -3,12 +3,16 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   ApExtraParams,
   AP,
+  ApDeep,
+  ApGroup,
   APRadio,
   ApRadioBands,
   CommonUrlsInfo,
   createHttpRequest,
   RequestPayload,
-  TableResult
+  TableResult,
+  VenueCapabilities,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -32,13 +36,42 @@ export const apApi = baseApApi.injectEndpoints({
       transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
       }
+    }),
+    apGroupList: build.query<ApGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApGroupList, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    addAp: build.mutation<ApDeep, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
 
 export const {
   useApListQuery,
-  useLazyApListQuery
+  useLazyApListQuery,
+  useAddApMutation,
+  useApGroupListQuery,
+  useLazyApGroupListQuery,
+  useWifiCapabilitiesQuery
 } = apApi
 
 
