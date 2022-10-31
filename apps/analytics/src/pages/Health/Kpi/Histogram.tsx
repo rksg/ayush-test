@@ -82,9 +82,6 @@ function Histogram ({
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
-  const [, setSliderValue] = useState(
-    splits.indexOf(thresholdValue) + 1
-  )
   const [isInitialRender, setIsInitialRender] = useState(true)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
 
@@ -160,10 +157,9 @@ function Histogram ({
 
   const onButtonReset = useCallback((baseConfig?: boolean) => {
     const defaultConfig: unknown = onReset && onReset()(baseConfig)
-    setSliderValue(splits.indexOf(defaultConfig) + 0.5)
     setThresholdValue(defaultConfig as string)
     setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
-  }, [kpi, onReset, setKpiThreshold, splits, thresholds])
+  }, [kpi, onReset, setKpiThreshold, thresholds])
 
   const onButtonApply = async () => {
     if (onApply) {
