@@ -5,7 +5,7 @@ import { isEmpty }      from 'lodash'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { Button, Loader, showActionModal }                   from '@acx-ui/components'
+import { DisabledButton, Loader, showActionModal }           from '@acx-ui/components'
 import { BulbOutlined }                                      from '@acx-ui/icons'
 import { useDeleteFloorPlanMutation, useFloorPlanListQuery } from '@acx-ui/rc/services'
 import { FloorPlanDto }                                      from '@acx-ui/rc/utils'
@@ -72,17 +72,12 @@ export default function FloorPlan () {
               deleteFloorPlan={onDeleteFloorPlan}/>
           }
           <UI.StyledSpace size={24}>
-            <Button size='small' type='link'>{$t({ defaultMessage: '+ Add Floor Plan' })}</Button>
-            <Button size='small' type='link'>
+            <DisabledButton size='small' type='link'>
+              {$t({ defaultMessage: '+ Add Floor Plan' })}
+            </DisabledButton>
+            <DisabledButton size='small' type='link'>
               {$t({ defaultMessage: 'Unplaced Devices (0)' })}
-            </Button>
-            <UI.Button
-              type='default'
-              data-testid='expandIcon'
-              key={'expand-btn'}
-              title={$t({ defaultMessage: 'Expand' })}
-              icon={<UI.ArrowOutIcon />}
-            />
+            </DisabledButton>
           </UI.StyledSpace>
         </UI.FloorPlanContainer>
         :
@@ -94,7 +89,9 @@ export default function FloorPlan () {
                 'You can place your devices on floor plans or map to view their geographical distribution'
             })}
           </Space>}>
-          <Button type='link'>{$t({ defaultMessage: 'Add Floor Plan' })}</Button>
+          <DisabledButton type='link'>
+            {$t({ defaultMessage: 'Add Floor Plan' })}
+          </DisabledButton>
         </Empty>
       }
     </Loader>

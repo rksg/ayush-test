@@ -23,9 +23,15 @@ export const Wrapper = styled.div`
           overflow: visible !important;
           .ant-layout-sider-children {
             .ant-pro-sider-logo {
+              a {
+                min-height: unset;
+              }
+              padding: 0;
               width: var(--acx-sider-width);
-              padding: 18px 20px;
-              margin-bottom: 10px;
+              height: var(--acx-header-height);
+              margin-bottom: 13px;
+              align-items: center;
+              justify-content: center;
             }
             .ant-menu-submenu-arrow {
               display: none;
@@ -49,6 +55,7 @@ export const Wrapper = styled.div`
         }
         .ant-menu-title-content {
           a {
+            display: block;
             color: var(--acx-primary-white);
           }
         }
@@ -105,6 +112,12 @@ export const Wrapper = styled.div`
           font-size: var(--acx-headline-4-font-size);
           font-weight: var(--acx-headline-4-font-weight);
           line-height: 38px;
+          &-disabled {
+            .ant-pro-menu-item-title {
+              color: var(--acx-primary-white);
+              opacity: 0.35;
+            }
+          }
           &-selected {
             font-weight: var(--acx-headline-4-font-weight-bold);
             border-left-color: var(--acx-accents-orange-50);
@@ -160,25 +173,26 @@ export const Wrapper = styled.div`
           .ant-menu-sub {
             background-color: var(--acx-neutrals-80);
           }
+        }
       }
     }
-  }
 
-  .ant-layout-header {
-    width: 100% !important;
-    height: var(--acx-header-height) !important;
-    line-height: var(--acx-header-height) !important;
-    .ant-pro-global-header {
-      background-color: var(--acx-primary-black);
-      color: var(--acx-primary-white);
-      padding: 0 20px 0 var(--acx-sider-width);
-      font-size: var(--acx-body-4-font-size);
+    .ant-layout-header {
+      width: 100% !important;
+      height: var(--acx-header-height) !important;
+      line-height: var(--acx-header-height) !important;
+      .ant-pro-global-header {
+        background-color: var(--acx-primary-black);
+        color: var(--acx-primary-white);
+        padding: 0 20px 0 var(--acx-sider-width);
+        font-size: var(--acx-body-4-font-size);
+      }
     }
-  }
 
-  .ant-layout-content {
-    margin: 0;
-    background-color: var(--acx-primary-white);
+    .ant-layout-content {
+      margin: 0;
+      background-color: var(--acx-primary-white);
+    }
   }
 `
 
@@ -224,10 +238,18 @@ export const RightHeaderContentWrapper = styled.div`
   align-items: center;
   gap: var(--acx-header-button-margin);
   height: 100%;
+
+  .ant-tooltip-disabled-compatible-wrapper {
+    display: flex !important;
+    button[disabled] {
+      background-color: var(--acx-neutrals-70);
+    }
+  }
 `
 
 const MenuIcon = styled.span`
   margin-right: 8px;
+  color: var(--acx-primary-white) !important;
   > svg {
     vertical-align: middle;
     height: 20px;
