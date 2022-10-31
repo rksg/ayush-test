@@ -10,3 +10,11 @@ export interface EdgeViewModel {
   venueId: string
   tags: string[]
 }
+
+export enum EdgeStatusEnum {
+  REQUIRES_ATTENTION = 'Requires Attention',
+  TEMPORARILY_DEGRADED = 'Temporarily degraded',
+  IN_SETUP_PHASE = 'In Setup Phase',
+  OFFLINE = 'Offline',
+  OPERATIONAL = 'Operational'
+}

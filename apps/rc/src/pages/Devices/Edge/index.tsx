@@ -11,6 +11,8 @@ import { useDeleteEdgeMutation, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeViewModel, useTableQuery }               from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
 
+import { EdgeStatusLight } from './EdgeStatusLight'
+
 const EdgesTable = () => {
 
   const defaultPayload = {
@@ -63,7 +65,12 @@ const EdgesTable = () => {
       key: 'status',
       dataIndex: 'status',
       sorter: true,
-      filterable: true
+      filterable: true,
+      render: (data, row) => {
+        return (
+          <EdgeStatusLight data={row.status} />
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Type' }),

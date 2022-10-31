@@ -8,7 +8,7 @@ export const mockEdgeData = {
   data: [
     {
       name: 'Smart Edge 1',
-      status: 'operational',
+      status: 'Operational',
       type: 'type 1',
       model: 'model 1',
       serialNumber: '0000000001',
@@ -20,7 +20,7 @@ export const mockEdgeData = {
     },
     {
       name: 'Smart Edge 2',
-      status: 'operational',
+      status: 'Operational',
       type: 'type 1',
       model: 'model 1',
       serialNumber: '0000000002',
@@ -32,7 +32,7 @@ export const mockEdgeData = {
     },
     {
       name: 'Smart Edge 3',
-      status: 'operational',
+      status: 'Operational',
       type: 'type 1',
       model: 'model 1',
       serialNumber: '0000000003',
@@ -44,7 +44,7 @@ export const mockEdgeData = {
     },
     {
       name: 'Smart Edge 4',
-      status: 'operational',
+      status: 'Operational',
       type: 'type 1',
       model: 'model 1',
       serialNumber: '0000000004',
@@ -56,7 +56,7 @@ export const mockEdgeData = {
     },
     {
       name: 'Smart Edge 5',
-      status: 'operational',
+      status: 'Operational',
       type: 'type 1',
       model: 'model 1',
       serialNumber: '0000000005',

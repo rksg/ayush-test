@@ -49,6 +49,7 @@ describe('EdgeList', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
 
@@ -125,6 +126,27 @@ describe('EdgeList', () => {
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "Smart Edge 1"?')
+    await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+  })
+
+  it('should delete selected row(multiple)', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/list' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row1 = screen.getByRole('row', { name: /Smart Edge 1/i })
+    const row2 = screen.getByRole('row', { name: /Smart Edge 2/i })
+    await user.click(within(row1).getByRole('checkbox'))
+    await user.click(within(row2).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Delete' }))
+    await screen.findByText('Delete "2 Edges"?')
     await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
