@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement } from 'react'
 
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
@@ -67,10 +67,7 @@ const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => 
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
   const { networkFilter: { path } } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
-  const selectedRange = useMemo(() =>
-    ({ startDate: moment(startDate), endDate: moment(endDate) }),
-  [endDate, startDate]
-  )
+
   return <PageHeader
     {...props}
     subTitle={<Loader states={[state]} fallback={<Spinner size='small' />}>
@@ -89,7 +86,10 @@ const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => 
       />,
       <RangePicker
         key='range-picker'
-        selectedRange={selectedRange}
+        selectedRange={{
+          startDate: moment(startDate),
+          endDate: moment(endDate)
+        }}
         enableDates={dateRangeForLast(3, 'months')}
         onDateApply={setDateFilter as CallableFunction}
         showTimePicker

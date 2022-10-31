@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -47,10 +47,7 @@ export default function Dashboard () {
 
 function DashboardPageHeader () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const selectedRange = useMemo(() =>
-    ({ startDate: moment(startDate), endDate: moment(endDate) }),
-  [endDate, startDate]
-  )
+
   const { $t } = useIntl()
   return (
     <PageHeader
@@ -59,7 +56,7 @@ function DashboardPageHeader () {
         <VenueFilter key='hierarchy-filter'/>,
         <RangePicker
           key='range-picker'
-          selectedRange={selectedRange}
+          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           enableDates={dateRangeForLast(3,'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
