@@ -17,7 +17,7 @@ import {
   venueListResponse
 } from '../__tests__/fixtures'
 import { radiusErrorMessage, multipleConflictMessage } from '../contentsMap'
-import { NetworkForm }                                 from '../NetworkForm'
+import NetworkForm                                     from '../NetworkForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')

@@ -1,10 +1,9 @@
 import { Provider } from '@acx-ui/store'
 import {
-  render,
-  screen
+  render
 } from '@acx-ui/test-utils'
 
-import { SwitchesTable } from '.'
+import SwitchesTable from '.'
 
 describe('Switch List Table', () => {
   const params = { tenantId: 'tenant-id' }

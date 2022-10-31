@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader } from '@acx-ui/components'
 // import { ApTable } from '../../../../components/ApTable'
 
-export function ApsTable () {
+export default function ApsTable () {
   const { $t } = useIntl()
 
   return (

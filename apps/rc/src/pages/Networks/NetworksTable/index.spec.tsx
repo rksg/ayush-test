@@ -11,7 +11,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { NetworksTable } from '.'
+import NetworksTable from '.'
 
 jest.mock('socket.io-client')
 
