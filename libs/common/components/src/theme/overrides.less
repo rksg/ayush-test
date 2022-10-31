@@ -191,19 +191,27 @@
       margin-left: 5px;
     }
 
-    &-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
-      flex-direction: row-reverse;
+    &.ant-form-vertical {
+      .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
+        flex-direction: row-reverse;
 
+        &::before {
+          margin-right: 0;
+          margin-left: 3px;
+        }
+        
+        > svg {
+          order: -1
+        }
+      }
+    }
+
+    &-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
       &::before {
-        margin-right: 0;
-        margin-left: 3px;
         color: var(--acx-accents-orange-50);
         font-family: var(--acx-neutral-brand-font);
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
-      }
-      > svg {
-        order: -1
       }
     }
 
@@ -562,6 +570,14 @@
     }
   }
 
+  .ant-spin {
+    &.ant-spin-sm {
+      .ant-spin-dot {
+        font-size: 12px;
+      }
+    }
+  }
+
   .ant-switch {
     background: transparent;
     border: 1px solid var(--acx-neutrals-60);
@@ -670,40 +686,6 @@
   .ant-modal {
     .ant-modal-content {
       box-shadow: 0px 6px 16px rgba(51, 51, 51, 0.1);
-    }
-
-    &:not(.ant-modal-confirm) {
-      .ant-modal-content {
-        border-radius: 12px;
-        max-height: 80vh;
-        display: flex;
-        flex-direction: column;
-      }
-      .ant-modal-header {
-        border-radius: inherit;
-        .ant-modal-title {
-          font-family: var(--acx-accent-brand-font);
-          font-size: var(--acx-headline-2-font-size);
-          font-weight: var(--acx-headline-2-font-weight);
-          line-height: var(--acx-headline-2-line-height);
-        }
-      }
-      .ant-modal-body {
-        padding-top: 0;
-        flex: 1;
-        overflow-y: scroll;
-      }
-      .ant-modal-footer {
-        border-radius: inherit;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        .ant-btn + .ant-btn:not(.ant-dropdown-trigger) {
-          margin-left: 12px;
-        }
-      }
-      .ant-modal-close-x {
-        padding-top: 3px;
-      }
     }
 
     &.ant-modal-confirm {

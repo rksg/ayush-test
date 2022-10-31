@@ -31,45 +31,51 @@ exports[`VenueTabs should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-analytics"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-analytics"
               role="tab"
-              tabindex="0"
             >
-              AI Analytics
+              <span>
+                AI Analytics
+              </span>
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-clients"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-clients"
               role="tab"
-              tabindex="0"
             >
-              Clients (0)
+              <span>
+                Clients (2)
+              </span>
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-devices"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-devices"
               role="tab"
-              tabindex="0"
             >
-              Devices (0)
+              <span>
+                Devices (1)
+              </span>
             </div>
           </div>
           <div
@@ -83,35 +89,39 @@ exports[`VenueTabs should render correctly 1`] = `
               role="tab"
               tabindex="0"
             >
-              Networks (0)
+              Networks (1)
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-services"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-services"
               role="tab"
-              tabindex="0"
             >
-              Services (0)
+              <span>
+                Services (0)
+              </span>
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-timeline"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-timeline"
               role="tab"
-              tabindex="0"
             >
-              Timeline
+              <span>
+                Timeline
+              </span>
             </div>
           </div>
           <div

@@ -1,6 +1,5 @@
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilterProvider }           from '@acx-ui/analytics/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
@@ -25,6 +24,6 @@ export default function AnalyticsRoutes () {
     </Route>
   )
   return (
-    <Provider><AnalyticsFilterProvider>{routes}</AnalyticsFilterProvider></Provider>
+    <Provider>{routes}</Provider>
   )
 }

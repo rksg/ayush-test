@@ -3,7 +3,7 @@
 exports[`Networks Table should click disabled row 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -55,7 +55,7 @@ exports[`Networks Table should click disabled row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
     >
       <div
         class="ant-pro-table"
@@ -978,7 +978,7 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/c9d5f4c771c34ad2898f7078cebbb191/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/c9d5f4c771c34ad2898f7078cebbb191/network-details/aps"
                                 >
                                   network-01
                                 </a>
@@ -1147,7 +1147,7 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/373377b0cb6e46ea8982b1c80aabe1fa/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/373377b0cb6e46ea8982b1c80aabe1fa/network-details/aps"
                                 >
                                   network-03
                                 </a>
@@ -1644,7 +1644,7 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/3c62b3818d194022b8dd35852c66f646/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/3c62b3818d194022b8dd35852c66f646/network-details/aps"
                                 >
                                   network-09
                                 </a>
@@ -1884,7 +1884,7 @@ exports[`Networks Table should click disabled row 1`] = `
 exports[`Networks Table should delete selected row 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -1936,7 +1936,7 @@ exports[`Networks Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
     >
       <div
         class="ant-pro-table"
@@ -2859,7 +2859,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/c9d5f4c771c34ad2898f7078cebbb191/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/c9d5f4c771c34ad2898f7078cebbb191/network-details/aps"
                                 >
                                   network-01
                                 </a>
@@ -3028,7 +3028,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/373377b0cb6e46ea8982b1c80aabe1fa/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/373377b0cb6e46ea8982b1c80aabe1fa/network-details/aps"
                                 >
                                   network-03
                                 </a>
@@ -3525,7 +3525,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/3c62b3818d194022b8dd35852c66f646/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/3c62b3818d194022b8dd35852c66f646/network-details/aps"
                                 >
                                   network-09
                                 </a>
@@ -3765,7 +3765,7 @@ exports[`Networks Table should delete selected row 1`] = `
 exports[`Networks Table should render table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -3817,7 +3817,7 @@ exports[`Networks Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
     >
       <div
         class="ant-pro-table"
@@ -4666,7 +4666,7 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/c9d5f4c771c34ad2898f7078cebbb191/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/c9d5f4c771c34ad2898f7078cebbb191/network-details/aps"
                                 >
                                   network-01
                                 </a>
@@ -4835,7 +4835,7 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/373377b0cb6e46ea8982b1c80aabe1fa/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/373377b0cb6e46ea8982b1c80aabe1fa/network-details/aps"
                                 >
                                   network-03
                                 </a>
@@ -5332,7 +5332,7 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/3c62b3818d194022b8dd35852c66f646/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/3c62b3818d194022b8dd35852c66f646/network-details/aps"
                                 >
                                   network-09
                                 </a>

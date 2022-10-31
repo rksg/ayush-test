@@ -23,19 +23,20 @@ describe('dataZoomOptions', () => {
       {
         key: 'series1',
         name: 'series1',
-        data: [['2022-04-07T09:15:00.000Z', '-'], ['2022-04-07T09:30:00.000Z', '-']]
+        data: [['2022-04-07T09:15:00.000Z', 1], ['2022-04-07T09:30:00.000Z', 2]]
       },
       {
         key: 'series2',
         name: 'series2',
-        data: [['2022-04-07T09:15:00.000Z', '-'], ['2022-04-07T09:45:00.000Z', '-']]
+        data: [['2022-04-07T09:15:00.000Z', 3], ['2022-04-07T09:45:00.000Z', 4]]
       }
     ] as TimeSeriesChartData[]
     expect(dataZoomOptions(data)).toEqual([{
       id: 'zoom',
       type: 'inside',
+      filterMode: 'none',
       zoomLock: true,
-      minValueSpan: 2 * 30 * 60 * 1000
+      minValueSpan: 30 * 60 * 1000
     }])
   })
 })

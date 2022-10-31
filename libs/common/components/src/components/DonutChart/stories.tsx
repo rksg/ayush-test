@@ -26,11 +26,11 @@ export const incidents = [
 ]
 
 export const topSwitchModels = [
-  { value: 13, name: 'ICX7150-C12P', color: cssStr('--acx-accents-blue-30') },
-  { value: 8, name: 'ICX7150-C121P', color: cssStr('--acx-accents-blue-60') },
-  { value: 7, name: 'ICX7150-C57P', color: cssStr('--acx-accents-orange-25') },
-  { value: 4, name: 'ICX7150-C8', color: cssStr('--acx-accents-orange-50') },
-  { value: 2, name: 'ICX7150-C0', color: cssStr('--acx-semantics-yellow-40') }
+  { value: 13, name: 'ICX7150-C12P', color: cssStr('--acx-viz-qualitative-1') },
+  { value: 8, name: 'ICX7150-C121P', color: cssStr('--acx-viz-qualitative-2') },
+  { value: 7, name: 'ICX7150-C57P', color: cssStr('--acx-viz-qualitative-3') },
+  { value: 4, name: 'ICX7150-C8', color: cssStr('--acx-viz-qualitative-4') },
+  { value: 2, name: 'ICX7150-C0', color: cssStr('--acx-viz-qualitative-5') }
 ]
 
 const clickHandler = (params: EventParams) => {

@@ -4,7 +4,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
-  Button,
+  DisabledButton,
   GridRow,
   GridCol,
   PageHeader,
@@ -15,7 +15,7 @@ import {
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { useDateFilter, dateRangeForLast, DashboardFilterProvider, useDashboardFilter } from '@acx-ui/utils'
+import { useDateFilter, dateRangeForLast, useDashboardFilter } from '@acx-ui/utils'
 
 import VenueFilter from '../../components/VenueFilter'
 
@@ -37,11 +37,11 @@ export default function Dashboard () {
     }
   ]
   return (
-    <DashboardFilterProvider>
+    <>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
       <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
-    </DashboardFilterProvider>
+    </>
   )
 }
 
@@ -62,7 +62,10 @@ function DashboardPageHeader () {
           showTimePicker
           selectionType={range}
         />,
-        <Button key='download' icon={<DownloadOutlined />} />
+        <DisabledButton
+          tooltipPlacement='topRight'
+          key='download'
+          icon={<DownloadOutlined />} />
       ]}
     />
   )

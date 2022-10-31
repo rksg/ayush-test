@@ -3,7 +3,7 @@
 exports[`NetworkDetails should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -68,37 +68,48 @@ exports[`NetworkDetails should render correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <span>
+                    All Active Venues
+                  </span>
+                  <svg>
+                    ArrowExpand.svg
+                  </svg>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <span>
-                  Entire Organization
-                </span>
-                <svg>
-                  ArrowExpand.svg
-                </svg>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <a
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/373377b0cb6e46ea8982b1c80aabe1fa/edit"
@@ -112,18 +123,6 @@ exports[`NetworkDetails should render correctly 1`] = `
                   </span>
                 </button>
               </a>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  BulbOutlined.svg
-                </svg>
-              </button>
             </div>
           </div>
         </span>
@@ -146,17 +145,19 @@ exports[`NetworkDetails should render correctly 1`] = `
                 style="transform: translate(0px, 0px);"
               >
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-overview"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-overview"
                     role="tab"
-                    tabindex="0"
                   >
-                    Overview
+                    <span>
+                      Overview
+                    </span>
                   </div>
                 </div>
                 <div
@@ -188,45 +189,51 @@ exports[`NetworkDetails should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-events"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-events"
                     role="tab"
-                    tabindex="0"
                   >
-                    Events
+                    <span>
+                      Events
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-incidents"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-incidents"
                     role="tab"
-                    tabindex="0"
                   >
-                    Incidents
+                    <span>
+                      Incidents
+                    </span>
                   </div>
                 </div>
                 <div

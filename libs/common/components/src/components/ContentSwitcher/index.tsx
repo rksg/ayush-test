@@ -2,10 +2,11 @@ import { FC, ReactNode, useState } from 'react'
 
 import { SelectionControl, SelectionControlOptionProps } from '../SelectionControl'
 interface TabDetail {
-  label: string
+  label: ReactNode
   value: string
-  children: ReactNode,
+  children: ReactNode
   icon?: ReactNode
+  disabled?: boolean
 }
 
 export interface ContentSwitcherProps {
@@ -23,7 +24,8 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
     return {
       label: tabDetail.label,
       value: tabDetail.value,
-      icon: tabDetail.icon
+      icon: tabDetail.icon,
+      disabled: tabDetail.disabled
     }
   })
   const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
