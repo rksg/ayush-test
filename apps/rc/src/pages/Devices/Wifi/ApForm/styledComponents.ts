@@ -1,7 +1,7 @@
 import { Divider as AntDivider, Form } from 'antd'
 import styled                          from 'styled-components/macro'
 
-export const AddressFormItem = styled(Form.Item)`
+export const CoordinateFormItem = styled(Form.Item)`
   position: relative;
   margin: 0 !important;
   .ant-form-item-row {
@@ -17,7 +17,7 @@ export const AddressFormItem = styled(Form.Item)`
   }
 `
 
-export const AddressMap = styled.div`
+export const CoordinateMap = styled.div`
   position: relative;
   aspect-ratio: 470 / 260;
 `

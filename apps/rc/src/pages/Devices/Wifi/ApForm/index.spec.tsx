@@ -154,7 +154,7 @@ describe('AP Form - Add', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     })
 
-    it('should handle disacrd coordinates input', async () => {
+    it('should handle discard coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/devices/aps/:action' }
       })

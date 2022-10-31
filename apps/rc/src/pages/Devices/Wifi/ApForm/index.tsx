@@ -425,7 +425,7 @@ function CoordinatesModal (props: {
     onOk={onApplyCoordinates}
     onCancel={() => setGpsModalVisible(false)}
   >
-    <UI.AddressFormItem
+    <UI.CoordinateFormItem
       label={false}
       name={fieldName}
       rules={[{
@@ -449,7 +449,7 @@ function CoordinatesModal (props: {
         onChange={onChangeCoordinates}
       />}
     />
-    <UI.AddressMap>
+    <UI.CoordinateMap>
       {isMapEnabled ?
         <GoogleMap
           libraries={['places']}
@@ -470,6 +470,6 @@ function CoordinatesModal (props: {
           {$t({ defaultMessage: 'Map is not enabled' })}
         </Typography.Title>
       }
-    </UI.AddressMap>
+    </UI.CoordinateMap>
   </Modal>
 }
