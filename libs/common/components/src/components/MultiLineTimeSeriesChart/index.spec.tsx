@@ -71,13 +71,13 @@ describe('MultiLineTimeSeriesChart', () => {
       disableLegend={true}
     />)
 
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-30')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-1')}"]`))
       .not.toBeNull()
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-blue-50')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-2')}"]`))
       .not.toBeNull()
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-accents-orange-50')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-3')}"]`))
       .not.toBeNull()
-    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-semantics-yellow-40')}"]`))
+    expect(asFragment().querySelector(`path[stroke="${cssStr('--acx-viz-qualitative-4')}"]`))
       .toBeNull()
   })
 
@@ -144,24 +144,25 @@ describe('useBrush', () => {
             on: mockGetZrOn,
             setCursorStyle: mockSetCursorStyle
           })
-        })
+        }),
+        forceUpdate: jest.fn()
       }
-    } as RefObject<ReactECharts>
+    } as unknown as RefObject<ReactECharts>
   })
 
   it('handles null echart ref', () => {
     eChartsRef = { current: null } as RefObject<ReactECharts>
-    renderHook(() => useBrush(eChartsRef, getSeriesData(), ['2022-09-07', '2022-09-07']))
+    renderHook(() => useBrush(eChartsRef, ['2022-09-07', '2022-09-07']))
     // intentionally no assertion to cover the line where echart ref is null
   })
 
   it('handles undefined brush prop', () => {
-    renderHook(() => useBrush(eChartsRef, getSeriesData(), undefined))
+    renderHook(() => useBrush(eChartsRef, undefined))
     expect(mockDispatchAction).not.toBeCalled()
   })
 
   it('handles brush events', () => {
-    renderHook(() => useBrush(eChartsRef, getSeriesData(), ['2022-09-07', '2022-09-07']))
+    renderHook(() => useBrush(eChartsRef, ['2022-09-07', '2022-09-07']))
 
     expect(mockDispatchAction).toBeCalledTimes(1)
     expect(mockDispatchAction).toBeCalledWith({
@@ -182,7 +183,6 @@ describe('useBrush', () => {
     renderHook(() => {
       useBrush(
         eChartsRef,
-        getSeriesData(),
         ['2022-09-07', '2022-09-07'],
         mockOnBrushChange
       )

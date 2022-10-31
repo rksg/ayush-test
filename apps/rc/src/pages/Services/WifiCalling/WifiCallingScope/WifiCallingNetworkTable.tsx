@@ -94,7 +94,10 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
       showToast({
         type: 'info',
-        content: `Activate ${selectRows.length} network(s)`
+        content: $t(
+          { defaultMessage: 'Activate {count} network(s)' },
+          { count: selectRows.length }
+        )
       })
       clearSelection()
     }
@@ -110,7 +113,10 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
       showToast({
         type: 'info',
-        content: `Deactivate ${selectRows.length} network(s)`
+        content: $t(
+          { defaultMessage: 'Deactivate {count} network(s)' },
+          { count: selectRows.length }
+        )
       })
       clearSelection()
     }

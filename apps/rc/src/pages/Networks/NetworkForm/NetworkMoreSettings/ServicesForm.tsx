@@ -11,6 +11,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Button }                            from '@acx-ui/components'
+import { notAvailableMsg }                   from '@acx-ui/utils'
 import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
@@ -79,7 +81,7 @@ function ClientIsolationForm () {
           initialValue={false}
           children={<Switch />} />
       </UI.FieldLabel>
-      <Tooltip title={$t({ defaultMessage: 'Drop#1 is not support.' })}>
+      <Tooltip title={$t(notAvailableMsg)}>
         <UI.FieldLabel width='230px'>
           {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
           <Form.Item

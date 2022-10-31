@@ -10,9 +10,7 @@ function Services () {
   const { $t } = useIntl()
 
   if (!isServicesEnabled) {
-    // eslint-disable-next-line no-console
-    console.log($t({ defaultMessage: 'Services is not enabled' }))
-    // return <span>{ $t({ defaultMessage: 'Services is not enabled' }) }</span>
+    return <span>{ $t({ defaultMessage: 'Services is not enabled' }) }</span>
   }
 
   return (

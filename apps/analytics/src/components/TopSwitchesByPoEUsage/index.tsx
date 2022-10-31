@@ -21,14 +21,6 @@ import { formatter, intlFormats }                             from '@acx-ui/util
 
 import { useTopSwitchesByPoEUsageQuery } from './services'
 
-const barColors = [
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-accents-orange-25'),
-  cssStr('--acx-accents-orange-50'),
-  cssStr('--acx-accents-blue-40'),
-  cssStr('--acx-accents-blue-50')
-]
-
 const seriesMapping: BarChartData['seriesEncode'] = [
   { x: 'usage', y: 'name' }
 ]
@@ -94,7 +86,6 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
             data && data.source?.length > 0
               ?
               <BarChart
-                barColors={barColors}
                 data={data}
                 grid={{ top: '10%',right: '17%' }}
                 labelFormatter={switchUsageLabelFormatter(intl)}

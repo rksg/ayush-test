@@ -79,19 +79,18 @@ describe('AllRoutes', () => {
     await screen.findByTestId('services')
   })
 
-  // TODO: temporarily disable the test case
-  // test('should not navigate to services/* if the feature flag is off', async () => {
-  //   jest.mocked(useSplitTreatment).mockReturnValue(false)
-  //
-  //   render(<Provider><AllRoutes /></Provider>, {
-  //     route: {
-  //       path: '/t/tenantId/services/some-page',
-  //       wrapRoutes: false
-  //     }
-  //   })
-  //
-  //   await screen.findByText('Services is not enabled')
-  // })
+  test('should not navigate to services/* if the feature flag is off', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(false)
+
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/services/some-page',
+        wrapRoutes: false
+      }
+    })
+
+    await screen.findByText('Services is not enabled')
+  })
 
   test('should navigate to venues/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
