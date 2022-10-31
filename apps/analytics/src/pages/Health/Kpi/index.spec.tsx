@@ -7,8 +7,7 @@ import {
   mockGraphqlMutation,
   mockGraphqlQuery,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 import { TimeStampRange } from '@acx-ui/types'
 import { DateRange }      from '@acx-ui/utils'
