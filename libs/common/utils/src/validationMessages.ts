@@ -94,6 +94,18 @@ export const validationMessages = {
   vlanRange: defineMessage({
     defaultMessage: 'VLAN ID must be between 1 and 4094',
     description: 'Validation - VLAN range checks'
+  }),
+  validateURL: defineMessage({
+    defaultMessage: 'Please enter a valid URL',
+    description: 'Validation - Please enter a valid URL'
+  }),
+  validateEqualOne: defineMessage({
+    defaultMessage: 'This value should be higher than or equal to 1',
+    description: 'Validation - This value should be higher than or equal to 1'
+  }),
+  validateLowerThan65535: defineMessage({
+    defaultMessage: 'This value should be lower than or equal to 65535',
+    description: 'Validation - This value should be lower than or equal to 65535'
   })
 }
 

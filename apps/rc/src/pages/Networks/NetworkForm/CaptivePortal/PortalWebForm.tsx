@@ -4,6 +4,7 @@ import {
   RadioChangeEvent,
   Row
 } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
@@ -26,33 +27,34 @@ export function PortalWebForm () {
   /* eslint-enable */
 
 function PortalWebFormPage () {
+  const intl = useIntl()
   return (
     <>
-      <StepsForm.Title>Portal Web Page</StepsForm.Title>
+      <StepsForm.Title>{intl.$t({ defaultMessage: 'Portal Web Page' })}</StepsForm.Title>
       <div style={{ display: 'none' }}>
         <Form.Item
           name={['guestPage', 'langCode']}
-          label='Display Language'
+          label={intl.$t({ defaultMessage: 'Display Language' })}
           initialValue={'en'}
         ></Form.Item>
         <Form.Item
           name={['guestPage', 'tagLine']}
-          label='Marketing Message'
+          label={intl.$t({ defaultMessage: 'Marketing Message' })}
           initialValue={'Marketing value'}
         ></Form.Item>
         <Form.Item
           name={['guestPage', 'termsAndConditions']}
-          label='Terms &amp; Conditions'
+          label={intl.$t({ defaultMessage: 'Terms &amp; Conditions' })}
           initialValue={'T&C value'}
         ></Form.Item>
         <Form.Item
           name={['guestPage', 'welcomeMessages']}
-          label='Welcome Text'
+          label={intl.$t({ defaultMessage: 'Welcome Text' })}
           initialValue={'Welcome to the Guest Access login page'}
         ></Form.Item>
         <Form.Item
           name={['guestPage', 'wifi4Eu']}
-          label='Insert WiFi4EU Snippet'
+          label={intl.$t({ defaultMessage: 'Insert WiFi4EU Snippet' })}
           initialValue={false}
         ></Form.Item>
       </div>

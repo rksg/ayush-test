@@ -6,6 +6,7 @@ import {
   Row,
   Space
 } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { StepsForm }                             from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
@@ -13,6 +14,7 @@ import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                                     from '../NetworkDiagram/NetworkDiagram'
 import { RadioDescription }                                   from '../styledComponents'
+
 
 export function PortalTypeForm () {
   return (
@@ -34,12 +36,14 @@ const onChange = (e: RadioChangeEvent) => {
 /* eslint-enable */
 
 function TypesForm () {
+  const intl = useIntl()
   return (
     <>
       <StepsForm.Title>Portal Type</StepsForm.Title>
       <Form.Item
         name={['guestPortal', 'guestNetworkType']}
-        label='Select the way users gain access to the network through the captive portal'
+        label={intl.$t({ defaultMessage:
+          'Select the way users gain access to the network through the captive portal' })}
         rules={[{ required: true }]}
       >
         <Radio.Group onChange={onChange}>

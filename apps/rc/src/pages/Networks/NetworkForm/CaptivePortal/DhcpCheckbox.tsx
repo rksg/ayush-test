@@ -10,16 +10,17 @@ import {
   Tooltip
 } from 'antd'
 import { useWatch } from 'antd/lib/form/Form'
+import { useIntl }  from 'react-intl'
 
 import { Button, Subtitle }                                              from '@acx-ui/components'
 import { useGetDefaultGuestDhcpServiceProfileQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { IpUtilsService, Venue }                                         from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
 
-/* eslint-disable max-len */
-const guestDhcpDisableToolTipText = 'You cannot enable the DHCP service because the network is activated in a Mesh enabled Venue.'
-
 export function DhcpCheckbox () {
+  const intl = useIntl()
+  /* eslint-disable max-len */
+  const guestDhcpDisableToolTipText = intl.$t({ defaultMessage: 'You cannot enable the DHCP service because the network is activated in a Mesh enabled Venue.' })
   const [
     venues
   ] = [
@@ -64,7 +65,8 @@ export function DhcpCheckbox () {
       const dhcp = { ...dhcpApi.data }
       const bitmask = IpUtilsService.getBitmaskSize(dhcp.subnetMask)
       const guestDhcpIpSpec = dhcp.subnetAddress + '/' + bitmask.toString()
-      const guestDhcpToolTipText = 'Clients will recieve IP addresses in an isolated ' + guestDhcpIpSpec + ' network.'
+      const guestDhcpToolTipText = intl.$t({ defaultMessage: 'Clients will recieve IP addresses in an isolated {guestDhcpIpSpec} network.' },
+        { guestDhcpIpSpec })
       const leaseTime = []
       if (dhcp.leaseTimeHours > 0) {
         leaseTime.push(dhcp.leaseTimeHours + 'hrs')
@@ -89,7 +91,7 @@ export function DhcpCheckbox () {
         name='dhcpCheckbox'
         valuePropName='checked'
         initialValue={false}
-        children={<Checkbox>Enable Ruckus DHCP service</Checkbox>}
+        children={<Checkbox>{intl.$t({ defaultMessage: 'Enable Ruckus DHCP service' })}</Checkbox>}
       />
       <Tooltip title={meshEnable ?
         guestDhcpDisableToolTipText :
@@ -103,12 +105,12 @@ export function DhcpCheckbox () {
         placement='bottom'
         content={
           <div>
-            <Subtitle level={4}>Guest network pool details:</Subtitle>
-            <label>IP address space:</label> {guestDhcp.guestDhcpIpSpec} <br />
-            <label>Subnet mask:</label> {guestDhcp.subnetMask} <br />
-            <label>Start IP Address:</label> {guestDhcp.startIpAddress} <br />
-            <label>End IP Address:</label> {guestDhcp.endIpAddress} <br />
-            <label>Lease time:</label> {guestDhcp.guestDhcpLeaseTime}
+            <Subtitle level={4}>{intl.$t({ defaultMessage: 'Guest network pool details:' })}</Subtitle>
+            <label>{intl.$t({ defaultMessage: 'IP address space:' })}</label> {guestDhcp.guestDhcpIpSpec} <br />
+            <label>{intl.$t({ defaultMessage: 'Subnet mask:' })}</label> {guestDhcp.subnetMask} <br />
+            <label>{intl.$t({ defaultMessage: 'Start IP Address:' })}</label> {guestDhcp.startIpAddress} <br />
+            <label>{intl.$t({ defaultMessage: 'End IP Address:' })}</label> {guestDhcp.endIpAddress} <br />
+            <label>{intl.$t({ defaultMessage: 'Lease time:' })}</label> {guestDhcp.guestDhcpLeaseTime}
           </div>
         }
         trigger='click'

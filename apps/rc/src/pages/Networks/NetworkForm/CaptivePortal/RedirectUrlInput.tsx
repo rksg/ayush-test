@@ -11,12 +11,16 @@ import {
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useWatch }            from 'antd/lib/form/Form'
+import { useIntl }             from 'react-intl'
 
 import { URLRegExp } from '@acx-ui/rc/utils'
 
-const REDIRECT_TOOLTIP = 'If unchecked, users will reach the page they originally requested'
-
 export function RedirectUrlInput () {
+  const intl = useIntl()
+
+  const REDIRECT_TOOLTIP =
+    intl.$t({ defaultMessage: 'If unchecked, users will reach the page they originally requested' })
+
   const form = Form.useFormInstance()
   const [
     redirectCheckbox,
@@ -45,7 +49,7 @@ export function RedirectUrlInput () {
         initialValue={false}
         children={
           <Checkbox onChange={redirectCheckboxChange}>
-              Redirect users to
+            {intl.$t({ defaultMessage: 'Redirect users to' })}
           </Checkbox>
         }
       />
