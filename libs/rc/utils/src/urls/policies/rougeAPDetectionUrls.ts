@@ -12,5 +12,9 @@ export const RougeAPDetectionUrls: { [key: string]: ApiInfo } = {
   getRougePolicyList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/rogue/policy'
+  },
+  getVenueRougePolicy: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue'
   }
 }

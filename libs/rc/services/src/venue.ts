@@ -35,8 +35,8 @@ import {
   VenueDefaultRegulatoryChannelsForm,
   TriBandSettings,
   AvailableLteBands,
-  VenueApModelCellular
-} from '@acx-ui/rc/utils'
+  VenueApModelCellular, RougeOldApResponseType
+} from '@acx-ui/rc/utils';
 
 
 export const baseVenueApi = createApi({
@@ -507,6 +507,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getOldVenueRougeAp: build.query<TableResult<RougeOldApResponseType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getOldVenueRougeAp, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueRogueAp, params)
@@ -558,6 +567,7 @@ export const {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
+  useGetOldVenueRougeApQuery,
   useUpdateVenueRogueApMutation,
   useGetRoguePoliciesQuery,
   useConfigProfilesQuery,

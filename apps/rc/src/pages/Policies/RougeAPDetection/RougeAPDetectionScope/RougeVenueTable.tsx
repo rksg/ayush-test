@@ -1,28 +1,50 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react'
 
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showToast, Table, TableProps } from '@acx-ui/components'
-import { useVenuesListQuery }           from '@acx-ui/rc/services'
+import { useVenueRougePolicyQuery }     from '@acx-ui/rc/services'
 import {
   RougeAPDetectionActionPayload, RougeAPDetectionActionTypes,
   RougeVenueData,
-  useTableQuery
+  useTableQuery, VenueRougePolicyType
 } from '@acx-ui/rc/utils'
 
 import RougeAPDetectionContext from '../RougeAPDetectionContext'
 
 const defaultPayload = {
-  searchString: '',
+  url: '/api/viewmodel/tenant/{tenantId}/venue',
   fields: [
-    'aggregatedApStatus',
-    'switches',
+    'id',
     'name',
-    'venue',
-    'id'
-  ]
+    'city',
+    'country',
+    'aggregatedApStatus',
+    'rogueDetection',
+    'status'
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 25
 }
+
+// {
+//   "id": "4ca20c8311024ac5956d366f15d96e0c",
+//   "name": "leonard-venue",
+//   "city": "Toronto, Ontario",
+//   "country": "Canada",
+//   "aggregatedApStatus": {
+//   "1_01_NeverContactedCloud": 491
+// },
+//   "status": "1_InSetupPhase",
+//   "rogueDetection": {
+//   "policyId": "14d6ee52df3a48988f91558bac54c1ae",
+//     "policyName": "Default profile",
+//     "enabled": true
+// }
+// }
 
 const RougeVenueTable = (props: { edit?: boolean }) => {
   const { $t } = useIntl()
@@ -32,68 +54,87 @@ const RougeVenueTable = (props: { edit?: boolean }) => {
   console.log('rougeVenueTable')
   console.log(state)
 
-  const basicColumns: TableProps<RougeVenueData>['columns'] = [
+  const basicColumns: TableProps<VenueRougePolicyType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Venue' }),
-      dataIndex: 'venue',
-      key: 'venue'
+      dataIndex: 'name',
+      key: 'name'
     },
     {
       title: $t({ defaultMessage: 'APs' }),
-      dataIndex: 'aps',
-      key: 'aps'
+      dataIndex: 'aggregatedApStatus',
+      key: 'aggregatedApStatus',
+      render: (data, row) => {
+        if (row.aggregatedApStatus?.hasOwnProperty('2_00_Operational')) {
+          return row.aggregatedApStatus['2_00_Operational']
+        }
+        return 0
+      }
     },
     {
       title: $t({ defaultMessage: 'Switches' }),
       dataIndex: 'switches',
-      key: 'switches'
+      key: 'switches',
+      render: (data, row) => {
+        return 0
+      }
     },
     {
       title: $t({ defaultMessage: 'Rouge AP Detection' }),
       dataIndex: 'rougeDetection',
-      key: 'rougeDetection'
+      key: 'rougeDetection',
+      render: (data, row) => {
+        console.log(row)
+        if (row.rougeDetection?.enabled) {
+          return <div style={{ textAlign: 'center' }}>
+            <div>ON</div>
+            <div>({row.rougeDetection.policyName})</div>
+          </div>
+        }
+        return 'OFF'
+      }
     },
     {
       title: $t({ defaultMessage: 'Activate' }),
       dataIndex: 'activate',
-      key: 'activate'
+      key: 'activate',
+      render: (data, row) => {
+        return <Switch checked={
+          state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
+        }/>
+      }
     }
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: useVenuesListQuery,
+    useQuery: useVenueRougePolicyQuery,
     defaultPayload
   })
 
-  useEffect(() => {
-    if (tableQuery.data && edit) {
-      console.log('update useeffect here')
-      // dispatch({
-      //   type: WifiCallingActionTypes.ADD_NETWORK_ID,
-      //   payload: {
-      //     networkIds: tableQuery.data?.data
-      //       .filter(network => data.networkIds?.includes(network.id))
-      //       .map(network => network.id),
-      //     networksName: tableQuery.data?.data
-      //       .filter(network => data.networkIds?.includes(network.id))
-      //       .map(network => network.name)
-      //   }
-      // } as WifiCallingActionPayload)
-    }
-  }, [tableQuery.data])
+  // useEffect(() => {
+  //   if (tableQuery.data && edit) {
+  //     console.log('update useeffect here')
+  //     // dispatch({
+  //     //   type: WifiCallingActionTypes.ADD_NETWORK_ID,
+  //     //   payload: {
+  //     //     networkIds: tableQuery.data?.data
+  //     //       .filter(network => data.networkIds?.includes(network.id))
+  //     //       .map(network => network.id),
+  //     //     networksName: tableQuery.data?.data
+  //     //       .filter(network => data.networkIds?.includes(network.id))
+  //     //       .map(network => network.name)
+  //     //   }
+  //     // } as WifiCallingActionPayload)
+  //   }
+  // }, [tableQuery.data])
 
   const basicData = tableQuery.data?.data.map((venue) => {
     return {
       id: venue.id,
-      venue: venue.name,
-      aps: 0,
-      switches: 0,
-      rougeDetection: 'OFF',
-      activate: <Switch checked={
-        state.venues.findIndex(venueExist => venueExist.id === venue.id) !== -1
-      }
-      key={venue.id}
-      />
+      name: venue.name,
+      aggregatedApStatus: venue.aggregatedApStatus,
+      rougeDetection: venue.rogueDetection,
+      activate: false
     }
   })
 
@@ -143,6 +184,7 @@ const RougeVenueTable = (props: { edit?: boolean }) => {
       columns={basicColumns}
       dataSource={basicData}
       pagination={tableQuery.pagination}
+      onChange={tableQuery.handleTableChange}
       rowKey='id'
       rowActions={rowActions}
       rowSelection={{ type: 'checkbox' }}

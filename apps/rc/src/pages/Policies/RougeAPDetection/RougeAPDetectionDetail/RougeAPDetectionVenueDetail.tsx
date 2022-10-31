@@ -26,7 +26,8 @@ const RougeAPDetectionVenueDetail = () => {
     {
       title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'venue',
-      key: 'venue'
+      key: 'venue',
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'Rouge APs' }),

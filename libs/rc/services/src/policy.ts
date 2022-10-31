@@ -8,7 +8,7 @@ import {
   createHttpRequest,
   RequestPayload,
   RougeAPDetectionUrls,
-  RougeAPDetectionContextType, RougeAPDetectionTempType, RougeAPDetectionRuleTempType
+  RougeAPDetectionContextType, RougeAPDetectionTempType, VenueRougePolicyType, TableResult
 } from '@acx-ui/rc/utils';
 
 export const basePolicyApi = createApi({
@@ -49,6 +49,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    venueRougePolicy: build.query<TableResult<VenueRougePolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RougeAPDetectionUrls.getVenueRougePolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     })
   })
 })
@@ -57,5 +67,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
 export const {
   useAddRougePolicyMutation,
   useGetRougePolicyListQuery,
-  useRougePolicyQuery
+  useRougePolicyQuery,
+  useVenueRougePolicyQuery
 } = policyApi

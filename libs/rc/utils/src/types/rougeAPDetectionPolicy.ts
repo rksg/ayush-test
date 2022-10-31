@@ -1,3 +1,4 @@
+import { ApDeviceStatusEnum } from '../constants';
 
 export interface RougeAPDetectionContextType {
   policyName: string,
@@ -13,6 +14,31 @@ export interface RougeAPDetectionRuleTempType {
   rules: RougeAPRule[]
 }
 
+export interface RougeOldApResponseType {
+  rougeMac: string,
+  ssid: string,
+  numberOfDetectingAps: number,
+  locatable: boolean,
+  lastUpdTime: string,
+  detectingAps: {
+    apMac: string,
+    apName: string
+  }[],
+  closestAp: {
+    apName: string,
+    apSerialNumber: string,
+    snr: number
+  },
+  closestAp_apName?: string,
+  closestAp_snr?: number,
+  category: string,
+  classificationRuleName: string,
+  classificationPolicyName: string,
+  channel: number,
+  band: string,
+  model: string
+}
+
 export interface RougeAPDetectionTempType {
   totalCount: 1,
   page: 1,
@@ -22,6 +48,26 @@ export interface RougeAPDetectionTempType {
     activeVenues: RougeVenue[],
     numOfRules: number
   }[]
+}
+
+export interface VenueRougePolicyType {
+  id: string,
+  name: string,
+  city?: string,
+  country?: string,
+  aggregatedApStatus?: Record<ApDeviceStatusEnum, number>,
+  status?: string,
+  rougeDetection?: {
+    policyId: string,
+    policyName: string,
+    enabled: boolean
+  },
+  rogueDetection?: {
+    policyId: string,
+    policyName: string,
+    enabled: boolean
+  },
+  activate?: boolean
 }
 
 export interface RougeAPRule {

@@ -9,9 +9,10 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import RougeAPDetectionDetailContent from './RougeAPDetectionDetailContent';
-import RougeAPDetectionVenueDetail from './RougeAPDetectionVenueDetail';
+import { TenantLink } from '@acx-ui/react-router-dom'
+
+import RougeAPDetectionDetailContent from './RougeAPDetectionDetailContent'
+import RougeAPDetectionVenueDetail   from './RougeAPDetectionVenueDetail'
 
 const RougeAPDetectionDetailView = () => {
   const { $t } = useIntl()

@@ -9,7 +9,6 @@ import { useGetRougePolicyListQuery } from '@acx-ui/rc/services'
 
 const RougeAPDetectionDetailContent = () => {
   const params = useParams()
-  console.log(params)
   const { Paragraph } = Typography
   const { $t } = useIntl()
 
@@ -23,9 +22,7 @@ const RougeAPDetectionDetailContent = () => {
   })
 
   if (data) {
-    console.log(data.data)
     const policyData = data.data.filter(d => d.id === params.policyId)[0]
-    console.log(policyData)
     return <Card>
       <Row gutter={24} justify='start' style={{ width: '100%' }}>
         <Col span={4}>
