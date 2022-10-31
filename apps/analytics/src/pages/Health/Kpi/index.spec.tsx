@@ -150,7 +150,7 @@ describe('Kpi Section', () => {
     const applyBtn = applyBtns[0]
     expect(applyBtn).toBeDefined()
     fireEvent.click(applyBtn)
-    expect(await screen.findByText('Threshold set succesfully.')).toBeVisible()
+    expect(await screen.findByText('Threshold set succesfully.')).toBeInTheDocument()
   }, 30000)
 
   describe('getDefaultThreshold', () => {
