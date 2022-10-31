@@ -94,6 +94,10 @@ export const validationMessages = {
   vlanRange: defineMessage({
     defaultMessage: 'VLAN ID must be between 1 and 4094',
     description: 'Validation - VLAN range checks'
+  }),
+  gpsCoordinates: defineMessage({
+    defaultMessage: 'Please enter the valid GPS coordinates',
+    description: 'Validation - GPS coordinates checks'
   })
 }
 
