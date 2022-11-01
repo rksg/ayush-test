@@ -34,6 +34,7 @@ export function RadioSettings () {
   const {
     editContextData,
     setEditContextData,
+    editRadioContextData,
     setEditRadioContextData
   } = useContext(VenueEditContext)
 
@@ -106,6 +107,7 @@ export function RadioSettings () {
       formRef?.current?.setFieldsValue(venueSavedChannelsData)
       setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
       setEditRadioContextData({
+        ...editRadioContextData,
         radioData: formRef.current?.getFieldsValue(),
         updateWifiRadio: handleUpdateRadioSettings
       })
@@ -114,6 +116,7 @@ export function RadioSettings () {
       formRef?.current?.setFieldsValue(defaultChannelsData)
       setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
       setEditRadioContextData({
+        ...editRadioContextData,
         radioData: formRef.current?.getFieldsValue(),
         updateWifiRadio: handleUpdateRadioSettings
       })
@@ -175,6 +178,7 @@ export function RadioSettings () {
       isDirty: true
     })
     setEditRadioContextData({
+      ...editRadioContextData,
       radioData: formRef.current?.getFieldsValue(),
       updateWifiRadio: handleUpdateRadioSettings
     })
