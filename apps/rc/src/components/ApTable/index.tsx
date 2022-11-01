@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {
-  LoadingOutlined
+  Loading3QuartersOutlined
 } from '@ant-design/icons'
 import { Badge, Space } from 'antd'
 import { saveAs }       from 'file-saver'
@@ -22,7 +22,6 @@ import {
   useApListQuery,
   useDeleteApMutation,
   useDownloadApLogMutation,
-  // useFactoryResetApMutation,
   useLazyGetDhcpApQuery,
   useRebootApMutation
 } from '@acx-ui/rc/services'
@@ -114,7 +113,6 @@ export function ApTable (props?: ApTableProps) {
   const [ downloadApLog ] = useDownloadApLogMutation()
   const [ getDhcpAp ] = useLazyGetDhcpApQuery()
   const [ rebootAp ] = useRebootApMutation()
-  // const [ factoryResetAp ] = useFactoryResetApMutation()
   const [ deleteAp ] = useDeleteApMutation()
 
   const tableData = tableQuery.data?.data ?? []
@@ -375,7 +373,8 @@ export function ApTable (props?: ApTableProps) {
         type: 'info',
         closable: false,
         extraContent: <div style={{ width: '60px' }}>
-          <LoadingOutlined style={{ margin: 0 }}/>
+          <Loading3QuartersOutlined spin
+            style={{ margin: 0, fontSize: '18px', color: cssStr('--acx-primary-white') }}/>
         </div>,
         content: $t({ defaultMessage: 'Preparing log...' })
       })
