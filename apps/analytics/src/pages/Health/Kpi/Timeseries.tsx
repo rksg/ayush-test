@@ -32,10 +32,10 @@ function KpiTimeseries ({
 }: {
   filters: AnalyticsFilter;
   kpi: keyof typeof kpiConfig;
-  threshold?: number;
+  threshold: number;
   chartRef: RefCallback<ReactECharts>;
-  setTimeWindow?: { (timeWidow: TimeStampRange, isReset: boolean): void };
-  timeWindow?: TimeStampRange // not set if there is no zoom
+  setTimeWindow: { (timeWidow: TimeStampRange, isReset: boolean): void };
+  timeWindow: TimeStampRange // not set if there is no zoom
 }) {
   const { $t } = useIntl()
   const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])

@@ -2,6 +2,7 @@ import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { TimeStampRange }                   from '@acx-ui/types'
 import { DateRange }                        from '@acx-ui/utils'
 
 import { timeseriesApi }                   from './services'
@@ -34,7 +35,8 @@ describe('Kpi timeseries', () => {
 
   const chartRef = jest.fn()
   const setTimeWindow = jest.fn()
-
+  const timeWindow = ['2022-04-07T09:15:00.000Z', '2022-04-07T10:15:00.000Z'] as TimeStampRange
+  const threshold = 10
 
   beforeEach(() => {
     store.dispatch(timeseriesApi.util.resetApiState())
@@ -51,6 +53,8 @@ describe('Kpi timeseries', () => {
         kpi={'onlineAPs'}
         chartRef={chartRef}
         setTimeWindow={setTimeWindow}
+        timeWindow={timeWindow}
+        threshold={threshold}
       />
     </Provider>)
     expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
@@ -65,6 +69,8 @@ describe('Kpi timeseries', () => {
         kpi={'onlineAPs'}
         chartRef={chartRef}
         setTimeWindow={setTimeWindow}
+        timeWindow={timeWindow}
+        threshold={threshold}
       />
     </Provider>)
     expect(await screen.findByText('80%')).toBeVisible()
@@ -79,6 +85,8 @@ describe('Kpi timeseries', () => {
         kpi={'onlineAPs'}
         chartRef={chartRef}
         setTimeWindow={setTimeWindow}
+        timeWindow={timeWindow}
+        threshold={threshold}
       />
     </Provider>)
     expect(await screen.findByText('No data to display')).toBeVisible()
