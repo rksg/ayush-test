@@ -3,7 +3,7 @@
 exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -459,7 +459,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
+                                class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
                               >
                                 <div
                                   class="ant-space ant-space-horizontal ant-space-align-center"
@@ -738,7 +738,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="styledComponents__Wrapper-sc-1abm7iv-13 jNQPNk"
+                                class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
                               >
                                 <div
                                   class="ant-pro-table"
