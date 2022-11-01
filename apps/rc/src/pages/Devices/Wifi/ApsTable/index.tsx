@@ -5,7 +5,7 @@ import { Button, Dropdown, PageHeader } from '@acx-ui/components'
 // import { ApTable } from '../../../../components/ApTable'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-export function ApsTable () {
+export default function ApsTable () {
   const { $t } = useIntl()
   const addMenu = <Menu
     items={[{

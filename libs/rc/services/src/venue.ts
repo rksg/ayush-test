@@ -384,7 +384,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueExternalAntenna: build.query<ExternalAntenna[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.GetVenueExternalAntenna, params)
+        const req = createHttpRequest(WifiUrlsInfo.getVenueExternalAntenna, params)
         return {
           ...req
         }
@@ -401,7 +401,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     venueDefaultRegulatoryChannels: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.GetVenueDefaultRegulatoryChannels, params)
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultRegulatoryChannels, params)
         return{
           ...req
         }
@@ -409,7 +409,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getDefaultRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.GetDefaultRadioCustomization, params)
+        const req = createHttpRequest(WifiUrlsInfo.getDefaultRadioCustomization, params)
         return{
           ...req
         }
@@ -417,7 +417,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.GetVenueRadioCustomization, params)
+        const req = createHttpRequest(WifiUrlsInfo.getVenueRadioCustomization, params)
         return{
           ...req
         }
@@ -435,7 +435,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateVenueRadioCustomization:
     build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.UpdateVenueRadioCustomization, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueRadioCustomization, params)
         return {
           ...req,
           body: payload
@@ -446,7 +446,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getVenueTripleBandRadioSettings:
     build.query<TriBandSettings, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.GetVenueTripleBandRadioSettings, params)
+        const req = createHttpRequest(WifiUrlsInfo.getVenueTripleBandRadioSettings, params)
         return{
           ...req
         }
@@ -455,7 +455,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateVenueTripleBandRadioSettings:
     build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.UpdateVenueTripleBandRadioSettings, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueTripleBandRadioSettings, params)
         return {
           ...req,
           body: payload
@@ -466,16 +466,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
       version: string,
       apModels:CapabilitiesApModel[] }, RequestPayload>({
         query: ({ params }) => {
-          const req = createHttpRequest(WifiUrlsInfo.GetVenueApCapabilities, params)
+          const req = createHttpRequest(WifiUrlsInfo.getVenueApCapabilities, params)
           return {
             ...req
           }
         },
         providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
       }),
-    UpdateVenueExternalAntenna: build.mutation<CommonResult, RequestPayload>({
+    updateVenueExternalAntenna: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.UpdateVenueExternalAntenna, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueExternalAntenna, params)
         return {
           ...req,
           body: payload

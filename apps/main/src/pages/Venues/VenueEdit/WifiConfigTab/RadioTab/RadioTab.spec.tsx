@@ -32,10 +32,10 @@ describe('RadioTab', () => {
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
-        WifiUrlsInfo.GetVenueExternalAntenna.url,
+        WifiUrlsInfo.getVenueExternalAntenna.url,
         (_, res, ctx) => res(ctx.json(venueExternalAntenna))),
       rest.get(
-        WifiUrlsInfo.GetVenueApCapabilities.url,
+        WifiUrlsInfo.getVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueExternalAntennaCap))),
       rest.get(
         CommonUrlsInfo.getDashboardOverview.url,
@@ -47,22 +47,22 @@ describe('RadioTab', () => {
         CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(
-        WifiUrlsInfo.GetVenueTripleBandRadioSettings.url,
+        WifiUrlsInfo.getVenueTripleBandRadioSettings.url,
         (_, res, ctx) => res(ctx.json({ enabled: true }))),
       rest.get(
-        WifiUrlsInfo.GetDefaultRadioCustomization.url,
+        WifiUrlsInfo.getDefaultRadioCustomization.url,
         (_, res, ctx) => res(ctx.json(defaultRadioCustomizationData))),
       rest.get(
-        WifiUrlsInfo.GetVenueRadioCustomization.url,
+        WifiUrlsInfo.getVenueRadioCustomization.url,
         (_, res, ctx) => res(ctx.json(radioCustomizationData))),
       rest.get(
-        WifiUrlsInfo.GetVenueDefaultRegulatoryChannels.url,
+        WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
         (_, res, ctx) => res(ctx.json(validChannelsData))),
       rest.put(
-        WifiUrlsInfo.UpdateVenueExternalAntenna.url,
+        WifiUrlsInfo.updateVenueExternalAntenna.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.put(
-        WifiUrlsInfo.UpdateVenueRadioCustomization.url,
+        WifiUrlsInfo.updateVenueRadioCustomization.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
