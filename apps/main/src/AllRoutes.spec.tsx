@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { useSplitTreatment }                                  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider }                                           from '@acx-ui/store'
-import { render, screen, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
-import { mockRestApiQuery }                                   from '@acx-ui/test-utils'
+import { useSplitTreatment }       from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
+import { render, screen, cleanup } from '@acx-ui/test-utils'
+import { mockRestApiQuery }        from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
@@ -53,7 +53,6 @@ describe('AllRoutes', () => {
         wrapRoutes: false
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByTestId('analytics')
   })
 
@@ -64,7 +63,6 @@ describe('AllRoutes', () => {
         wrapRoutes: false
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByTestId('devices')
   })
 
