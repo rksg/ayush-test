@@ -6,7 +6,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Table, TableProps, Card, showActionModal } from '@acx-ui/components'
+import { Table, TableProps, showActionModal } from '@acx-ui/components'
 import {
   useVenueDHCPProfileQuery,
   useGetDHCPProfileQuery,
@@ -16,7 +16,7 @@ import { DHCPPool }   from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 
-export default function VenuePoolTable ({ setPoolsNumFn }: { setPoolsNumFn: Function } ){
+export default function VenuePoolTable (){
   const params = useParams()
   const { $t } = useIntl()
 
@@ -36,10 +36,9 @@ export default function VenuePoolTable ({ setPoolsNumFn }: { setPoolsNumFn: Func
 
 
   const [activateDHCPPool] = useActivateDHCPPoolMutation()
+
   const setActivePool = async (dhcppoolId:string, activated:boolean)=>{
-
     await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
-
     const updateActive = tableData?.map((item)=>{
       if(item.id===dhcppoolId){
         return {
@@ -50,14 +49,12 @@ export default function VenuePoolTable ({ setPoolsNumFn }: { setPoolsNumFn: Func
         return item
       }
     })
-
     setTableData(updateActive)
   }
 
 
 
   useEffect(() => {
-    setPoolsNumFn(dhcpProfile?.dhcpPools.length || 0)
     const mergedData = dhcpProfile?.dhcpPools.map( item => {
       const index = _.findIndex(activeList, poolId => poolId === item.id)
       return {
@@ -144,14 +141,10 @@ export default function VenuePoolTable ({ setPoolsNumFn }: { setPoolsNumFn: Func
   ]
 
   return (
-    <Card >
-      <div style={{ width: '100%' }}>
-        <Table
-          columns={columns}
-          dataSource={tableData}
-          rowKey='id'
-        />
-      </div>
-    </Card>
+    <Table
+      columns={columns}
+      dataSource={tableData}
+      rowKey='id'
+    />
   )
 }

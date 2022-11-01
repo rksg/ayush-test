@@ -23,7 +23,7 @@ import { AntSelect, AntLabel, IconContainer, AddBtnContainer, StyledForm } from 
 
 const { Option } = AntSelect
 
-const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> | undefined) => {
+const VenueDHCPForm = React.forwardRef((props, formRef) => {
   const { $t } = useIntl()
 
   const params = useParams()
@@ -45,7 +45,6 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
 
   const [gateways, setGateways] = useState<DHCPProfileAps[]>()
 
-
   useEffect(() => {
     const natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
     setGateways(natGatewayList)
@@ -61,7 +60,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
 
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
     const currentVal = form.getFieldsValue().gateways[index]
-    return <><Row key={index}>
+    return <div key={index}><Row key={index}>
       <StyledForm.Item name={['gateways', index, 'serialNumber']}>
         <AntSelect onChange={() => {
           const gatewayRawData = form.getFieldsValue().gateways
@@ -69,7 +68,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
         }}
         placeholder={$t({ defaultMessage: 'Select AP...' })}>
           {apList?.data?.map(ap =>
-            <Option value={ap.serialNumber}>
+            <Option key={ap.serialNumber} value={ap.serialNumber}>
               {ap.name}
             </Option>
           )}
@@ -96,12 +95,12 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
         block>
         {$t({ defaultMessage: 'Add gateway' })}
       </Button>
-    </AddBtnContainer>}</>
+    </AddBtnContainer>}</div>
   }) : <><Row>
     <StyledForm.Item name={['gateways', 0, 'serialNumber']}>
       <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
         {apList?.data?.map(ap =>
-          <Option value={ap.serialNumber}>
+          <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
           </Option>
         )}
@@ -123,7 +122,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
     layout='vertical'
     validateTrigger='onBlur'
     form={form}
-    ref={formRef}
+    ref={formRef as React.Ref<FormInstance<unknown>>}
   >
     <StyledForm.Item name='enabled'
       label='Service State'
@@ -142,7 +141,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
         >
           <AntSelect placeholder={$t({ defaultMessage: 'Select Service...' })}>
             {dhcpProfileList?.map( dhcp =>
-              <Option value={dhcp.id}>
+              <Option key={dhcp.id} value={dhcp.id}>
                 {dhcp.serviceName}
               </Option>
             )}
@@ -166,7 +165,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
       rules={[{ required: true }]}>
       <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
         {apList?.data?.map( ap =>
-          <Option value={ap.serialNumber}>
+          <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
           </Option>
         )}
@@ -176,7 +175,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef:React.Ref<FormInstance> |
       name='backupServerSN'>
       <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
         {apList?.data?.map( ap =>
-          <Option value={ap.serialNumber}>
+          <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
           </Option>
         )}

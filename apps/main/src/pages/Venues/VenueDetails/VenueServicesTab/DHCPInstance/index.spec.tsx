@@ -12,6 +12,7 @@ import handlers from './mockData'
 
 import DHCPInstance from '.'
 
+
 describe('Venue DHCP Instance', () => {
   it('should render DHCP instance correctly', async () => {
     mockServer.use(...handlers)
@@ -34,9 +35,7 @@ describe('Venue DHCP Instance', () => {
     const activeButton = await screen.findByText('Confirm')
     fireEvent.click(activeButton)
     screen.getByRole('switch',{ checked: true })
-
+    await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (1 Online)' }))
   })
-
-
 
 })

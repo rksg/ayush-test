@@ -1,24 +1,30 @@
 import { CheckCircleFilled } from '@ant-design/icons'
-import { Tabs }              from 'antd'
 import { useIntl }           from 'react-intl'
+import { useParams }         from 'react-router-dom'
 
-import { cssStr }      from '@acx-ui/components'
-import { ServiceType } from '@acx-ui/rc/utils'
+import { Tabs }                     from '@acx-ui/components'
+import { cssStr }                   from '@acx-ui/components'
+import { useVenueDHCPProfileQuery } from '@acx-ui/rc/services'
+import { ServiceType }              from '@acx-ui/rc/utils'
 
 import DHCPInstance from './DHCPInstance'
 
+
 export function VenueServicesTab () {
   const { $t } = useIntl()
+  const params = useParams()
 
-
-  //FIXME: check service status when API ready
-
+  const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
+    params
+  })
 
   return (
     <Tabs>
-      <Tabs.TabPane tab={<span style={{ marginRight: 10 }}>
-        <CheckCircleFilled style={{ color: cssStr('--acx-semantics-green-50'), marginRight: 5 }}/>
+      <Tabs.TabPane tab={<span>
+        { venueDHCPProfile?.enabled &&
+        <CheckCircleFilled style={{ color: cssStr('--acx-semantics-green-50'), marginRight: 5 }}/>}
         {$t({ defaultMessage: 'DHCP' })}</span>}
+
       key={ServiceType.DHCP}>
         <DHCPInstance/>
       </Tabs.TabPane>

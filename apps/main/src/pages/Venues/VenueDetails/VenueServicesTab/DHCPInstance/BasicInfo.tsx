@@ -27,32 +27,27 @@ export default function BasicInfo () {
   const locationState:LocationState = useLocation().state as LocationState
 
   const [visible, setVisible] = useState(locationState?.showConfig ? true : false)
-
   const { $t } = useIntl()
   const TYPOGRAPHY_LEVEL = 4
+  const DISPLAY_GATEWAY_MAX_NUM = 2
   const SPAN_NUM = 3
-  let formRef = useRef() as React.Ref<FormInstance> | undefined
+  let formRef = useRef<FormInstance>()
 
   const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
     params
   })
-
   const { data: dhcpProfile } = useGetDHCPProfileQuery({
     params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
   })
-
   const { data: apList } = useApListQuery({ params })
 
   const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
-
-
   const primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
+    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })]?.serialNumber
   const backupServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
-  const natGatewaySN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'NatGateway' })].serialNumber
+    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })]?.serialNumber
 
+  const gatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
   const displayData = {
     name: dhcpProfile?.serviceName,
     status: venueDHCPProfile?.enabled === true,
@@ -60,8 +55,13 @@ export default function BasicInfo () {
     poolsNum: dhcpProfile? dhcpProfile?.dhcpPools.length : 0,
     primaryDHCP: primaryServerSN && apList ? apListGroupSN[primaryServerSN].name:'',
     secondaryDHCP: backupServerSN && apList ? apListGroupSN[backupServerSN].name:'',
-    natGateway: natGatewaySN && apList ? apListGroupSN[natGatewaySN].name:''
+    natGateway: _.take(gatewayList.map(( gateway )=>{
+      return apListGroupSN[gateway.serialNumber]?.name
+    }),DISPLAY_GATEWAY_MAX_NUM)
   }
+
+
+
 
 
   return <>
@@ -115,19 +115,22 @@ export default function BasicInfo () {
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'Gateway' })}</Text>
           </Title>
-          <Paragraph>{displayData.natGateway}</Paragraph>
+          {displayData.natGateway.map((data)=>{
+            return <Paragraph style={{ marginBottom: 5 }}>{ data }</Paragraph>
+          })}
+          {
+            gatewayList.length>DISPLAY_GATEWAY_MAX_NUM && '...'
+          }
         </Col>
         <Col span={SPAN_NUM}>
-          <div>
-            <Button style={{ paddingLeft: 0 }}
-              onClick={()=>{
-                setVisible(true)
-              }}
-              type='link'
-              block>
-              {$t({ defaultMessage: 'Manage Local Service' })}
-            </Button>
-          </div>
+          <Button style={{ paddingLeft: 0 }}
+            onClick={()=>{
+              setVisible(true)
+            }}
+            type='link'
+            block>
+            {$t({ defaultMessage: 'Manage Local Service' })}
+          </Button>
         </Col>
       </Row>
     </RowWrapper>
@@ -142,9 +145,8 @@ export default function BasicInfo () {
         // form.current.resetFields()
       }}
       onOk={() => {
-        const form = formRef as React.MutableRefObject<FormInstance>
-        form.current.getFieldsValue()
-        form.current.submit()
+        formRef?.current?.getFieldsValue()
+        // form.current.submit()
         setVisible(false)
       }}
     >
