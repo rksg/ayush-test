@@ -11,9 +11,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button }                            from '@acx-ui/components'
-import { notAvailableMsg }                   from '@acx-ui/utils'
 import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
+import { notAvailableMsg }                                                                      from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
