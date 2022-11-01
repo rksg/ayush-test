@@ -60,7 +60,6 @@ const defaultApPayload = {
 
 export function ApForm () {
   const { $t } = useIntl()
-  const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   const isApGpsFeatureEnabled = useSplitTreatment(Features.AP_GPS)
   const { tenantId, action } = useParams()
   const formRef = useRef<StepsFormInstance<ApDeep>>()
@@ -279,14 +278,12 @@ export function ApForm () {
                       <Button
                         type='link'
                         size='small'
-                        disabled={!isMapEnabled}
                         onClick={() => setGpsModalVisible(true)}>
                         {$t({ defaultMessage: 'Change' })}
                       </Button>
                       {deviceGps && <Button
                         type='link'
                         size='small'
-                        disabled={!isMapEnabled}
                         onClick={() => setDeviceGps(null as unknown as DeviceGps)}>
                         {$t({ defaultMessage: 'Same as Venue' })}
                       </Button>}
@@ -323,7 +320,7 @@ function CoordinatesModal (props: {
   onSaveCoordinates: (data: DeviceGps) => void
 }) {
   const { $t } = useIntl()
-  const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
+  const isMapEnabled = useSplitTreatment(Features.G_MAP)
   const {
     formRef,
     fieldName,
@@ -343,13 +340,13 @@ function CoordinatesModal (props: {
 
   useEffect(() => {
     setTimeout(() => {
+      const coord = deviceGps || selectedVenue
+      formRef?.current?.setFieldValue(fieldName, `${coord?.latitude}, ${coord?.longitude}`)
       if (window.google) {
-        const coord = deviceGps || selectedVenue
         const latlng = new google.maps.LatLng({
           lat: Number(coord?.latitude),
           lng: Number(coord?.longitude)
         })
-        formRef?.current?.setFieldValue(fieldName, `${coord?.latitude}, ${coord?.longitude}`)
         updateMarkerPosition(latlng)
       }
     }, 500)
@@ -366,11 +363,13 @@ function CoordinatesModal (props: {
     try {
       const isValid = await formRef?.current?.validateFields([fieldName])
       if (isValid) {
-        const latlng = new google.maps.LatLng({
-          lat: Number(values[0]),
-          lng: Number(values[1])
-        })
-        updateMarkerPosition(latlng)
+        if (window.google) {
+          const latlng = new google.maps.LatLng({
+            lat: Number(values[0]),
+            lng: Number(values[1])
+          })
+          updateMarkerPosition(latlng)
+        }
         setCoordinatesValid(true)
       }
     } catch (error) {
@@ -432,12 +431,12 @@ function CoordinatesModal (props: {
         required: isMapEnabled
       }, {
         validator: (_, value) => {
-          const cord = value.split(',')
+          const cord = value?.split(',')
           const asVeneue = selectedVenue?.latitude === cord[0].trim()
                 && selectedVenue?.longitude === cord[1].trim()
           return asVeneue
             ? Promise.resolve()
-            : gpsRegExp(cord[0].trim(), cord[1].trim())
+            : gpsRegExp(cord[0]?.trim(), cord[1]?.trim())
         }
       }]}
       children={<Input
@@ -449,8 +448,8 @@ function CoordinatesModal (props: {
         onChange={onChangeCoordinates}
       />}
     />
-    <UI.CoordinateMap>
-      {isMapEnabled ?
+    {isMapEnabled
+      ? <UI.CoordinateMap>
         <GoogleMap
           libraries={['places']}
           mapTypeControl={false}
@@ -465,11 +464,10 @@ function CoordinatesModal (props: {
             onDragEnd={onDragEndMaker}
           />}
         </GoogleMap>
-        :
-        <Typography.Title level={3}>
-          {$t({ defaultMessage: 'Map is not enabled' })}
-        </Typography.Title>
-      }
-    </UI.CoordinateMap>
+      </UI.CoordinateMap>
+      : <Typography.Title level={3} style={{ margin: '60px 12px' }}>
+        {$t({ defaultMessage: 'Map is not enabled' })}
+      </Typography.Title>
+    }
   </Modal>
 }
