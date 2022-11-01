@@ -5,14 +5,14 @@ import { useIntl }              from 'react-intl'
 import { useParams }            from 'react-router-dom'
 
 import { Card }                       from '@acx-ui/components'
-import { useGetRougePolicyListQuery } from '@acx-ui/rc/services'
+import { useGetRoguePolicyListQuery } from '@acx-ui/rc/services'
 
-const RougeAPDetectionDetailContent = () => {
+const RogueAPDetectionDetailContent = () => {
   const params = useParams()
   const { Paragraph } = Typography
   const { $t } = useIntl()
 
-  const { data } = useGetRougePolicyListQuery({
+  const { data } = useGetRoguePolicyListQuery({
     params: params,
     payload: {
       page: 1,
@@ -22,7 +22,9 @@ const RougeAPDetectionDetailContent = () => {
   })
 
   if (data) {
+    console.log(data)
     const policyData = data.data.filter(d => d.id === params.policyId)[0]
+    console.log(policyData)
     return <Card>
       <Row gutter={24} justify='start' style={{ width: '100%' }}>
         <Col span={4}>
@@ -49,4 +51,4 @@ const RougeAPDetectionDetailContent = () => {
   }
 }
 
-export default RougeAPDetectionDetailContent
+export default RogueAPDetectionDetailContent

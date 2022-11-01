@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }             from '@acx-ui/components'
-import { LocationSolid, MapSolid }               from '@acx-ui/icons'
-import { useGetOldVenueRougeApQuery }            from '@acx-ui/rc/services'
-import { RougeOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
+import { LocationSolid, SignalUp }               from '@acx-ui/icons'
+import { useGetOldVenueRogueApQuery }            from '@acx-ui/rc/services'
+import { RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue/{venueId}/rogue/ap',
@@ -67,9 +67,9 @@ const defaultPayload = {
 // },
 
 
-export function VenueRougeAps () {
+export function VenueRogueAps () {
   function getCols (intl: ReturnType<typeof useIntl>) {
-    const columns: TableProps<RougeOldApResponseType>['columns'] = [
+    const columns: TableProps<RogueOldApResponseType>['columns'] = [
       {
         key: 'rogueMac',
         title: intl.$t({ defaultMessage: 'BSSID' }),
@@ -82,7 +82,7 @@ export function VenueRougeAps () {
         dataIndex: 'category',
         filterable: true,
         sorter: true,
-        align: 'center'
+        align: 'left'
       },
       {
         key: 'classificationPolicyName',
@@ -102,7 +102,7 @@ export function VenueRougeAps () {
         title: intl.$t({ defaultMessage: 'Channel' }),
         dataIndex: 'channel',
         sorter: true,
-        align: 'right'
+        align: 'center'
       },
       {
         key: 'band',
@@ -115,7 +115,13 @@ export function VenueRougeAps () {
         title: intl.$t({ defaultMessage: 'SNR' }),
         dataIndex: 'closestAp_snr',
         sorter: true,
-        align: 'center'
+        align: 'left',
+        render: function (data, row) {
+          return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <span>{row.closestAp_snr}</span>
+            <SignalUp height={21}/>
+          </div>
+        }
       },
       {
         key: 'closestAp_apName',
@@ -154,14 +160,14 @@ export function VenueRougeAps () {
         render: function (data, row) {
           return row.locatable
             ? <LocationSolid fill={'#f00'} stroke={'#f00'}/>
-            : <LocationSolid fill={'#838383'} stroke={'#838383'} fillOpacity={'0.5'}/>
+            : <LocationSolid fill={'#facd91'} stroke={'#facd91'} fillOpacity={'0.5'}/>
         }
       }
     ]
     return columns
   }
 
-  const transformData = (data: RougeOldApResponseType[]) => {
+  const transformData = (data: RogueOldApResponseType[]) => {
     return data.map(response => {
       return {
         ...response,
@@ -171,9 +177,9 @@ export function VenueRougeAps () {
     })
   }
 
-  const VenueRougeApsTable = () => {
+  const VenueRogueApsTable = () => {
     const tableQuery = useTableQuery({
-      useQuery: useGetOldVenueRougeApQuery,
+      useQuery: useGetOldVenueRogueApQuery,
       defaultPayload
     })
 
@@ -193,6 +199,6 @@ export function VenueRougeAps () {
   }
 
   return (
-    <VenueRougeApsTable />
+    <VenueRogueApsTable />
   )
 }

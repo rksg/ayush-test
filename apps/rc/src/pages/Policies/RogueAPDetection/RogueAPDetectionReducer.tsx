@@ -1,37 +1,45 @@
 import {
-  RougeAPDetectionActionPayload,
-  RougeAPDetectionActionTypes,
-  RougeAPDetectionContextType
+  RogueAPDetectionActionPayload,
+  RogueAPDetectionActionTypes,
+  RogueAPDetectionContextType
 } from '@acx-ui/rc/utils'
 
-export const rougeAPDetectionReducer = (
-  state: RougeAPDetectionContextType, action: RougeAPDetectionActionPayload
-): RougeAPDetectionContextType => {
+export const rogueAPDetectionReducer = (
+  state: RogueAPDetectionContextType, action: RogueAPDetectionActionPayload
+): RogueAPDetectionContextType => {
   switch (action.type) {
-    case RougeAPDetectionActionTypes.POLICYNAME:
+    case RogueAPDetectionActionTypes.POLICYNAME:
       return {
         ...state,
         policyName: action.payload.policyName
       }
-    case RougeAPDetectionActionTypes.TAGS:
+    case RogueAPDetectionActionTypes.TAGS:
       return {
         ...state,
         tags: action.payload.tags
       }
-    case RougeAPDetectionActionTypes.UPDATE_STATE:
+    case RogueAPDetectionActionTypes.UPDATE_STATE:
       return {
         ...state,
         ...action.payload.state
       }
-    case RougeAPDetectionActionTypes.UPDATE_RULE:
+    case RogueAPDetectionActionTypes.UPDATE_RULE:
       const updateRule = action.payload.rule
+      const updateRules = [...state.rules]
+      console.log(state)
       if (updateRule.priority) {
-        state.rules[updateRule.priority - 1] = updateRule
+        updateRules[updateRule.priority - 1] = updateRule
       }
       return {
-        ...state
+        ...state,
+        rules: updateRules
       }
-    case RougeAPDetectionActionTypes.ADD_RULE:
+    case RogueAPDetectionActionTypes.UPDATE_ENTIRE_RULE:
+      return {
+        ...state,
+        rules: action.payload.rules
+      }
+    case RogueAPDetectionActionTypes.ADD_RULE:
       if (!state.rules) {
         return {
           ...state,
@@ -48,7 +56,7 @@ export const rougeAPDetectionReducer = (
           priority: state.rules.length + 1
         }]
       }
-    case RougeAPDetectionActionTypes.DEL_RULE:
+    case RogueAPDetectionActionTypes.DEL_RULE:
       const nRules = state.rules.filter((rule) =>
         rule.name !== action.payload.name
       ).map((rule, i) => {
@@ -61,7 +69,7 @@ export const rougeAPDetectionReducer = (
         ...state,
         rules: nRules
       }
-    case RougeAPDetectionActionTypes.MOVE_UP:
+    case RogueAPDetectionActionTypes.MOVE_UP:
       const moveUpIdx = state.rules.findIndex((rule) =>
         rule.name === action.payload.name && rule.priority === action.payload.priority
       )
@@ -80,7 +88,7 @@ export const rougeAPDetectionReducer = (
           }
         })
       }
-    case RougeAPDetectionActionTypes.MOVE_DOWN:
+    case RogueAPDetectionActionTypes.MOVE_DOWN:
       const moveDownIdx = state.rules.findIndex((rule) =>
         rule.name === action.payload.name && rule.priority === action.payload.priority
       )
@@ -99,7 +107,7 @@ export const rougeAPDetectionReducer = (
           }
         })
       }
-    case RougeAPDetectionActionTypes.ADD_VENUES:
+    case RogueAPDetectionActionTypes.ADD_VENUES:
       if (!state.venues || state.venues.length === 0) {
         return {
           ...state,
@@ -115,7 +123,7 @@ export const rougeAPDetectionReducer = (
       return {
         ...state
       }
-    case RougeAPDetectionActionTypes.REMOVE_VENUES:
+    case RogueAPDetectionActionTypes.REMOVE_VENUES:
       const venueRemoveIds = action.payload.map(venue => venue.id)
       return {
         ...state,

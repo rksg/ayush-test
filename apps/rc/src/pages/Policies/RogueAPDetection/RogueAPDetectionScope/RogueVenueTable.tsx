@@ -4,14 +4,14 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showToast, Table, TableProps } from '@acx-ui/components'
-import { useVenueRougePolicyQuery }     from '@acx-ui/rc/services'
+import { useVenueRoguePolicyQuery }     from '@acx-ui/rc/services'
 import {
-  RougeAPDetectionActionPayload, RougeAPDetectionActionTypes,
-  RougeVenueData,
-  useTableQuery, VenueRougePolicyType
+  RogueAPDetectionActionPayload, RogueAPDetectionActionTypes,
+  RogueVenueData,
+  useTableQuery, VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
 
-import RougeAPDetectionContext from '../RougeAPDetectionContext'
+import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',
@@ -20,6 +20,7 @@ const defaultPayload = {
     'name',
     'city',
     'country',
+    'switches',
     'aggregatedApStatus',
     'rogueDetection',
     'status'
@@ -46,15 +47,12 @@ const defaultPayload = {
 // }
 // }
 
-const RougeVenueTable = (props: { edit?: boolean }) => {
+const RogueVenueTable = (props: { edit?: boolean }) => {
   const { $t } = useIntl()
   const { edit } = props
-  const { state, dispatch } = useContext(RougeAPDetectionContext)
+  const { state, dispatch } = useContext(RogueAPDetectionContext)
 
-  console.log('rougeVenueTable')
-  console.log(state)
-
-  const basicColumns: TableProps<VenueRougePolicyType>['columns'] = [
+  const basicColumns: TableProps<VenueRoguePolicyType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
@@ -76,19 +74,18 @@ const RougeVenueTable = (props: { edit?: boolean }) => {
       dataIndex: 'switches',
       key: 'switches',
       render: (data, row) => {
-        return 0
+        return row.switches ?? 0
       }
     },
     {
-      title: $t({ defaultMessage: 'Rouge AP Detection' }),
-      dataIndex: 'rougeDetection',
-      key: 'rougeDetection',
+      title: $t({ defaultMessage: 'Rogue AP Detection' }),
+      dataIndex: 'rogueDetection',
+      key: 'rogueDetection',
       render: (data, row) => {
-        console.log(row)
-        if (row.rougeDetection?.enabled) {
+        if (row.rogueDetection?.enabled) {
           return <div style={{ textAlign: 'center' }}>
             <div>ON</div>
-            <div>({row.rougeDetection.policyName})</div>
+            <div>({row.rogueDetection.policyName})</div>
           </div>
         }
         return 'OFF'
@@ -107,7 +104,7 @@ const RougeVenueTable = (props: { edit?: boolean }) => {
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: useVenueRougePolicyQuery,
+    useQuery: useVenueRoguePolicyQuery,
     defaultPayload
   })
 
@@ -133,23 +130,23 @@ const RougeVenueTable = (props: { edit?: boolean }) => {
       id: venue.id,
       name: venue.name,
       aggregatedApStatus: venue.aggregatedApStatus,
-      rougeDetection: venue.rogueDetection,
+      rogueDetection: venue.rogueDetection,
       activate: false
     }
   })
 
-  const rowActions: TableProps<RougeVenueData>['actions'] = [{
+  const rowActions: TableProps<RogueVenueData>['actions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
-    onClick: (selectRows: RougeVenueData[], clearSelection: () => void) => {
+    onClick: (selectRows: RogueVenueData[], clearSelection: () => void) => {
       dispatch({
-        type: RougeAPDetectionActionTypes.ADD_VENUES,
+        type: RogueAPDetectionActionTypes.ADD_VENUES,
         payload: selectRows.map(row => {
           return {
             id: row.id,
             name: row.venue
           }
         })
-      } as RougeAPDetectionActionPayload)
+      } as RogueAPDetectionActionPayload)
 
       showToast({
         type: 'info',
@@ -159,16 +156,16 @@ const RougeVenueTable = (props: { edit?: boolean }) => {
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
-    onClick: (selectRows: RougeVenueData[], clearSelection: () => void) => {
+    onClick: (selectRows: RogueVenueData[], clearSelection: () => void) => {
       dispatch({
-        type: RougeAPDetectionActionTypes.REMOVE_VENUES,
+        type: RogueAPDetectionActionTypes.REMOVE_VENUES,
         payload: selectRows.map(row => {
           return {
             id: row.id,
             name: row.venue
           }
         })
-      } as RougeAPDetectionActionPayload)
+      } as RogueAPDetectionActionPayload)
 
 
       showToast({
@@ -192,4 +189,4 @@ const RougeVenueTable = (props: { edit?: boolean }) => {
   )
 }
 
-export default RougeVenueTable
+export default RogueVenueTable

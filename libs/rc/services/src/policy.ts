@@ -7,8 +7,8 @@ import {
 import {
   createHttpRequest,
   RequestPayload,
-  RougeAPDetectionUrls,
-  RougeAPDetectionContextType, RougeAPDetectionTempType, VenueRougePolicyType, TableResult
+  RogueAPDetectionUrls,
+  RogueAPDetectionContextType, RogueAPDetectionTempType, VenueRoguePolicyType, TableResult
 } from '@acx-ui/rc/utils';
 
 export const basePolicyApi = createApi({
@@ -21,9 +21,9 @@ export const basePolicyApi = createApi({
 
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
-    addRougePolicy: build.mutation<RougeAPDetectionContextType, RequestPayload>({
+    addRoguePolicy: build.mutation<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RougeAPDetectionUrls.addRougePolicy, params)
+        const req = createHttpRequest(RogueAPDetectionUrls.addRoguePolicy, params)
         return {
           ...req,
           body: payload
@@ -31,9 +31,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    getRougePolicyList: build.query<RougeAPDetectionTempType, RequestPayload>({
+    getRoguePolicyList: build.query<RogueAPDetectionTempType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RougeAPDetectionUrls.getRougePolicyList, params)
+        const req = createHttpRequest(RogueAPDetectionUrls.getRoguePolicyList, params)
         return {
           ...req,
           body: payload
@@ -41,18 +41,28 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
-    rougePolicy: build.query<RougeAPDetectionTempType, RequestPayload>({
+    roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RougeAPDetectionUrls.getRougePolicy, params)
+        const req = createHttpRequest(RogueAPDetectionUrls.getRoguePolicy, params)
         return {
           ...req
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
-    venueRougePolicy: build.query<TableResult<VenueRougePolicyType>, RequestPayload>({
+    updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RougeAPDetectionUrls.getVenueRougePolicy, params)
+        const req = createHttpRequest(RogueAPDetectionUrls.updateRoguePolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    venueRoguePolicy: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RogueAPDetectionUrls.getVenueRoguePolicy, params)
         return {
           ...req,
           body: payload
@@ -65,8 +75,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
 
 export const {
-  useAddRougePolicyMutation,
-  useGetRougePolicyListQuery,
-  useRougePolicyQuery,
-  useVenueRougePolicyQuery
+  useAddRoguePolicyMutation,
+  useGetRoguePolicyListQuery,
+  useUpdateRoguePolicyMutation,
+  useRoguePolicyQuery,
+  useVenueRoguePolicyQuery
 } = policyApi

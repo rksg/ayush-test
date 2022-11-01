@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom'
 
-import { RougeAPDetectionContextType } from '@acx-ui/rc/utils'
+import { RogueAPDetectionContextType } from '@acx-ui/rc/utils'
 import { Provider }                    from '@acx-ui/store'
 import { render, screen }              from '@acx-ui/test-utils'
 
-import RougeAPDetectionContext from '../RougeAPDetectionContext'
+import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
-import RougeAPDetectionSummaryForm from './RougeAPDetectionSummaryForm'
+import RogueAPDetectionSummaryForm from './RogueAPDetectionSummaryForm'
 
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
@@ -14,7 +14,7 @@ const wrapper = ({ children }: { children: React.ReactElement }) => {
     {children}
   </Provider>
 }
-const setRougeAPDetectionSummary = jest.fn()
+const setRogueAPDetectionSummary = jest.fn()
 
 const initState = {
   venues: [{
@@ -30,17 +30,17 @@ const initState = {
   }],
   tags: ['tag1', 'tag2', 'tag3'],
   description: ''
-} as RougeAPDetectionContextType
+} as RogueAPDetectionContextType
 
-describe('RougeAPDetectionSummaryForm', () => {
+describe('RogueAPDetectionSummaryForm', () => {
   it('should render form successfully', async () => {
     const { asFragment } = render(
-      <RougeAPDetectionContext.Provider value={{
+      <RogueAPDetectionContext.Provider value={{
         state: initState,
-        dispatch: setRougeAPDetectionSummary
+        dispatch: setRogueAPDetectionSummary
       }}>
-        <RougeAPDetectionSummaryForm />
-      </RougeAPDetectionContext.Provider>,
+        <RogueAPDetectionSummaryForm />
+      </RogueAPDetectionContext.Provider>,
       { wrapper }
     )
     expect(screen.getByText('policyName1')).toBeInTheDocument()

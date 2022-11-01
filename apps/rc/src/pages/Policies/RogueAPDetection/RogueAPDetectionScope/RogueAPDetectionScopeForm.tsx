@@ -3,13 +3,13 @@ import { useIntl }        from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import RougeVenueTable from './RougeVenueTable'
+import RogueVenueTable from './RogueVenueTable'
 
-type RougeAPDetectionScopeFormProps = {
+type RogueAPDetectionScopeFormProps = {
   edit: boolean
 }
 
-const RougeAPDetectionScopeForm = (props: RougeAPDetectionScopeFormProps) => {
+const RogueAPDetectionScopeForm = (props: RogueAPDetectionScopeFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
 
@@ -21,9 +21,9 @@ const RougeAPDetectionScopeForm = (props: RougeAPDetectionScopeFormProps) => {
         <Form.Item
           name='venueTable'
           label={$t({ defaultMessage:
-              'Select the venues where the rouge AP detection policy will be applied:' })}
+              'Select the venues where the rogue AP detection policy will be applied:' })}
         >
-          <RougeVenueTable edit={edit} />
+          <RogueVenueTable edit={edit} />
         </Form.Item>
 
       </Col>
@@ -34,4 +34,4 @@ const RougeAPDetectionScopeForm = (props: RougeAPDetectionScopeFormProps) => {
   )
 }
 
-export default RougeAPDetectionScopeForm
+export default RogueAPDetectionScopeForm

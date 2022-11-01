@@ -1,21 +1,15 @@
-import { ApDeviceStatusEnum } from '../constants';
+import { ApDeviceStatusEnum } from '../constants'
 
-export interface RougeAPDetectionContextType {
+export interface RogueAPDetectionContextType {
   policyName: string,
   tags: string[],
   description: string,
-  rules: RougeAPRule[],
-  venues: RougeVenue[]
+  rules: RogueAPRule[],
+  venues: RogueVenue[]
 }
 
-export interface RougeAPDetectionRuleTempType {
-  id: string,
-  name: string,
-  rules: RougeAPRule[]
-}
-
-export interface RougeOldApResponseType {
-  rougeMac: string,
+export interface RogueOldApResponseType {
+  rogueMac: string,
   ssid: string,
   numberOfDetectingAps: number,
   locatable: boolean,
@@ -39,29 +33,25 @@ export interface RougeOldApResponseType {
   model: string
 }
 
-export interface RougeAPDetectionTempType {
+export interface RogueAPDetectionTempType {
   totalCount: 1,
   page: 1,
   data: {
     id: string,
     name: string,
-    activeVenues: RougeVenue[],
+    activeVenues: RogueVenue[],
     numOfRules: number
   }[]
 }
 
-export interface VenueRougePolicyType {
+export interface VenueRoguePolicyType {
   id: string,
   name: string,
   city?: string,
   country?: string,
+  switches?: number,
   aggregatedApStatus?: Record<ApDeviceStatusEnum, number>,
-  status?: string,
-  rougeDetection?: {
-    policyId: string,
-    policyName: string,
-    enabled: boolean
-  },
+  status?: string
   rogueDetection?: {
     policyId: string,
     policyName: string,
@@ -70,35 +60,35 @@ export interface VenueRougePolicyType {
   activate?: boolean
 }
 
-export interface RougeAPRule {
+export interface RogueAPRule {
   name: string,
   priority?: number,
-  type: RougeRuleType,
-  classification: RougeCategory
+  type: RogueRuleType,
+  classification: RogueCategory
 }
 
-export interface RougeVenue {
+export interface RogueVenue {
   id: string,
   name: string
 }
 
-export interface RougeVenueData {
+export interface RogueVenueData {
   id: string,
   venue: string,
   aps: number,
   switches: number,
-  rougeDetection: string,
+  rogueDetection: string,
   activate: React.ReactElement
 }
 
-export enum RougeCategory {
+export enum RogueCategory {
   MALICIOUS = 'Malicious',
   IGNORED = 'Ignored',
   KNOWN = 'Known',
   UNCLASSIFIED = 'Unclassified'
 }
 
-export enum RougeRuleType {
+export enum RogueRuleType {
   AD_HOC_RULE = 'AdhocRule',
   CTS_ABUSE_RULE = 'CtsabuseRule',
   DEAUTH_FLOOD_RULE = 'DeauthfloodRule',
@@ -114,13 +104,14 @@ export enum RougeRuleType {
   SSID_SPOOFING_RULE = 'SsidspoofingRule'
 }
 
-export enum RougeAPDetectionActionTypes {
+export enum RogueAPDetectionActionTypes {
   POLICYNAME = 'POLICYNAME',
   DESCRIPTION = 'DESCRIPTION',
   TAGS = 'TAGS',
   UPDATE_STATE = 'UPDATE_STATE',
   ADD_RULE = 'ADD_RULE',
   UPDATE_RULE = 'UPDATE_RULE',
+  UPDATE_ENTIRE_RULE = 'UPDATE_ENTIRE_RULE',
   DEL_RULE = 'DEL_RULE',
   MOVE_UP = 'MOVE_UP',
   MOVE_DOWN = 'MOVE_DOWN',
@@ -128,56 +119,61 @@ export enum RougeAPDetectionActionTypes {
   REMOVE_VENUES = 'REMOVE_VENUES'
 }
 
-export type RougeAPDetectionActionPayload = {
-  type: RougeAPDetectionActionTypes.POLICYNAME,
+export type RogueAPDetectionActionPayload = {
+  type: RogueAPDetectionActionTypes.POLICYNAME,
   payload: {
     policyName: string
   }
 } | {
-  type: RougeAPDetectionActionTypes.TAGS,
+  type: RogueAPDetectionActionTypes.TAGS,
   payload: {
     tags: string[]
   }
 } | {
-  type: RougeAPDetectionActionTypes.UPDATE_STATE,
+  type: RogueAPDetectionActionTypes.UPDATE_STATE,
   payload: {
-    state: RougeAPDetectionContextType
+    state: RogueAPDetectionContextType
   }
 } | {
-  type: RougeAPDetectionActionTypes.ADD_RULE,
+  type: RogueAPDetectionActionTypes.ADD_RULE,
   payload: {
-    rule: RougeAPRule
+    rule: RogueAPRule
   }
 } | {
-  type: RougeAPDetectionActionTypes.UPDATE_RULE,
+  type: RogueAPDetectionActionTypes.UPDATE_RULE,
   payload: {
-    rule: RougeAPRule
+    rule: RogueAPRule
   }
 } | {
-  type: RougeAPDetectionActionTypes.DEL_RULE,
+  type: RogueAPDetectionActionTypes.UPDATE_ENTIRE_RULE,
+  payload: {
+    rules: RogueAPRule[]
+  }
+} | {
+  type: RogueAPDetectionActionTypes.DEL_RULE,
   payload: {
     name: string
   }
 } | {
-  type: RougeAPDetectionActionTypes.MOVE_UP,
+  type: RogueAPDetectionActionTypes.MOVE_UP,
   payload: {
     name: string,
     priority?: number
   }
 } | {
-  type: RougeAPDetectionActionTypes.MOVE_DOWN,
+  type: RogueAPDetectionActionTypes.MOVE_DOWN,
   payload: {
     name: string,
     priority?: number
   }
 } | {
-  type: RougeAPDetectionActionTypes.ADD_VENUES,
+  type: RogueAPDetectionActionTypes.ADD_VENUES,
   payload: {
     name: string,
     id: string
   }[]
 } | {
-  type: RougeAPDetectionActionTypes.REMOVE_VENUES,
+  type: RogueAPDetectionActionTypes.REMOVE_VENUES,
   payload: {
     name: string,
     id: string

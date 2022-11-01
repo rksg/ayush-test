@@ -6,7 +6,7 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails }    from './pages/Networks/NetworkDetails/NetworkDetails'
 import { NetworkForm }       from './pages/Networks/NetworkForm/NetworkForm'
 import { NetworksTable }     from './pages/Networks/NetworksTable'
-import RougeAPDetectionForm  from './pages/Policies/RougeAPDetection/RougeAPDetectionForm/RougeAPDetectionForm'
+import RogueAPDetectionForm  from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import { DHCPForm }          from './pages/Services/DHCPForm/DHCPForm'
 import { MdnsProxyForm }     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import { SelectServiceForm } from './pages/Services/SelectServiceForm'
@@ -17,8 +17,8 @@ import {
   ServiceOperation
 } from './pages/Services/serviceRouteUtils'
 import { ServicesTable } from './pages/Services/ServicesTable'
-import RougeAPDetectionDetailView
-  from './pages/Policies/RougeAPDetection/RougeAPDetectionDetail/RougeAPDetectionDetailView';
+import RogueAPDetectionDetailView
+  from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView';
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -103,16 +103,16 @@ function PolicyRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
       <Route
-        path='policies/rougeAPDetection/create'
-        element={<RougeAPDetectionForm edit={false}/>}
+        path='policies/rogueAPDetection/create'
+        element={<RogueAPDetectionForm edit={false}/>}
       />
       <Route
-        path='policies/rougeAPDetection/:policyId/edit'
-        element={<RougeAPDetectionForm edit={true}/>}
+        path='policies/rogueAPDetection/:policyId/edit'
+        element={<RogueAPDetectionForm edit={true}/>}
       />
       <Route
-        path='policies/rougeAPDetection/:policyId/detail'
-        element={<RougeAPDetectionDetailView />}
+        path='policies/rogueAPDetection/:policyId/detail'
+        element={<RogueAPDetectionDetailView />}
       />
     </Route>
   )

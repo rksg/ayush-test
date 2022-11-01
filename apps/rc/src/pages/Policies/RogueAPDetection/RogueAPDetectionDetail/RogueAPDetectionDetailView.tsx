@@ -11,22 +11,22 @@ import {
 } from '@acx-ui/components'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import RougeAPDetectionDetailContent from './RougeAPDetectionDetailContent'
-import RougeAPDetectionVenueDetail   from './RougeAPDetectionVenueDetail'
+import RogueAPDetectionDetailContent from './RogueAPDetectionDetailContent'
+import RogueAPDetectionVenueDetail   from './RogueAPDetectionVenueDetail'
 
-const RougeAPDetectionDetailView = () => {
+const RogueAPDetectionDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
 
   return (
     <>
       <PageHeader
-        title={`${$t({ defaultMessage: 'Rouge AP Detection policy' })}`}
+        title={`${$t({ defaultMessage: 'Rogue AP Detection policy' })}`}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: '/policies' }
         ]}
         extra={[
-          <TenantLink to={`/policies/rougeAPDetection/${params.policyId}/edit`} key='edit'>
+          <TenantLink to={`/policies/rogueAPDetection/${params.policyId}/edit`} key='edit'>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button>
@@ -36,14 +36,14 @@ const RougeAPDetectionDetailView = () => {
 
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <RougeAPDetectionDetailContent />
+          <RogueAPDetectionDetailContent />
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <RougeAPDetectionVenueDetail />
+          <RogueAPDetectionVenueDetail />
         </GridCol>
       </GridRow>
     </>
   )
 }
 
-export default RougeAPDetectionDetailView
+export default RogueAPDetectionDetailView

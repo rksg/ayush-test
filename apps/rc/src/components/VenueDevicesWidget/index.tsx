@@ -4,7 +4,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
 
 import { VenueMeshApsTable } from '../../../../main/src/pages/Venues/VenueDetails/VenueDevicesTab/VenueMeshAps'
-import { VenueRougeAps }     from '../../../../main/src/pages/Venues/VenueDetails/VenueDevicesTab/VenueRougeAps'
+import { VenueRogueAps }     from '../../../../main/src/pages/Venues/VenueDetails/VenueDevicesTab/VenueRogueAps'
 
 
 export default function VenueDevicesWidget () {
@@ -23,7 +23,7 @@ export default function VenueDevicesWidget () {
     {
       label: $t({ defaultMessage: 'Rouge APs' }),
       value: 'rougeAps',
-      children: <VenueRougeAps />
+      children: <VenueRogueAps />
     }
   ]
 

@@ -1,23 +1,23 @@
 import {
-  RougeAPDetectionActionPayload,
-  RougeAPDetectionActionTypes,
-  RougeAPDetectionContextType, RougeCategory, RougeRuleType
+  RogueAPDetectionActionPayload,
+  RogueAPDetectionActionTypes,
+  RogueAPDetectionContextType, RogueCategory, RogueRuleType
 } from '@acx-ui/rc/utils'
 
-import { rougeAPDetectionReducer } from './RougeAPDetectionReducer'
+import { rogueAPDetectionReducer } from './RogueAPDetectionReducer'
 
-describe('RougeAPDetectionReducer test', () => {
+describe('RogueAPDetectionReducer test', () => {
   it('should update the policy name when POLICYNAME action is dispatched', () => {
-    const initState = {} as RougeAPDetectionContextType
+    const initState = {} as RogueAPDetectionContextType
 
     const action = {
-      type: RougeAPDetectionActionTypes.POLICYNAME,
+      type: RogueAPDetectionActionTypes.POLICYNAME,
       payload: {
         policyName: 'policyNameId1'
       }
     }
 
-    const updatedState = rougeAPDetectionReducer(initState, action as RougeAPDetectionActionPayload)
+    const updatedState = rogueAPDetectionReducer(initState, action as RogueAPDetectionActionPayload)
 
     expect(updatedState).toEqual({
       ...initState,
@@ -25,16 +25,16 @@ describe('RougeAPDetectionReducer test', () => {
     })
   })
   it('should update the tags data when TAGS action is dispatched', () => {
-    const initState = {} as RougeAPDetectionContextType
+    const initState = {} as RogueAPDetectionContextType
 
     const action = {
-      type: RougeAPDetectionActionTypes.TAGS,
+      type: RogueAPDetectionActionTypes.TAGS,
       payload: {
         tags: ['tag1', 'tag2', 'tag3']
       }
     }
 
-    const updatedState = rougeAPDetectionReducer(initState, action as RougeAPDetectionActionPayload)
+    const updatedState = rogueAPDetectionReducer(initState, action as RogueAPDetectionActionPayload)
 
     expect(updatedState).toEqual({
       ...initState,
@@ -42,92 +42,92 @@ describe('RougeAPDetectionReducer test', () => {
     })
   })
   it('should update the rule when RULE related action is dispatched', () => {
-    const initState = {} as RougeAPDetectionContextType
+    const initState = {} as RogueAPDetectionContextType
 
     const action = {
-      type: RougeAPDetectionActionTypes.ADD_RULE,
+      type: RogueAPDetectionActionTypes.ADD_RULE,
       payload: {
         rule: {
           name: 'rule1',
-          type: RougeRuleType.AD_HOC_RULE,
-          classification: RougeCategory.MALICIOUS
+          type: RogueRuleType.AD_HOC_RULE,
+          classification: RogueCategory.MALICIOUS
         }
       }
     }
 
-    const updatedState = rougeAPDetectionReducer(initState, action as RougeAPDetectionActionPayload)
+    const updatedState = rogueAPDetectionReducer(initState, action as RogueAPDetectionActionPayload)
 
     expect(updatedState).toEqual({
       ...initState,
       rules: [{
         name: 'rule1',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 1
       }]
     })
 
     const addNextAction = {
-      type: RougeAPDetectionActionTypes.ADD_RULE,
+      type: RogueAPDetectionActionTypes.ADD_RULE,
       payload: {
         rule: {
           name: 'rule2',
-          type: RougeRuleType.AD_HOC_RULE,
-          classification: RougeCategory.MALICIOUS
+          type: RogueRuleType.AD_HOC_RULE,
+          classification: RogueCategory.MALICIOUS
         }
       }
     }
 
     // eslint-disable-next-line max-len
-    const updatedAddState = rougeAPDetectionReducer(updatedState, addNextAction as RougeAPDetectionActionPayload)
+    const updatedAddState = rogueAPDetectionReducer(updatedState, addNextAction as RogueAPDetectionActionPayload)
 
     expect(updatedAddState).toEqual({
       ...updatedState,
       rules: [{
         name: 'rule1',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 1
       }, {
         name: 'rule2',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 2
       }]
     })
 
     const updateNextAction = {
-      type: RougeAPDetectionActionTypes.UPDATE_RULE,
+      type: RogueAPDetectionActionTypes.UPDATE_RULE,
       payload: {
         rule: {
           name: 'rule2-modify',
-          type: RougeRuleType.AD_HOC_RULE,
-          classification: RougeCategory.MALICIOUS,
+          type: RogueRuleType.AD_HOC_RULE,
+          classification: RogueCategory.MALICIOUS,
           priority: 2
         }
       }
     }
 
     // eslint-disable-next-line max-len
-    const updatedUpdateState = rougeAPDetectionReducer(updatedAddState, updateNextAction as RougeAPDetectionActionPayload)
+    const updatedUpdateState = rogueAPDetectionReducer(updatedAddState, updateNextAction as RogueAPDetectionActionPayload)
 
     expect(updatedUpdateState).toEqual({
       ...updatedAddState,
       rules: [{
         name: 'rule1',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 1
       }, {
         name: 'rule2-modify',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 2
       }]
     })
 
     const updateMoveUpAction = {
-      type: RougeAPDetectionActionTypes.MOVE_UP,
+      type: RogueAPDetectionActionTypes.MOVE_UP,
       payload: {
         name: 'rule2-modify',
         priority: 2
@@ -135,25 +135,25 @@ describe('RougeAPDetectionReducer test', () => {
     }
 
     // eslint-disable-next-line max-len
-    const updatedMoveUpState = rougeAPDetectionReducer(updatedUpdateState, updateMoveUpAction as RougeAPDetectionActionPayload)
+    const updatedMoveUpState = rogueAPDetectionReducer(updatedUpdateState, updateMoveUpAction as RogueAPDetectionActionPayload)
 
     expect(updatedMoveUpState).toEqual({
       ...updatedUpdateState,
       rules: [{
         name: 'rule2-modify',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 1
       }, {
         name: 'rule1',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 2
       }]
     })
 
     const updateMoveDownAction = {
-      type: RougeAPDetectionActionTypes.MOVE_DOWN,
+      type: RogueAPDetectionActionTypes.MOVE_DOWN,
       payload: {
         name: 'rule2-modify',
         priority: 1
@@ -161,55 +161,55 @@ describe('RougeAPDetectionReducer test', () => {
     }
 
     // eslint-disable-next-line max-len
-    const updatedMoveDownState = rougeAPDetectionReducer(updatedMoveUpState, updateMoveDownAction as RougeAPDetectionActionPayload)
+    const updatedMoveDownState = rogueAPDetectionReducer(updatedMoveUpState, updateMoveDownAction as RogueAPDetectionActionPayload)
 
     expect(updatedMoveDownState).toEqual({
       ...updatedMoveUpState,
       rules: [{
         name: 'rule1',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 1
       }, {
         name: 'rule2-modify',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 2
       }]
     })
 
     const updateDelAction = {
-      type: RougeAPDetectionActionTypes.DEL_RULE,
+      type: RogueAPDetectionActionTypes.DEL_RULE,
       payload: {
         name: 'rule2-modify'
       }
     }
 
     // eslint-disable-next-line max-len
-    const updatedDelState = rougeAPDetectionReducer(updatedMoveDownState, updateDelAction as RougeAPDetectionActionPayload)
+    const updatedDelState = rogueAPDetectionReducer(updatedMoveDownState, updateDelAction as RogueAPDetectionActionPayload)
 
     expect(updatedDelState).toEqual({
       ...updatedMoveDownState,
       rules: [{
         name: 'rule1',
-        type: RougeRuleType.AD_HOC_RULE,
-        classification: RougeCategory.MALICIOUS,
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
         priority: 1
       }]
     })
   })
   it('should update the venue when VENUE related action is dispatched', () => {
-    const initState = {} as RougeAPDetectionContextType
+    const initState = {} as RogueAPDetectionContextType
 
     const action = {
-      type: RougeAPDetectionActionTypes.ADD_VENUES,
+      type: RogueAPDetectionActionTypes.ADD_VENUES,
       payload: [{
         name: 'venueName1',
         id: 'venueId1'
       }]
     }
 
-    const updatedState = rougeAPDetectionReducer(initState, action as RougeAPDetectionActionPayload)
+    const updatedState = rogueAPDetectionReducer(initState, action as RogueAPDetectionActionPayload)
 
     expect(updatedState).toEqual({
       ...initState,
@@ -220,7 +220,7 @@ describe('RougeAPDetectionReducer test', () => {
     })
 
     const addAction = {
-      type: RougeAPDetectionActionTypes.ADD_VENUES,
+      type: RogueAPDetectionActionTypes.ADD_VENUES,
       payload: [{
         name: 'venueName2',
         id: 'venueId2'
@@ -231,7 +231,7 @@ describe('RougeAPDetectionReducer test', () => {
     }
 
     // eslint-disable-next-line max-len
-    const updatedAddVenueState = rougeAPDetectionReducer(updatedState, addAction as RougeAPDetectionActionPayload)
+    const updatedAddVenueState = rogueAPDetectionReducer(updatedState, addAction as RogueAPDetectionActionPayload)
 
     expect(updatedAddVenueState).toEqual({
       ...updatedState,
@@ -248,7 +248,7 @@ describe('RougeAPDetectionReducer test', () => {
     })
 
     const removeAction = {
-      type: RougeAPDetectionActionTypes.REMOVE_VENUES,
+      type: RogueAPDetectionActionTypes.REMOVE_VENUES,
       payload: [{
         name: 'venueName2',
         id: 'venueId2'
@@ -259,7 +259,7 @@ describe('RougeAPDetectionReducer test', () => {
     }
 
     // eslint-disable-next-line max-len
-    const updatedRemoveVenueState = rougeAPDetectionReducer(updatedAddVenueState, removeAction as RougeAPDetectionActionPayload)
+    const updatedRemoveVenueState = rogueAPDetectionReducer(updatedAddVenueState, removeAction as RogueAPDetectionActionPayload)
 
     expect(updatedRemoveVenueState).toEqual({
       ...updatedAddVenueState,
@@ -270,7 +270,7 @@ describe('RougeAPDetectionReducer test', () => {
     })
   })
   it('do nothing when undefined action is dispatched', () => {
-    const initState = {} as RougeAPDetectionContextType
+    const initState = {} as RogueAPDetectionContextType
 
     const action = {
       type: 'undefined',
@@ -279,7 +279,7 @@ describe('RougeAPDetectionReducer test', () => {
       }
     }
 
-    const updatedState = rougeAPDetectionReducer(initState, action as RougeAPDetectionActionPayload)
+    const updatedState = rogueAPDetectionReducer(initState, action as RogueAPDetectionActionPayload)
 
     expect(updatedState).toEqual({
       ...initState

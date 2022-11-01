@@ -6,30 +6,30 @@ import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
 import { StepsForm }                                         from '@acx-ui/components'
-import { useGetRougePolicyListQuery }                        from '@acx-ui/rc/services'
+import { useGetRoguePolicyListQuery }                        from '@acx-ui/rc/services'
 import {
-  RougeAPDetectionActionTypes, RougeAPDetectionContextType
+  RogueAPDetectionActionTypes, RogueAPDetectionContextType
 } from '@acx-ui/rc/utils'
 
-import RougeAPDetectionContext from '../RougeAPDetectionContext'
+import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RuleTable from './RuleTable'
 
-type RougeAPDetectionSettingFormProps = {
+type RogueAPDetectionSettingFormProps = {
   edit: boolean,
-  formRef?: MutableRefObject<ProFormInstance<RougeAPDetectionContextType> | undefined>
+  formRef?: MutableRefObject<ProFormInstance<RogueAPDetectionContextType> | undefined>
 }
 
-const RougeAPDetectionSettingForm = (props: RougeAPDetectionSettingFormProps) => {
+const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) => {
   const { $t } = useIntl()
   const { edit, formRef } = props
   const params = useParams()
 
   const {
     state, dispatch
-  } = useContext(RougeAPDetectionContext)
+  } = useContext(RogueAPDetectionContext)
 
-  const { data } = useGetRougePolicyListQuery({
+  const { data } = useGetRoguePolicyListQuery({
     params: params,
     payload: {
       page: 1,
@@ -40,7 +40,7 @@ const RougeAPDetectionSettingForm = (props: RougeAPDetectionSettingFormProps) =>
 
   const handlePolicyName = (policyName: string) => {
     dispatch({
-      type: RougeAPDetectionActionTypes.POLICYNAME,
+      type: RogueAPDetectionActionTypes.POLICYNAME,
       payload: {
         policyName: policyName
       }
@@ -49,7 +49,7 @@ const RougeAPDetectionSettingForm = (props: RougeAPDetectionSettingFormProps) =>
 
   const handleTags = (tags: string[]) => {
     dispatch({
-      type: RougeAPDetectionActionTypes.TAGS,
+      type: RogueAPDetectionActionTypes.TAGS,
       payload: {
         tags: tags
       }
@@ -63,7 +63,7 @@ const RougeAPDetectionSettingForm = (props: RougeAPDetectionSettingFormProps) =>
       console.log(data, params.policyId)
       policyData = data.data && data.data.filter(d => d.id === params.policyId)[0]
       dispatch({
-        type: RougeAPDetectionActionTypes.UPDATE_STATE,
+        type: RogueAPDetectionActionTypes.UPDATE_STATE,
         payload: {
           state: {
             ...state,
@@ -88,7 +88,19 @@ const RougeAPDetectionSettingForm = (props: RougeAPDetectionSettingFormProps) =>
           rules={[
             { required: true },
             { min: 2 },
-            { max: 32 }
+            { max: 32 },
+            { validator: async (rule, value) => {
+              return new Promise<void>((resolve, reject) => {
+                console.log(data)
+                if (!edit && value
+                  && data?.data.findIndex((policy) => policy.name === value) !== -1) {
+                  return reject(
+                    $t({ defaultMessage: 'The rogue policy with that name already exists' })
+                  )
+                }
+                return resolve()
+              })
+            } }
           ]}
           validateFirst
           hasFeedback
@@ -107,6 +119,18 @@ const RougeAPDetectionSettingForm = (props: RougeAPDetectionSettingFormProps) =>
         <Form.Item
           name='rules'
           label={$t({ defaultMessage: 'Classification rules' })}
+          rules={[
+            { validator: async (rule, value) => {
+              return new Promise<void>((resolve, reject) => {
+                if (state.rules.length === 0) {
+                  return reject(
+                    $t({ defaultMessage: 'No rules have been created yet' })
+                  )
+                }
+                return resolve()
+              })
+            } }
+          ]}
         >
           <RuleTable edit={edit}/>
         </Form.Item>
@@ -118,4 +142,4 @@ const RougeAPDetectionSettingForm = (props: RougeAPDetectionSettingFormProps) =>
   )
 }
 
-export default RougeAPDetectionSettingForm
+export default RogueAPDetectionSettingForm

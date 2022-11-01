@@ -43,10 +43,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         key='clients'
       />
       <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Devices ({devicesCount})' }, { devicesCount })}
-        </Tooltip>}
+        tab={$t({ defaultMessage: 'Devices ({devicesCount})' }, { devicesCount })}
         key='devices'
       />
       <Tabs.TabPane

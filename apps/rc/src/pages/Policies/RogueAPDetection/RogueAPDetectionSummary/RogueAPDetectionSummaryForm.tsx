@@ -5,16 +5,16 @@ import { useIntl }                    from 'react-intl'
 
 import { StepsForm, Subtitle } from '@acx-ui/components'
 
-import RougeAPDetectionContext from '../RougeAPDetectionContext'
+import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
-const RougeAPDetectionSummaryForm = () => {
+const RogueAPDetectionSummaryForm = () => {
   const { Paragraph } = Typography
 
   const { $t } = useIntl()
 
   const {
     state
-  } = useContext(RougeAPDetectionContext)
+  } = useContext(RogueAPDetectionContext)
 
   console.log('render in summary, state: ')
   console.log(state)
@@ -78,4 +78,4 @@ const RougeAPDetectionSummaryForm = () => {
   )
 }
 
-export default RougeAPDetectionSummaryForm
+export default RogueAPDetectionSummaryForm

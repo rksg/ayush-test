@@ -5,33 +5,34 @@ import { useIntl }                      from 'react-intl'
 
 import { Drawer }                                                                 from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                                             from '@acx-ui/icons'
-import { RougeAPDetectionActionTypes, RougeAPRule, RougeCategory, RougeRuleType } from '@acx-ui/rc/utils'
+import { RogueAPDetectionActionTypes, RogueAPRule, RogueCategory, RogueRuleType } from '@acx-ui/rc/utils'
 
-import RougeAPDetectionContext from '../RougeAPDetectionContext'
+import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 const { Option } = Select
 
 
-interface RougeAPDetectionDrawerProps {
+interface RogueAPDetectionDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   isEditMode: boolean
   queryRuleName: string
 }
 
-const RougeAPDetectionDrawer = (props: RougeAPDetectionDrawerProps) => {
+const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, setVisible, isEditMode, queryRuleName } = props
   const [resetField, setResetField] = useState(false)
-  const { state, dispatch } = useContext(RougeAPDetectionContext)
+  const { state, dispatch } = useContext(RogueAPDetectionContext)
 
   let ruleObj = {
     name: '',
-    type: RougeRuleType.AD_HOC_RULE,
-    classification: RougeCategory.MALICIOUS
-  } as RougeAPRule
+    type: RogueRuleType.AD_HOC_RULE,
+    classification: RogueCategory.MALICIOUS
+  } as RogueAPRule
 
+  console.log(state, queryRuleName)
   const stateIdx = state.rules.findIndex(rules => rules.name === queryRuleName)
   if (isEditMode && stateIdx !== -1) {
     ruleObj = state.rules[stateIdx]
@@ -59,47 +60,47 @@ const RougeAPDetectionDrawer = (props: RougeAPDetectionDrawerProps) => {
   const selectRule = (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <Select
-        data-testid='selectRougeRule'
+        data-testid='selectRogueRule'
         defaultValue={ruleObj.type}
         style={{ width: '70%', marginRight: '5px' }}
-        onChange={(options) => setRuleType(options.toString() as RougeRuleType)}>
-        <Option value={RougeRuleType.AD_HOC_RULE}>
+        onChange={(options) => setRuleType(options.toString() as RogueRuleType)}>
+        <Option value={RogueRuleType.AD_HOC_RULE}>
           {$t({ defaultMessage: 'Ad Hoc' })}
         </Option>
-        <Option value={RougeRuleType.CTS_ABUSE_RULE}>
+        <Option value={RogueRuleType.CTS_ABUSE_RULE}>
           {$t({ defaultMessage: 'CTS Abuse' })}
         </Option>
-        <Option value={RougeRuleType.DEAUTH_FLOOD_RULE}>
+        <Option value={RogueRuleType.DEAUTH_FLOOD_RULE}>
           {$t({ defaultMessage: 'Deauth Flood' })}
         </Option>
-        <Option value={RougeRuleType.DISASSOC_FLOOD_RULE}>
+        <Option value={RogueRuleType.DISASSOC_FLOOD_RULE}>
           {$t({ defaultMessage: 'Disassoc Flood' })}
         </Option>
-        <Option value={RougeRuleType.EXCESSIVE_POWER_RULE}>
+        <Option value={RogueRuleType.EXCESSIVE_POWER_RULE}>
           {$t({ defaultMessage: 'Excessive Power' })}
         </Option>
-        <Option value={RougeRuleType.LOW_SNR_RULE}>
+        <Option value={RogueRuleType.LOW_SNR_RULE}>
           {$t({ defaultMessage: 'Low SNR' })}
         </Option>
-        <Option value={RougeRuleType.MAC_OUI_RULE}>
+        <Option value={RogueRuleType.MAC_OUI_RULE}>
           {$t({ defaultMessage: 'MAC OUI' })}
         </Option>
-        <Option value={RougeRuleType.MAC_SPOOFING_RULE}>
+        <Option value={RogueRuleType.MAC_SPOOFING_RULE}>
           {$t({ defaultMessage: 'MAC Spoofing' })}
         </Option>
-        <Option value={RougeRuleType.NULL_SSID_RULE}>
+        <Option value={RogueRuleType.NULL_SSID_RULE}>
           {$t({ defaultMessage: 'Null SSID' })}
         </Option>
-        <Option value={RougeRuleType.RTS_ABUSE_RULE}>
+        <Option value={RogueRuleType.RTS_ABUSE_RULE}>
           {$t({ defaultMessage: 'RTS Abuse' })}
         </Option>
-        <Option value={RougeRuleType.SAME_NETWORK_RULE}>
+        <Option value={RogueRuleType.SAME_NETWORK_RULE}>
           {$t({ defaultMessage: 'Same Network' })}
         </Option>
-        <Option value={RougeRuleType.SSID_RULE}>
+        <Option value={RogueRuleType.SSID_RULE}>
           {$t({ defaultMessage: 'SSID' })}
         </Option>
-        <Option value={RougeRuleType.SSID_SPOOFING_RULE}>
+        <Option value={RogueRuleType.SSID_SPOOFING_RULE}>
           {$t({ defaultMessage: 'SSID Spoofing' })}
         </Option>
       </Select>
@@ -115,25 +116,25 @@ const RougeAPDetectionDrawer = (props: RougeAPDetectionDrawerProps) => {
   const selectCategory = (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <Select
-        data-testid='selectRougeCategory'
+        data-testid='selectRogueCategory'
         defaultValue={ruleObj.classification}
         style={{ width: '70%', marginRight: '5px' }}
-        onChange={(options) => setCategory(options.toString() as RougeCategory)}>
-        <Option value={RougeCategory.IGNORED}>
+        onChange={(options) => setCategory(options.toString() as RogueCategory)}>
+        <Option value={RogueCategory.IGNORED}>
           {$t({ defaultMessage: 'Ignored' })}
         </Option>
-        <Option value={RougeCategory.KNOWN}>
+        <Option value={RogueCategory.KNOWN}>
           {$t({ defaultMessage: 'Known' })}
         </Option>
-        <Option value={RougeCategory.UNCLASSIFIED}>
+        <Option value={RogueCategory.UNCLASSIFIED}>
           {$t({ defaultMessage: 'Unclassified' })}
         </Option>
-        <Option value={RougeCategory.MALICIOUS}>
+        <Option value={RogueCategory.MALICIOUS}>
           {$t({ defaultMessage: 'Malicious' })}
         </Option>
       </Select>
       <Tooltip
-        title={$t({ defaultMessage: 'Classify rouge APs when the above rule type is matched.' })}
+        title={$t({ defaultMessage: 'Classify rogue APs when the above rule type is matched.' })}
         placement='bottom'
       >
         <QuestionMarkCircleOutlined />
@@ -199,7 +200,7 @@ const RougeAPDetectionDrawer = (props: RougeAPDetectionDrawerProps) => {
             await form.validateFields()
             if (!isEditMode && !state.rules.filter(rule => rule.name === ruleName).length) {
               dispatch({
-                type: RougeAPDetectionActionTypes.ADD_RULE,
+                type: RogueAPDetectionActionTypes.ADD_RULE,
                 payload: {
                   rule: {
                     name: ruleName,
@@ -211,8 +212,9 @@ const RougeAPDetectionDrawer = (props: RougeAPDetectionDrawerProps) => {
             }
 
             if (isEditMode) {
+              console.log(isEditMode, ruleObj, ruleName)
               dispatch({
-                type: RougeAPDetectionActionTypes.UPDATE_RULE,
+                type: RogueAPDetectionActionTypes.UPDATE_RULE,
                 payload: {
                   rule: {
                     name: ruleName,
@@ -238,4 +240,4 @@ const RougeAPDetectionDrawer = (props: RougeAPDetectionDrawerProps) => {
   )
 }
 
-export default RougeAPDetectionDrawer
+export default RogueAPDetectionDrawer

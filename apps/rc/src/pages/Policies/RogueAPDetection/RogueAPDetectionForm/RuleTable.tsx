@@ -1,13 +1,15 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react';
 
 import { useIntl } from 'react-intl'
 
 import { showActionModal, Table, TableProps }       from '@acx-ui/components'
-import { RougeAPDetectionActionTypes, RougeAPRule } from '@acx-ui/rc/utils'
+import { RogueAPDetectionActionPayload, RogueAPDetectionActionTypes, RogueAPRule } from '@acx-ui/rc/utils';
 
-import RougeAPDetectionContext from '../RougeAPDetectionContext'
+import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
-import RougeAPDetectionDrawer from './RougeAPDetectionDrawer'
+import RogueAPDetectionDrawer from './RogueAPDetectionDrawer'
+import { useRoguePolicyQuery } from '@acx-ui/rc/services';
+import { useParams } from 'react-router-dom';
 
 type RuleTableProps = {
   edit: boolean
@@ -17,9 +19,13 @@ const RuleTable = (props: RuleTableProps) => {
   const { $t } = useIntl()
   const { edit } = props
 
-  const { state, dispatch } = useContext(RougeAPDetectionContext)
+  const { state, dispatch } = useContext(RogueAPDetectionContext)
 
   console.log(state)
+
+  const { data } = useRoguePolicyQuery({
+    params: useParams()
+  })
 
   const [ruleName, setRuleName] = useState('')
   const [visibleAdd, setVisibleAdd] = useState(false)
@@ -48,14 +54,19 @@ const RuleTable = (props: RuleTableProps) => {
     }
   ]
 
-  // useEffect(() => {
-  //   if (!state.ePDG.length && data && edit) {
-  //     dispatch({
-  //       type: WifiCallingActionTypes.UPDATE_ENTIRE_EPDG,
-  //       payload: data.epdgs
-  //     } as WifiCallingActionPayload)
-  //   }
-  // }, [data, state])
+  useEffect(() => {
+    console.log('run useEffect in ruleTable')
+    console.log(state)
+    if (!state.rules.length && data && edit) {
+      console.log(data)
+      dispatch({
+        type: RogueAPDetectionActionTypes.UPDATE_ENTIRE_RULE,
+        payload: {
+          rules: data.rules
+        }
+      })
+    }
+  }, [data, state.rules])
 
   const handleAddAction = () => {
     setVisibleAdd(true)
@@ -67,7 +78,7 @@ const RuleTable = (props: RuleTableProps) => {
     onClick: handleAddAction
   }]
 
-  const editAction = (rows: RougeAPRule[]) => {
+  const editAction = (rows: RogueAPRule[]) => {
     if (rows.length > 1) {
       showActionModal({
         type: 'error',
@@ -80,9 +91,9 @@ const RuleTable = (props: RuleTableProps) => {
     }
   }
 
-  const moveUpAction = (rows: RougeAPRule[]) => {
+  const moveUpAction = (rows: RogueAPRule[]) => {
     dispatch({
-      type: RougeAPDetectionActionTypes.MOVE_UP,
+      type: RogueAPDetectionActionTypes.MOVE_UP,
       payload: {
         name: rows[0].name,
         priority: rows[0].priority
@@ -90,9 +101,9 @@ const RuleTable = (props: RuleTableProps) => {
     })
   }
 
-  const moveDownAction = (rows: RougeAPRule[]) => {
+  const moveDownAction = (rows: RogueAPRule[]) => {
     dispatch({
-      type: RougeAPDetectionActionTypes.MOVE_DOWN,
+      type: RogueAPDetectionActionTypes.MOVE_DOWN,
       payload: {
         name: rows[0].name,
         priority: rows[0].priority
@@ -100,7 +111,7 @@ const RuleTable = (props: RuleTableProps) => {
     })
   }
 
-  const delAction = (rows: RougeAPRule[]) => {
+  const delAction = (rows: RogueAPRule[]) => {
     if (rows.length > 1) {
       showActionModal({
         type: 'error',
@@ -116,7 +127,7 @@ const RuleTable = (props: RuleTableProps) => {
         },
         onOk: () => {
           rows[0].priority && dispatch({
-            type: RougeAPDetectionActionTypes.DEL_RULE,
+            type: RogueAPDetectionActionTypes.DEL_RULE,
             payload: {
               name: rows[0].name
             }
@@ -130,7 +141,7 @@ const RuleTable = (props: RuleTableProps) => {
 
   }
 
-  const rowActions: TableProps<RougeAPRule>['actions'] = [{
+  const rowActions: TableProps<RogueAPRule>['actions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: editAction
   },{
@@ -146,15 +157,15 @@ const RuleTable = (props: RuleTableProps) => {
 
   return (
     <>
-      <RougeAPDetectionDrawer
-        key='rougeAddDrawer'
+      <RogueAPDetectionDrawer
+        key='rogueAddDrawer'
         visible={visibleAdd}
         setVisible={setVisibleAdd}
         isEditMode={false}
         queryRuleName={''}
       />
-      <RougeAPDetectionDrawer
-        key='rougeEditDrawer'
+      <RogueAPDetectionDrawer
+        key='rogueEditDrawer'
         visible={visibleEdit}
         setVisible={setVisibleEdit}
         isEditMode={true}
