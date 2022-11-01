@@ -17,7 +17,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 gNDeNP"
+            class="styledComponents__Wrapper-sc-9l0oc9-0 dDtnzP"
             type="button"
           >
             <div
@@ -57,7 +57,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 gqqWrH"
+            class="styledComponents__Wrapper-sc-9l0oc9-0 ihItkv"
             type="button"
           >
             <div
@@ -97,7 +97,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 berUAp"
+            class="styledComponents__Wrapper-sc-9l0oc9-0 hjaQGp"
             type="button"
           >
             <div
@@ -132,7 +132,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 jXIUar"
+            class="styledComponents__Wrapper-sc-9l0oc9-0 hcpWvL"
             type="button"
           >
             <div
@@ -141,7 +141,7 @@ exports[`Incidents Page should match snapshot 1`] = `
               <div
                 class="ant-statistic-title"
               >
-                Avg. Time to Connect
+                Avg Time To Connect
               </div>
               <div
                 class="ant-statistic-content"
@@ -181,7 +181,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 gNDeNP"
+            class="styledComponents__Wrapper-sc-9l0oc9-0 dDtnzP"
             type="button"
           >
             <div
@@ -221,7 +221,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 gqqWrH"
+            class="styledComponents__Wrapper-sc-9l0oc9-0 ihItkv"
             type="button"
           >
             <div
@@ -261,7 +261,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 berUAp"
+            class="styledComponents__Wrapper-sc-9l0oc9-0 hjaQGp"
             type="button"
           >
             <div
@@ -296,7 +296,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 jXIUar"
+            class="styledComponents__Wrapper-sc-9l0oc9-0 hcpWvL"
             type="button"
           >
             <div
@@ -305,7 +305,7 @@ exports[`Incidents Page should show - when no data 1`] = `
               <div
                 class="ant-statistic-title"
               >
-                Avg. Time to Connect
+                Avg Time To Connect
               </div>
               <div
                 class="ant-statistic-content"
@@ -325,5 +325,85 @@ exports[`Incidents Page should show - when no data 1`] = `
       </div>
     </div>
   </div>
+</DocumentFragment>
+`;
+
+exports[`box should render correctly 1`] = `
+<DocumentFragment>
+  <button
+    class="styledComponents__Wrapper-sc-9l0oc9-0 eLiTEU"
+    type="button"
+  >
+    <div
+      class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+    >
+      <div
+        class="ant-statistic-title"
+      >
+        test box
+      </div>
+      <div
+        class="ant-statistic-content"
+      >
+        <span
+          class="ant-statistic-content-value"
+        >
+          <span
+            class="ant-statistic-content-value-int"
+          >
+            100
+          </span>
+        </span>
+        <span
+          class="ant-statistic-content-suffix"
+        >
+          /suffix
+        </span>
+      </div>
+    </div>
+    <div
+      data-testid="up-arrow"
+    />
+  </button>
+</DocumentFragment>
+`;
+
+exports[`box should render correctly when disabled 1`] = `
+<DocumentFragment>
+  <button
+    class="styledComponents__Wrapper-sc-9l0oc9-0 dDtnzP"
+    type="button"
+  >
+    <div
+      class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+    >
+      <div
+        class="ant-statistic-title"
+      >
+        test box
+      </div>
+      <div
+        class="ant-statistic-content"
+      >
+        <span
+          class="ant-statistic-content-value"
+        >
+          <span
+            class="ant-statistic-content-value-int"
+          >
+            100
+          </span>
+        </span>
+        <span
+          class="ant-statistic-content-suffix"
+        >
+          /suffix
+        </span>
+      </div>
+    </div>
+    <div
+      data-testid="down-arrow"
+    />
+  </button>
 </DocumentFragment>
 `;

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Form, Input } from 'antd'
+import { Form, Input, Space } from 'antd'
 
 import { BulbOutlined } from '@acx-ui/icons'
 
@@ -10,6 +10,7 @@ import { Button } from '../../Button'
 export function CustomDrawer () {
   const [visible, setVisible] = useState(false)
   const [resetField, setResetField] = useState(false)
+  const [showAddAnother, setShowAddAnother] = useState(false)
   const [form] = Form.useForm()
 
   const onClose = () => {
@@ -19,13 +20,20 @@ export function CustomDrawer () {
   const onOpen = () => {
     setVisible(true)
     setResetField(false)
+    setShowAddAnother(false)
   }
   const resetFields = () => {
     setResetField(true)
     onClose()
   }
 
-  const content = <Form layout='vertical' form={form} onFinish={onClose}>
+  const onOpenWithAddAnother = () => {
+    setVisible(true)
+    setResetField(false)
+    setShowAddAnother(true)
+  }
+
+  const content = <Form layout='vertical' form={form} onFinish={resetFields}>
     <Form.Item
       name='name'
       label='Name'
@@ -40,14 +48,20 @@ export function CustomDrawer () {
     />
   </Form>
 
-  const footer = [
-    <Button onClick={() => form.submit()} type={'primary'}>Save</Button>,
-    <Button onClick={resetFields}>Reset</Button>
-  ]
+  const footerWithAddAnother = (
+    <Drawer.FormFooter
+      showAddAnother={showAddAnother}
+      onCancel={resetFields}
+      onSave={() => form.submit()}
+    />
+  )
 
   return (
     <>
-      <Button onClick={onOpen}>Custom Drawer</Button>
+      <Space>
+        <Button onClick={onOpen}>Custom Drawer</Button>
+        <Button onClick={onOpenWithAddAnother}>Custom Drawer With Add Another</Button>
+      </Space>
       <Drawer
         title={'Custom Drawer'}
         icon={<BulbOutlined />}
@@ -56,7 +70,7 @@ export function CustomDrawer () {
         visible={visible}
         onClose={onClose}
         children={content}
-        footer={footer}
+        footer={footerWithAddAnother}
         destroyOnClose={resetField}
         width={'600px'}
       />

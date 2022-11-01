@@ -10,12 +10,9 @@ import {
   CardTypes,
   Loader,
   MultiLineTimeSeriesChart,
-  cssStr,
   NoData
 } from '@acx-ui/components'
-import { TimeStamp } from '@acx-ui/types'
-
-import { TimeWindow } from '../../pages/Health/HealthPageContext'
+import { TimeStamp, TimeStampRange } from '@acx-ui/types'
 
 import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
@@ -27,7 +24,7 @@ interface NetworkHistoryWidgetComponentProps {
   type?: CardTypes;
   filters: IncidentFilter;
   hideIncidents?: boolean;
-  brush?: { timeWindow: TimeWindow, setTimeWindow: (range: TimeWindow) => void }
+  brush?: { timeWindow: TimeStampRange, setTimeWindow: (range: TimeStampRange) => void }
 }
 
 const NetworkHistoryWidget = forwardRef<
@@ -38,7 +35,7 @@ const NetworkHistoryWidget = forwardRef<
     hideTitle,
     type = 'default',
     filters,
-    hideIncidents,
+    hideIncidents=false,
     brush
   } = props
   const { $t } = useIntl()
@@ -52,18 +49,13 @@ const NetworkHistoryWidget = forwardRef<
       name: $t({ defaultMessage: 'Connected Clients' })
     }
   ] as Array<{ key: Key; name: string }>
-  const lineColors = [
-    cssStr('--acx-accents-blue-50'),
-    cssStr('--acx-accents-blue-30')
-  ]
   if (!hideIncidents) {
     seriesMapping.push({
       key: 'impactedClientCount',
       name: $t({ defaultMessage: 'Impacted Clients' })
     })
-    lineColors.push(cssStr('--acx-accents-orange-50'))
   }
-  const queryResults = useNetworkHistoryQuery(filters, {
+  const queryResults = useNetworkHistoryQuery({ ...filters, hideIncidents }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest
@@ -79,7 +71,6 @@ const NetworkHistoryWidget = forwardRef<
               <MultiLineTimeSeriesChart
                 style={{ width, height }}
                 data={queryResults.data}
-                lineColors={lineColors}
                 brush={brush?.timeWindow}
                 onBrushChange={brush?.setTimeWindow as (range: TimeStamp[]) => void}
                 chartRef={ref as RefCallback<ReactECharts> | undefined}

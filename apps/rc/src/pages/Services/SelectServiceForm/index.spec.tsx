@@ -1,16 +1,17 @@
 import '@testing-library/jest-dom'
 
-import userEvent from '@testing-library/user-event'
+import { renderHook } from '@testing-library/react'
+import userEvent      from '@testing-library/user-event'
 
-import { ServiceType }    from '@acx-ui/rc/utils'
-import { Path }           from '@acx-ui/react-router-dom'
-import { render, screen } from '@acx-ui/test-utils'
+import { ServiceType }             from '@acx-ui/rc/utils'
+import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
+import { render, screen }          from '@acx-ui/test-utils'
 
-import { getServiceRoutePath, ServiceOperation } from '../serviceRouteUtils'
+import { getSelectServiceRoutePath, getServiceListRoutePath, getServiceRoutePath, ServiceOperation } from '../serviceRouteUtils'
 
-import { SelectServiceForm } from '.'
+import SelectServiceForm from '.'
 
-const mockedUsedNavigate = jest.fn()
+const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: 't/__tenantId__',
   search: '',
@@ -19,21 +20,22 @@ const mockedTenantPath: Path = {
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate,
-  useTenantLink: (): Path => mockedTenantPath
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (to: To): Path => {
+    return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
+  }
 }))
 
 describe('Select Service Form', () => {
-  let params: { tenantId: string }
-  beforeEach(async () => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-  })
+  const params = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+  }
+  const path = '/:tenantId/' + getSelectServiceRoutePath()
+
   it('should render form', async () => {
     const { asFragment } = render(
       <SelectServiceForm />, {
-        route: { params, path: '/:tenantId/services/select' }
+        route: { params, path }
       }
     )
 
@@ -43,12 +45,12 @@ describe('Select Service Form', () => {
   it('should navigate to the correct service page', async () => {
     render(
       <SelectServiceForm />, {
-        route: { params, path: '/:tenantId/services/select' }
+        route: { params, path }
       }
     )
 
     const wifiCallingRadio = screen.getByRole('radio', { name: /Wi-Fi Calling/ })
-    const submitButton = screen.getByRole('button', { name: 'Add' })
+    const submitButton = screen.getByRole('button', { name: 'Next' })
 
     await userEvent.click(wifiCallingRadio)
     await userEvent.click(submitButton)
@@ -58,9 +60,22 @@ describe('Select Service Form', () => {
       oper: ServiceOperation.CREATE
     })
 
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+    expect(mockedUseNavigate).toHaveBeenCalledWith({
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${serviceCreatePath}`
     })
+  })
+
+  it('should navigate to the service list when cancel the form', async () => {
+    const { result } = renderHook(() => useTenantLink(getServiceListRoutePath(true)))
+
+    render(
+      <SelectServiceForm />, {
+        route: { params, path }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockedUseNavigate).toHaveBeenCalledWith(result.current)
   })
 })

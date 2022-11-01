@@ -62,14 +62,20 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 4px;"
             >
-              <button
-                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <span>
-                  Edit
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <span>
+                    Edit
+                  </span>
+                </button>
+              </span>
             </div>
             <span
               class="ant-space-item-split"
@@ -338,43 +344,38 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           class="ant-space-item"
           style="margin-right: 24px;"
         >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-            type="button"
+          <span
+            style="cursor: not-allowed;"
           >
-            <span>
-              + Add Floor Plan
-            </span>
-          </button>
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 24px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-            type="button"
-          >
-            <span>
-              Unplaced Devices (0)
-            </span>
-          </button>
-        </div>
-        <div
-          class="ant-space-item"
-        >
-          <button
-            class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-1v7l7qr-2 bnlKLs"
-            data-testid="expandIcon"
-            title="Expand"
-            type="button"
-          >
-            <svg
-              class="styledComponents__ArrowOutIcon-sc-1v7l7qr-1"
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              disabled=""
+              style="pointer-events: none;"
+              type="button"
             >
-              ArrowsOut.svg
-            </svg>
-          </button>
+              <span>
+                + Add Floor Plan
+              </span>
+            </button>
+          </span>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            style="cursor: not-allowed;"
+          >
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              disabled=""
+              style="pointer-events: none;"
+              type="button"
+            >
+              <span>
+                Unplaced Devices (0)
+              </span>
+            </button>
+          </span>
         </div>
       </div>
     </div>

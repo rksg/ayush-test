@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMWidth } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 jest.mock('@acx-ui/icons', ()=> ({
@@ -27,13 +27,20 @@ jest.mock('react-resizable', () => ({
   ))
 }))
 
+type TestRow = {
+  key: string,
+  name: string,
+  age: number,
+  address: string
+}
+
 describe('Table component', () => {
-  const basicColumns = [
+  const testColumns: TableProps<TestRow>['columns'] = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Age', dataIndex: 'age', key: 'age', tooltip: 'tooltip' },
     { title: 'Address', dataIndex: 'address', key: 'address' }
   ]
-  const basicData = [
+  const testData = [
     {
       key: '1',
       name: 'John Doe',
@@ -55,8 +62,8 @@ describe('Table component', () => {
   ]
   it('should render correctly', () => {
     const { asFragment } = render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -64,8 +71,8 @@ describe('Table component', () => {
   it('renders compact table', () => {
     const { asFragment } = render(<Table
       type='compact'
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -73,10 +80,29 @@ describe('Table component', () => {
   it('renders form table', () => {
     const { asFragment } = render(<Table
       type='form'
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders table with ellipsis column', async () => {
+    const columns = testColumns.map((column, i) => {
+      column = { ...column }
+      if (i === 0) {
+        column.ellipsis = true
+      } else if (i === 1) {
+        column.width = 100
+      }
+      return column
+    })
+    render(<Table
+      columns={columns}
+      dataSource={testData}
+    />)
+    const table = screen.getByRole('table')
+    expect(table).toHaveStyle('width: 100%')
+    expect(table).toHaveStyle('table-layout: fixed')
   })
 
   it('should render multi select table and render action buttons correctly', async () => {
@@ -87,8 +113,8 @@ describe('Table component', () => {
     ]
 
     const { asFragment } = render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowActions={rowActions}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />)
@@ -113,10 +139,10 @@ describe('Table component', () => {
     expect(onDelete).not.toHaveBeenCalled()
 
     fireEvent.click(editButton)
-    expect(onEdit).toBeCalledWith(basicData.slice(0, 2), expect.anything())
+    expect(onEdit).toBeCalledWith(testData.slice(0, 2), expect.anything())
 
     fireEvent.click(deleteButton)
-    expect(onDelete).toBeCalledWith(basicData.slice(0, 2), expect.anything())
+    expect(onDelete).toBeCalledWith(testData.slice(0, 2), expect.anything())
 
     fireEvent.click(closeButton)
     expect(closeButton).not.toBeVisible()
@@ -127,13 +153,13 @@ describe('Table component', () => {
   })
 
   it('allow action to clear selection', async () => {
-    const rowActions: TableProps<{ key: string, name: string }>['rowActions'] = [
-      { label: 'Delete', onClick: (selected, clear) => clear() }
+    const rowActions: TableProps<TestRow>['rowActions'] = [
+      { label: 'Delete', onClick: (_selected, clear) => clear() }
     ]
 
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowActions={rowActions}
       rowSelection={{ defaultSelectedRowKeys: ['1', '2'] }}
     />)
@@ -164,7 +190,7 @@ describe('Table component', () => {
     ]
 
     const rowActions: TableProps<{ key: string, name: string }>['rowActions'] = [
-      { label: 'Delete', onClick: (selected, clear) => clear() }
+      { label: 'Delete', onClick: (_selected, clear) => clear() }
     ]
 
     const { rerender } = render(<Table
@@ -215,8 +241,8 @@ describe('Table component', () => {
   it('single select row click', async () => {
     const onChange = jest.fn()
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowSelection={{ type: 'radio', onChange }}
     />)
 
@@ -226,9 +252,9 @@ describe('Table component', () => {
     expect(tbody).toBeVisible()
 
     const body = within(tbody)
-    fireEvent.click(await body.findByText(basicData[1].name))
+    fireEvent.click(await body.findByText(testData[1].name))
     // to ensure it doesn't get unselected
-    fireEvent.click(await body.findByText(basicData[1].name))
+    fireEvent.click(await body.findByText(testData[1].name))
     const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
     expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
     expect(onChange).toBeCalledTimes(1)
@@ -236,8 +262,8 @@ describe('Table component', () => {
 
   it('single select disabled row click', async () => {
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowSelection={{
         type: 'radio',
         getCheckboxProps: () => ({
@@ -259,11 +285,11 @@ describe('Table component', () => {
     expect(selectedRow.filter(el => el.checked)).toHaveLength(0)
   })
 
-  it('multible select row click', async () => {
+  it('multiple select row click', async () => {
     const onChange = jest.fn()
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowSelection={{ defaultSelectedRowKeys: ['1', '3'], onChange }}
     />)
 
@@ -281,44 +307,11 @@ describe('Table component', () => {
     expect(onChange).toBeCalledTimes(2)
   })
 
-  it('should handle ellipsis', () => {
-    const basicColumns = [
-      { title: 'Name', key: 'name', dataIndex: 'name', width: 1 },
-      { title: 'Age', key: 'age', dataIndex: 'age' },
-      { title: 'Address', key: 'address', dataIndex: 'name' }
-    ]
-    const basicData = [
-      {
-        key: '1',
-        name: 'John Doe',
-        age: 32,
-        address: 'sample address'
-      },
-      {
-        key: '2',
-        name: 'Jane Doe',
-        age: 33,
-        address: 'new address'
-      },
-      {
-        key: '3',
-        name: 'Will Smith',
-        age: 45,
-        address: 'address'
-      }
-    ]
-    const { asFragment } = render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
-      ellipsis={true}
-    />)
-    expect(asFragment()).toMatchSnapshot()
-  })
   it('calls onResetState', async () => {
     const reset = jest.fn()
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       extraSettings={[<div>setting element</div>]}
       onResetState={reset}
     />)
@@ -328,20 +321,17 @@ describe('Table component', () => {
     expect(reset).toHaveBeenCalled()
   })
 
-  describe('resize', () => {
-    mockDOMWidth(99)
-    it('should allow column resizing', async () => {
-      const { asFragment } = render(<Table
-        columns={basicColumns}
-        dataSource={basicData}
-      />)
-      // eslint-disable-next-line testing-library/no-node-access
-      expect(asFragment().querySelector('col')?.style.width).toBe('')
-      await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
-      //screen.debug()
-      // eslint-disable-next-line testing-library/no-node-access
-      expect(asFragment().querySelector('col')?.style.width).toBe('99px')
-    })
+  it('should allow column resizing', async () => {
+    mockDOMSize(99, 800)
+    const { asFragment } = render(<Table
+      columns={testColumns}
+      dataSource={testData}
+    />)
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('col')?.style.width).toBe('')
+    await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('col')?.style.width).toBe('99px')
   })
 
   it('renders action items', async () => {
@@ -352,8 +342,8 @@ describe('Table component', () => {
 
     render(<Table
       actions={actions}
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
     />)
 
     const action1 = await screen.findByRole('button', { name: actions[0].label })
@@ -375,8 +365,8 @@ describe('Table component', () => {
       return <>
         <button onClick={() => setVisible(false)}>show</button>
         <Table
-          columns={basicColumns}
-          dataSource={basicData}
+          columns={testColumns}
+          dataSource={testData}
           rowActions={rowActions}
           rowSelection={{ defaultSelectedRowKeys: ['1'] }}
         />
@@ -394,14 +384,14 @@ describe('Table component', () => {
 
   it('hides rowAction when visible(items) == false', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
-    const rowActions: TableProps<typeof basicData[number]>['rowActions'] = [
+    const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Edit', onClick: onEdit, visible: (items) => items.length === 1 },
       { label: 'Delete', onClick: onDelete }
     ]
 
     render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
+      columns={testColumns}
+      dataSource={testData}
       rowActions={rowActions}
       rowSelection={{ }}
     />)
@@ -413,6 +403,49 @@ describe('Table component', () => {
     const row2 = await screen.findByRole('row', { name: /jane/i })
     fireEvent.click(within(row2).getByRole('checkbox'))
     expect(editButton).not.toBeVisible()
+  })
+
+  it('disabled row action button and add tooltip', async () => {
+    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const rowActions: TableProps<TestRow>['rowActions'] = [
+      { label: 'Edit', onClick: onEdit },
+      { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' }
+    ]
+
+    render(<Table
+      columns={testColumns}
+      dataSource={testData}
+      rowActions={rowActions}
+      rowSelection={{ }}
+    />)
+
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    expect(deleteButton).toBeDisabled()
+  })
+
+  it('add row action button tooltip', async () => {
+    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const rowActions: TableProps<TestRow>['rowActions'] = [
+      { label: 'Edit', onClick: onEdit },
+      { label: 'Delete', onClick: onDelete, tooltip: 'test delete' }
+    ]
+
+    render(<Table
+      columns={testColumns}
+      dataSource={testData}
+      rowActions={rowActions}
+      rowSelection={{ }}
+    />)
+
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    expect(deleteButton).toBeVisible()
+    expect(rowActions[1].onClick).not.toBeCalled()
+    fireEvent.click(deleteButton)
+    expect(rowActions[1].onClick).toBeCalled()
   })
 
   describe('search & filter', () => {

@@ -18,7 +18,7 @@ import {
   venueListResponse,
   policyListResponse
 } from './__tests__/fixtures'
-import { NetworkForm } from './NetworkForm'
+import NetworkForm from './NetworkForm'
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText(/Network Name/)
@@ -143,5 +143,5 @@ describe('NetworkForm', () => {
     const button = screen.getByRole('button', { name: /venues/i })
     await button.click()
     await userEvent.click(screen.getByText('Finish'))
-  })
+  }, 20000)
 })

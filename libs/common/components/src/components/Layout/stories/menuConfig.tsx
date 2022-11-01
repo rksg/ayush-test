@@ -116,7 +116,8 @@ const config: LayoutProps['menuConfig'] = [
     path: '/users',
     name: 'Users',
     inactiveIcon: AccountCircleOutlined,
-    activeIcon: AccountCircleSolid
+    activeIcon: AccountCircleSolid,
+    disabled: true
   },
   genPlaceholder(),
   {

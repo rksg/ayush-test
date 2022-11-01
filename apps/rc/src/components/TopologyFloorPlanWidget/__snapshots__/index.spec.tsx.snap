@@ -38,7 +38,7 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px; height: 280px;"
+            style="width: 1280px; height: 800px;"
           >
             <div
               style="text-align: left; padding: 10px 0px;"
@@ -50,13 +50,14 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
                   class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
                 >
                   <label
-                    class="ant-radio-button-wrapper"
+                    class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
                   >
                     <span
-                      class="ant-radio-button"
+                      class="ant-radio-button ant-radio-button-disabled"
                     >
                       <input
                         class="ant-radio-button-input"
+                        disabled=""
                         type="radio"
                         value="topology"
                       />
@@ -65,7 +66,9 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
                       />
                     </span>
                     <span>
-                      Topology
+                      <span>
+                        Topology
+                      </span>
                     </span>
                   </label>
                   <label
@@ -103,7 +106,7 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div

@@ -5,16 +5,17 @@ import { storiesOf }        from '@storybook/react'
 import { connect }          from 'echarts'
 import ReactECharts         from 'echarts-for-react'
 
-import { incidentSeverities }                from '@acx-ui/analytics/utils'
-import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStamp, TimeStampRange }    from '@acx-ui/types'
+import { TimeSeriesChartData, incidentSeverities } from '@acx-ui/analytics/utils'
+import { TimeStamp, TimeStampRange }               from '@acx-ui/types'
+import { formatter }                               from '@acx-ui/utils'
 
 import { cssStr } from '../../theme/helper'
 import { Button } from '../Button'
 
 import { MultiLineTimeSeriesChart } from '.'
 
-const getData = () => {
+
+export const getData = () => {
   const base = +new Date(2020, 9, 29)
   const oneDay = 24 * 3600 * 1000
   const data = [[base, Math.random() * 3000]]
@@ -33,6 +34,7 @@ export const getSeriesData = (index = 0) => {
   const series = []
   for (let i = 0; i < 3; i++) {
     series.push({
+      key: `series-${index}-${i}`,
       name: seriesNames[index][i],
       data: getData()
     })
@@ -67,7 +69,7 @@ const Connected = () => {
 const ConnectedBrush = () => {
   const [data, setData]= useState(getSeriesData())
   const n = data.length
-  const timeWindowInit = (data: MultiLineTimeSeriesChartData[]) =>
+  const timeWindowInit = (data: TimeSeriesChartData[]) =>
     [data[0].data[0][0], data[n-1].data[n-1][0]]
   const [timeWindow, setTimeWindow] = useState(timeWindowInit(data))
   const onBrushChangeCallback = useCallback((range: TimeStamp[]) => {
@@ -107,6 +109,18 @@ storiesOf('MultiLineTimeSeriesChart', module)
     data={getSeriesData()}
     // eslint-disable-next-line no-console
     onDataZoom={(range) => { console.log(range.map(r => new Date(r).toISOString())) }}
+  />)
+  .add('With Formatters', () => <MultiLineTimeSeriesChart
+    style={{ width: 504, height: 300 }}
+    data={[
+      { key: 'count', name: 'Count Sample', data: getData() },
+      { key: 'duration', name: 'Duration Sample', data: getData() }
+    ]}
+    dataFormatter={formatter('countFormat')}
+    seriesFormatters={{
+      count: formatter('countFormat'),
+      duration: formatter('durationFormat')
+    }}
   />)
 
   .add('With Mark Areas', () => <MultiLineTimeSeriesChart

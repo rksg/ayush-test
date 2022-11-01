@@ -40,7 +40,7 @@ export function AdvancedSettingForm () {
   const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
   const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
   const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
-  const [updateVenueLedOn] = useUpdateVenueLedOnMutation()
+  const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
   const defaultArray: VenueLed[] = []
@@ -56,6 +56,7 @@ export function AdvancedSettingForm () {
     const data = editContextData?.tempData?.[tab] || undefined
     setEditContextData({
       ...editContextData,
+      unsavedTabKey: 'settings',
       tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
       oldData: data,
       newData: data,
@@ -92,6 +93,7 @@ export function AdvancedSettingForm () {
   useEffect(() => {
     setEditContextData({
       ...editContextData,
+      unsavedTabKey: 'settings',
       tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
       newData: tableData,
       oldData: (venueLed?.data as VenueLed[])?.map(
@@ -182,7 +184,7 @@ export function AdvancedSettingForm () {
       )])
   }
 
-  const handleUpdateSetting = async (redirect?: boolean) => {
+  const handleUpdateSetting = async () => {
     try {
       setEditContextData({
         ...editContextData,
@@ -193,12 +195,6 @@ export function AdvancedSettingForm () {
         params: { tenantId, venueId },
         payload: tableData.filter(data => data.model)
       })
-      if (redirect) {
-        navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-        })
-      }
     } catch {
       showToast({
         type: 'error',
@@ -209,7 +205,7 @@ export function AdvancedSettingForm () {
 
   return (
     <StepsForm
-      onFinish={() => handleUpdateSetting(true)}
+      onFinish={() => handleUpdateSetting()}
       onCancel={() => navigate({
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
@@ -219,7 +215,10 @@ export function AdvancedSettingForm () {
       <StepsForm.StepForm>
         <Row>
           <Col span={7}>
-            <Loader states={[{ isLoading: venueLed.isLoading || venueCaps.isLoading }]}>
+            <Loader states={[{
+              isLoading: venueLed.isLoading || venueCaps.isLoading,
+              isFetching: isUpdatingVenueLedOn
+            }]}>
               <Space size={8} direction='vertical'>
                 <Table
                   columns={columns}
@@ -230,8 +229,8 @@ export function AdvancedSettingForm () {
                   onClick={handleAdd}
                   type='link'
                   disabled={venueLed.isLoading
-                      || !modelOptions.length
-                      || !!tableData?.find((item) => !item.model)
+                    || !modelOptions.length
+                    || !!tableData?.find((item) => !item.model)
                   }
                   style={{ fontSize: '12px' }}>
                   {$t({ defaultMessage: 'Add Model' })}

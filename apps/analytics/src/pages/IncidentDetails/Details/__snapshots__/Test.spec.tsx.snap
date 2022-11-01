@@ -3,7 +3,7 @@
 exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -92,7 +92,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -106,7 +106,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -133,9 +133,21 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModels"
+            data-testid="network-impact-apModelByAP"
+            data-type="apInfra"
+          />
+          <div
+            data-dimension="apFwVersions"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apInfra"
+          />
         </div>
       </div>
     </div>
@@ -145,9 +157,14 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Charts
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApPoeImpactChart"
+          />
         </div>
       </div>
     </div>
@@ -157,9 +174,61 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Impacted Entities Section
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Impacted APs
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -170,7 +239,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
 exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -259,7 +328,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -273,7 +342,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -300,9 +369,21 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModels"
+            data-testid="network-impact-apModelByAP"
+            data-type="apInfra"
+          />
+          <div
+            data-dimension="apFwVersions"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apInfra"
+          />
         </div>
       </div>
     </div>
@@ -312,9 +393,14 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Charts
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApWanThroughputImpactChart"
+          />
         </div>
       </div>
     </div>
@@ -324,9 +410,61 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Impacted Entities Section
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Impacted APs
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -337,7 +475,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
 exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -426,7 +564,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -440,7 +578,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -467,9 +605,31 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModel"
+            data-testid="network-impact-apModelByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="apFwVersion"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonsByEvent"
+            data-type="apRebootEvent"
+          />
         </div>
       </div>
     </div>
@@ -479,9 +639,17 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApRebootBySystemChart"
+          />
+          <div
+            data-testid="timeseries-ConnectedClientsChart"
+          />
         </div>
       </div>
     </div>
@@ -492,7 +660,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
 exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -581,7 +749,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -595,7 +763,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -622,9 +790,31 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModel"
+            data-testid="network-impact-apModelByAP"
+            data-type="apDowntime"
+          />
+          <div
+            data-dimension="apFwVersion"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apDowntime"
+          />
+          <div
+            data-dimension="eventType"
+            data-testid="network-impact-eventTypeByAP"
+            data-type="apDowntime"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-reasonByAP"
+            data-type="apDowntime"
+          />
         </div>
       </div>
     </div>
@@ -634,9 +824,17 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApDisconnectionCountChart"
+          />
+          <div
+            data-testid="timeseries-DowntimeEventTypeDistributionChart"
+          />
         </div>
       </div>
     </div>
@@ -647,7 +845,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
 exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -736,7 +934,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -750,7 +948,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -777,9 +975,31 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModel"
+            data-testid="network-impact-apModelByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="apFwVersion"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonByAP"
+            data-type="apReboot"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-rebootReasonsByEvent"
+            data-type="apRebootEvent"
+          />
         </div>
       </div>
     </div>
@@ -789,9 +1009,20 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-ApRebootBySystemChart"
+          />
+          <div
+            data-testid="timeseries-ConnectedClientsChart"
+          />
+          <div
+            data-testid="timeseries-RebootedApsCountChart"
+          />
         </div>
       </div>
     </div>
@@ -802,7 +1033,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -891,7 +1122,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -905,7 +1136,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -932,10 +1163,37 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="osType"
+            data-testid="network-impact-os"
+            data-type="client"
+          />
+          <div
+            data-dimension="apModels"
+            data-testid="network-impact-apModel"
+            data-type="client"
+          />
+          <div
+            data-dimension="apFwVersions"
+            data-testid="network-impact-apVersion"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -944,10 +1202,28 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Chart
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-RssQualityByClientsChart"
+          />
         </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
+      >
+        <div
+          data-testid="rssDistributionChart"
+        />
       </div>
     </div>
   </div>
@@ -957,7 +1233,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1046,7 +1322,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1060,7 +1336,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1087,10 +1363,32 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1099,10 +1397,21 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1112,7 +1421,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
 exports[`Test Details should render FailureTemplate correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1201,7 +1510,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1215,7 +1524,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1242,10 +1551,32 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1254,10 +1585,21 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1267,7 +1609,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
 exports[`Test Details should render FailureTemplate correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1356,7 +1698,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1370,7 +1712,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1397,10 +1739,32 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1409,10 +1773,21 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1422,7 +1797,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
 exports[`Test Details should render FailureTemplate correctly 4`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1511,7 +1886,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1525,7 +1900,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1552,10 +1927,32 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1564,10 +1961,21 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1577,7 +1985,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
 exports[`Test Details should render FailureTemplate correctly 5`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1666,7 +2074,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1680,7 +2088,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1707,10 +2115,32 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="reasonCodes"
+            data-testid="network-impact-reason"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -1719,10 +2149,21 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-FailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-AttemptAndFailureChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1732,7 +2173,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
 exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1821,7 +2262,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1835,7 +2276,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -1862,9 +2303,61 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Impacted Entities
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Details
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1874,9 +2367,61 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Detail Chart
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Memory Utilization
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1887,7 +2432,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
 exports[`Test Details should render SwitchPoePd correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1976,7 +2521,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -1990,7 +2535,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -2017,9 +2562,125 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Impacted Entities
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Details
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Impacted Switches
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2030,7 +2691,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
 exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2119,7 +2780,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -2133,7 +2794,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -2160,9 +2821,125 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
-        <div>
-          Impacted Entities Section
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Details
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Impacted Switches
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 qjybK"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2173,7 +2950,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
 exports[`Test Details should render Ttc correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2262,7 +3039,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 280px;"
+            style="width: 1280px;"
           >
             <div
               data-testid="incidentAttributes"
@@ -2276,7 +3053,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
             class="expand-trigger"
           >
             <div
-              style="width: 281px; height: 281px;"
+              style="width: 1281px; height: 801px;"
             />
           </div>
           <div
@@ -2303,10 +3080,27 @@ exports[`Test Details should render Ttc correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 228px;"
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div
@@ -2315,10 +3109,21 @@ exports[`Test Details should render Ttc correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
       >
         <div
-          data-testid="timeSeries"
-        />
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-TtcFailureChart"
+          />
+          <div
+            data-testid="timeseries-ClientCountChart"
+          />
+          <div
+            data-testid="timeseries-TtcByFailureTypeChart"
+          />
+        </div>
       </div>
     </div>
   </div>
