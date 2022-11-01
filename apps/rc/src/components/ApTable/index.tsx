@@ -134,7 +134,7 @@ export function ApTable (props?: ApTableProps) {
       dataIndex: 'name',
       sorter: true,
       render: (data, row) => (
-        <TenantLink to={`/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+        <TenantLink to={`/devices/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       )
     }, {
       key: 'deviceStatus',
@@ -183,7 +183,7 @@ export function ApTable (props?: ApTableProps) {
             showTotal={false}
             barColors={[cssStr(deviceStatusColors.empty)]}
           />
-          <TenantLink to={`/aps/${row.venueId}/details/incidents`}>{data ? data: 0}</TenantLink>
+          <TenantLink to={`/devices/${row.venueId}/details/incidents`}>{data ? data: 0}</TenantLink>
         </Space>)
       }
     }, {
@@ -371,9 +371,12 @@ export function ApTable (props?: ApTableProps) {
     label: $t({ defaultMessage: 'Download Log' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
     onClick: (rows) => {
-      const toastKey = showToast({ //TODO: use message.loading
+      const toastKey = showToast({
         type: 'info',
-        extraContent: <>&nbsp;<LoadingOutlined /></>,
+        closable: false,
+        extraContent: <div style={{ width: '60px' }}>
+          <LoadingOutlined style={{ margin: 0 }}/>
+        </div>,
         content: $t({ defaultMessage: 'Preparing log...' })
       })
 
