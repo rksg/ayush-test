@@ -67,7 +67,6 @@ const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => 
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
   const { networkFilter: { path } } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
-
   return <PageHeader
     {...props}
     subTitle={<Loader states={[state]} fallback={<Spinner size='small' />}>
