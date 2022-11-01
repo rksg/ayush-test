@@ -3,7 +3,7 @@ import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
 import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
-import { ApForm }            from './pages/Devices/Wifi/ApForm'
+import { ApForm }        from './pages/Devices/Wifi/ApForm'
 import ApsTable          from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'

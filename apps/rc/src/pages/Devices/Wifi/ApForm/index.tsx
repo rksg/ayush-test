@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Space, Tooltip, Typography } from 'antd'
 import { DefaultOptionType }                                         from 'antd/lib/select'
+import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
 import {
@@ -103,7 +104,7 @@ export function ApForm () {
   const handleAddAp = async (values: ApDeep) => {
     try {
       const payload = [{
-        ...values,
+        ..._.omit(values, 'deviceGps'),
         ...(deviceGps && { deviceGps: deviceGps })
       }]
       await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
