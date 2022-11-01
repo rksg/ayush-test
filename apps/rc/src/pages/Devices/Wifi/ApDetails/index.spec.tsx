@@ -9,7 +9,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { apDetailData } from './__tests__/fixtures'
 
-import { ApDetails } from '.'
+import ApDetails from '.'
 
 jest.mock(
   'analytics/Widgets',

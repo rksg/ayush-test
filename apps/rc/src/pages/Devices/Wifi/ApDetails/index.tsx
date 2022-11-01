@@ -21,7 +21,7 @@ const tabs = {
   timeline: ApTimelineTab
 }
 
-export function ApDetails () {
+export default function ApDetails () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   return <>
