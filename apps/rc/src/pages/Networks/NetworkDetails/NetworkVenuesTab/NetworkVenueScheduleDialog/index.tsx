@@ -15,6 +15,7 @@ import {
 } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
+import ReactPlayer from 'react-player'
 
 import {
   Button,
@@ -35,12 +36,10 @@ import {
   transformTimezoneDifference
 } from '@acx-ui/rc/utils'
 
-
 import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { CheckboxValueType }   from 'antd/es/checkbox/Group'
-
 
 export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number) => {
   let vlanPrefix = ''
@@ -399,9 +398,10 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         <p>- Activate or deactivate the network for <b>entire day</b></p>
         <p>- Activate or deactivate the network for <b>any time-slot</b> by clicking on it</p>
         <p>- Activate or deactivate the network for <b>multiple adjacent time-slots</b> by dragging your mouse over them</p>
-        <video>
-          <source src='../../../../assets/images/scheduling/entireDay.mp4' type='video/mp4' />
-        </video>
+        <ReactPlayer
+          url='scheduling/entireDay.mp4'
+          controls={true}
+        />
         <p>- To set the network schedule for <b>multiple adjacent time-slots</b>, drag the mouse over them</p>
         <p>- All the rectangles in the drag area will receive the same status – opposite the status of the rectangle where the drag started</p>
       </Modal>
