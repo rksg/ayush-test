@@ -33,7 +33,7 @@ function BarChart ({
 }: {
   filters: AnalyticsFilter;
   kpi: string;
-  threshold: string;
+  threshold: number;
 }) {
   const { $t } = useIntl()
   const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
@@ -43,7 +43,7 @@ function BarChart ({
     {
       ...filters,
       kpi,
-      threshold: threshold,
+      threshold: threshold as unknown as string,
       granularity: 'PT24H',
       startDate
     },

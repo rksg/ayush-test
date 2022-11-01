@@ -15,7 +15,7 @@ import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
 
 const getGoalPercent = (
-  { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue : string }
+  { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue: number }
 ) : number => {
   const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
@@ -61,7 +61,7 @@ function Histogram ({
 }: {
   filters: AnalyticsFilter;
   kpi: string;
-  threshold: string;
+  threshold: number;
   setKpiThreshold: CallableFunction;
   thresholds: KpiThresholdType;
   canSave: {
@@ -117,11 +117,11 @@ function Histogram ({
 
     if(splitsAfterIsReverseCheck.indexOf(reformattedBarData) === -1){
       const selectSecondLastBar = splitsAfterIsReverseCheck.length - 1
-      setThresholdValue(splitsAfterIsReverseCheck[selectSecondLastBar] as unknown as string)
+      setThresholdValue(splitsAfterIsReverseCheck[selectSecondLastBar])
       setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[selectSecondLastBar] })
       return
     }
-    setThresholdValue(reformattedBarData as unknown as string)
+    setThresholdValue(reformattedBarData)
     setKpiThreshold({ ...thresholds, [kpi]: reformattedBarData })
   }
 
@@ -157,7 +157,7 @@ function Histogram ({
 
   const onButtonReset = useCallback((baseConfig?: boolean) => {
     const defaultConfig: unknown = onReset && onReset()(baseConfig)
-    setThresholdValue(defaultConfig as string)
+    setThresholdValue(defaultConfig as number)
     setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
   }, [kpi, onReset, setKpiThreshold, thresholds])
 

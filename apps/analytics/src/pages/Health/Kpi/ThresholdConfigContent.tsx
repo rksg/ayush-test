@@ -28,14 +28,14 @@ function ThresholdConfig ({
   canSave,
   isNetwork
 }: {
-  thresholdValue: string;
+  thresholdValue: number;
   percent: number;
   shortXFormat: CallableFunction;
   onReset?: CallableFunction;
   onApply?: CallableFunction;
   canSave?: boolean;
   isNetwork?: boolean;
-  unit: MessageDescriptor;
+  unit: MessageDescriptor | string;
 }) {
   const { $t } = useIntl()
   const isDisabled = !Boolean(canSave)
@@ -46,7 +46,7 @@ function ThresholdConfig ({
         {$t(thresholdDescText.goal)}
         <UI.HistogramBoldContent>
           {shortXFormat?.(thresholdValue)}
-          {unit !== '%' ? ` ${$t(unit)}` : unit}
+          {typeof unit !== 'string' ? ` ${$t(unit)}` : unit}
         </UI.HistogramBoldContent>
       </UI.HistogramSpanContent>
       <UI.HistogramGoalPercentage>

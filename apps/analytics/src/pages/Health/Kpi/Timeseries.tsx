@@ -31,16 +31,16 @@ function KpiTimeseries ({
   timeWindow
 }: {
   filters: AnalyticsFilter;
-  kpi: string;
-  threshold?: string;
-  chartRef?: RefCallback<ReactECharts>;
+  kpi: keyof typeof kpiConfig;
+  threshold?: number;
+  chartRef: RefCallback<ReactECharts>;
   setTimeWindow?: { (timeWidow: TimeStampRange, isReset: boolean): void };
   timeWindow?: TimeStampRange // not set if there is no zoom
 }) {
   const { $t } = useIntl()
   const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const queryResults = useKpiTimeseriesQuery(
-    { ...filters, kpi, threshold: threshold },
+    { ...filters, kpi, threshold: threshold as unknown as string },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,

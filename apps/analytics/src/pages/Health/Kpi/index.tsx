@@ -164,8 +164,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
               </GridCol>
               <GridCol col={{ span: 19 }}>
                 <KpiTimeseries filters={filters}
-                  kpi={kpi}
-                  threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+                  kpi={kpi as unknown as keyof typeof kpiConfig}
+                  threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                   chartRef={connectChart}
                   setTimeWindow={setTimeWindow}
                   {...(defaultZoom ? {} : { timeWindow })}
@@ -177,7 +177,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
             {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
               <Histogram filters={filters}
                 kpi={kpi}
-                threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+                threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}
                 thresholds={kpiThreshold}
                 onReset={() => onReset(kpi as keyof KpiThresholdType)}
@@ -189,7 +189,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
             ) : (
               <BarChart filters={filters}
                 kpi={kpi}
-                threshold={kpiThreshold[kpi as keyof KpiThresholdType] as unknown as string}
+                threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
               />
             )}
           </GridCol>
