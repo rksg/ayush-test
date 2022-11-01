@@ -151,7 +151,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
   return (
     <>
       {kpis.map((kpi) => (
-        <GridRow key={kpi+defaultZoom} divider='true'>
+        <GridRow key={kpi+defaultZoom} $divider>
           <GridCol col={{ span: 16 }}>
             <GridRow style={{ height: '160px' }}>
               <GridCol col={{ span: 5 }}>

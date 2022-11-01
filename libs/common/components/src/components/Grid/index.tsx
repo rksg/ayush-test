@@ -27,8 +27,8 @@ const Container = styled.div`
 `
 
 export const GridRow = styled(AntRow).attrs({ gutter: [20, 20] })<
-  AntRowProps & { divider?: 'false' | 'true' | boolean }
->`${({ divider }) => divider === 'true'
+  AntRowProps & { $divider?: boolean }
+>`${props => props.$divider
   ? `
     padding-bottom: 20px;
     &:not(:last-of-type)::after {
