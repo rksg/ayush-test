@@ -4,5 +4,5 @@ export interface TimeSeriesChartData extends Object {
   key: string,
   name: string,
   show?: boolean,
-  data: [TimeStamp, number | '-'][]
+  data: [TimeStamp, number | null][]
 }

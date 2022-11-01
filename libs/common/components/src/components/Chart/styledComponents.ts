@@ -38,13 +38,8 @@ export const Badge = styled(AntBadge)`
     font-size: var(--acx-body-5-font-size);
     line-height: var(--acx-body-5-line-height);
     color: var(--acx-primary-white);
-
-    > b {
-      font-weight: var(--acx-subtitle-6-font-weight-bold);
-      > span {
-        margin-left: 10px;
-        font-weight: var(--acx-body-font-weight-bold);
-      }
+    b {
+      font-weight: var(--acx-body-font-weight-bold);
     }
   }
 `

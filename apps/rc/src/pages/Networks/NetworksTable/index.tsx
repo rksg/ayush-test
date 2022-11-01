@@ -11,8 +11,9 @@ import {
   useTableQuery,
   Network,
   NetworkType
-} from '@acx-ui/rc/utils'
+}                                                            from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                                   from '@acx-ui/utils'
 
 const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
 
@@ -29,7 +30,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return data
         }else{
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+            <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
           )
         }
       }
@@ -160,14 +161,14 @@ const rowSelection = (intl: ReturnType<typeof useIntl>) => {
     renderCell (checked: boolean, record: Network, index: number, node: ReactNode) {
       if (disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1) {
         return <Tooltip
-          title={intl.$t({ defaultMessage: 'Not available in Beta1' })}>{node}</Tooltip>
+          title={intl.$t(notAvailableMsg)}>{node}</Tooltip>
       }
       return node
     }
   }
   return params
 }
-export function NetworksTable () {
+export default function NetworksTable () {
   const { $t } = useIntl()
   const NetworksTable = () => {
     const navigate = useNavigate()

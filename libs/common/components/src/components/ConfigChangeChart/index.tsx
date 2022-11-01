@@ -39,10 +39,10 @@ export interface ConfigChangeChartProps
   }
 
 export const mapping = [
-  { key: 'ap', label: 'AP', color: cssStr('--acx-semantics-yellow-40') },
-  { key: 'apGroup', label: 'AP Group', color: cssStr('--acx-accents-orange-50') },
-  { key: 'wlan', label: 'WLAN', color: cssStr('--acx-accents-orange-25') },
-  { key: 'venue', label: 'Venue', color: cssStr('--acx-accents-blue-30') }
+  { key: 'ap', label: 'AP', color: cssStr('--acx-viz-qualitative-4') },
+  { key: 'apGroup', label: 'AP Group', color: cssStr('--acx-viz-qualitative-3') },
+  { key: 'wlan', label: 'WLAN', color: cssStr('--acx-viz-qualitative-2') },
+  { key: 'venue', label: 'Venue', color: cssStr('--acx-viz-qualitative-1') }
 ] as { key: string, label: string, color: string }[]
 
 export const hexToRGB = (hex: string) =>

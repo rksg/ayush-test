@@ -91,10 +91,14 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid password',
     description: 'Validation - Please enter a valid password'
   }),
+  vlanRange: defineMessage({
+    defaultMessage: 'VLAN ID must be between 1 and 4094',
+    description: 'Validation - VLAN range checks'
+  }),
   emailAddress: defineMessage({
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
-  })
+  })    
 }
 
 export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessages {

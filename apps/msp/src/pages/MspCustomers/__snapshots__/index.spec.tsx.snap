@@ -3,7 +3,7 @@
 exports[`MspCustomers should render table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -85,7 +85,7 @@ exports[`MspCustomers should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
     >
       <div
         class="styledComponents__Header-sc-1abm7iv-11 lWiiO"

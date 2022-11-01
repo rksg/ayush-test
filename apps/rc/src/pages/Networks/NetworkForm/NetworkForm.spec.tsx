@@ -21,7 +21,7 @@ import {
   networkDeepResponse,
   venueListResponse
 } from './__tests__/fixtures'
-import { NetworkForm } from './NetworkForm'
+import NetworkForm from './NetworkForm'
 
 describe('NetworkForm', () => {
 

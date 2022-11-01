@@ -3,19 +3,19 @@
 exports[`SparklineChart should render component 1`] = `
 <svg
   baseProfile="full"
-  height="300"
+  height="800"
   style="position:absolute;left:0;top:0;user-select:none"
   version="1.1"
-  width="0"
+  width="1280"
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"
 >
   <rect
     fill="none"
     fill-opacity="1"
-    height="300"
+    height="800"
     id="0"
-    width="0"
+    width="1280"
     x="0"
     y="0"
   />
@@ -24,12 +24,12 @@ exports[`SparklineChart should render component 1`] = `
       clip-path="url(#zr0-c0)"
     >
       <path
-        d="M0 238.8C0 238.8 0 209.2 0 179.6C0 150 0 150 0 120.4C0 90.8 0 90.8 0 61.2C0 31.6 0 2 0 2L0 298Z"
+        d="M128 638.8C128 638.8 256 559.2 384 479.6C512 400 512 400 640 320.4C768 240.8 768 240.8 896 161.2C1024 81.6 1152 2 1152 2L1152 798L896 798L640 798L384 798L128 798Z"
         fill="url(#zr0-g0)"
         fill-opacity="0.7"
       />
       <path
-        d="M0 238.8C0 238.8 0 209.2 0 179.6C0 150 0 150 0 120.4C0 90.8 0 90.8 0 61.2C0 31.6 0 2 0 2"
+        d="M128 638.8C128 638.8 256 559.2 384 479.6C512 400 512 400 640 320.4C768 240.8 768 240.8 896 161.2C1024 81.6 1152 2 1152 2"
         fill="none"
         stroke="#23AB36"
         stroke-linejoin="bevel"
@@ -42,7 +42,7 @@ exports[`SparklineChart should render component 1`] = `
       id="zr0-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 296.8l0 0Z"
+        d="M-1 1.6l0 0l0 796.8l0 0Z"
         fill="#000"
       />
     </clippath>
@@ -70,19 +70,19 @@ exports[`SparklineChart should render component 1`] = `
 exports[`SparklineChart should render component with trendLine having green 1`] = `
 <svg
   baseProfile="full"
-  height="300"
+  height="800"
   style="position:absolute;left:0;top:0;user-select:none"
   version="1.1"
-  width="0"
+  width="1280"
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"
 >
   <rect
     fill="none"
     fill-opacity="1"
-    height="300"
+    height="800"
     id="0"
-    width="0"
+    width="1280"
     x="0"
     y="0"
   />
@@ -91,12 +91,12 @@ exports[`SparklineChart should render component with trendLine having green 1`] 
       clip-path="url(#zr2-c0)"
     >
       <path
-        d="M0 248.6667C0 248.6667 0 224 0 199.3333C0 174.6667 0 174.6667 0 150C0 125.3333 0 125.3333 0 100.6667C0 76 0 76 0 51.3333C0 26.6667 0 2 0 2L0 298Z"
+        d="M106.6667 665.3333C106.6667 665.3333 213.3333 599 320 532.6667C426.6667 466.3334 426.6666 466.3333 533.3333 400C640 333.6667 640 333.6667 746.6667 267.3333C853.3333 201 853.3333 201 960 134.6667C1066.6667 68.3333 1173.3334 2 1173.3334 2L1173.3334 798L960 798L746.6667 798L533.3333 798L320 798L106.6667 798Z"
         fill="url(#zr2-g0)"
         fill-opacity="0.7"
       />
       <path
-        d="M0 248.6667C0 248.6667 0 224 0 199.3333C0 174.6667 0 174.6667 0 150C0 125.3333 0 125.3333 0 100.6667C0 76 0 76 0 51.3333C0 26.6667 0 2 0 2"
+        d="M106.6667 665.3333C106.6667 665.3333 213.3333 599 320 532.6667C426.6667 466.3334 426.6666 466.3333 533.3333 400C640 333.6667 640 333.6667 746.6667 267.3333C853.3333 201 853.3333 201 960 134.6667C1066.6667 68.3333 1173.3334 2 1173.3334 2"
         fill="none"
         stroke="#23AB36"
         stroke-linejoin="bevel"
@@ -109,7 +109,7 @@ exports[`SparklineChart should render component with trendLine having green 1`] 
       id="zr2-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 296.8l0 0Z"
+        d="M-1 1.6l0 0l0 796.8l0 0Z"
         fill="#000"
       />
     </clippath>
@@ -137,19 +137,19 @@ exports[`SparklineChart should render component with trendLine having green 1`] 
 exports[`SparklineChart should render component with trendLine having red 1`] = `
 <svg
   baseProfile="full"
-  height="300"
+  height="800"
   style="position:absolute;left:0;top:0;user-select:none"
   version="1.1"
-  width="0"
+  width="1280"
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"
 >
   <rect
     fill="none"
     fill-opacity="1"
-    height="300"
+    height="800"
     id="0"
-    width="0"
+    width="1280"
     x="0"
     y="0"
   />
@@ -158,12 +158,12 @@ exports[`SparklineChart should render component with trendLine having red 1`] = 
       clip-path="url(#zr1-c0)"
     >
       <path
-        d="M0 238.8C0 238.8 0 209.2 0 179.6C0 150 0 150 0 120.4C0 90.8 0 90.8 0 61.2C0 31.6 0 2 0 2C0 2 0 298 0 298Z"
+        d="M106.6667 638.8C106.6667 638.8 213.3333 559.2 320 479.6C426.6667 400 426.6666 400 533.3333 320.4C640 240.8 640 240.8 746.6667 161.2C853.3333 81.6 907.9155 2 960 2C1121.2488 2 1173.3334 798 1173.3334 798L960 798L746.6667 798L533.3333 798L320 798L106.6667 798Z"
         fill="url(#zr1-g0)"
         fill-opacity="0.7"
       />
       <path
-        d="M0 238.8C0 238.8 0 209.2 0 179.6C0 150 0 150 0 120.4C0 90.8 0 90.8 0 61.2C0 31.6 0 2 0 2C0 2 0 298 0 298"
+        d="M106.6667 638.8C106.6667 638.8 213.3333 559.2 320 479.6C426.6667 400 426.6666 400 533.3333 320.4C640 240.8 640 240.8 746.6667 161.2C853.3333 81.6 907.9155 2 960 2C1121.2488 2 1173.3334 798 1173.3334 798"
         fill="none"
         stroke="#ED1C24"
         stroke-linejoin="bevel"
@@ -176,7 +176,7 @@ exports[`SparklineChart should render component with trendLine having red 1`] = 
       id="zr1-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 296.8l0 0Z"
+        d="M-1 1.6l0 0l0 796.8l0 0Z"
         fill="#000"
       />
     </clippath>

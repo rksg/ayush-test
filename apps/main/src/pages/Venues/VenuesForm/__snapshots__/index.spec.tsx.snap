@@ -3,7 +3,7 @@
 exports[`Venues Form should render venues form 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -274,6 +274,7 @@ exports[`Venues Form should render venues form 1`] = `
                                   class="ant-input"
                                   data-testid="address-input"
                                   id="0_address_addressLine"
+                                  placeholder="Set address here"
                                   type="text"
                                   value=""
                                 />

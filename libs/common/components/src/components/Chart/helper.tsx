@@ -4,16 +4,18 @@ import {
   YAXisComponentOption,
   RegisteredSeriesOption,
   TooltipComponentOption
-} from 'echarts'
-import { CallbackDataParams } from 'echarts/types/dist/shared'
-import { renderToString }     from 'react-dom/server'
+}                                                   from 'echarts'
+import { CallbackDataParams, InsideDataZoomOption } from 'echarts/types/dist/shared'
+import { FormatXMLElementFn }                       from 'intl-messageformat'
+import moment                                       from 'moment-timezone'
+import { renderToString }                           from 'react-dom/server'
 import {
   MessageDescriptor,
   IntlShape,
   RawIntlProvider,
   FormattedMessage,
   defineMessage
-} from 'react-intl'
+}                                                   from 'react-intl'
 
 import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import { TimeStamp }           from '@acx-ui/types'
@@ -28,17 +30,48 @@ import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
+export const qualitativeColorSet = () => [
+  cssStr('--acx-viz-qualitative-1'),
+  cssStr('--acx-viz-qualitative-2'),
+  cssStr('--acx-viz-qualitative-3'),
+  cssStr('--acx-viz-qualitative-4'),
+  cssStr('--acx-viz-qualitative-5'),
+  cssStr('--acx-viz-qualitative-6'),
+  cssStr('--acx-viz-qualitative-7'),
+  cssStr('--acx-viz-qualitative-8'),
+  cssStr('--acx-viz-qualitative-9'),
+  cssStr('--acx-viz-qualitative-10')
+]
+
 export type TooltipFormatterParams = Exclude<
   TooltipComponentFormatterCallbackParams,
   Array<unknown>
 >
 
+export type ChartFormatterFn = (
+  value: unknown,
+  tz?: string,
+  index?: number
+) => string
+
+const defaultRichTextFormatValues: Record<
+  string,
+  FormatXMLElementFn<React.ReactNode, React.ReactNode>
+> = {
+  br: () => <br />,
+  div: content => <div>{content}</div>,
+  span: content => <span>{content}</span>,
+  b: content => <b>{content}</b>,
+  space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+}
+
 export const gridOptions = ({
   disableLegend = false,
   hasXAxisName = false,
-  xAxisOffset = 0
+  xAxisOffset = 0,
+  yAxisOffset = 0
 } = {}) => ({
-  left: 0,
+  left: yAxisOffset,
   right: 0,
   bottom: hasXAxisName ? 16 + xAxisOffset : 0,
   top: disableLegend ? 6 : '15%',
@@ -60,11 +93,26 @@ export const legendTextStyleOptions = () => ({
   fontWeight: cssNumber('--acx-body-font-weight')
 })
 
+export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
+  id: 'zoom',
+  type: 'inside',
+  filterMode: 'none' as InsideDataZoomOption['filterMode'],
+  zoomLock: true,
+  minValueSpan: Math.max(...data.map(datum =>
+    moment.duration(moment(datum.data[1][0])
+      .diff(moment(datum.data[0][0])))
+      .asMilliseconds()
+  ))
+}]
+
 export const xAxisOptions = () => ({
   axisLine: {
     lineStyle: {
-      color: 'transparent'
+      color: cssStr('--acx-neutrals-40')
     }
+  },
+  axisTick: {
+    show: false
   },
   axisPointer: {
     type: 'line',
@@ -109,7 +157,12 @@ export const barChartSeriesLabelOptions = () => ({
 } as RegisteredSeriesOption['bar']['label'])
 
 export const yAxisOptions = () => ({
-  boundaryGap: [0, '10%']
+  boundaryGap: [0, '10%'],
+  splitLine: {
+    lineStyle: {
+      color: cssStr('--acx-neutrals-20')
+    }
+  }
 } as YAXisComponentOption)
 
 export const axisLabelOptions = () => ({
@@ -160,37 +213,43 @@ export const tooltipOptions = () => ({
 
 export const timeSeriesTooltipFormatter = (
   series: TimeSeriesChartData[],
-  dataFormatters: {
-    default?: (ReturnType<typeof formatter> | undefined)
-  } & Record<string, (ReturnType<typeof formatter> | undefined)>
+  dataFormatters: { default: ChartFormatterFn } & Record<string, ChartFormatterFn>
 ) => (
   parameters: TooltipFormatterParams | TooltipFormatterParams[]
 ) => {
-  const param = Array.isArray(parameters) ? parameters : [parameters]
-  const [ time ] = param[0].data as [TimeStamp, number]
-  const dataIndex = param[0].dataIndex
+  const intl = getIntl()
+  const params = Array.isArray(parameters) ? parameters : [parameters]
+  const [ time ] = params[0].data as [TimeStamp, number]
+  const dataIndex = params[0].dataIndex
 
   return renderToString(
-    <UI.TooltipWrapper>
-      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
-      <ul>{
-        series.map((data: TimeSeriesChartData)=> {
-          const color = param.find(p => p.seriesName === data.name)?.color || ''
-          const formatter = dataFormatters[data.key] || dataFormatters.default
-          const [, value] = data.data[dataIndex as number] as [TimeStamp, number]
-          const text = <>
-            {`${data.name}: `}
-            <b>{`${formatter ? formatter(value) : value}`}</b>
-          </>
-          return <li key={data.name}>
-            { data.show !== false
-              ? (color ? <UI.Badge color={(color) as string} text={text}/> : null)
-              : text
-            }
-          </li>
-        })
-      }</ul>
-    </UI.TooltipWrapper>
+    <RawIntlProvider value={intl}>
+      <UI.TooltipWrapper>
+        <time dateTime={new Date(time).toJSON()}>
+          {formatter('dateTimeFormat')(time) as string}
+        </time>
+        <ul>{
+          series.map((data: TimeSeriesChartData)=> {
+            const color = params.find(p => p.seriesName === data.name)?.color || ''
+            if (!color && data.show !== false) return null
+
+            const formatter = dataFormatters[data.key] || dataFormatters.default
+            const [, value] = data.data[dataIndex as number] as [TimeStamp, number | null]
+            let text = <FormattedMessage
+              defaultMessage='{name}: <b>{value}</b>'
+              values={{
+                ...defaultRichTextFormatValues,
+                name: data.name,
+                value: formatter(value, undefined, dataIndex)
+              }}
+            />
+            text = data.show !== false ? <UI.Badge color={(color) as string} text={text} /> : text
+            text = <li key={data.name}>{text}</li>
+            return text
+          })
+        }</ul>
+      </UI.TooltipWrapper>
+    </RawIntlProvider>
   )
 }
 
@@ -223,13 +282,10 @@ export const stackedBarTooltipFormatter = (
   })
   const text = <FormattedMessage {...tooltipFormat}
     values={{
+      ...defaultRichTextFormatValues,
       name,
       formattedValue,
-      value: value[0],
-      br: () => <br />,
-      span: content => <span>{content}</span>,
-      b: content => <b>{content}</b>,
-      space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+      value: value[0]
     }}
   />
 
@@ -263,13 +319,9 @@ export const donutChartTooltipFormatter = (
 
   const text = <FormattedMessage {...tooltipFormat}
     values={{
+      ...defaultRichTextFormatValues,
       name, value, percent, total,
-      formattedPercent, formattedValue, formattedTotal,
-      br: () => <br />,
-      div: content => <div>{content}</div>,
-      span: content => <span>{content}</span>,
-      b: content => <b>{content}</b>,
-      space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+      formattedPercent, formattedValue, formattedTotal
     }}
   />
 

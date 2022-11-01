@@ -166,7 +166,7 @@ describe('IncidentTableWidget', () => {
       data: { network: { hierarchyNode: { incidents: undefined } } }
     })
 
-    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
+    const { container } = render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false
@@ -174,9 +174,10 @@ describe('IncidentTableWidget', () => {
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
-    await screen.findByText('No Data')
-    expect(screen.getByText('No Data').textContent).toBe('No Data')
+    // jest not rendering sticky position
+    // await screen.findByText('No Data')
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.querySelectorAll('.ant-table-expanded-row-fixed')).toHaveLength(1)
   })
 
   const columnHeaders = [
@@ -227,32 +228,12 @@ describe('IncidentTableWidget', () => {
         }
       }
     })
-
-    // reset severity
-    const headerList = await screen.findAllByText(columnHeaders[0].name)
-    expect(headerList.length).toBeGreaterThan(0)
-    const header = headerList[headerList.length - 1]
-
-    fireEvent.click(header)
-
-
     for (let i = 0; i < columnHeaders.length; i++) {
-      const headerList = await screen.findAllByText(columnHeaders[i].name)
-      expect(headerList.length).toBeGreaterThan(0)
-      const header = headerList[headerList.length - 1]
-
-      fireEvent.click(header)
-
-      const downCaret = await screen.findAllByRole('img', { hidden: false, name: 'caret-up' })
-      expect(downCaret.length).toBe(1)
-
-      fireEvent.click(header)
-
-      const upCaret = await screen.findAllByRole('img', { hidden: false, name: 'caret-down' })
-      expect(upCaret.length).toBe(1)
-      fireEvent.click(header)
+      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1))
+      await screen.findAllByRole('img', { hidden: false, name: 'caret-up' })
+      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1))
+      await screen.findAllByRole('img', { hidden: false, name: 'caret-down' })
     }
-
   })
 
   it('should allow for muting', async () => {

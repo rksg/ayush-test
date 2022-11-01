@@ -10,7 +10,8 @@ describe('SelectionControl', () => {
       onChange={onChange}
       options={[{
         label: 'l1',
-        value: 'v1'
+        value: 'v1',
+        disabled: true
       }, {
         label: 'l2',
         value: 'v2'
@@ -18,6 +19,8 @@ describe('SelectionControl', () => {
     />)
     expect(screen.getByText('l1')).toBeVisible()
     expect(screen.getByText('l2')).toBeVisible()
+    screen.getByText('l1').click()
+    expect(onChange).not.toHaveBeenCalled()
     screen.getByText('l2').click()
     expect(onChange).toHaveBeenCalled()
     expect(onChange.mock.calls[0][0].target.value).toEqual('v2')

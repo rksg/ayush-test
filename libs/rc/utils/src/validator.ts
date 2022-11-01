@@ -212,6 +212,24 @@ export function subnetMaskIpRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function checkVlanMember (value: string) {
+  const { $t } = getIntl()
+  const items = value.toString().split(',')
+  const isValid = items.map((item: string) => {
+    const num = item.includes('-') ? item : Number(item)
+    if (item.includes('-')) {
+      const nums = item.split('-').map((x: string) => Number(x))
+      return nums[1] > nums[0] && nums[1] < 4095 && nums[0] > 0
+    }
+    return num > 0 && num < 4095
+  }).filter((x:boolean) => !x).length === 0
+
+  if (isValid) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t(validationMessages.invalid))
+}
+
 export function emailRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
