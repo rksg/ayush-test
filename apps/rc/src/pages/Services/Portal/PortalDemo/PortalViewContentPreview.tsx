@@ -28,28 +28,28 @@ export default function PortalViewContentPreview (props:{
   const isbg = demoValue?.backgroundImage ? 'true' : 'false'
   return (
     <UI.LayoutViewContent isbg={isbg}>
-      {componentDisplay?.WiFi4EU && <UI.Img src={Wifi4eu}
+      {componentDisplay.WiFi4EU && <UI.Img src={Wifi4eu}
         alt={$t({ defaultMessage: 'Wifi4eu' })}
         height={120} />}
       <PortalAlternativeLanguage alternativeLang={alternativeLang}/>
-      {componentDisplay?.Logo &&<UI.Img src={demoValue.logo}
+      {componentDisplay.Logo &&<UI.Img src={demoValue.logo}
         alt={$t({ defaultMessage: 'Logo' })}
         style={{ height: (demoValue.logoSize||PortalDemoDefaultSize.logoSize) ,maxWidth: 425 }}
       />}
-      {componentDisplay?.WelcomeText && <UI.Input type='text'
+      {componentDisplay.WelcomeText && <UI.Input type='text'
         defaultValue={demoValue.welcomeText}
-        style={{ height: 25 * ((demoValue.welcomeSize||PortalDemoDefaultSize.welcomeSize)
+        style={{ height: 25 * ((demoValue.welcomeSize)
           /PortalDemoDefaultSize.welcomeSize) ,
-        width: 280*((demoValue.welcomeSize||PortalDemoDefaultSize.welcomeSize)
+        width: 280*((demoValue.welcomeSize)
           /PortalDemoDefaultSize.welcomeSize), maxWidth: 425, color: demoValue.welcomeColor,
-        fontSize: (demoValue.welcomeSize||PortalDemoDefaultSize.welcomeSize) }}
+        fontSize: (demoValue.welcomeSize) }}
       />}
-      {componentDisplay?.Photo &&<UI.Img src={demoValue.photo}
+      {componentDisplay.Photo &&<UI.Img src={demoValue.photo}
         alt={$t({ defaultMessage: 'Photo png' })}
         style={{ height: (demoValue.photoSize||PortalDemoDefaultSize.photoSize) ,
           maxWidth: 425 }}
       />}
-      {componentDisplay?.SecondaryText &&<UI.FieldText
+      {componentDisplay.SecondaryText &&<UI.FieldText
         style={{ lineHeight: 24 * ((demoValue.secondarySize||
           PortalDemoDefaultSize.secondarySize)/PortalDemoDefaultSize.secondarySize)+'px' ,
         maxWidth: 425, color: demoValue.secondaryColor,
@@ -83,30 +83,28 @@ export default function PortalViewContentPreview (props:{
       <PortalViewConfirm/>}
       {view === PortalViewEnum.TermCondition &&
       <PortalViewTerms/>}
-      {componentDisplay?.TermsConditions &&<UI.FieldText>{$t({
+      {componentDisplay.TermsConditions &&<UI.FieldText>{$t({
         defaultMessage: 'By clicking the connect button, you are accepting the'
       })}&nbsp;&nbsp;
       <UI.FieldTextLink>
         {$t({ defaultMessage: 'terms & conditions' })}
       </UI.FieldTextLink></UI.FieldText>}
       {componentDisplay.PoweredBy && <UI.SelectedDiv style={{ paddingLeft: 200/((
-        demoValue.poweredImgSize ||
-      PortalDemoDefaultSize.poweredImgSize)/PortalDemoDefaultSize.poweredImgSize) }}>
+        demoValue.poweredImgSize)/PortalDemoDefaultSize.poweredImgSize) }}>
         <div style={{ backgroundColor: demoValue.poweredBackgroundColor }}>
-          {demoValue.componentDisplay?.PoweredBy &&<UI.FieldText style={{
-            fontSize: (demoValue.poweredSize||PortalDemoDefaultSize.poweredSize),
-            lineHeight: 24 * ((demoValue.poweredSize||PortalDemoDefaultSize.poweredSize)
+          {componentDisplay.PoweredBy &&<UI.FieldText style={{
+            fontSize: (demoValue.poweredSize),
+            lineHeight: 24 * ((demoValue.poweredSize)
             /PortalDemoDefaultSize.poweredSize)+'px' ,
             maxWidth: 425, color: demoValue.poweredColor,textAlign: 'left'
           }}
           >
             {$t({ defaultMessage: 'Powered By' })}</UI.FieldText>}
-          {demoValue.componentDisplay?.PoweredBy && <UI.Img src={demoValue.poweredImg}
+          {componentDisplay.PoweredBy && <UI.Img src={demoValue.poweredImg}
             alt={$t({ defaultMessage: 'Powered by' })}
-            style={{ marginLeft: 40/((demoValue.poweredImgSize ||
-               PortalDemoDefaultSize.poweredImgSize)/PortalDemoDefaultSize.poweredImgSize),
-            height: (demoValue.poweredImgSize || PortalDemoDefaultSize.poweredImgSize),
-            maxWidth: 425
+            style={{ marginLeft: 40/(demoValue.poweredImgSize/PortalDemoDefaultSize.poweredImgSize),
+              height: demoValue.poweredImgSize,
+              maxWidth: 425
             }}
           ></UI.Img>}</div></UI.SelectedDiv>}
     </UI.LayoutViewContent>

@@ -175,7 +175,7 @@ exports[`SummaryForm should render portal summary successfully 1`] = `
         style="padding-left: 10px; padding-right: 10px;"
       >
         <div
-          class="styledComponents__FieldTextLink-sc-cby53p-25 jTuPKW"
+          class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
         >
           Preview
         </div>

@@ -268,7 +268,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                     style="flex: 1 1 auto;"
                   >
                     <div
-                      class="ant-form-item ant-form-item-has-success"
+                      class="ant-form-item"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -294,7 +294,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="styledComponents__LayoutHeader-sc-cby53p-15 fThztv"
+                                class="styledComponents__LayoutHeader-sc-cby53p-14 eHjzlu"
                               >
                                 <div
                                   class="ant-row"
@@ -304,12 +304,12 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     style="flex: 0 0 345px;"
                                   >
                                     <label
-                                      class="styledComponents__Label-sc-cby53p-13"
+                                      class="styledComponents__Label-sc-cby53p-12 llMFdC"
                                     >
                                       View as:
                                     </label>
                                     <div
-                                      class="ant-select ant-select-in-form-item ant-select-status-success styledComponents__Select-sc-cby53p-14 cqNHZW ant-select-single ant-select-show-arrow"
+                                      class="ant-select ant-select-in-form-item styledComponents__Select-sc-cby53p-13 iItVdp ant-select-single ant-select-show-arrow"
                                       style="width: 300px;"
                                     >
                                       <div
@@ -375,10 +375,10 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     style="flex: 0 0 20px;"
                                   >
                                     <div
-                                      class="styledComponents__FieldExtraTooltip-sc-cby53p-16 gGZLaW"
+                                      class="styledComponents__FieldExtraTooltip-sc-cby53p-15 gqGOAB"
                                     >
                                       <img
-                                        class="styledComponents__Img-sc-cby53p-17 irdayp"
+                                        class="styledComponents__Img-sc-cby53p-16 hGxGzA"
                                         src="question.svg"
                                       />
                                     </div>
@@ -389,17 +389,17 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                   >
                                     <img
                                       alt="deskicon"
-                                      class="styledComponents__ImgDesk-sc-cby53p-5 KTiVq"
+                                      class="styledComponents__ImgDesk-sc-cby53p-4 DycTz"
                                       src="pc_selected.svg"
                                     />
                                     <img
                                       alt="tableticon"
-                                      class="styledComponents__ImgTablet-sc-cby53p-6 harTCj"
+                                      class="styledComponents__ImgTablet-sc-cby53p-5 hUsCWQ"
                                       src="pad.svg"
                                     />
                                     <img
                                       alt="mobileicon"
-                                      class="styledComponents__ImgMobile-sc-cby53p-7 kOXlvU"
+                                      class="styledComponents__ImgMobile-sc-cby53p-6 lakBQl"
                                       src="mobile.svg"
                                     />
                                   </div>
@@ -408,51 +408,61 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     style="flex-basis: auto; text-align: right; padding-right: 5px;"
                                   >
                                     <button
-                                      class="styledComponents__Button-sc-cby53p-8 fIGjpR styledComponents__Popover-sc-cby53p-42"
+                                      class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD styledComponents__Popover-sc-cby53p-41"
+                                      type="button"
                                     >
-                                      Language Settings
+                                      <span>
+                                        Language Settings
+                                      </span>
                                     </button>
                                     <button
-                                      class="styledComponents__Button-sc-cby53p-8 fIGjpR styledComponents__Popover-sc-cby53p-42"
+                                      class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD styledComponents__Popover-sc-cby53p-41"
+                                      type="button"
                                     >
-                                      Components
+                                      <span>
+                                        Components
+                                      </span>
                                     </button>
                                     <button
-                                      class="styledComponents__Button-sc-cby53p-8 fIGjpR"
+                                      class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD"
+                                      type="button"
                                     >
-                                      Reset
+                                      <span>
+                                        Reset
+                                      </span>
                                     </button>
                                   </div>
                                 </div>
                               </div>
                               <section
-                                class="ant-layout styledComponents__LayoutContent-sc-cby53p-10 etFCdc"
+                                class="ant-layout styledComponents__LayoutContent-sc-cby53p-9 cAxKxJ"
+                                id="democontent"
                               >
                                 <img
                                   alt="background setting"
-                                  class="styledComponents__Img-sc-cby53p-17 irdayp styledComponents__Popover-sc-cby53p-42"
+                                  class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
                                   src="imgToggle.svg"
                                   style="position: absolute; left: 10px; top: 60px; cursor: pointer;"
                                 />
                                 <section
-                                  class="ant-layout styledComponents__LayoutView-sc-cby53p-11 kgYONA"
-                                  style="background-image: url(undefined);"
+                                  class="ant-layout styledComponents__LayoutView-sc-cby53p-10 jDpihB"
+                                  style="background-image: url();"
                                 >
                                   <section
-                                    class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-12 jQmKeP"
+                                    class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-11 ibtgTw"
                                     isbg="false"
                                   >
                                     <div
-                                      class="styledComponents__FieldTextLink-sc-cby53p-25 jTuPKW"
+                                      class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
                                     />
                                     <img
                                       alt="Logo"
-                                      class="styledComponents__Img-sc-cby53p-17 irdayp styledComponents__Popover-sc-cby53p-42"
+                                      class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
                                       src="small-logo-img.png"
                                       style="height: 105px; cursor: none; outline: none; max-width: 425px;"
                                     />
                                     <input
-                                      class="styledComponents__Input-sc-cby53p-19 gzYVMi styledComponents__Popover-sc-cby53p-42"
+                                      class="styledComponents__Input-sc-cby53p-18 lafdeX styledComponents__Popover-sc-cby53p-41"
                                       placeholder="welcometext"
                                       style="cursor: none; outline: none; height: 25px; width: 280px; max-width: 425px; font-size: 14px;"
                                       type="text"
@@ -460,35 +470,35 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     />
                                     <img
                                       alt="Photo png"
-                                      class="styledComponents__Img-sc-cby53p-17 irdayp styledComponents__Popover-sc-cby53p-42"
+                                      class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
                                       src="main-photo.svg"
                                       style="cursor: none; outline: none; height: 170px; max-width: 425px;"
                                     />
                                     <div
-                                      class="styledComponents__FieldText-sc-cby53p-20 fpDySd styledComponents__Popover-sc-cby53p-42"
+                                      class="styledComponents__FieldText-sc-cby53p-19 jnKkCj styledComponents__Popover-sc-cby53p-41"
                                       placeholder="sectexthere"
                                       style="cursor: none; outline: none; line-height: 24px; max-width: 425px; font-size: 14px;"
                                     >
                                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
                                     </div>
                                     <button
-                                      class="styledComponents__PortalButton-sc-cby53p-24 kIRHUI styledComponents__Popover-sc-cby53p-42"
+                                      class="styledComponents__PortalButton-sc-cby53p-23 eRnPwL styledComponents__Popover-sc-cby53p-41"
                                       placeholder="buttonsetting"
                                       style="cursor: none; outline: none;"
                                     >
                                       Connect To Wi-Fi
                                     </button>
                                     <div
-                                      class="styledComponents__SelectedDiv-sc-cby53p-44 hbUUOw"
+                                      class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
                                       style="padding-left: 200px;"
                                     >
                                       <div
-                                        class="styledComponents__Popover-sc-cby53p-42"
+                                        class="styledComponents__Popover-sc-cby53p-41"
                                         placeholder="poweredbackground"
                                         style="outline: none; cursor: none;"
                                       >
                                         <div
-                                          class="styledComponents__FieldText-sc-cby53p-20 fpDySd styledComponents__Popover-sc-cby53p-42"
+                                          class="styledComponents__FieldText-sc-cby53p-19 jnKkCj styledComponents__Popover-sc-cby53p-41"
                                           placeholder="poweredtext"
                                           style="font-size: 14px; width: 152px; line-height: 24px; max-width: 425px; text-align: left; cursor: none; outline: none;"
                                         >
@@ -496,7 +506,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                         </div>
                                         <img
                                           alt="poweredimage"
-                                          class="styledComponents__Img-sc-cby53p-17 irdayp styledComponents__Popover-sc-cby53p-42"
+                                          class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
                                           src="powered-logo-img.svg"
                                           style="margin-left: 50px; cursor: none; outline: none; height: 50px; max-width: 425px;"
                                         />
@@ -781,7 +791,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <div
-                      class="styledComponents__FieldTextLink-sc-cby53p-25 jTuPKW"
+                      class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
                     >
                       Preview
                     </div>

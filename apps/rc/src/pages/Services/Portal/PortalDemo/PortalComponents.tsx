@@ -26,8 +26,8 @@ export default function PortalComponents (props:{
           key={key+'switch'}
           checked={demoValue?.componentDisplay?.[key]}
           onClick={(value)=>{
-            demoValue.componentDisplay[key] = value
-            updateViewContent({ ...demoValue })
+            updateViewContent({ ...demoValue, componentDisplay:
+               { ...demoValue.componentDisplay, [key]: value } })
           }}
           unCheckedChildren={$t({ defaultMessage: 'OFF' })}/>
         {key === 'TermsConditions'&&<PortalTermsModal

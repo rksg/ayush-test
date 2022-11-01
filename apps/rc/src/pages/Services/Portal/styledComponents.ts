@@ -3,12 +3,9 @@ import {
   UserOutlined as AntUserOutlined,
   MailOutlined as AntMailOutlined,
   EditOutlined as AntEditOutlined,
-  SettingFilled as AntSettingOutlined,
-  PlusOutlined as AntPlusOutlined,
-  MinusOutlined as AntMinusOutlined,
-  EyeInvisibleOutlined as AntEyeInvisibleOutlined
+  SettingFilled as AntSettingOutlined
 } from '@ant-design/icons'
-import { Tabs as AntTabs, Popover as AntPopover,
+import { Tabs as AntTabs, Popover as AntPopover, Button as AntButton,
   Select as AntSelect, Layout as AntLayout, Switch as AntSwitch, Modal as AntModal } from 'antd'
 import styled, { css  } from 'styled-components/macro'
 export const CommonLabel = styled.div`
@@ -31,20 +28,9 @@ export const Switch = styled(AntSwitch)`
   }
 `
 export const ComponentLabel = styled.label`
-  width: 180px;
+  width: 160px;
   padding-right:5px;
   display: inline-block;
-`
-export const CommonContainer= styled.div<{ $isShow: boolean | null }>`
-  ${props => props.$isShow ? css`
-  display:'';
-  `:css`
-  display: none;
-  `}
-  float: right;
-  border: 1px solid var(--acx-neutrals-50);
-  background-color: var(--acx-primary-white);
-  width: 300px;
 `
 export const ImgDesk = styled.img`
   &:hover{
@@ -65,26 +51,28 @@ export const ImgMobile = styled.img`
   }
 `
 const buttonStyle= css`
-  margin-left: 10px;
+  margin-left: 0px;
   border: 0;
   padding-top:5px;
   color: var(--acx-accents-blue-60);
   background-color: var(--acx-neutrals-20);
   cursor: pointer;
 `
-export const Button = styled.button`
+export const Button = styled(AntButton)`
   ${buttonStyle}
 `
-export const PopoverButton = styled.button`
+export const PopoverButton = styled(AntButton)`
   ${buttonStyle}
-  margin-left:0px;
   padding-left:0px;
   background-color: var(--acx-primary-white);
 `
 export const LayoutContent = styled(AntLayout)`
   border: 1px solid var(--acx-neutrals-50);
   width: 95%;
-  background-color: var(--acx-primary-black);
+  background-color: var(--acx-primary-black) !important;
+  .ant-layout{
+    background-color: var(--acx-primary-black);
+  }
   background-position: center;
   background-repeat: no-repeat;
   align-items: center;
@@ -122,7 +110,7 @@ export const LayoutViewContent = styled(AntLayout)<{ isbg: string | null }>`
   padding-bottom:10px;
 `
 export const Label = styled.label`
-
+  font-size:14px;
 `
 export const Select = styled(AntSelect)`
   &.ant-select-in-form-item { width: 200px; }
@@ -375,11 +363,9 @@ export const SelectedDiv = styled.div`
   padding-left: 200px;
   padding-right: 73px;
 `
-export const PlusOutlined = styled(AntPlusOutlined)`
-  margin-right:5px;
-`
-export const MinusOutlined = styled(AntMinusOutlined)`
-  margin-right:5px;
-`
-export const EyeInvisibleOutlined = styled(AntEyeInvisibleOutlined)`
+export const WrappedButton = styled(AntButton)`
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin-right: 5px;
 `

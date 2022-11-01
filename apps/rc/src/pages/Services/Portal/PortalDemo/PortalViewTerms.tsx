@@ -1,8 +1,13 @@
 import { useIntl } from 'react-intl'
 
+import { Demo } from '@acx-ui/rc/utils'
+
 
 import * as UI from '../styledComponents'
-export default function PortalViewTerms () {
+export default function PortalViewTerms (props:{
+  demoValue?: Demo
+}) {
+  const { demoValue } = props
   const { $t } = useIntl()
   const terms = 'Terms and Conditions ("Terms")</br>'+
   'Last updated: January 29, 2019</br></br>'+
@@ -58,7 +63,7 @@ export default function PortalViewTerms () {
       <UI.ViewSectionTitle>
         {$t({ defaultMessage: 'Terms and Conditions' })}</UI.ViewSectionTitle>
       <UI.ViewTextArea
-        dangerouslySetInnerHTML={{ __html: terms }}
+        dangerouslySetInnerHTML={{ __html: demoValue?.termsCondition || terms }}
       ></UI.ViewTextArea>
     </UI.ViewSection>
 

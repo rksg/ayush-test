@@ -1,6 +1,3 @@
-
-import { useState } from 'react'
-
 import { Upload }       from 'antd'
 import { RcFile }       from 'antd/lib/upload'
 import { SketchPicker } from 'react-color'
@@ -28,17 +25,18 @@ export default function PortalImageTools (props:{
   showImg?:boolean,
   showText?: boolean,
   defaultSize?:number
-  color?:string
+  color?:string,
+  showColorPicker?:boolean,
+  setShowColorPicker?: (value:boolean) => void
 }) {
   const { updateDemoImg, size, showEye, url,showText,color,
-    showImg, showColorPic, defaultSize } = props
-  const [showColorPicker, setShowColorPicker]=useState(false)
+    showImg, showColorPic, defaultSize, showColorPicker, setShowColorPicker } = props
+  const showMinusEn = (size !== minSize*(defaultSize as number))
+  const showPlusEn = (size !== maxSize*(defaultSize as number))
   return (
     <>
       <div style={{ marginTop: -6 }}
-        onClick={(e)=>{e.stopPropagation()
-          setShowColorPicker(false)
-        }}>
+        onClick={(e)=>{e.stopPropagation()}}>
         <Upload accept='.png,.jpg,.jpeg'
           id='contentimageupload'
           showUploadList={false}
@@ -55,22 +53,21 @@ export default function PortalImageTools (props:{
               onClick={(e)=>e.stopPropagation()}/></label>}
         </Upload>
 
-        {showImg!==false && size !== maxSize*(defaultSize as number)
-        &&<UI.ToolImg src={PlusEn}
-          alt='plusen'
-          onClick={()=>{
-            updateDemoImg({ url: url||'', size: (size as number)*1.5, show: true })
+        {showImg!==false
+        &&<UI.ToolImg src={showPlusEn? PlusEn:PlusDis}
+          alt={showPlusEn?'plusen':'plusdis'}
+          onClick={(e)=>{
+            showPlusEn? updateDemoImg({ url: url||'', size: (size as number)*1.5, show: true }):
+              e.preventDefault()
           }}/>}
-        {showImg!==false && size === maxSize*(defaultSize as number) &&
-         <UI.ToolImg src={PlusDis} alt='plusdis'/>}
-        {showImg!==false && size !== minSize*(defaultSize as number) &&
-        <UI.ToolImg src={MinusEn}
-          alt='minusen'
-          onClick={() => {
-            updateDemoImg({ url: url||'', size: (size as number)/1.5, show: true })
-          }} />}
-        {showImg!==false && size === minSize*(defaultSize as number)
-         && <UI.ToolImg src={MinusDis} alt='minusdis'/>}
+        {showImg!==false &&<UI.WrappedButton type='text'
+          onClick={(e) => {
+            showMinusEn? updateDemoImg({ url: url||'', size: (size as number)/1.5, show: true }):
+              e.preventDefault()
+          }}>
+          <UI.ToolImg src={showMinusEn? MinusEn:MinusDis}
+            alt='minusen'
+          /></UI.WrappedButton>}
         {showText!==false && <UI.ToolImg src={TextPlus}
           alt='textplus'
           onClick={()=>{
@@ -86,7 +83,7 @@ export default function PortalImageTools (props:{
         {showColorPic!==false && <UI.ToolImg src={ColorPick}
           alt='colorpick'
           onClick={(e)=>{
-            setShowColorPicker(true)
+            setShowColorPicker?.(!showColorPicker)
             e.stopPropagation()
           }}
         />}
@@ -98,9 +95,7 @@ export default function PortalImageTools (props:{
       </div>
       {showColorPic!==false && showColorPicker &&<div
         placeholder='colorpickcontainer'
-        style={{ marginTop: 10 }}
-        onClick={(e)=>e.stopPropagation()}
-        onMouseLeave={()=>setShowColorPicker(false)}>
+        style={{ marginTop: 10, position: 'absolute', marginLeft: -10 }}>
         <SketchPicker
           color={color}
           disableAlpha={true}

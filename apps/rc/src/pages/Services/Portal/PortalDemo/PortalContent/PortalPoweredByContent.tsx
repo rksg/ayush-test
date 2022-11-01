@@ -64,9 +64,9 @@ export default function PortalPoweredByContent (props: {
     }}
   />
   return (
-    <UI.SelectedDiv style={{ paddingLeft: Math.min(200/((demoValue.poweredImgSize ||
-      PortalDemoDefaultSize.poweredImgSize)/PortalDemoDefaultSize.poweredImgSize),
-    200/((demoValue.poweredSize||PortalDemoDefaultSize.poweredSize)
+    <UI.SelectedDiv style={{ paddingLeft: Math.min(200/(demoValue.poweredImgSize
+      /PortalDemoDefaultSize.poweredImgSize),
+    200/((demoValue.poweredSize)
       /PortalDemoDefaultSize.poweredSize))+'px' }}
     ><PortalPopover
         content={poweredTools}
@@ -97,14 +97,13 @@ export default function PortalPoweredByContent (props: {
           content={poweredTextTools}
           visible={poweredTextClicked}
           onVisibleChange={(value) => setPoweredTextClicked(value)}>
-          <UI.FieldText style={{ fontSize: (demoValue.poweredSize||
-            PortalDemoDefaultSize.poweredSize),
-          width: 152*((demoValue.poweredSize||PortalDemoDefaultSize.poweredSize)
+          <UI.FieldText style={{ fontSize: demoValue.poweredSize,
+            width: 152*(demoValue.poweredSize
           /PortalDemoDefaultSize.poweredSize)+'px' ,
-          lineHeight: 24 * ((demoValue.poweredSize||PortalDemoDefaultSize.poweredSize)
+            lineHeight: 24 * (demoValue.poweredSize
           /PortalDemoDefaultSize.poweredSize)+'px' ,
-          maxWidth: 425, color: demoValue.poweredColor,textAlign: 'left',
-          cursor: cursorTwoText, outline: outlineTwoText
+            maxWidth: 425, color: demoValue.poweredColor,textAlign: 'left',
+            cursor: cursorTwoText, outline: outlineTwoText
           }}
           placeholder='poweredtext'
           onMouseOver={(e)=>{
@@ -139,7 +138,7 @@ export default function PortalPoweredByContent (props: {
               style={{
                 marginLeft: 50,
                 cursor: cursorTwoImg, outline: outlineTwoImg,
-                height: (demoValue.poweredImgSize || PortalDemoDefaultSize.poweredImgSize),
+                height: demoValue.poweredImgSize,
                 maxWidth: 425
               }}
               onMouseOver={(e)=>{

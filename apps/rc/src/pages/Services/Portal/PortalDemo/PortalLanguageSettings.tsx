@@ -17,9 +17,8 @@ export default function PortalLanguageSettings (props:{
       <UI.CommonLabel>{$t({ defaultMessage: 'Display Language' })}</UI.CommonLabel>
       <UI.Select value={demoValue.displayLang}
         onChange={(value)=>{
-          demoValue.displayLang = value as string
-          demoValue.alternativeLang[value as keyof typeof PortalLanguageEnum] = false
-          updateViewContent({ ...demoValue })
+          updateViewContent({ ...demoValue, displayLang: value as string, alternativeLang:
+            { ...demoValue.alternativeLang, [value as keyof typeof PortalLanguageEnum]: false } })
         }}>
         {Object.keys(PortalLanguageEnum).map(
           (key => <Option key={key}>{PortalLanguageEnum[key as keyof typeof PortalLanguageEnum]}
@@ -33,8 +32,9 @@ export default function PortalLanguageSettings (props:{
           checked={key === demoValue.displayLang ? false:
             demoValue.alternativeLang[key]}
           onChange={(e)=>{
-            demoValue.alternativeLang[key] = e.target.checked
-            updateViewContent({ ...demoValue })
+            updateViewContent({ ...demoValue, alternativeLang: { ...demoValue.alternativeLang,
+              [key as keyof typeof PortalLanguageEnum]: e.target.checked
+            } })
           }}>
           {PortalLanguageEnum[key as keyof typeof PortalLanguageEnum]} </Checkbox>
       </UI.CommonLabel>

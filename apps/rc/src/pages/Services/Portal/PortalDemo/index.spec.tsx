@@ -13,9 +13,11 @@ import Logopng                   from '../../../../assets/images/portal-demo/sma
 import { PortalDemoDefaultSize } from '../../commonUtils'
 import PortalFormContext         from '../PortalForm/PortalFormContext'
 
-import PortalDemo from './PortalDemo'
+import PortalDemo from './index'
 
 const mockDemo = {
+  backgroundColor: 'var(--acx-primary-white)',
+  backgroundImage: '',
   welcomeText: 'Welcome to the Guest Access login page',
   welcomeColor: 'var(--acx-primary-black)',
   welcomeSize: PortalDemoDefaultSize.welcomeSize,
@@ -72,6 +74,7 @@ describe('PortalDemo', () => {
 
 
     fireEvent.mouseLeave(screen.getByPlaceholderText('welcometext'))
+
     await userEvent.click(screen.getByPlaceholderText('welcometext'))
     await userEvent.click(screen.getByRole('img',{ name: 'textplus' }))
     await userEvent.click(screen.getByRole('img',{ name: 'textplus' }))
@@ -79,52 +82,55 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getByRole('img',{ name: 'textminus' }))
     await userEvent.click(screen.getByRole('img',{ name: 'colorpick' }))
     await userEvent.click(screen.getByRole('img',{ name: 'eyehide' }))
+    await userEvent.type(screen.getByPlaceholderText('welcometext'),'welcome text')
 
     fireEvent.mouseOver(screen.getByPlaceholderText('buttonsetting'))
     fireEvent.mouseLeave(screen.getByPlaceholderText('buttonsetting'))
     fireEvent.click(screen.getByPlaceholderText('buttonsetting'))
-    await userEvent.click(screen.getByRole('img',{ name: 'colorpick' }))
+    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[1])
     await userEvent.click(screen.getByTitle('#F5A623'))
-    fireEvent.mouseLeave(screen.getByPlaceholderText('colorpickcontainer'))
 
     await userEvent.click(screen.getAllByText('Click Through')[0])
     await userEvent.click(screen.getAllByText('Guest Pass - Connect')[1])
     await userEvent.click(screen.getByPlaceholderText('buttonsetting'))
-    await userEvent.click(screen.getByRole('img',{ name: 'colorpick' }))
+    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[1])
     await userEvent.click(screen.getByTitle('#F5A623'))
     await userEvent.click(screen.getAllByText('Guest Pass - Connect')[0])
+
     await userEvent.click(screen.getAllByText('Guest Pass - Forgot password')[1])
     await userEvent.click(screen.getByPlaceholderText('buttonsetting'))
-    await userEvent.click(screen.getByRole('img',{ name: 'colorpick' }))
+    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[1])
+
     await userEvent.click(screen.getByTitle('#F5A623'))
     await userEvent.click(screen.getByText('Email Message'))
     await userEvent.click(screen.getAllByPlaceholderText('buttonsetting')[1])
-    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[1])
-    await userEvent.click(screen.getAllByTitle('#F5A623')[1])
 
+    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[2])
+    await userEvent.click(screen.getAllByTitle('#F5A623')[0])
     await userEvent.click(screen.getAllByText('Guest Pass - Forgot password')[0])
+
     await userEvent.click(screen.getAllByText('Self Sign In - Connect')[1])
     await userEvent.click(screen.getAllByText('Self Sign In - Connect')[1])
     await userEvent.click(screen.getAllByText('Self Sign In - Register/Confirm')[1])
     await userEvent.click(screen.getByPlaceholderText('buttonsetting'))
-    await userEvent.click(screen.getByRole('img',{ name: 'colorpick' }))
+    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[1])
     await userEvent.click(screen.getByTitle('#F5A623'))
     await userEvent.click(screen.getByText('Login'))
     await userEvent.click(screen.getAllByPlaceholderText('buttonsetting')[1])
-    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[1])
-    await userEvent.click(screen.getAllByTitle('#F5A623')[1])
-
+    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[2])
+    await userEvent.click(screen.getAllByTitle('#F5A623')[0])
     await userEvent.click(screen.getAllByText('Self Sign In - Register/Confirm')[0])
+
     await userEvent.click(screen.getAllByText('Host Approval - Register/Confirm')[1])
     await userEvent.click(screen.getByPlaceholderText('buttonsetting'))
-    await userEvent.click(screen.getByRole('img',{ name: 'colorpick' }))
+    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[1])
     await userEvent.click(screen.getByTitle('#F5A623'))
     await userEvent.click(screen.getByText('Login'))
     await userEvent.click(screen.getAllByPlaceholderText('buttonsetting')[1])
-    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[1])
-    await userEvent.click(screen.getAllByTitle('#F5A623')[1])
-
+    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[2])
+    await userEvent.click(screen.getAllByTitle('#F5A623')[0])
     await userEvent.click(screen.getAllByText('Host Approval - Register/Confirm')[0])
+
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
     await userEvent.click(screen.getAllByText('Terms & Conditions')[1])
@@ -174,22 +180,26 @@ describe('PortalDemo', () => {
     fireEvent.mouseLeave(screen.getByRole('img',{ name: 'Photo png' }))
 
     await userEvent.click(screen.getByPlaceholderText('sectexthere'))
-    await userEvent.click(screen.getByRole('img',{ name: 'textplus' }))
+    await userEvent.click(screen.getAllByRole('img',{ name: 'textplus' })[1])
     await userEvent.click(screen.getByPlaceholderText('sectexthere'))
     fireEvent.mouseLeave(screen.getByPlaceholderText('sectexthere'))
 
     await userEvent.click(screen.getByPlaceholderText('poweredtext'))
-    await userEvent.click(screen.getAllByRole('img',{ name: 'textplus' })[1])
+    await userEvent.click(screen.getAllByRole('img',{ name: 'textplus' })[2])
     await userEvent.click(screen.getByPlaceholderText('poweredtext'))
     fireEvent.mouseLeave(screen.getByPlaceholderText('poweredtext'))
 
+    await userEvent.click(screen.getByRole('img',{ name: 'poweredimage' }))
+    await userEvent.click(screen.getAllByRole('img',{ name: 'plusen' })[2])
+    await userEvent.click(screen.getByRole('img',{ name: 'poweredimage' }))
+    fireEvent.mouseLeave(screen.getByRole('img',{ name: 'poweredimage' }))
+
     await userEvent.click(screen.getByPlaceholderText('poweredbackground'))
+    await userEvent.click(screen.getAllByRole('img',{ name: 'eyehide' })[4])
     await userEvent.click(screen.getByPlaceholderText('poweredbackground'))
     fireEvent.mouseLeave(screen.getByPlaceholderText('poweredbackground'))
 
-    await userEvent.click(screen.getByRole('img',{ name: 'poweredimage' }))
-    await userEvent.click(screen.getByRole('img',{ name: 'poweredimage' }))
-    fireEvent.mouseLeave(screen.getByRole('img',{ name: 'poweredimage' }))
+
 
     fireEvent.click(screen.getByText('Reset'))
   }, 15000)

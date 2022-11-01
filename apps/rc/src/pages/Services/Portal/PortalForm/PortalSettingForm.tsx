@@ -3,10 +3,13 @@ import { useIntl }               from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import PortalDemo from '../PortalDemo/PortalDemo'
+import PortalDemo from '../PortalDemo'
 
 
-const PortalSettingForm = () => {
+const PortalSettingForm = (props:{
+  resestDemoField: () => void
+}) => {
+  const { resestDemoField } = props
   const { $t } = useIntl()
   return (
     <>
@@ -32,7 +35,7 @@ const PortalSettingForm = () => {
           <Form.Item
             name='demo'
             label={$t({ defaultMessage: 'Demo' })}
-            children={<PortalDemo/>}
+            children={<PortalDemo resetDemo={() => resestDemoField()}/>}
           />
         </Col>
       </Row>

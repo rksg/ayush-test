@@ -23,8 +23,7 @@ export default function PortalBackground (props:{
   const [clicked, setClicked]=useState(false)
   const content = <div>
     <UI.PopoverButton style={{ marginBottom: 10 }}
-      onClick={(e)=>{
-        e.preventDefault()
+      onClick={()=>{
         setShowColorPicker(true)
       }}>{$t({ defaultMessage: 'Set background color' })}</UI.PopoverButton><br/>
     {showColorPicker && <div style={{ marginBottom: 10 }} placeholder='bgcolorpicker'>
@@ -43,7 +42,7 @@ export default function PortalBackground (props:{
     >
       <UI.PopoverButton onClick={(e)=>{
         e.preventDefault()
-      }}><label htmlFor='bgimageupload'>
+      }}><label htmlFor='bgimageupload' style={{ fontSize: 14 }}>
           {$t({ defaultMessage: 'Select image' })}</label></UI.PopoverButton>
     </Upload>
     <UI.CommonHints>
@@ -52,6 +51,7 @@ export default function PortalBackground (props:{
 
   return (
     <UI.Popover content={content}
+      getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
       overlayClassName='uipopover'
       trigger='click'
       placement='bottomLeft'

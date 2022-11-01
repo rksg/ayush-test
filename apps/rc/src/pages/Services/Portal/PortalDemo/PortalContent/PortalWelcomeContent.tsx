@@ -34,13 +34,13 @@ export default function PortalWelcomeContent (props: {
       visible={clicked}
       onVisibleChange={(value) => setClicked(value)}
     ><UI.Input type='text'
-        defaultValue={demoValue.welcomeText}
+        value={demoValue.welcomeText}
         placeholder='welcometext'
-        style={{ cursor: cursor, outline: outline, height: 25 * ((demoValue.welcomeSize||
-          PortalDemoDefaultSize.welcomeSize)/PortalDemoDefaultSize.welcomeSize) ,
-        width: 280*((demoValue.welcomeSize||PortalDemoDefaultSize.welcomeSize)
+        style={{ cursor: cursor, outline: outline, height: 25 * (demoValue.welcomeSize
+          /PortalDemoDefaultSize.welcomeSize) ,
+        width: 280*((demoValue.welcomeSize)
         /PortalDemoDefaultSize.welcomeSize), maxWidth: 425, color: demoValue.welcomeColor,
-        fontSize: (demoValue.welcomeSize||PortalDemoDefaultSize.welcomeSize) }}
+        fontSize: (demoValue.welcomeSize) }}
         onChange={(e) => updateWelcome({ text: e.target.value, show: true })}
         onMouseOver={() => {
           setCursor('pointer')

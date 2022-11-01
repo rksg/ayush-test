@@ -66,6 +66,8 @@ const mockSummary = {
   serviceName: '',
   network: list.data,
   demo: {
+    backgroundColor: 'var(--acx-primary-white)',
+    backgroundImage: '',
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: 'var(--acx-primary-black)',
     welcomeSize: PortalDemoDefaultSize.welcomeSize,

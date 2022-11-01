@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { Col, Row, Tooltip }                        from 'antd'
-import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { Alert }                from '@acx-ui/components'
@@ -27,15 +26,16 @@ import PortalViewContentPreview from './PortalViewContentPreview'
 
 type PortalDemoProps = {
   isPreview?: boolean
-  value?: Demo
+  value?: Demo,
+  resetDemo?: () => void,
   onChange?: (data: Demo) => void
 }
 export default function PortalDemo ({
   isPreview,
   value,
+  resetDemo,
   onChange
 }: PortalDemoProps) {
-  const [prevValue] = useState(_.cloneDeep(value as Demo))
   const { $t } = useIntl()
   const { Option } = UI.Select
   const [screen, setScreen] = useState('desk')
@@ -48,19 +48,14 @@ export default function PortalDemo ({
   const [showLanguage, setShowLanguage] = useState(false)
   const [showComponent, setShowComponent] = useState(false)
   const [view, setView] = useState(PortalViewEnum.ClickThrough)
-  const [demoValue, setDemoValue]=useState(value as Demo)
-  useEffect(()=>{
-    if(demoValue){
-      onChange?.(demoValue)
-    }
-  },[demoValue])
+  const demoValue = value as Demo
   const langContent = <PortalLanguageSettings
     demoValue={demoValue}
-    updateViewContent={(data)=>setDemoValue({ ...demoValue, ...data })}
+    updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
   />
   const compContent = <PortalComponents
     demoValue={demoValue}
-    updateViewContent={(data)=>setDemoValue({ ...demoValue, ...data })}
+    updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
   />
   return (
     <>
@@ -120,39 +115,38 @@ export default function PortalDemo ({
           {!isPreview&&<Col flex='auto' style={{ textAlign: 'right', paddingRight: 5 }}>
             <UI.Popover
               overlayClassName='uipopover'
+              overlayInnerStyle={{ maxHeight: 500 , overflowY: 'auto' }}
+              getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
               content={langContent}
               trigger='click'
               placement='bottomLeft'
               visible={showLanguage}
               onVisibleChange={(data)=>setShowLanguage(data)}
-            ><UI.Button onClick={(e)=>{
-                e.preventDefault()
-              }}>
+            ><UI.Button type='link'>
                 {$t({ defaultMessage: 'Language Settings' })}</UI.Button></UI.Popover>
             <UI.Popover
               overlayClassName='uipopover'
+              getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
               content={compContent}
               trigger='click'
               placement='bottomLeft'
               visible={showComponent}
               onVisibleChange={(data)=>setShowComponent(data)}
-            ><UI.Button onClick={(e)=>{
-                e.preventDefault()
-              }}>{$t({ defaultMessage: 'Components' })}</UI.Button></UI.Popover>
-            <UI.Button onClick={(e)=>{
-              e.preventDefault()
-              setDemoValue(_.cloneDeep(prevValue as Demo))
-            }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
+            ><UI.Button type='link'>{$t({ defaultMessage: 'Components' })}</UI.Button></UI.Popover>
+            <UI.Button type='link'
+              onClick={()=>{
+                resetDemo?.()
+              }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
           </Col>}
         </Row>
       </UI.LayoutHeader>
-      <UI.LayoutContent>
+      <UI.LayoutContent id='democontent'>
         {!isPreview&&<PortalBackground $isDesk={marked.desk}
-          backgroundColor={demoValue?.backgroundColor || '#FFFFFF'}
+          backgroundColor={demoValue.backgroundColor}
           updateBackgroundImg={(data: string) =>
-            setDemoValue({ ...demoValue, backgroundImage: data })}
+            onChange?.({ ...demoValue, backgroundImage: data })}
           updateBackgroundColor={(data: string) =>
-            setDemoValue({ ...demoValue, backgroundColor: data })}/>}
+            onChange?.({ ...demoValue, backgroundColor: data })}/>}
         <UI.LayoutView $type={screen}
           style={{ backgroundImage: 'url("'+(isPreview?value:demoValue)?.backgroundImage+'")',
             backgroundColor: (isPreview?value:demoValue)?.backgroundColor }}>
@@ -160,7 +154,7 @@ export default function PortalDemo ({
             demoValue={value as Demo}/>:
             <PortalViewContent view={view}
               demoValue={demoValue}
-              updateViewContent={(data)=>setDemoValue({ ...demoValue, ...data })}
+              updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
             />}
         </UI.LayoutView>
       </UI.LayoutContent>

@@ -7,9 +7,9 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useGetPortalQuery }                     from '@acx-ui/rc/services'
-import { defaultComDisplay, Portal }             from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useGetPortalQuery }                                 from '@acx-ui/rc/services'
+import { defaultAlternativeLang, defaultComDisplay, Portal } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
 
 import Photo                     from '../../../../assets/images/portal-demo/main-photo.svg'
 import Powered                   from '../../../../assets/images/portal-demo/powered-logo-img.svg'
@@ -25,6 +25,8 @@ const initialPortalData : Portal ={
   serviceName: '',
   network: [],
   demo: {
+    backgroundColor: 'var(--acx-primary-white)',
+    backgroundImage: '',
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: 'var(--acx-primary-black)',
     welcomeSize: PortalDemoDefaultSize.welcomeSize,
@@ -46,7 +48,7 @@ const initialPortalData : Portal ={
     termsCondition: '',
     componentDisplay: defaultComDisplay ,
     displayLang: 'English',
-    alternativeLang: {}
+    alternativeLang: defaultAlternativeLang
   }
 
 }
@@ -113,7 +115,9 @@ export const PortalForm = () => {
               return true
             }}
           >
-            <PortalSettingForm />
+            <PortalSettingForm resestDemoField={()=>{
+              formRef.current?.setFieldsValue({ demo: { ...portalData.demo } })
+            }}/>
           </StepsForm.StepForm>
 
           <StepsForm.StepForm

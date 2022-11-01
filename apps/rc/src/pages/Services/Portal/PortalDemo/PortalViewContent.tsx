@@ -34,8 +34,8 @@ export default function PortalViewContent (props:{
   const { $t } = useIntl()
   const [cursor, setCursor]=useState('none')
   const [outline, setOutline]=useState('none')
-  const alternativeLang = demoValue?.alternativeLang
-  const componentDisplay = demoValue?.componentDisplay
+  const alternativeLang = demoValue.alternativeLang
+  const componentDisplay = demoValue.componentDisplay
   const isbg = demoValue?.backgroundImage ? 'true' : 'false'
   const [clicked, setClicked]=useState(false)
   const logoTools = <PortalImageTools
@@ -45,17 +45,17 @@ export default function PortalViewContent (props:{
     showText={false}
     showColorPic={false}
     updateDemoImg={(data)=>{
-      demoValue.componentDisplay.Logo = data.show as boolean
-      updateViewContent({ ...demoValue, logo: data.url, logoSize: data.size })
+      updateViewContent({ ...demoValue, logo: data.url, logoSize: data.size,
+        componentDisplay: { ...demoValue.componentDisplay, Logo: data.show as boolean } })
     }}
   />
   return (
     <UI.LayoutViewContent isbg={isbg}>
-      {componentDisplay?.WiFi4EU && <UI.Img src={Wifi4eu}
+      {componentDisplay.WiFi4EU && <UI.Img src={Wifi4eu}
         alt={$t({ defaultMessage: 'Wifi4eu' })}
         height={120} />}
       <PortalAlternativeLanguage alternativeLang={alternativeLang}/>
-      {componentDisplay?.Logo &&<PortalPopover
+      {componentDisplay.Logo &&<PortalPopover
         content={logoTools}
         visible={clicked}
         onVisibleChange={(value)=>setClicked(value)}
@@ -73,28 +73,28 @@ export default function PortalViewContent (props:{
             setClicked(true)
             setOutline(dashedOutline)}}
         /></PortalPopover>}
-      {componentDisplay?.WelcomeText && <PortalWelcomeContent
+      {componentDisplay.WelcomeText && <PortalWelcomeContent
         demoValue={demoValue}
         updateWelcome={(data)=>{
-          demoValue.componentDisplay.WelcomeText = data.show as boolean
           updateViewContent({ ...demoValue, welcomeSize: data.size||demoValue.welcomeSize,
+            componentDisplay: { ...demoValue.componentDisplay, WelcomeText: data.show as boolean },
             welcomeText: data.text||demoValue.welcomeText,
             welcomeColor: data.color||demoValue.welcomeColor })}}
       />}
-      {componentDisplay?.Photo &&
+      {componentDisplay.Photo &&
         <PortalPhotoContent
           demoValue={demoValue}
           updatePhoto={(data)=>{
-            demoValue.componentDisplay.Photo = data.show as boolean
-            updateViewContent({ ...demoValue, photo: data.url, photoSize: data.size })}}
+            updateViewContent({ ...demoValue, photo: data.url, photoSize: data.size,
+              componentDisplay: { ...demoValue.componentDisplay, Photo: data.show as boolean } })}}
         />}
-      {componentDisplay?.SecondaryText &&
+      {componentDisplay.SecondaryText &&
         <PortalSecondaryTextContent
           demoValue={demoValue}
           updateSecText={(data)=>{
-            demoValue.componentDisplay.SecondaryText = data.show as boolean
-            updateViewContent({ ...demoValue, secondarySize: data.size,
-              secondaryColor: data.color })}}
+            updateViewContent({ ...demoValue, secondarySize: data.size, componentDisplay:
+              { ...demoValue.componentDisplay, SecondaryText: data.show as boolean },
+            secondaryColor: data.color })}}
         />}
       {view === PortalViewEnum.ClickThrough && <PortalViewGoThrough
         demoValue={demoValue}
@@ -128,8 +128,8 @@ export default function PortalViewContent (props:{
       {view === PortalViewEnum.ConnectionConfirmed &&
       <PortalViewConfirm/>}
       {view === PortalViewEnum.TermCondition &&
-      <PortalViewTerms/>}
-      {componentDisplay?.TermsConditions &&<UI.FieldText>{$t({
+      <PortalViewTerms demoValue={demoValue}/>}
+      {componentDisplay.TermsConditions &&<UI.FieldText>{$t({
         defaultMessage: 'By clicking the connect button, you are accepting the'
       })}&nbsp;&nbsp;
       <UI.FieldTextLink>
@@ -138,8 +138,8 @@ export default function PortalViewContent (props:{
       {componentDisplay.PoweredBy &&<PortalPoweredByContent
         demoValue={demoValue}
         updatePoweredBy={(data)=>{
-          demoValue.componentDisplay.PoweredBy = data.show as boolean
           updateViewContent({ ...demoValue, poweredImg: data.url||demoValue.poweredImg,
+            componentDisplay: { ...demoValue.componentDisplay, PoweredBy: data.show as boolean },
             poweredImgSize: data.size||demoValue.poweredImgSize,
             poweredBackgroundColor: data.bgcolor||demoValue.poweredBackgroundColor,
             poweredColor: data.color||demoValue.poweredColor,
