@@ -1,23 +1,22 @@
-import { ConfigProvider }                    from '@acx-ui/components'
 import { ServiceType }                       from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import { SwitchesTable }     from './pages/Devices/Switch/SwitchesTable'
-import { ApsTable }          from './pages/Devices/Wifi/ApsTable'
-import { NetworkDetails }    from './pages/Networks/NetworkDetails/NetworkDetails'
-import { NetworkForm }       from './pages/Networks/NetworkForm/NetworkForm'
-import { NetworksTable }     from './pages/Networks/NetworksTable'
-import { DHCPForm }          from './pages/Services/DHCPForm/DHCPForm'
-import { MdnsProxyForm }     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import { SelectServiceForm } from './pages/Services/SelectServiceForm'
+import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
+import ApsTable          from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable     from './pages/Networks/NetworksTable'
+import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import SelectServiceForm from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation
 } from './pages/Services/serviceRouteUtils'
-import { ServicesTable } from './pages/Services/ServicesTable'
+import ServicesTable from './pages/Services/ServicesTable'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -28,9 +27,7 @@ export default function RcRoutes () {
     </Route>
   )
   return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
+    <Provider children={routes} />
   )
 }
 

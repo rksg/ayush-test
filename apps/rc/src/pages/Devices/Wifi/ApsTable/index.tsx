@@ -8,7 +8,7 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { ApTable } from '../../../../components/ApTable'
 
-export function ApsTable () {
+export default function ApsTable () {
   const { $t } = useIntl()
 
   return (

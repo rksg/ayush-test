@@ -33,39 +33,39 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId'
   },
-  GetVenueExternalAntenna: {
+  getVenueExternalAntenna: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna'
   },
-  GetVenueApCapabilities: {
+  getVenueApCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
   },
-  UpdateVenueExternalAntenna: {
+  updateVenueExternalAntenna: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna'
   },
-  GetVenueDefaultRegulatoryChannels: {
+  getVenueDefaultRegulatoryChannels: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/valid-channels'
   },
-  GetDefaultRadioCustomization: {
+  getDefaultRadioCustomization: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/radio/default'
   },
-  GetVenueRadioCustomization: {
+  getVenueRadioCustomization: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/radio'
   },
-  UpdateVenueRadioCustomization: {
+  updateVenueRadioCustomization: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/radio'
   },
-  GetVenueTripleBandRadioSettings: {
+  getVenueTripleBandRadioSettings: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
   },
-  UpdateVenueTripleBandRadioSettings: {
+  updateVenueTripleBandRadioSettings: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
   },

@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader } from '@acx-ui/components'
 import { TenantLink }         from '@acx-ui/react-router-dom'
 
-export function SwitchesTable () {
+export default function SwitchesTable () {
   const { $t } = useIntl()
 
   return (
