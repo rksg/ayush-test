@@ -102,9 +102,6 @@ export const RangePicker = ({
         onCalendarChange={(values: RangeValueType) =>
           setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
         }
-        onChange={(values) => {
-          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
-        }}
         mode={['date', 'date']}
         renderExtraFooter={() => (
           <DatePickerFooter
