@@ -3,7 +3,7 @@
 exports[`ApDetails should navigate to analytic tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -383,7 +383,7 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
 exports[`ApDetails should navigate to clients tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -763,7 +763,7 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
 exports[`ApDetails should navigate to networks tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1143,7 +1143,7 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
 exports[`ApDetails should navigate to reports tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1523,7 +1523,7 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
 exports[`ApDetails should navigate to services tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1903,7 +1903,7 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
 exports[`ApDetails should navigate to timeline tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -2283,7 +2283,7 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
 exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -2663,7 +2663,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
 exports[`ApDetails should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
