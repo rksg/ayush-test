@@ -18,30 +18,24 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
+import useDHCPInfo                                                         from './hooks/useDHCPInfo'
 import { AntSelect, AntLabel, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
+
 
 
 const { Option } = AntSelect
 
 const VenueDHCPForm = React.forwardRef((props, formRef) => {
   const { $t } = useIntl()
-
   const params = useParams()
-
   const [form] = StyledForm.useForm()
+  const dhcpInfo = useDHCPInfo()
 
   const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
-    params: { venueId: params.venueId }
+    params
   })
-
   const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
-
   const { data: apList } = useApListQuery({ params })
-
-  const primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
-  const backupServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
 
   const [gateways, setGateways] = useState<DHCPProfileAps[]>()
 
@@ -50,12 +44,13 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
     setGateways(natGatewayList)
 
     form.setFieldsValue({
-      serviceId: venueDHCPProfile?.serviceProfileId,
-      primaryServerSN: primaryServerSN,
-      backupServerSN: backupServerSN,
+      serviceId: dhcpInfo?.id,
+      primaryServerSN: dhcpInfo?.primaryDHCP.serialNumber,
+      backupServerSN: dhcpInfo?.secondaryDHCP.serialNumber,
       gateways: natGatewayList
     })
-  }, [venueDHCPProfile, dhcpProfileList, apList, primaryServerSN, backupServerSN, form])
+  }, [venueDHCPProfile, form, dhcpInfo.id, dhcpInfo.primaryDHCP.serialNumber,
+    dhcpInfo.secondaryDHCP.serialNumber])
 
 
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{

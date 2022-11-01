@@ -12,10 +12,7 @@ import LeaseTable from './LeaseTable'
 import PoolTable  from './PoolTable'
 
 
-
-
 type TabPosition = 'pools' | 'lease'
-
 
 const DHCPInstance = () => {
   const { $t } = useIntl()
@@ -25,7 +22,6 @@ const DHCPInstance = () => {
   const changeTabPosition = (e: RadioChangeEvent) => {
     setTabPosition(e.target.value)
   }
-
 
   const { data: leasesList } = useVenuesLeasesListQuery({
     params: { venueId: params.venueId }

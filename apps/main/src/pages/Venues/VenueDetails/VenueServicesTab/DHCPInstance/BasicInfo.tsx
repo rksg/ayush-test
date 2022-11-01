@@ -3,22 +3,17 @@ import React, { useState, useRef } from 'react'
 import { Col, Row, Typography, Button, FormInstance } from 'antd'
 import _                                              from 'lodash'
 import { useIntl }                                    from 'react-intl'
-import { useParams, useLocation }                     from 'react-router-dom'
+import { useLocation }                                from 'react-router-dom'
 
-import { Modal }   from '@acx-ui/components'
-import {
-  useVenueDHCPProfileQuery,
-  useGetDHCPProfileQuery,
-  useApListQuery } from '@acx-ui/rc/services'
-import { DHCPConfigTypeMessages } from '@acx-ui/rc/utils'
-import { TenantLink }             from '@acx-ui/react-router-dom'
+import { Modal }      from '@acx-ui/components'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
+import useDHCPInfo    from './hooks/useDHCPInfo'
 import { RowWrapper } from './styledComponents'
 import VenueDHCPForm  from './VenueDHCPForm'
 
 
 export default function BasicInfo () {
-  const params = useParams()
   const { Title, Text, Paragraph } = Typography
 
   type LocationState = {
@@ -32,37 +27,8 @@ export default function BasicInfo () {
   const DISPLAY_GATEWAY_MAX_NUM = 2
   const SPAN_NUM = 3
   let formRef = useRef<FormInstance>()
-
-  const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
-    params
-  })
-  const { data: dhcpProfile } = useGetDHCPProfileQuery({
-    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
-  })
-  const { data: apList } = useApListQuery({ params })
-
-  const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
-  const primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })]?.serialNumber
-  const backupServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })]?.serialNumber
-
-  const gatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
-  const displayData = {
-    name: dhcpProfile?.serviceName,
-    status: venueDHCPProfile?.enabled === true,
-    configurationType: dhcpProfile ? DHCPConfigTypeMessages[dhcpProfile.dhcpMode]:'',
-    poolsNum: dhcpProfile? dhcpProfile?.dhcpPools.length : 0,
-    primaryDHCP: primaryServerSN && apList ? apListGroupSN[primaryServerSN].name:'',
-    secondaryDHCP: backupServerSN && apList ? apListGroupSN[backupServerSN].name:'',
-    natGateway: _.take(gatewayList.map(( gateway )=>{
-      return apListGroupSN[gateway.serialNumber]?.name
-    }),DISPLAY_GATEWAY_MAX_NUM)
-  }
-
-
-
-
+  const dhcpInfo = useDHCPInfo()
+  const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
 
   return <>
     <RowWrapper>
@@ -72,7 +38,7 @@ export default function BasicInfo () {
             <Text strong>{$t({ defaultMessage: 'Service Name' })}</Text>
           </Title>
           <TenantLink
-            to={`/services/dhcp/${venueDHCPProfile?.serviceProfileId}/detail`}>{displayData.name}
+            to={`/services/dhcp/${dhcpInfo?.id}/detail`}>{dhcpInfo.name}
           </TenantLink>
         </Col>
 
@@ -81,7 +47,7 @@ export default function BasicInfo () {
             <Text strong>{$t({ defaultMessage: 'Service Status' })}</Text>
           </Title>
           <Paragraph>
-            {displayData.status? $t({ defaultMessage: 'ON' }): $t({ defaultMessage: 'OFF' }) }
+            {dhcpInfo.status? $t({ defaultMessage: 'ON' }): $t({ defaultMessage: 'OFF' }) }
           </Paragraph>
         </Col>
 
@@ -89,38 +55,37 @@ export default function BasicInfo () {
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'DHCP Configuration' })}</Text>
           </Title>
-          <Paragraph>{displayData.configurationType}</Paragraph>
+          <Paragraph>{dhcpInfo.configurationType}</Paragraph>
         </Col>
 
         <Col span={SPAN_NUM}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'DHCP Pools' })}</Text>
           </Title>
-          <Paragraph>{displayData.poolsNum}</Paragraph>
+          <Paragraph>{dhcpInfo.poolsNum}</Paragraph>
         </Col>
 
         <Col span={SPAN_NUM}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'Primary DHCP Server' })}</Text>
           </Title>
-          <Paragraph>{displayData.primaryDHCP}</Paragraph>
+          <Paragraph>{dhcpInfo.primaryDHCP.name}</Paragraph>
         </Col>
         <Col span={SPAN_NUM}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'Secondary DHCP Server' })}</Text>
           </Title>
-          <Paragraph>{displayData.secondaryDHCP}</Paragraph>
+          <Paragraph>{dhcpInfo.secondaryDHCP.name}</Paragraph>
         </Col>
         <Col span={SPAN_NUM}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'Gateway' })}</Text>
           </Title>
-          {displayData.natGateway.map((data)=>{
-            return <Paragraph style={{ marginBottom: 5 }}>{ data }</Paragraph>
+          {natGateway.map((data)=>{
+            return <Paragraph key={data.serialNumber}
+              style={{ marginBottom: 5 }}>{ data.name }</Paragraph>
           })}
-          {
-            gatewayList.length>DISPLAY_GATEWAY_MAX_NUM && '...'
-          }
+          { dhcpInfo.gateway.length>DISPLAY_GATEWAY_MAX_NUM && '...' }
         </Col>
         <Col span={SPAN_NUM}>
           <Button style={{ paddingLeft: 0 }}
