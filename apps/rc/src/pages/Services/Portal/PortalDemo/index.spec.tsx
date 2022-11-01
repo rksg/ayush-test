@@ -79,7 +79,7 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getByRole('img',{ name: 'textplus' }))
     await userEvent.click(screen.getByRole('img',{ name: 'textplus' }))
     await userEvent.click(screen.getByRole('img',{ name: 'textminus' }))
-    await userEvent.click(screen.getByRole('img',{ name: 'textminus' }))
+
     await userEvent.click(screen.getByRole('img',{ name: 'colorpick' }))
     await userEvent.click(screen.getByRole('img',{ name: 'eyehide' }))
     await userEvent.type(screen.getByPlaceholderText('welcometext'),'welcome text')
@@ -106,7 +106,7 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getAllByPlaceholderText('buttonsetting')[1])
 
     await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[2])
-    await userEvent.click(screen.getAllByTitle('#F5A623')[0])
+    await userEvent.click(screen.getByTitle('#F5A623'))
     await userEvent.click(screen.getAllByText('Guest Pass - Forgot password')[0])
 
     await userEvent.click(screen.getAllByText('Self Sign In - Connect')[1])
@@ -118,7 +118,7 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getByText('Login'))
     await userEvent.click(screen.getAllByPlaceholderText('buttonsetting')[1])
     await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[2])
-    await userEvent.click(screen.getAllByTitle('#F5A623')[0])
+    await userEvent.click(screen.getByTitle('#F5A623'))
     await userEvent.click(screen.getAllByText('Self Sign In - Register/Confirm')[0])
 
     await userEvent.click(screen.getAllByText('Host Approval - Register/Confirm')[1])
@@ -128,7 +128,7 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getByText('Login'))
     await userEvent.click(screen.getAllByPlaceholderText('buttonsetting')[1])
     await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[2])
-    await userEvent.click(screen.getAllByTitle('#F5A623')[0])
+    await userEvent.click(screen.getByTitle('#F5A623'))
     await userEvent.click(screen.getAllByText('Host Approval - Register/Confirm')[0])
 
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
@@ -169,7 +169,7 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getByRole('img',{ name: 'plusen' }))
     await userEvent.click(screen.getByRole('img',{ name: 'plusen' }))
     await userEvent.click(screen.getByRole('img',{ name: 'minusen' }))
-    await userEvent.click(screen.getByRole('img',{ name: 'minusen' }))
+
     await userEvent.upload(screen.getByPlaceholderText('contentimageupload'), file)
     await userEvent.click(screen.getByRole('img',{ name: 'pictureout' }))
     await userEvent.click(screen.getByRole('img',{ name: 'Logo' }))
@@ -199,10 +199,8 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getByPlaceholderText('poweredbackground'))
     fireEvent.mouseLeave(screen.getByPlaceholderText('poweredbackground'))
 
-
-
     fireEvent.click(screen.getByText('Reset'))
-  }, 15000)
+  }, 20000)
 
   it('should render portal demo preview successfully', async () => {
     const { asFragment } = render(
@@ -227,5 +225,5 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
     fireEvent.click(screen.getAllByText('Terms & Conditions')[1])
-  }, 15000)
+  }, 10000)
 })
