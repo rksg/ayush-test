@@ -172,8 +172,9 @@ export function Radio5GHz () {
               options={defaultChannelsData &&
                 _.get(defaultChannelsData, '5GChannels.dfs') &&
             Object.keys(defaultChannelsData['5GChannels']['dfs'])
-              .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
-              defaultValue={'auto'}
+              .map(item => ({ label: item === 'auto' ? _.upperFirst(item) : item,
+                value: item === 'auto' ? item.toUpperCase() : item }))}
+              defaultValue={'AUTO'}
             />
           </Form.Item>
           <Form.Item

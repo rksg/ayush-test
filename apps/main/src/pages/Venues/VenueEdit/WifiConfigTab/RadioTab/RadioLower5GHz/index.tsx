@@ -202,7 +202,8 @@ export function RadioLower5GHz () {
                 _.get(defaultChannelsData, '5GLowerChannels.dfs') &&
                 Object.keys(defaultChannelsData['5GLowerChannels']['dfs'])
                   .map(item => ({
-                    label: item === 'auto' ? item.toUpperCase() : item, value: item
+                    label: item === 'auto' ? _.upperFirst(item) : item,
+                    value: item === 'auto' ? item.toUpperCase() : item
                   }))}
               defaultValue={'auto'}
               disabled={inheritSettings}

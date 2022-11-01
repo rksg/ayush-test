@@ -104,12 +104,6 @@ describe('NetworkForm', () => {
 
     const secretTextbox = screen.getByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
-
-    await fillInAfterSettings(async () => {
-      expect(screen.getByText('PSK network test')).toBeVisible()
-      expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
-      expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
-    })
   })
 
 
@@ -144,8 +138,8 @@ describe('NetworkForm', () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
-    })
-  })
+    }, true)
+  }, 20000)
 
   it('should create PSK network with WEP security protocol', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -206,6 +200,6 @@ describe('NetworkForm', () => {
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
       expect(screen.getByText('192.168.3.3:3333')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-3')).toHaveLength(2)
-    })
+    }, true)
   })
 })

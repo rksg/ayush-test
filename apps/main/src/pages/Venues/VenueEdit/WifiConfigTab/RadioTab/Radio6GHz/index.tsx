@@ -130,7 +130,8 @@ export function Radio6GHz () {
               options={defaultChannelsData &&
                 defaultChannelsData['6GChannels'] &&
             Object.keys(defaultChannelsData['6GChannels'])
-              .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+              .map(item => ({ label: item === 'auto' ? _.upperFirst(item) : item,
+                value: item === 'auto' ? item.toUpperCase() : item }))}
               defaultValue={'auto'}
             />
           </Form.Item>
