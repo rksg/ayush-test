@@ -25,7 +25,7 @@ export const useDateFilter = () => {
       setDateFilter,
       ...getDateRangeFilter(range, startDate, endDate)
     } as const
-  }, [search, setSearch])
+  }, [search]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 function readDateFilter (search: URLSearchParams, setSearch: CallableFunction) {

@@ -69,5 +69,5 @@ export function useAnalyticsFilter () {
       getNetworkFilter,
       raw
     }
-  }, [dateFilter, pathname, search, setSearch])
+  }, [pathname, search]) // eslint-disable-line react-hooks/exhaustive-deps
 }
