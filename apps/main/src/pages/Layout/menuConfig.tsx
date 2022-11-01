@@ -72,13 +72,15 @@ export function useMenuConfig () {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
       inactiveIcon: CalendarDateOutlined,
-      activeIcon: CalendarDateSolid
+      activeIcon: CalendarDateSolid,
+      disabled: true
     },
     {
       path: '/reports',
       name: $t({ defaultMessage: 'Reports' }),
       inactiveIcon: ReportsOutlined,
-      activeIcon: ReportsSolid
+      activeIcon: ReportsSolid,
+      disabled: true
     },
     genPlaceholder(),
     {
@@ -92,16 +94,17 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Devices' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
-      routes: [
-        {
-          path: '/devices/aps',
-          name: $t({ defaultMessage: 'WiFi' })
-        },
-        {
-          path: '/devices/switches',
-          name: $t({ defaultMessage: 'Switch' })
-        }
-      ]
+      // routes: [
+      //   {
+      //     path: '/devices/aps',
+      //     name: $t({ defaultMessage: 'WiFi' })
+      //   },
+      //   {
+      //     path: '/devices/switches',
+      //     name: $t({ defaultMessage: 'Switch' })
+      //   }
+      // ],
+      disabled: true
     },
     {
       path: '/networks',
@@ -113,26 +116,30 @@ export function useMenuConfig () {
       path: '/services',
       name: $t({ defaultMessage: 'Services' }),
       inactiveIcon: ServicesOutlined,
-      activeIcon: ServicesSolid
+      activeIcon: ServicesSolid,
+      disabled: true
     },
     {
       path: '/policies',
       name: $t({ defaultMessage: 'Policies' }),
       inactiveIcon: PoliciesOutlined,
-      activeIcon: PoliciesSolid
+      activeIcon: PoliciesSolid,
+      disabled: true
     },
     {
       path: '/users',
       name: $t({ defaultMessage: 'Users' }),
       inactiveIcon: AccountCircleOutlined,
-      activeIcon: AccountCircleSolid
+      activeIcon: AccountCircleSolid,
+      disabled: true
     },
     genPlaceholder(),
     {
       path: '/administration',
       name: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
-      activeIcon: AdminSolid
+      activeIcon: AdminSolid,
+      disabled: true
     }
   ]
   return config

@@ -33,17 +33,41 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId'
   },
-  GetVenueExternalAntenna: {
+  getVenueExternalAntenna: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna'
   },
-  GetVenueApCapabilities: {
+  getVenueApCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
   },
-  UpdateVenueExternalAntenna: {
+  updateVenueExternalAntenna: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/externalAntenna'
+  },
+  getVenueDefaultRegulatoryChannels: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/valid-channels'
+  },
+  getDefaultRadioCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/radio/default'
+  },
+  getVenueRadioCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/radio'
+  },
+  updateVenueRadioCustomization: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/radio'
+  },
+  getVenueTripleBandRadioSettings: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
+  },
+  updateVenueTripleBandRadioSettings: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
   },
   getLteBandLockChannel: {
     method: 'get',
@@ -51,7 +75,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getAvailableLteBands: {
     method: 'get',
-    url: '/api/tenant/:venueId/wifi/lte-band'
+    url: '/api/tenant/:tenantId/wifi/lte-band'
   },
   getVenueApModelCellular: {
     method: 'get',

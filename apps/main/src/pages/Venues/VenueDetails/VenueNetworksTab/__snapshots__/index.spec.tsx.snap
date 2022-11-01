@@ -6,7 +6,7 @@ exports[`VenueNetworksTab should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 dvVAeG"
     >
       <div
         class="ant-pro-table"
@@ -408,7 +408,7 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/a27e3eb0bd164e01ae731da8d976d3b1/networks/d556bb683e4248b7a911fdb40c307aa5/network-details/overview"
+                                  href="/t/a27e3eb0bd164e01ae731da8d976d3b1/networks/d556bb683e4248b7a911fdb40c307aa5/network-details/aps"
                                 >
                                   test_1
                                 </a>
@@ -472,7 +472,7 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/a27e3eb0bd164e01ae731da8d976d3b1/networks/cd922ec00f744a16b4b784f3305ec0aa/network-details/overview"
+                                  href="/t/a27e3eb0bd164e01ae731da8d976d3b1/networks/cd922ec00f744a16b4b784f3305ec0aa/network-details/aps"
                                 >
                                   test_2
                                 </a>

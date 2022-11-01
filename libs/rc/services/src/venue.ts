@@ -31,6 +31,9 @@ import {
   VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile,
+  VenueDefaultRegulatoryChannels,
+  VenueDefaultRegulatoryChannelsForm,
+  TriBandSettings,
   AvailableLteBands,
   VenueApModelCellular
 } from '@acx-ui/rc/utils'
@@ -39,7 +42,7 @@ import {
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -54,6 +57,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -109,6 +113,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...venueDetailReq
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -318,6 +323,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
+      providesTags: [{ type: 'AAA', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg,
@@ -326,6 +332,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })
         })
       }
+    }),
+    updateAAASetting: build.mutation<AAASetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateAaaSetting, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
       query: ({ params, payload }) => {
@@ -368,7 +384,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueExternalAntenna: build.query<ExternalAntenna[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.GetVenueExternalAntenna, params)
+        const req = createHttpRequest(WifiUrlsInfo.getVenueExternalAntenna, params)
         return {
           ...req
         }
@@ -383,20 +399,83 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    venueDefaultRegulatoryChannels: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultRegulatoryChannels, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getDefaultRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDefaultRadioCustomization, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueRadioCustomization, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'VenueRadio', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg,
+            ['UpdateVenueRadioCustomization'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueRadio', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    updateVenueRadioCustomization:
+    build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueRadioCustomization, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueRadio', id: 'LIST' }]
+    }),
+    getVenueTripleBandRadioSettings:
+    build.query<TriBandSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueTripleBandRadioSettings, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueTripleBandRadioSettings:
+    build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueTripleBandRadioSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getVenueApCapabilities: build.query<{
       version: string,
       apModels:CapabilitiesApModel[] }, RequestPayload>({
         query: ({ params }) => {
-          const req = createHttpRequest(WifiUrlsInfo.GetVenueApCapabilities, params)
+          const req = createHttpRequest(WifiUrlsInfo.getVenueApCapabilities, params)
           return {
             ...req
           }
         },
         providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
       }),
-    UpdateVenueExternalAntenna: build.mutation<CommonResult, RequestPayload>({
+    updateVenueExternalAntenna: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.UpdateVenueExternalAntenna, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueExternalAntenna, params)
         return {
           ...req,
           body: payload
@@ -473,6 +552,7 @@ export const {
   useUpdateVenueLanPortsMutation,
   useVenueSwitchAAAServerListQuery,
   useGetAaaSettingQuery,
+  useUpdateAAASettingMutation,
   useAddAAAServerMutation,
   useUpdateAAAServerMutation,
   useDeleteAAAServerMutation,
@@ -486,6 +566,12 @@ export const {
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
   useSwitchConfigProfileQuery,
+  useVenueDefaultRegulatoryChannelsQuery,
+  useGetDefaultRadioCustomizationQuery,
+  useGetVenueRadioCustomizationQuery,
+  useUpdateVenueRadioCustomizationMutation,
+  useGetVenueTripleBandRadioSettingsQuery,
+  useUpdateVenueTripleBandRadioSettingsMutation,
   useGetVenueExternalAntennaQuery,
   useGetVenueApCapabilitiesQuery,
   useUpdateVenueExternalAntennaMutation,

@@ -42,7 +42,7 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip' | 'form'
+    type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
@@ -241,8 +241,10 @@ function Table <RecordType extends Record<string, any>> (
       ? col.width
       : colWidth[col.key as keyof typeof colWidth] || col.width,
     onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+      hasEllipsisColumn,
       width: colWidth[column.key],
-      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
+      definedWidth: col.width
     })
   })
 
@@ -293,6 +295,7 @@ function Table <RecordType extends Record<string, any>> (
       dataSource={getFilteredData<RecordType>(
         dataSource, filterValues, activeFilters, searchables, searchValue
       )}
+      sortDirections={['ascend', 'descend', 'ascend']}
       bordered={false}
       search={false}
       columns={(type === 'tall' ? columns.map(col=>({
