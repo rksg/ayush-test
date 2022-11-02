@@ -90,7 +90,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
   })
 
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(defaultThreshold)
-  const thresholdPermission = useFetchThresholdPermissionQuery({ path: filters.path })
+  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path: filters.path })
 
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
@@ -106,9 +106,9 @@ export default function KpiSection (props: { tab: HealthTab }) {
   useEffect(() => { connect('timeSeriesGroup') }, [])
 
   const canSave = {
-    data: { allowedSave: thresholdPermission.data?.mutationAllowed as boolean | undefined },
-    isFetching: thresholdPermission.isFetching,
-    isLoading: thresholdPermission.isLoading
+    data: { allowedSave: thresholdPermissionQuery.data?.mutationAllowed as boolean | undefined },
+    isFetching: thresholdPermissionQuery.isFetching,
+    isLoading: thresholdPermissionQuery.isLoading
   }
 
   const fetchingCustomThresholds = {
@@ -122,7 +122,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
     : undefined
 
   return (
-    <Loader states={[customThresholdQuery, thresholdPermission]}>
+    <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
       {kpis.map((kpi) => (
         <GridRow key={kpi+defaultZoom} $divider>
           <GridCol col={{ span: 16 }}>
@@ -155,8 +155,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}
                 thresholds={kpiThreshold}
-                canSave={canSave}
-                customThreshold={fetchingCustomThresholds}
+                permissionQuery={canSave}
+                customThresholdQuery={fetchingCustomThresholds}
                 isNetwork={isNetwork}
               />
             ) : (

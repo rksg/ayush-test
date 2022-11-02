@@ -30,10 +30,10 @@ const getGoalPercent = (
   return percent
 }
 
-export function getDefaultThreshold (
+export function getDisplayTreshold (
   kpi: keyof KpiThresholdType, data?: ThresholdsApiResponse, useDefaultThreshold?: boolean
 ) {
-  return (useDefaultThreshold)
+  return (useDefaultThreshold || !data)
     ? getThreshold()[kpi]
     : getThreshold(data as unknown as Partial<FetchedData>)[kpi]
 }
@@ -61,8 +61,8 @@ function Histogram ({
   threshold,
   setKpiThreshold,
   thresholds,
-  canSave,
-  customThreshold,
+  permissionQuery,
+  customThresholdQuery,
   isNetwork
 }: {
   filters: AnalyticsFilter;
@@ -70,17 +70,17 @@ function Histogram ({
   threshold: number;
   setKpiThreshold: CallableFunction;
   thresholds: KpiThresholdType;
-  canSave: {
+  permissionQuery: {
     data: { allowedSave: boolean | undefined };
     isFetching: boolean;
     isLoading: boolean;
   };
-  customThreshold: {
+  customThresholdQuery: {
     isFetching: boolean;
     isLoading: boolean;
     data: Object | undefined;
   };
-  isNetwork?: boolean;
+  isNetwork: boolean | undefined;
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
@@ -90,15 +90,15 @@ function Histogram ({
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
   const [ triggerSave ] = useSaveThresholdMutation()
 
-  const onButtonReset = useCallback((useDefaultThreshold?: boolean) => {
+  const onButtonReset = useCallback((useDefaultThreshold: boolean) => {
     if (Object.keys(defaultThreshold).includes(kpi)) {
-      const defaultConfig = getDefaultThreshold(
-        kpi as keyof typeof defaultThreshold, customThreshold.data, useDefaultThreshold
+      const defaultConfig = getDisplayTreshold(
+        kpi as keyof typeof defaultThreshold, customThresholdQuery.data, useDefaultThreshold
       )
       setThresholdValue(defaultConfig)
       setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
     }
-  }, [kpi, setKpiThreshold, thresholds, customThreshold.data])
+  }, [kpi, setKpiThreshold, thresholds, customThresholdQuery.data])
 
   const onButtonApply = async () => {
     try {
@@ -122,20 +122,20 @@ function Histogram ({
   useEffect(() => {
     if (
       isInitialRender &&
-      !customThreshold.isFetching &&
-      !customThreshold.isLoading &&
-      customThreshold.data
+      !customThresholdQuery.isFetching &&
+      !customThresholdQuery.isLoading &&
+      customThresholdQuery.data
     ) {
-      onButtonReset()
+      onButtonReset(false)
       setIsInitialRender(false)
     }
-  }, [customThreshold, isInitialRender, onButtonReset])
+  }, [customThresholdQuery, isInitialRender, onButtonReset])
 
   useEffect(() => {
-    if (customThreshold.data) {
+    if (customThresholdQuery.data) {
       setIsInitialRender(true)
     }
-  }, [customThreshold.data])
+  }, [customThresholdQuery.data])
 
   /* istanbul ignore next */
   const onSliderChange = (newValue: number) => {
@@ -214,7 +214,7 @@ function Histogram ({
   const unit = histogram?.xUnit
 
   return (
-    <Loader states={[queryResults]} key={kpi}>
+    <Loader states={[queryResults, customThresholdQuery, permissionQuery]} key={kpi}>
       <GridRow>
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
@@ -261,7 +261,7 @@ function Histogram ({
             shortXFormat={histogram?.shortXFormat}
             onReset={() => onButtonReset(true)}
             onApply={onButtonApply}
-            canSave={canSave.data?.allowedSave}
+            canSave={permissionQuery.data?.allowedSave}
             isNetwork={isNetwork}
           />
         </GridCol>

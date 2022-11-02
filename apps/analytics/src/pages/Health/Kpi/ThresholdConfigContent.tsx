@@ -30,12 +30,12 @@ function ThresholdConfig ({
 }: {
   thresholdValue: number;
   percent: number;
+  unit: MessageDescriptor | string;
   shortXFormat: CallableFunction;
   onReset: CallableFunction;
   onApply: CallableFunction;
   canSave?: boolean;
   isNetwork?: boolean;
-  unit: MessageDescriptor | string;
 }) {
   const { $t } = useIntl()
   const isDisabled = !Boolean(canSave)
