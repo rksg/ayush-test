@@ -60,7 +60,6 @@ export const PortalForm = () => {
   const params = useParams()
   const editMode = params.action === 'edit'
   const [portalData, setPortalData]=useState<Portal>(initialPortalData)
-  const [error, setError]=useState(false)
   const formRef = useRef<StepsFormInstance<Portal>>()
 
   const { data } = useGetPortalQuery({ params })
@@ -90,12 +89,13 @@ export const PortalForm = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Portal Service' })}
+        title={editMode ? $t({ defaultMessage: 'Edit Portal Service' })
+          :$t({ defaultMessage: 'Add Portal Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Service' }), link: '/service' }
         ]}
       />
-      <PortalFormContext.Provider value={{ editMode, portalData, setPortalData, error }}>
+      <PortalFormContext.Provider value={{ editMode, portalData, setPortalData }}>
         <StepsForm<Portal>
           formRef={formRef}
           onCancel={() => navigate(linkToServices)}
@@ -107,10 +107,8 @@ export const PortalForm = () => {
             initialValues={initialPortalData}
             onFinish={async (data) => {
               if(data.demo.componentDisplay.WiFi4EU && !data.demo.wifi4EU){
-                setError(true)
                 return false
               }
-              setError(false)
               updateSaveData(data)
               return true
             }}

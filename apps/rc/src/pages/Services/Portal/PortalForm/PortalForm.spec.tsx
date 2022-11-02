@@ -6,7 +6,8 @@ import { CommonUrlsInfo, PortalUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import { mockServer, render, screen }     from '@acx-ui/test-utils'
 
-import { PortalForm } from './PortalForm'
+
+import PortalForm from './PortalForm'
 
 
 export const networkResponse = {
@@ -57,13 +58,14 @@ describe('PortalForm', () => {
       rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
-        res(ctx.json(networkResponse))
-      ),
       rest.post(
         PortalUrlsInfo.savePortal.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))
-      ))
+        (_, res, ctx) => {return res(ctx.json(successResponse))}
+      ),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
+        res(ctx.json(networkResponse))
+      )
+    )
 
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
 
@@ -75,6 +77,7 @@ describe('PortalForm', () => {
 
     //step 1 setting form
     await userEvent.type(screen.getByRole('textbox', { name: 'Service Name' }),'create Portal test')
+    await userEvent.click(screen.getByText('Reset'))
     await userEvent.click(screen.getByText('Next'))
 
     //scope
