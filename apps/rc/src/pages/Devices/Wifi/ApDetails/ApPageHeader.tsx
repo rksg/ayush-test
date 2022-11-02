@@ -15,11 +15,11 @@ import ApTabs from './ApTabs'
 
 function ApPageHeader () {
   const { $t } = useIntl()
-  const { tenantId, apId } = useParams()
-  const { data } = useApDetailHeaderQuery({ params: { tenantId, apId } })
+  const { tenantId, serialNumber } = useParams()
+  const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
 
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/aps/${apId}`)
+  const basePath = useTenantLink(`/devices/aps/${serialNumber}`)
 
   // const handleMenuClick: MenuProps['onClick'] = (e) => { TODO:
   //   // console.log('click', e)

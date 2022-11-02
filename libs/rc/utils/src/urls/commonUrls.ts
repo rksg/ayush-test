@@ -209,6 +209,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApDetailHeader: {
     method: 'get',
-    url: '/api/viewmodel/tenant/:tenantId/ap/:apId/detailheader'
+    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   }
 }

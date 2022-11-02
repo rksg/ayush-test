@@ -36,11 +36,11 @@ describe('ApDetails', () => {
   it('should render correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'overview'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
 
     expect(await screen.findByText('test-ap')).toBeVisible()
@@ -52,11 +52,11 @@ describe('ApDetails', () => {
   it('should navigate to analytic tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'analytics'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -64,11 +64,11 @@ describe('ApDetails', () => {
   it('should navigate to troubleshooting tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'troubleshooting'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -76,11 +76,11 @@ describe('ApDetails', () => {
   it('should navigate to reports tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'reports'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -88,11 +88,11 @@ describe('ApDetails', () => {
   it('should navigate to networks tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'networks'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -100,11 +100,11 @@ describe('ApDetails', () => {
   it('should navigate to clients tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'clients'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -112,11 +112,11 @@ describe('ApDetails', () => {
   it('should navigate to services tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'services'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -124,11 +124,11 @@ describe('ApDetails', () => {
   it('should navigate to timeline tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'timeline'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -136,11 +136,11 @@ describe('ApDetails', () => {
   it('should not navigate to non-existent tab', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'not-exist'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
@@ -149,11 +149,11 @@ describe('ApDetails', () => {
   it('should go to edit page', async () => {
     const params = {
       tenantId: 'tenant-id',
-      apId: 'ap-id',
+      serialNumber: 'ap-serialNumber',
       activeTab: 'overview'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:apId/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
