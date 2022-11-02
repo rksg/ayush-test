@@ -135,7 +135,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       key: 'duration',
       render: (_, value) => formatter('durationFormat')(value.duration),
       sorter: {
-        compare: (a, b) => defaultSort(b.duration, a.duration)
+        compare: (a, b) => defaultSort(a.duration, b.duration)
       }
     },
     {

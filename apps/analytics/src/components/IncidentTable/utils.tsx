@@ -75,7 +75,7 @@ export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) =
 export const durationValue = (start: string, end: string) => moment(end).diff(moment(start))
 
 export const dateSort = (dateA: string, dateB: string) =>
-  Math.sign(durationValue(dateA, dateB))
+  Math.sign(durationValue(dateB, dateA))
 
 export const defaultSort = (a: string | number, b: string | number) => {
   if (a < b) return -1
@@ -88,8 +88,8 @@ export const clientImpactSort = (a?: unknown, b?: unknown) => {
   let d = (b === noDataSymbol) ? -1 : parseFloat(b as string)
   if (isNaN(c)) c = -2
   if (isNaN(d)) d = -2
-  if (c > d) return -1
-  if (c < d) return 1
+  if (c > d) return 1
+  if (c < d) return -1
   return 0
 }
 
