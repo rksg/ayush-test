@@ -4,8 +4,8 @@ import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
-import { TenantType }                         from '@acx-ui/react-router-dom'
-import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
+import { TenantType }                from '@acx-ui/react-router-dom'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import menuConfig   from './stories/menuConfig'
 import { LayoutUI } from './styledComponents'
@@ -52,7 +52,7 @@ describe('Layout', () => {
     await screen.findByTestId('ai-outlined')
     expect(asFragment()).toMatchSnapshot()
   })
-  xit('should render with custom tenant type correctly', async () => {
+  it('should render with custom tenant type correctly', async () => {
     const mspConfig = [
       {
         path: '/dashboard',
@@ -69,9 +69,9 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, { route: true })
     await screen.findByTestId('speed-indicator-outlined')
-    await waitFor(() => {
-      // eslint-disable-next-line testing-library/no-node-access
-      expect(asFragment().querySelector('li[data-menu-id]')).not.toBeNull()
+    await screen.findByRole('menuitem', {
+      name: (name, element) => name === 'Dashboard' &&
+        (element as HTMLElement).hasAttribute('data-menu-id')
     })
     expect(asFragment()).toMatchSnapshot()
   })
