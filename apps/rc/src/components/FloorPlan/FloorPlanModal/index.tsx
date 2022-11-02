@@ -118,6 +118,7 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
       onAddEditFloorPlan(floorPlan, isEditMode)
       setOpen(false)
     }
+    setLoading(false)
   }
 
   return (
@@ -130,6 +131,7 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
           { buttonTitle }
         </Button>
         <Modal
+          width={480}
           title={!isEditMode ? $t({ defaultMessage: 'Add Floor Plan' })
             : $t({ defaultMessage: 'Edit Floor Plan' })}
           visible={open}
@@ -140,7 +142,9 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
           cancelButtonProps={{ disabled: loading }}
           maskClosable={false}
           getContainer={false}>
-          <FloorPlanForm form={form}
+          <FloorPlanForm
+            form={form}
+            formLoading={loading}
             onFormSubmit={onFormSubmit}
             imageFile={isEditMode ? selectedFloorPlan?.imageUrl: ''}/>
         </Modal>

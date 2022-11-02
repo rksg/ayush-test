@@ -211,7 +211,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           headers: {
             'accept': 'application/json, text/plain, */*',
-            'x-rks-tenantid': 'd1ec841a4ff74436b23bca6477f6a631',
+            'x-rks-tenantid': params?.tenantId,
             'content-type': 'application/json; charset=UTF-8'
           },
           body: payload
