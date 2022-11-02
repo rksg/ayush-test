@@ -95,17 +95,17 @@ export function useMenuConfig () {
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
       // TODO: add back when needed, comment for now
-      // routes: [
-      //   {
-      //     path: '/devices/aps',
-      //     name: $t({ defaultMessage: 'WiFi' })
-      //   },
-      //   {
-      //     path: '/devices/switches',
-      //     name: $t({ defaultMessage: 'Switch' })
-      //   }
-      // ],
-      disabled: true
+      routes: [
+        {
+          path: '/devices/aps',
+          name: $t({ defaultMessage: 'WiFi' })
+        },
+        {
+          path: '/devices/switches',
+          name: $t({ defaultMessage: 'Switch' })
+        }
+      ],
+      // disabled: true
     },
     {
       path: '/networks',
