@@ -128,7 +128,7 @@ export function Radio5GHz () {
 
   return (
     <>
-      <Row gutter={20}>
+      <Row gutter={20} data-testid='radio-5g-tab'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: 'Channel selection method:' })}
