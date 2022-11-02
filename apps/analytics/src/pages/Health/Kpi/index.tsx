@@ -8,22 +8,20 @@ import moment       from 'moment-timezone'
 import {
   kpisForTab,
   useAnalyticsFilter,
-  kpiConfig,
-  AnalyticsFilter
+  kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
 
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
 
-import BarChart              from './BarChart'
-import Histogram             from './Histogram'
-import HealthPill            from './Pill'
+import BarChart                      from './BarChart'
+import Histogram                     from './Histogram'
+import HealthPill                    from './Pill'
 import {
   KpisHavingThreshold,
   useGetKpiThresholdsQuery,
-  useFetchThresholdPermissionQuery,
-  useSaveThresholdMutation
+  useFetchThresholdPermissionQuery
 } from './services'
 import KpiTimeseries from './Timeseries'
 
@@ -80,16 +78,6 @@ export const getThreshold = (customTreshold?: Partial<FetchedData> | undefined) 
   return resultConfig
 }
 
-export function getApplyCallback (triggerSave: CallableFunction, filters: AnalyticsFilter) {
-  return (kpi: keyof KpiThresholdType) => {
-    return async (value: number) =>
-      await triggerSave({ path: filters.path, name: kpi, value }).unwrap()
-  }
-}
-
-export type onApplyType = () => (value: number) => Promise<unknown>
-export type onResetType = () => (baseConfig?: boolean) => number
-
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
   const healthFilter = useContext(HealthPageContext)
@@ -103,7 +91,6 @@ export default function KpiSection (props: { tab: HealthTab }) {
 
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(defaultThreshold)
   const thresholdPermission = useFetchThresholdPermissionQuery({ path: filters.path })
-  const [ triggerSave ] = useSaveThresholdMutation()
 
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
@@ -129,8 +116,6 @@ export default function KpiSection (props: { tab: HealthTab }) {
     isLoading: customThresholdQuery.isLoading,
     data: customThresholdQuery.data
   }
-
-  const onApply = getApplyCallback(triggerSave, filters)
 
   const isNetwork = (filters.path[0].name === 'Network' && filters.path[0].type === 'network')
     ? true
@@ -170,7 +155,6 @@ export default function KpiSection (props: { tab: HealthTab }) {
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}
                 thresholds={kpiThreshold}
-                onApply={() => onApply(kpi as keyof KpiThresholdType)}
                 canSave={canSave}
                 customThreshold={fetchingCustomThresholds}
                 isNetwork={isNetwork}

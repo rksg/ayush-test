@@ -8,8 +8,8 @@ import { AnalyticsFilter, kpiConfig }                                           
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import type { TimeStamp }                                                        from '@acx-ui/types'
 
-import { defaultThreshold, FetchedData, getThreshold, KpiThresholdType, onApplyType } from '../Kpi'
-import {  useKpiHistogramQuery, KPIHistogramResponse, ThresholdsApiResponse }         from '../Kpi/services'
+import { defaultThreshold, FetchedData, getThreshold, KpiThresholdType }                                from '../Kpi'
+import {  useKpiHistogramQuery, KPIHistogramResponse, ThresholdsApiResponse, useSaveThresholdMutation } from '../Kpi/services'
 
 import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
@@ -61,7 +61,6 @@ function Histogram ({
   threshold,
   setKpiThreshold,
   thresholds,
-  onApply,
   canSave,
   customThreshold,
   isNetwork
@@ -81,7 +80,6 @@ function Histogram ({
     isLoading: boolean;
     data: Object | undefined;
   };
-  onApply?: onApplyType;
   isNetwork?: boolean;
 }) {
   const { $t } = useIntl()
@@ -90,6 +88,7 @@ function Histogram ({
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const [isInitialRender, setIsInitialRender] = useState(true)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
+  const [ triggerSave ] = useSaveThresholdMutation()
 
   const onButtonReset = useCallback((useDefaultThreshold?: boolean) => {
     if (Object.keys(defaultThreshold).includes(kpi)) {
@@ -102,23 +101,21 @@ function Histogram ({
   }, [kpi, setKpiThreshold, thresholds, customThreshold.data])
 
   const onButtonApply = async () => {
-    if (onApply) {
-      try {
-        await onApply()(thresholdValue)
-        showToast({
-          type: 'success',
-          content: $t({
-            defaultMessage: 'Threshold set succesfully.'
-          })
+    try {
+      await triggerSave({ path: filters.path, name: kpi, value: thresholdValue }).unwrap()
+      showToast({
+        type: 'success',
+        content: $t({
+          defaultMessage: 'Threshold set succesfully.'
         })
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({
-            defaultMessage: 'Error setting threshold, please try again later.'
-          })
+      })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({
+          defaultMessage: 'Error setting threshold, please try again later.'
         })
-      }
+      })
     }
   }
 
