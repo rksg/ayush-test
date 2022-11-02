@@ -1,9 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                    from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-
-import { calculateGranularity } from '../../../utils'
+import { dataApi }                                          from '@acx-ui/analytics/services'
+import { AnalyticsFilter, kpiConfig, calculateGranularity } from '@acx-ui/analytics/utils'
 
 type datum = number []
 export type KPITimeseriesResponse = {
