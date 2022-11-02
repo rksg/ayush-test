@@ -38,7 +38,8 @@ COPY tools/docker/tscValidator.sh ./tools/docker/tscValidator.sh
 RUN chmod +x tools/docker/tscValidator.sh
 RUN tools/docker/tscValidator.sh
 RUN npx nx run rc:test --coverage --maxWorkers=25%
-RUN npx nx run-many --target=test --all --exclude=rc --coverage --runInBand --verbose
+RUN npx nx run analytics:test --coverage --maxWorkers=50%
+RUN npx nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
 ###############################################################
 
