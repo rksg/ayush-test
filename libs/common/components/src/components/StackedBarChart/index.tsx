@@ -147,7 +147,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
     color: barColors,
     grid: {
       left: showLabels ? 5 : 0,
-      right: showLabels ? 25 : -20,
+      right: showLabels ? 25 : 0,
       bottom: 0,
       top: 0,
       containLabel: showLabels

@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 
-const buttonStype = css`
+const buttonStyle = css`
   color: var(--acx-primary-black);
   background-color: transparent;
   border: none;
@@ -27,7 +27,11 @@ export const Wrapper = styled.div`
     vertical-align: top;
   }
   .ant-radio-button-wrapper {
-    ${buttonStype}
+    ${buttonStyle}
+
+    &:not(.ant-radio-button-wrapper-checked, .ant-radio-button-wrapper-disabled):hover {
+      background-color: var(--acx-neutrals-30);
+    }
   }
 
   svg {
