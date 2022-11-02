@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 
 import { sum, max } from 'lodash'
+import _            from 'lodash'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
@@ -8,11 +9,42 @@ import { AnalyticsFilter, kpiConfig }                                           
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import type { TimeStamp }                                                        from '@acx-ui/types'
 
-import { defaultThreshold, FetchedData, getThreshold, KpiThresholdType }                                from '../Kpi'
+import { defaultThreshold, KpiThresholdType }                                                           from '../Kpi'
 import {  useKpiHistogramQuery, KPIHistogramResponse, ThresholdsApiResponse, useSaveThresholdMutation } from '../Kpi/services'
 
 import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
+
+export type ValueType = {
+  value: number | null
+}
+
+export interface FetchedData {
+  timeToConnectThreshold: ValueType;
+  rssThreshold: ValueType;
+  clientThroughputThreshold: ValueType;
+  apCapacityThreshold: ValueType;
+  apServiceUptimeThreshold: ValueType;
+  apToSZLatencyThreshold: ValueType;
+  switchPoeUtilizationThreshold: ValueType;
+}
+
+export const getThreshold = (customTreshold?: Partial<FetchedData> | undefined) => {
+  const defaultConfig = { ...defaultThreshold }
+
+  if (!customTreshold) return defaultConfig
+
+  const fetchedValuesArr = Object.entries(customTreshold).map(([key, val]) =>
+    [ key.replace('Threshold', ''), val.value ])
+  const fetchValues = Object.fromEntries(fetchedValuesArr)
+
+  const resultConfig = {
+    ...defaultConfig,
+    ..._.omitBy(fetchValues, _.isNull)
+  }
+
+  return resultConfig
+}
 
 const getGoalPercent = (
   { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue: number }
@@ -106,7 +138,7 @@ function Histogram ({
       showToast({
         type: 'success',
         content: $t({
-          defaultMessage: 'Threshold set succesfully.'
+          defaultMessage: 'Threshold set successfully.'
         })
       })
     } catch {

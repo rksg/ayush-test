@@ -38,11 +38,12 @@ export function DisabledButton (
   // workaround for showing tooltip when button disabled
   // ref: https://github.com/react-component/tooltip/issues/18
   const notAvailMsg = useIntl().$t(notAvailableMsg)
+  const { tooltipPlacement, ...buttonProps } = props
   return <Tooltip
-    placement={props.tooltipPlacement || 'top'}
+    placement={tooltipPlacement || 'top'}
     title={props.title || notAvailMsg}>
     <span style={{ cursor: 'not-allowed' }}>
-      <Button {...props} disabled style={{ ...props.style, pointerEvents: 'none' }}/>
+      <Button {...buttonProps} disabled style={{ ...props.style, pointerEvents: 'none' }}/>
     </span>
   </Tooltip>
 }

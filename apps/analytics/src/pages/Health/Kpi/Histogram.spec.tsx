@@ -11,8 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { getDefaultThreshold, onResetType, onApplyType } from '../Kpi'
-import { histogramApi }                                  from '../Kpi/services'
+import { histogramApi } from '../Kpi/services'
 
 import Histogram from './Histogram'
 
@@ -48,19 +47,20 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          canSave={{
+          permissionQuery={{
             data: { allowedSave: true },
             isFetching: false,
             isLoading: false
           }}
-          fetchingDefault={{
+          customThresholdQuery={{
             data: {},
             isFetching: false,
             isLoading: false
           }}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -75,19 +75,20 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          canSave={{
+          permissionQuery={{
             data: { allowedSave: true },
             isFetching: false,
             isLoading: false
           }}
-          fetchingDefault={{
+          customThresholdQuery={{
             data: {},
             isFetching: false,
             isLoading: false
           }}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -103,19 +104,20 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'rss'}
-          threshold={thresholdMap['rss'] as unknown as string}
+          threshold={thresholdMap['rss']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          canSave={{
+          permissionQuery={{
             data: { allowedSave: true },
             isFetching: false,
             isLoading: false
           }}
-          fetchingDefault={{
+          customThresholdQuery={{
             data: {},
             isFetching: false,
             isLoading: false
           }}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -130,19 +132,20 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          canSave={{
+          permissionQuery={{
             data: { allowedSave: true },
             isFetching: false,
             isLoading: false
           }}
-          fetchingDefault={{
+          customThresholdQuery={{
             data: {},
             isFetching: false,
             isLoading: false
           }}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -158,19 +161,20 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          canSave={{
+          permissionQuery={{
             data: { allowedSave: true },
             isFetching: false,
             isLoading: false
           }}
-          fetchingDefault={{
+          customThresholdQuery={{
             data: {},
             isFetching: false,
             isLoading: false
           }}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -187,28 +191,26 @@ describe('Threshold Histogram chart', () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
-    const onReset = jest.fn().mockImplementation(
-      (() => () => getDefaultThreshold()['timeToConnect']) as onResetType
-    )
+
     render(
       <Provider>
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          onReset={onReset}
-          canSave={{
+          permissionQuery={{
             data: { allowedSave: true },
             isFetching: false,
             isLoading: false
           }}
-          fetchingDefault={{
+          customThresholdQuery={{
             data: {},
             isFetching: false,
             isLoading: false
           }}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -216,33 +218,31 @@ describe('Threshold Histogram chart', () => {
     const resetBtn = await screen.findByRole('button', { name: 'Reset' })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(resetBtn) })
-    expect(onReset).toBeCalled()
   })
 
   it('should call setKpiThreshold on clicking apply btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
-    const onApply = jest.fn().mockImplementation((() => {}) as onApplyType)
     render(
       <Provider>
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          onApply={() => onApply}
-          canSave={{
+          permissionQuery={{
             data: { allowedSave: true },
             isFetching: false,
             isLoading: false
           }}
-          fetchingDefault={{
+          customThresholdQuery={{
             data: {},
             isFetching: false,
             isLoading: false
           }}
+          isNetwork
         />
       </Provider>
     )
@@ -250,46 +250,37 @@ describe('Threshold Histogram chart', () => {
     const applyBtn = await screen.findByRole('button', { name: 'Apply' })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(applyBtn) })
-    expect(onApply).toBeCalledTimes(1)
   })
 
   it('should see error setKpiThreshold on clicking apply btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
-    const applyCounter = jest.fn()
-    const onApply = () => {
-      return async () => {
-        applyCounter()
-        return Promise.reject('failed apply fn')
-      }
-    }
     render(
       <Provider>
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          onApply={onApply}
-          canSave={{
+          permissionQuery={{
             data: { allowedSave: true },
             isFetching: false,
             isLoading: false
           }}
-          fetchingDefault={{
+          customThresholdQuery={{
             data: {},
             isFetching: false,
             isLoading: false
           }}
+          isNetwork={false}
         />
       </Provider>
     )
     const applyBtn = await screen.findByRole('button', { name: 'Apply' })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(applyBtn) })
-    expect(applyCounter).toBeCalledTimes(1)
   })
 })
 

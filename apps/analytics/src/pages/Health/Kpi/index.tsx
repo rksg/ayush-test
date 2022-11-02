@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
-import _            from 'lodash'
 import moment       from 'moment-timezone'
 
 import {
@@ -35,21 +34,6 @@ export interface KpiThresholdType {
   switchPoeUtilization: number;
 }
 
-export type ValueType = {
-  value: number | null
-}
-
-export interface FetchedData {
-  timeToConnectThreshold: ValueType;
-  rssThreshold: ValueType;
-  clientThroughputThreshold: ValueType;
-  apCapacityThreshold: ValueType;
-  apServiceUptimeThreshold: ValueType;
-  apToSZLatencyThreshold: ValueType;
-  switchPoeUtilizationThreshold: ValueType;
-}
-
-
 export const defaultThreshold = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
   rss: kpiConfig.rss.histogram.initialThreshold,
@@ -60,23 +44,6 @@ export const defaultThreshold = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
-
-export const getThreshold = (customTreshold?: Partial<FetchedData> | undefined) => {
-  const defaultConfig = { ...defaultThreshold }
-
-  if (!customTreshold) return defaultConfig
-
-  const fetchedValuesArr = Object.entries(customTreshold).map(([key, val]) =>
-    [ key.replace('Threshold', ''), val.value ])
-  const fetchValues = Object.fromEntries(fetchedValuesArr)
-
-  const resultConfig = {
-    ...defaultConfig,
-    ..._.omitBy(fetchValues, _.isNull)
-  }
-
-  return resultConfig
-}
 
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]

@@ -57,7 +57,7 @@ describe('Threshold barchart', () => {
       <BarChart
         filters={filters}
         kpi={'timeToConnect'}
-        threshold={thresholdMap['timeToConnect']}
+        threshold={thresholdMap['timeToConnect'] as unknown as number}
       />
     </Provider>)
     expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
@@ -71,7 +71,7 @@ describe('Threshold barchart', () => {
         <BarChart
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect']}
+          threshold={thresholdMap['timeToConnect'] as unknown as number}
         />
       </Provider>
     )
@@ -86,7 +86,7 @@ describe('Threshold barchart', () => {
         <BarChart
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect']}
+          threshold={thresholdMap['timeToConnect'] as unknown as number}
         />
       </Provider>
     )
