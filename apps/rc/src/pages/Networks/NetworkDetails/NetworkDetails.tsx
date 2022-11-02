@@ -18,7 +18,7 @@ const tabs = {
   incidents: NetworkIncidentsTab
 }
 
-export function NetworkDetails () {
+export default function NetworkDetails () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   return <>

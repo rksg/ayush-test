@@ -168,7 +168,7 @@ const rowSelection = (intl: ReturnType<typeof useIntl>) => {
   }
   return params
 }
-export function NetworksTable () {
+export default function NetworksTable () {
   const { $t } = useIntl()
   const NetworksTable = () => {
     const navigate = useNavigate()
