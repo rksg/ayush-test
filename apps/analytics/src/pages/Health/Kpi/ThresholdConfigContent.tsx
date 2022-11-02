@@ -14,7 +14,7 @@ const thresholdDescText = {
 
 const getDisabledToolTip = (isNetwork?: boolean) => (isNetwork)
   // eslint-disable-next-line max-len
-  ? defineMessage({ defaultMessage: 'Cannot save threshold at organisation level.{ br }Please select a Venue or AP to set a threshold.' })
+  ? defineMessage({ defaultMessage: 'Cannot save threshold at organisation level. Please select a Venue or AP to set a threshold.' })
   // eslint-disable-next-line max-len
   : defineMessage({ defaultMessage: 'You don\'t have permission to set threshold for selected network node.' })
 
@@ -39,7 +39,7 @@ function ThresholdConfig ({
 }) {
   const { $t } = useIntl()
   const isDisabled = !Boolean(canSave)
-  const disabledMsg = $t(getDisabledToolTip(isNetwork), { br: '\n' })
+  const disabledMsg = $t(getDisabledToolTip(isNetwork))
   const resetCallback = () => onReset()
   const applyCallback = () => onApply()
   return (
