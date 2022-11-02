@@ -108,7 +108,7 @@ function AlarmWidget () {
   })
 
   const { data } = overviewQuery
-  const splitConfig = useSplitTreatmentWithConfig('ADMIN-BASE')
+  const splitConfig = useSplitTreatmentWithConfig('ADMN-ESNTLS')
   console.log('splitConfig widgets---> ', splitConfig)
   return (
     <Loader states={[overviewQuery, alarmQuery]}>

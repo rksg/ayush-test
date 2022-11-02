@@ -8,7 +8,7 @@ import { FeatureFlag } from './types'
 
 export function useSplitTreatment (splitName: string): boolean {
   const { client } = useContext(SplitContext)
-  const isReady = client.Event.SDK_READY
+  const isReady = client.ready().hasOnFulfilled()
   const { tenantId } = useParams()
   const attributes = { tenantId }
   const treatment = isReady

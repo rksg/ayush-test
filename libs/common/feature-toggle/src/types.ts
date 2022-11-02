@@ -17,6 +17,23 @@ export enum Region {
 }
 
 export enum Vertical {
-  VERTICAL_DEFAULT = 'DEFAULT',
-  VERTICAL_MSP = 'MSP'
+  VERTICAL_DEFAULT = 'Default',
+  VERTICAL_HOSPITALITY = 'Hospitality',
+  VERTICAL_EDU = 'Education',
+}
+
+export enum TenantType {
+  REC = 'REC',
+  MSP = 'MSP'
+}
+
+export const defaultConfig = {
+  'feature-REC-Default': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS',
+    'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY ESNTLS', 'API-CLOUD'],
+  'feature-REC-Education': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS',
+    'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY ESNTLS', 'API-CLOUD'],
+  'feature-MSP-Default': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS',
+    'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY ESNTLS', 'PLCY-SGMNT', 'API-CLOUD'],
+  'feature-MSP-Hospitality': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS',
+    'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY ESNTLS', 'PLCY-SGMNT', 'API-CLOUD']
 }

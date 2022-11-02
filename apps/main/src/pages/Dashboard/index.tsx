@@ -1,8 +1,7 @@
-import React, { useContext, useDebugValue } from 'react'
+import React from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
-import { useSplitTreatmentWithConfig } from '@acx-ui/feature-toggle'
 
 import {
   DisabledButton,
@@ -13,6 +12,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
+import { useSplitTreatmentWithConfig } from '@acx-ui/feature-toggle'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
@@ -25,6 +25,7 @@ const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 export default function Dashboard () {
   const { $t } = useIntl()
+  // eslint-disable-next-line no-console
   console.log('PLM FF', useSplitTreatmentWithConfig('ADMIN-BASE'))
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
