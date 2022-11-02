@@ -181,7 +181,7 @@ export function ApTable (props?: ApTableProps) {
             showTotal={false}
             barColors={[cssStr(deviceStatusColors.empty)]}
           />
-          <TenantLink to={`/devices/${row.venueId}/details/incidents`}>{data ? data: 0}</TenantLink>
+          <TenantLink to={`/devices/aps/${row.serialNumber}/details/incidents`}>{data ? data: 0}</TenantLink>
         </Space>)
       }
     }, {
