@@ -2,19 +2,19 @@
 import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Tabs }                       from '@acx-ui/components'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }            from '@acx-ui/utils'
+import { Tabs }                     from '@acx-ui/components'
+import { useLocation, useNavigate } from '@acx-ui/react-router-dom'
+import { notAvailableMsg }          from '@acx-ui/utils'
 
 export function VenueAnalyticsTab () {
   const { $t } = useIntl()
-  const basePath = useTenantLink('/venue-analytics/')
+  const basePath = useLocation()
   const navigate = useNavigate()
   const onTabChange = (tab:string) =>
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
-    })
+      search: `?venueAnalytics=${tab}`
+    }, { replace: true })
 
   return (
     <Tabs
