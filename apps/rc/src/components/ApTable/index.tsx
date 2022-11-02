@@ -132,7 +132,7 @@ export function ApTable (props?: ApTableProps) {
       dataIndex: 'name',
       sorter: true,
       render: (data, row) => (
-        <TenantLink to={`/devices/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+        <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       )
     }, {
       key: 'deviceStatus',
