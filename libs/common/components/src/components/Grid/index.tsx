@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Row as AntRow, Col as AntCol } from 'antd'
-import styled                           from 'styled-components/macro'
+import styled, { css }                  from 'styled-components/macro'
 
 import type {
   RowProps as AntRowProps,
