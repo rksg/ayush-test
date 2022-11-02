@@ -8,8 +8,8 @@ import { AnalyticsFilter, kpiConfig }                                           
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import type { TimeStamp }                                                        from '@acx-ui/types'
 
-import { KpiThresholdType, onApplyType, onResetType }  from '../Kpi'
-import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
+import { defaultThreshold, FetchedData, getThreshold, KpiThresholdType, onApplyType } from '../Kpi'
+import {  useKpiHistogramQuery, KPIHistogramResponse, ThresholdsApiResponse }         from '../Kpi/services'
 
 import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
@@ -28,6 +28,14 @@ const getGoalPercent = (
   const percent = total > 0 ? (success / total) * 100 : 0
 
   return percent
+}
+
+export function getDefaultThreshold (
+  kpi: keyof KpiThresholdType, data?: ThresholdsApiResponse, useDefaultThreshold?: boolean
+) {
+  return (useDefaultThreshold)
+    ? getThreshold()[kpi]
+    : getThreshold(data as unknown as Partial<FetchedData>)[kpi]
 }
 
 const transformHistogramResponse = ({
@@ -53,14 +61,13 @@ function Histogram ({
   threshold,
   setKpiThreshold,
   thresholds,
-  onReset,
   onApply,
   canSave,
-  fetchingDefault,
+  customThreshold,
   isNetwork
 }: {
   filters: AnalyticsFilter;
-  kpi: string;
+  kpi: keyof typeof kpiConfig;
   threshold: number;
   setKpiThreshold: CallableFunction;
   thresholds: KpiThresholdType;
@@ -69,12 +76,11 @@ function Histogram ({
     isFetching: boolean;
     isLoading: boolean;
   };
-  fetchingDefault: {
+  customThreshold: {
     isFetching: boolean;
     isLoading: boolean;
     data: Object | undefined;
   };
-  onReset?: onResetType;
   onApply?: onApplyType;
   isNetwork?: boolean;
 }) {
@@ -155,16 +161,20 @@ function Histogram ({
     })
     : 0
 
-  const onButtonReset = useCallback((baseConfig?: boolean) => {
-    const defaultConfig: unknown = onReset && onReset()(baseConfig)
-    setThresholdValue(defaultConfig as number)
-    setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
-  }, [kpi, onReset, setKpiThreshold, thresholds])
+  const onButtonReset = useCallback((useDefaultThreshold?: boolean) => {
+    if (Object.keys(defaultThreshold).includes(kpi)) {
+      const defaultConfig = getDefaultThreshold(
+        kpi as keyof typeof defaultThreshold, customThreshold.data, useDefaultThreshold
+      )
+      setThresholdValue(defaultConfig)
+      setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
+    }
+  }, [kpi, setKpiThreshold, thresholds, customThreshold.data])
 
   const onButtonApply = async () => {
     if (onApply) {
       try {
-        await onApply()(thresholdValue as unknown as number)
+        await onApply()(thresholdValue)
         showToast({
           type: 'success',
           content: $t({
@@ -185,20 +195,20 @@ function Histogram ({
   useEffect(() => {
     if (
       isInitialRender &&
-      !fetchingDefault.isFetching &&
-      !fetchingDefault.isLoading &&
-      fetchingDefault.data
+      !customThreshold.isFetching &&
+      !customThreshold.isLoading &&
+      customThreshold.data
     ) {
       onButtonReset()
       setIsInitialRender(false)
     }
-  }, [fetchingDefault, isInitialRender, onButtonReset])
+  }, [customThreshold, isInitialRender, onButtonReset])
 
   useEffect(() => {
-    if (fetchingDefault.data) {
+    if (customThreshold.data) {
       setIsInitialRender(true)
     }
-  }, [fetchingDefault.data])
+  }, [customThreshold.data])
 
   const hasData = (queryResults?.data?.[0]?.rawData?.data)?.every(
     (datum: number) => datum !== null
@@ -206,7 +216,7 @@ function Histogram ({
   const yAxisLabelOffset = max(queryResults?.data?.[0]?.rawData?.data)?.toString()?.length
   const unit = histogram?.xUnit
   return (
-    <Loader states={[queryResults, canSave, fetchingDefault]} key={kpi}>
+    <Loader states={[queryResults]} key={kpi}>
       <GridRow>
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>

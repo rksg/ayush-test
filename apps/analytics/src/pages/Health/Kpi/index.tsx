@@ -11,7 +11,7 @@ import {
   kpiConfig,
   AnalyticsFilter
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow } from '@acx-ui/components'
+import { GridCol, GridRow, Loader } from '@acx-ui/components'
 
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
@@ -22,11 +22,11 @@ import HealthPill            from './Pill'
 import {
   KpisHavingThreshold,
   useGetKpiThresholdsQuery,
-  ThresholdsApiResponse,
   useFetchThresholdPermissionQuery,
   useSaveThresholdMutation
 } from './services'
 import KpiTimeseries from './Timeseries'
+
 export interface KpiThresholdType {
   timeToConnect: number;
   rss: number;
@@ -37,11 +37,11 @@ export interface KpiThresholdType {
   switchPoeUtilization: number;
 }
 
-type ValueType = {
+export type ValueType = {
   value: number | null
 }
 
-interface FetchedData {
+export interface FetchedData {
   timeToConnectThreshold: ValueType;
   rssThreshold: ValueType;
   clientThroughputThreshold: ValueType;
@@ -52,7 +52,7 @@ interface FetchedData {
 }
 
 
-export const defaultData = {
+export const defaultThreshold = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
   rss: kpiConfig.rss.histogram.initialThreshold,
   clientThroughput: kpiConfig.clientThroughput.histogram.initialThreshold,
@@ -63,12 +63,12 @@ export const defaultData = {
 }
 
 
-export const getDefaultThreshold = (fetchedData?: Partial<FetchedData> | undefined) => {
-  const defaultConfig = { ...defaultData }
+export const getThreshold = (customTreshold?: Partial<FetchedData> | undefined) => {
+  const defaultConfig = { ...defaultThreshold }
 
-  if (!fetchedData) return defaultConfig
+  if (!customTreshold) return defaultConfig
 
-  const fetchedValuesArr = Object.entries(fetchedData).map(([key, val]) =>
+  const fetchedValuesArr = Object.entries(customTreshold).map(([key, val]) =>
     [ key.replace('Threshold', ''), val.value ])
   const fetchValues = Object.fromEntries(fetchedValuesArr)
 
@@ -78,17 +78,6 @@ export const getDefaultThreshold = (fetchedData?: Partial<FetchedData> | undefin
   }
 
   return resultConfig
-}
-
-export function getResetCallback (data: ThresholdsApiResponse | undefined) {
-  return (kpi: keyof KpiThresholdType) => {
-    return (baseConfig?: boolean) => {
-      const defaultConfig = (baseConfig)
-        ? getDefaultThreshold()[kpi]
-        : getDefaultThreshold(data as unknown as Partial<FetchedData>)[kpi]
-      return defaultConfig
-    }
-  }
 }
 
 export function getApplyCallback (triggerSave: CallableFunction, filters: AnalyticsFilter) {
@@ -107,12 +96,12 @@ export default function KpiSection (props: { tab: HealthTab }) {
   const { timeWindow, setTimeWindow } = healthFilter
   const { filters } = useAnalyticsFilter()
 
-  const defaultQuery = useGetKpiThresholdsQuery({
+  const customThresholdQuery = useGetKpiThresholdsQuery({
     ...filters,
-    kpis: Object.keys(defaultData) as unknown as KpisHavingThreshold[]
+    kpis: Object.keys(defaultThreshold) as unknown as KpisHavingThreshold[]
   })
 
-  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(defaultData)
+  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(defaultThreshold)
   const thresholdPermission = useFetchThresholdPermissionQuery({ path: filters.path })
   const [ triggerSave ] = useSaveThresholdMutation()
 
@@ -136,21 +125,19 @@ export default function KpiSection (props: { tab: HealthTab }) {
   }
 
   const fetchingCustomThresholds = {
-    isFetching: defaultQuery.isFetching,
-    isLoading: defaultQuery.isLoading,
-    data: defaultQuery.data
+    isFetching: customThresholdQuery.isFetching,
+    isLoading: customThresholdQuery.isLoading,
+    data: customThresholdQuery.data
   }
 
-  const onReset = getResetCallback(defaultQuery.data)
   const onApply = getApplyCallback(triggerSave, filters)
 
   const isNetwork = (filters.path[0].name === 'Network' && filters.path[0].type === 'network')
     ? true
     : undefined
 
-  // add permission & custom query to loader below tabs
   return (
-    <>
+    <Loader states={[customThresholdQuery, thresholdPermission]}>
       {kpis.map((kpi) => (
         <GridRow key={kpi+defaultZoom} $divider>
           <GridCol col={{ span: 16 }}>
@@ -179,14 +166,13 @@ export default function KpiSection (props: { tab: HealthTab }) {
             {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
               <Histogram
                 filters={filters}
-                kpi={kpi}
+                kpi={kpi as keyof typeof kpiConfig}
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}
                 thresholds={kpiThreshold}
-                onReset={() => onReset(kpi as keyof KpiThresholdType)}
                 onApply={() => onApply(kpi as keyof KpiThresholdType)}
                 canSave={canSave}
-                fetchingDefault={fetchingCustomThresholds}
+                customThreshold={fetchingCustomThresholds}
                 isNetwork={isNetwork}
               />
             ) : (
@@ -198,6 +184,6 @@ export default function KpiSection (props: { tab: HealthTab }) {
           </GridCol>
         </GridRow>
       ))}
-    </>
+    </Loader>
   )
 }
