@@ -243,7 +243,11 @@ export const timeSeriesTooltipFormatter = (
                 value: formatter(value, undefined, dataIndex)
               }}
             />
-            text = data.show !== false ? <UI.Badge color={(color) as string} text={text} /> : text
+            text = data.show !== false ? <UI.Badge
+              className='acx-chart-tooltip'
+              color={(color) as string}
+              text={text}
+            /> : text
             text = <li key={data.name}>{text}</li>
             return text
           })
@@ -292,7 +296,7 @@ export const stackedBarTooltipFormatter = (
   return renderToString(
     <RawIntlProvider value={intl}>
       <UI.TooltipWrapper>
-        <UI.Badge color={param.color?.toString()} text={text} />
+        <UI.Badge className='acx-chart-tooltip' color={param.color?.toString()} text={text} />
       </UI.TooltipWrapper>
     </RawIntlProvider>
   )
@@ -328,7 +332,7 @@ export const donutChartTooltipFormatter = (
   return renderToString(
     <RawIntlProvider value={intl}>
       <UI.TooltipWrapper>
-        <UI.Badge color={parameters.color?.toString()} text={text} />
+        <UI.Badge className='acx-chart-tooltip' color={parameters.color?.toString()} text={text} />
       </UI.TooltipWrapper>
     </RawIntlProvider>
   )

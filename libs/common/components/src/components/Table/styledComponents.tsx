@@ -455,7 +455,7 @@ export const Wrapper = styled.div<StyledTable>`
           font-size: unset;
         }
 
-        .ant-badge.ant-badge-status {
+        .ant-badge.ant-badge-status:not(.acx-chart-tooltip) {
           display: flex;
           justify-content: left;
           align-items: center;
