@@ -57,10 +57,8 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
   }
 
   useEffect(() => {
-    console.log('run useEffect')
     let policyData
-    if (edit && data && state.policyName === '' && formRef) {
-      console.log(data, params.policyId)
+    if (edit && data && state.policyName === '') {
       policyData = data.data && data.data.filter(d => d.id === params.policyId)[0]
       dispatch({
         type: RogueAPDetectionActionTypes.UPDATE_STATE,
@@ -72,8 +70,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
           }
         }
       })
-      formRef.current?.setFieldValue('policyName', policyData.name ? policyData.name : '')
-      console.log(formRef.current)
+      formRef?.current?.setFieldValue('policyName', policyData.name ? policyData.name : '')
     }
   }, [data, state.policyName])
 
@@ -91,7 +88,6 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
             { max: 32 },
             { validator: async (rule, value) => {
               return new Promise<void>((resolve, reject) => {
-                console.log(data)
                 if (!edit && value
                   && data?.data.findIndex((policy) => policy.name === value) !== -1) {
                   return reject(
@@ -120,7 +116,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
           name='rules'
           label={$t({ defaultMessage: 'Classification rules' })}
           rules={[
-            { validator: async (rule, value) => {
+            { validator: async () => {
               return new Promise<void>((resolve, reject) => {
                 if (state.rules.length === 0) {
                   return reject(

@@ -26,7 +26,6 @@ export const rogueAPDetectionReducer = (
     case RogueAPDetectionActionTypes.UPDATE_RULE:
       const updateRule = action.payload.rule
       const updateRules = [...state.rules]
-      console.log(state)
       if (updateRule.priority) {
         updateRules[updateRule.priority - 1] = updateRule
       }

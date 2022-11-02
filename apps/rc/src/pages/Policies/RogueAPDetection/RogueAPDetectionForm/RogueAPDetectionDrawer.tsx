@@ -32,7 +32,6 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
     classification: RogueCategory.MALICIOUS
   } as RogueAPRule
 
-  console.log(state, queryRuleName)
   const stateIdx = state.rules.findIndex(rules => rules.name === queryRuleName)
   if (isEditMode && stateIdx !== -1) {
     ruleObj = state.rules[stateIdx]
@@ -212,7 +211,6 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
             }
 
             if (isEditMode) {
-              console.log(isEditMode, ruleObj, ruleName)
               dispatch({
                 type: RogueAPDetectionActionTypes.UPDATE_RULE,
                 payload: {

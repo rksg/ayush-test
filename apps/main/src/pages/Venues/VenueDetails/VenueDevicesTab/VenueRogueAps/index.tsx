@@ -153,7 +153,7 @@ export function VenueRogueAps () {
       },
       {
         key: 'locatable',
-        title: intl.$t({ defaultMessage: 'Locate Rouge' }),
+        title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
         sorter: true,
         align: 'center',

@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { Col, Row }  from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
-import { Card, Table, TableProps }       from '@acx-ui/components'
-import { useVenueRoguePolicyQuery } from '@acx-ui/rc/services'
-import { RogueVenueData, useTableQuery, VenueRoguePolicyType } from '@acx-ui/rc/utils';
+import { Card, Table, TableProps }             from '@acx-ui/components'
+import { useVenueRoguePolicyQuery }            from '@acx-ui/rc/services'
+import { useTableQuery, VenueRoguePolicyType } from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',
@@ -27,7 +26,6 @@ const defaultPayload = {
 }
 
 const RogueAPDetectionVenueDetail = () => {
-  const params = useParams()
   const { $t } = useIntl()
   const basicColumns: TableProps<VenueRoguePolicyType>['columns'] = [
     {
@@ -62,7 +60,7 @@ const RogueAPDetectionVenueDetail = () => {
   const basicData = tableQuery.data?.data
 
   return (
-    <Card title={`${$t({ defaultMessage: 'Instance' })}(${basicData?.length})`}>
+    <Card title={`${$t({ defaultMessage: 'Instance' })}(${basicData?.length ?? 0})`}>
       <Row gutter={24} style={{ width: '100%' }}>
         <Col span={24}>
           <Table

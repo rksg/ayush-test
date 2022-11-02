@@ -9,7 +9,7 @@ import {
   RequestPayload,
   RogueAPDetectionUrls,
   RogueAPDetectionContextType, RogueAPDetectionTempType, VenueRoguePolicyType, TableResult
-} from '@acx-ui/rc/utils';
+} from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),

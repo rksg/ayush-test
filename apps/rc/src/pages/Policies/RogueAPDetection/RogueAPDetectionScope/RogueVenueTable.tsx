@@ -31,25 +31,8 @@ const defaultPayload = {
   pageSize: 25
 }
 
-// {
-//   "id": "4ca20c8311024ac5956d366f15d96e0c",
-//   "name": "leonard-venue",
-//   "city": "Toronto, Ontario",
-//   "country": "Canada",
-//   "aggregatedApStatus": {
-//   "1_01_NeverContactedCloud": 491
-// },
-//   "status": "1_InSetupPhase",
-//   "rogueDetection": {
-//   "policyId": "14d6ee52df3a48988f91558bac54c1ae",
-//     "policyName": "Default profile",
-//     "enabled": true
-// }
-// }
-
-const RogueVenueTable = (props: { edit?: boolean }) => {
+const RogueVenueTable = () => {
   const { $t } = useIntl()
-  const { edit } = props
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
   const basicColumns: TableProps<VenueRoguePolicyType>['columns'] = [
@@ -107,23 +90,6 @@ const RogueVenueTable = (props: { edit?: boolean }) => {
     useQuery: useVenueRoguePolicyQuery,
     defaultPayload
   })
-
-  // useEffect(() => {
-  //   if (tableQuery.data && edit) {
-  //     console.log('update useeffect here')
-  //     // dispatch({
-  //     //   type: WifiCallingActionTypes.ADD_NETWORK_ID,
-  //     //   payload: {
-  //     //     networkIds: tableQuery.data?.data
-  //     //       .filter(network => data.networkIds?.includes(network.id))
-  //     //       .map(network => network.id),
-  //     //     networksName: tableQuery.data?.data
-  //     //       .filter(network => data.networkIds?.includes(network.id))
-  //     //       .map(network => network.name)
-  //     //   }
-  //     // } as WifiCallingActionPayload)
-  //   }
-  // }, [tableQuery.data])
 
   const basicData = tableQuery.data?.data.map((venue) => {
     return {

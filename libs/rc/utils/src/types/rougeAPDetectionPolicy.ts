@@ -90,18 +90,18 @@ export enum RogueCategory {
 
 export enum RogueRuleType {
   AD_HOC_RULE = 'AdhocRule',
-  CTS_ABUSE_RULE = 'CtsabuseRule',
-  DEAUTH_FLOOD_RULE = 'DeauthfloodRule',
-  DISASSOC_FLOOD_RULE = 'DisassocfloodRule',
-  EXCESSIVE_POWER_RULE = 'ExcessivepowerRule',
+  CTS_ABUSE_RULE = 'CTSAbuseRule',
+  DEAUTH_FLOOD_RULE = 'DeauthFloodRule',
+  DISASSOC_FLOOD_RULE = 'DisassocFloodRule',
+  EXCESSIVE_POWER_RULE = 'ExcessivePowerRule',
   LOW_SNR_RULE = 'LowsnrRule',
   MAC_OUI_RULE = 'MacouiRule',
   MAC_SPOOFING_RULE = 'MacspoofingRule',
-  NULL_SSID_RULE = 'NullssidRule',
-  RTS_ABUSE_RULE = 'RtsabuseRule',
-  SAME_NETWORK_RULE = 'SamenetworkRule',
+  NULL_SSID_RULE = 'NullSSIDRule',
+  RTS_ABUSE_RULE = 'RTSAbuseRule',
+  SAME_NETWORK_RULE = 'SameNetworkRule',
   SSID_RULE = 'SsidRule',
-  SSID_SPOOFING_RULE = 'SsidspoofingRule'
+  SSID_SPOOFING_RULE = 'SsidSpoofingRule'
 }
 
 export enum RogueAPDetectionActionTypes {

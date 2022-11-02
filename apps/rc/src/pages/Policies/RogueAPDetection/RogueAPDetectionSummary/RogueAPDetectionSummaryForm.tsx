@@ -16,9 +16,6 @@ const RogueAPDetectionSummaryForm = () => {
     state
   } = useContext(RogueAPDetectionContext)
 
-  console.log('render in summary, state: ')
-  console.log(state)
-
   return (
     <Row gutter={20}>
       <Col span={18}>

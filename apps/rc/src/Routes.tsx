@@ -3,9 +3,11 @@ import { ServiceType }       from '@acx-ui/rc/utils'
 import { rootRoutes, Route } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
-import { NetworkDetails }    from './pages/Networks/NetworkDetails/NetworkDetails'
-import { NetworkForm }       from './pages/Networks/NetworkForm/NetworkForm'
-import { NetworksTable }     from './pages/Networks/NetworksTable'
+import { NetworkDetails }         from './pages/Networks/NetworkDetails/NetworkDetails'
+import { NetworkForm }            from './pages/Networks/NetworkForm/NetworkForm'
+import { NetworksTable }          from './pages/Networks/NetworksTable'
+import RogueAPDetectionDetailView
+  from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm  from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import { DHCPForm }          from './pages/Services/DHCPForm/DHCPForm'
 import { MdnsProxyForm }     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
@@ -17,8 +19,6 @@ import {
   ServiceOperation
 } from './pages/Services/serviceRouteUtils'
 import { ServicesTable } from './pages/Services/ServicesTable'
-import RogueAPDetectionDetailView
-  from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView';
 
 export default function RcRoutes () {
   const routes = rootRoutes(

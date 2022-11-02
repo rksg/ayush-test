@@ -1,15 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { showActionModal, Table, TableProps }       from '@acx-ui/components'
-import { RogueAPDetectionActionPayload, RogueAPDetectionActionTypes, RogueAPRule } from '@acx-ui/rc/utils';
+import { useRoguePolicyQuery }                      from '@acx-ui/rc/services'
+import { RogueAPDetectionActionTypes, RogueAPRule } from '@acx-ui/rc/utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueAPDetectionDrawer from './RogueAPDetectionDrawer'
-import { useRoguePolicyQuery } from '@acx-ui/rc/services';
-import { useParams } from 'react-router-dom';
+
 
 type RuleTableProps = {
   edit: boolean
@@ -20,8 +21,6 @@ const RuleTable = (props: RuleTableProps) => {
   const { edit } = props
 
   const { state, dispatch } = useContext(RogueAPDetectionContext)
-
-  console.log(state)
 
   const { data } = useRoguePolicyQuery({
     params: useParams()
@@ -55,10 +54,7 @@ const RuleTable = (props: RuleTableProps) => {
   ]
 
   useEffect(() => {
-    console.log('run useEffect in ruleTable')
-    console.log(state)
     if (!state.rules.length && data && edit) {
-      console.log(data)
       dispatch({
         type: RogueAPDetectionActionTypes.UPDATE_ENTIRE_RULE,
         payload: {

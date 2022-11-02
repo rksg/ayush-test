@@ -36,7 +36,7 @@ import {
   TriBandSettings,
   AvailableLteBands,
   VenueApModelCellular, RogueOldApResponseType
-} from '@acx-ui/rc/utils';
+} from '@acx-ui/rc/utils'
 
 
 export const baseVenueApi = createApi({

@@ -197,6 +197,41 @@ describe('RogueAPDetectionReducer test', () => {
         priority: 1
       }]
     })
+
+    const updateEntireAction = {
+      type: RogueAPDetectionActionTypes.UPDATE_ENTIRE_RULE,
+      payload: {
+        rules: [{
+          name: 'rule1-entire',
+          type: RogueRuleType.AD_HOC_RULE,
+          classification: RogueCategory.MALICIOUS,
+          priority: 1
+        }, {
+          name: 'rule2-entire',
+          type: RogueRuleType.AD_HOC_RULE,
+          classification: RogueCategory.MALICIOUS,
+          priority: 2
+        }]
+      }
+    }
+
+    // eslint-disable-next-line max-len
+    const updatedEntireState = rogueAPDetectionReducer(updatedDelState, updateEntireAction as RogueAPDetectionActionPayload)
+
+    expect(updatedEntireState).toEqual({
+      ...updatedDelState,
+      rules: [{
+        name: 'rule1-entire',
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
+        priority: 1
+      }, {
+        name: 'rule2-entire',
+        type: RogueRuleType.AD_HOC_RULE,
+        classification: RogueCategory.MALICIOUS,
+        priority: 2
+      }]
+    })
   })
   it('should update the venue when VENUE related action is dispatched', () => {
     const initState = {} as RogueAPDetectionContextType
