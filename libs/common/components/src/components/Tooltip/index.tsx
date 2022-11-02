@@ -1,17 +1,8 @@
-import { Tooltip as AntTooltip } from 'antd'
-
-import type { TooltipProps } from 'antd'
+import { Tooltip } from 'antd'
 
 Tooltip.defaultProps = {
-  placement: 'topLeft'
+  ...Tooltip.defaultProps,
+  mouseEnterDelay: 0.5
 }
 
-export function Tooltip ({ title, placement, children }: TooltipProps) {
-  return <AntTooltip
-    title={title}
-    placement={placement}
-    mouseEnterDelay={0.5}
-  >
-    { children }
-  </AntTooltip>
-}
+export { Tooltip }
