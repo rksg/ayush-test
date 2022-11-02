@@ -91,6 +91,55 @@ function Histogram ({
   const [isInitialRender, setIsInitialRender] = useState(true)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
 
+  const onButtonReset = useCallback((useDefaultThreshold?: boolean) => {
+    if (Object.keys(defaultThreshold).includes(kpi)) {
+      const defaultConfig = getDefaultThreshold(
+        kpi as keyof typeof defaultThreshold, customThreshold.data, useDefaultThreshold
+      )
+      setThresholdValue(defaultConfig)
+      setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
+    }
+  }, [kpi, setKpiThreshold, thresholds, customThreshold.data])
+
+  const onButtonApply = async () => {
+    if (onApply) {
+      try {
+        await onApply()(thresholdValue)
+        showToast({
+          type: 'success',
+          content: $t({
+            defaultMessage: 'Threshold set succesfully.'
+          })
+        })
+      } catch {
+        showToast({
+          type: 'error',
+          content: $t({
+            defaultMessage: 'Error setting threshold, please try again later.'
+          })
+        })
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (
+      isInitialRender &&
+      !customThreshold.isFetching &&
+      !customThreshold.isLoading &&
+      customThreshold.data
+    ) {
+      onButtonReset()
+      setIsInitialRender(false)
+    }
+  }, [customThreshold, isInitialRender, onButtonReset])
+
+  useEffect(() => {
+    if (customThreshold.data) {
+      setIsInitialRender(true)
+    }
+  }, [customThreshold.data])
+
   /* istanbul ignore next */
   const onSliderChange = (newValue: number) => {
     if (
@@ -161,60 +210,12 @@ function Histogram ({
     })
     : 0
 
-  const onButtonReset = useCallback((useDefaultThreshold?: boolean) => {
-    if (Object.keys(defaultThreshold).includes(kpi)) {
-      const defaultConfig = getDefaultThreshold(
-        kpi as keyof typeof defaultThreshold, customThreshold.data, useDefaultThreshold
-      )
-      setThresholdValue(defaultConfig)
-      setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
-    }
-  }, [kpi, setKpiThreshold, thresholds, customThreshold.data])
-
-  const onButtonApply = async () => {
-    if (onApply) {
-      try {
-        await onApply()(thresholdValue)
-        showToast({
-          type: 'success',
-          content: $t({
-            defaultMessage: 'Threshold set succesfully.'
-          })
-        })
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({
-            defaultMessage: 'Error setting threshold, please try again later.'
-          })
-        })
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (
-      isInitialRender &&
-      !customThreshold.isFetching &&
-      !customThreshold.isLoading &&
-      customThreshold.data
-    ) {
-      onButtonReset()
-      setIsInitialRender(false)
-    }
-  }, [customThreshold, isInitialRender, onButtonReset])
-
-  useEffect(() => {
-    if (customThreshold.data) {
-      setIsInitialRender(true)
-    }
-  }, [customThreshold.data])
-
   const hasData = (queryResults?.data?.[0]?.rawData?.data)?.every(
     (datum: number) => datum !== null
   )
   const yAxisLabelOffset = max(queryResults?.data?.[0]?.rawData?.data)?.toString()?.length
   const unit = histogram?.xUnit
+
   return (
     <Loader states={[queryResults]} key={kpi}>
       <GridRow>

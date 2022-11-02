@@ -31,8 +31,8 @@ function ThresholdConfig ({
   thresholdValue: number;
   percent: number;
   shortXFormat: CallableFunction;
-  onReset?: CallableFunction;
-  onApply?: CallableFunction;
+  onReset: CallableFunction;
+  onApply: CallableFunction;
   canSave?: boolean;
   isNetwork?: boolean;
   unit: MessageDescriptor | string;
@@ -40,6 +40,8 @@ function ThresholdConfig ({
   const { $t } = useIntl()
   const isDisabled = !Boolean(canSave)
   const disabledMsg = $t(getDisabledToolTip(isNetwork), { br: '\n' })
+  const resetCallback = () => onReset()
+  const applyCallback = () => onApply()
   return (
     <UI.HistogramConfig>
       <UI.HistogramSpanContent>
@@ -56,7 +58,11 @@ function ThresholdConfig ({
         </UI.HistogramBoldContent>
       </UI.HistogramGoalPercentage>
       <UI.BtnWrapper>
-        <Button style={{ width: 70 }} size='small' onClick={() => onReset && onReset()}>
+        <Button
+          style={{ width: 70 }}
+          size='small'
+          onClick={resetCallback}
+        >
           {$t(thresholdDescText.resetBtn)}
         </Button>
         {(isDisabled)
@@ -73,7 +79,7 @@ function ThresholdConfig ({
             style={{ width: 70 }}
             size='small'
             type='secondary'
-            onClick={() => onApply && onApply()}
+            onClick={applyCallback}
           >
             {$t(thresholdDescText.applyBtn)}
           </Button>
