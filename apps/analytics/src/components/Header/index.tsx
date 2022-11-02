@@ -9,8 +9,8 @@ import { useDateFilter, dateRangeForLast, NodeType }                          fr
 
 import NetworkFilter from '../NetworkFilter'
 
-import { useNetworkNodeInfoQuery }         from './services'
-import { Divider, ConnectedHeaderWrapper } from './styledComponents'
+import { useNetworkNodeInfoQuery } from './services'
+import { Divider }                 from './styledComponents'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
@@ -67,37 +67,35 @@ const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => 
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
   const { networkFilter: { path } } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
-  return <ConnectedHeaderWrapper>
-    <PageHeader
-      {...props}
-      subTitle={<Loader states={[state]} fallback={<Spinner size='small' />}>
-        {useSubTitle(results.data?.subTitle || [], type)}
-      </Loader>}
-      title={<Loader states={[state]} fallback={<Spinner size='default' />}>
-        {filter || path.length > 1 ?
-          (results.data?.name || name as string) // ap/switch name from data || venue name from filter
-          : props.title}
-      </Loader>}
-      extra={[
-        <NetworkFilter
-          key='network-filter'
-          shouldQuerySwitch={shouldQuerySwitch}
-          withIncidents={withIncidents}
-        />,
-        <RangePicker
-          key='range-picker'
-          selectedRange={{
-            startDate: moment(startDate),
-            endDate: moment(endDate)
-          }}
-          enableDates={dateRangeForLast(3, 'months')}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />
-      ]}
-    />
-  </ConnectedHeaderWrapper>
+  return <PageHeader
+    {...props}
+    subTitle={<Loader states={[state]} fallback={<Spinner size='small' />}>
+      {useSubTitle(results.data?.subTitle || [], type)}
+    </Loader>}
+    title={<Loader states={[state]} fallback={<Spinner size='default' />}>
+      {filter || path.length > 1 ?
+        (results.data?.name || name as string) // ap/switch name from data || venue name from filter
+        : props.title}
+    </Loader>}
+    extra={[
+      <NetworkFilter
+        key='network-filter'
+        shouldQuerySwitch={shouldQuerySwitch}
+        withIncidents={withIncidents}
+      />,
+      <RangePicker
+        key='range-picker'
+        selectedRange={{
+          startDate: moment(startDate),
+          endDate: moment(endDate)
+        }}
+        enableDates={dateRangeForLast(3, 'months')}
+        onDateApply={setDateFilter as CallableFunction}
+        showTimePicker
+        selectionType={range}
+      />
+    ]}
+  />
 }
 
 export default Header

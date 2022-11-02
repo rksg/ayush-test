@@ -11,7 +11,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { ServicesTable } from '.'
+import ServicesTable from '.'
 
 const mockTableResult = {
   totalCount: 3,

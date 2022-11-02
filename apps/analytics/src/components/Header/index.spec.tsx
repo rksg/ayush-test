@@ -1,3 +1,5 @@
+import { BrowserRouter } from 'react-router-dom'
+
 import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
@@ -29,14 +31,18 @@ describe('Analytics header', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
       data: header1.queryResult
     })
-    render(<Provider> <Header title={''} shouldQuerySwitch/></Provider>)
+    render(<BrowserRouter><Provider>
+      <Header title={''} shouldQuerySwitch/>
+    </Provider></BrowserRouter>)
     expect(screen.getAllByRole('img', { name: 'loader' })).toHaveLength(2)
   })
   it('should render header', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
       data: header4.queryResult
     })
-    render(<Provider><Header title={'Title'} shouldQuerySwitch/></Provider>)
+    render(<BrowserRouter><Provider>
+      <Header title={'Title'} shouldQuerySwitch/>
+    </Provider></BrowserRouter>)
     expect(await screen.findByTitle('Venue')).toHaveTextContent('Type:')
     expect(await screen.findByText('Clients: 100')).toBeVisible()
     expect(await screen.findByText('IP Address: ip2 (3)')).toBeVisible()

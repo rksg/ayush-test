@@ -1,13 +1,18 @@
 import { Incident } from '@acx-ui/analytics/utils'
 
-import apDisconnectionCountChart          from './charts/ApDisconnectionCountChart'
-import attemptAndFailureChart             from './charts/AttemptAndFailureChart'
-import clientCountChart                   from './charts/ClientCountChart'
-import downtimeEventTypeDistributionChart from './charts/DowntimeEventTypeDistributionChart'
-import failureChart                       from './charts/FailureChart'
-import rssQualityByClientsChart           from './charts/RssQualityByClientsChart'
-import ttcByFailureTypeChart              from './charts/TtcByFailureTypeChart'
-import ttcFailureChart                    from './charts/TtcFailureChart'
+import apDisconnectionCountChart          from './Charts/ApDisconnectionCountChart'
+import apPoeImpactChart                   from './Charts/ApPoeImpactChart'
+import apRebootBySystemChart              from './Charts/ApRebootBySystemChart'
+import apWanthroughputImpactChart         from './Charts/ApWanthroughputImpactChart'
+import attemptAndFailureChart             from './Charts/AttemptAndFailureChart'
+import clientCountChart                   from './Charts/ClientCountChart'
+import connectedClientsChartChart         from './Charts/ConnectedClientsChart'
+import downtimeEventTypeDistributionChart from './Charts/DowntimeEventTypeDistributionChart'
+import failureChart                       from './Charts/FailureChart'
+import rebootedAPsCountChart              from './Charts/RebootedAPsCountChart'
+import rssQualityByClientsChart           from './Charts/RssQualityByClientsChart'
+import ttcByFailureTypeChart              from './Charts/TtcByFailureTypeChart'
+import ttcFailureChart                    from './Charts/TtcFailureChart'
 
 import type { TimeSeriesChartProps } from './types'
 
@@ -24,7 +29,12 @@ export enum TimeSeriesChartTypes {
   TtcFailureChart,
   TtcByFailureTypeChart,
   ApDisconnectionCountChart,
-  DowntimeEventTypeDistributionChart
+  DowntimeEventTypeDistributionChart,
+  ApRebootBySystemChart,
+  ConnectedClientsChart,
+  RebootedApsCountChart,
+  ApPoeImpactChart,
+  ApWanThroughputImpactChart
 }
 
 export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
@@ -35,5 +45,10 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.TtcFailureChart]: ttcFailureChart,
   [TimeSeriesChartTypes.TtcByFailureTypeChart]: ttcByFailureTypeChart,
   [TimeSeriesChartTypes.ApDisconnectionCountChart]: apDisconnectionCountChart,
-  [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart]: downtimeEventTypeDistributionChart
+  [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart]: downtimeEventTypeDistributionChart,
+  [TimeSeriesChartTypes.ApRebootBySystemChart]: apRebootBySystemChart,
+  [TimeSeriesChartTypes.ConnectedClientsChart]: connectedClientsChartChart,
+  [TimeSeriesChartTypes.RebootedApsCountChart]: rebootedAPsCountChart,
+  [TimeSeriesChartTypes.ApPoeImpactChart]: apPoeImpactChart,
+  [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactChart
 }

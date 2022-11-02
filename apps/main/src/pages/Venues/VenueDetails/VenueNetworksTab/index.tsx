@@ -115,7 +115,7 @@ export function VenueNetworksTab () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
         )
       }
     },

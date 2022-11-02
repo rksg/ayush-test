@@ -177,6 +177,7 @@ export function LanPorts () {
           label={$t({ defaultMessage: 'AP Model' })}
           initialValue={null}
           children={<Select
+            data-testid='apModelSelect'
             options={[
               { label: $t({ defaultMessage: 'No model selected' }), value: null },
               ...apModelsOptions

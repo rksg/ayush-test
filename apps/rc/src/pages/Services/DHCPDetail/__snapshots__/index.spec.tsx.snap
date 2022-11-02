@@ -3,7 +3,7 @@
 exports[`DHCP Detail Page should render detail page 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -192,7 +192,7 @@ exports[`DHCP Detail Page should render detail page 1`] = `
             </h3>
             <div>
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 dvVAeG"
               >
                 <div
                   class="ant-pro-table"

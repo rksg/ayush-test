@@ -17,7 +17,7 @@ import {
   venueListResponse
 } from '../__tests__/fixtures'
 import { radiusErrorMessage, multipleConflictMessage } from '../contentsMap'
-import { NetworkForm }                                 from '../NetworkForm'
+import NetworkForm                                     from '../NetworkForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -211,7 +211,7 @@ describe('NetworkForm', () => {
     expect(authBtn).toBeVisible()
     expect(authBtn).toBeDisabled()
     expect(accBtn).toBeVisible()
-    expect(diagram[1].src).toContain('aaa-proxy.png')
+    expect(diagram[1].src).toContain('aaa.png')
 
     await userEvent.click(accBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
@@ -221,7 +221,7 @@ describe('NetworkForm', () => {
 
     await userEvent.click(authBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
-    expect(diagram[1].src).toContain('aaa-proxy.png')
+    expect(diagram[1].src).toContain('aaa.png')
   })
 
   it('IP address and Port combinations must be unique', async () => {
