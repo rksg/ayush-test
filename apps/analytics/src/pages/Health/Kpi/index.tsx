@@ -135,7 +135,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
     isLoading: thresholdPermission.isLoading
   }
 
-  const fetchingDefault = {
+  const fetchingCustomThresholds = {
     isFetching: defaultQuery.isFetching,
     isLoading: defaultQuery.isLoading,
     data: defaultQuery.data
@@ -148,6 +148,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
     ? true
     : undefined
 
+  // add permission & custom query to loader below tabs
   return (
     <>
       {kpis.map((kpi) => (
@@ -163,19 +164,21 @@ export default function KpiSection (props: { tab: HealthTab }) {
                 />
               </GridCol>
               <GridCol col={{ span: 19 }}>
-                <KpiTimeseries filters={filters}
+                <KpiTimeseries
+                  filters={filters}
                   kpi={kpi as unknown as keyof typeof kpiConfig}
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                   chartRef={connectChart}
                   setTimeWindow={setTimeWindow}
-                  {...(defaultZoom ? {} : { timeWindow })}
+                  {...(defaultZoom ? { timeWindow: undefined } : { timeWindow })}
                 />
               </GridCol>
             </GridRow>
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
             {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
-              <Histogram filters={filters}
+              <Histogram
+                filters={filters}
                 kpi={kpi}
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}
@@ -183,7 +186,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
                 onReset={() => onReset(kpi as keyof KpiThresholdType)}
                 onApply={() => onApply(kpi as keyof KpiThresholdType)}
                 canSave={canSave}
-                fetchingDefault={fetchingDefault}
+                fetchingDefault={fetchingCustomThresholds}
                 isNetwork={isNetwork}
               />
             ) : (
