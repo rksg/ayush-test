@@ -38,17 +38,10 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     deleteAp: build.mutation<AP, RequestPayload>({
       query: ({ params, payload }) => {
-        if(payload){ //delete multiple rows
-          const req = createHttpRequest(WifiUrlsInfo.deleteAps, params)
-          return {
-            ...req,
-            body: payload
-          }
-        }else{ //delete single row
-          const req = createHttpRequest(WifiUrlsInfo.deleteAp, params)
-          return {
-            ...req
-          }
+        const req = createHttpRequest(WifiUrlsInfo.deleteAps, params)
+        return {
+          ...req,
+          ...(!!payload && { body: payload })
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]

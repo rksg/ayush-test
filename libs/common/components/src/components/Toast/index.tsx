@@ -41,7 +41,7 @@ export const showToast = (config: ToastProps): string | number => {
 }
 
 const toastContent = (key: string | number, config: ToastProps) => {
-  const { content, extraContent, link, type: toastType, onClose, closable } = config
+  const { content, extraContent, link, type: toastType, onClose, closable = true } = config
   return (
     <UI.Toast>
       <UI.Content>
@@ -55,7 +55,7 @@ const toastContent = (key: string | number, config: ToastProps) => {
           )
         }
       </UI.Content>
-      { closable !== false && (
+      { closable && (
         <UI.CloseButton onClick={() => {
           message.destroy(key)
           if (onClose) onClose()

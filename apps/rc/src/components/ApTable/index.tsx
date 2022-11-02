@@ -212,7 +212,6 @@ export function ApTable (props?: ApTableProps) {
     }, {
       key: 'clients',
       title: $t({ defaultMessage: 'Clients' }),
-      // title: $t({ defaultMessage: 'Connected Clients' }),
       dataIndex: 'clients',
       align: 'center',
       render: (data, row) => (
