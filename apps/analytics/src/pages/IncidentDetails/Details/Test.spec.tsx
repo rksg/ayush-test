@@ -42,6 +42,15 @@ jest.mock('../IncidentDetails/TimeSeries')
 jest.mock('../Charts/RssDistributionChart', () => ({
   RssDistributionChart: () => <div data-testid='rssDistributionChart' />
 }))
+jest.mock('../Tables/PoeLowTable', () => ({
+  PoeLowTable: () => <div data-testid='poeLowTable' />
+}))
+jest.mock('../Tables/PoePdTable', () => ({
+  PoePdTable: () => <div data-testid='poePdTable' />
+}))
+jest.mock('../Tables/WanthroughputTable', () => ({
+  WanthroughputTable: () => <div data-testid='wanthroughputTable' />
+}))
 
 describe('Test', () => {
   fixtures.mockTimeSeries()
@@ -54,105 +63,120 @@ describe('Test', () => {
         fakeIncident: fakeIncidentPoeLow,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: ['poeLowTable']
       },
       {
         component: ApinfraWanthroughputLow,
         fakeIncident: fakeIncidentApInfraWanthroughput,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: ['wanthroughputTable']
       },
       {
         component: ApservContinuousReboots,
         fakeIncident: fakeIncidentContReboot,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: ApservDowntimeHigh,
         fakeIncident: fakeIncidentDowntimeHigh,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: ApservHighNumReboots,
         fakeIncident: fakeIncidentHighReboot,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: AssocFailure,
         fakeIncident: fakeIncident1,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: AuthFailure,
         fakeIncident: fakeIncident1,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: CovClientrssiLow,
         fakeIncident: fakeIncidentRss,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: ['rssDistributionChart']
+        charts: ['rssDistributionChart'],
+        tables: []
       },
       {
         component: DhcpFailure,
         fakeIncident: fakeIncident1,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: EapFailure,
         fakeIncident: fakeIncident1,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: RadiusFailure,
         fakeIncident: fakeIncident1,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: SwitchMemoryHigh,
         fakeIncident: fakeIncidentSwitchMemory,
         hasNetworkImpact: false,
         hasTimeSeries: false,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: SwitchPoePd,
         fakeIncident: fakeIncidentPoePd,
         hasNetworkImpact: false,
         hasTimeSeries: false,
-        charts: []
+        charts: [],
+        tables: ['poePdTable']
       },
       {
         component: SwitchVlanMismatch,
         fakeIncident: fakeIncidentPoePd,
         hasNetworkImpact: false,
         hasTimeSeries: false,
-        charts: []
+        charts: [],
+        tables: []
       },
       {
         component: Ttc,
         fakeIncident: fakeIncidentTtc,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: [],
+        tables: []
       }
     ].forEach((test) => {
       it(`should render ${test.component.name} correctly`, () => {
@@ -178,6 +202,9 @@ describe('Test', () => {
         }
         test.charts.forEach(chart => {
           expect(screen.getByTestId(chart)).toBeVisible()
+        })
+        test.tables.forEach(table => {
+          expect(screen.getByTestId(table)).toBeVisible()
         })
         expect(asFragment()).toMatchSnapshot()
       })

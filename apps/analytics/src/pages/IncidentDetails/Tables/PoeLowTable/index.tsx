@@ -3,11 +3,11 @@ import React, { useMemo, useState } from 'react'
 import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { noDataSymbol }              from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table } from '@acx-ui/components'
-import { useTenantLink, Link }       from '@acx-ui/react-router-dom'
+import { noDataSymbol }                      from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, NoData } from '@acx-ui/components'
+import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
 
-import { ImpactedTableProps, defaultSort } from '../utils'
+import { ImpactedTableProps, defaultSort, json2keymap } from '../utils'
 
 import poeApPwrModeEnumMap                      from './poeApPwrModeEnumMap.json'
 import poeCurPwrSrcEnumMap                      from './poeCurPwrSrcEnumMap.json'
@@ -36,26 +36,16 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
   }) })
   const basePath = useTenantLink('/analytics/incidents/')
 
-  const json2keymap = (keyFields: string[], field: string, filter: string[]) =>
-    (...mappings: any[]) => mappings
-    // (...mappings: Array<{id: number, code: string, text: string}>[]) => mappings
-      .flatMap(items => items)
-      .filter(item => !filter.includes(item[field]))
-      .reduce((map, item) => map.set(
-        keyFields.map(keyField => item[keyField]).join('-'),
-        item[field]
-      ), new Map())
-
   const pwrModeMap = json2keymap(['code'], 'text', [''])(poeApPwrModeEnumMap)
   const pwrSrcMap = json2keymap(['code'], 'text', [''])(poeCurPwrSrcEnumMap)
 
-  const convertData = (data: ImpactedAP[]) => (
-    data.map(datum => {
+  const convertData = (data?: ImpactedAP[]) => (
+    data!.map(datum => {
       const configured = datum.poeMode.configured
       const operating = datum.poeMode.operating
       return {
-        name: data[0].name,
-        mac: data[0].mac,
+        name: data![0].name,
+        mac: data![0].mac,
         configured: pwrModeMap.get(configured),
         operating: pwrSrcMap.get(operating),
         eventTime: datum.poeMode.eventTime,
@@ -139,15 +129,17 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
 
   return (
     <Loader states={[queryResults]}>
-      <Table
-        type='tall'
-        dataSource={convertData(queryResults.data!)}
-        columns={columnHeaders}
-        rowKey='id'
-        showSorterTooltip={false}
-        columnEmptyText={noDataSymbol}
-        indentSize={6}
-      />
+      {queryResults.data ?
+        <Table
+          type='tall'
+          dataSource={convertData(queryResults.data)}
+          columns={columnHeaders}
+          rowKey='id'
+          showSorterTooltip={false}
+          columnEmptyText={noDataSymbol}
+          indentSize={6}
+        />
+        : <NoData />}
     </Loader>
   )
 }

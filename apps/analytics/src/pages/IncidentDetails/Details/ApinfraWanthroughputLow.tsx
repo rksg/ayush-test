@@ -12,7 +12,7 @@ import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
-import WanthroughputTable                    from '../Tables/WanthroughputTable'
+import { WanthroughputTable }                from '../Tables/WanthroughputTable'
 import { TimeSeries }                        from '../TimeSeries'
 import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 

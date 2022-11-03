@@ -2,15 +2,16 @@ import { gql } from 'graphql-request'
 
 import { dataApi } from '@acx-ui/analytics/services'
 
+interface ImpactedApPoeMode {
+  configured: string
+  operating: string
+  eventTime: number
+  apGroup: string
+}
 export interface ImpactedAP {
   name: string
   mac: string
-  poeMode: {
-    configured: string
-    operating: string
-    eventTime: number
-    apGroup: string
-  }
+  poeMode: ImpactedApPoeMode
 }
 
 export interface RequestPayload {

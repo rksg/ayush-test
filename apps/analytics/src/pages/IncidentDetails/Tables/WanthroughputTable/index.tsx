@@ -3,9 +3,9 @@ import React, { useMemo, useState } from 'react'
 import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { noDataSymbol }              from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table } from '@acx-ui/components'
-import { useTenantLink, Link }       from '@acx-ui/react-router-dom'
+import { noDataSymbol }                      from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, NoData } from '@acx-ui/components'
+import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
 
 import { ImpactedTableProps, defaultSort } from '../utils'
 
@@ -131,15 +131,17 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
 
   return (
     <Loader states={[queryResults]}>
-      <Table
-        type='tall'
-        dataSource={convertData(queryResults.data!)}
-        columns={columnHeaders}
-        rowKey='id'
-        showSorterTooltip={false}
-        columnEmptyText={noDataSymbol}
-        indentSize={6}
-      />
+      {queryResults.data ?
+        <Table
+          type='tall'
+          dataSource={convertData(queryResults.data!)}
+          columns={columnHeaders}
+          rowKey='id'
+          showSorterTooltip={false}
+          columnEmptyText={noDataSymbol}
+          indentSize={6}
+        />
+        : <NoData />}
     </Loader>
   )
 }

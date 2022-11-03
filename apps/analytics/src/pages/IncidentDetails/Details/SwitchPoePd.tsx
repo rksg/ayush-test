@@ -9,7 +9,7 @@ import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
-import PoePdTable                         from '../Tables/PoePdTable'
+import { PoePdTable }                     from '../Tables/PoePdTable'
 
 import * as UI from './styledComponents'
 
