@@ -9,9 +9,9 @@ function Services () {
   const isServicesEnabled = useSplitTreatment(Features.SERVICES)
   const { $t } = useIntl()
 
-  // if (!isServicesEnabled) {
-  //   return <span>{ $t({ defaultMessage: 'Services is not enabled' }) }</span>
-  // }
+  if (!isServicesEnabled) {
+    return <span>{ $t({ defaultMessage: 'Services is not enabled' }) }</span>
+  }
 
   return (
     <Loader>
