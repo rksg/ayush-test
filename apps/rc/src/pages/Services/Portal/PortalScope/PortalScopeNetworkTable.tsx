@@ -120,11 +120,16 @@ export default function PortalScopeNetworkTable () {
 
   useEffect(()=>{
     if (tableQuery.data) {
-      const data = tableQuery.data.data.map(item => ({
-        ...item,
-        // work around of read-only records from RTKQ
-        activated: { ...item.activated }
-      }))
+      const data = tableQuery.data.data.reduce((obj: PortalNetwork[],item) =>{
+        if(item.nwSubType==='guest'){
+          obj.push({
+            ...item,
+            // work around of read-only records from RTKQ
+            activated: { ...item.activated }
+          })
+        }
+        return obj
+      },[])
       if (tableData.length && activateNetworks.length) {
         setTableDataActivate(data, activateNetworks)
       } else {
