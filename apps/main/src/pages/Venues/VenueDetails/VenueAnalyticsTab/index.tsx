@@ -1,20 +1,43 @@
-
 import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Tabs }                     from '@acx-ui/components'
-import { useLocation, useNavigate } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }          from '@acx-ui/utils'
+import { useAnalyticsFilter, AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { Tabs }                                from '@acx-ui/components'
+import { useVenueDetailsHeaderQuery }          from '@acx-ui/rc/services'
+import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { defaultNetworkPath, notAvailableMsg } from '@acx-ui/utils'
 
 export function VenueAnalyticsTab () {
   const { $t } = useIntl()
   const basePath = useLocation()
   const navigate = useNavigate()
-  const onTabChange = (tab:string) =>
+  const params = useParams()
+  const { data } = useVenueDetailsHeaderQuery({ params })
+  const { filters } = useAnalyticsFilter()
+  const venueName = data?.venue.name
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const healthFilter = {
+    ...filters,
+    path: [{ type: 'zone', name: venueName }]
+  } as AnalyticsFilter
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const incidentFilter = {
+    ...filters,
+    filter: {
+      networkNodes: [[{ type: 'zone', name: venueName }]],
+      switchNodes: [[{ type: 'switchGroup', name: venueName }]]
+    },
+    path: defaultNetworkPath
+  } as AnalyticsFilter
+
+  const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
       search: `?venueAnalytics=${tab}`
     }, { replace: true })
+  }
 
   return (
     <Tabs
