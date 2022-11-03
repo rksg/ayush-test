@@ -9,7 +9,7 @@ import { render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import Photo                     from '../../../../assets/images/portal-demo/main-photo.svg'
 import Powered                   from '../../../../assets/images/portal-demo/powered-logo-img.svg'
-import Logopng                   from '../../../../assets/images/portal-demo/small-logo-img.png'
+import Logo                      from '../../../../assets/images/portal-demo/small-logo-img.png'
 import { PortalDemoDefaultSize } from '../../commonUtils'
 import PortalFormContext         from '../PortalForm/PortalFormContext'
 
@@ -23,7 +23,7 @@ const mockDemo = {
   welcomeSize: PortalDemoDefaultSize.welcomeSize,
   photo: Photo,
   photoSize: PortalDemoDefaultSize.photoSize,
-  logo: Logopng,
+  logo: Logo,
   logoSize: PortalDemoDefaultSize.logoSize,
   secondaryText: 'Lorem ipsum dolor sit amet, '+
   'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',

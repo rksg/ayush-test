@@ -7,9 +7,9 @@ import PortalDemo from '../PortalDemo'
 
 
 const PortalSettingForm = (props:{
-  resestDemoField: () => void
+  resetDemoField: () => void
 }) => {
-  const { resestDemoField } = props
+  const { resetDemoField } = props
   const { $t } = useIntl()
   return (
     <>
@@ -35,7 +35,7 @@ const PortalSettingForm = (props:{
           <Form.Item
             name='demo'
             label={$t({ defaultMessage: 'Demo' })}
-            children={<PortalDemo resetDemo={() => resestDemoField()}/>}
+            children={<PortalDemo resetDemo={() => resetDemoField()}/>}
           />
         </Col>
       </Row>
