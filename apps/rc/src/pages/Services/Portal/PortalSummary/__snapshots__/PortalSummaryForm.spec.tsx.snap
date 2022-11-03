@@ -1,0 +1,229 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SummaryForm should render portal summary successfully 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <h3
+      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+    >
+      Summary
+    </h3>
+    <div
+      class="ant-row"
+    >
+      <h4
+        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+      >
+        Settings
+      </h4>
+    </div>
+    <div
+      class="ant-row"
+      style="margin-left: -10px; margin-right: -10px;"
+    >
+      <div
+        class="ant-col ant-col-5"
+        style="padding-left: 10px; padding-right: 10px;"
+      >
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
+                title="Service Name:"
+              >
+                Service Name
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-5"
+        style="padding-left: 10px; padding-right: 10px;"
+      >
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
+                title="Language:"
+              >
+                Language
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  English
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-10"
+        style="padding-left: 10px; padding-right: 10px;"
+      >
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
+                title="Alternative languages:"
+              >
+                Alternative languages
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  Czech  Finnish  French  German  Greek  Hungarian  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-row"
+      style="margin-left: -10px; margin-right: -10px;"
+    >
+      <div
+        class="ant-col ant-col-5"
+        style="padding-left: 10px; padding-right: 10px;"
+      >
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
+                title="WiFi4EU :"
+              >
+                WiFi4EU 
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  OFF
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-5"
+        style="padding-left: 10px; padding-right: 10px;"
+      >
+        <div
+          class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
+        >
+          Preview
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-row"
+    >
+      <div
+        class="ant-col"
+      >
+        <h4
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+        >
+          Wireless Networks (2)
+        </h4>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <li
+                    style="margin: 10px 0px;"
+                  >
+                    efef32751d854e2ea2bfce4b367c330c
+                  </li>
+                  <li
+                    style="margin: 10px 0px;"
+                  >
+                    1d88235da9504a98847fb5ed2b971052
+                  </li>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;

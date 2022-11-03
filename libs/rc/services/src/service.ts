@@ -234,6 +234,33 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
 
       },
+
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortal: build.query<Portal | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
+        if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        return result as QueryReturnValue<Portal,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    savePortal: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload }) => {
+        const createPortalReq = createHttpRequest(
+          PortalUrlsInfo.savePortal, params
+        )
+        return {
+          ...createPortalReq,
+          body: payload
+        }
+      },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
@@ -275,6 +302,8 @@ export const {
   useDeleteMdnsProxyMutation,
   useDeleteMdnsProxyListMutation,
   useDeleteWifiCallingServiceMutation,
+  useGetPortalQuery,
+  useSavePortalMutation,
   usePortalNetworkInstancesQuery,
-  useGetPortalProfileDetailQuery
+  useGetPortalProfileDetailQuery  
 } = serviceApi

@@ -199,7 +199,7 @@
           margin-right: 0;
           margin-left: 3px;
         }
-        
+
         > svg {
           order: -1
         }
@@ -785,5 +785,20 @@
   .gm-style-iw-d {
     overflow: hidden !important;
     max-height: 255px !important;
+  }
+  .uipopover{
+    z-index: 0;
+    padding-top: 0px;
+    .ant-popover-arrow{
+      display:none;
+    }
+    .ant-popover-inner{
+      border-radius: 0;
+      border:1px solid var(--acx-neutrals-50);
+      .ant-popover-inner-content {
+        padding: 10px 10px;
+    }
+    }
+
   }
 }

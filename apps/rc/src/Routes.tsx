@@ -9,6 +9,7 @@ import NetworkForm         from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable       from './pages/Networks/NetworksTable'
 import DHCPForm            from './pages/Services/DHCPForm/DHCPForm'
 import MdnsProxyForm       from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import PortalForm          from './pages/Services/Portal/PortalForm/PortalForm'
 import PortalServiceDetail from './pages/Services/Portal/PortalDetail'
 import SelectServiceForm   from './pages/Services/SelectServiceForm'
 import {
@@ -101,6 +102,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<h1>DHCP details page</h1>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
+        element={<PortalForm/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}

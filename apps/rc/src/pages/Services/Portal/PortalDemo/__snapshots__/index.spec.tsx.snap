@@ -1,0 +1,525 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PortalDemo should render portal demo preview successfully 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="ant-alert ant-alert-error styledComponents__AlertStyle-sc-1c2evo5-0 lfjPoV"
+      data-show="true"
+      role="alert"
+      style="width: 400px; position: absolute; height: 30px; left: 37px; top: -33px;"
+    >
+      <span
+        aria-label="close-circle"
+        class="anticon anticon-close-circle ant-alert-icon"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          data-icon="close-circle"
+          fill="currentColor"
+          focusable="false"
+          height="1em"
+          viewBox="64 64 896 896"
+          width="1em"
+        >
+          <path
+            d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
+          />
+        </svg>
+      </span>
+      <div
+        class="ant-alert-content"
+      >
+        <div
+          class="ant-alert-message"
+        >
+          WiFi4EU is enabled but not configured!
+        </div>
+      </div>
+    </div>
+    <div
+      class="styledComponents__LayoutHeader-sc-cby53p-14 eHjzlu"
+    >
+      <div
+        class="ant-row"
+      >
+        <div
+          class="ant-col"
+          style="flex: 0 0 305px;"
+        >
+          <label
+            class="styledComponents__Label-sc-cby53p-12 llMFdC"
+          >
+            View as:
+          </label>
+          <div
+            class="ant-select styledComponents__Select-sc-cby53p-13 iItVdp ant-select-single ant-select-show-arrow"
+            style="width: 250px;"
+          >
+            <div
+              class="ant-select-selector"
+            >
+              <span
+                class="ant-select-selection-search"
+              >
+                <input
+                  aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
+                  aria-autocomplete="list"
+                  aria-controls="rc_select_TEST_OR_SSR_list"
+                  aria-haspopup="listbox"
+                  aria-owns="rc_select_TEST_OR_SSR_list"
+                  autocomplete="off"
+                  class="ant-select-selection-search-input"
+                  id="rc_select_TEST_OR_SSR"
+                  readonly=""
+                  role="combobox"
+                  style="opacity: 0;"
+                  type="search"
+                  unselectable="on"
+                  value=""
+                />
+              </span>
+              <span
+                class="ant-select-selection-item"
+                title="Click Through"
+              >
+                Click Through
+              </span>
+            </div>
+            <span
+              aria-hidden="true"
+              class="ant-select-arrow"
+              style="user-select: none;"
+              unselectable="on"
+            >
+              <span
+                aria-label="down"
+                class="anticon anticon-down ant-select-suffix"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="down"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                  />
+                </svg>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div
+          class="ant-col"
+          style="flex: 0 0 20px;"
+        >
+          <div
+            class="styledComponents__FieldExtraTooltip-sc-cby53p-15 gqGOAB"
+          >
+            <img
+              class="styledComponents__Img-sc-cby53p-16 hGxGzA"
+              src="question.svg"
+            />
+          </div>
+        </div>
+        <div
+          class="ant-col"
+          style="flex: 0 0 157px;"
+        >
+          <img
+            alt="deskicon"
+            class="styledComponents__ImgDesk-sc-cby53p-4 DycTz"
+            src="pc_selected.svg"
+          />
+          <img
+            alt="tableticon"
+            class="styledComponents__ImgTablet-sc-cby53p-5 hUsCWQ"
+            src="pad.svg"
+          />
+          <img
+            alt="mobileicon"
+            class="styledComponents__ImgMobile-sc-cby53p-6 lakBQl"
+            src="mobile.svg"
+          />
+        </div>
+      </div>
+    </div>
+    <section
+      class="ant-layout styledComponents__LayoutContent-sc-cby53p-9 cAxKxJ"
+      id="democontent"
+    >
+      <section
+        class="ant-layout styledComponents__LayoutView-sc-cby53p-10 jDpihB"
+        style="background-image: url();"
+      >
+        <section
+          class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-11 ibtgTw"
+          isbg="false"
+        >
+          <img
+            alt="Wifi4eu"
+            class="styledComponents__Img-sc-cby53p-16 hGxGzA"
+            height="120"
+            src="wifi4eu-banner.png"
+          />
+          <div
+            class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
+          >
+            Czech   Finnish   French   German   Hungarian   
+          </div>
+          <img
+            alt="Logo"
+            class="styledComponents__Img-sc-cby53p-16 hGxGzA"
+            src="small-logo-img.png"
+            style="height: 105px; max-width: 425px;"
+          />
+          <input
+            class="styledComponents__Input-sc-cby53p-18 lafdeX"
+            style="height: 25px; width: 280px; max-width: 425px; font-size: 14px;"
+            type="text"
+            value="Welcome to the Guest Access login page"
+          />
+          <img
+            alt="Photo png"
+            class="styledComponents__Img-sc-cby53p-16 hGxGzA"
+            src="main-photo.svg"
+            style="height: 170px; max-width: 425px;"
+          />
+          <div
+            class="styledComponents__FieldText-sc-cby53p-19 jnKkCj"
+            style="line-height: 24px; max-width: 425px; font-size: 14px;"
+          >
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
+          </div>
+          <button
+            class="styledComponents__PortalButton-sc-cby53p-23 eRnPwL"
+          >
+            Connect To Wi-Fi
+          </button>
+          <div
+            class="styledComponents__FieldText-sc-cby53p-19 jnKkCj"
+          >
+            By clicking the connect button, you are accepting the  
+            <div
+              class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
+            >
+              terms & conditions
+            </div>
+          </div>
+          <div
+            class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
+            style="padding-left: 200px;"
+          >
+            <div>
+              <div
+                class="styledComponents__FieldText-sc-cby53p-19 jnKkCj"
+                style="font-size: 14px; line-height: 24px; max-width: 425px; text-align: left;"
+              >
+                Powered By
+              </div>
+              <img
+                alt="Powered by"
+                class="styledComponents__Img-sc-cby53p-16 hGxGzA"
+                src="powered-logo-img.svg"
+                style="margin-left: 40px; height: 50px; max-width: 425px;"
+              />
+            </div>
+          </div>
+        </section>
+      </section>
+    </section>
+  </form>
+</DocumentFragment>
+`;
+
+exports[`PortalDemo should render portal demo successfully 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="ant-alert ant-alert-error styledComponents__AlertStyle-sc-1c2evo5-0 lfjPoV"
+      data-show="true"
+      role="alert"
+      style="width: 400px; position: absolute; height: 30px; left: 37px; top: -33px;"
+    >
+      <span
+        aria-label="close-circle"
+        class="anticon anticon-close-circle ant-alert-icon"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          data-icon="close-circle"
+          fill="currentColor"
+          focusable="false"
+          height="1em"
+          viewBox="64 64 896 896"
+          width="1em"
+        >
+          <path
+            d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
+          />
+        </svg>
+      </span>
+      <div
+        class="ant-alert-content"
+      >
+        <div
+          class="ant-alert-message"
+        >
+          WiFi4EU is enabled but not configured!
+        </div>
+      </div>
+    </div>
+    <div
+      class="styledComponents__LayoutHeader-sc-cby53p-14 eHjzlu"
+    >
+      <div
+        class="ant-row"
+      >
+        <div
+          class="ant-col"
+          style="flex: 0 0 345px;"
+        >
+          <label
+            class="styledComponents__Label-sc-cby53p-12 llMFdC"
+          >
+            View as:
+          </label>
+          <div
+            class="ant-select styledComponents__Select-sc-cby53p-13 iItVdp ant-select-single ant-select-show-arrow"
+            style="width: 300px;"
+          >
+            <div
+              class="ant-select-selector"
+            >
+              <span
+                class="ant-select-selection-search"
+              >
+                <input
+                  aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
+                  aria-autocomplete="list"
+                  aria-controls="rc_select_TEST_OR_SSR_list"
+                  aria-haspopup="listbox"
+                  aria-owns="rc_select_TEST_OR_SSR_list"
+                  autocomplete="off"
+                  class="ant-select-selection-search-input"
+                  id="rc_select_TEST_OR_SSR"
+                  readonly=""
+                  role="combobox"
+                  style="opacity: 0;"
+                  type="search"
+                  unselectable="on"
+                  value=""
+                />
+              </span>
+              <span
+                class="ant-select-selection-item"
+                title="Click Through"
+              >
+                Click Through
+              </span>
+            </div>
+            <span
+              aria-hidden="true"
+              class="ant-select-arrow"
+              style="user-select: none;"
+              unselectable="on"
+            >
+              <span
+                aria-label="down"
+                class="anticon anticon-down ant-select-suffix"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="down"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                  />
+                </svg>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div
+          class="ant-col"
+          style="flex: 0 0 20px;"
+        >
+          <div
+            class="styledComponents__FieldExtraTooltip-sc-cby53p-15 gqGOAB"
+          >
+            <img
+              class="styledComponents__Img-sc-cby53p-16 hGxGzA"
+              src="question.svg"
+            />
+          </div>
+        </div>
+        <div
+          class="ant-col"
+          style="flex: 0 0 157px;"
+        >
+          <img
+            alt="deskicon"
+            class="styledComponents__ImgDesk-sc-cby53p-4 DycTz"
+            src="pc_selected.svg"
+          />
+          <img
+            alt="tableticon"
+            class="styledComponents__ImgTablet-sc-cby53p-5 hUsCWQ"
+            src="pad.svg"
+          />
+          <img
+            alt="mobileicon"
+            class="styledComponents__ImgMobile-sc-cby53p-6 lakBQl"
+            src="mobile.svg"
+          />
+        </div>
+        <div
+          class="ant-col"
+          style="flex-basis: auto; text-align: right; padding-right: 5px;"
+        >
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD styledComponents__Popover-sc-cby53p-41"
+            type="button"
+          >
+            <span>
+              Language Settings
+            </span>
+          </button>
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD styledComponents__Popover-sc-cby53p-41"
+            type="button"
+          >
+            <span>
+              Components
+            </span>
+          </button>
+          <button
+            class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD"
+            type="button"
+          >
+            <span>
+              Reset
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <section
+      class="ant-layout styledComponents__LayoutContent-sc-cby53p-9 cAxKxJ"
+      id="democontent"
+    >
+      <img
+        alt="background setting"
+        class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
+        src="imgToggle.svg"
+        style="position: absolute; left: 10px; top: 60px; cursor: pointer;"
+      />
+      <section
+        class="ant-layout styledComponents__LayoutView-sc-cby53p-10 jDpihB"
+        style="background-image: url();"
+      >
+        <section
+          class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-11 ibtgTw"
+          isbg="false"
+        >
+          <img
+            alt="Wifi4eu"
+            class="styledComponents__Img-sc-cby53p-16 hGxGzA"
+            height="120"
+            src="wifi4eu-banner.png"
+          />
+          <div
+            class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
+          >
+            Czech   Finnish   French   German   Hungarian   
+          </div>
+          <img
+            alt="Logo"
+            class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
+            src="small-logo-img.png"
+            style="height: 105px; cursor: none; outline: none; max-width: 425px;"
+          />
+          <input
+            class="styledComponents__Input-sc-cby53p-18 lafdeX styledComponents__Popover-sc-cby53p-41"
+            placeholder="welcometext"
+            style="cursor: none; outline: none; height: 25px; width: 280px; max-width: 425px; font-size: 14px;"
+            type="text"
+            value="Welcome to the Guest Access login page"
+          />
+          <img
+            alt="Photo png"
+            class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
+            src="main-photo.svg"
+            style="cursor: none; outline: none; height: 170px; max-width: 425px;"
+          />
+          <div
+            class="styledComponents__FieldText-sc-cby53p-19 jnKkCj styledComponents__Popover-sc-cby53p-41"
+            placeholder="sectexthere"
+            style="cursor: none; outline: none; line-height: 24px; max-width: 425px; font-size: 14px;"
+          >
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
+          </div>
+          <button
+            class="styledComponents__PortalButton-sc-cby53p-23 eRnPwL styledComponents__Popover-sc-cby53p-41"
+            placeholder="buttonsetting"
+            style="cursor: none; outline: none;"
+          >
+            Connect To Wi-Fi
+          </button>
+          <div
+            class="styledComponents__FieldText-sc-cby53p-19 jnKkCj"
+          >
+            By clicking the connect button, you are accepting the  
+            <div
+              class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
+            >
+              terms & conditions
+            </div>
+          </div>
+          <div
+            class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
+            style="padding-left: 200px;"
+          >
+            <div
+              class="styledComponents__Popover-sc-cby53p-41"
+              placeholder="poweredbackground"
+              style="outline: none; cursor: none;"
+            >
+              <div
+                class="styledComponents__FieldText-sc-cby53p-19 jnKkCj styledComponents__Popover-sc-cby53p-41"
+                placeholder="poweredtext"
+                style="font-size: 14px; width: 152px; line-height: 24px; max-width: 425px; text-align: left; cursor: none; outline: none;"
+              >
+                Powered By
+              </div>
+              <img
+                alt="poweredimage"
+                class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
+                src="powered-logo-img.svg"
+                style="margin-left: 50px; cursor: none; outline: none; height: 50px; max-width: 425px;"
+              />
+            </div>
+          </div>
+        </section>
+      </section>
+    </section>
+  </form>
+</DocumentFragment>
+`;

@@ -7,11 +7,12 @@ import { Demo } from '@acx-ui/rc/utils'
 
 import Photo   from '../../../../assets/images/portal-demo/main-photo.svg'
 import Powered from '../../../../assets/images/portal-demo/powered-logo-img.svg'
-import Logopng from '../../../../assets/images/portal-demo/small-logo-img.png'
+import Logo    from '../../../../assets/images/portal-demo/small-logo-img.png'
+import PortalPreviewModal from '../PortalSummary/PortalPreviewModal'
 export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
   const { demoValue } = props
-  const newDemo = { ...demoValue, poweredImg: Powered, logo: Logopng, photo: Photo }
+  const newDemo = { ...demoValue, poweredImg: Powered, logo: Logo, photo: Photo }
   return (
     <Card>
       <div style={{ display: 'flex' }}>
@@ -25,12 +26,11 @@ export default function PortalOverview (props: { demoValue: Demo }) {
           <Typography.Title level={3}>
             {$t({ defaultMessage: 'WiFi4EU Snippet' })}
           </Typography.Title>
-          <Typography.Text>{newDemo?.displayLang}</Typography.Text>
+          <Typography.Text>{newDemo?.componentDisplay.WiFi4EU?
+            $t({ defaultMessage: 'ON' }):$t({ defaultMessage: 'OFF' })}</Typography.Text>
         </div>
         <div>
-          <Typography.Title level={3}><Button type='link' style={{ marginTop: -20 }}>
-            {$t({ defaultMessage: 'Preview' })}
-          </Button></Typography.Title>
+          <Typography.Title level={3}><PortalPreviewModal demoValue={newDemo}/></Typography.Title>
         </div>
       </div>
 
