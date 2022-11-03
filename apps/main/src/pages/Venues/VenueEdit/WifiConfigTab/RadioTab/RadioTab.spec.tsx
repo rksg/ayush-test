@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useSplitTreatment }                                                from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { venueApi }                                                         from '@acx-ui/rc/services'
 import { CommonUrlsInfo, VenueDefaultRegulatoryChannelsForm, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                  from '@acx-ui/store'
@@ -149,7 +149,7 @@ describe('RadioTab', () => {
   }, 20000)
 
   xit('should render Wi-Fi Radio Settings correctly', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
         editContextData: {},

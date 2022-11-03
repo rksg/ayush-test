@@ -16,7 +16,7 @@ import {
   Button,
   Subtitle
 } from '@acx-ui/components'
-import { Features, useSplitTreatment }                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useCloudpathListQuery }                        from '@acx-ui/rc/services'
 import {
@@ -135,7 +135,7 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`

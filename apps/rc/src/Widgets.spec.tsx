@@ -1,5 +1,5 @@
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
-import { render, screen }    from '@acx-ui/test-utils'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { render, screen } from '@acx-ui/test-utils'
 
 import WifiWidgets from './Widgets'
 
@@ -62,12 +62,12 @@ describe('Wi-Fi Widgets', () => {
     expect(screen.getByText('Venue Overview Devices Widget')).toBeTruthy()
   })
   it('should render a Card with name, if widget is not defined and FF enabled', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<WifiWidgets name={'none'}></WifiWidgets>)
     expect(screen.getByText('none')).toBeTruthy()
   })
   it('should not render a Card with name, if widget is not defined and FF disabled', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<WifiWidgets name={'none'}></WifiWidgets>)
     expect(screen.getByText('Coming soon...')).toBeTruthy()
   })

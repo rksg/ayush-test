@@ -7,6 +7,8 @@ import { get }       from '@acx-ui/config'
 import { useParams } from '@acx-ui/react-router-dom'
 
 let factory: SplitIO.IBrowserSDK
+const splitKey = get('SPLIT_IO_KEY')
+const suffix = splitKey.substring(0, 5)
 
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const { tenantId } = useParams() as { tenantId: string }
@@ -16,32 +18,16 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
         featuresRefreshRate: 30 // 30 sec
       },
       core: {
-        authorizationKey: get('SPLIT_IO_KEY'),
+        authorizationKey: splitKey,
         key: tenantId
       },
       storage: {
         type: 'LOCALSTORAGE',
-        prefix: 'ACX'
+        prefix: 'ACX' + suffix
       },
       debug: false // set this value to true for running in debug mode for debugging in local development only
     })
   }
-
-  // const config: SplitIO.IBrowserSettings = {
-  //   scheduler: {
-  //     featuresRefreshRate: 30 // 30 sec polling rate
-  //   },
-  //   core: {
-  //     authorizationKey: get('SPLIT_IO_KEY'),
-  //     key: tenantId
-  //   },
-  //   storage: {
-  //     type: 'LOCALSTORAGE',
-  //     prefix: 'ACX'
-  //   },
-  //   debug: false // set this value to true for running in debug mode for debugging in local development only
-  // }
-  // return <SplitFactory config={config} updateOnSdkReady={true} children={props.children} />
   return <SplitFactory factory={factory} children={props.children}/>
 }
 
