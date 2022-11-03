@@ -1,13 +1,13 @@
 
-import { Button, Typography } from 'antd'
-import { useIntl }            from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import { Card } from '@acx-ui/components'
 import { Demo } from '@acx-ui/rc/utils'
 
-import Photo   from '../../../../assets/images/portal-demo/main-photo.svg'
-import Powered from '../../../../assets/images/portal-demo/powered-logo-img.svg'
-import Logo    from '../../../../assets/images/portal-demo/small-logo-img.png'
+import Photo              from '../../../../assets/images/portal-demo/main-photo.svg'
+import Powered            from '../../../../assets/images/portal-demo/powered-logo-img.svg'
+import Logo               from '../../../../assets/images/portal-demo/small-logo-img.png'
 import PortalPreviewModal from '../PortalSummary/PortalPreviewModal'
 export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
@@ -26,7 +26,7 @@ export default function PortalOverview (props: { demoValue: Demo }) {
           <Typography.Title level={3}>
             {$t({ defaultMessage: 'WiFi4EU Snippet' })}
           </Typography.Title>
-          <Typography.Text>{newDemo?.componentDisplay.WiFi4EU?
+          <Typography.Text>{newDemo?.componentDisplay?.WiFi4EU?
             $t({ defaultMessage: 'ON' }):$t({ defaultMessage: 'OFF' })}</Typography.Text>
         </div>
         <div>

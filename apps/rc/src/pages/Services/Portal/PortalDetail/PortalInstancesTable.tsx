@@ -50,7 +50,7 @@ export default function PortalInstancesTable (
       title: $t({ defaultMessage: 'Service Health' }),
       width: 135,
       dataIndex: 'health',
-      render: (data) => <ProgressBar percent={Number(data)}/>
+      render: (data) => <ProgressBar percent={data as number}/>
     },
     {
       key: 'abrate',
