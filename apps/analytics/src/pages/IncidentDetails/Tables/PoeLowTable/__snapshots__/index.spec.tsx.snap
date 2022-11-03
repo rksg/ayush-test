@@ -705,6 +705,44 @@ exports[`PoeLowTable should render correctly 1`] = `
                                 <a
                                   href="/t/undefined/analytics/incidents"
                                 >
+                                  RuckusAP2
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                84:23:88:2F:ED:61
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                802.3bt/Class 8
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                802.3at+ Switch/Injector
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                October 28 2022 15:15
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
+                              >
+                                <a
+                                  href="/t/undefined/analytics/incidents"
+                                >
                                   RuckusAP
                                 </a>
                               </td>

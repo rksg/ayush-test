@@ -44,8 +44,8 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
       const configured = datum.poeMode.configured
       const operating = datum.poeMode.operating
       return {
-        name: data![0].name,
-        mac: data![0].mac,
+        name: datum.name,
+        mac: datum.mac,
         configured: pwrModeMap.get(configured),
         operating: pwrSrcMap.get(operating),
         eventTime: datum.poeMode.eventTime,

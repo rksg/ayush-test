@@ -17,6 +17,16 @@ export const expectedResult = [
       eventTime: 1666970100000,
       apGroup: 'default'
     }
+  },
+  {
+    name: 'RuckusAP2',
+    mac: '84:23:88:2F:ED:61',
+    poeMode: {
+      configured: 'RKS_AP_PWR_MODE_BT8',
+      operating: 'RKS_AP_PWR_SRC_AT_PLUS',
+      eventTime: 1666970130000,
+      apGroup: 'default'
+    }
   }
 ]
 

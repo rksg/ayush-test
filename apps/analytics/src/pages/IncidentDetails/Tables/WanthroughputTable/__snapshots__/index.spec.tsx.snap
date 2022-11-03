@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PoeLowTable should render correctly 1`] = `
+exports[`WanthroughputTable should render correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
