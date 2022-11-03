@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: configmap-acx-ui
 data:
-    google.maps.key: "AIzaSyACjGDfnC5-HTRbG5dVkJp7hDRpRVwqp4M"
-    disable.pendo: "true"
-    splitio.ff.key: "l9e2d1b3npu3ri6bi920e38vln2h9qkgqikv"
-    captive.portal.domain.name: "eu.ruckus.cloud"
+  google.maps.key: "AIzaSyACjGDfnC5-HTRbG5dVkJp7hDRpRVwqp4M"
+  disable.pendo: "true"
+  split.io.key: "l9e2d1b3npu3ri6bi920e38vln2h9qkgqikv"
+  captive.portal.domain.name: "eu.ruckus.cloud"
