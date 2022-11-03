@@ -12,6 +12,7 @@ import { mockServer, render, screen }                                           
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueAPDetectionForm from './RogueAPDetectionForm'
+import userEvent from '@testing-library/user-event';
 
 
 const policyListContent = {
@@ -178,7 +179,7 @@ describe('RogueAPDetectionForm', () => {
       { target: { value: 'test' } })
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'policyName1' } })
+      { target: { value: 'policyName11' } })
 
     fireEvent.change(screen.getByRole('textbox', { name: /tags/i }),
       { target: { value: 'a,b,c' } })
@@ -192,7 +193,7 @@ describe('RogueAPDetectionForm', () => {
 
     fireEvent.click(screen.getByText('Add'))
 
-    fireEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByText('test-venue2')
 
@@ -200,11 +201,15 @@ describe('RogueAPDetectionForm', () => {
       'test-venue'
     )).toBeTruthy()
 
-    fireEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByText(/venues\(0\)/i)
 
-    fireEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { name: 'Summary', level: 3 })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
   it('should render RogueAPDetectionForm with editMode successfully', async () => {
@@ -230,9 +235,7 @@ describe('RogueAPDetectionForm', () => {
         state: initState,
         dispatch: setRogueAPConfigure
       }}>
-        <Form>
-          <RogueAPDetectionForm edit={true}/>
-        </Form>
+        <RogueAPDetectionForm edit={true}/>
       </RogueAPDetectionContext.Provider>
       , {
         wrapper: wrapper,
@@ -245,10 +248,9 @@ describe('RogueAPDetectionForm', () => {
     expect(screen.getAllByText('Settings')).toBeTruthy()
     expect(screen.getAllByText('Scope')).toBeTruthy()
 
-    fireEvent.click(screen.getByText('Next'))
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByText('test-venue2')
-
-    await screen.findByText('nextsefef')
   })
 })
