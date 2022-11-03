@@ -102,11 +102,11 @@ export const LayoutViewContent = styled(AntLayout)<{ isbg: string | null }>`
   width:425px;
   max-width:600px;
   align-items:center;
-  background-color: var(--acx-primary-white);
+  background-color: var(--acx-primary-white) !important;
   background-position: center;
   background-repeat: no-repeat;
   height:auto;
-  min-height:150px;
+  min-height:250px;
   padding-bottom:10px;
 `
 export const Label = styled.label`

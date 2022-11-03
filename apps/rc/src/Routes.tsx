@@ -108,9 +108,13 @@ function ServiceRoutes () {
         element={<PortalForm/>}
       />
       <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
+        element={<PortalForm/>}
+      />
+      <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
         element={<PortalServiceDetail/>}
-      />
+      />      
     </Route>
   )
 }

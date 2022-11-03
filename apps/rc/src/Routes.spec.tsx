@@ -47,6 +47,10 @@ jest.mock('./pages/Services/DHCPForm/DHCPForm', () => () => {
   return <div data-testid='DHCPForm' />
 })
 
+jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
+  return <div data-testid='PortalForm' />
+})
+
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/aps', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -244,6 +248,28 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByText('DHCP details page')).toBeVisible()
+  })
+
+  test('should navigate to create Portal page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PortalForm')).toBeVisible()
+  })
+
+  test('should navigate to edit Portal page', async () => {
+    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })
+    path = path.replace(':serviceId', 'serviceId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PortalForm')).toBeVisible()
   })
 
 })
