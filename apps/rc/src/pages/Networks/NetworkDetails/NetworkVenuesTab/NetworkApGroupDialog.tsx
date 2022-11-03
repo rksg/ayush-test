@@ -12,14 +12,14 @@ import {
   Row,
   Space,
   Spin,
-  Select,
-  Tooltip
+  Select
 } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
-  Modal
+  Modal,
+  Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {

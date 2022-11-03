@@ -1,9 +1,9 @@
 import { forwardRef } from 'react'
 
-import { Badge, Tooltip } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Badge }   from 'antd'
+import { useIntl } from 'react-intl'
 
-import { LayoutUI }                  from '@acx-ui/components'
+import { LayoutUI, Tooltip }         from '@acx-ui/components'
 import { NotificationSolid }         from '@acx-ui/icons'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import { useParams }                 from '@acx-ui/react-router-dom'
