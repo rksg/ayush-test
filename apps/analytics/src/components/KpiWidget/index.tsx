@@ -1,9 +1,8 @@
-import { Tooltip }            from 'antd'
 import { useIntl, IntlShape } from 'react-intl'
 
-import { AnalyticsFilter, kpiConfig }               from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, SparklineChart, Loader } from '@acx-ui/components'
-import { intlFormats, formatter }                   from '@acx-ui/utils'
+import { AnalyticsFilter, kpiConfig }                        from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, SparklineChart, Loader, Tooltip } from '@acx-ui/components'
+import { intlFormats, formatter }                            from '@acx-ui/utils'
 
 import { useKpiTimeseriesQuery }   from '../../pages/Health/Kpi/services'
 import { getSparklineGranularity } from '../../utils'

@@ -331,7 +331,7 @@ export function ConfigChangeChart ({
                       invisible: width <= 0,
                       style: {
                         text: '|||',
-                        fill: cssStr('--acx-accents-blue-70')
+                        fill: cssStr('--acx-accents-blue-60')
                       },
                       cursor: 'default',
                       z: 1

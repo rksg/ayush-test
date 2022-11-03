@@ -98,7 +98,7 @@ describe('Venue Marker Tooltip', () => {
     links.forEach(link => {
       fireEvent.click(link)
       expect(onNavigateMock).lastCalledWith({
-        path: 'TBD',
+        path: 'TODO',
         venueId: '7ae27179b7b84de89eb7e56d9b15943d'
       })
     })

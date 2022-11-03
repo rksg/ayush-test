@@ -14,7 +14,6 @@ import { Button } from '../Button'
 
 import { MultiLineTimeSeriesChart } from '.'
 
-
 export const getData = () => {
   const base = +new Date(2020, 9, 29)
   const oneDay = 24 * 3600 * 1000

@@ -69,7 +69,6 @@ export default function TopApplicationsByTrafficWidget ({
         trafficHistory: <SparklineChart
           key={index}
           data={sparkLineData}
-          isTrendLine={true}
           style={sparklineChartStyle}/>
       }
     })
