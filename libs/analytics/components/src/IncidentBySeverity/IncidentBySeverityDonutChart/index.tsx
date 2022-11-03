@@ -1,0 +1,53 @@
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
+
+import { incidentSeverities, IncidentFilter } from '@acx-ui/analytics/utils'
+import type { DonutChartData }                from '@acx-ui/components'
+import {
+  Card,
+  Loader,
+  cssStr,
+  DonutChart
+} from '@acx-ui/components'
+
+import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../services'
+
+export function IncidentBySeverityDonutChart ({ filters }: { filters: IncidentFilter }) {
+  const { $t } = useIntl()
+  const queryResult = useIncidentsBySeverityQuery(filters, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: { ...data } as IncidentsBySeverityData,
+      ...rest
+    })
+  })
+
+  const getChartData = (data: IncidentsBySeverityData): DonutChartData[] => {
+    const chartData: DonutChartData[] = []
+    for (const key in data) {
+      const value = data[key as keyof typeof incidentSeverities]
+      if (value > 0){
+        chartData.push({
+          name: key,
+          color: cssStr(incidentSeverities[key as keyof typeof incidentSeverities].color),
+          value
+        })
+      }
+    }
+    return chartData
+  }
+
+  const data = getChartData(queryResult.data)
+
+  return <Loader states={[queryResult]}>
+    <Card title={$t({ defaultMessage: 'Incidents' })}>
+      <AutoSizer>
+        {({ width, height }) => (
+          <DonutChart
+            style={{ width, height }}
+            legend='name-value'
+            data={data}/>
+        )}
+      </AutoSizer>
+    </Card>
+  </Loader>
+}

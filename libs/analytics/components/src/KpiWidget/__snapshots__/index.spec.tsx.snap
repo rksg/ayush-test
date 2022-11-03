@@ -1,0 +1,387 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`KpiWidget should render component having healthy icon: percentDiv 1`] = `
+<div
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-6 kIftfA"
+>
+  <div
+    class="ant-space-item"
+    style="margin-right: 8px;"
+  >
+    <span
+      class="styledComponents__HealthyIcon-sc-s2cdzz-2 jkYkbP"
+    />
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
+    >
+      99%
+    </span>
+  </div>
+</div>
+`;
+
+exports[`KpiWidget should render component having healthy icon: svg 1`] = `
+<svg
+  baseProfile="full"
+  height="800"
+  style="position:absolute;left:0;top:0;user-select:none"
+  version="1.1"
+  width="1280"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <rect
+    fill="none"
+    fill-opacity="1"
+    height="800"
+    id="0"
+    width="1280"
+    x="0"
+    y="0"
+  />
+  <g>
+    <g
+      clip-path="url(#zr3-c0)"
+    >
+      <path
+        d="M25.6 2C25.6 2 73.7118 2 76.8 2C124.9118 2 79.8882 798 128 798C131.0882 798 153.6 798 179.2 798C204.8 798 227.3118 798 230.4 798C278.5118 798 233.4883 2 281.6 2C284.6882 2 307.2 2 332.8 2C358.4 2 358.4 2 384 2C409.6 2 409.6 2 435.2 2C460.8 2 460.8 2 486.4 2C512 2 512 2 537.6 2C563.2 2 563.2 2 588.8 2C614.4 2 614.4 2 640 2C665.6 2 665.6 2 691.2 2C716.8 2 716.8 2 742.4 2C768 2 768 2 793.6 2C819.2 2 819.2 2 844.8 2C870.4 2 870.4 2 896 2C921.6 2 921.6 2 947.2 2C972.8 2 983.4978 2 998.4 2C1034.6978 2 1024 115.7143 1049.6 115.7143C1075.2 115.7143 1064.5023 2 1100.8 2C1115.7023 2 1126.4 2 1152 2C1177.6 2 1177.6 2 1203.2 2C1228.8 2 1254.4 2 1254.4 2L1254.4 798L1203.2 798L1152 798L1100.8 798L1049.6 798L998.4 798L947.2 798L896 798L844.8 798L793.6 798L742.4 798L691.2 798L640 798L588.8 798L537.6 798L486.4 798L435.2 798L384 798L332.8 798L281.6 798L230.4 798L179.2 798L128 798L76.8 798L25.6 798Z"
+        fill="url(#zr3-g0)"
+        fill-opacity="0.7"
+      />
+      <path
+        d="M25.6 2C25.6 2 73.7118 2 76.8 2C124.9118 2 79.8882 798 128 798C131.0882 798 153.6 798 179.2 798C204.8 798 227.3118 798 230.4 798C278.5118 798 233.4883 2 281.6 2C284.6882 2 307.2 2 332.8 2C358.4 2 358.4 2 384 2C409.6 2 409.6 2 435.2 2C460.8 2 460.8 2 486.4 2C512 2 512 2 537.6 2C563.2 2 563.2 2 588.8 2C614.4 2 614.4 2 640 2C665.6 2 665.6 2 691.2 2C716.8 2 716.8 2 742.4 2C768 2 768 2 793.6 2C819.2 2 819.2 2 844.8 2C870.4 2 870.4 2 896 2C921.6 2 921.6 2 947.2 2C972.8 2 983.4978 2 998.4 2C1034.6978 2 1024 115.7143 1049.6 115.7143C1075.2 115.7143 1064.5023 2 1100.8 2C1115.7023 2 1126.4 2 1152 2C1177.6 2 1177.6 2 1203.2 2C1228.8 2 1254.4 2 1254.4 2"
+        fill="none"
+        stroke="#23AB36"
+        stroke-linejoin="bevel"
+        stroke-width="0.8"
+      />
+    </g>
+  </g>
+  <defs>
+    <clippath
+      id="zr3-c0"
+    >
+      <path
+        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        fill="#000"
+      />
+    </clippath>
+    <lineargradient
+      gradientUnits="objectBoundingBox"
+      id="zr3-g0"
+      x1="0"
+      x2="0"
+      y1="0"
+      y2="1"
+    >
+      <stop
+        offset="0%"
+        stop-color="#88D392"
+      />
+      <stop
+        offset="100%"
+        stop-color="#FFFFFF"
+      />
+    </lineargradient>
+  </defs>
+</svg>
+`;
+
+exports[`KpiWidget should render component having major icon: percentDiv 1`] = `
+<div
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-6 kIftfA"
+>
+  <div
+    class="ant-space-item"
+    style="margin-right: 8px;"
+  >
+    <span
+      class="styledComponents__MajorIcon-sc-s2cdzz-1 iFLByV"
+    />
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
+    >
+      33%
+    </span>
+  </div>
+</div>
+`;
+
+exports[`KpiWidget should render component having major icon: svg 1`] = `
+<svg
+  baseProfile="full"
+  height="800"
+  style="position:absolute;left:0;top:0;user-select:none"
+  version="1.1"
+  width="1280"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <rect
+    fill="none"
+    fill-opacity="1"
+    height="800"
+    id="0"
+    width="1280"
+    x="0"
+    y="0"
+  />
+  <g>
+    <g
+      clip-path="url(#zr4-c0)"
+    >
+      <path
+        d="M320 39.9048C320 39.9048 960 39.9048 960 39.9048L960 798L320 798Z"
+        fill="url(#zr4-g0)"
+        fill-opacity="0.7"
+      />
+      <path
+        d="M320 39.9048C320 39.9048 960 39.9048 960 39.9048"
+        fill="none"
+        stroke="#23AB36"
+        stroke-linejoin="bevel"
+        stroke-width="0.8"
+      />
+    </g>
+  </g>
+  <defs>
+    <clippath
+      id="zr4-c0"
+    >
+      <path
+        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        fill="#000"
+      />
+    </clippath>
+    <lineargradient
+      gradientUnits="objectBoundingBox"
+      id="zr4-g0"
+      x1="0"
+      x2="0"
+      y1="0"
+      y2="1"
+    >
+      <stop
+        offset="0%"
+        stop-color="#88D392"
+      />
+      <stop
+        offset="100%"
+        stop-color="#FFFFFF"
+      />
+    </lineargradient>
+  </defs>
+</svg>
+`;
+
+exports[`KpiWidget should render component properly with sparkline: percentDiv 1`] = `
+<div
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-6 kIftfA"
+>
+  <div
+    class="ant-space-item"
+    style="margin-right: 8px;"
+  >
+    <span
+      class="styledComponents__HealthyIcon-sc-s2cdzz-2 jkYkbP"
+    />
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
+    >
+      78%
+    </span>
+  </div>
+</div>
+`;
+
+exports[`KpiWidget should render component properly with sparkline: svg 1`] = `
+<svg
+  baseProfile="full"
+  height="800"
+  style="position:absolute;left:0;top:0;user-select:none"
+  version="1.1"
+  width="1280"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <rect
+    fill="none"
+    fill-opacity="1"
+    height="800"
+    id="0"
+    width="1280"
+    x="0"
+    y="0"
+  />
+  <g>
+    <g
+      clip-path="url(#zr2-c0)"
+    >
+      <path
+        d="M25.6 185.6923C25.6 185.6923 29.5382 798 76.8 798C80.7382 798 102.4 798 128 798C153.6 798 153.6 798 179.2 798C204.8 798 225.4682 798 230.4 798C276.6682 798 237.9739 551.9177 281.6 320.4C289.1739 280.2062 301.3432 271.8795 332.8 254.5769C352.5432 243.7173 358.119 244.2336 384 243.7173C409.319 243.2121 409.6329 243.2121 435.2 243.2121C460.8329 243.2121 460.8937 246.9231 486.4 246.9231C512.0937 246.9231 512.4178 239.6682 537.6 239.6682C563.6178 239.6682 584.2325 239.6682 588.8 254.9346C635.4325 410.7978 593.1934 798 640 798C644.3934 798 665.6 798 691.2 798C716.8 798 739.3118 798 742.4 798C790.5118 798 745.7459 2 793.6 2C796.9459 2 819.2 24.1111 844.8 24.1111C870.4 24.1111 892.6541 2 896 2C943.8541 2 921.6 798 947.2 798C972.8 798 950.2883 2 998.4 2C1001.4883 2 1024.2557 2 1049.6 2C1075.4557 2 1075.0562 12.3377 1100.8 12.3377C1126.2562 12.3377 1126.3186 8.1304 1152 5.5378C1177.5186 2.9616 1177.5695 2 1203.2 2C1228.7695 2 1254.4 2 1254.4 2L1254.4 798L1203.2 798L1152 798L1100.8 798L1049.6 798L998.4 798L947.2 798L896 798L844.8 798L793.6 798L742.4 798L691.2 798L640 798L588.8 798L537.6 798L486.4 798L435.2 798L384 798L332.8 798L281.6 798L230.4 798L179.2 798L128 798L76.8 798L25.6 798Z"
+        fill="url(#zr2-g0)"
+        fill-opacity="0.7"
+      />
+      <path
+        d="M25.6 185.6923C25.6 185.6923 29.5382 798 76.8 798C80.7382 798 102.4 798 128 798C153.6 798 153.6 798 179.2 798C204.8 798 225.4682 798 230.4 798C276.6682 798 237.9739 551.9177 281.6 320.4C289.1739 280.2062 301.3432 271.8795 332.8 254.5769C352.5432 243.7173 358.119 244.2336 384 243.7173C409.319 243.2121 409.6329 243.2121 435.2 243.2121C460.8329 243.2121 460.8937 246.9231 486.4 246.9231C512.0937 246.9231 512.4178 239.6682 537.6 239.6682C563.6178 239.6682 584.2325 239.6682 588.8 254.9346C635.4325 410.7978 593.1934 798 640 798C644.3934 798 665.6 798 691.2 798C716.8 798 739.3118 798 742.4 798C790.5118 798 745.7459 2 793.6 2C796.9459 2 819.2 24.1111 844.8 24.1111C870.4 24.1111 892.6541 2 896 2C943.8541 2 921.6 798 947.2 798C972.8 798 950.2883 2 998.4 2C1001.4883 2 1024.2557 2 1049.6 2C1075.4557 2 1075.0562 12.3377 1100.8 12.3377C1126.2562 12.3377 1126.3186 8.1304 1152 5.5378C1177.5186 2.9616 1177.5695 2 1203.2 2C1228.7695 2 1254.4 2 1254.4 2"
+        fill="none"
+        stroke="#23AB36"
+        stroke-linejoin="bevel"
+        stroke-width="0.8"
+      />
+    </g>
+  </g>
+  <defs>
+    <clippath
+      id="zr2-c0"
+    >
+      <path
+        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        fill="#000"
+      />
+    </clippath>
+    <lineargradient
+      gradientUnits="objectBoundingBox"
+      id="zr2-g0"
+      x1="0"
+      x2="0"
+      y1="0"
+      y2="1"
+    >
+      <stop
+        offset="0%"
+        stop-color="#88D392"
+      />
+      <stop
+        offset="100%"
+        stop-color="#FFFFFF"
+      />
+    </lineargradient>
+  </defs>
+</svg>
+`;
+
+exports[`KpiWidget should render for empty data: percentDiv 1`] = `
+<div
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-6 kIftfA"
+>
+  <div
+    class="ant-space-item"
+    style="margin-right: 8px;"
+  >
+    <span
+      class="styledComponents__CriticalIcon-sc-s2cdzz-0 eWNVNd"
+    />
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
+    >
+      0%
+    </span>
+  </div>
+</div>
+`;
+
+exports[`KpiWidget should render for empty data: svg 1`] = `
+<svg
+  baseProfile="full"
+  height="800"
+  style="position:absolute;left:0;top:0;user-select:none"
+  version="1.1"
+  width="1280"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <rect
+    fill="none"
+    fill-opacity="1"
+    height="800"
+    id="0"
+    width="1280"
+    x="0"
+    y="0"
+  />
+  <g>
+    <g
+      clip-path="url(#zr1-c0)"
+    >
+      <path
+        d="M320 798C320 798 960 798 960 798L320 798Z"
+        fill="url(#zr1-g0)"
+        fill-opacity="0.7"
+      />
+      <path
+        d="M320 798C320 798 960 798 960 798"
+        fill="none"
+        stroke="#23AB36"
+        stroke-linejoin="bevel"
+        stroke-width="0.8"
+      />
+    </g>
+  </g>
+  <defs>
+    <clippath
+      id="zr1-c0"
+    >
+      <path
+        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        fill="#000"
+      />
+    </clippath>
+    <lineargradient
+      gradientUnits="objectBoundingBox"
+      id="zr1-g0"
+      x1="0"
+      x2="0"
+      y1="0"
+      y2="1"
+    >
+      <stop
+        offset="0%"
+        stop-color="#88D392"
+      />
+      <stop
+        offset="100%"
+        stop-color="#FFFFFF"
+      />
+    </lineargradient>
+  </defs>
+</svg>
+`;
+
+exports[`KpiWidget should return proper Kpi info text 1`] = `
+Object {
+  "current": Object {
+    "clientThroughput": Object {
+      "shortText": "Above 10 Mbps",
+      "title": "Client Throughput",
+      "tooltip": "12.3K of 23.5K sessions above 10 Mbps",
+    },
+    "connectionSuccess": Object {
+      "shortText": "",
+      "title": "Connection Success",
+      "tooltip": "12.3K of 23.5K attempts",
+    },
+    "timeToConnect": Object {
+      "shortText": "Under 10 s",
+      "title": "Time To Connect",
+      "tooltip": "12.3K of 23.5K connections under 10 seconds",
+    },
+  },
+}
+`;
