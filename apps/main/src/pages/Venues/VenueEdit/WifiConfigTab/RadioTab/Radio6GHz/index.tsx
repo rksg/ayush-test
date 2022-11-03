@@ -86,7 +86,7 @@ export function Radio6GHz () {
 
   return (
     <>
-      <Row gutter={20}>
+      <Row gutter={20} data-testid='radio-6g-tab'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: 'Channel selection method:' })}
@@ -130,7 +130,8 @@ export function Radio6GHz () {
               options={defaultChannelsData &&
                 defaultChannelsData['6GChannels'] &&
             Object.keys(defaultChannelsData['6GChannels'])
-              .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+              .map(item => ({ label: item === 'auto' ? _.upperFirst(item) : item,
+                value: item === 'auto' ? item.toUpperCase() : item }))}
               defaultValue={'auto'}
             />
           </Form.Item>

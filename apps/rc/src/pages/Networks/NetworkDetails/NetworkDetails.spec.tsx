@@ -5,7 +5,7 @@ import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
-import { NetworkDetails } from './NetworkDetails'
+import NetworkDetails from './NetworkDetails'
 
 
 const network = {

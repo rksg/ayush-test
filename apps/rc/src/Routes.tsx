@@ -1,21 +1,22 @@
-import { ConfigProvider }    from '@acx-ui/components'
-import { ServiceType }       from '@acx-ui/rc/utils'
-import { rootRoutes, Route } from '@acx-ui/react-router-dom'
-import { Provider }          from '@acx-ui/store'
+import { ServiceType }                       from '@acx-ui/rc/utils'
+import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
+import { Provider }                          from '@acx-ui/store'
 
-import { NetworkDetails }    from './pages/Networks/NetworkDetails/NetworkDetails'
-import { NetworkForm }       from './pages/Networks/NetworkForm/NetworkForm'
-import { NetworksTable }     from './pages/Networks/NetworksTable'
-import { DHCPForm }          from './pages/Services/DHCPForm/DHCPForm'
-import { MdnsProxyForm }     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import { SelectServiceForm } from './pages/Services/SelectServiceForm'
+import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
+import ApsTable          from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable     from './pages/Networks/NetworksTable'
+import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import SelectServiceForm from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation
 } from './pages/Services/serviceRouteUtils'
-import { ServicesTable }        from './pages/Services/ServicesTable'
+import ServicesTable from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
@@ -23,14 +24,23 @@ import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingFo
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
+      <Route path='devices/*' element={<DeviceRoutes />} />
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
     </Route>
   )
   return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
+    <Provider children={routes} />
+  )
+}
+
+function DeviceRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
+      <Route path='devices/aps' element={<ApsTable />} />
+      <Route path='devices/switches' element={<SwitchesTable />} />
+    </Route>
   )
 }
 
@@ -46,11 +56,6 @@ function NetworkRoutes () {
       <Route
         path='networks/:networkId/:action'
         element={<NetworkForm />}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={'networks/wifiCalling/create'}
-        element={<WifiCallingForm />}
       />
     </Route>
   )
