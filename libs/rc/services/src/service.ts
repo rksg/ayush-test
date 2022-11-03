@@ -19,7 +19,10 @@ import {
   DHCPSaveData,
   WifiCallingUrls,
   WifiUrlsInfo,
-  MdnsProxyForwardingRule
+  MdnsProxyForwardingRule,
+  PortalDetailInstances,
+  Portal,
+  PortalUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -232,6 +235,24 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
+        return {
+          ...instancesRes
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
+      query: ({ params }) => {
+        const portalDetailReq = createHttpRequest(PortalUrlsInfo.getPortalProfileDetail, params)
+        return {
+          ...portalDetailReq
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
     })
   })
 })
@@ -253,5 +274,7 @@ export const {
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
   useDeleteMdnsProxyListMutation,
-  useDeleteWifiCallingServiceMutation
+  useDeleteWifiCallingServiceMutation,
+  usePortalNetworkInstancesQuery,
+  useGetPortalProfileDetailQuery
 } = serviceApi

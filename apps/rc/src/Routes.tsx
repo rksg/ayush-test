@@ -2,14 +2,15 @@ import { ServiceType }                       from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
-import ApsTable          from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable     from './pages/Networks/NetworksTable'
-import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
-import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import SelectServiceForm from './pages/Services/SelectServiceForm'
+import SwitchesTable       from './pages/Devices/Switch/SwitchesTable'
+import ApsTable            from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails      from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm         from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable       from './pages/Networks/NetworksTable'
+import DHCPForm            from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyForm       from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import PortalServiceDetail from './pages/Services/Portal/PortalDetail'
+import SelectServiceForm   from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,
@@ -100,6 +101,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<h1>DHCP details page</h1>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
+        element={<PortalServiceDetail/>}
       />
     </Route>
   )

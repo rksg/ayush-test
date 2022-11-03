@@ -31,6 +31,14 @@ module.exports = async function setupProxy (app) {
     ))
   }
   app.use(createProxyMiddleware(
+    '/api/tenant/*/portal-service-profile/*',
+    { target: 'http://localhost:8081/api', changeOrigin: true }
+  ))
+  app.use(createProxyMiddleware(
+    '/api/tenant/*/portal-service-profile/instances/*',
+    { target: 'http://localhost:8081/api', changeOrigin: true }
+  ))
+  app.use(createProxyMiddleware(
     '/api/websocket/socket.io',
     { target: CLOUD_URL, changeOrigin: true, ws: true }
   ))
