@@ -13,7 +13,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import Photo                     from '../../../../assets/images/portal-demo/main-photo.svg'
 import Powered                   from '../../../../assets/images/portal-demo/powered-logo-img.svg'
-import Logo                      from '../../../../assets/images/portal-demo/small-logo-img.png'
+import Logo                      from '../../../../assets/images/portal-demo/small-logo-img.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
 
 import { PortalSummaryForm } from './PortalSummaryForm'
