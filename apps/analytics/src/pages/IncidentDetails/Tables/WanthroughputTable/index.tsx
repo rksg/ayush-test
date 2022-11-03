@@ -126,8 +126,8 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
       sorter: {
         compare: (a, b) => defaultSort(a.eventTime, b.eventTime)
       }
-    }
-  ], [])
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], []) // '$t' 'basePath' 'intl' 'sliceType' are not changing
 
   return (
     <Loader states={[queryResults]}>

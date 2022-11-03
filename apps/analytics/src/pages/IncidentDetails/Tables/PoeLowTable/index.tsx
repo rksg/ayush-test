@@ -46,8 +46,8 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
       return {
         name: datum.name,
         mac: datum.mac,
-        configured: pwrModeMap.get(configured),
-        operating: pwrSrcMap.get(operating),
+        configured: pwrModeMap.get(configured)!,
+        operating: pwrSrcMap.get(operating)!,
         eventTime: datum.poeMode.eventTime,
         apGroup: datum.poeMode.apGroup
       }
@@ -124,8 +124,8 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
       sorter: {
         compare: (a, b) => defaultSort(a.eventTime, b.eventTime)
       }
-    }
-  ], [])
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], []) // '$t' 'basePath' 'intl' 'sliceType' are not changing
 
   return (
     <Loader states={[queryResults]}>

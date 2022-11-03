@@ -91,8 +91,8 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
       sorter: {
         compare: (a, b) => defaultSort(a.metadata, b.metadata)
       }
-    }
-  ], [])
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], []) // '$t' 'basePath' 'intl' are not changing
 
   return (
     <Loader states={[queryResults]}>
