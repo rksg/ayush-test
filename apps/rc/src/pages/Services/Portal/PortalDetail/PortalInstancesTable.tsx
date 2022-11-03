@@ -24,7 +24,7 @@ export default function PortalInstancesTable (
       render: function (_data, row) {
         return (
           <TenantLink
-            to={`//${row.network.id}/network-details/overview`}>
+            to={`/networks/${row.network.id}/network-details/aps`}>
             {row.network.name}</TenantLink>
         )
       }
