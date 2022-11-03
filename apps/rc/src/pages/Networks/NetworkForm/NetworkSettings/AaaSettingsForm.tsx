@@ -6,14 +6,14 @@ import {
   Form,
   Row,
   Select,
-  Switch,
-  Tooltip
+  Switch
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   StepsForm,
-  Subtitle
+  Subtitle,
+  Tooltip
 } from '@acx-ui/components'
 import { Features, useSplitTreatment }                  from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'

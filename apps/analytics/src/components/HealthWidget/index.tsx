@@ -1,9 +1,9 @@
-import { Tooltip } from 'antd'
 import { mean }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
+import { Tooltip }                    from '@acx-ui/components'
 import {
   Card,
   Loader,
