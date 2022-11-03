@@ -201,7 +201,7 @@ export function FilteredTable () {
     <Table<RecordType>
       columns={columns}
       rowActions={rowActions}
-      dataSource={data.map(row => omit(row, 'children'))}
+      dataSource={data!.map(row => omit(row, 'children'))}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />
     with filter only:
