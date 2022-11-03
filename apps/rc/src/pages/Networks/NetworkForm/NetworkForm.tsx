@@ -57,7 +57,7 @@ const settingTitle = defineMessage({
   }`
 })
 
-export function NetworkForm () {
+export default function NetworkForm () {
   const intl = useIntl()
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
