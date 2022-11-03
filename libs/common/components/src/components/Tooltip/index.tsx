@@ -1,8 +1,14 @@
-import { Tooltip } from 'antd'
+import { Tooltip as AntTooltip } from 'antd'
+
+import type { TooltipProps } from 'antd'
 
 Tooltip.defaultProps = {
-  ...Tooltip.defaultProps,
+  ...AntTooltip.defaultProps,
   mouseEnterDelay: 0.5
 }
 
-export { Tooltip }
+function Tooltip ({ ...props }: TooltipProps) {
+  return <AntTooltip {...props} />
+}
+
+export { Tooltip, TooltipProps }

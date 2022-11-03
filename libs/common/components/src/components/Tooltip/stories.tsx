@@ -7,11 +7,11 @@ storiesOf('Tooltip', module)
   .add('Sample', () => {
     return <div>
       <Tooltip title={'This is a tooltip'}>
-        <Button>bottomLeft</Button>
+        <Button>bottom</Button>
       </Tooltip>
       <div style={{ paddingTop: '100px' }}>
         <Tooltip title={'This is a tooltip'}>
-          <Button>topLeft</Button>
+          <Button>top</Button>
         </Tooltip>
       </div>
     </div>
