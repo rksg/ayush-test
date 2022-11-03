@@ -16,7 +16,7 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from './pages/Services/serviceRouteUtils'
-import ServicesTable from './pages/Services/ServicesTable'
+import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
