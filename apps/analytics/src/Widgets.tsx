@@ -17,7 +17,8 @@ import TopSwitchesByPoEUsageWidget    from './components/TopSwitchesByPoEUsage'
 import TopSwitchesByTrafficWidget     from './components/TopSwitchesByTraffic'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
 import VenueHealthWidget              from './components/VenueHealthWidget'
-
+import HealthPage                     from './pages/Health'
+import { IncidentTabContent }         from './pages/Incidents'
 const widgetsMap = {
   trafficByVolume: ({ filters }: { filters: AnalyticsFilter }) => (
     <TrafficByVolumeWidget filters={filters} />
@@ -63,6 +64,12 @@ const widgetsMap = {
   ),
   health: ({ filters }: { filters: AnalyticsFilter }) => (
     <HealthWidget filters={filters}/>
+  ),
+  incidentsPageWidget: ({ filters }: { filters: AnalyticsFilter }) => (
+    <IncidentTabContent filters={filters}/>
+  ),
+  healthPageWidget: ({ filters }: { filters: AnalyticsFilter }) => (
+    <HealthPage filters={filters}/>
   )
 }
 

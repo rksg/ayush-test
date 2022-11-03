@@ -2,6 +2,7 @@ import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { useAnalyticsFilter }                           from '@acx-ui/analytics/utils'
 import { categoryNames, categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }                              from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Tabs }                       from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
 
@@ -28,9 +29,11 @@ const tabsMap : Record<IncidentListTabs, MessageDescriptor> = {
   })
 }
 
-const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
-  const { tabSelection } = props
+export const IncidentTabContent = (props: { tabSelection?: IncidentListTabs,
+  filters? : AnalyticsFilter }) => {
+  const { tabSelection,filters: widgetFilters } = props
   const { filters } = useAnalyticsFilter()
+  const incidentsPageFilters = widgetFilters ? widgetFilters : filters
   const incidentCodesBasedOnCategory: IncidentCode[] | undefined = categoryCodeMap[
     tabSelection as Exclude<IncidentListTabs, 'overview'>
   ]?.codes as IncidentCode[]
@@ -38,17 +41,21 @@ const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
   return (
     <GridRow>
       <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
-        <IncidentBySeverityWidget filters={{ ...filters, code: incidentCodesBasedOnCategory }} />
+        <IncidentBySeverityWidget
+          filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
+        />
       </GridCol>
       <GridCol col={{ span: 20 }} style={{ height: '210px' }}>
         <NetworkHistoryWidget
           hideTitle
-          filters={{ ...filters, code: incidentCodesBasedOnCategory }}
+          filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
           type='no-border'
         />
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ minHeight: '248px' }}>
-        <IncidentTableWidget filters={{ ...filters, code: incidentCodesBasedOnCategory }} />
+        <IncidentTableWidget
+          filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
+        />
       </GridCol>
     </GridRow>
   )

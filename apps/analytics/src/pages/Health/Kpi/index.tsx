@@ -6,7 +6,7 @@ import moment       from 'moment-timezone'
 
 import {
   kpisForTab,
-  useAnalyticsFilter,
+  AnalyticsFilter,
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow } from '@acx-ui/components'
@@ -27,11 +27,11 @@ export type KpiThresholdType = {
   apToSZLatency: number;
   switchPoeUtilization: number;
 }
-export default function KpiSection (props: { tab: HealthTab }) {
+export default function KpiSection (props: { tab: HealthTab, filters : AnalyticsFilter }) {
   const { kpis } = kpisForTab[props.tab]
   const healthFilter = useContext(HealthPageContext)
   const { timeWindow, setTimeWindow } = healthFilter
-  const { filters } = useAnalyticsFilter()
+  const { filters } = props
   const {
     timeToConnect,
     rss,
