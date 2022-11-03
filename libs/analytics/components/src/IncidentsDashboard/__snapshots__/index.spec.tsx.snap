@@ -48,7 +48,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
             >
               <div
                 class="ant-row Grid__GridRow-sc-5irhjd-2 sc-jqUVSM  kAxCIQ"
-                style="margin: -5px -10px -5px -10px;"
+                style="margin: -5px -5px -5px -5px;"
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
