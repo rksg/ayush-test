@@ -1,21 +1,19 @@
 import React, {
-  useCallback,
   useContext,
   useState
 } from 'react'
 
 import {
-  Row, Col, Form
+  Form, Transfer
 } from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Modal, SearchBar }            from '@acx-ui/components'
-import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
-import { useGetWifiCallingServiceListQuery }   from '@acx-ui/rc/services'
-import { WifiCallingSetting }                  from '@acx-ui/rc/utils'
+import { Button, Modal }                     from '@acx-ui/components'
+import { useGetWifiCallingServiceListQuery } from '@acx-ui/rc/services'
 
 import { WifiCallingSettingContext } from './ServicesForm'
+
 
 export function WifiCallingSettingModal () {
   const form = Form.useFormInstance()
@@ -25,126 +23,59 @@ export function WifiCallingSettingModal () {
   const { data } = useGetWifiCallingServiceListQuery({
     params: params
   })
-  const initData = data ? data.slice() : []
+
   const [visible, setVisible] = useState(false)
-  const [search, setSearch] = useState('')
-  const [availableItem, setAvailableItem] = useState('')
-  const [selectedItem, setSelectedItem] = useState('')
-  const [candidateList, setCandidateList] = useState<WifiCallingSetting[]>(
-    wifiCallingSettingList.length > 0 ? [...wifiCallingSettingList] : []
-  )
+  const [targetKeys, setTargetKeys] = useState<string[]>(
+    wifiCallingSettingList.length > 0
+      ? wifiCallingSettingList.map(item => item.id)
+      : [])
+  const [selectedKeys, setSelectedKeys] = useState([] as string[])
 
-  const handleAvailableList = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setAvailableItem(event.target.value)
-    setSelectedItem('')
+  const onChange = (nextTargetKeys: string[]) => {
+    setTargetKeys(nextTargetKeys)
   }
 
-  const handleSelectedList = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedItem(event.target.value)
-    setAvailableItem('')
+  const onSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
+    setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys])
   }
 
-  const handleAddAction = useCallback(() => {
-    if (availableItem && initData) {
-      const dataIndex = initData.findIndex(wifiCallingSetting =>
-        wifiCallingSetting.serviceName === availableItem)
-      if (dataIndex !== -1) {
-        candidateList.push(initData[dataIndex])
-        initData.splice(dataIndex, 1)
-      }
-    }
-
-    setAvailableItem('')
-  }, [candidateList, initData, availableItem])
-
-  const handleRemoveAction = useCallback(() => {
-    if (selectedItem && candidateList.length) {
-      const candidateIndex = candidateList.findIndex(wifiCallingSetting =>
-        wifiCallingSetting.serviceName === selectedItem)
-      if (candidateIndex !== -1) {
-        candidateList.splice(candidateIndex, 1)
-      }
-    }
-
-    setSelectedItem('')
-  }, [candidateList, initData, selectedItem])
-
-  const modalContent = <Row gutter={24} justify='space-between'>
-    <Col span={10}>
-      <p>{$t({ defaultMessage: 'Available Profiles' })}</p>
-      <SearchBar onChange={setSearch}/>
-      <select name='availableProfilesList'
-        data-testid='availableProfileList'
-        size={8}
-        onChange={handleAvailableList}
-        style={{ width: '100%', marginTop: '10px' }}>
-        {initData && initData
-          .filter((wifiCallingSetting) => {
-            return wifiCallingSetting.serviceName?.toLowerCase().indexOf(search) !== -1
-          })
-          .map((wifiCallingSetting) => {
-            return <option
-              data-testid={'avail_' + wifiCallingSetting.serviceName}
-              key={wifiCallingSetting.id}
-              value={wifiCallingSetting.serviceName}>
-              {wifiCallingSetting.serviceName}
-            </option>
-          })}
-      </select>
-    </Col>
-    <Col span={4}>
-      <p style={{ height: '88px' }}/>
-      <Button size={'middle'}
-        icon={<ArrowChevronRight />}
-        disabled={selectedItem !== ''}
-        onClick={handleAddAction}
-        style={{ width: '100%', justifyContent: 'center' }}>
-        {$t({ defaultMessage: 'Add' })}
-      </Button>
-      <Button size={'middle'}
-        icon={<ArrowChevronLeft />}
-        disabled={availableItem !== ''}
-        onClick={handleRemoveAction}
-        style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }}>
-        {$t({ defaultMessage: 'Remove' })}
-      </Button>
-    </Col>
-    <Col span={10}>
-      <p>{$t({ defaultMessage: 'Selected Profiles' })}</p>
-      <p style={{ height: '18px' }}/>
-      <select name='selectedProfileList'
-        data-testid='selectedProfileList'
-        size={8}
-        onChange={handleSelectedList}
-        style={{ width: '100%', marginTop: '10px' }}>
-        {candidateList && candidateList.map((wifiCallingSetting) => {
-          return <option
-            data-testid={'selected_' + wifiCallingSetting.serviceName}
-            key={wifiCallingSetting.id}
-            value={wifiCallingSetting.serviceName}>
-            {wifiCallingSetting.serviceName}
-          </option>
-        })}
-      </select>
-    </Col>
-  </Row>
+  const transferComponent = <Transfer
+    showSearch
+    listStyle={{
+      width: '100%',
+      height: '100%'
+    }}
+    operations={[$t({ defaultMessage: 'Add' }), $t({ defaultMessage: 'Remove' })]}
+    dataSource={data?.map(data => {
+      return { ...data, key: data.id }
+    })}
+    render={item => item.serviceName}
+    onChange={onChange}
+    onSelectChange={onSelectChange}
+    targetKeys={targetKeys}
+    selectedKeys={selectedKeys}
+    titles={[
+      $t({ defaultMessage: 'Available Profiles' }),
+      $t({ defaultMessage: 'Selected Profiles' })
+    ]}
+  />
 
   const showModal = () => {
     setVisible(true)
   }
 
   const handleOk = () => {
-    data && setWifiCallingSettingList([...candidateList])
+    data && setWifiCallingSettingList(data.filter(data => targetKeys.indexOf(data.id) !== -1))
     setVisible(false)
     form.setFieldValue(
       ['wlan', 'advancedCustomization', 'wifiCallingIds'],
-      candidateList.map(service => service.id)
+      targetKeys
     )
   }
 
   const handleCancel = () => {
     setVisible(false)
-    setCandidateList([...wifiCallingSettingList])
+    setTargetKeys(wifiCallingSettingList.map(item => item.id))
   }
 
   return (
@@ -163,7 +94,7 @@ export function WifiCallingSettingModal () {
         onOk={handleOk}
         width={850}
       >
-        {modalContent}
+        {transferComponent}
       </Modal>
     </>
   )

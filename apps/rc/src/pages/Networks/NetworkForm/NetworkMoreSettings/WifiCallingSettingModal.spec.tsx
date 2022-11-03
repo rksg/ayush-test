@@ -86,9 +86,7 @@ describe('WifiCallingSettingModal', () => {
 
     await screen.findByText('AT&T')
 
-    fireEvent.change(screen.getByTestId('availableProfileList'),
-      { target: { value: 'AT&T' } }
-    )
+    fireEvent.click(screen.getByText(/at&t/i))
 
     const addButton = screen.getByRole('button', {
       name: /add/i
@@ -109,9 +107,7 @@ describe('WifiCallingSettingModal', () => {
       name: /save/i
     })
 
-    fireEvent.change(screen.getByTestId('selectedProfileList'),
-      { target: { value: 'AT&T' } }
-    )
+    fireEvent.click(screen.getByText(/at&t/i))
 
     const removeButton = screen.getByRole('button', {
       name: /remove/i
@@ -163,9 +159,7 @@ describe('WifiCallingSettingModal', () => {
 
     await screen.findByText('AT&T')
 
-    fireEvent.change(screen.getByTestId('availableProfileList'),
-      { target: { value: 'AT&T' } }
-    )
+    fireEvent.click(screen.getByText(/at&t/i))
 
     const addButton = screen.getByRole('button', {
       name: /add/i
@@ -186,9 +180,7 @@ describe('WifiCallingSettingModal', () => {
       name: /save/i
     })
 
-    fireEvent.change(screen.getByTestId('selectedProfileList'),
-      { target: { value: 'AT&T' } }
-    )
+    fireEvent.click(screen.getByText(/at&t/i))
 
     fireEvent.click(screen.getByRole('button', {
       name: /save/i
