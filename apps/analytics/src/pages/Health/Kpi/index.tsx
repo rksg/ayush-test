@@ -44,18 +44,14 @@ export const defaultThreshold = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
-
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
   const healthFilter = useContext(HealthPageContext)
   const { timeWindow, setTimeWindow } = healthFilter
   const { filters } = useAnalyticsFilter()
-
-  const customThresholdQuery = useGetKpiThresholdsQuery({
-    ...filters,
-    kpis: Object.keys(defaultThreshold) as unknown as KpisHavingThreshold[]
-  })
-
+  const thresholdKeys = kpis
+    .filter(kpi => defaultThreshold[kpi as keyof KpiThresholdType]) as KpisHavingThreshold[]
+  const customThresholdQuery = useGetKpiThresholdsQuery({ ...filters, kpis: thresholdKeys })
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(defaultThreshold)
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path: filters.path })
 
@@ -123,7 +119,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
                 isNetwork={isNetwork}
               />
             ) : (
-              <BarChart filters={filters}
+              <BarChart
+                filters={filters}
                 kpi={kpi}
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
               />
