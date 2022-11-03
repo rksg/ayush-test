@@ -1,0 +1,47 @@
+[
+  {
+    "id": 0,
+    "code": "RKS_AP_PWR_SRC_UNKNOWN",
+    "text": "Unknown"
+  },
+  {
+    "id": 1,
+    "code": "RKS_AP_PWR_SRC_DC",
+    "text": "AC/DC Power supply"
+  },
+  {
+    "id": 2,
+    "code": "RKS_AP_PWR_SRC_AT",
+    "text": "802.3at Switch/Injector"
+  },
+  {
+    "id": 3,
+    "code": "RKS_AP_PWR_SRC_INJ",
+    "text": "PoE Injector"
+  },
+  {
+    "id": 4,
+    "code": "RKS_AP_PWR_SRC_AF",
+    "text": "802.3af Switch/Injector"
+  },
+  {
+    "id": 5,
+    "code": "RKS_AP_PWR_SRC_AT_PLUS",
+    "text": "802.3at+ Switch/Injector"
+  },
+  {
+    "id": 6,
+    "code": "RKS_AP_PWR_SRC_BT6",
+    "text": "802.3bt/Class 6"
+  },
+  {
+    "id": 7,
+    "code": "RKS_AP_PWR_SRC_BT7",
+    "text": "802.3bt/Class 7"
+  },
+  {
+    "id": 8,
+    "code": "RKS_AP_PWR_SRC_BT8",
+    "text": "802.3bt/Class 8"
+  }
+]

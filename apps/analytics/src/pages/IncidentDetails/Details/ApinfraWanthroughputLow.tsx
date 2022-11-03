@@ -12,6 +12,7 @@ import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import WanthroughputTable                    from '../Tables/WanthroughputTable'
 import { TimeSeries }                        from '../TimeSeries'
 import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
@@ -82,7 +83,7 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
           />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
-          <div>Impacted Entities Section</div>
+          <WanthroughputTable incident={incident}/>
         </GridCol>
       </GridRow>
     </>

@@ -1,0 +1,42 @@
+[
+  {
+    "id": 0,
+    "code": "RKS_AP_PWR_MODE_AUTO",
+    "text": "Auto"
+  },
+  {
+    "id": 1,
+    "code": "RKS_AP_PWR_MODE_AF",
+    "text": "802.3af"
+  },
+  {
+    "id": 2,
+    "code": "RKS_AP_PWR_MODE_AT",
+    "text": "802.3at"
+  },
+  {
+    "id": 3,
+    "code": "RKS_AP_PWR_MODE_AT_PLUS",
+    "text": "802.3at+"
+  },
+  {
+    "id": 4,
+    "code": "RKS_AP_PWR_MODE_BT6",
+    "text": "802.3bt/Class 6"
+  },
+  {
+    "id": 5,
+    "code": "RKS_AP_PWR_MODE_BT7",
+    "text": "802.3bt/Class 7"
+  },
+  {
+    "id": 6,
+    "code": "RKS_AP_PWR_MODE_BT8",
+    "text": "802.3bt/Class 8"
+  },
+  {
+    "id": 7,
+    "code": "RKS_AP_PWR_MODE_MAX",
+    "text": "Max"
+  }
+]

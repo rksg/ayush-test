@@ -9,6 +9,7 @@ import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
+import PoePdTable                         from '../Tables/PoePdTable'
 
 import * as UI from './styledComponents'
 
@@ -46,7 +47,7 @@ export const SwitchPoePd = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
-          <div>Impacted Entities</div>
+          <PoePdTable incident={incident}/>
         </GridCol>
       </GridRow>
     </>
