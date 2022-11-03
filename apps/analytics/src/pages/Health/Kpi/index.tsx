@@ -83,11 +83,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
     isLoading: customThresholdQuery.isLoading,
     data: customThresholdQuery.data
   }
-
-  const isNetwork = (filters.path[0].name === 'Network' && filters.path[0].type === 'network')
-    ? true
-    : undefined
-
+  const isNetwork = filters.path.length === 1
   return (
     <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
       {kpis.map((kpi) => (

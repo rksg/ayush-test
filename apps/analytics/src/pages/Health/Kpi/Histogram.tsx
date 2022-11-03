@@ -112,7 +112,7 @@ function Histogram ({
     isLoading: boolean;
     data: Object | undefined;
   };
-  isNetwork: boolean | undefined;
+  isNetwork: boolean;
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])

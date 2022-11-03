@@ -167,7 +167,7 @@ describe('Kpi Section', () => {
 
     const period = Buffer.from(JSON.stringify(filters)).toString('base64')
     const analyticsNetworkFilter = Buffer.from(JSON.stringify({
-      path: [{ type: 'ap', name: 'AP' }],
+      path: [{ type: 'network', name: 'Network' }, { type: 'ap', name: 'AP' }],
       raw: []
     })).toString('base64')
 
