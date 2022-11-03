@@ -69,7 +69,6 @@ export function TopApplicationsByTraffic ({
         trafficHistory: <SparklineChart
           key={index}
           data={sparkLineData}
-          isTrendLine={true}
           style={sparklineChartStyle}/>
       }
     })

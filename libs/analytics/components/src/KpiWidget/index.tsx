@@ -1,9 +1,8 @@
-import { Tooltip }            from 'antd'
 import { useIntl, IntlShape } from 'react-intl'
 
 import { healthApi }                                           from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig, getSparklineGranularity } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, SparklineChart, Loader }            from '@acx-ui/components'
+import { GridRow, GridCol, SparklineChart, Loader, Tooltip }   from '@acx-ui/components'
 import { intlFormats, formatter }                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'

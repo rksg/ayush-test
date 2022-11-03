@@ -57,7 +57,6 @@ exports[`KpiWidget should render component having healthy icon: svg 1`] = `
         fill="none"
         stroke="#23AB36"
         stroke-linejoin="bevel"
-        stroke-width="0.8"
       />
     </g>
   </g>
@@ -66,7 +65,7 @@ exports[`KpiWidget should render component having healthy icon: svg 1`] = `
       id="zr3-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        d="M-1 1.5l1281 0l0 797l-1281 0Z"
         fill="#000"
       />
     </clippath>
@@ -148,7 +147,6 @@ exports[`KpiWidget should render component having major icon: svg 1`] = `
         fill="none"
         stroke="#23AB36"
         stroke-linejoin="bevel"
-        stroke-width="0.8"
       />
     </g>
   </g>
@@ -157,7 +155,7 @@ exports[`KpiWidget should render component having major icon: svg 1`] = `
       id="zr4-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        d="M-1 1.5l1281 0l0 797l-1281 0Z"
         fill="#000"
       />
     </clippath>
@@ -239,7 +237,6 @@ exports[`KpiWidget should render component properly with sparkline: svg 1`] = `
         fill="none"
         stroke="#23AB36"
         stroke-linejoin="bevel"
-        stroke-width="0.8"
       />
     </g>
   </g>
@@ -248,7 +245,7 @@ exports[`KpiWidget should render component properly with sparkline: svg 1`] = `
       id="zr2-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        d="M-1 1.5l1281 0l0 797l-1281 0Z"
         fill="#000"
       />
     </clippath>
@@ -330,7 +327,6 @@ exports[`KpiWidget should render for empty data: svg 1`] = `
         fill="none"
         stroke="#23AB36"
         stroke-linejoin="bevel"
-        stroke-width="0.8"
       />
     </g>
   </g>
@@ -339,7 +335,7 @@ exports[`KpiWidget should render for empty data: svg 1`] = `
       id="zr1-c0"
     >
       <path
-        d="M-1 1.6l0 0l0 796.8l0 0Z"
+        d="M-1 1.5l1281 0l0 797l-1281 0Z"
         fill="#000"
       />
     </clippath>

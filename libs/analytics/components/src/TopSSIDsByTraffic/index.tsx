@@ -9,6 +9,7 @@ import {
   Table,
   NoData,
   SparklineChart } from '@acx-ui/components'
+import { TenantLink }             from '@acx-ui/react-router-dom'
 import { formatter, intlFormats } from '@acx-ui/utils'
 
 import { useTopSSIDsByTrafficQuery, TopSSIDsByTraffic } from './services'
@@ -28,7 +29,15 @@ function TopSSIDsByTrafficWidget ({
     {
       title: $t({ defaultMessage: 'SSID Name' }),
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      render: (data: unknown) => {
+        // TODO: Use '/networks/:id/network-details/overview'
+        /* SSID ID is required to make this work, which is currently not supported.
+        So until then redirecting to the networks page. */
+        return <TenantLink to={'/networks'}>
+          { data as string}
+        </TenantLink>
+      }
     },
     {
       title: $t({ defaultMessage: 'Total Traffic' }),
@@ -50,10 +59,10 @@ function TopSSIDsByTrafficWidget ({
 
   const getDataSource = (appTrafficData: TopSSIDsByTraffic[],
     overallTrafic:number) => {
-    return appTrafficData.map((item,index) => {
+    return appTrafficData.map((item, index) => {
       const sparkLineData = item.timeSeries.userTraffic
         .map(value => value ? value : 0)
-      const sparklineChartStyle = { height: 22, width: 80, display: 'inline' }
+      const sparklineChartStyle = { height: 22, width: 100, display: 'inline' }
       return {
         ...item,
         traffic: <Space align='start' size={4}>
@@ -67,7 +76,6 @@ function TopSSIDsByTrafficWidget ({
         trafficHistory: <SparklineChart
           key={index}
           data={sparkLineData}
-          isTrendLine={true}
           style={sparklineChartStyle}/>
       }
     })

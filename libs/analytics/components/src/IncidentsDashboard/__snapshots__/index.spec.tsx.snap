@@ -52,7 +52,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                  style="padding: 5px 10px 5px 10px;"
+                  style="padding: 5px 5px 5px 5px;"
                 >
                   <div
                     class="Grid__Container-sc-5irhjd-1 zzbxI sc-papXJ iZPNKw"
@@ -83,7 +83,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                 </div>
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                  style="padding: 5px 10px 5px 10px;"
+                  style="padding: 5px 5px 5px 5px;"
                 >
                   <div
                     class="Grid__Container-sc-5irhjd-1 zzbxI sc-papXJ iZPNKw"
@@ -114,7 +114,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                 </div>
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                  style="padding: 5px 10px 5px 10px;"
+                  style="padding: 5px 5px 5px 5px;"
                 >
                   <div
                     class="Grid__Container-sc-5irhjd-1 zzbxI sc-papXJ iZPNKw"
@@ -145,7 +145,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                 </div>
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                  style="padding: 5px 10px 5px 10px;"
+                  style="padding: 5px 5px 5px 5px;"
                 >
                   <div
                     class="Grid__Container-sc-5irhjd-1 zzbxI sc-papXJ iZPNKw"
@@ -203,7 +203,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                     />
                     <g>
                       <path
-                        d="M-75 -0.5l75 0l0 1l-75 0Z"
+                        d="M-80 -0.5l80 0l0 1l-80 0Z"
                         fill="none"
                         transform="translate(85 659.1667)"
                       />
@@ -213,12 +213,12 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                         style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
                         transform="translate(85 659.1667)"
-                        x="-75"
+                        x="-80"
                       >
                         Infrastructure
                       </text>
                       <path
-                        d="M-75 -0.5l75 0l0 1l-75 0Z"
+                        d="M-80 -0.5l80 0l0 1l-80 0Z"
                         fill="none"
                         transform="translate(85 395.5)"
                       />
@@ -228,12 +228,12 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                         style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
                         transform="translate(85 395.5)"
-                        x="-75"
+                        x="-80"
                       >
                         Performance
                       </text>
                       <path
-                        d="M-75 -0.5l75 0l0 1l-75 0Z"
+                        d="M-80 -0.5l80 0l0 1l-80 0Z"
                         fill="none"
                         transform="translate(85 131.8333)"
                       />
@@ -243,100 +243,97 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                         style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
                         transform="translate(85 131.8333)"
-                        x="-75"
+                        x="-80"
                       >
                         Connection
                       </text>
                       <path
-                        d="M93 655.1667L93 663.1667L93 655.1667"
+                        d="M93 654.1667L94.5493 654.1667L94.5493 664.1667L93 664.1667L93 654.1667"
                         fill="#FAD278"
                       />
                       <path
-                        d="M93 391.5L93 399.5L93 391.5"
+                        d="M93 390.5L94.4719 390.5L94.4719 400.5L93 400.5L93 390.5"
                         fill="#FAD278"
                       />
                       <path
-                        d="M93 127.8333L93 135.8333L93 127.8333"
+                        d="M93 126.8333L94.3944 126.8333L94.3944 136.8333L93 136.8333L93 126.8333"
                         fill="#FAD278"
                       />
                       <path
-                        d="M94.556 655.1667L94.556 663.1667L94.556 655.1667"
+                        d="M94.5493 654.1667L95.8663 654.1667L95.8663 664.1667L94.5493 664.1667L94.5493 654.1667"
                         fill="#F7B41E"
                       />
                       <path
-                        d="M94.4782 391.5L94.4782 399.5L94.4782 391.5"
+                        d="M94.4719 390.5L95.7113 390.5L95.7113 400.5L94.4719 400.5L94.4719 390.5"
                         fill="#F7B41E"
                       />
                       <path
-                        d="M94.4004 127.8333L94.4004 135.8333L94.4004 127.8333"
+                        d="M94.3944 126.8333L95.5564 126.8333L95.5564 136.8333L94.3944 136.8333L94.3944 126.8333"
                         fill="#F7B41E"
                       />
                       <path
-                        d="M95.8786 655.1667L95.8786 663.1667L95.8786 655.1667"
+                        d="M95.8663 654.1667L1180.3996 654.1667L1180.3996 664.1667L95.8663 664.1667L95.8663 654.1667"
                         fill="#EC7100"
                       />
                       <path
-                        d="M95.723 391.5L95.723 399.5L95.723 391.5"
+                        d="M95.7113 390.5L1102.778 390.5L1102.778 400.5L95.7113 400.5L95.7113 390.5"
                         fill="#EC7100"
                       />
                       <path
-                        d="M95.5674 127.8333L95.5674 135.8333L95.5674 127.8333"
+                        d="M95.5564 126.8333L1025.1564 126.8333L1025.1564 136.8333L95.5564 136.8333L95.5564 126.8333"
                         fill="#EC7100"
                       />
                       <path
-                        d="M1185.0786 655.1667L1185.0786 663.1667L1185.0786 655.1667"
+                        d="M1180.3996 654.1667A0.8521 0.8521 0 0 1 1181.2517 655.0188L1181.2517 663.3145A0.8521 0.8521 0 0 1 1180.3996 664.1667L1180.3996 654.1667"
                         fill="#ED1C24"
                       />
                       <path
-                        d="M1107.123 391.5L1107.123 399.5L1107.123 391.5"
+                        d="M1102.778 390.5A0.7747 0.7747 0 0 1 1103.5527 391.2747L1103.5527 399.7253A0.7747 0.7747 0 0 1 1102.778 400.5L1102.778 390.5"
                         fill="#ED1C24"
                       />
                       <path
-                        d="M1029.1674 127.8333L1029.1674 135.8333L1029.1674 127.8333"
+                        d="M1025.1564 126.8333A0.6972 0.6972 0 0 1 1025.8536 127.5305L1025.8536 136.1361A0.6972 0.6972 0 0 1 1025.1564 136.8333L1025.1564 126.8333"
                         fill="#ED1C24"
                       />
                       <path
-                        d="M0 -10l5 0l0 20l-5 0Z"
+                        d="M0 -8l5 0l0 16l-5 0Z"
                         fill="none"
-                        transform="translate(1190.0786 659.1667)"
+                        transform="translate(1186.2517 659.1667)"
                       />
                       <text
                         dominant-baseline="central"
                         fill="#333333"
-                        fill-opacity="0"
-                        style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
-                        transform="translate(1190.0786 659.1667)"
+                        transform="translate(1186.2517 659.1667)"
                       >
                         14048
                       </text>
                       <path
-                        d="M0 -10l5 0l0 20l-5 0Z"
+                        d="M0 -8l5 0l0 16l-5 0Z"
                         fill="none"
-                        transform="translate(1112.123 395.5)"
+                        transform="translate(1108.5527 395.5)"
                       />
                       <text
                         dominant-baseline="central"
                         fill="#333333"
-                        fill-opacity="0"
-                        style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
-                        transform="translate(1112.123 395.5)"
+                        transform="translate(1108.5527 395.5)"
                       >
                         13045
                       </text>
                       <path
-                        d="M0 -10l5 0l0 20l-5 0Z"
+                        d="M0 -8l5 0l0 16l-5 0Z"
                         fill="none"
-                        transform="translate(1034.1674 131.8333)"
+                        transform="translate(1030.8536 131.8333)"
                       />
                       <text
                         dominant-baseline="central"
                         fill="#333333"
-                        fill-opacity="0"
-                        style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
-                        transform="translate(1034.1674 131.8333)"
+                        transform="translate(1030.8536 131.8333)"
                       >
                         12042
                       </text>

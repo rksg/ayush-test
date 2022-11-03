@@ -1,9 +1,9 @@
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { IncidentFilter }                from '@acx-ui/analytics/utils'
-import { Card, Loader, StackedBarChart } from '@acx-ui/components'
-import { intlFormats }                   from '@acx-ui/utils'
+import { IncidentFilter }                              from '@acx-ui/analytics/utils'
+import { Card, Loader, StackedBarChart, NoActiveData } from '@acx-ui/components'
+import { intlFormats }                                 from '@acx-ui/utils'
 
 import {
   IncidentsBySeverityDataKey,
@@ -51,22 +51,33 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
     { category: $t({ defaultMessage: 'Performance' }), series: [] as Series },
     { category: $t({ defaultMessage: 'Connection' }), series: [] as Series }
   ]
+  const incidentsCount: Boolean[] = []
   severities && Object.entries(severities).forEach(([severity, data]) => {
+    incidentsCount.push(data.incidentsCount > 0)
     headers.push({ severityKey: severity, ...data })
     const categories = [data.infrastructure, data.performance, data.connection]
     categories.forEach((value, index) => {
       barCharts[index].series.push({ name: severity, value })
     })
   })
+  const noData = incidentsCount.every(value => !value)
+
   return <Loader states={[response]}>
     <Card title={$t(defineMessage({ defaultMessage: 'Incidents' }))}>
       <AutoSizer>
-        {({ width, height }) => <UI.Container style={{ width, height }}>
-          <UI.SeveritiesContainer>
-            {headers.map((datum, index) => <IncidentSeverityWidget key={index} data={datum} />)}
-          </UI.SeveritiesContainer>
-          <StackedBarChart data={barCharts} showTooltip style={{ height: 100 }} />
-        </UI.Container>}
+        {({ width, height }) => (
+          noData
+            ? <NoActiveData text={$t({ defaultMessage: 'No active incidents' })} />
+            : <UI.Container style={{ width, height }}>
+              <UI.SeveritiesContainer>
+                {headers.map((datum, index) => <IncidentSeverityWidget key={index} data={datum} />)}
+              </UI.SeveritiesContainer>
+              <StackedBarChart data={barCharts}
+                showTooltip
+                style={{ height: 100 }}
+                axisLabelWidth={80} />
+            </UI.Container>
+        )}
       </AutoSizer>
     </Card>
   </Loader>

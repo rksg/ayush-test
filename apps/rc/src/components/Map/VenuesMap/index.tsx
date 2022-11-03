@@ -64,6 +64,7 @@ function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps) {
   return (
     <Wrapper
       apiKey={get('GOOGLE_MAPS_KEY')}
+      version='3.49' // Fixing the version to avoid unnecessary bugs from new versions of API
       libraries={['places']}
       language={'en'}
       render={render}
