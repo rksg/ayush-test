@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Tooltip } from 'antd'
+import { Tooltip } from '@acx-ui/components'
 
 import { Descriptions, TextContent } from './styledComponents'
 

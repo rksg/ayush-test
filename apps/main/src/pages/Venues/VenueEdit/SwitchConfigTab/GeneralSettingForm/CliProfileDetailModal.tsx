@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { Col, Divider, Form, Row, Select, Tooltip, Typography } from 'antd'
+import { Col, Divider, Form, Row, Select, Typography } from 'antd'
 
-import { cssStr, Modal }                                  from '@acx-ui/components'
+import { cssStr, Modal, Tooltip }                         from '@acx-ui/components'
 import { ConfigurationProfile, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { getIntl }                                        from '@acx-ui/utils'
 
