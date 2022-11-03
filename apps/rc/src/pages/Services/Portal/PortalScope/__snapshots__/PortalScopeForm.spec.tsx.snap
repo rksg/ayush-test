@@ -478,7 +478,7 @@ exports[`Create Portal: Networks Step should render correctly 1`] = `
                                           <td
                                             class="ant-table-cell"
                                           >
-                                            Pre-Shared Key (PSK)
+                                            Self Sign-In
                                           </td>
                                           <td
                                             class="ant-table-cell"

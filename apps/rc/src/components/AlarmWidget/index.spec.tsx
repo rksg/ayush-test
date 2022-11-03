@@ -116,13 +116,13 @@ describe('Alarm widget', () => {
     fireEvent.click(await screen.findByText('Some_AP'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       hash: '',
-      pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/aps/FEK3224R08J/TBD',
+      pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/aps/FEK3224R08J/TODO',
       search: ''
     })
     fireEvent.click(await screen.findByText('Some_Switch'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       hash: '',
-      pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/switches/FEK3230S0A2/TBD',
+      pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/switches/FEK3230S0A2/TODO',
       search: ''
     })
   })

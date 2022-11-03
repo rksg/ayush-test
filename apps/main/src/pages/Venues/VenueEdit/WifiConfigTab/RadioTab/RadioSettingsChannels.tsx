@@ -1,8 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Space, Tooltip, Form }               from 'antd'
+import { Space, Form }                        from 'antd'
 import { intersection, findIndex, map, uniq } from 'lodash'
 import { useIntl }                            from 'react-intl'
+
+import { Tooltip } from '@acx-ui/components'
 
 import { VenueEditContext } from '../..'
 

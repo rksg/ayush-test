@@ -38,7 +38,8 @@ const list = {
     {
       name: '!!!SANWPA2!!!',
       id: '1d88235da9504a98847fb5ed2b971052',
-      nwSubType: 'psk',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
       venues: {
         count: 1,
         names: [
