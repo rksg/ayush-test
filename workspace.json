@@ -14,6 +14,7 @@
     "common-types": "libs/common/types",
     "common-utils": "libs/common/utils",
     "main": "apps/main",
+    "main-components": "libs/main/components",
     "msp": "apps/msp",
     "rc": "apps/rc",
     "rc-components": "libs/rc/components",

@@ -7,7 +7,6 @@ import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
 import { Child, useVenueFilterQuery } from './services'
 import * as UI                        from './styledComponents'
 
-
 const getFilterData = (data: Child[]): Option [] => {
   const venues: { [key: string]: Option; } = {}
   for (const { name, id } of data) {
@@ -17,7 +16,8 @@ const getFilterData = (data: Child[]): Option [] => {
   }
   return Object.values(venues)
 }
-function VenueFilter () {
+
+export function VenueFilter () {
   const { $t } = useIntl()
   const { setNodeFilter, filters } = useDashboardFilter()
   const { filter: { networkNodes } } = filters
@@ -45,5 +45,3 @@ function VenueFilter () {
     </UI.Container>
   )
 }
-
-export default VenueFilter

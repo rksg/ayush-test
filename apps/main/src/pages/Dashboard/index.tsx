@@ -15,9 +15,9 @@ import {
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
+import { VenueFilter }                                         from '@acx-ui/main/components'
 import { useDateFilter, dateRangeForLast, useDashboardFilter } from '@acx-ui/utils'
 
-import VenueFilter from '../../components/VenueFilter'
 
 const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))

@@ -8,7 +8,7 @@ import { PathNode, DateRange }                         from '@acx-ui/utils'
 import { api }              from './services'
 import { networkHierarchy } from './services.spec'
 
-import VenueFilter from '.'
+import { VenueFilter } from '.'
 
 const setNodeFilter = jest.fn()
 const filters = (nodes: PathNode[][]) => ({
