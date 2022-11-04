@@ -77,7 +77,7 @@ export function PskSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />

@@ -46,7 +46,7 @@ export function AaaSettingsForm (props: {
         isCloudpathEnabled: data.isCloudpathEnabled,
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.enableAccountingService,
+        enableAccountingService: data.accountingRadius,
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
         enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
         authRadius: data.authRadius,
@@ -60,7 +60,7 @@ export function AaaSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
