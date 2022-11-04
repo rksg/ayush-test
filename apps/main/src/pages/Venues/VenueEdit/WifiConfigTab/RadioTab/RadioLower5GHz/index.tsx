@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Form, Input, InputNumber, Radio, RadioChangeEvent, Row, Select, Slider } from 'antd'
+import _                                                                               from 'lodash'
 import { useIntl }                                                                     from 'react-intl'
 
 import {
@@ -63,7 +64,8 @@ export function RadioLower5GHz () {
     })
 
   useEffect(() => {
-    if(defaultChannelsData){
+    if (defaultChannelsData &&
+        _.get(defaultChannelsData, '5GLowerChannels.indoor.auto')) {
       setDefaultIndoorChannels(
         defaultChannelsData['5GLowerChannels']['indoor']['auto']
       )
@@ -71,7 +73,8 @@ export function RadioLower5GHz () {
         defaultChannelsData['5GLowerChannels']['outdoor']['auto']
       )
     }
-    if(defaultChannelsData && channelBandwidth){
+    if (defaultChannelsData && channelBandwidth &&
+      _.get(defaultChannelsData, '5GLowerChannels.indoor.' + channelType)) {
       setChannelType(channelBandwidth === 'AUTO' ?
         channelBandwidth.toLowerCase() : channelBandwidth)
 
@@ -139,7 +142,7 @@ export function RadioLower5GHz () {
 
   return (
     <>
-      <Row gutter={20}>
+      <Row gutter={20} data-testid='radio-l5g-tab'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: '5GHz settings:' })}
@@ -196,8 +199,12 @@ export function RadioLower5GHz () {
             name={['radioParamsDual5G', 'radioParamsLower5G', 'channelBandwidth']}>
             <Select
               options={defaultChannelsData &&
-            Object.keys(defaultChannelsData['5GLowerChannels']['dfs'])
-              .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+                _.get(defaultChannelsData, '5GLowerChannels.dfs') &&
+                Object.keys(defaultChannelsData['5GLowerChannels']['dfs'])
+                  .map(item => ({
+                    label: item === 'auto' ? _.upperFirst(item) : item,
+                    value: item === 'auto' ? item.toUpperCase() : item
+                  }))}
               defaultValue={'auto'}
               disabled={inheritSettings}
             />

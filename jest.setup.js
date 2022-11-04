@@ -11,6 +11,9 @@ const { mockInstances } = require('@googlemaps/jest-mocks')
 const { Loader } = require('@googlemaps/js-api-loader')
 const { rest } = require('msw')
 const nodeCrypto = require('crypto')
+const { configure } = require('@testing-library/dom')
+
+configure({ asyncUtilTimeout: 3000 })
 
 jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
@@ -82,4 +85,4 @@ jest.mock('@acx-ui/feature-toggle', () => ({
 // For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
 HTMLCanvasElement.prototype.getContext = () => null
 
-jest.setTimeout(10000)
+jest.setTimeout(20000)

@@ -10,7 +10,6 @@ import {
   CardTypes,
   Loader,
   MultiLineTimeSeriesChart,
-  cssStr,
   NoData
 } from '@acx-ui/components'
 import { TimeStamp, TimeStampRange } from '@acx-ui/types'
@@ -50,16 +49,11 @@ const NetworkHistoryWidget = forwardRef<
       name: $t({ defaultMessage: 'Connected Clients' })
     }
   ] as Array<{ key: Key; name: string }>
-  const lineColors = [
-    cssStr('--acx-accents-blue-50'),
-    cssStr('--acx-accents-blue-30')
-  ]
   if (!hideIncidents) {
     seriesMapping.push({
       key: 'impactedClientCount',
       name: $t({ defaultMessage: 'Impacted Clients' })
     })
-    lineColors.push(cssStr('--acx-accents-orange-50'))
   }
   const queryResults = useNetworkHistoryQuery({ ...filters, hideIncidents }, {
     selectFromResult: ({ data, ...rest }) => ({
@@ -77,7 +71,6 @@ const NetworkHistoryWidget = forwardRef<
               <MultiLineTimeSeriesChart
                 style={{ width, height }}
                 data={queryResults.data}
-                lineColors={lineColors}
                 brush={brush?.timeWindow}
                 onBrushChange={brush?.setTimeWindow as (range: TimeStamp[]) => void}
                 chartRef={ref as RefCallback<ReactECharts> | undefined}

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Tooltip }                              from 'antd'
+import { Space }                                       from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
@@ -9,7 +9,8 @@ import AutoSizer                                       from 'react-virtualized-a
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { Button } from '../Button'
+import { Button }  from '../Button'
+import { Tooltip } from '../Tooltip'
 
 import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
 import { ResizableColumn }                                          from './ResizableColumn'
@@ -295,6 +296,7 @@ function Table <RecordType extends Record<string, any>> (
       dataSource={getFilteredData<RecordType>(
         dataSource, filterValues, activeFilters, searchables, searchValue
       )}
+      sortDirections={['ascend', 'descend', 'ascend']}
       bordered={false}
       search={false}
       columns={(type === 'tall' ? columns.map(col=>({

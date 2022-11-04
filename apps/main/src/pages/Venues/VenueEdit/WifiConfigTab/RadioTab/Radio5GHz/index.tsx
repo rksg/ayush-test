@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Form, Input, InputNumber, Row, Select, Slider } from 'antd'
+import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
 import {
@@ -65,7 +66,8 @@ export function Radio5GHz () {
         defaultChannelsData['5GChannels']['outdoor'][channelType]
       )
     }
-    if(defaultChannelsData && channelBandwidth){
+    if (defaultChannelsData && channelBandwidth
+      && _.get(defaultChannelsData, '5GChannels.indoor.' + channelType) ){
       setChannelType(channelBandwidth === 'AUTO' ?
         channelBandwidth.toLowerCase() : channelBandwidth)
 
@@ -126,7 +128,7 @@ export function Radio5GHz () {
 
   return (
     <>
-      <Row gutter={20}>
+      <Row gutter={20} data-testid='radio-5g-tab'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: 'Channel selection method:' })}
@@ -168,9 +170,11 @@ export function Radio5GHz () {
             name={['radioParams50G', 'channelBandwidth']}>
             <Select
               options={defaultChannelsData &&
+                _.get(defaultChannelsData, '5GChannels.dfs') &&
             Object.keys(defaultChannelsData['5GChannels']['dfs'])
-              .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
-              defaultValue={'auto'}
+              .map(item => ({ label: item === 'auto' ? _.upperFirst(item) : item,
+                value: item === 'auto' ? item.toUpperCase() : item }))}
+              defaultValue={'AUTO'}
             />
           </Form.Item>
           <Form.Item

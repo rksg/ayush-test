@@ -2203,8 +2203,59 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
         style="min-height: 250px;"
       >
-        <div>
-          Impacted Entities
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Details
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2216,8 +2267,59 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
         style="min-height: 250px;"
       >
-        <div>
-          Detail Chart
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Memory Utilization
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2504,8 +2606,123 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
         style="min-height: 250px;"
       >
-        <div>
-          Impacted Entities Section
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Details
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="min-height: 250px;"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  >
+                    Impacted Switches
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                style="height: 150px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      Not available in this Beta version
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

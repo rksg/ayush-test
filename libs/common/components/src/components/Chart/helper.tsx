@@ -30,6 +30,19 @@ import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
+export const qualitativeColorSet = () => [
+  cssStr('--acx-viz-qualitative-1'),
+  cssStr('--acx-viz-qualitative-2'),
+  cssStr('--acx-viz-qualitative-3'),
+  cssStr('--acx-viz-qualitative-4'),
+  cssStr('--acx-viz-qualitative-5'),
+  cssStr('--acx-viz-qualitative-6'),
+  cssStr('--acx-viz-qualitative-7'),
+  cssStr('--acx-viz-qualitative-8'),
+  cssStr('--acx-viz-qualitative-9'),
+  cssStr('--acx-viz-qualitative-10')
+]
+
 export type TooltipFormatterParams = Exclude<
   TooltipComponentFormatterCallbackParams,
   Array<unknown>
@@ -55,9 +68,10 @@ const defaultRichTextFormatValues: Record<
 export const gridOptions = ({
   disableLegend = false,
   hasXAxisName = false,
-  xAxisOffset = 0
+  xAxisOffset = 0,
+  yAxisOffset = 0
 } = {}) => ({
-  left: 0,
+  left: yAxisOffset,
   right: 0,
   bottom: hasXAxisName ? 16 + xAxisOffset : 0,
   top: disableLegend ? 6 : '15%',
@@ -94,8 +108,11 @@ export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
 export const xAxisOptions = () => ({
   axisLine: {
     lineStyle: {
-      color: 'transparent'
+      color: cssStr('--acx-neutrals-40')
     }
+  },
+  axisTick: {
+    show: false
   },
   axisPointer: {
     type: 'line',
@@ -132,15 +149,20 @@ export const barChartSeriesLabelOptions = () => ({
   show: true,
   position: 'right',
   fontFamily: cssStr('--acx-neutral-brand-font'),
-  fontSize: cssNumber('--acx-body-3-font-size'),
-  lineHeight: cssNumber('--acx-body-3-line-height'),
+  fontSize: cssNumber('--acx-body-4-font-size'),
+  lineHeight: cssNumber('--acx-body-4-line-height'),
   color: cssStr('--acx-primary-black'),
   fontWeight: cssNumber('--acx-body-font-weight'),
   silent: true
 } as RegisteredSeriesOption['bar']['label'])
 
 export const yAxisOptions = () => ({
-  boundaryGap: [0, '10%']
+  boundaryGap: [0, '10%'],
+  splitLine: {
+    lineStyle: {
+      color: cssStr('--acx-neutrals-20')
+    }
+  }
 } as YAXisComponentOption)
 
 export const axisLabelOptions = () => ({
@@ -221,7 +243,11 @@ export const timeSeriesTooltipFormatter = (
                 value: formatter(value, undefined, dataIndex)
               }}
             />
-            text = data.show !== false ? <UI.Badge color={(color) as string} text={text} /> : text
+            text = data.show !== false ? <UI.Badge
+              className='acx-chart-tooltip'
+              color={(color) as string}
+              text={text}
+            /> : text
             text = <li key={data.name}>{text}</li>
             return text
           })
@@ -270,7 +296,7 @@ export const stackedBarTooltipFormatter = (
   return renderToString(
     <RawIntlProvider value={intl}>
       <UI.TooltipWrapper>
-        <UI.Badge color={param.color?.toString()} text={text} />
+        <UI.Badge className='acx-chart-tooltip' color={param.color?.toString()} text={text} />
       </UI.TooltipWrapper>
     </RawIntlProvider>
   )
@@ -306,7 +332,7 @@ export const donutChartTooltipFormatter = (
   return renderToString(
     <RawIntlProvider value={intl}>
       <UI.TooltipWrapper>
-        <UI.Badge color={parameters.color?.toString()} text={text} />
+        <UI.Badge className='acx-chart-tooltip' color={parameters.color?.toString()} text={text} />
       </UI.TooltipWrapper>
     </RawIntlProvider>
   )

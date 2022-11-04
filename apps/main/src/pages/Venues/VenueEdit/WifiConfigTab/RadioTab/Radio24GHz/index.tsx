@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Form, InputNumber, Row, Select, Slider } from 'antd'
+import _                                               from 'lodash'
 import { useIntl }                                     from 'react-intl'
 
 import {
@@ -72,7 +73,7 @@ export function Radio24GHz () {
 
   return (
     <>
-      <Row gutter={20}>
+      <Row gutter={20} data-testid='radio-24g-tab'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: 'Channel selection method:' })}
@@ -114,8 +115,10 @@ export function Radio24GHz () {
             name={['radioParams24G', 'channelBandwidth']}>
             <Select
               options={defaultChannelsData &&
+                defaultChannelsData['2.4GChannels'] &&
             Object.keys(defaultChannelsData['2.4GChannels'])
-              .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+              .map(item => ({ label: item === 'auto' ? _.upperFirst(item) : item,
+                value: item === 'auto' ? item.toUpperCase() : item }))}
               defaultValue={'auto'}
             />
           </Form.Item>

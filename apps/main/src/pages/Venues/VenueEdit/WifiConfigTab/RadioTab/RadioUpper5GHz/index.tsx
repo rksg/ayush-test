@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Form, Input, InputNumber, Radio, RadioChangeEvent, Row, Select, Slider } from 'antd'
+import _                                                                               from 'lodash'
 import { useIntl }                                                                     from 'react-intl'
 
 import {
@@ -63,7 +64,8 @@ export function RadioUpper5GHz () {
     })
 
   useEffect(() => {
-    if(defaultChannelsData){
+    if (defaultChannelsData &&
+      _.get(defaultChannelsData, '5GUpperChannels.indoor.auto')) {
       setDefaultIndoorChannels(
         defaultChannelsData['5GUpperChannels']['indoor']['auto']
       )
@@ -71,7 +73,8 @@ export function RadioUpper5GHz () {
         defaultChannelsData['5GUpperChannels']['outdoor']['auto']
       )
     }
-    if(defaultChannelsData && channelBandwidth){
+    if (defaultChannelsData &&
+      channelBandwidth && _.get(defaultChannelsData, '5GUpperChannels.indoor.' + channelType)) {
       setChannelType(channelBandwidth === 'AUTO' ?
         channelBandwidth.toLowerCase() : channelBandwidth)
 
@@ -138,7 +141,7 @@ export function RadioUpper5GHz () {
 
   return (
     <>
-      <Row gutter={20}>
+      <Row gutter={20} data-testid='radio-u5g-tab'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: '5GHz settings:' })}
@@ -195,8 +198,10 @@ export function RadioUpper5GHz () {
             name={['radioParamsDual5G', 'radioParamsUpper5G', 'channelBandwidth']}>
             <Select
               options={defaultChannelsData &&
+                defaultChannelsData['5GUpperChannels'] &&
             Object.keys(defaultChannelsData['5GUpperChannels']['dfs'])
-              .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+              .map(item => ({ label: item === 'auto' ? _.upperFirst(item) : item,
+                value: item === 'auto' ? item.toUpperCase() : item }))}
               defaultValue={'auto'}
               disabled={inheritSettings}
             />

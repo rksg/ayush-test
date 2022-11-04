@@ -14,8 +14,9 @@ import {
   legendOptions,
   legendTextStyleOptions,
   tooltipOptions,
-  EventParams
-} from '../Chart/helper'
+  EventParams,
+  qualitativeColorSet
+}                 from '../Chart/helper'
 import { useLegendSelectChanged } from '../Chart/useLegendSelectChanged'
 
 import type { EChartsOption }     from 'echarts'
@@ -26,7 +27,7 @@ export interface BarChartProps
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: TChartData,
   grid?: GridOption,
-  barColors: string[]
+  barColors?: string[]
   barWidth?: number
   labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
@@ -71,7 +72,7 @@ export function BarChart<TChartData extends BarChartData>
   labelFormatter,
   tooltipFormatter,
   labelRichStyle,
-  barColors,
+  barColors = qualitativeColorSet(),
   barWidth,
   onClick,
   ...props
@@ -80,6 +81,7 @@ export function BarChart<TChartData extends BarChartData>
   useLegendSelectChanged(eChartsRef)
 
   const option: EChartsOption = {
+    animation: false,
     grid: { ...gridOptions(), ...gridProps },
     dataset: {
       dimensions: data.dimensions,
@@ -127,7 +129,6 @@ export function BarChart<TChartData extends BarChartData>
         }
       }
     },
-
     series: getSeries(data, barColors, labelFormatter, labelRichStyle, !!onClick)
   }
 

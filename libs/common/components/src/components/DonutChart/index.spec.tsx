@@ -16,8 +16,8 @@ const data = [
 ]
 
 export const topSwitchModels = [
-  { value: 13, name: 'ICX7150-C12P', color: cssStr('--acx-accents-blue-30') },
-  { value: 8, name: 'ICX7150-C121P', color: cssStr('--acx-accents-blue-60') },
+  { value: 13, name: 'ICX7150-C12P', color: cssStr('--acx-accents-blue-25') },
+  { value: 8, name: 'ICX7150-C121P', color: cssStr('--acx-accents-blue-55') },
   { value: 7, name: 'ICX7150-C57P', color: cssStr('--acx-accents-orange-25') },
   { value: 4, name: 'ICX7150-C8', color: cssStr('--acx-accents-orange-50') },
   { value: 2, name: 'ICX7150-C0', color: cssStr('--acx-semantics-yellow-40') }
@@ -40,6 +40,7 @@ describe('DonutChart - small', () => {
     const { asFragment } = render(<DonutChart
       style={{ width: 238, height: 176 }}
       data={data}
+      showLegend
       title='Donut Chart'/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Donut Chart').getAttribute('style'))
@@ -74,7 +75,9 @@ describe('DonutChart - small', () => {
     expect(numbers.length).toEqual(1)
   })
   it('should render the legend properly when formatter not available', async () => {
-    const { asFragment } = render(<DonutChart style={{ width: 238, height: 176 }} data={data}/>)
+    const { asFragment } = render(<DonutChart style={{ width: 238, height: 176 }}
+      data={data}
+      showLegend/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('5095').getAttribute('style'))
       .toEqual("font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;")

@@ -5,7 +5,7 @@ import {
   Incident,
   shortDescription
 } from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
+import { PageHeader, SeverityPill, GridRow, GridCol, Card, NotAvailable } from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
@@ -46,10 +46,14 @@ export const SwitchMemoryHigh = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
-          <div>Impacted Entities</div>
+          <Card title={$t({ defaultMessage: 'Details' })} type='no-border' >
+            <NotAvailable/>
+          </Card>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
-          <div>Detail Chart</div>
+          <Card title={$t({ defaultMessage: 'Memory Utilization' })} type='no-border'>
+            <NotAvailable/>
+          </Card>
         </GridCol>
       </GridRow>
     </>

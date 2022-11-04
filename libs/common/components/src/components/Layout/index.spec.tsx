@@ -69,6 +69,10 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, { route: true })
     await screen.findByTestId('speed-indicator-outlined')
+    await screen.findByRole('menuitem', {
+      name: (name, element) => name === 'Dashboard' &&
+        (element as HTMLElement).hasAttribute('data-menu-id')
+    })
     expect(asFragment()).toMatchSnapshot()
   })
   it('should collapsed', async () => {
@@ -97,5 +101,22 @@ describe('Layout', () => {
     await screen.findByTestId('ai-outlined')
     fireEvent.click(screen.getByTestId('account-circle-outlined'))
     await screen.findByTestId('account-circle-solid')
+  })
+  it('should show tooltip when disabled', async () => {
+    const { asFragment } = render(<Layout
+      menuConfig={menuConfig}
+      leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/t/:tenantId/:page',
+        params: { tenantId: 't-id', page: 'dashboard' }
+      }
+    })
+    await screen.findByTestId('ai-outlined')
+    fireEvent.mouseOver(screen.getByTestId('account-circle-outlined'))
+    await screen.findByRole('tooltip', { hidden: true })
+    expect(asFragment()).toMatchSnapshot()
   })
 })

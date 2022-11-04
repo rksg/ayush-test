@@ -18,8 +18,7 @@ import { useRssDistributionChartQuery } from './services'
 
 const rssThreshold = -80
 const barColors = (severity: Incident['severity'], rssBuckets: number[]) => {
-  // TODO: change color when confirmed
-  const normalColor = cssStr('--acx-neutrals-50')
+  const normalColor = cssStr('--acx-viz-diverging-central')
   const severityColor = cssStr(incidentSeverities[calculateSeverity(severity)].color)
   return rssBuckets.map(rss => rss <= rssThreshold ? severityColor : normalColor)
 }
