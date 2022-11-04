@@ -8,6 +8,11 @@ export interface RogueAPDetectionContextType {
   venues: RogueVenue[]
 }
 
+export interface RogueAPDetailContextType {
+  filtersId: string[],
+  setFiltersId: (filtersId: string[]) => void
+}
+
 export interface RogueOldApResponseType {
   rogueMac: string,
   ssid: string,
@@ -34,14 +39,10 @@ export interface RogueOldApResponseType {
 }
 
 export interface RogueAPDetectionTempType {
-  totalCount: 1,
-  page: 1,
-  data: {
     id: string,
     name: string,
-    activeVenues: RogueVenue[],
-    numOfRules: number
-  }[]
+    venues: RogueVenue[],
+    rules: number
 }
 
 export interface VenueRoguePolicyType {

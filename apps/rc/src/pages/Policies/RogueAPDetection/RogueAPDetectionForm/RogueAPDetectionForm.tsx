@@ -120,7 +120,7 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
           name='scope'
           title={$t({ defaultMessage: 'Scope' })}
         >
-          <RogueAPDetectionScopeForm edit={edit}/>
+          <RogueAPDetectionScopeForm />
         </StepsForm.StepForm>
 
         { !edit && <StepsForm.StepForm

@@ -104,21 +104,28 @@ const RogueVenueTable = () => {
   const rowActions: TableProps<RogueVenueData>['actions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
     onClick: (selectRows: RogueVenueData[], clearSelection: () => void) => {
-      dispatch({
-        type: RogueAPDetectionActionTypes.ADD_VENUES,
-        payload: selectRows.map(row => {
-          return {
-            id: row.id,
-            name: row.venue
-          }
+      if (state.venues.length + selectRows.length >= 64) {
+        showToast({
+          type: 'info',
+          content: 'The max-number of venues in a rogue ap policy profile is 64.'
         })
-      } as RogueAPDetectionActionPayload)
+      } else {
+        dispatch({
+          type: RogueAPDetectionActionTypes.ADD_VENUES,
+          payload: selectRows.map(row => {
+            return {
+              id: row.id,
+              name: row.venue
+            }
+          })
+        } as RogueAPDetectionActionPayload)
 
-      showToast({
-        type: 'info',
-        content: `Activate ${selectRows.length} venue(s)`
-      })
-      clearSelection()
+        showToast({
+          type: 'info',
+          content: `Activate ${selectRows.length} venue(s)`
+        })
+        clearSelection()
+      }
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),

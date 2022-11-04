@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { act, fireEvent } from '@testing-library/react'
-import { Form }           from 'antd'
+import userEvent          from '@testing-library/user-event'
 import { rest }           from 'msw'
 
 import { policyApi }                                                                  from '@acx-ui/rc/services'
@@ -12,7 +12,7 @@ import { mockServer, render, screen }                                           
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueAPDetectionForm from './RogueAPDetectionForm'
-import userEvent from '@testing-library/user-event';
+
 
 
 const policyListContent = {
@@ -149,7 +149,7 @@ describe('RogueAPDetectionForm', () => {
       (_, res, ctx) => res(
         ctx.json(venueTable)
       )
-    ), rest.post(
+    ), rest.get(
       RogueAPDetectionUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)
@@ -223,7 +223,7 @@ describe('RogueAPDetectionForm', () => {
       (_, res, ctx) => res(
         ctx.json(venueTable)
       )
-    ), rest.post(
+    ), rest.get(
       RogueAPDetectionUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)
@@ -248,9 +248,27 @@ describe('RogueAPDetectionForm', () => {
     expect(screen.getAllByText('Settings')).toBeTruthy()
     expect(screen.getAllByText('Scope')).toBeTruthy()
 
+
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'policyName111' } })
+
+    fireEvent.click(screen.getByRole('button', {
+      name: /add rule/i
+    }))
+
+    fireEvent.change(screen.getByRole('textbox', { name: /rule name/i }),
+      { target: { value: 'rule1' } })
+
+    await userEvent.click(screen.getByText('Add'))
+
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByText('test-venue2')
+
+    await screen.findByRole('heading', { name: 'Scope', level: 3 })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 })

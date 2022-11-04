@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
@@ -7,6 +7,8 @@ import { useParams }            from 'react-router-dom'
 import { Card }                from '@acx-ui/components'
 import { useRoguePolicyQuery } from '@acx-ui/rc/services'
 
+import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
+
 const RogueAPDetectionDetailContent = () => {
   const { Paragraph } = Typography
   const { $t } = useIntl()
@@ -14,6 +16,14 @@ const RogueAPDetectionDetailContent = () => {
   const { data } = useRoguePolicyQuery({
     params: useParams()
   })
+
+  const { setFiltersId } = useContext(RogueAPDetailContext)
+
+  useEffect(() => {
+    if (data) {
+      setFiltersId(data.venues.map(venue => venue.id))
+    }
+  }, [data])
 
   if (data) {
     return <Card>

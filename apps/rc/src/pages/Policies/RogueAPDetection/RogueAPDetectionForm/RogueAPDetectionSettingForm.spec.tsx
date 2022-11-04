@@ -129,7 +129,7 @@ describe('RogueAPDetectionSettingForm', () => {
   })
 
   it('should render RogueAPDetectionSettingForm with editMode successfully', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       RogueAPDetectionUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)

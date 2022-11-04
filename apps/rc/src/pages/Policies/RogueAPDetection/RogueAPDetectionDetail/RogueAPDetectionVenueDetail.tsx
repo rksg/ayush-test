@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
@@ -6,6 +6,8 @@ import { useIntl }  from 'react-intl'
 import { Card, Table, TableProps }             from '@acx-ui/components'
 import { useVenueRoguePolicyQuery }            from '@acx-ui/rc/services'
 import { useTableQuery, VenueRoguePolicyType } from '@acx-ui/rc/utils'
+
+import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',
@@ -15,6 +17,7 @@ const defaultPayload = {
     'city',
     'country',
     'switches',
+    'rogueAps',
     'aggregatedApStatus',
     'rogueDetection',
     'status'
@@ -22,7 +25,10 @@ const defaultPayload = {
   sortField: 'name',
   sortOrder: 'ASC',
   page: 1,
-  pageSize: 25
+  pageSize: 25,
+  filters: {
+    id: [] as string[]
+  }
 }
 
 const RogueAPDetectionVenueDetail = () => {
@@ -41,20 +47,22 @@ const RogueAPDetectionVenueDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Rogue APs' }),
-      dataIndex: 'aggregatedApStatus',
-      key: 'aggregatedApStatus',
-      render: (data, row) => {
-        if (row.aggregatedApStatus?.hasOwnProperty('2_00_Operational')) {
-          return row.aggregatedApStatus['2_00_Operational']
-        }
-        return 0
-      }
+      dataIndex: 'rogueAps',
+      key: 'rogueAps',
+      render: (row) => row ? row : 0
     }
   ]
 
+  const { filtersId } = useContext(RogueAPDetailContext)
+
   const tableQuery = useTableQuery({
     useQuery: useVenueRoguePolicyQuery,
-    defaultPayload
+    defaultPayload: {
+      ...defaultPayload,
+      filters: {
+        id: filtersId
+      }
+    }
   })
 
   const basicData = tableQuery.data?.data

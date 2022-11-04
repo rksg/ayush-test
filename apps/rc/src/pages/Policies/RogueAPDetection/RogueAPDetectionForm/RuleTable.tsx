@@ -65,8 +65,17 @@ const RuleTable = (props: RuleTableProps) => {
   }, [data, state.rules])
 
   const handleAddAction = () => {
-    setVisibleAdd(true)
-    setVisibleEdit(false)
+    if (state.rules.length === 32) {
+      showActionModal({
+        type: 'error',
+        content: $t({
+          defaultMessage: 'The max-number of rules in a rogue ap policy profile is 32.'
+        })
+      })
+    } else {
+      setVisibleAdd(true)
+      setVisibleEdit(false)
+    }
   }
 
   const actions = [{

@@ -30,12 +30,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
   } = useContext(RogueAPDetectionContext)
 
   const { data } = useGetRoguePolicyListQuery({
-    params: params,
-    payload: {
-      page: 1,
-      pageSize: 10000,
-      url: '/api/viewmodel/tenant/{tenantId}/rogue/policy'
-    }
+    params: params
   })
 
   const handlePolicyName = (policyName: string) => {
@@ -57,16 +52,15 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
   }
 
   useEffect(() => {
-    let policyData
     if (edit && data && state.policyName === '') {
-      policyData = data.data && data.data.filter(d => d.id === params.policyId)[0]
+      let policyData = data.filter(d => d.id === params.policyId)[0]
       dispatch({
         type: RogueAPDetectionActionTypes.UPDATE_STATE,
         payload: {
           state: {
             ...state,
-            policyName: policyData.name ? policyData.name : '',
-            venues: policyData.activeVenues
+            policyName: policyData.name ?? '',
+            venues: policyData.venues
           }
         }
       })
@@ -89,7 +83,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
             { validator: async (rule, value) => {
               return new Promise<void>((resolve, reject) => {
                 if (!edit && value
-                  && data?.data.findIndex((policy) => policy.name === value) !== -1) {
+                  && data?.findIndex((policy) => policy.name === value) !== -1) {
                   return reject(
                     $t({ defaultMessage: 'The rogue policy with that name already exists' })
                   )

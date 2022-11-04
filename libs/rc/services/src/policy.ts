@@ -19,6 +19,10 @@ export const basePolicyApi = createApi({
   endpoints: () => ({ })
 })
 
+const RKS_NEW_UI = {
+  'x-rks-new-ui': true
+}
+
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
     addRoguePolicy: build.mutation<RogueAPDetectionContextType, RequestPayload>({
@@ -31,19 +35,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    getRoguePolicyList: build.query<RogueAPDetectionTempType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueAPDetectionUrls.getRoguePolicyList, params)
+    getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RogueAPDetectionUrls.getRoguePolicyList, params, RKS_NEW_UI)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueAPDetectionUrls.getRoguePolicy, params)
+        const req = createHttpRequest(RogueAPDetectionUrls.getRoguePolicy, params, RKS_NEW_UI)
         return {
           ...req
         }
