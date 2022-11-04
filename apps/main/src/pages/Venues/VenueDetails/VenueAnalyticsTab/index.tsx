@@ -9,7 +9,7 @@ import { defaultNetworkPath, notAvailableMsg } from '@acx-ui/utils'
 
 export function VenueAnalyticsTab () {
   const { $t } = useIntl()
-  const basePath = useLocation()
+  const location = useLocation()
   const navigate = useNavigate()
   const params = useParams()
   const { data } = useVenueDetailsHeaderQuery({ params })
@@ -33,15 +33,24 @@ export function VenueAnalyticsTab () {
   } as AnalyticsFilter
 
   const onTabChange = (tab: string) => {
-    navigate({
-      ...basePath,
-      search: `?venueAnalytics=${tab}`
-    }, { replace: true })
+    if (params.activeSubTab) {
+      const newPath = location.pathname.replace(params.activeSubTab, tab)
+      navigate({
+        ...location,
+        pathname: newPath
+      })
+    } else {
+      navigate({
+        ...location,
+        pathname: `${location.pathname}/${tab}`
+      })
+    }
   }
 
   return (
     <Tabs
       onChange={onTabChange}
+      activeKey={params.activeSubTab}
       defaultActiveKey='incidents'
       type='card'
     >
