@@ -19,20 +19,14 @@ const widgetsMap = {
   floorPlans: () => <TopologyFloorPlanWidget />,
   // Venue Overview Page Widgets
   venueAlarmDonut: () => <VenueAlarmDonut />,
-  venueDevices: () => <VenueDevicesWidget />,
-  none: null
+  venueDevices: () => <VenueDevicesWidget />
 }
 
 function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {
   const Widget = widgetsMap[name]
 
   return <Provider>
-    { Widget
-      ? <Widget />
-      : <Card>
-        { name }
-      </Card>
-    }
+    {Widget ? <Widget /> : <Card>{ name }</Card>}
   </Provider>
 }
 

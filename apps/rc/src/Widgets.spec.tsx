@@ -61,14 +61,4 @@ describe('Wi-Fi Widgets', () => {
     render(<WifiWidgets name={'venueDevices'}></WifiWidgets>)
     expect(screen.getByText('Venue Overview Devices Widget')).toBeTruthy()
   })
-  it('should render a Card with name, if widget is not defined and FF enabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<WifiWidgets name={'none'}></WifiWidgets>)
-    expect(screen.getByText('none')).toBeTruthy()
-  })
-  it('should not render a Card with name, if widget is not defined and FF disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<WifiWidgets name={'none'}></WifiWidgets>)
-    expect(screen.getByText('none')).toBeTruthy()
-  })
 })
