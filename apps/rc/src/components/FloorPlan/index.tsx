@@ -124,19 +124,21 @@ export default function FloorPlan () {
           </UI.StyledSpace>
         </UI.FloorPlanContainer>
         :
-        <Empty description={
-          <Space><BulbOutlined />
-            {$t({
-              defaultMessage:
+        <UI.EpmtyFloorplanContainer>
+          <Empty description={
+            <Space><BulbOutlined />
+              {$t({
+                defaultMessage:
                 // eslint-disable-next-line max-len
                 'You can place your devices on floor plans or map to view their geographical distribution'
-            })}
-          </Space>}>
+              })}
+            </Space>}>
+          </Empty>
           <AddEditFloorplanModal
             buttonTitle={$t({ defaultMessage: 'Add Floor Plan' })}
             onAddEditFloorPlan={onAddEditFloorPlan}
             isEditMode={false}/>
-        </Empty>
+        </UI.EpmtyFloorplanContainer>
       }
     </Loader>
   )

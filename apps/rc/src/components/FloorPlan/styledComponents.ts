@@ -25,3 +25,8 @@ export const FloorPlanContainer = styled('div')`
   overflow: overlay;
   max-height: 460px
 `
+export const EpmtyFloorplanContainer = styled('div')`
+  display: inline-flex;
+  align-items: center;
+  flex-direction: column
+`
