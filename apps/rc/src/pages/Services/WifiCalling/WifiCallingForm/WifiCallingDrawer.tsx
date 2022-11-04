@@ -1,9 +1,9 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Button, Drawer }                                         from '@acx-ui/components'
+import { Drawer }                                                 from '@acx-ui/components'
 import { EPDG, WifiCallingActionPayload, WifiCallingActionTypes } from '@acx-ui/rc/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
@@ -21,7 +21,6 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, setVisible, isEditMode, serviceIndex } = props
-  const [resetField, setResetField] = useState(false)
   const { state, dispatch } = useContext(WifiCallingFormContext)
   const [form] = Form.useForm()
   const title = isEditMode
@@ -31,11 +30,6 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
   const onClose = () => {
     setVisible(false)
     form.resetFields()
-  }
-
-  const resetFields = () => {
-    setResetField(true)
-    onClose()
   }
 
   const content = <Form layout='vertical'
@@ -60,10 +54,7 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
         } as WifiCallingActionPayload)
       }
 
-      onClose()
-      const clearButton = document?.querySelector('button[title="Clear selection"]')
-      // @ts-ignore
-      clearButton.click()
+      form.resetFields()
     }
     }>
     <Form.Item
@@ -84,24 +75,35 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
     />
   </Form>
 
-  const footer = [
-    <Button key='saveBtn' onClick={() => form.submit()} type={'primary'}>
-      {$t({ defaultMessage: 'Save' })}
-    </Button>,
-    <Button key='cancelBtn' onClick={resetFields}>
-      {$t({ defaultMessage: 'Cancel' })}
-    </Button>
-  ]
-
   return (
     <Drawer
       title={title}
       visible={visible}
       onClose={onClose}
       children={content}
-      // TODO: use Drawer.FormFooter component when ready (https://bitbucket.rks-cloud.com/projects/RKSCLOUD/repos/acx-ui/pull-requests/136/overview)
-      footer={footer}
-      destroyOnClose={resetField}
+      footer={
+        <Drawer.FormFooter
+          showAddAnother={!isEditMode}
+          buttonLabel={({
+            addAnother: $t({ defaultMessage: 'Add another ePDG' }),
+            save: isEditMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
+          })}
+          onCancel={onClose}
+          onSave={async (addAnotherRuleChecked: boolean) => {
+            try {
+              await form.validateFields()
+              form.submit()
+
+              if (!addAnotherRuleChecked) {
+                onClose()
+              }
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
+          }}
+        />
+      }
+      destroyOnClose={true}
       width={'600px'}
     />
   )

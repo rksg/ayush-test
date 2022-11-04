@@ -6,11 +6,11 @@ import {
   Form,
   InputNumber,
   Select,
-  Switch,
-  Tooltip
+  Switch
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tooltip }                                                                              from '@acx-ui/components'
 import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
 import { notAvailableMsg }                                                                      from '@acx-ui/utils'
 
