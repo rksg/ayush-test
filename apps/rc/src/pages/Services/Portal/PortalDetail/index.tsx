@@ -1,7 +1,7 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button, DisabledButton, GridRow, Loader }                    from '@acx-ui/components'
+import { PageHeader, Button, DisabledButton, GridRow, Loader }            from '@acx-ui/components'
 import { ClockOutlined }                                                  from '@acx-ui/icons'
 import { usePortalNetworkInstancesQuery, useGetPortalProfileDetailQuery } from '@acx-ui/rc/services'
 import { Demo, useTableQuery }                                            from '@acx-ui/rc/utils'
