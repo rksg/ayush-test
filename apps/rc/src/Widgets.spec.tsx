@@ -1,4 +1,3 @@
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { render, screen } from '@acx-ui/test-utils'
 
 import WifiWidgets from './Widgets'
