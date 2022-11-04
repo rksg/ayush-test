@@ -1,7 +1,7 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button, DisabledButton, GridRow }                    from '@acx-ui/components'
+import { PageHeader, Button, DisabledButton, GridRow, Loader }                    from '@acx-ui/components'
 import { ClockOutlined }                                                  from '@acx-ui/icons'
 import { usePortalNetworkInstancesQuery, useGetPortalProfileDetailQuery } from '@acx-ui/rc/services'
 import { Demo, useTableQuery }                                            from '@acx-ui/rc/utils'
@@ -29,13 +29,13 @@ export default function PortalServiceDetail () {
     defaultPayload
   })
 
-  const { data } = useGetPortalProfileDetailQuery({ params })
+  const queryResults = useGetPortalProfileDetailQuery({ params })
 
 
   return (
     <>
       <PageHeader
-        title={data?.serviceName||''}
+        title={queryResults.data?.serviceName||''}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
@@ -43,22 +43,26 @@ export default function PortalServiceDetail () {
           <DisabledButton key={'last24'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,
-          <TenantLink to={`/services/portal/${data?.id}/edit`} key='edit'>
+          <TenantLink to={`/services/portal/${queryResults.data?.id}/edit`} key='edit'>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button></TenantLink>
         ]}
       />
       <GridRow>
-        <PortalOverview demoValue={data?.demo as Demo} />
+        <Loader states={[queryResults]}>
+          <PortalOverview demoValue={queryResults.data?.demo as Demo} />
+        </Loader>
       </GridRow>
 
       <GridRow style={{ marginTop: 25 }}>
-        <PortalInstancesTable
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-        />
+        <Loader states={[tableQuery]}>
+          <PortalInstancesTable
+            dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+          />
+        </Loader>
       </GridRow>
     </>
   )
