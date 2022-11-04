@@ -50,16 +50,7 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          permissionQuery={{
-            data: { allowedSave: true },
-            isFetching: false,
-            isLoading: false
-          }}
-          customThresholdQuery={{
-            data: {},
-            isFetching: false,
-            isLoading: false
-          }}
+          mutationAllowed={true}
           isNetwork={false}
         />
       </Provider>
@@ -78,16 +69,7 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          permissionQuery={{
-            data: { allowedSave: true },
-            isFetching: false,
-            isLoading: false
-          }}
-          customThresholdQuery={{
-            data: {},
-            isFetching: false,
-            isLoading: false
-          }}
+          mutationAllowed={true}
           isNetwork={false}
         />
       </Provider>
@@ -107,16 +89,7 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['rss']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          permissionQuery={{
-            data: { allowedSave: true },
-            isFetching: false,
-            isLoading: false
-          }}
-          customThresholdQuery={{
-            data: {},
-            isFetching: false,
-            isLoading: false
-          }}
+          mutationAllowed={true}
           isNetwork={false}
         />
       </Provider>
@@ -135,16 +108,7 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          permissionQuery={{
-            data: { allowedSave: true },
-            isFetching: false,
-            isLoading: false
-          }}
-          customThresholdQuery={{
-            data: {},
-            isFetching: false,
-            isLoading: false
-          }}
+          mutationAllowed={true}
           isNetwork={false}
         />
       </Provider>
@@ -164,16 +128,7 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          permissionQuery={{
-            data: { allowedSave: true },
-            isFetching: false,
-            isLoading: false
-          }}
-          customThresholdQuery={{
-            data: {},
-            isFetching: false,
-            isLoading: false
-          }}
+          mutationAllowed={true}
           isNetwork={false}
         />
       </Provider>
@@ -185,7 +140,7 @@ describe('Threshold Histogram chart', () => {
       fireEvent.mouseMove(slider)
       fireEvent.mouseUp(slider)
     })
-    expect(setKpiThreshold).toBeCalled()
+    expect(setKpiThreshold).not.toBeCalled()
   })
   it('should call setKpiThreshold on clicking reset btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
@@ -200,16 +155,7 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          permissionQuery={{
-            data: { allowedSave: true },
-            isFetching: false,
-            isLoading: false
-          }}
-          customThresholdQuery={{
-            data: {},
-            isFetching: false,
-            isLoading: false
-          }}
+          mutationAllowed={true}
           isNetwork={false}
         />
       </Provider>
@@ -232,16 +178,7 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          permissionQuery={{
-            data: { allowedSave: true },
-            isFetching: false,
-            isLoading: false
-          }}
-          customThresholdQuery={{
-            data: {},
-            isFetching: false,
-            isLoading: false
-          }}
+          mutationAllowed={true}
           isNetwork
         />
       </Provider>
@@ -264,16 +201,7 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          permissionQuery={{
-            data: { allowedSave: true },
-            isFetching: false,
-            isLoading: false
-          }}
-          customThresholdQuery={{
-            data: {},
-            isFetching: false,
-            isLoading: false
-          }}
+          mutationAllowed={true}
           isNetwork={false}
         />
       </Provider>

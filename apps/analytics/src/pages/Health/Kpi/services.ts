@@ -6,6 +6,16 @@ import { NetworkPath }                from '@acx-ui/utils'
 
 import { calculateGranularity } from '../../../utils'
 
+export interface KpiThresholdType {
+  timeToConnect: number;
+  rss: number;
+  clientThroughput: number;
+  apCapacity: number;
+  apServiceUptime: number;
+  apToSZLatency: number;
+  switchPoeUtilization: number;
+}
+
 type datum = number []
 export type KPITimeseriesResponse = {
   data: datum[]
@@ -29,36 +39,23 @@ export type KpiPayload = AnalyticsFilter & {
   granularity?: string;
 }
 
-export type ConfigCode = keyof typeof kpiConfig
+type ConfigCode = keyof typeof kpiConfig
 
-export type ThresholdResponse = Partial<{
-  [k in ConfigCode]: {
-      value: number | null,
-      updateBy: string | null,
-      updateAt: string | null
-  }
-}>
-
-export type ThresholdPayload = {
-  path: NetworkPath,
-  configCode: ConfigCode[]
-}
-
-export type ThresholdPermissionResponse = {
+type ThresholdPermissionResponse = {
   mutationAllowed: boolean
 }
 
-export type ThresholdPermissionPayload = {
+type ThresholdPermissionPayload = {
   path: NetworkPath
 }
 
-export type ThresholdMutationPayload = {
+type ThresholdMutationPayload = {
   path: NetworkPath,
   name: ConfigCode,
   value: number
 }
 
-export type ThresholdMutationResponse = {
+type ThresholdMutationResponse = {
   data?: Partial<{
     [k in ConfigCode]: {
       success: boolean
@@ -149,12 +146,17 @@ interface ThresholdData {
   value: number | null
 }
 
-export interface ThresholdsApiResponse {
+interface ThresholdsApiResponse {
   timeToConnectThreshold?: ThresholdData
   clientThroughputThreshold?: ThresholdData
+  rssThreshold?: ThresholdData
+  apCapacityThreshold?: ThresholdData
+  apServiceUptimeThreshold?: ThresholdData
+  apToSZLatencyThreshold?: ThresholdData
+  switchPoeUtilizationThreshold?: ThresholdData
 }
 
-export type KpisHavingThreshold = 'timeToConnect' | 'clientThroughput'
+type KpisHavingThreshold = keyof KpiThresholdType
 
 export type KpiThresholsPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
 
@@ -185,8 +187,8 @@ export const thresholdApi = dataApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'KPI_THRESHOLD_CONFIG' }]
     }),
     fetchThresholdPermission: build.query<
-    ThresholdPermissionResponse,
-    ThresholdPermissionPayload
+      ThresholdPermissionResponse,
+      ThresholdPermissionPayload
     >({
       query: (payload) => ({
         document: gql`
@@ -200,8 +202,8 @@ export const thresholdApi = dataApi.injectEndpoints({
       })
     }),
     saveThreshold: build.mutation<
-    ThresholdMutationResponse,
-    ThresholdMutationPayload
+      ThresholdMutationResponse,
+      ThresholdMutationPayload
     >({
       query: (payload) => ({
         document: gql`

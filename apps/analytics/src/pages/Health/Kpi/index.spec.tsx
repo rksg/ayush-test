@@ -62,7 +62,7 @@ describe('Kpi Section', () => {
     })
     mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
       data: {
-        timeToConnectThreshold: { value: 30000 }
+        timeToConnectThreshold: { value: 2000 }
       }
     })
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {

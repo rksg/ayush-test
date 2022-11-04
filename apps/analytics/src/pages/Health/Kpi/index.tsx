@@ -18,23 +18,13 @@ import BarChart                      from './BarChart'
 import Histogram                     from './Histogram'
 import HealthPill                    from './Pill'
 import {
-  KpisHavingThreshold,
+  KpiThresholdType,
   useGetKpiThresholdsQuery,
   useFetchThresholdPermissionQuery
 } from './services'
 import KpiTimeseries from './Timeseries'
 
-export interface KpiThresholdType {
-  timeToConnect: number;
-  rss: number;
-  clientThroughput: number;
-  apCapacity: number;
-  apServiceUptime: number;
-  apToSZLatency: number;
-  switchPoeUtilization: number;
-}
-
-export const defaultThreshold = {
+export const defaultThreshold: KpiThresholdType = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
   rss: kpiConfig.rss.histogram.initialThreshold,
   clientThroughput: kpiConfig.clientThroughput.histogram.initialThreshold,
@@ -44,17 +34,38 @@ export const defaultThreshold = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
-export default function KpiSection (props: { tab: HealthTab }) {
-  const { kpis } = kpisForTab[props.tab]
-  const healthFilter = useContext(HealthPageContext)
-  const { timeWindow, setTimeWindow } = healthFilter
+export default function KpiSections (props: { tab: HealthTab }) {
   const { filters } = useAnalyticsFilter()
-  const thresholdKeys = kpis
-    .filter(kpi => defaultThreshold[kpi as keyof KpiThresholdType]) as KpisHavingThreshold[]
+  const { tab } = props
+  const { kpis } = kpisForTab[tab]
+  const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const customThresholdQuery = useGetKpiThresholdsQuery({ ...filters, kpis: thresholdKeys })
-  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(defaultThreshold)
+  const { data, fulfilledTimeStamp } = customThresholdQuery
+  const thresholds = thresholdKeys.reduce((kpis, kpi) => {
+    kpis[kpi] = data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
+    return kpis
+  }, {} as KpiThresholdType)
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path: filters.path })
+  const mutationAllowed = Boolean(thresholdPermissionQuery.data?.mutationAllowed)
+  return <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
+    {fulfilledTimeStamp && <KpiSection
+      key={fulfilledTimeStamp} // forcing component to rerender on newly received thresholds
+      kpis={kpis}
+      thresholds={thresholds}
+      mutationAllowed={mutationAllowed}
+    />}
+  </Loader>
+}
 
+function KpiSection (props: {
+  kpis: string[]
+  thresholds: KpiThresholdType
+  mutationAllowed: boolean
+}) {
+  const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
+  const { filters } = useAnalyticsFilter()
+  const isNetwork = filters.path.length === 1
+  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(props.thresholds)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -65,24 +76,10 @@ export default function KpiSection (props: { tab: HealthTab }) {
     moment(filters.startDate).isSame(timeWindow[0]) &&
     moment(filters.endDate).isSame(timeWindow[1])
   )
-
   useEffect(() => { connect('timeSeriesGroup') }, [])
-
-  const canSave = {
-    data: { allowedSave: thresholdPermissionQuery.data?.mutationAllowed as boolean | undefined },
-    isFetching: thresholdPermissionQuery.isFetching,
-    isLoading: thresholdPermissionQuery.isLoading
-  }
-
-  const fetchingCustomThresholds = {
-    isFetching: customThresholdQuery.isFetching,
-    isLoading: customThresholdQuery.isLoading,
-    data: customThresholdQuery.data
-  }
-  const isNetwork = filters.path.length === 1
   return (
-    <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
-      {kpis.map((kpi) => (
+    <>
+      {props.kpis.map((kpi) => (
         <GridRow key={kpi+defaultZoom} $divider>
           <GridCol col={{ span: 16 }}>
             <GridRow style={{ height: '160px' }}>
@@ -114,8 +111,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}
                 thresholds={kpiThreshold}
-                permissionQuery={canSave}
-                customThresholdQuery={fetchingCustomThresholds}
+                mutationAllowed={props.mutationAllowed}
                 isNetwork={isNetwork}
               />
             ) : (
@@ -128,6 +124,6 @@ export default function KpiSection (props: { tab: HealthTab }) {
           </GridCol>
         </GridRow>
       ))}
-    </Loader>
+    </>
   )
 }

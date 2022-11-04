@@ -1,7 +1,6 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 
 import { sum, max } from 'lodash'
-import _            from 'lodash'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
@@ -9,42 +8,16 @@ import { AnalyticsFilter, kpiConfig }                                           
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import type { TimeStamp }                                                        from '@acx-ui/types'
 
-import { defaultThreshold, KpiThresholdType }                                                           from '../Kpi'
-import {  useKpiHistogramQuery, KPIHistogramResponse, ThresholdsApiResponse, useSaveThresholdMutation } from '../Kpi/services'
+import { defaultThreshold }  from '../Kpi'
+import {
+  KpiThresholdType,
+  useKpiHistogramQuery,
+  KPIHistogramResponse,
+  useSaveThresholdMutation
+} from '../Kpi/services'
 
 import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
-
-export type ValueType = {
-  value: number | null
-}
-
-export interface FetchedData {
-  timeToConnectThreshold: ValueType;
-  rssThreshold: ValueType;
-  clientThroughputThreshold: ValueType;
-  apCapacityThreshold: ValueType;
-  apServiceUptimeThreshold: ValueType;
-  apToSZLatencyThreshold: ValueType;
-  switchPoeUtilizationThreshold: ValueType;
-}
-
-export const getThreshold = (customTreshold?: Partial<FetchedData> | undefined) => {
-  const defaultConfig = { ...defaultThreshold }
-
-  if (!customTreshold) return defaultConfig
-
-  const fetchedValuesArr = Object.entries(customTreshold).map(([key, val]) =>
-    [ key.replace('Threshold', ''), val.value ])
-  const fetchValues = Object.fromEntries(fetchedValuesArr)
-
-  const resultConfig = {
-    ...defaultConfig,
-    ..._.omitBy(fetchValues, _.isNull)
-  }
-
-  return resultConfig
-}
 
 const getGoalPercent = (
   { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue: number }
@@ -60,14 +33,6 @@ const getGoalPercent = (
   const percent = total > 0 ? (success / total) * 100 : 0
 
   return percent
-}
-
-export function getDisplayTreshold (
-  kpi: keyof KpiThresholdType, data?: ThresholdsApiResponse, useDefaultThreshold?: boolean
-) {
-  return (useDefaultThreshold || !data)
-    ? getThreshold()[kpi]
-    : getThreshold(data as unknown as Partial<FetchedData>)[kpi]
 }
 
 const transformHistogramResponse = ({
@@ -93,8 +58,7 @@ function Histogram ({
   threshold,
   setKpiThreshold,
   thresholds,
-  permissionQuery,
-  customThresholdQuery,
+  mutationAllowed,
   isNetwork
 }: {
   filters: AnalyticsFilter;
@@ -102,36 +66,20 @@ function Histogram ({
   threshold: number;
   setKpiThreshold: CallableFunction;
   thresholds: KpiThresholdType;
-  permissionQuery: {
-    data: { allowedSave: boolean | undefined };
-    isFetching: boolean;
-    isLoading: boolean;
-  };
-  customThresholdQuery: {
-    isFetching: boolean;
-    isLoading: boolean;
-    data: Object | undefined;
-  };
+  mutationAllowed: boolean;
   isNetwork: boolean;
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
-  const [isInitialRender, setIsInitialRender] = useState(true)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
   const [ triggerSave ] = useSaveThresholdMutation()
-
-  const onButtonReset = useCallback((useDefaultThreshold: boolean) => {
-    if (Object.keys(defaultThreshold).includes(kpi)) {
-      const defaultConfig = getDisplayTreshold(
-        kpi as keyof typeof defaultThreshold, customThresholdQuery.data, useDefaultThreshold
-      )
-      setThresholdValue(defaultConfig)
-      setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
-    }
-  }, [kpi, setKpiThreshold, thresholds, customThresholdQuery.data])
-
+  const onButtonReset = useCallback(() => {
+    const defaultConfig = defaultThreshold[kpi as keyof typeof defaultThreshold]
+    setThresholdValue(defaultConfig)
+    setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
+  }, [kpi, setKpiThreshold, thresholds])
   const onButtonApply = async () => {
     try {
       await triggerSave({ path: filters.path, name: kpi, value: thresholdValue }).unwrap()
@@ -150,25 +98,6 @@ function Histogram ({
       })
     }
   }
-
-  useEffect(() => {
-    if (
-      isInitialRender &&
-      !customThresholdQuery.isFetching &&
-      !customThresholdQuery.isLoading &&
-      customThresholdQuery.data
-    ) {
-      onButtonReset(false)
-      setIsInitialRender(false)
-    }
-  }, [customThresholdQuery, isInitialRender, onButtonReset])
-
-  useEffect(() => {
-    if (customThresholdQuery.data) {
-      setIsInitialRender(true)
-    }
-  }, [customThresholdQuery.data])
-
   /* istanbul ignore next */
   const onSliderChange = (newValue: number) => {
     if (
@@ -246,7 +175,7 @@ function Histogram ({
   const unit = histogram?.xUnit
 
   return (
-    <Loader states={[queryResults, customThresholdQuery, permissionQuery]} key={kpi}>
+    <Loader states={[queryResults]} key={kpi}>
       <GridRow>
         <GridCol col={{ span: 18 }} style={{ height: '160px' }}>
           <AutoSizer>
@@ -291,9 +220,9 @@ function Histogram ({
             percent={percent}
             unit={histogram?.xUnit}
             shortXFormat={histogram?.shortXFormat}
-            onReset={() => onButtonReset(true)}
+            onReset={onButtonReset}
             onApply={onButtonApply}
-            canSave={permissionQuery.data?.allowedSave}
+            canSave={mutationAllowed}
             isNetwork={isNetwork}
           />
         </GridCol>
