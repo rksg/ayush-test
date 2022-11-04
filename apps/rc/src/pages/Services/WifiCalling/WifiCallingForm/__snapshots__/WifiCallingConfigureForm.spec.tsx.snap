@@ -459,7 +459,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
+                                class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                               >
                                 <div
                                   class="ant-space ant-space-horizontal ant-space-align-center"
@@ -738,7 +738,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
+                                class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                               >
                                 <div
                                   class="ant-pro-table"

@@ -3,7 +3,7 @@
 exports[`EpdgTable should render drawer successfully after clicking the Add button 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
   >
     <div
       class="ant-space ant-space-horizontal ant-space-align-center"
@@ -329,7 +329,7 @@ exports[`EpdgTable should render drawer successfully after clicking the Add butt
 exports[`EpdgTable should render drawer successfully after clicking the Delete button 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
   >
     <div
       class="ant-space ant-space-horizontal ant-space-align-center"
@@ -754,7 +754,7 @@ exports[`EpdgTable should render drawer successfully after clicking the Delete b
 exports[`EpdgTable should render drawer successfully after clicking the Edit button 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
   >
     <div
       class="ant-space ant-space-horizontal ant-space-align-center"

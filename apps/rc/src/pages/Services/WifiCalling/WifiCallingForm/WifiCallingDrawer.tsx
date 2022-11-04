@@ -86,7 +86,7 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
           showAddAnother={!isEditMode}
           buttonLabel={({
             addAnother: $t({ defaultMessage: 'Add another ePDG' }),
-            save: isEditMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
+            save: $t({ defaultMessage: 'Save' })
           })}
           onCancel={onClose}
           onSave={async (addAnotherRuleChecked: boolean) => {
