@@ -114,7 +114,7 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
         element={<PortalServiceDetail/>}
-      />      
+      />
     </Route>
   )
 }

@@ -83,14 +83,18 @@ exports[`Portal Detail Page should render detail page 1`] = `
             <div
               class="ant-space-item"
             >
-              <button
-                class="ant-btn ant-btn-primary ant-btn-lg styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <a
+                href="/t/a27e3eb0bd164e01ae731da8d976d3b1/services/portal/undefined/edit"
               >
-                <span>
-                  Configure
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-primary ant-btn-lg styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  type="button"
+                >
+                  <span>
+                    Configure
+                  </span>
+                </button>
+              </a>
             </div>
           </div>
         </span>
@@ -223,7 +227,7 @@ exports[`Portal Detail Page should render detail page 1`] = `
             </h3>
             <div>
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-13 dvVAeG"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
               >
                 <div
                   class="ant-pro-table"

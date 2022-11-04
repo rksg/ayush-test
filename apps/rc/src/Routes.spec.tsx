@@ -51,6 +51,10 @@ jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
   return <div data-testid='PortalForm' />
 })
 
+jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
+  return <div data-testid='PortalServiceDetail' />
+})
+
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/aps', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -270,6 +274,18 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('PortalForm')).toBeVisible()
+  })
+
+  test('should navigate to Portal details page', async () => {
+    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })
+    path = path.replace(':serviceId', 'serviceId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PortalServiceDetail')).toBeVisible()
   })
 
 })

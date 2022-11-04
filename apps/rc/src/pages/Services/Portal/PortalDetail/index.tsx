@@ -6,9 +6,11 @@ import { PageHeader, Button }                                             from '
 import { ClockOutlined }                                                  from '@acx-ui/icons'
 import { usePortalNetworkInstancesQuery, useGetPortalProfileDetailQuery } from '@acx-ui/rc/services'
 import { Demo, useTableQuery }                                            from '@acx-ui/rc/utils'
+import { TenantLink }                                                     from '@acx-ui/react-router-dom'
 
 import PortalInstancesTable from './PortalInstancesTable'
 import PortalOverview       from './PortalOverview'
+
 
 
 const defaultPayload = {
@@ -42,9 +44,10 @@ export default function PortalServiceDetail () {
           <Button size='large' key={'last24'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </Button>,
-          <Button size='large'key={'configure'} type={'primary'}>
-            {$t({ defaultMessage: 'Configure' })}
-          </Button>
+          <TenantLink to={`/services/portal/${data?.id}/edit`} key='edit'>
+            <Button size='large'key={'configure'} type={'primary'}>
+              {$t({ defaultMessage: 'Configure' })}
+            </Button></TenantLink>
         ]}
       />
       <Row>
