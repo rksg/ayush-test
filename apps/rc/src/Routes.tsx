@@ -9,8 +9,8 @@ import NetworkForm         from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable       from './pages/Networks/NetworksTable'
 import DHCPForm            from './pages/Services/DHCPForm/DHCPForm'
 import MdnsProxyForm       from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import PortalForm          from './pages/Services/Portal/PortalForm/PortalForm'
 import PortalServiceDetail from './pages/Services/Portal/PortalDetail'
+import PortalForm          from './pages/Services/Portal/PortalForm/PortalForm'
 import SelectServiceForm   from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
