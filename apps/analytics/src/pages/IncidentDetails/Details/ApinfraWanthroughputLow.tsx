@@ -4,11 +4,11 @@ import { useIntl }    from 'react-intl'
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
 
+import { WanthroughputTable }                from '../Charts/WanthroughputTable'
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
 import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
-import { WanthroughputTable }                from '../Tables/WanthroughputTable'
 import { TimeSeries }                        from '../TimeSeries'
 import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
