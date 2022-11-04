@@ -1,19 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react'
 
-import { Col, Row, Tooltip }                        from 'antd'
+import { Tooltip }                                  from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Alert }                from '@acx-ui/components'
-import { Demo, PortalViewEnum } from '@acx-ui/rc/utils'
+import { Alert }                                      from '@acx-ui/components'
+import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
 
-import Mobile        from '../../../../assets/images/portal-demo/mobile.svg'
-import Mobile_select from '../../../../assets/images/portal-demo/mobile_selected.svg'
-import Tablet        from '../../../../assets/images/portal-demo/pad.svg'
-import Tablet_select from '../../../../assets/images/portal-demo/pad_selected.svg'
-import Desk          from '../../../../assets/images/portal-demo/pc.svg'
-import Desk_select   from '../../../../assets/images/portal-demo/pc_selected.svg'
-import Question      from '../../../../assets/images/portal-demo/question.svg'
-import * as UI       from '../styledComponents'
+import Mobile                       from '../../../../assets/images/portal-demo/mobile.svg'
+import Mobile_select                from '../../../../assets/images/portal-demo/mobile_selected.svg'
+import Tablet                       from '../../../../assets/images/portal-demo/pad.svg'
+import Tablet_select                from '../../../../assets/images/portal-demo/pad_selected.svg'
+import Desk                         from '../../../../assets/images/portal-demo/pc.svg'
+import Desk_select                  from '../../../../assets/images/portal-demo/pc_selected.svg'
+import Question                     from '../../../../assets/images/portal-demo/question.svg'
+import { capativeTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
+import * as UI                      from '../styledComponents'
 
 import PortalBackground         from './PortalBackground'
 import PortalComponents         from './PortalComponents'
@@ -55,6 +57,14 @@ export default function PortalDemo ({
     demoValue={demoValue}
     updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
   />
+
+  const type= view === PortalViewEnum.ClickThrough? GuestNetworkTypeEnum.ClickThrough :
+    (view === PortalViewEnum.GuestPassConnect || view ===PortalViewEnum.GuestPassForgot)?
+      GuestNetworkTypeEnum.GuestPass:
+      (view === PortalViewEnum.SelfSignIn||view === PortalViewEnum.SelfSignInRegister) ?
+        GuestNetworkTypeEnum.SelfSignIn:
+        view === PortalViewEnum.HostApproval?
+          GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
   return (
     <>
       {demoValue.componentDisplay.WiFi4EU && !demoValue.wifi4EU
@@ -64,8 +74,9 @@ export default function PortalDemo ({
           type='error'
           showIcon/>}
       <UI.LayoutHeader>
-        <Row >
-          <Col flex={isPreview? '305px':'345px'}>
+        <div style={{ display: 'flex' }}>
+          <div
+            style={{ flex: isPreview? '0 0 305px':'0 0 345px' }}>
             <UI.Label>
               {$t({ defaultMessage: 'View as:' })}
             </UI.Label>
@@ -78,20 +89,19 @@ export default function PortalDemo ({
                   {PortalViewEnum[key as keyof typeof PortalViewEnum]}</Option>
               ))}
             </UI.Select>
-          </Col>
-          <Col flex='20px'>
+          </div>
+          <div style={{ flex: '0 0 40px' }}>
             <UI.FieldExtraTooltip>
               <Tooltip
                 placement='bottom'
                 title={<FormattedMessage
-                  defaultMessage={`tips here
-                `}
+                  {...capativeTypesDescription[type]}
                 />}
                 children={<UI.Img src={Question} />}
               />
             </UI.FieldExtraTooltip>
-          </Col>
-          <Col flex='157px'>
+          </div>
+          <div style={{ flex: '0 0 160px' }}>
             <UI.ImgDesk src={marked.desk?Desk_select:Desk}
               alt='deskicon'
               onClick={()=>{
@@ -110,8 +120,9 @@ export default function PortalDemo ({
                 setScreen('mobile')
                 setMarked({ desk: false, tablet: false, mobile: true })
               }}/>
-          </Col>
-          {!isPreview&&<Col flex='auto' style={{ textAlign: 'right', paddingRight: 5 }}>
+          </div>
+          {!isPreview&&<div
+            style={{ flex: 'auto', textAlign: 'right', paddingRight: 5 }}>
             <UI.Popover
               overlayClassName='uipopover'
               overlayInnerStyle={{ maxHeight: 500 , overflowY: 'auto' }}
@@ -136,8 +147,8 @@ export default function PortalDemo ({
               onClick={()=>{
                 resetDemo?.()
               }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
-          </Col>}
-        </Row>
+          </div>}
+        </div>
       </UI.LayoutHeader>
       <UI.LayoutContent id='democontent'>
         {!isPreview&&<PortalBackground $isDesk={marked.desk}

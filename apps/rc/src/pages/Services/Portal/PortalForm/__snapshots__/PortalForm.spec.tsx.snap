@@ -297,10 +297,9 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                 class="styledComponents__LayoutHeader-sc-cby53p-14 eHjzlu"
                               >
                                 <div
-                                  class="ant-row"
+                                  style="display: flex;"
                                 >
                                   <div
-                                    class="ant-col"
                                     style="flex: 0 0 345px;"
                                   >
                                     <label
@@ -371,8 +370,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="ant-col"
-                                    style="flex: 0 0 20px;"
+                                    style="flex: 0 0 40px;"
                                   >
                                     <div
                                       class="styledComponents__FieldExtraTooltip-sc-cby53p-15 gqGOAB"
@@ -384,8 +382,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="ant-col"
-                                    style="flex: 0 0 157px;"
+                                    style="flex: 0 0 160px;"
                                   >
                                     <img
                                       alt="deskicon"
@@ -404,7 +401,6 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     />
                                   </div>
                                   <div
-                                    class="ant-col"
                                     style="flex-basis: auto; text-align: right; padding-right: 5px;"
                                   >
                                     <button

@@ -15,6 +15,10 @@ jest.mock('./pages/Devices/Wifi/ApsTable', () => () => {
   return <div data-testid='ApsTable' />
 })
 
+jest.mock('./pages/Devices/Wifi/ApDetails', () => () => {
+  return <div data-testid='ApDetails' />
+})
+
 jest.mock('./pages/Devices/Switch/SwitchesTable', () => () => {
   return <div data-testid='SwitchesTable' />
 })
@@ -74,6 +78,16 @@ describe('RcRoutes: Devices', () => {
       }
     })
     expect(screen.getByTestId('ApsTable')).toBeVisible()
+  })
+
+  test('should navigate to devices ap-details', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/devices/aps/serialNumber/details/some-tab',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ApDetails')).toBeVisible()
   })
 
   test('should navigate to devices/switches', async () => {
