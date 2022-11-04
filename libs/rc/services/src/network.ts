@@ -46,6 +46,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }))
         return result
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

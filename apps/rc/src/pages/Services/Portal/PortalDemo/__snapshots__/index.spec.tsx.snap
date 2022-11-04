@@ -168,7 +168,7 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
             alt="Wifi4eu"
             class="styledComponents__Img-sc-cby53p-16 hGxGzA"
             height="120"
-            src="wifi4eu-banner.png"
+            src="wifi4eu-banner.svg"
           />
           <div
             class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
@@ -178,7 +178,7 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
           <img
             alt="Logo"
             class="styledComponents__Img-sc-cby53p-16 hGxGzA"
-            src="small-logo-img.png"
+            src="small-logo-img.svg"
             style="height: 105px; max-width: 425px;"
           />
           <input
@@ -443,7 +443,7 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
             alt="Wifi4eu"
             class="styledComponents__Img-sc-cby53p-16 hGxGzA"
             height="120"
-            src="wifi4eu-banner.png"
+            src="wifi4eu-banner.svg"
           />
           <div
             class="styledComponents__FieldTextLink-sc-cby53p-24 bdKAAP"
@@ -453,7 +453,7 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
           <img
             alt="Logo"
             class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
-            src="small-logo-img.png"
+            src="small-logo-img.svg"
             style="height: 105px; cursor: none; outline: none; max-width: 425px;"
           />
           <input

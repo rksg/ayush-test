@@ -427,7 +427,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                     <img
                                       alt="Logo"
                                       class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
-                                      src="small-logo-img.png"
+                                      src="small-logo-img.svg"
                                       style="height: 105px; cursor: none; outline: none; max-width: 425px;"
                                     />
                                     <input

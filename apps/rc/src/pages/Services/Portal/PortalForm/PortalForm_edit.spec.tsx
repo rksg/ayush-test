@@ -8,7 +8,7 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from
 
 import Photo                     from '../../../../assets/images/portal-demo/main-photo.svg'
 import Powered                   from '../../../../assets/images/portal-demo/powered-logo-img.svg'
-import Logo                      from '../../../../assets/images/portal-demo/small-logo-img.png'
+import Logo                      from '../../../../assets/images/portal-demo/small-logo-img.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
 
 import { PortalForm } from './PortalForm'

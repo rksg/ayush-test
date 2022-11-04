@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Demo, PortalViewEnum } from '@acx-ui/rc/utils'
 
-import Wifi4eu                   from '../../../../assets/images/portal-demo/wifi4eu-banner.png'
+import Wifi4eu                   from '../../../../assets/images/portal-demo/wifi4eu-banner.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
 import * as UI                   from '../styledComponents'
 
