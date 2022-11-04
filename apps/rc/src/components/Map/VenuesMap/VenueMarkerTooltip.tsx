@@ -15,7 +15,7 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
       title: '',
       dataIndex: 'name',
       key: 'name',
-      width: 50
+      width: 75
     },
     {
       title: $t({ defaultMessage: 'Networking Devices' }),
@@ -55,7 +55,7 @@ export function VenueMarkerTooltip (
   const commonProps = {
     animation: false,
     showLabels: false,
-    style: { height: 10, width: 100 },
+    style: { height: 22, width: 120 },
     showTotal: false,
     barColors: deviceConnectionStatusColors,
     tooltipFormat: defineMessage({
@@ -72,22 +72,22 @@ export function VenueMarkerTooltip (
           <StackedBarChart
             data={apStat}
             {...commonProps}/>
-          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TODO' })}>
             {apsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
-        : <UI.CellWrapper>
+        : <UI.TextWrapper>
           {$t({ defaultMessage: 'No APs' })}
-        </UI.CellWrapper>,
+        </UI.TextWrapper>,
       clients: clientsCount && clientsCount > 0
         ? <UI.CellWrapper>
-          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TODO' })}>
             {clientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
-        : <UI.CellWrapper>
+        : <UI.TextWrapper>
           {$t({ defaultMessage: 'No AP Clients' })}
-        </UI.CellWrapper>
+        </UI.TextWrapper>
     },
     {
       key: '2',
@@ -97,22 +97,22 @@ export function VenueMarkerTooltip (
           <StackedBarChart
             data={switchStat}
             {...commonProps} />
-          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TODO' })}>
             {switchesCount}
           </UI.TotalCount>
         </UI.CellWrapper>
-        : <UI.CellWrapper>
+        : <UI.TextWrapper>
           {$t({ defaultMessage: 'No Switches' })}
-        </UI.CellWrapper>,
+        </UI.TextWrapper>,
       clients: switchClientsCount && switchClientsCount > 0
         ? <UI.CellWrapper>
-          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TODO' })}>
             {switchClientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
-        : <UI.CellWrapper>
+        : <UI.TextWrapper>
           {$t({ defaultMessage: 'No Switch Clients' })}
-        </UI.CellWrapper>
+        </UI.TextWrapper>
     }
   ]
 

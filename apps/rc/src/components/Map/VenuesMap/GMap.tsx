@@ -44,11 +44,12 @@ const GMap: React.FC<MapProps> = ({
   const ref = React.useRef<HTMLDivElement>(null)
   const [map, setMap] = React.useState<google.maps.Map>()
   const [markerClusterer, setMarkerClusterer] = React.useState<MarkerClusterer>()
-  const venueInfoWindow = new google.maps.InfoWindow({})
+  const [venueInfoWindow, setVenueInfoWindow] = React.useState<google.maps.InfoWindow>()
 
   React.useEffect(() => {
     if (ref.current) {
       setMap(new window.google.maps.Map(ref.current, {}))
+      setVenueInfoWindow(new google.maps.InfoWindow())
     }
     return () => setMap(undefined)
   }, [ref])
@@ -80,7 +81,7 @@ const GMap: React.FC<MapProps> = ({
     }
     return function cleanup () {
       if(map) {
-        ['click', 'idle', 'zoom_changed'].forEach((eventName) =>
+        ['click', 'idle', 'zoom_changed', 'mouseover', 'mouseout'].forEach((eventName) =>
           google.maps.event.clearListeners(map, eventName))
       }
     }
@@ -88,7 +89,7 @@ const GMap: React.FC<MapProps> = ({
   },[map, onClick, onIdle])
 
   React.useEffect(() => {
-    if (map) {
+    if (map && venueInfoWindow) {
       if(markerClusterer){
         markerClusterer.clearMarkers()
       }
@@ -96,7 +97,7 @@ const GMap: React.FC<MapProps> = ({
         _.maxBy(venues, 'apsCount')?.apsCount : null
 
       // Build the updated markers
-      let markers = venues?.map((venueMarker: VenueMarkerOptions) => {
+      const markers = venues?.map((venueMarker: VenueMarkerOptions) => {
         let markerSize = 32
         // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
 
@@ -141,7 +142,8 @@ const GMap: React.FC<MapProps> = ({
           venueInfoWindow.setContent(infoDiv)
           venueInfoWindow.open({
             shouldFocus: true,
-            anchor: marker
+            anchor: marker,
+            map
           })
         })
         marker.addListener('mouseout', () => {
@@ -157,8 +159,8 @@ const GMap: React.FC<MapProps> = ({
         return marker
       })
 
-      markers = markers.filter(marker => marker.getVisible())
-      if (markers && markers.length > 0) {
+      const visibleMarkers = markers.filter(marker => marker.getVisible())
+      if (visibleMarkers && visibleMarkers.length > 0) {
         if(cluster){
           setMarkerClusterer(new MarkerClusterer({
             map,
@@ -168,12 +170,12 @@ const GMap: React.FC<MapProps> = ({
             onClusterClick: onClusterClick
           }))
         }
-
+        // Set bounds so all markers are visible
         const bounds = new google.maps.LatLngBounds()
-        markers.map((marker) => bounds.extend(marker.getPosition()!))
+        visibleMarkers.map((marker) => bounds.extend(marker.getPosition()!))
         map.fitBounds(bounds)
+        map.setCenter(bounds.getCenter())
       }
-
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, cluster, onClusterClick, venues])

@@ -1,19 +1,15 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader }      from '@acx-ui/components'
-import { Card }                from '@acx-ui/components'
-import { DonutChart }          from '@acx-ui/components'
-import type { DonutChartData } from '@acx-ui/components'
-import {  useAlarmsListQuery } from '@acx-ui/rc/services'
+import { cssStr, Loader, Card, DonutChart, NoActiveData } from '@acx-ui/components'
+import type { DonutChartData }                            from '@acx-ui/components'
+import {  useAlarmsListQuery }                            from '@acx-ui/rc/services'
 import {
   Alarm,
   EventSeverityEnum
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
-
-import * as UI from '../styledComponents'
 
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
@@ -102,10 +98,7 @@ function VenueAlarmWidget () {
                 style={{ width, height }}
                 legend={'name-value'}
                 data={data}/>
-              : <UI.NoDataWrapper>
-                <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
-                <UI.TextWrapper>{$t({ defaultMessage: 'No active alarms' })}</UI.TextWrapper>
-              </UI.NoDataWrapper>
+              : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })} />
           )}
         </AutoSizer>
       </Card>
