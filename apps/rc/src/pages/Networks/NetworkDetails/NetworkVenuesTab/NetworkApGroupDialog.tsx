@@ -21,7 +21,7 @@ import {
   Modal,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   RadioEnum,
   RadioTypeEnum,
@@ -97,7 +97,7 @@ const defaultAG: NetworkApGroupWithSelected = {
 
 export function NetworkApGroupDialog (props: ApGroupModalProps) {
   const { $t } = useIntl()
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   const { networkVenue, venueName, network, formName } = props
 

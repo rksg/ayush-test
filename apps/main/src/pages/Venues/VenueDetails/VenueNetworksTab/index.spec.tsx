@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useSplitTreatment }            from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { networkApi }                   from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -63,7 +63,7 @@ describe('VenueNetworksTab', () => {
   })
 
   it('activate Network', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenueNetworkList.url,
