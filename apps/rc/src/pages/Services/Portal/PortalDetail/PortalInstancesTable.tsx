@@ -1,8 +1,5 @@
 
-import React from 'react'
-
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Card, ProgressBar } from '@acx-ui/components'
 import { PortalDetailInstances }                from '@acx-ui/rc/utils'
@@ -82,19 +79,12 @@ export default function PortalInstancesTable (
   ]
 
   return (
-    <Card>
-      <div style={{ width: '100%' }}>
-        <Typography.Title level={3}>
-          {$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}
-        </Typography.Title>
-        <div >
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            rowKey='id'
-          />
-        </div>
-      </div>
+    <Card title={$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}>
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        rowKey='id'
+      />
     </Card>
   )
 }

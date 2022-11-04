@@ -149,8 +149,8 @@ describe('Portal Detail Page', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/services/portal/:serviceId/detail' }
       })
-    await screen.findByRole('heading', { level: 3, name: `Instances (${list.data.length})` })
-    await screen.findByRole('heading', { level: 3, name: 'Language' })
+    await screen.findByText((`Instances (${list.data.length})`))
+    await screen.findByRole('heading', { level: 4, name: 'Language' })
     expect(asFragment()).toMatchSnapshot()
   })
 
