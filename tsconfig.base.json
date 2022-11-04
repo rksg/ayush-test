@@ -16,7 +16,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@acx-ui/analytics/components": ["libs/analytics/components/src/index.ts"],
+      "@acx-ui/analytics/components": [
+        "libs/analytics/components/src/index.ts"
+      ],
       "@acx-ui/analytics/services": ["libs/analytics/services/src/index.ts"],
       "@acx-ui/analytics/utils": ["libs/analytics/utils/src/index.ts"],
       "@acx-ui/components": ["libs/common/components/src/index.ts"],
@@ -24,6 +26,7 @@
       "@acx-ui/feature-toggle": ["libs/common/feature-toggle/src/index.ts"],
       "@acx-ui/icons": ["libs/common/icons/src/index.ts"],
       "@acx-ui/main/components": ["libs/main/components/src/index.ts"],
+      "@acx-ui/msp/components": ["libs/msp/components/src/index.ts"],
       "@acx-ui/rc/components": ["libs/rc/components/src/index.ts"],
       "@acx-ui/rc/services": ["libs/rc/services/src/index.ts"],
       "@acx-ui/rc/utils": ["libs/rc/utils/src/index.ts"],

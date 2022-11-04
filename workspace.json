@@ -16,6 +16,7 @@
     "main": "apps/main",
     "main-components": "libs/main/components",
     "msp": "apps/msp",
+    "msp-components": "libs/msp/components",
     "rc": "apps/rc",
     "rc-components": "libs/rc/components",
     "rc-services": "libs/rc/services",
