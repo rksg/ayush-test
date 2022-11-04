@@ -3,6 +3,7 @@ import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
 import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
+import ApDetails         from './pages/Devices/Wifi/ApDetails'
 import { ApForm }        from './pages/Devices/Wifi/ApForm'
 import ApsTable          from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
@@ -38,6 +39,10 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
       <Route path='devices/aps' element={<ApsTable />} />
       <Route path='devices/aps/:action' element={<ApForm />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab'
+        element={<ApDetails />}
+      />
       <Route path='devices/switches' element={<SwitchesTable />} />
     </Route>
   )

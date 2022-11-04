@@ -4,6 +4,7 @@ import {
   ApExtraParams,
   AP,
   ApDeep,
+  ApDetailHeader,
   ApGroup,
   APRadio,
   ApRadioBands,
@@ -76,6 +77,15 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    apDetailHeader: build.query<ApDetailHeader, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApDetailHeader, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     })
   })
 })
@@ -83,6 +93,7 @@ export const apApi = baseApApi.injectEndpoints({
 export const {
   useApListQuery,
   useLazyApListQuery,
+  useApDetailHeaderQuery,
   useAddApMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
