@@ -17,7 +17,7 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { Features, useSplitTreatment }                                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                   from '@acx-ui/icons'
 import {
   useApListQuery,
@@ -62,7 +62,7 @@ const defaultApPayload = {
 
 export function ApForm () {
   const { $t } = useIntl()
-  const isApGpsFeatureEnabled = useSplitTreatment(Features.AP_GPS)
+  const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
   const { tenantId, action } = useParams()
   const formRef = useRef<StepsFormInstance<ApDeep>>()
   const navigate = useNavigate()
@@ -326,7 +326,7 @@ function CoordinatesModal (props: {
   onSaveCoordinates: (data: DeviceGps) => void
 }) {
   const { $t } = useIntl()
-  const isMapEnabled = useSplitTreatment(Features.G_MAP)
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const {
     formRef,
     fieldName,

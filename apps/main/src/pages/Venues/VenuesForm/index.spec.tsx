@@ -2,8 +2,8 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useSplitTreatment }  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo  }    from '@acx-ui/rc/utils'
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
@@ -77,7 +77,7 @@ describe('Venues Form', () => {
   })
 
   it('should render venues form', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     const { asFragment } = render(
       <Provider>
@@ -119,7 +119,7 @@ describe('Venues Form', () => {
     expect(address).toEqual(addressResult)
   })
   it('google map is enabled', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <VenuesForm />
@@ -131,7 +131,7 @@ describe('Venues Form', () => {
     expect(addressInput).toBeEnabled()
   })
   it('google map is not enabled', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <VenuesForm />
@@ -142,7 +142,7 @@ describe('Venues Form', () => {
     await screen.findByText('Map is not enabled')
   })
   it('should back to venues list', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <VenuesForm />
@@ -158,7 +158,7 @@ describe('Venues Form', () => {
     })
   })
   it('should edit venue successfully', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     const params = {
       venueId: '2c16284692364ab6a01f4c60f5941836',

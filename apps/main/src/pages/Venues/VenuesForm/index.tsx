@@ -12,9 +12,9 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { get }                         from '@acx-ui/config'
-import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
-import { SearchOutlined }              from '@acx-ui/icons'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
@@ -119,7 +119,7 @@ const defaultAddress: Address = {
 
 export function VenuesForm () {
   const intl = useIntl()
-  const isMapEnabled = useSplitTreatment(Features.G_MAP)
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<VenueExtended>>()
   const params = useParams()
