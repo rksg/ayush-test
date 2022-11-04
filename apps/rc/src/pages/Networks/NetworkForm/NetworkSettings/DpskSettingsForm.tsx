@@ -1,22 +1,19 @@
 import { useState, useContext, useEffect } from 'react'
 
-import { Radio, Space } from 'antd'
+import { Radio, RadioChangeEvent, Space } from 'antd'
 import {
   Col,
   Form,
   InputNumber,
   Row,
-  Select,
-  Tooltip
+  Select
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Subtitle }                                      from '@acx-ui/components'
+import { StepsForm, Subtitle, Tooltip }                             from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
-import { useCloudpathListQuery }                                    from '@acx-ui/rc/services'
-import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType,
+import { WlanSecurityEnum, PassphraseFormatEnum, DpskNetworkType,
   transformDpskNetwork, PassphraseExpirationEnum, NetworkSaveData }      from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
@@ -31,50 +28,49 @@ const { useWatch } = Form
 export function DpskSettingsForm (props: {
   saveState: NetworkSaveData
 }) {
-  const { data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
-    if(data){
+    if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.cloudpathServerId !== undefined,
+        isCloudpathEnabled: data.isCloudpathEnabled,
         dpskPassphraseGeneration: data?.dpskPassphraseGeneration,
         dpskWlanSecurity: data?.wlan?.wlanSecurity
       })
     }
   }, [data])
-  const selectedId = useWatch('cloudpathServerId')
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        selected: data?.find((item) => item.id === selectedId)
-      }
-    }
-  })
 
   return (
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
-        <NetworkDiagram
-          type={NetworkTypeEnum.DPSK}
-          cloudpathType={selected?.deploymentType}
-        />
+        <NetworkDiagram />
       </Col>
     </Row>
   )
 }
 
 function SettingsForm () {
-  const { editMode } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [
     isCloudpathEnabled
   ] = [
     useWatch('isCloudpathEnabled')
   ]
+
+  const onCloudPathChange = (e: RadioChangeEvent) => {
+    if(e.target.value){
+      form.setFieldsValue({
+        cloudpathServerId: ''
+      })
+    }
+    setData && setData({ ...data, isCloudpathEnabled: e.target.value })
+  }
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -97,7 +93,7 @@ function SettingsForm () {
           name='isCloudpathEnabled'
           initialValue={false}
         >
-          <Radio.Group>
+          <Radio.Group onChange={onCloudPathChange}>
             <Space direction='vertical'>
               <Radio value={false} disabled={editMode}>
                 { $t({ defaultMessage: 'Use the DPSK Service' }) }

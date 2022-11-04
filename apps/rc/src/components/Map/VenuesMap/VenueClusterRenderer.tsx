@@ -1,12 +1,12 @@
 import { ReactNode } from 'react'
 
-import Icon                     from '@ant-design/icons'
-import { Cluster,Renderer }     from '@googlemaps/markerclusterer'
-import { List, Space, Popover } from 'antd'
-import { createRoot }           from 'react-dom/client'
-import { IntlShape }            from 'react-intl'
+import Icon                           from '@ant-design/icons'
+import { Cluster,Renderer }           from '@googlemaps/markerclusterer'
+import { List, Space, Popover }       from 'antd'
+import { createRoot }                 from 'react-dom/client'
+import { RawIntlProvider, IntlShape } from 'react-intl'
 
-import { ConfigProvider, cssStr } from '@acx-ui/components'
+import { cssStr } from '@acx-ui/components'
 
 import {
   getClusterSVG,
@@ -150,7 +150,10 @@ export default class VenueClusterRenderer implements Renderer {
         clusterInfoWindow, this.onNavigate)
 
       const infoDiv = document.createElement('div')
-      createRoot(infoDiv).render(<ConfigProvider lang='en-US' children={content} />)
+      createRoot(infoDiv).render(
+        <RawIntlProvider value={this.intl}>
+          {content}
+        </RawIntlProvider>)
 
       clusterInfoWindow.setContent(infoDiv)
 

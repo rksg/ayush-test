@@ -12,17 +12,17 @@ import TopSSIDsByTrafficWidget from './index'
 
 type ColumnElements = Array<HTMLElement|SVGSVGElement>
 
-const extractRows = (doc:DocumentFragment)=>{
-  const rows: Array<ColumnElements>=[]
+const extractRows = (doc: DocumentFragment) => {
+  const rows: Array<ColumnElements> = []
   doc.querySelectorAll('table > tbody > tr').forEach((row) => {
     const columns = row.querySelectorAll('td')
     const extractedColumns: ColumnElements = []
-    columns.forEach((column,colIndex)=>{
-      if(colIndex === 2){
+    columns.forEach((column, colIndex) => {
+      if(colIndex === 2) {
         const svgElement = column.querySelector('svg')
-        if(svgElement)
+        if (svgElement)
           extractedColumns.push(svgElement)
-      }else{
+      } else {
         extractedColumns.push(column)
       }
     })
@@ -48,7 +48,7 @@ describe('TopSSIDsByTrafficWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
       data: { network: { hierarchyNode: topSSIDsByTrafficFixture } }
     })
-    render( <Provider> <TopSSIDsByTrafficWidget filters={filters}/></Provider>)
+    render(<Provider><TopSSIDsByTrafficWidget filters={filters}/></Provider>, { route: true })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
@@ -59,9 +59,8 @@ describe('TopSSIDsByTrafficWidget', () => {
         topNSSIDByTraffic: []
       } } }
     })
-    const { asFragment } = render( <Provider>
-      <TopSSIDsByTrafficWidget filters={filters}/>
-    </Provider>)
+    const { asFragment } = render(<Provider><TopSSIDsByTrafficWidget filters={filters}/></Provider>,
+      { route: true })
     await screen.findByText('No data to display')
     expect(asFragment()).toMatchSnapshot('NoData')
   })
@@ -70,13 +69,12 @@ describe('TopSSIDsByTrafficWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
       data: { network: { hierarchyNode: topSSIDsByTrafficFixture } }
     })
-    const { asFragment } = render( <Provider> <TopSSIDsByTrafficWidget
-      filters={filters}/></Provider>)
+    const { asFragment } = render(<Provider><TopSSIDsByTrafficWidget filters={filters}/></Provider>,
+      { route: true })
     await screen.findByText('Top 5 SSIDs by Traffic')
     const tableHeaders = asFragment().querySelector('div > table > thead')
     expect(tableHeaders).toMatchSnapshot('tableHeaders')
     const tableRows = extractRows(asFragment())
     expect(tableRows).toMatchSnapshot('tableRows')
   })
-
 })

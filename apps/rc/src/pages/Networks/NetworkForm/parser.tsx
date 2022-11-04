@@ -12,7 +12,7 @@ import {
   PhyTypeConstraintEnum
 } from '@acx-ui/rc/utils'
 
-const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
+const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled
@@ -105,34 +105,48 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       }
     }
   }
-  saveData = {
-    ...saveData,
-    ...{
-      wlan: {
-        wlanSecurity: data.wlanSecurity,
-        advancedCustomization: new AAAWlanAdvancedCustomization(),
-        bypassCNA: false,
-        bypassCPUsingMacAddressAuthentication: false,
-        enable: true,
-        managementFrameProtection: 'Disabled',
-        vlanId: 1
+  if (editMode) {
+    saveData = {
+      ...saveData,
+      ...{
+        wlan: {
+          wlanSecurity: data.wlanSecurity
+        }
+      }
+    }
+  } else {
+    saveData = {
+      ...saveData,
+      ...{
+        wlan: {
+          wlanSecurity: data.wlanSecurity,
+          advancedCustomization: new AAAWlanAdvancedCustomization(),
+          bypassCNA: false,
+          bypassCPUsingMacAddressAuthentication: false,
+          enable: true,
+          managementFrameProtection: 'Disabled',
+          vlanId: 1
+        }
       }
     }
   }
 
+
   return saveData
 }
 
-const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
+const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = { ...data }
 
-  saveData = {
-    ...saveData,
-    ...{
-      wlan: {
-        advancedCustomization: new OpenWlanAdvancedCustomization(),
-        enable: true,
-        vlanId: 1
+  if (!editMode) {
+    saveData = {
+      ...saveData,
+      ...{
+        wlan: {
+          advancedCustomization: new OpenWlanAdvancedCustomization(),
+          enable: true,
+          vlanId: 1
+        }
       }
     }
   }
@@ -140,14 +154,27 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
   return saveData
 }
 
-const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = { ...data,
-    ...{
-      wlan: {
-        wlanSecurity: data.dpskWlanSecurity,
-        enable: true,
-        vlanId: 1,
-        advancedCustomization: new DpskWlanAdvancedCustomization()
+const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
+  let saveData
+  if (editMode) {
+    saveData = {
+      ...data,
+      ...{
+        wlan: {
+          wlanSecurity: data.dpskWlanSecurity
+        }
+      }
+    }
+  } else {
+    saveData = {
+      ...data,
+      ...{
+        wlan: {
+          wlanSecurity: data.dpskWlanSecurity,
+          enable: true,
+          vlanId: 1,
+          advancedCustomization: new DpskWlanAdvancedCustomization()
+        }
       }
     }
   }
@@ -161,7 +188,7 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
   return saveData
 }
 
-const parsePskSettingDataToSave = (data: NetworkSaveData) => {
+const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService
   }
@@ -230,15 +257,27 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
     }
   }
 
-  saveData = {
-    ...saveData,
-    ...{
-      type: data.type,
-      wlan: {
-        ...data.wlan,
-        advancedCustomization: new PskWlanAdvancedCustomization(),
-        enable: true,
-        vlanId: 1
+  if (editMode) {
+    saveData = {
+      ...saveData,
+      ...{
+        type: data.type,
+        wlan: {
+          ...data.wlan
+        }
+      }
+    }
+  } else {
+    saveData = {
+      ...saveData,
+      ...{
+        type: data.type,
+        wlan: {
+          ...data.wlan,
+          advancedCustomization: new PskWlanAdvancedCustomization(),
+          enable: true,
+          vlanId: 1
+        }
       }
     }
   }
@@ -257,12 +296,12 @@ export function transferDetailToSave (data: CreateNetworkFormFields) {
   }
 }
 
-export function tranferSettingsToSave (data: NetworkSaveData) {
+export function tranferSettingsToSave (data: NetworkSaveData, editMode: boolean) {
   const networkSaveDataParser = {
-    [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
-    [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),
-    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data),
-    [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data)
+    [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data, editMode),
+    [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data, editMode),
+    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data, editMode),
+    [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data, editMode)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
