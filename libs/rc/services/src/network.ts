@@ -178,21 +178,45 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       }
     }),
     networkVenueList: build.query<TableResult<Venue>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const venueListReq = createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, params)
-        return{
-          ...venueListReq,
-          body: payload
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const networkVenuesListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, arg.params),
+          body: arg.payload
         }
+        const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
+        const networkVenuesList = networkVenuesListQuery.data as TableResult<Venue>
+
+        const networkDeepListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
+          body: [arg.params?.networkId]
+        }
+        const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
+        const networkDeepList = networkDeepListQuery.data as { response: NetworkDetail[] }
+        const networkDeep = networkDeepList.response[0]
+
+        let networkVenuesApGroupList = {} as { response: NetworkVenue[] }
+
+        if (networkDeep.wlan?.ssid && arg.params?.networkId) {
+          const networkVenuesApGroupInfo = {
+            ...createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, arg.params),
+            body: networkVenuesList.data.map(item => ({
+              venueId: item.id,
+              ssids: [networkDeep.wlan?.ssid],
+              networkId: arg.params?.networkId
+            }))
+          }
+          const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
+          networkVenuesApGroupList = networkVenuesApGroupQuery.data as { response: NetworkVenue[] }
+        }
+
+        const aggregatedList = aggregatedNetworksVenueData(
+          networkVenuesList, networkVenuesApGroupList, networkDeep)
+
+        return networkVenuesListQuery.data
+          ? { data: aggregatedList }
+          : { error: networkVenuesListQuery.error as FetchBaseQueryError }
       },
-      transformResponse (result: TableResult<Venue>) {
-        result.data = result.data.map(item => ({
-          ...item,
-          activated: item.activated ?? { isActivated: false }
-        }))
-        return result
-      },
-      providesTags: [{ type: 'Venue', id: 'LIST' }],
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           refetchByUsecase(msg, ['UpdateNetworkDeep'], () => {
@@ -258,6 +282,30 @@ export const networkApi = baseNetworkApi.injectEndpoints({
   })
 })
 
+export const aggregatedNetworksVenueData = (venueList: TableResult<Venue>,
+  venueNetworkApGroupList:{ response: NetworkVenue[] },
+  networkDeep: NetworkDetail
+) => {
+  const data:Venue[] = []
+  venueList.data.forEach(item => {
+    const networkApGroup = venueNetworkApGroupList?.response?.find(
+      i => i.venueId === item.id
+    )
+    const deepVenue = networkDeep?.venues?.find(
+      i => i.venueId === item.id
+    )
+    data.push({
+      ...item,
+      activated: calculateNetworkActivated(networkApGroup),
+      deepVenue: deepVenue
+    })
+  })
+  return {
+    ...venueList,
+    data
+  }
+}
+
 export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
   venueNetworkApGroupList:{ response: NetworkVenue[] },
   networkDeepListList:{ response: NetworkDetail[] }) => {
@@ -284,7 +332,7 @@ export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
   }
 }
 
-const calculateNetworkActivated = (res: NetworkVenue) => {
+const calculateNetworkActivated = (res?: NetworkVenue) => {
   const activatedObj = { isActivated: false, isDisabled: false, errors: [] as string[] }
   let errorsCounter = 0
   if (res && !res.isAllApGroups) {
@@ -310,8 +358,10 @@ const calculateNetworkActivated = (res: NetworkVenue) => {
         activatedObj.isDisabled = true
       }
     }
-  } else {
+  } else if (res && res.isAllApGroups) {
     activatedObj.isActivated = true
+  } else {
+    activatedObj.isActivated = false
   }
   return activatedObj
 }
