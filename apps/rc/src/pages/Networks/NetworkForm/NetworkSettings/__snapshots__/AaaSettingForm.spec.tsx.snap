@@ -559,7 +559,8 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                           class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                         >
                           <img
-                            src="none.png"
+                            alt="Open Network"
+                            src="open.png"
                           />
                         </div>
                       </div>
@@ -686,7 +687,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                   Select venues to activate this network
                 </p>
                 <div
-                  class="ant-form-item"
+                  class="ant-form-item ant-form-item-has-success"
                 >
                   <div
                     class="ant-row ant-form-item-row"

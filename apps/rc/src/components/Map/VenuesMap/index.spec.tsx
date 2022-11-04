@@ -41,7 +41,7 @@ describe('VenuesMap', () => {
     const script = document.getElementsByTagName('script')[0]
     expect(script.src).toEqual(
       'https://maps.googleapis.com/maps/api/js' +
-      '?callback=__googleMapsCallback&key=some-key&libraries=places&language=en')
+      '?callback=__googleMapsCallback&key=some-key&libraries=places&language=en&v=3.49')
   })
 
   it('should load the child component after api is loaded successfully', async () => {

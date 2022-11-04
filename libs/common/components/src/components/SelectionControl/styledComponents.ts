@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 
-const buttonStype = css`
+const buttonStyle = css`
   color: var(--acx-primary-black);
   background-color: transparent;
   border: none;
@@ -27,7 +27,11 @@ export const Wrapper = styled.div`
     vertical-align: top;
   }
   .ant-radio-button-wrapper {
-    ${buttonStype}
+    ${buttonStyle}
+
+    &:not(.ant-radio-button-wrapper-checked, .ant-radio-button-wrapper-disabled):hover {
+      background-color: var(--acx-neutrals-30);
+    }
   }
 
   svg {
@@ -35,7 +39,17 @@ export const Wrapper = styled.div`
     margin-right: 8px;
   }
   path { stroke: var(--acx-primary-black); }
-  .ant-radio-button-wrapper-checked path { stroke: var(--acx-primary-white); }
+
+  .ant-radio-button-wrapper-checked path {
+    stroke: var(--acx-primary-white);
+  }
+
+  .ant-radio-button-wrapper-checked {
+    cursor: default;
+    &:not(.ant-radio-button-wrapper-disabled):hover {
+      color: var(--acx-primary-white);
+    }
+  }
 
   .ant-radio-group-small {
     svg {

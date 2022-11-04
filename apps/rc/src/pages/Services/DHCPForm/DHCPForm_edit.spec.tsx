@@ -11,7 +11,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { DHCPForm } from './DHCPForm'
+import DHCPForm from './DHCPForm'
 
 
 const dhcpResponse: DHCPSaveData = {
