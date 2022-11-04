@@ -96,7 +96,7 @@ export const validationMessages = {
     description: 'Validation - VLAN range checks'
   }),
   gpsCoordinates: defineMessage({
-    defaultMessage: 'Please enter the valid GPS coordinates',
+    defaultMessage: 'Please enter valid GPS coordinates',
     description: 'Validation - GPS coordinates checks'
   })
 }

@@ -7,6 +7,8 @@ import { get } from '@acx-ui/config'
 
 import { Loader } from '../Loader'
 
+import * as UI from './styledComponents'
+
 export interface MapProps extends google.maps.MapOptions {
   style?: React.CSSProperties
   onClick?: (e: google.maps.MapMouseEvent) => void;
@@ -15,10 +17,10 @@ export interface MapProps extends google.maps.MapOptions {
   libraries: WrapperProps['libraries']
 }
 
-export const GoogleMap: React.FC<MapProps> = ({
+export const GoogleMap = ({
   libraries,
   ...props
-}) => {
+}: MapProps) => {
   const { $t } = useIntl()
   return <Wrapper
     apiKey={get('GOOGLE_MAPS_KEY')}
@@ -53,7 +55,10 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
 
   return (
     <>
-      <div ref={ref} style={{ height: '100%', width: '100%', margin: '0' }}/>
+      <div ref={ref}
+        className='map-container'
+        style={{ height: '100%', width: '100%', margin: '0' }}
+      />
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           // set the map prop on the child component
@@ -66,3 +71,5 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
     </>
   )
 }
+
+GoogleMap.FormItem = UI.FormItem

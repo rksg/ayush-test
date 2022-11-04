@@ -9,7 +9,9 @@ import {
   ApRadioBands,
   CommonUrlsInfo,
   createHttpRequest,
+  onSocketActivityChanged,
   RequestPayload,
+  showActivityMessage,
   TableResult,
   VenueCapabilities,
   WifiUrlsInfo
@@ -35,6 +37,18 @@ export const apApi = baseApApi.injectEndpoints({
       },
       transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Ap', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddAps'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
+          })
+        })
       }
     }),
     apGroupList: build.query<ApGroup[], RequestPayload>({
@@ -52,7 +66,8 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
     wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Space, Tooltip, Typography } from 'antd'
 import { DefaultOptionType }                                         from 'antd/lib/select'
-import _                                                             from 'lodash'
+import { omit, isEqual }                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
 import {
@@ -44,6 +44,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -104,7 +105,7 @@ export function ApForm () {
   const handleAddAp = async (values: ApDeep) => {
     try {
       const payload = [{
-        ..._.omit(values, 'deviceGps'),
+        ...omit(values, 'deviceGps'),
         ...(deviceGps && { deviceGps: deviceGps })
       }]
       await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
@@ -142,7 +143,7 @@ export function ApForm () {
   }
 
   return <>
-    { action === 'add' && <PageHeader
+    {action === 'add' && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
@@ -229,11 +230,13 @@ export function ApForm () {
                   { validator: (_, value) => checkValuesNotEqual(value, 'aaaa') },
                   { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
                   { validator: (_, value) => apNameRegExp(value) },
-                  { validator: (_, value) => {
-                    const nameList = apList?.data?.data?.map(item => item.name) ?? []
-                    return checkObjectNotExists(nameList, value,
-                      $t({ defaultMessage: 'AP Name' }), 'value')
-                  } }
+                  {
+                    validator: (_, value) => {
+                      const nameList = apList?.data?.data?.map(item => item.name) ?? []
+                      return checkObjectNotExists(nameList, value,
+                        $t({ defaultMessage: 'AP Name' }), 'value')
+                    }
+                  }
                 ]}
                 validateFirst
                 hasFeedback
@@ -245,11 +248,13 @@ export function ApForm () {
                 rules={[
                   { required: true },
                   { validator: (_, value) => serialNumberRegExp(value) },
-                  { validator: (_, value) => {
-                    const serialNumbers = apList?.data?.data?.map(item => item.serialNumber) ?? []
-                    return checkObjectNotExists(serialNumbers, value,
-                      $t({ defaultMessage: 'Serial Number' }), 'value')
-                  } }
+                  {
+                    validator: (_, value) => {
+                      const serialNumbers = apList?.data?.data?.map(item => item.serialNumber) ?? []
+                      return checkObjectNotExists(serialNumbers, value,
+                        $t({ defaultMessage: 'Serial Number' }), 'value')
+                    }
+                  }
                 ]}
                 validateFirst
                 hasFeedback
@@ -266,7 +271,7 @@ export function ApForm () {
                 label={$t({ defaultMessage: 'Tags' })}
                 children={<Input />}
               /> */}
-              { isApGpsFeatureEnabled && <Form.Item
+              {isApGpsFeatureEnabled && <Form.Item
                 label={$t({ defaultMessage: 'GPS Coordinates' })}
                 children={selectedVenue?.id
                   ? <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -355,7 +360,7 @@ function CoordinatesModal (props: {
 
   const updateMarkerPosition = (latlng: google.maps.LatLng) => {
     setMarker(latlng)
-    setCenter(latlng.toJSON())
+    setCenter(latlng.lat() ? latlng.toJSON() : { lat: 0, lng: 0 })
     setZoom(16)
   }
 
@@ -381,8 +386,8 @@ function CoordinatesModal (props: {
 
   const onApplyCoordinates = () => {
     const latLng = formRef?.current?.getFieldValue(fieldName).split(',')
-    if (selectedVenue?.latitude !== latLng[0].trim()
-      || selectedVenue?.longitude !== latLng[1].trim()) {
+      .map((v: string) => v.trim())
+    if (!isEqual([selectedVenue?.latitude, selectedVenue?.longitude], latLng)) {
       showActionModal({
         type: 'confirm',
         width: 450,
@@ -404,11 +409,18 @@ function CoordinatesModal (props: {
   }
 
   const onDragEndMaker = (event: google.maps.MapMouseEvent) => {
+    const hasError = formRef?.current
+      ? formRef?.current?.getFieldError(fieldName).length > 0 : false
     const latLng = [
       event.latLng?.lat().toFixed(6),
       event.latLng?.lng().toFixed(6)
     ]
+    if (hasError) {
+      updateMarkerPosition(event?.latLng as google.maps.LatLng)
+    }
+    formRef?.current?.validateFields([fieldName])
     formRef?.current?.setFieldValue(fieldName, `${latLng.join(', ')}`)
+    setCoordinatesValid(true)
   }
 
   return <Modal
@@ -425,32 +437,34 @@ function CoordinatesModal (props: {
     onOk={onApplyCoordinates}
     onCancel={() => setGpsModalVisible(false)}
   >
-    <UI.CoordinateFormItem
-      label={false}
-      name={fieldName}
-      rules={[{
-        required: isMapEnabled
-      }, {
-        validator: (_, value) => {
-          const cord = value?.split(',')
-          const asVeneue = selectedVenue?.latitude === cord[0].trim()
-                && selectedVenue?.longitude === cord[1].trim()
-          return asVeneue
-            ? Promise.resolve()
-            : gpsRegExp(cord[0]?.trim(), cord[1]?.trim())
-        }
-      }]}
-      children={<Input
-        placeholder={
-          $t({ defaultMessage: 'Enter the latitude and longitude. e.g. 37.4117499, -122.0193697' })
-        }
+    <GoogleMap.FormItem>
+      <Form.Item
+        noStyle
+        label={false}
+        name={fieldName}
+        rules={[{
+          required: isMapEnabled,
+          message: $t(validationMessages.gpsCoordinates)
+        }, {
+          validator: (_, value) => {
+            const latLng = value.split(',').map((v: string) => v.trim())
+            const asVeneue = isEqual([selectedVenue?.latitude, selectedVenue?.longitude], latLng)
+            return asVeneue
+              ? Promise.resolve()
+              : gpsRegExp(latLng[0], latLng[1])
+          }
+        }]}
+        validateFirst
+      >
+        <Input placeholder={$t({
+          defaultMessage: 'Enter the latitude and longitude. e.g. 37.4117499, -122.0193697'
+        })}
         autoComplete='off'
         data-testid='coordinates-input'
         onChange={onChangeCoordinates}
-      />}
-    />
-    {isMapEnabled
-      ? <UI.CoordinateMap>
+        />
+      </Form.Item>
+      {isMapEnabled ?
         <GoogleMap
           libraries={['places']}
           mapTypeControl={false}
@@ -465,10 +479,10 @@ function CoordinatesModal (props: {
             onDragEnd={onDragEndMaker}
           />}
         </GoogleMap>
-      </UI.CoordinateMap>
-      : <Typography.Title level={3} style={{ margin: '60px 12px' }}>
-        {$t({ defaultMessage: 'Map is not enabled' })}
-      </Typography.Title>
-    }
+        : <Typography.Title level={3}>
+          {$t({ defaultMessage: 'Map is not enabled' })}
+        </Typography.Title>}
+    </GoogleMap.FormItem>
+
   </Modal>
 }

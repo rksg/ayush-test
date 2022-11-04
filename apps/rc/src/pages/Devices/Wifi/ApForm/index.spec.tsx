@@ -68,7 +68,7 @@ async function changeCoordinates (data, applyData) {
   })
 
   if (!validCoordinates.includes(data)) {
-    expect(await screen.findByText('Please enter the valid GPS coordinates')).toBeVisible()
+    expect(await screen.findByText('Please enter valid GPS coordinates')).toBeVisible()
     fireEvent.change(
       within(dialog).getByTestId('coordinates-input'), { target: { value: validCoordinates[1] } }
     )

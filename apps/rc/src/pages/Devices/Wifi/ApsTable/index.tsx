@@ -13,10 +13,10 @@ export default function ApsTable () {
       label: <TenantLink to='devices/aps/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
     }, {
       key: 'import-from-file',
-      label: <TenantLink to='TBD'>{$t({ defaultMessage: 'Import from file' })}</TenantLink>
+      label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Import from file' })}</TenantLink>
     }, {
       key: 'ap-group',
-      label: <TenantLink to='TBD'>{$t({ defaultMessage: 'AP Group' })}</TenantLink> }
+      label: <TenantLink to='TODO'>{$t({ defaultMessage: 'AP Group' })}</TenantLink> }
     ]}
   />
 
@@ -25,7 +25,7 @@ export default function ApsTable () {
       <PageHeader
         title={$t({ defaultMessage: 'WiFi' })}
         extra={[
-          <Dropdown overlay={addMenu}>{() =>
+          <Dropdown overlay={addMenu} key='addMenu'>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
           }</Dropdown>
         ]}

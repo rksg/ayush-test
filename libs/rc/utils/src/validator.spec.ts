@@ -137,7 +137,7 @@ describe('validator', () => {
     })
     it('Should display error message if GPS values incorrectly', async () => {
       const result = gpsRegExp('51.507558', '-0.126095xxxx')
-      await expect(result).rejects.toEqual('Please enter the valid GPS coordinates')
+      await expect(result).rejects.toEqual('Please enter valid GPS coordinates')
     })
   })
 

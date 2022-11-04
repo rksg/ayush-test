@@ -252,7 +252,7 @@ export function gpsRegExp (lat: string, lng: string) {
   const latitudeRe = new RegExp('^$|^(-?(?:90(?:\\.0{1,6})?|(?:[1-8]?\\d(?:\\.\\d{1,6})?)))$')
   const longitudeRe = new RegExp('^$|^(-?(?:180(?:\\.0{1,6})?|(?:[1-9]?\\d(?:\\.\\d{1,6})?)|(?:1[0-7]?\\d(?:\\.\\d{1,6})?)))$')
 
-  if (!latitudeRe.test(lat) || !longitudeRe.test(lng)) {
+  if (!lat || !lng || !latitudeRe.test(lat) || !longitudeRe.test(lng)) {
     return Promise.reject($t(validationMessages.gpsCoordinates))
   }
   return Promise.resolve()
