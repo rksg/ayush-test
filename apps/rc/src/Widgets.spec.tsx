@@ -2,73 +2,25 @@ import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import { render, screen }    from '@acx-ui/test-utils'
 
 import WifiWidgets from './Widgets'
+import '@acx-ui/rc/components'
 
-jest.mock('./components/AlarmWidget', () => ({
-  __esModule: true,
-  default: () => <div>Alarms Widget</div>
-}))
-jest.mock('./components/VenuesDonut', () => ({
-  __esModule: true,
-  default: () => <div>Venues Widget</div>
-}))
-jest.mock('./components/DevicesDonut/DashboardWidget', () => ({
-  __esModule: true,
-  default: () => <div>Devices Widget</div>
-}))
-jest.mock('./components/ClientsDonut', () => ({
-  __esModule: true,
-  default: () => <div>Clients Widget</div>
-}))
-jest.mock('./components/Map', () => ({
-  __esModule: true,
-  default: () => <div>Map Widget</div>
-}))
-jest.mock('./components/AlarmWidget/VenueAlarmDonut', () => ({
-  __esModule: true,
-  default: () => <div>Venue Overview Alarm Widget</div>
-}))
-jest.mock('./components/DevicesDonut/VenueWidget', () => ({
-  __esModule: true,
-  default: () => <div>Venue Overview Devices Widget</div>
+jest.mock('@acx-ui/rc/components', () => ({
+  AlarmWidget: () => <div data-testid='AlarmWidget' />
 }))
 
 describe('Wi-Fi Widgets', () => {
   it('should render Alarm widget', async () => {
-    render(<WifiWidgets name={'alarms'}></WifiWidgets>)
-    expect(screen.getByText('Alarms Widget')).toBeTruthy()
-  })
-  it('should render Venues widget', async () => {
-    render(<WifiWidgets name={'venues'}></WifiWidgets>)
-    expect(screen.getByText('Venues Widget')).toBeTruthy()
-  })
-  it('should render Devices widget', async () => {
-    render(<WifiWidgets name={'devices'}></WifiWidgets>)
-    expect(screen.getByText('Devices Widget')).toBeTruthy()
-  })
-  it('should render Clients widget', async () => {
-    render(<WifiWidgets name={'clients'}></WifiWidgets>)
-    expect(screen.getByText('Clients Widget')).toBeTruthy()
-  })
-  it('should render Map widget', async () => {
-    render(<WifiWidgets name={'map'}></WifiWidgets>)
-    expect(screen.getByText('Map Widget')).toBeTruthy()
-  })
-  it('should render Venue Overview Alarm widget', async () => {
-    render(<WifiWidgets name={'venueAlarmDonut'}></WifiWidgets>)
-    expect(screen.getByText('Venue Overview Alarm Widget')).toBeTruthy()
-  })
-  it('should render Venue Overview Devices widget', async () => {
-    render(<WifiWidgets name={'venueDevices'}></WifiWidgets>)
-    expect(screen.getByText('Venue Overview Devices Widget')).toBeTruthy()
+    render(<WifiWidgets name='alarms' />)
+    expect(await screen.findByTestId('AlarmWidget')).toBeVisible()
   })
   it('should render a Card with name, if widget is not defined and FF enabled', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(true)
     render(<WifiWidgets name={'none'}></WifiWidgets>)
-    expect(screen.getByText('none')).toBeTruthy()
+    expect(screen.getByText('none')).toBeVisible()
   })
   it('should not render a Card with name, if widget is not defined and FF disabled', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(false)
     render(<WifiWidgets name={'none'}></WifiWidgets>)
-    expect(screen.getByText('Coming soon...')).toBeTruthy()
+    expect(screen.getByText('Coming soon...')).toBeVisible()
   })
 })

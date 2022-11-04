@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Venue Overview Alarm Widget should render "No active alarms" when no alarms exist 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <p>
+      Something went wrong.
+    </p>
+    <p>
+      ReferenceError: CheckMarkCircleSolid is not defined
+      <br />
+      ReferenceError: CheckMarkCircleSolid is not defined
+      <br />
+          at /Users/shiawuen/Projects/ruckus/acx-ui/libs/common/icons/src/icons/CheckMarkCircleSolid.svg:6:49
+      <br />
+          at renderWithHooks (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:16175:18)
+      <br />
+          at updateForwardRef (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:20023:20)
+      <br />
+          at beginWork (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:22465:16)
+      <br />
+          at beginWork$1 (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:27381:14)
+      <br />
+          at performUnitOfWork (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26516:12)
+      <br />
+          at workLoopSync (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26422:5)
+      <br />
+          at renderRootSync (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26390:7)
+      <br />
+          at recoverFromConcurrentError (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:25806:20)
+      <br />
+          at performSyncWorkOnRoot (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26052:20)
+      <br />
+          at flushSyncCallbacks (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:12009:22)
+      <br />
+          at /Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:25607:13
+      <br />
+          at /Users/shiawuen/Projects/ruckus/acx-ui/node_modules/jsdom/lib/jsdom/browser/Window.js:550:9
+      <br />
+          at node:internal/process/task_queues:141:7
+      <br />
+          at AsyncResource.runInAsyncScope (node:async_hooks:202:9)
+      <br />
+          at AsyncResource.runMicrotask (node:internal/process/task_queues:138:8)
+      <br />
+    </p>
+  </div>
+</DocumentFragment>
+`;
