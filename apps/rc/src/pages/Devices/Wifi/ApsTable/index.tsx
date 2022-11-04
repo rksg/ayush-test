@@ -13,7 +13,7 @@ export const addMenu = <Menu
   ]}
 />
 
-export function ApsTable () {
+export default function ApsTable () {
   const { $t } = useIntl()
 
   return (

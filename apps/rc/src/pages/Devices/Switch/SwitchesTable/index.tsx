@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
 
-export function SwitchesTable () {
+export default function SwitchesTable () {
   const { $t } = useIntl()
 
   return (

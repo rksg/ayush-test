@@ -12,7 +12,8 @@ import {
   RequestPayload,
   TableResult,
   VenueCapabilities,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  ApDetailHeader
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -61,6 +62,15 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    apDetailHeader: build.query<ApDetailHeader, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApDetailHeader, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     })
   })
 })
@@ -71,7 +81,8 @@ export const {
   useAddApMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
-  useWifiCapabilitiesQuery
+  useWifiCapabilitiesQuery,
+  useApDetailHeaderQuery
 } = apApi
 
 

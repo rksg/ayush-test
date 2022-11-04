@@ -1,7 +1,7 @@
-import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
+import { Tooltip }                               from '@acx-ui/components'
 import { Card }                                  from '@acx-ui/components'
 import { ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
 import { notAvailableMsg }                       from '@acx-ui/utils'

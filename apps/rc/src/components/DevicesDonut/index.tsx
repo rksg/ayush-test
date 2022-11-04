@@ -28,12 +28,12 @@ function DevicesDonutWidget (props: {
               style={{ width: width/2 , height }}
               title={$t({ defaultMessage: 'Wi-Fi' })}
               data={props.apData}
-              onClick={() => onClick('TBD')}/>
+              onClick={() => onClick('TODO')}/>
             <DonutChart
               style={{ width: width/2, height }}
               title={$t({ defaultMessage: 'Switch' })}
               data={props.switchData}
-              onClick={() => onClick('TBD')}/>
+              onClick={() => onClick('TODO')}/>
           </div>
         )}
       </AutoSizer>

@@ -1,24 +1,23 @@
-import { ConfigProvider }                    from '@acx-ui/components'
 import { ServiceType }                       from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import { SwitchesTable }     from './pages/Devices/Switch/SwitchesTable'
-import { ApForm }            from './pages/Devices/Wifi/ApForm'
-import { ApsTable }          from './pages/Devices/Wifi/ApsTable'
-import { NetworkDetails }    from './pages/Networks/NetworkDetails/NetworkDetails'
-import { NetworkForm }       from './pages/Networks/NetworkForm/NetworkForm'
-import { NetworksTable }     from './pages/Networks/NetworksTable'
-import { DHCPForm }          from './pages/Services/DHCPForm/DHCPForm'
-import { MdnsProxyForm }     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import { SelectServiceForm } from './pages/Services/SelectServiceForm'
+import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
+import ApDetails         from './pages/Devices/Wifi/ApDetails'
+import ApsTable          from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable     from './pages/Networks/NetworksTable'
+import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import SelectServiceForm from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation
 } from './pages/Services/serviceRouteUtils'
-import { ServicesTable } from './pages/Services/ServicesTable'
+import ServicesTable from './pages/Services/ServicesTable'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -29,9 +28,7 @@ export default function RcRoutes () {
     </Route>
   )
   return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
+    <Provider children={routes} />
   )
 }
 
@@ -41,6 +38,10 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
       <Route path='devices/aps' element={<ApsTable />} />
       <Route path='devices/aps/:action' element={<ApForm />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab'
+        element={<ApDetails />}
+      />
       <Route path='devices/switches' element={<SwitchesTable />} />
     </Route>
   )
