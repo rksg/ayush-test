@@ -12,7 +12,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
-const seriesMapping = [
+const seriesMapping = () => [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
     name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION, false),
     color: cssStr('--acx-semantics-red-50') },
@@ -31,7 +31,7 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
   const chartData: DonutChartData[] = []
   const venuesSummary = overviewData?.summary?.venues?.summary
   if (venuesSummary) {
-    seriesMapping.forEach(({ key, name, color }) => {
+    seriesMapping().forEach(({ key, name, color }) => {
       if (venuesSummary[key]) {
         chartData.push({
           name,

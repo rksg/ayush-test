@@ -10,7 +10,7 @@ import {
 
 import { getAPStatusDisplayName, getSwitchStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
-const seriesMappingSwitch = [
+const seriesMappingSwitch = () => [
   { key: SwitchStatusEnum.DISCONNECTED,
     name: getSwitchStatusDisplayName(SwitchStatusEnum.DISCONNECTED),
     color: cssStr('--acx-semantics-red-50') },
@@ -29,7 +29,7 @@ export const getSwitchDonutChartData = (overviewData: Dashboard | undefined): Do
   const chartData: DonutChartData[] = []
   const switchesSummary = overviewData?.summary?.switches?.summary
   if (switchesSummary) {
-    seriesMappingSwitch.forEach(({ key, name, color }) => {
+    seriesMappingSwitch().forEach(({ key, name, color }) => {
       const value = parseInt(switchesSummary[key as SwitchStatusEnum]!, 10)
       if(key === SwitchStatusEnum.INITIALIZING && value) {
         const neverContactedCloud = find(chartData, {
@@ -53,7 +53,7 @@ export const getVenueSwitchDonutChartData =
   const chartData: DonutChartData[] = []
   const switchesSummary = venueDetails?.switches?.summary
   if (switchesSummary) {
-    seriesMappingSwitch.forEach(({ key, name, color }) => {
+    seriesMappingSwitch().forEach(({ key, name, color }) => {
       const value = switchesSummary[key as SwitchStatusEnum]
       if(key === SwitchStatusEnum.INITIALIZING && value) {
         const neverContactedCloud = find(chartData, {
@@ -72,7 +72,7 @@ export const getVenueSwitchDonutChartData =
   return chartData
 }
 
-const seriesMappingAP = [
+const seriesMappingAP = () => [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
     name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION, false),
     color: cssStr('--acx-semantics-red-50') },
@@ -94,7 +94,7 @@ export const getApDonutChartData =
 (apsSummary: VenueDetailHeader['aps']['summary'] | undefined): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   if (apsSummary) {
-    seriesMappingAP.forEach(({ key, name, color }) => {
+    seriesMappingAP().forEach(({ key, name, color }) => {
       const value = apsSummary[key as ApVenueStatusEnum]
       if (key === ApVenueStatusEnum.OFFLINE && value) {
         const setupPhase = find(chartData, {

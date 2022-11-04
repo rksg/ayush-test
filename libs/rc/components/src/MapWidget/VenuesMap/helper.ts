@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
-import _ from 'lodash'
+import _                 from 'lodash'
+import { defineMessage } from 'react-intl'
 
 import { cssStr }    from '@acx-ui/components'
 import {
@@ -7,39 +8,45 @@ import {
   Dashboard,
   ApVenueStatusEnum,
   SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import * as UI                from './styledComponents'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
-export const getAPStatusDisplayName = (label: ApVenueStatusEnum,
-  severity: boolean = true) => {
-  switch (label) {
-    case ApVenueStatusEnum.REQUIRES_ATTENTION:
-      return `${severity ? '1 ' : ''}Requires Attention`
-    case ApVenueStatusEnum.TRANSIENT_ISSUE:
-      return `${severity ? '2 ' : ''}Transient Issue`
-    case ApVenueStatusEnum.IN_SETUP_PHASE:
-      return `${severity ? '3 ' : ''}In Setup Phase`
-    case ApVenueStatusEnum.OPERATIONAL:
-      return `${severity ? '4 ' : ''}Operational`
-    case ApVenueStatusEnum.OFFLINE:
-    default:
-      return `${severity ? '3 ' : ''}Offline`
-  }
+const apStatusMap = {
+  [ApVenueStatusEnum.REQUIRES_ATTENTION]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention'
+  }),
+  [ApVenueStatusEnum.TRANSIENT_ISSUE]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {2 } other {}}Transient Issue'
+  }),
+  [ApVenueStatusEnum.IN_SETUP_PHASE]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase'
+  }),
+  [ApVenueStatusEnum.OPERATIONAL]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {4 } other {}}Operational'
+  }),
+  [ApVenueStatusEnum.OFFLINE]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline'
+  })
+}
+export const getAPStatusDisplayName = (label: ApVenueStatusEnum, showSeverity: boolean = true) => {
+  const { $t } = getIntl()
+  return $t(apStatusMap[label], { showSeverity })
 }
 
+
+const switchStatusMap = {
+  [SwitchStatusEnum.OPERATIONAL]: defineMessage({ defaultMessage: 'Operational' }),
+  [SwitchStatusEnum.DISCONNECTED]: defineMessage({ defaultMessage: 'Requires Attention' }),
+  [SwitchStatusEnum.NEVER_CONTACTED_CLOUD]: defineMessage({ defaultMessage: 'In Setup Phase' }),
+  [SwitchStatusEnum.INITIALIZING]: defineMessage({ defaultMessage: 'In Setup Phase' }),
+  [SwitchStatusEnum.APPLYING_FIRMWARE]: defineMessage({ defaultMessage: 'In Setup Phase' }),
+  default: defineMessage({ defaultMessage: 'In Setup Phase' })
+}
 export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
-  switch (switchStatus) {
-    case SwitchStatusEnum.OPERATIONAL:
-      return 'Operational'
-    case SwitchStatusEnum.DISCONNECTED:
-      return 'Requires Attention'
-    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
-    case SwitchStatusEnum.INITIALIZING:
-    case SwitchStatusEnum.APPLYING_FIRMWARE:
-    default:
-      return 'In Setup Phase'
-  }
+  const { $t } = getIntl()
+  return $t(_.get(switchStatusMap, switchStatus, switchStatusMap.default))
 }
 
 export const getVenueInfoMarkerIcon = (status: string) => {
