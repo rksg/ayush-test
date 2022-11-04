@@ -4,7 +4,7 @@ import { Form, Radio, RadioChangeEvent, Space, Switch } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
 import { Loader, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useSplitTreatment }                         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                          from '@acx-ui/icons'
 import {
   // useLazyApListQuery,
@@ -63,7 +63,7 @@ export function RadioSettings () {
 
   // const [apList] = useLazyApListQuery()
 
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   // const triBandApModelNames = _.isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
   // let filters = { model: triBandApModelNames }
