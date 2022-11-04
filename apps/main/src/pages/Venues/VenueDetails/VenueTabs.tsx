@@ -2,6 +2,7 @@ import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
+import { Features, useSplitTreatment }           from '@acx-ui/feature-toggle'
 import { VenueDetailHeader }                     from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { notAvailableMsg }                       from '@acx-ui/utils'
@@ -11,6 +12,8 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const params = useParams()
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
   const navigate = useNavigate()
+  const enableVenueAnalytics = !useSplitTreatment(Features.VENUE_ANALYTICS)
+
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
@@ -29,7 +32,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
       <Tabs.TabPane
-        disabled
+        disabled={enableVenueAnalytics}
         tab={<Tooltip title={$t(notAvailableMsg)}>
           {$t({ defaultMessage: 'AI Analytics' })}
         </Tooltip>}
