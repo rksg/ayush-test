@@ -15,7 +15,7 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useSplitTreatment }                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   WlanSecurityEnum,
@@ -61,7 +61,7 @@ export function AaaSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -88,7 +88,7 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
