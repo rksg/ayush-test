@@ -9,7 +9,7 @@ export const addMenu = <Menu
   items={[
     { key: 'ap', label: <TenantLink to='devices/aps/add'>AP</TenantLink> },
     { key: 'import-from-file', label: <TenantLink to='TBD'>Import from file</TenantLink> },
-    { key: 'ap-group', label: <TenantLink to='TBD'>AP Group</TenantLink> }
+    { key: 'ap-group', label: <TenantLink to='devices/apgroups/add'>AP Group</TenantLink> }
   ]}
 />
 
