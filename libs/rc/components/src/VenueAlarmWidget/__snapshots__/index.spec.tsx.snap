@@ -5,47 +5,85 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
-    <p>
-      Something went wrong.
-    </p>
-    <p>
-      ReferenceError: CheckMarkCircleSolid is not defined
-      <br />
-      ReferenceError: CheckMarkCircleSolid is not defined
-      <br />
-          at /Users/shiawuen/Projects/ruckus/acx-ui/libs/common/icons/src/icons/CheckMarkCircleSolid.svg:6:49
-      <br />
-          at renderWithHooks (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:16175:18)
-      <br />
-          at updateForwardRef (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:20023:20)
-      <br />
-          at beginWork (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:22465:16)
-      <br />
-          at beginWork$1 (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:27381:14)
-      <br />
-          at performUnitOfWork (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26516:12)
-      <br />
-          at workLoopSync (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26422:5)
-      <br />
-          at renderRootSync (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26390:7)
-      <br />
-          at recoverFromConcurrentError (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:25806:20)
-      <br />
-          at performSyncWorkOnRoot (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:26052:20)
-      <br />
-          at flushSyncCallbacks (/Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:12009:22)
-      <br />
-          at /Users/shiawuen/Projects/ruckus/acx-ui/node_modules/react-dom/cjs/react-dom.development.js:25607:13
-      <br />
-          at /Users/shiawuen/Projects/ruckus/acx-ui/node_modules/jsdom/lib/jsdom/browser/Window.js:550:9
-      <br />
-          at node:internal/process/task_queues:141:7
-      <br />
-          at AsyncResource.runInAsyncScope (node:async_hooks:202:9)
-      <br />
-          at AsyncResource.runMicrotask (node:internal/process/task_queues:138:8)
-      <br />
-    </p>
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+              >
+                Alarms
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div
+            style="overflow: visible; height: 0px; width: 0px;"
+          >
+            <div
+              class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <span
+                    data-testid="CheckMarkCircleSolid"
+                  />
+                </div>
+              </div>
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoActiveTextWrapper-sc-m7jeli-3 iRdLpd kuAEvr"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  No active alarms
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1281px; height: 801px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;
