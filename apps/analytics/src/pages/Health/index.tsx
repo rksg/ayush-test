@@ -39,7 +39,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter }) => {
   let { activeTab = healthTabs[0].value } = params
   activeTab =
     params[
-      widgetFilters?.urlTabparam ? widgetFilters?.urlTabparam : activeTab
+      widgetFilters?.urlTabParam ? widgetFilters?.urlTabParam : activeTab
     ] ?? healthTabs[0].value
   const navigate = useNavigate()
   const basePath = useTenantLink(

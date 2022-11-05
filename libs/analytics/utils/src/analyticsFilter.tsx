@@ -13,7 +13,7 @@ export type AnalyticsFilter = DateFilter & {
   path: NetworkPath;
   filter?: pathFilter;
   urlBasePath?: Path;
-  urlTabparam?: string
+  urlTabParam?: string
 }
 
 export function useAnalyticsFilter () {
