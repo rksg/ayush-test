@@ -48,7 +48,7 @@ describe('Kpi Section', () => {
     })
     render(<Router><Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} />
+        <KpiSection tab={'overview'} filters={filters}/>
       </HealthPageContext.Provider>
     </Provider></Router>)
     await screen.findByText('Time To Connect')

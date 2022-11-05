@@ -1,13 +1,15 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { dataApiURL, dataApi }              from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Provider }                         from '@acx-ui/store'
+import { Provider, store }                  from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
+import { header1 }                        from './components/Header/__tests__/fixtures'
 import { healthWidgetFixture }            from './components/HealthWidget/__tests__/fixtures'
 import { expectedIncidentDashboardData }  from './components/IncidentsDashboard/__tests__/fixtures'
+import { networkHierarchy }               from './components/NetworkFilter/__tests__/fixtures'
 import { topApplicationByTrafficFixture } from './components/TopApplicationsByTraffic/__tests__/fixtures'
 import { topSSIDsByClientFixture }        from './components/TopSSIDsByClient/__tests__/fixtures'
 import { topSSIDsByTrafficFixture }       from './components/TopSSIDsByTraffic/__tests__/fixtures'
@@ -15,7 +17,6 @@ import { topSwitchesByErrorResponse }     from './components/TopSwitchesByError/
 import { topSwitchesByPoEUsageResponse }  from './components/TopSwitchesByPoEUsage/__tests__/fixtures'
 import { topSwitchesByTrafficResponse }   from './components/TopSwitchesByTraffic/__tests__/fixtures'
 import AnalyticsWidgets                   from './Widgets'
-
 const sample = {
   time: [
     '2022-04-07T09:15:00.000Z',
@@ -88,6 +89,12 @@ const switchTrafficByVolumeSample = {
   switchTotalTraffic_rx: [11, 12, 13, 14, 15]
 }
 
+jest.mock('./pages/health/ConnectedClientsOverTime', () => () => <div>Summary TimeSeries</div>)
+jest.mock('./pages/health/Kpi', () => () => <div>Kpi Section</div>)
+
+jest.mock('./pages/health/SummaryBoxes', () => ({
+  SummaryBoxes: () => <div data-testid='Summary Boxes' />
+}))
 test('should render Traffic by Volume widget', async () => {
 
   mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
@@ -257,4 +264,56 @@ test('should render Venue Overview Incidents Widget', async () => {
     name='venueIncidentsDonut'
     filters={filters} /></Provider>)
   await screen.findByText('Incidents')
+})
+test('should render incidents page widget', async () => {
+  const queryResult = {
+    network: {
+      node: {
+        type: 'switch',
+        name: 'Switch',
+        model: 'm',
+        firmware: '123',
+        portCount: 20
+      }
+    }
+  }
+  mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', { data: queryResult })
+  mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+    data: { network: { hierarchyNode: networkHierarchy } }
+  })
+  mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+    data: { network: { hierarchyNode: { incidents: [] } } }
+  })
+  const sample = { P1: 0, P2: 2, P3: 3, P4: 4 }
+  mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+    data: { network: { hierarchyNode: sample } }
+  })
+  render(
+    <Provider>
+      <BrowserRouter>
+        <AnalyticsWidgets
+          name='incidentsPageWidget'
+          filters={filters} />
+      </BrowserRouter>
+    </Provider>)
+  await screen.findByText('Total Incidents')
+})
+test('should render health page widget', async () => {
+  store.dispatch(dataApi.util.resetApiState())
+  mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', { data: header1.queryResult })
+  mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+    data: { network: { hierarchyNode: networkHierarchy } }
+  })
+  mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+    data: { network: { hierarchyNode: { incidents: [] } } }
+  })
+  render(
+    <Provider>
+      <BrowserRouter>
+        <AnalyticsWidgets
+          name='healthPageWidget'
+          filters={filters} />
+      </BrowserRouter>
+    </Provider>)
+  await screen.findByText('Kpi Section')
 })

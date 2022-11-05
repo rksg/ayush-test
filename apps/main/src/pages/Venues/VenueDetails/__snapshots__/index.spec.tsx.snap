@@ -471,7 +471,10 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
           role="tabpanel"
           tabindex="0"
         >
-          Incident Venue Table
+          <div
+            data-testid="analytics-incidentsPageWidget"
+            title="incidentsPageWidget"
+          />
         </div>
         <div
           aria-hidden="true"
