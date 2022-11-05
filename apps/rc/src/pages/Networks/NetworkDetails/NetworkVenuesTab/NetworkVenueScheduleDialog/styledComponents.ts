@@ -26,6 +26,9 @@ export const CheckboxGroup = styled(Checkbox.Group)`
   .ant-checkbox-wrapper:nth-child(even) {
 	  border-right: 1px solid var(--acx-neutrals-50)
   }
+  .ant-checkbox-wrapper-checked:nth-child(even) {
+	  border-right: 1px solid var(--acx-neutrals-60)
+  }
   .ant-checkbox-wrapper:nth-child(4n) {
 	  border-right: 1px solid var(--acx-neutrals-60)
   }
@@ -36,7 +39,7 @@ export const CheckboxGroup = styled(Checkbox.Group)`
     position: relative;
     font-size: 10px;
     width: ${channelWidth};
-    height: 46px;
+    height: 32px;
     background: var(--acx-neutrals-30);
     .channels > span + span {
       padding-left: 6px;
@@ -56,32 +59,50 @@ export const CheckboxGroup = styled(Checkbox.Group)`
         user-select: none;
       }
     }
+
+    &.ant-checkbox-wrapper-disabled:hover {
+		  background: var(--acx-neutrals-40);
+    }
+
     &:hover {
-		background: var(--acx-accents-blue-60);
+		  background: var(--acx-accents-blue-60);
     }
 
-    &.ant-checkbox-wrapper-disabled:not(.ant-checkbox-wrapper-checked) {
-	  background:  var(--acx-neutrals-30);
-      &:before {
-        content: '';
-        display: inline-block;
-        position: absolute;
-        border-bottom: 14px solid var(--acx-primary-white);
-        width: calc(100% + 6px);
-        left: -3px;
-        top: 1px;
-      }
-    }
-
-    &.ant-checkbox-wrapper-checked {
-		background:  var(--acx-accents-blue-50);
-	  border-right: 1px solid var(--acx-neutrals-60)
+    &.ant-checkbox-wrapper-checked:not(.ant-checkbox-wrapper-disabled) {
+		  background:  var(--acx-accents-blue-50);
       &:hover {
         background:  var(--acx-accents-blue-60);
       }
     }
+
+    &.ant-checkbox-wrapper-disabled {
+	    background:  var(--acx-neutrals-20);
+      &:before {
+        background:  var(--acx-neutrals-20);
+      }
+    }
   }
 }
+`
+
+export const Timetick = styled.div`
+  width: 40px;
+  height: 15px;
+  float: left;
+  font-size: 9px;
+  &:first-child {
+	  width: 45px;
+  }
+`
+
+export const Timetickborder = styled.div`
+  width: 20px;
+  height: 5px;
+  float: left;
+  border-left: 1px solid var(--acx-neutrals-60);
+  &:first-child {
+	  width: 19px;
+  }
 `
 
 export const Section = styled.section`
