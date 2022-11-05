@@ -41,9 +41,12 @@ export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageF
       <Form.Item name='name'
         label={$t({ defaultMessage: 'Floor Plan Name' })}
         rules={[
-          { type: 'string', required: true, message: 'This field is required' },
-          { min: 2, message: 'This field should be at least 2 characters' },
-          { max: 32, message: 'Name is too long. Maximal length is 32 characters' }
+          { type: 'string', required: true,
+            message: $t({ defaultMessage: 'This field is required' }) },
+          { min: 2,
+            message: $t({ defaultMessage: 'This field should be at least 2 characters' }) },
+          { max: 32,
+            message: $t({ defaultMessage: 'Name is too long. Maximal length is 32 characters' }) }
         ]}>
         <Input />
       </Form.Item>
@@ -54,7 +57,7 @@ export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageF
           label={$t({ defaultMessage: 'Floor Number' })}
           initialValue={0}
           rules={[
-            { required: true, message: 'This field is required' },
+            { required: true, message: $t({ defaultMessage: 'This field is required' }) },
             { type: 'number', min: -32768, max: 32767 }
           ]}
         >
@@ -81,7 +84,7 @@ export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageF
       <Form.Item name='imageName'
         label={$t({ defaultMessage: 'Floor Plan Image' })}
         rules={[
-          { required: true, message: 'This field is required' }
+          { required: true, message: $t({ defaultMessage: 'This field is required' }) }
         ]}
       >
         <FloorplanUpload
