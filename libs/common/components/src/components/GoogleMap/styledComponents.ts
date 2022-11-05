@@ -1,6 +1,14 @@
 import { Form } from 'antd'
 import styled   from 'styled-components/macro'
 
+export const MapContainer = styled.div`
+  position: relative;
+  aspect-ratio: 470 / 260;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+`
+
 export const FormItem = styled(Form.Item)`
   .ant-form-item-control-input-content > *:first-child {
     position: absolute;
@@ -16,6 +24,9 @@ export const FormItem = styled(Form.Item)`
     left: 12px;
     top: 48px;
     background-color: rgba(255, 255, 255, 0.9);
+    > div {
+      padding: 0
+    }
   }
 
   .ant-form-item-extra {
@@ -27,10 +38,5 @@ export const FormItem = styled(Form.Item)`
   h3 {
     text-align: center;
     margin-top: 100px;
-  }
-
-  .map-container {
-    position: relative;
-    aspect-ratio: 470 / 260;    
   }
 `

@@ -55,10 +55,7 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
 
   return (
     <>
-      <div ref={ref}
-        className='map-container'
-        style={{ height: '100%', width: '100%', margin: '0' }}
-      />
+      <UI.MapContainer ref={ref} />
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           // set the map prop on the child component
