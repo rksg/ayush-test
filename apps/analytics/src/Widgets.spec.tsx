@@ -89,10 +89,10 @@ const switchTrafficByVolumeSample = {
   switchTotalTraffic_rx: [11, 12, 13, 14, 15]
 }
 
-jest.mock('./pages/health/ConnectedClientsOverTime', () => () => <div>Summary TimeSeries</div>)
-jest.mock('./pages/health/Kpi', () => () => <div>Kpi Section</div>)
+jest.mock('./pages/Health/ConnectedClientsOverTime', () => () => <div>Summary TimeSeries</div>)
+jest.mock('./pages/Health/Kpi', () => () => <div>Kpi Section</div>)
 
-jest.mock('./pages/health/SummaryBoxes', () => ({
+jest.mock('./pages/Health/SummaryBoxes', () => ({
   SummaryBoxes: () => <div data-testid='Summary Boxes' />
 }))
 test('should render Traffic by Volume widget', async () => {
