@@ -6,7 +6,6 @@ import { useAnalyticsFilter, AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Tabs }                                from '@acx-ui/components'
 import { useVenueDetailsHeaderQuery }          from '@acx-ui/rc/services'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import {  Path }                               from '@acx-ui/react-router-dom'
 import { defaultNetworkPath, notAvailableMsg } from '@acx-ui/utils'
 
 export function VenueAnalyticsTab () {
