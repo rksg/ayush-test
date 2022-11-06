@@ -69,7 +69,7 @@ export function VenueAnalyticsTab () {
           name='healthPageWidget'
           filters={{
             ...healthFilter,
-            urlBasePath: `venues/${venueId}/venue-details/analytics/health` as unknown as Path
+            urlBasePath: `venues/${venueId}/venue-details/analytics/health`
           }}
         />
       </Tabs.TabPane>

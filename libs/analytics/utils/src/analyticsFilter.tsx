@@ -4,7 +4,7 @@ import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { useLocation, Path }                                                                from '@acx-ui/react-router-dom'
+import { useLocation, Pathname }                                                            from '@acx-ui/react-router-dom'
 import { getDateRangeFilter, DateFilter, pathFilter, NetworkPath, NodeType, useDateFilter } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
@@ -12,7 +12,7 @@ export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Networ
 export type AnalyticsFilter = DateFilter & {
   path: NetworkPath;
   filter?: pathFilter;
-  urlBasePath?: Path;
+  urlBasePath?: Pathname;
   urlTabParam?: string
 }
 

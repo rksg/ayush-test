@@ -324,7 +324,7 @@ test('should render health page widget', async () => {
       <BrowserRouter>
         <AnalyticsWidgets
           name='healthPageWidget'
-          filters={filters} />
+          filters={{ ...filters, urlTabParam: 'urlTabParam', urlBasePath: 'urlBasePath' }} />
       </BrowserRouter>
     </Provider>)
   await screen.findByText('Kpi Section')
