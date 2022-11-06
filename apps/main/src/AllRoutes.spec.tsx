@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useSplitTreatment }       from '@acx-ui/feature-toggle'
+import { useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                from '@acx-ui/store'
 import { render, screen, cleanup } from '@acx-ui/test-utils'
@@ -80,7 +80,7 @@ describe('AllRoutes', () => {
   })
 
   test('should navigate to services/* if the feature flag is on', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -93,7 +93,7 @@ describe('AllRoutes', () => {
   })
 
   test('should not navigate to services/* if the feature flag is off', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {

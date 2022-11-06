@@ -1,6 +1,6 @@
-import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI

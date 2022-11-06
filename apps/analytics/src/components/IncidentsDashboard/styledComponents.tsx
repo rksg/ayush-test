@@ -34,7 +34,7 @@ export const SeverityContainer = styled(GridCol).attrs({ col: { span: 12 } })`
   flex-direction: row;
   justify-content: center;
 `
-export const SeveritiesContainer = styled(GridRow).attrs({ gutter: [20, 10] })`
+export const SeveritiesContainer = styled(GridRow).attrs({ gutter: [10, 10] })`
   margin: 0;
 `
 export const Container = styled.div`

@@ -62,10 +62,10 @@ const listPayload = {
 export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData
 }) {
-  const { data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(() => {
-    if (data) {
+    if ((editMode || cloneMode) && data) {
       form.setFieldsValue({
         wlan: {
           ...data.wlan,
@@ -87,10 +87,10 @@ export function NetworkMoreSettingsForm (props: {
           'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate')
       })
     }
-  }, [data])
+  }, [data, editMode, cloneMode])
   const { $t } = useIntl()
   const [enableMoreSettings, setEnabled] = useState(false)
-  if (data) {
+  if (data && editMode) {
     return <MoreSettingsForm wlanData={props.wlanData} />
   } else {
     return <div>

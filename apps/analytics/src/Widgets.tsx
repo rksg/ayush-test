@@ -4,7 +4,7 @@ import { Provider }        from '@acx-ui/store'
 
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import HealthWidget                   from './components/HealthWidget'
-import VenueIncidentsWidget           from './components/IncidentBySeverity/DonutChart'
+import VenueIncidentsWidget           from './components/IncidentBySeverity/VenueIncidentsDonut'
 import IncidentsDashboardWidget       from './components/IncidentsDashboard'
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesTrafficByVolumeWidget  from './components/SwitchesTrafficByVolume'

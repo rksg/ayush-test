@@ -6,12 +6,11 @@ import {
   Form,
   InputNumber,
   Row,
-  Select,
-  Tooltip
+  Select
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Subtitle }                                      from '@acx-ui/components'
+import { StepsForm, Subtitle, Tooltip }                             from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
 import { WlanSecurityEnum, PassphraseFormatEnum, DpskNetworkType,
   transformDpskNetwork, PassphraseExpirationEnum, NetworkSaveData }      from '@acx-ui/rc/utils'
@@ -45,7 +44,7 @@ export function DpskSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />

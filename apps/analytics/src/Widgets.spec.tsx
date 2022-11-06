@@ -100,7 +100,8 @@ test('should render Traffic by Volume widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
     data: { network: { hierarchyNode: { timeSeries: sample } } }
   })
-  render( <Provider> <AnalyticsWidgets name='trafficByVolume' filters={filters}/></Provider>)
+  render(<Provider><AnalyticsWidgets name='trafficByVolume' filters={filters}/></Provider>,
+    { route: true })
   expect(await screen.findByText('Traffic by Volume')).not.toBe(null)
 })
 
@@ -108,7 +109,8 @@ test('should render Network History widget', async () => {
   mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
     data: { network: { hierarchyNode: { timeSeries: networkHistorySample } } }
   })
-  render( <Provider> <AnalyticsWidgets name='networkHistory' filters={filters}/></Provider>)
+  render(<Provider><AnalyticsWidgets name='networkHistory' filters={filters}/></Provider>,
+    { route: true })
   expect(await screen.findByText('Network History')).not.toBe(null)
 })
 
@@ -134,7 +136,7 @@ test('should render Connected Clients Over Time widget', async () => {
   render(
     <Provider>
       <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
-    </Provider>)
+    </Provider>, { route: true })
   expect(await screen.findByText('Connected Clients Over Time')).not.toBe(null)
 })
 
@@ -156,7 +158,7 @@ test('should render Top 5 Switch Models widget', async () => {
   render(
     <Provider>
       <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
-    </Provider>
+    </Provider>, { route: true }
   )
   expect(await screen.findByText('Top 5 Switch Models')).not.toBe(null)
 })
@@ -168,7 +170,7 @@ test('should render Switches Traffic by Volume widget', async () => {
   render(
     <Provider>
       <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
-    </Provider>)
+    </Provider>, { route: true })
   expect(await screen.findByText('Traffic by Volume')).not.toBe(null)
 })
 
@@ -186,9 +188,11 @@ test('should render Traffic by Application Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
     data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
   })
-  render( <Provider> <AnalyticsWidgets
-    name='topApplicationsByTraffic'
-    filters={filters} /></Provider>)
+  render(<Provider>
+    <AnalyticsWidgets
+      name='topApplicationsByTraffic'
+      filters={filters} />
+  </Provider>, { route: true })
   await screen.findByText('Top 5 Applications by Traffic')
 })
 
@@ -196,9 +200,11 @@ test('should render Traffic by SSID Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
     data: { network: { hierarchyNode: topSSIDsByTrafficFixture } }
   })
-  render( <Provider> <AnalyticsWidgets
-    name='topSSIDsByTraffic'
-    filters={filters} /></Provider>)
+  render(<Provider>
+    <AnalyticsWidgets
+      name='topSSIDsByTraffic'
+      filters={filters} />
+  </Provider>, { route: true })
   await screen.findByText('Top 5 SSIDs by Traffic')
 })
 
@@ -206,9 +212,11 @@ test('should render Clients by SSID Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TopSSIDsByClientWidget', {
     data: { network: { hierarchyNode: topSSIDsByClientFixture } }
   })
-  render( <Provider> <AnalyticsWidgets
-    name='topSSIDsByClient'
-    filters={filters} /></Provider>)
+  render(<Provider>
+    <AnalyticsWidgets
+      name='topSSIDsByClient'
+      filters={filters} />
+  </Provider>, { route: true })
   await screen.findByText('Top 5 SSIDs by Clients')
 })
 
@@ -216,10 +224,11 @@ test('should render Incidents Dashboard Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
     data: { network: { hierarchyNode: expectedIncidentDashboardData } }
   })
-  render( <Provider> <AnalyticsWidgets
-    name='incidents'
-    filters={filters}
-  /></Provider>)
+  render(<Provider>
+    <AnalyticsWidgets
+      name='incidents'
+      filters={filters}
+    /></Provider>, { route: true })
 
   await screen.findByText('Incidents')
 })
@@ -235,10 +244,11 @@ test('should render Venue health Widget', async () => {
       }
     }
   })
-  render( <Provider> <AnalyticsWidgets
-    name='venueHealth'
-    filters={filters}
-  /></Provider>)
+  render(<Provider>
+    <AnalyticsWidgets
+      name='venueHealth'
+      filters={filters}
+    /></Provider>, { route: true })
 
   await screen.findByText('Client Experience')
 })
@@ -260,9 +270,11 @@ test('should render Venue Overview Incidents Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
     data: { network: { hierarchyNode: sample } }
   })
-  render( <Provider> <AnalyticsWidgets
-    name='venueIncidentsDonut'
-    filters={filters} /></Provider>)
+  render(<Provider>
+    <AnalyticsWidgets
+      name='venueIncidentsDonut'
+      filters={filters} />
+  </Provider>, { route: true })
   await screen.findByText('Incidents')
 })
 test('should render incidents page widget', async () => {
