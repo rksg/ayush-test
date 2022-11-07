@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { ClockCircleOutlined }    from '@ant-design/icons'
-import { Form, Switch, Tooltip }  from 'antd'
+import { Form, Switch }           from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -11,9 +11,10 @@ import {
   Loader,
   showActionModal,
   Table,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
-import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
@@ -106,7 +107,7 @@ export function NetworkVenuesTab () {
   const params = useParams()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 
-import { Checkbox, Tooltip }                        from 'antd'
+import { Checkbox }                                 from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
@@ -11,9 +11,9 @@ import {
   shortDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Drawer } from '@acx-ui/components'
-import { useTenantLink, Link }        from '@acx-ui/react-router-dom'
-import { formatter }                  from '@acx-ui/utils'
+import { Loader, TableProps, Drawer, Tooltip } from '@acx-ui/components'
+import { useTenantLink, Link }                 from '@acx-ui/react-router-dom'
+import { formatter }                           from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,

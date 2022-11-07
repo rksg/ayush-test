@@ -6,12 +6,11 @@ import {
   Form,
   InputNumber,
   Select,
-  Switch,
-  Tooltip
+  Switch
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button }                            from '@acx-ui/components'
+import { Button, Tooltip }                   from '@acx-ui/components'
 import { DnsProxyRule, DnsProxyContextType } from '@acx-ui/rc/utils'
 import { notAvailableMsg }                   from '@acx-ui/utils'
 

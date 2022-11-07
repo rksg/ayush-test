@@ -38,7 +38,7 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
       <Route path='devices/aps' element={<ApsTable />} />
       <Route
-        path='devices/aps/:apId/details/:activeTab'
+        path='devices/aps/:serialNumber/details/:activeTab'
         element={<ApDetails />}
       />
       <Route path='devices/switches' element={<SwitchesTable />} />

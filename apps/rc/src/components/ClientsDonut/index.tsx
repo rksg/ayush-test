@@ -87,13 +87,13 @@ function ClientsDonutWidget () {
                 title={$t({ defaultMessage: 'Wi-Fi' })}
                 showLegend={false}
                 data={queryResults.data.apData}
-                onClick={() => onClick('TBD')}/>
+                onClick={() => onClick('TODO')}/>
               <DonutChart
                 style={{ width: width/2, height }}
                 title={$t({ defaultMessage: 'Switch' })}
                 showLegend={false}
                 data={queryResults.data.switchData}
-                onClick={() => onClick('TBD')}/>
+                onClick={() => onClick('TODO')}/>
             </div>
           )}
         </AutoSizer>

@@ -75,7 +75,7 @@ describe('RcRoutes: Devices', () => {
   test('should navigate to devices ap-details', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/aps/apId/details/some-tab',
+        path: '/t/tenantId/devices/aps/serialNumber/details/some-tab',
         wrapRoutes: false
       }
     })

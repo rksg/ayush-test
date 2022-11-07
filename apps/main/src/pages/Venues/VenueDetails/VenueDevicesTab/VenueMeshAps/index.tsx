@@ -1,8 +1,8 @@
-import { List, Tooltip } from 'antd'
-import { useIntl }       from 'react-intl'
+import { List }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Button, Table, TableProps, Loader } from '@acx-ui/components'
-import { useMeshApsQuery }                   from '@acx-ui/rc/services'
+import { Button, Table, TableProps, Loader, Tooltip } from '@acx-ui/components'
+import { useMeshApsQuery }                            from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,

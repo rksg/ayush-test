@@ -1,5 +1,6 @@
-import { List, Space, Tooltip as AntTooltip } from 'antd'
+import { List, Space } from 'antd'
 
+import { Tooltip }                                 from '@acx-ui/components'
 import { Alarm, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
 import { formatter }                               from '@acx-ui/utils'
 
@@ -25,11 +26,11 @@ export function AlarmList ({ data, width, height, onNavigate }: AlarmListProps) 
             { alarm.severity === EventSeverityEnum.CRITICAL
               ? <UI.CriticalAlarmIcon />
               : <UI.MajorAlarmIcon /> }
-            <AntTooltip title={alarm.message} placement='right'>
+            <Tooltip title={alarm.message}>
               <UI.MesssageWrapper style={{ width: width - 10 }}>
                 {alarm.message}
               </UI.MesssageWrapper>
-            </AntTooltip>
+            </Tooltip>
           </Space>
           <UI.SubTextContainer>
             {

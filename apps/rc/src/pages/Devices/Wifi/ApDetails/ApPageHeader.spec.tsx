@@ -25,7 +25,7 @@ describe('ApPageHeader', () => {
         (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
-    const params = { tenantId: 't1', apId: 'v1' }
+    const params = { tenantId: 't1', serialNumber: 'v1' }
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
