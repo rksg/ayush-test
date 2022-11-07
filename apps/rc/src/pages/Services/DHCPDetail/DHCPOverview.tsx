@@ -8,11 +8,8 @@ export default function DHCPOverView (props: { poolNumber:number | undefined }) 
   const { $t } = useIntl()
 
   return (
-    <Card>
+    <Card title={$t({ defaultMessage: 'Number of Pools' })}>
       <div>
-        <Typography.Title level={3}>
-          {$t({ defaultMessage: 'Number of Pools' })}
-        </Typography.Title>
         <Typography.Text>{props.poolNumber}</Typography.Text>
       </div>
     </Card>

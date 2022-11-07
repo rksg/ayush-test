@@ -50,13 +50,13 @@ export default function DHCPInstancesTable (
     },
     {
       key: 'osa',
-      title: $t({ defaultMessage: '# of successful allocations' }),
+      title: $t({ defaultMessage: '# of Successful Allocations' }),
       width: 200,
       dataIndex: 'successfulAllocations'
     },
     {
       key: 'ousa',
-      title: $t({ defaultMessage: '# of un-successful allocations' }),
+      title: $t({ defaultMessage: '# of Un-successful Allocations' }),
       width: 220,
       dataIndex: 'unsuccessfulAllocations'
     },
@@ -81,11 +81,9 @@ export default function DHCPInstancesTable (
   ]
 
   return (
-    <Card>
+    <Card
+      title={$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}>
       <div style={{ width: '100%' }}>
-        <Typography.Title level={3}>
-          {$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}
-        </Typography.Title>
         <div >
           <Table
             columns={columns}

@@ -1,8 +1,7 @@
-import { Row }       from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button }                                       from '@acx-ui/components'
+import { PageHeader, DisabledButton, GridRow, GridCol }             from '@acx-ui/components'
 import { ClockOutlined }                                            from '@acx-ui/icons'
 import { useDhcpVenueInstancesQuery, useGetDHCPProfileDetailQuery } from '@acx-ui/rc/services'
 import { useTableQuery }                                            from '@acx-ui/rc/utils'
@@ -34,30 +33,33 @@ export default function DHCPServiceDetail () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'DHCP Service' })+' '+data?.name}
+        title={data?.name}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
         extra={[
-          <Button size='large' key={'last24'} icon={<ClockOutlined />}>
+          <DisabledButton key={'last24'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
-          </Button>,
-          <Button size='large'key={'configure'} type={'primary'}>
+          </DisabledButton>,
+          <DisabledButton key={'configure'} type={'primary'}>
             {$t({ defaultMessage: 'Configure' })}
-          </Button>
+          </DisabledButton>
         ]}
       />
-      <Row>
-        <DHCPOverview poolNumber={data?.dhcpPools.length} />
-      </Row>
-
-      <Row style={{ marginTop: 25 }}>
-        <DHCPInstancesTable
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-        />
-      </Row>
+      <GridRow>
+        <GridCol col={{ span: 24 }}>
+          <DHCPOverview poolNumber={data?.dhcpPools.length} />
+        </GridCol>
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 24 }} style={{ marginTop: 25 }}>
+          <DHCPInstancesTable
+            dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+          />
+        </GridCol>
+      </GridRow>
     </>
   )
 }

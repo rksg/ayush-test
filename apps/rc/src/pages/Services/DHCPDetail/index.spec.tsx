@@ -122,8 +122,10 @@ describe('DHCP Detail Page', () => {
         route: { params, path: '/:tenantId/services/dhcp/:serviceId/detail' }
       })
 
-    await screen.findByRole('heading', { level: 3, name: `Instances (${list.data.length})` })
-    await screen.findByRole('heading', { level: 3, name: 'Number of Pools' })
+
+    expect(await screen.findByText((`Instances (${list.data.length})`))).toBeInTheDocument()
+    expect(await screen.findByText(('Number of Pools'))).toBeInTheDocument()
+
     expect(asFragment()).toMatchSnapshot()
   })
 

@@ -41,5 +41,4 @@ export * from './theme/helper'
 export * from './components/Modal'
 export * from './components/Drawer'
 export * from './components/SearchBar'
-export * from './components/ProgressBar'
 
