@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import _                             from 'lodash'
 
 import {
   ApExtraParams,
@@ -9,8 +10,10 @@ import {
   createHttpRequest,
   RequestPayload,
   TableResult,
-  ApDetailHeader
+  ApDetailHeader,
+  RadioProperties
 } from '@acx-ui/rc/utils'
+import { getShortDurationFormat, getUserDateFormat } from '@acx-ui/utils'
 
 export const baseApApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -42,6 +45,18 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
+    }),
+    apDetails: build.query<ApDetailHeader, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getAps, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: ApDetailHeader) {
+        return transformApDetails(result)
+      }
     })
   })
 })
@@ -49,11 +64,12 @@ export const apApi = baseApApi.injectEndpoints({
 export const {
   useApListQuery,
   useLazyApListQuery,
-  useApDetailHeaderQuery
+  useApDetailHeaderQuery,
+  useApDetailsQuery
 } = apApi
 
 
-const transformApList = function (result: TableResult<AP, ApExtraParams>) {
+const transformApList = (result: TableResult<AP, ApExtraParams>) => {
   let channelColumnStatus = {
     channel24: true,
     channel50: false,
@@ -103,4 +119,47 @@ const transformApList = function (result: TableResult<AP, ApExtraParams>) {
 
   return result
 
+}
+
+const transformApDetails = (result: any) => {
+  const ap = result?.data[0]
+  ap.lastSeenTime = ap.lastSeenTime ? getUserDateFormat(ap.lastSeenTime, undefined, true) : '--'
+  // get uptime field.
+  if (ap.apStatusData && ap.apStatusData.APSystem && ap.apStatusData.APSystem.uptime) {
+    ap.uptime = getShortDurationFormat(ap.apStatusData.APSystem.uptime * 1000)
+  } else {
+    ap.uptime = '--'
+  }
+
+  // set Radio Properties fields.
+  if (ap.apStatusData && ap.apStatusData.APRadio) {
+    const apRadio24 = _.find(ap.apStatusData.APRadio,
+      r => r.band === ApRadioBands.band24)
+    const apRadioU50 = _.find(ap.apStatusData.APRadio,
+      r => r.band === ApRadioBands.band50 && r.radioId === 2)
+    const apRadio50 = !apRadioU50 &&_.find(ap.apStatusData.APRadio,
+      r => r.band === ApRadioBands.band50 && r.radioId === 1)
+    const apRadio60 = !apRadioU50 && _.find(ap.apStatusData.APRadio,
+      r => r.radioId === 2)
+    const apRadioL50 = apRadioU50 && _.find(ap.apStatusData.APRadio,
+      r => r.band === ApRadioBands.band50 && r.radioId === 1)
+
+    ap.channel24 = apRadio24 as RadioProperties
+    ap.channel50 = apRadio50 as RadioProperties
+    ap.channelL50 = apRadioL50 as RadioProperties
+    ap.channelU50 = apRadioU50 as RadioProperties
+    ap.channel60 = apRadio60 as RadioProperties
+  } else {
+    ap.channel24 = {
+      Rssi: '--',
+      channel: '--',
+      txPower: '--'
+    } as RadioProperties
+    ap.channel50 = {
+      Rssi: '--',
+      channel: '--',
+      txPower: '--'
+    } as RadioProperties
+  }
+  return ap
 }

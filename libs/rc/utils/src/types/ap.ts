@@ -131,3 +131,10 @@ export interface ApModel {
 	supportDual5gMode: boolean,
 	supportTriRadio: boolean
 }
+
+export interface RadioProperties {
+  Rssi: string;
+  txPower: string;
+  channel: string;
+  band?: string;
+}

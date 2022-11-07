@@ -104,7 +104,7 @@ export function useMenuConfig () {
           path: '/devices/switches',
           name: $t({ defaultMessage: 'Switch' })
         }
-      ],
+      ]
       // disabled: true
     },
     {

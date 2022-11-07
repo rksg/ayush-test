@@ -85,3 +85,47 @@ export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
     defaultMessage: 'Custom'
   })
 }
+
+export const getUserDateFormat = (
+  // userProfile: UserProfile,  TODO:
+  dateStr: string,
+  recivedDateFormat = 'YYYY-MM-DD HH:mm:ss',
+  localTime = false) => {
+  const dateFormat = 'mm/dd/yyyy' //userProfile.dateFormat;
+
+  let date: moment.Moment
+  if (localTime) {
+    date = moment.utc(dateStr).local()
+  } else {
+    date = moment(dateStr, recivedDateFormat)
+  }
+  return date.format(dateFormat.toUpperCase() + ' HH:mm:ss')
+}
+
+export const getShortDurationFormat = (value: number | string) => {
+  const d = moment.duration(value)
+
+  const duration: { [index: string]: number } = {
+    years: d.years(),
+    months: d.months(),
+    days: d.days(),
+    hours: d.hours(),
+    minutes: d.minutes()
+  }
+
+  const result: Array<String> = []
+  for (const unit of Object.keys(duration)) {
+    if (duration[unit]) {
+      result.push(duration[unit] + ' ' + (duration[unit] > 1 ? unit : unit.substr(0, unit.length - 1)))
+    }
+    if (result.length > 1) {
+      break
+    }
+  }
+
+  if (result.length < 1) {
+    result.push('1 minute')
+  }
+
+  return result.join(', ')
+}
