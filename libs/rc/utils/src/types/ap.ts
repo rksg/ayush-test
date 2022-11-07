@@ -1,5 +1,6 @@
 import { APMeshRole } from '../constants'
 import { ApDeep }     from '../models/ApDeep'
+import { DhcpApInfo } from '../models/DhcpApInfo'
 
 export interface APRadio {
   channel?: number,
@@ -138,4 +139,9 @@ export interface ApModel {
 	supportChannel144: boolean,
 	supportDual5gMode: boolean,
 	supportTriRadio: boolean
+}
+
+export interface DhcpAp {
+  requestId: string,
+  response?: DhcpApInfo[]
 }

@@ -98,6 +98,15 @@ export const validationMessages = {
   gpsCoordinates: defineMessage({
     defaultMessage: 'Please enter valid GPS coordinates',
     description: 'Validation - GPS coordinates checks'
+  }),
+  diffVenueCountry: defineMessage({
+    defaultMessage: 'Cannot move AP to another venue in different country',
+    description: 'Validation - Venue Country checks'
+  }),
+  cellularApDhcpLimitation: defineMessage({
+    defaultMessage: `The cellular AP cannot 
+      be moved to the venue which doesn\'t enable DHCP service`,
+    description: 'Validation - Cellular AP Dhcp checks'
   })
 }
 

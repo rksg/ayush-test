@@ -10,6 +10,7 @@ import {
   ApRadioBands,
   CommonUrlsInfo,
   createHttpRequest,
+  DhcpAp,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
@@ -80,6 +81,16 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    updateAp: build.mutation<AP, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
     deleteAp: build.mutation<AP, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.deleteAps, params)
@@ -98,7 +109,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    getDhcpAp: build.query<CommonResult, RequestPayload>({
+    getDhcpAp: build.query<DhcpAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
         return{
@@ -149,6 +160,7 @@ export const {
   useApDetailHeaderQuery,
   useAddApMutation,
   useGetApQuery,
+  useUpdateApMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
   useWifiCapabilitiesQuery,

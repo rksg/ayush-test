@@ -40,8 +40,11 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
       <Route path='devices/aps' element={<ApsTable />} />
       <Route path='devices/aps/:action' element={<ApForm />} />
-      <Route path='devices/aps/:serialNumber/edit/:activeTab' element={<ApEdit />} />
-      <Route path='devices/aps/:serialNumber/edit/:activeTab/:activeSubTab' element={<ApEdit />} />
+      <Route path='devices/aps/:serialNumber/:action/:activeTab' element={<ApEdit />} />
+      <Route
+        path='devices/aps/:serialNumber/:action/:activeTab/:activeSubTab'
+        element={<ApEdit />}
+      />
       <Route
         path='devices/aps/:serialNumber/details/:activeTab'
         element={<ApDetails />}

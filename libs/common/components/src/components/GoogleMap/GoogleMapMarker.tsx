@@ -13,8 +13,11 @@ export const GoogleMapMarker: React.FC<MarkerProps> = (options) => {
     return () => { current.setMap(null) }
   }, [options])
 
-  if (options?.draggable && options?.onDragEnd) {
-    marker.current.addListener('dragend', options?.onDragEnd)
-  }
+  useEffect(() => {
+    if (options?.draggable && options?.onDragEnd) {
+      marker.current.addListener('dragend', options?.onDragEnd)
+    }
+  }, [])
+
   return null
 }

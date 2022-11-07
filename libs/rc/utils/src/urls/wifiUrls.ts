@@ -97,6 +97,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber'
   },
+  updateAp: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber'
+  },
   getDhcpAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/dhcp-ap'

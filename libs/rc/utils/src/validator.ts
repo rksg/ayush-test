@@ -230,9 +230,10 @@ export function checkVlanMember (value: string) {
   return Promise.reject($t(validationMessages.invalid))
 }
 
-export function checkValuesNotEqual (value: string, checkValue: string) {
+export function checkValuesNotEqual (value: string, checkValue: string, checkEqual?: boolean) {
   const { $t } = getIntl()
-  if (value && isEqual(value, checkValue)) {
+  const valid = checkEqual ? isEqual(value, checkValue) : !isEqual(value, checkValue)
+  if (value && !valid) {
     return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()

@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Space, Tooltip, Typography } from 'antd'
 import { DefaultOptionType }                                         from 'antd/lib/select'
-import { omit, isEqual }                                             from 'lodash'
+import { isEqual, omit, omitBy, pick }                               from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
 import {
@@ -17,26 +17,32 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                   from '@acx-ui/icons'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   useApListQuery,
   useAddApMutation,
   useGetApQuery,
   useLazyApGroupListQuery,
-  useVenuesListQuery
-  // TODO: edit ap
-  // useWifiCapabilitiesQuery
+  useLazyGetDhcpApQuery,
+  useUpdateApMutation,
+  useVenuesListQuery,
+  useWifiCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
+  ApDhcpRoleEnum,
+  APMeshRole,
   apNameRegExp,
   checkObjectNotExists,
   checkValuesNotEqual,
   DeviceGps,
+  DhcpApInfo,
+  DhcpModeEnum,
   gpsRegExp,
   hasGraveAccentAndDollarSign,
   serialNumberRegExp,
+  // Venue,
   VenueExtended,
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
@@ -46,6 +52,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
+
+import { ApEditContext } from '../ApEdit/index'
 
 import * as UI from './styledComponents'
 
@@ -69,56 +77,128 @@ export function ApForm () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
 
-  const apList = useApListQuery({ params: { tenantId: tenantId }, payload: defaultApPayload })
-  const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
+  const {
+    editContextData,
+    setEditContextData
+  } = useContext(ApEditContext)
+
+  const apList = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
+  const { data: venuesList, isLoading: isVenuesListLoading }
+    = useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
   const [apGroupList] = useLazyApGroupListQuery()
   const apDetails = useGetApQuery({ params: {
     tenantId, serialNumber: serialNumber ? serialNumber : '' } })
 
-  const [selectedVenue, setSelectedVenue] = useState({} as VenueExtended)
+  const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
   const [gpsModalVisible, setGpsModalVisible] = useState(false)
   const [deviceGps, setDeviceGps] = useState(null as unknown as DeviceGps)
 
   const [addAp] = useAddApMutation()
+  const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
 
-  // TODO: edit ap
-  // const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId: tenantId } })
-  // const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
-  // const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(true)
-  // const [cellularApModels, setCellularApModels] = useState([] as string[])
+  const [getDhcpAp] = useLazyGetDhcpApQuery()
+  const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
+  const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
+  const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(true)
+  const [cellularApModels, setCellularApModels] = useState([] as string[])
 
-  // useEffect(() => {
-  //   if (!wifiCapabilities.isLoading) {
-  //     setCellularApModels(wifiCapabilities?.data?.apModels
-  //       ?.filter(apModel => apModel.canSupportCellular)
-  //       .map(apModel => apModel.model) ?? [])
-  //   }
-  // }, [wifiCapabilities])
+  useEffect(() => {
+    if (!wifiCapabilities.isLoading) {
+      setCellularApModels(wifiCapabilities?.data?.apModels
+        ?.filter(apModel => apModel.canSupportCellular)
+        .map(apModel => apModel.model) ?? [])
+    }
+  }, [wifiCapabilities])
 
   useEffect(() => {
     if (!apDetails.isLoading && apDetails?.data) {
-      formRef?.current?.setFieldsValue(apDetails?.data)
+      const setData = async (apDetails: ApDeep) => {
+        const selected = getVenueById(
+          venuesList?.data as unknown as VenueExtended[], apDetails.venueId)
+        const options = await getApGroupOptions(apDetails.venueId)
+        const dhcpAp = (await getDhcpAp({
+          params: { tenantId }, payload: [serialNumber] }, true).unwrap())?.response?.[0]
+        setSelectedVenue(selected as unknown as VenueExtended)
+        setApGroupOption(options as DefaultOptionType[])
+        setApMeshRoleDisabled(
+          apDetails?.meshRole !== '' && apDetails?.meshRole !== APMeshRole.DISABLED)
+        setDhcpRoleDisabled(checkDhcpRoleDisabled(dhcpAp as DhcpApInfo))
+        setDeviceGps((apDetails?.deviceGps ?? null) as unknown as DeviceGps)
+        formRef?.current?.setFieldsValue(apDetails)
+      }
+
+      setData(apDetails.data)
     }
   }, [apDetails])
 
   useEffect(() => {
-    if (!venuesList.isLoading) {
-      setVenueOption(venuesList?.data?.data?.map(item => ({
+    if (!isVenuesListLoading) {
+      setVenueOption(venuesList?.data?.map(item => ({
         label: item.name, value: item.id
       })) ?? [])
     }
   }, [venuesList])
 
-  const handleAddAp = async (values: ApDeep) => {
-    try {
-      const payload = [{
-        ...omit(values, 'deviceGps'),
-        ...(deviceGps && { deviceGps: deviceGps })
+  // const handleAddAp = async (values: ApDeep) => {
+  //   try {
+  //     const payload = [{
+  //       ...omit(values, 'deviceGps'),
+  //       ...(deviceGps && { deviceGps: deviceGps })
+  //     }]
+  //     await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
+  //     navigate(`${basePath.pathname}/aps`, { replace: true })
+  //   } catch {
+  //     showToast({
+  //       type: 'error',
+  //       content: $t({ defaultMessage: 'An error occurred' })
+  //     })
+  //   }
+  // }
+
+  const getApGroupOptions = async (venueId: string) => {
+    const groupList = venueId
+      ? (await apGroupList({ params: { tenantId, venueId } }, true)).data
+      : []
+
+    return venueId && groupList?.length
+      ? groupList?.map((item) => ({
+        label: !item.isDefault
+          ? item.name
+          : $t({ defaultMessage: 'No group (inherit from Venue)' }),
+        value: item.isDefault && action === 'add' ? null : item.id
+      })) : [{
+        label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
+        value: null
       }]
-      await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
-      navigate(`${basePath.pathname}/aps`, { replace: true })
+  }
+
+  const handleFinish = async (values: ApDeep) => {
+    try {
+      if (action === 'add') {
+        const payload = {
+          ...omit(values, 'deviceGps'),
+          ...(deviceGps && { deviceGps: deviceGps })
+        }
+        await addAp({ params: { tenantId }, payload: [payload] }).unwrap()
+        navigate(`${basePath.pathname}/aps`, { replace: true })
+      } else {
+        const latlng = (values?.deviceGps as string)?.split(',').map((v: string) => v.trim())
+        const payload = {
+          ...values,
+          deviceGps: {
+            latitude: latlng[0],
+            longitude: latlng[1]
+          }
+        }
+        await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
+        setEditContextData && setEditContextData({
+          ...editContextData,
+          isDirty: false,
+          hasError: false
+        })
+      }
     } catch {
       showToast({
         type: 'error',
@@ -127,28 +207,37 @@ export function ApForm () {
     }
   }
 
-  //TODO: edit ap
-  // const handleEditAp = async (values: any) => {}
-
   const handleVenueChange = async (value: string) => {
-    const selected = venuesList?.data?.data?.filter(item => item.id === value)[0] ?? {}
-    const groupOption = value ?
-      (await apGroupList({ params: { tenantId: tenantId, venueId: value } }, true)).data
-        ?.filter((item) => !item.isDefault)
-        ?.map((item) => ({
-          label: item.name, value: item.id
-        }))
-      : []
-
-    setApGroupOption(groupOption as DefaultOptionType[])
-    setSelectedVenue(selected as VenueExtended)
+    const selected = getVenueById(venuesList?.data as unknown as VenueExtended[], value)
+    const options = await getApGroupOptions(value)
+    setSelectedVenue(selected as unknown as VenueExtended)
+    setApGroupOption(options as DefaultOptionType[])
     setDeviceGps(null as unknown as DeviceGps)
-    formRef?.current?.setFieldValue('apGroupId', null)
+    formRef?.current?.setFieldValue('apGroupId',
+      value === apDetails?.data?.venueId ? apDetails?.data?.apGroupId : ( value ? null : '')
+    )
   }
 
   const onSaveCoordinates = (latLng: DeviceGps) => {
     setDeviceGps(latLng)
     setGpsModalVisible(false)
+    handleEditContext()
+
+    if (!latLng) {
+      formRef?.current?.setFieldValue('deviceGps', latLng)
+    }
+  }
+
+  const handleEditContext = () => {
+    if (action === 'edit') {
+      setEditContextData && setEditContextData({
+        ...editContextData,
+        tabTitle: $t({ defaultMessage: 'AP Details' }),
+        isDirty: getFormDirty(formRef?.current as StepsFormInstance, apDetails?.data as ApDeep),
+        hasError: getFormValid(formRef?.current as StepsFormInstance),
+        updateChanges: () => handleFinish(formRef?.current?.getFieldsValue() as ApDeep)
+      })
+    }
   }
 
   return <>
@@ -160,7 +249,8 @@ export function ApForm () {
     />}
     <StepsForm
       formRef={formRef}
-      onFinish={handleAddAp}
+      onFinish={handleFinish}
+      onFormChange={handleEditContext}
       onCancel={() => navigate({
         ...basePath,
         pathname: `${basePath.pathname}/aps`
@@ -175,31 +265,57 @@ export function ApForm () {
         <Row gutter={20}>
           <Col span={8}>
             <Loader states={[{
-              isLoading: venuesList.isLoading || apDetails.isLoading
+              isLoading: isVenuesListLoading || apDetails.isLoading,
+              isFetching: isApDetailsUpdating
             }]}>
               <Form.Item
                 name='venueId'
                 label={<>
                   {$t({ defaultMessage: 'Venue' })}
-                  {/* TODO: edit ap */}
-                  {/* {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip
+                  {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip
                     title={
                       apMeshRoleDisabled
-                      ? $t(WifiNetworkMessages.AP_VENUE_MESH_DISABLED_TOOLTIP)
-                      : (dhcpRoleDisabled ? $t(WifiNetworkMessages.AP_VENUE_DHCP_DISABLED_TOOLTIP) : '')
+                        ? $t(WifiNetworkMessages.AP_VENUE_MESH_DISABLED_TOOLTIP)
+                        : (dhcpRoleDisabled
+                          ? $t(WifiNetworkMessages.AP_VENUE_DHCP_DISABLED_TOOLTIP)
+                          : ''
+                        )
                     }
                     placement='bottom'
                   >
                     <QuestionMarkCircleOutlined />
-                  </Tooltip>} */}
+                  </Tooltip>}
                 </>}
                 initialValue={null}
                 rules={[{
                   required: true
                 }, {
-                  // TODO: edit ap
-                  // venueCountryValidator
-                  // validateCellularApDhcpLimitation
+                  validator: (_, value) => {
+                    const selected = getVenueById(
+                      venuesList?.data as unknown as VenueExtended[], value
+                    )
+                    const originalVenue = getVenueById(
+                      venuesList?.data as unknown as VenueExtended[],
+                      apDetails?.data?.venueId as string
+                    )
+                    if (selected?.country && originalVenue?.country) {
+                      return checkValuesNotEqual(selected?.country, originalVenue?.country, true)
+                    }
+                    return Promise.resolve()
+                  },
+                  message: $t(validationMessages.diffVenueCountry)
+                }, {
+                  validator: (_, value) => {
+                    const selectedVenue = getVenueById(
+                      venuesList?.data as unknown as VenueExtended[], value)
+                    if (selectedVenue?.dhcp && selectedVenue?.dhcp?.enabled) {
+                      return checkObjectNotExists(
+                        cellularApModels, apDetails?.data?.model, $t({ defaultMessage: 'Venue' })
+                      )
+                    }
+                    return Promise.resolve()
+                  },
+                  message: $t(validationMessages.cellularApDhcpLimitation)
                 }]}
                 children={<Select
                   options={[
@@ -214,11 +330,8 @@ export function ApForm () {
                 label={$t({ defaultMessage: 'AP Group' })}
                 initialValue={null}
                 children={<Select
-                  disabled={!selectedVenue || !apGroupOption?.length}
-                  options={selectedVenue?.id ? [
-                    { label: $t({ defaultMessage: 'No group (inherit from Venue)' }), value: null },
-                    ...apGroupOption
-                  ] : []}
+                  disabled={!selectedVenue || apGroupOption?.length < 2}
+                  options={selectedVenue?.id ? apGroupOption : []}
                 />}
               />
               <Form.Item
@@ -241,7 +354,9 @@ export function ApForm () {
                   { validator: (_, value) => apNameRegExp(value) },
                   {
                     validator: (_, value) => {
-                      const nameList = apList?.data?.data?.map(item => item.name) ?? []
+                      const nameList = apList?.data?.data?.filter(
+                        item => item.serialNumber !== apDetails?.data?.serialNumber
+                      ).map(item => item.name) ?? []
                       return checkObjectNotExists(nameList, value,
                         $t({ defaultMessage: 'AP Name' }), 'value')
                     }
@@ -259,7 +374,9 @@ export function ApForm () {
                   { validator: (_, value) => serialNumberRegExp(value) },
                   {
                     validator: (_, value) => {
-                      const serialNumbers = apList?.data?.data?.map(item => item.serialNumber) ?? []
+                      const serialNumbers = apList?.data?.data?.filter(
+                        item => item.serialNumber !== apDetails?.data?.serialNumber
+                      ).map(item => item.serialNumber) ?? []
                       return checkObjectNotExists(serialNumbers, value,
                         $t({ defaultMessage: 'Serial Number' }), 'value')
                     }
@@ -299,7 +416,7 @@ export function ApForm () {
                       {deviceGps && <Button
                         type='link'
                         size='small'
-                        onClick={() => setDeviceGps(null as unknown as DeviceGps)}>
+                        onClick={() => onSaveCoordinates(null as unknown as DeviceGps)}>
                         {$t({ defaultMessage: 'Same as Venue' })}
                       </Button>}
                     </Space>
@@ -426,8 +543,9 @@ function CoordinatesModal (props: {
     ]
     if (hasError) {
       updateMarkerPosition(event?.latLng as google.maps.LatLng)
+      formRef.current?.setFields([{ name: fieldName, value: latLng.join(', '), errors: [] }])
     }
-    formRef?.current?.validateFields([fieldName])
+    // formRef?.current?.validateFields([fieldName])
     formRef?.current?.setFieldValue(fieldName, `${latLng.join(', ')}`)
     setCoordinatesValid(true)
   }
@@ -494,4 +612,29 @@ function CoordinatesModal (props: {
     </GoogleMap.FormItem>
 
   </Modal>
+}
+
+function getVenueById (venuesList: VenueExtended[], venueId: string) {
+  return venuesList?.filter(item => item.id === venueId)[0] ?? {}
+}
+
+function checkDhcpRoleDisabled (dhcpAp: DhcpApInfo) {
+  return (
+    (dhcpAp?.venueDhcpMode === DhcpModeEnum.EnableOnMultipleAPs
+    || dhcpAp?.venueDhcpMode === DhcpModeEnum.EnableOnHierarchicalAPs
+    ) && (dhcpAp?.dhcpApRole === ApDhcpRoleEnum.PrimaryServer
+    || dhcpAp?.dhcpApRole === ApDhcpRoleEnum.BackupServer
+    ))
+}
+
+function getFormDirty (form: StepsFormInstance, originalData: ApDeep) {
+  const formData = form?.getFieldsValue()
+  const checkFields = Object.keys(form?.getFieldsValue() ?? {})
+  const oldData = pick(originalData, checkFields)
+  const newData = omitBy(formData, v => !v)
+  return !isEqual(oldData, newData)
+}
+
+function getFormValid (form: StepsFormInstance) {
+  return form?.getFieldsError().map(item => item.errors).flat().length > 0
 }
