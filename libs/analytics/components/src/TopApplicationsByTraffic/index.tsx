@@ -1,0 +1,113 @@
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
+
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import {
+  Card,
+  Loader,
+  Table,
+  NoData,
+  SparklineChart,
+  ContentSwitcher,
+  ContentSwitcherProps
+} from '@acx-ui/components'
+import { formatter, intlFormats } from '@acx-ui/utils'
+
+import { useTopApplicationsByTrafficQuery, TopApplicationByTrafficData } from './services'
+import { TrafficPercent }                                                from './styledComponents'
+
+
+export function TopApplicationsByTraffic ({
+  filters
+}: {
+  filters: AnalyticsFilter;
+}) {
+  const { $t } = useIntl()
+  const queryResults = useTopApplicationsByTrafficQuery(filters)
+
+  const columns=[
+    {
+      title: $t({ defaultMessage: 'Application' }),
+      dataIndex: 'name',
+      key: 'name'
+    },
+    {
+      title: $t({ defaultMessage: 'Traffic' }),
+      dataIndex: 'traffic',
+      key: 'traffic'
+    },
+    {
+      title: $t({ defaultMessage: 'Traffic History' }),
+      dataIndex: 'trafficHistory',
+      key: 'trafficHistory'
+    },
+    {
+      title: $t({ defaultMessage: 'Clients' }),
+      dataIndex: 'clientCount',
+      key: 'clientCount',
+      align: 'right' as const
+    }
+  ]
+
+  const getDataSource= (appTrafficData: TopApplicationByTrafficData[],
+    overallTrafic:number) => {
+    return appTrafficData.map((item,index) => {
+      const sparkLineData = item.timeSeries.applicationTraffic
+        .map(value => value ? value : 0)
+      const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
+      return {
+        ...item,
+        traffic: <Space align='start' size={4}>
+          <>
+            {formatter('bytesFormat')(item.applicationTraffic)}
+            <TrafficPercent>
+            ({$t(intlFormats.percentFormatRound, { value: item.applicationTraffic/overallTrafic })})
+            </TrafficPercent>
+          </>
+        </Space>,
+        trafficHistory: <SparklineChart
+          key={index}
+          data={sparkLineData}
+          style={sparklineChartStyle}/>
+      }
+    })
+  }
+
+  const { data } = queryResults
+
+  const uploadTable = data && data.topNAppByUpload && data.topNAppByUpload.length ? <Table
+    columns={columns}
+    dataSource={getDataSource(data.topNAppByUpload, data.uploadAppTraffic)}
+    type='compact'
+    pagination={false}
+    rowKey='name'
+  /> : <NoData/>
+
+  const downloadTable = data && data.topNAppByDownload && data.topNAppByDownload.length ? <Table
+    columns={columns}
+    dataSource={getDataSource(data.topNAppByDownload, data.downloadAppTraffic)}
+    type='compact'
+    pagination={false}
+    rowKey='name'
+  /> : <NoData/>
+
+  const tabDetails:ContentSwitcherProps['tabDetails']=[
+    { label: $t({ defaultMessage: 'Upload' }) , children: uploadTable, value: 'upload' },
+    { label: $t({ defaultMessage: 'Download' }), children: downloadTable, value: 'download' }
+  ]
+
+  return (
+    <Loader states={[queryResults]}>
+      <Card title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <div style={{ display: 'block', height, width }}>
+              <ContentSwitcher tabDetails={tabDetails} size='small' space={8} />
+            </div>
+          )}
+        </AutoSizer>
+      </Card>
+    </Loader>
+  )
+}

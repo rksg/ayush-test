@@ -8,15 +8,13 @@ import { DateRange }                        from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import { timeseriesApi, histogramApi } from './services'
+import { api } from './services'
 
 import KpiSection from '.'
 
-
 describe('Kpi Section', () => {
   beforeEach(() => {
-    store.dispatch(histogramApi.util.resetApiState())
-    store.dispatch(timeseriesApi.util.resetApiState())
+    store.dispatch(api.util.resetApiState())
   })
   const sampleTS = {
     time: [

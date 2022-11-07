@@ -8,6 +8,7 @@ import ApsTable          from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable     from './pages/Networks/NetworksTable'
+import DHCPDetail        from './pages/Services/DHCPDetail'
 import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
 import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import SelectServiceForm from './pages/Services/SelectServiceForm'
@@ -21,6 +22,7 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -107,7 +109,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
-        element={<h1>DHCP details page</h1>}
+        element={<DHCPDetail/>}
       />
     </Route>
   )

@@ -22,7 +22,7 @@ export * from './ap'
 export * from './venue'
 export * from './network'
 export * from './user'
-export * from './service'
+export * from './services'
 export * from './msp'
 export * from './wifiCallingService'
 
