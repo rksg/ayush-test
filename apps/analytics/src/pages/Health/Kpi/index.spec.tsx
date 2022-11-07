@@ -99,7 +99,7 @@ describe('Kpi Section', () => {
     expect(applyBtn).toBeDefined()
     fireEvent.click(applyBtn)
     expect(await screen.findByText('Threshold set successfully.')).toBeInTheDocument()
-  }, 30000)
+  }, 60000)
 
 
 
@@ -138,7 +138,7 @@ describe('Kpi Section', () => {
     // eslint-disable-next-line max-len
     const disabledTooltips = await screen.findAllByTitle(/^Cannot save threshold at organisation level*/)
     expect(disabledTooltips).toHaveLength(4)
-  }, 30000)
+  }, 60000)
 
   it('should render disabled tooltip with no permissions', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
@@ -186,6 +186,6 @@ describe('Kpi Section', () => {
     // eslint-disable-next-line max-len
     const disabledTooltips = await screen.findAllByTitle(/^You don't have permission to set threshold for selected network node./)
     expect(disabledTooltips).toHaveLength(4)
-  }, 30000)
+  }, 60000)
 
 })
