@@ -1,6 +1,7 @@
 import { Key } from 'react'
 
 import { CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
+import { ApDeep } from '../models/ApDeep'
 import { BandBalancing }                                                      from '../models/BandBalancing'
 import { DenialOfServiceProtection }                                          from '../models/DenialOfServiceProtection'
 import { Mesh }                                                               from '../models/Mesh'
@@ -120,6 +121,14 @@ export interface DhcpOptions {
   enabled: boolean
   mode: DhcpModeEnum
 }
+
+export interface VenueDefaultApGroup {
+  id: string
+  isDefault: boolean
+  venueId: string,
+  aps?: ApDeep[]
+}
+
 
 enum DhcpModeEnum {
   DHCPMODE_EACH_AP = 'DHCPMODE_EACH_AP',

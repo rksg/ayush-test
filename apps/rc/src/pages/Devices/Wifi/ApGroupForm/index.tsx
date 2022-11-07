@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Transfer } from 'antd'
-import { DefaultOptionType } from 'antd/lib/select'
-import { useIntl } from 'react-intl'
+import { DefaultOptionType }                       from 'antd/lib/select'
+import { TransferItem }                            from 'antd/lib/transfer'
+import { useIntl }                                 from 'react-intl'
 
 import {
   PageHeader,
@@ -11,12 +12,13 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { TransferItem } from 'antd/lib/transfer'
 import {
   useLazyApGroupListQuery,
   useVenuesListQuery,
   useApListQuery,
-  useApGroupListQuery
+  useApGroupListQuery,
+  useLazyVenueDefaultApGroupQuery,
+  useAddApGroupMutation
 } from '@acx-ui/rc/services'
 import {
   ApGroup,
@@ -27,7 +29,7 @@ import {
   checkValuesNotEqual,
   hasGraveAccentAndDollarSign,
   serialNumberRegExp,
-  VenueExtended,
+  VenueExtended
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -45,7 +47,7 @@ const defaultPayload = {
 }
 
 
-export function ApGroupForm() {
+export function ApGroupForm () {
   const { $t } = useIntl()
   const { tenantId, action } = useParams()
   const formRef = useRef<StepsFormInstance<ApDeep>>()
@@ -53,8 +55,11 @@ export function ApGroupForm() {
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
 
+  const [apGroupList] = useLazyApGroupListQuery()
+  const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
   const [selectedVenue, setSelectedVenue] = useState({} as VenueExtended)
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
+  const [apsOption, setApsOption] = useState([] as TransferItem[])
 
 
   useEffect(() => {
@@ -65,13 +70,28 @@ export function ApGroupForm() {
     }
   }, [venuesList])
 
+  const handleVenueChange = async (value: string) => {
+    const selected = venuesList?.data?.data?.filter(item => item.id === value)[0] ?? {}
+    const defaultApGroupOption = value ?
+      (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } })).data
+        ?.aps?.map((item: ApDeep) => ({
+          name: item.name.toString(), key: item.serialNumber
+        }))
+      : []
+
+    setApsOption(defaultApGroupOption as TransferItem[])
+    setSelectedVenue(selected as VenueExtended)
+  }
+  const [addApGroup] = useAddApGroupMutation()
+
   const handleAddApGroup = async (values: ApGroup) => {
     try {
-      if (action === 'add') {
-
-      } else {
-
-      }
+      const payload = [{
+        ...values,
+        // ...(deviceGps && { deviceGps: deviceGps })
+      }]
+      await addApGroup({ params: { tenantId: tenantId }, payload }).unwrap()
+      navigate(`${basePath.pathname}/aps`, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -80,10 +100,6 @@ export function ApGroupForm() {
     }
   }
 
-  const handleVenueChange = async (value: string) => {
-    const selected = venuesList?.data?.data?.filter(item => item.id === value)[0] ?? {}
-    setSelectedVenue(selected as VenueExtended)
-  }
 
 
   return <>
@@ -107,11 +123,12 @@ export function ApGroupForm() {
       }}
     >
       <StepsForm.StepForm>
-        <Row gutter={20}>
-          <Col span={8}>
-            <Loader states={[{
-              isLoading: venuesList.isLoading
-            }]}>
+
+        <Loader states={[{
+          isLoading: venuesList.isLoading
+        }]}>
+          <Row gutter={20}>
+            <Col span={8}>
               <StepsForm.Title>{$t({ defaultMessage: 'Group Details' })}</StepsForm.Title>
               <Form.Item
                 name='name'
@@ -119,7 +136,7 @@ export function ApGroupForm() {
                 rules={[
                   { required: true },
                   { min: 2, transform: (value) => value.trim() },
-                  { max: 64, transform: (value) => value.trim() },
+                  { max: 64, transform: (value) => value.trim() }
                   // {
                   //   validator: (_, value) => {
                   //     const nameList = apGroupList?.data?.data?.map(item => item.name) ?? []
@@ -149,8 +166,16 @@ export function ApGroupForm() {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <StepsForm.Title
+                style={{ padding: '10px 0px' }}>
+                {$t({ defaultMessage: 'Group Member' })}
+              </StepsForm.Title>
               <Form.Item
-                name='selectedLoginServers'
+                name='apSerialNumbers'
                 // label={$t({ defaultMessage: 'Set Priority' })}
                 valuePropName='targetKeys'
                 rules={[
@@ -158,27 +183,22 @@ export function ApGroupForm() {
                   // { validator: (_, value) => orderValidator(value, AUTHEN_SERVERS_OBJ.NONE_TYPE) }
                 ]}
               >
-                <StepsForm.Title>{$t({ defaultMessage: 'Group Member' })}</StepsForm.Title>
                 <Transfer
-                  // {...defaultTransferProps}
+                  listStyle={{ width: 250, height: 316 }}
                   showSearch
                   showSelectAll={false}
                   dataSource={
-                    [
-                      {
-                        key: '1',
-                        name: '1'
-                      }
-                    ]}
+                    apsOption}
                   render={item => item.name}
                   operations={['Add', 'Remove']}
                   titles={[$t({ defaultMessage: 'Available APs' }),
                     $t({ defaultMessage: 'Selected APs' })]}
                 />
               </Form.Item>
-            </Loader>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+        </Loader>
+
       </StepsForm.StepForm>
     </StepsForm>
   </>

@@ -100,5 +100,9 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getApGroupsList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/ap-groups'
+  },
+  addApGroup: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap-group'
   }
 }

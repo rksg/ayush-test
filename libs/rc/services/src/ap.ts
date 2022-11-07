@@ -13,7 +13,8 @@ import {
   TableResult,
   VenueCapabilities,
   WifiUrlsInfo,
-  ApDetailHeader
+  ApDetailHeader,
+  VenueDefaultApGroup
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -55,9 +56,26 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    addApGroup: build.mutation<ApGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addApaddAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    venueDefaultApGroup: build.query<VenueDefaultApGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)
         return{
           ...req
         }
@@ -79,10 +97,13 @@ export const {
   useApListQuery,
   useLazyApListQuery,
   useAddApMutation,
+  useAddApGroupMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
   useWifiCapabilitiesQuery,
-  useApDetailHeaderQuery
+  useApDetailHeaderQuery,
+  useVenueDefaultApGroupQuery,
+  useLazyVenueDefaultApGroupQuery
 } = apApi
 
 
