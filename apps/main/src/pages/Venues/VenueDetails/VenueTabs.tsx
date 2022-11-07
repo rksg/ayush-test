@@ -1,6 +1,6 @@
-import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tooltip }                               from '@acx-ui/components'
 import { Tabs }                                  from '@acx-ui/components'
 import { VenueDetailHeader }                     from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'

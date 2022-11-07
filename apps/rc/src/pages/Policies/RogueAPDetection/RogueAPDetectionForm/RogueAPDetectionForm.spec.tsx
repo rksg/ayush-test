@@ -139,12 +139,7 @@ describe('RogueAPDetectionForm', () => {
   })
 
   it('should render RogueAPDetectionForm successfully', async () => {
-    mockServer.use(rest.get(
-      RogueAPDetectionUrls.getRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(detailContent)
-      )
-    ), rest.post(
+    mockServer.use(rest.post(
       RogueAPDetectionUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
@@ -175,11 +170,13 @@ describe('RogueAPDetectionForm', () => {
     expect(screen.getAllByText('Scope')).toBeTruthy()
     expect(screen.getAllByText('Summary')).toBeTruthy()
 
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'test' } })
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'policyName11' } })
+      { target: { value: 'policyName112' } })
 
     fireEvent.change(screen.getByRole('textbox', { name: /tags/i }),
       { target: { value: 'a,b,c' } })
@@ -191,25 +188,17 @@ describe('RogueAPDetectionForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /rule name/i }),
       { target: { value: 'rule1' } })
 
-    fireEvent.click(screen.getByText('Add'))
+    await userEvent.click(screen.getByText('Add'))
+
+    await screen.findByText('rule1')
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByText('test-venue2')
 
-    expect(screen.getByText(
-      'test-venue'
-    )).toBeTruthy()
-
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByText(/venues\(0\)/i)
-
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { name: 'Summary', level: 3 })
-
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
   it('should render RogueAPDetectionForm with editMode successfully', async () => {

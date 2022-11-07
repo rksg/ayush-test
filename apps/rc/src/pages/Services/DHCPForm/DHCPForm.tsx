@@ -17,7 +17,7 @@ import { SummaryForm } from './DHCPSummary/SummaryForm'
 import { Venues }      from './DHCPVenues/Venues'
 
 
-export function DHCPForm () {
+export default function DHCPForm () {
   const { $t } = useIntl()
 
   const params = useParams()

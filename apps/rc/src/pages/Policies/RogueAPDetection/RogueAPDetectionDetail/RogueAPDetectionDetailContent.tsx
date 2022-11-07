@@ -20,8 +20,9 @@ const RogueAPDetectionDetailContent = () => {
   const { setFiltersId } = useContext(RogueAPDetailContext)
 
   useEffect(() => {
-    if (data) {
-      setFiltersId(data.venues.map(venue => venue.id))
+    if (data){
+      const filtersIdList = data.venues ? data.venues.map(venue => venue.id) : ['UNDEFINED']
+      setFiltersId(filtersIdList)
     }
   }, [data])
 

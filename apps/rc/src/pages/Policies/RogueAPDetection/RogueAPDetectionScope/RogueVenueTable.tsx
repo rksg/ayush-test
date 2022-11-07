@@ -80,7 +80,9 @@ const RogueVenueTable = () => {
       key: 'activate',
       render: (data, row) => {
         return <Switch checked={
-          state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
+          state.venues
+            ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
+            : false
         }/>
       }
     }

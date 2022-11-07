@@ -3,7 +3,7 @@ import { ApiInfo } from '../../apiService'
 export const RogueAPDetectionUrls: { [key: string]: ApiInfo } = {
   addRoguePolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/rogue-policy'
+    url: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles'
   },
   getRoguePolicy: {
     method: 'get',
@@ -11,7 +11,7 @@ export const RogueAPDetectionUrls: { [key: string]: ApiInfo } = {
   },
   updateRoguePolicy: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/rogue-policy/:policyId'
+    url: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles/:policyId'
   },
   getRoguePolicyList: {
     method: 'get',

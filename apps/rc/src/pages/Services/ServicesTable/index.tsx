@@ -116,7 +116,7 @@ const defaultPayload = {
   ]
 }
 
-export function ServicesTable () {
+export default function ServicesTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const navigate = useNavigate()
