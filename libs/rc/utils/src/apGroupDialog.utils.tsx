@@ -5,7 +5,8 @@ import {
   Tooltip,
   ModalProps as AntdModalProps
 } from 'antd'
-import _ from 'lodash'
+import _                 from 'lodash'
+import { defineMessage } from 'react-intl'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { Button }  from '@acx-ui/components'
@@ -15,7 +16,6 @@ import {
   NetworkApGroup,
   NetworkSaveData,
   NetworkVenue,
-  VLAN_PREFIX,
   ISlotIndex,
   getSchedulingCustomTooltip,
   NetworkVenueScheduler,
@@ -39,63 +39,71 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
 
 /* eslint-disable max-len */
 
-export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number) => { // TODO: move to apGroupDialog.utils.tsx
-  let vlanPrefix = ''
-  let vlanString
-  let vlanType
-
-  if (vlanPool) {
-    vlanString = vlanPool.name
-    vlanPrefix = VLAN_PREFIX.POOL
-    vlanType = VlanType.Pool
-  } else  {
-    vlanString = vlanId
-    vlanPrefix = VLAN_PREFIX.VLAN
-    vlanType = VlanType.VLAN
-  }
-
-  return { vlanPrefix, vlanString, vlanType }
+const vlanContents = {
+  vlan: defineMessage({
+    defaultMessage: `VLAN-{id} {isCustom, selectordinal,
+      one {(Custom)}
+      other {(Default)}
+    }`
+  }),
+  vlanPool: defineMessage({
+    defaultMessage: `VLAN Pool: {poolName} {isCustom, selectordinal,
+      one {(Custom)}
+      other {(Default)}
+    }`
+  })
 }
 
-export const transformVLAN = (currentVenue?: NetworkVenue, wlan?: NetworkSaveData['wlan'], callback?: React.MouseEventHandler<HTMLElement>) => {
+export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number, isCustom = false) => { // TODO: move to apGroupDialog.utils.tsx
   const { $t } = getIntl()
-  let result = ''
-  let valuePrefix = ''
-  let vlanString
-  let valueSuffix = ''
 
-  if (currentVenue) {
-    if (!currentVenue.isAllApGroups && Array.isArray(currentVenue.apGroups) && currentVenue.apGroups.length > 1) {
-      vlanString = $t({ defaultMessage: 'Per AP Group' })
+  if (vlanPool) {
+    return {
+      vlanString: vlanPool.name,
+      vlanType: VlanType.Pool,
+      vlanText: $t(vlanContents.vlanPool, { isCustom, poolName: vlanPool.name })
     }
-    else if (!currentVenue.isAllApGroups && currentVenue?.apGroups?.length === 1) {
-      valueSuffix = $t({ defaultMessage: '(Custom)' })
-      const firstApGroup = currentVenue.apGroups[0]
-
-      if (firstApGroup?.vlanPoolId) {
-        valuePrefix = VLAN_PREFIX.POOL
-        vlanString = firstApGroup.vlanPoolName
-      } else if (firstApGroup?.vlanId) {
-        valuePrefix = VLAN_PREFIX.VLAN
-        vlanString = firstApGroup?.vlanId?.toString()
-      }
-
-      if (!vlanString) {
-        valuePrefix = VLAN_PREFIX.VLAN
-        vlanString = '1' // default fallback to avoid unavailable vlan1 of default ap group
-      }
-    }
-    else { //isAllApGroups
-      valueSuffix = $t({ defaultMessage: '(Default)' })
-
-      const vlanStringSet = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
-      valuePrefix = vlanStringSet.vlanPrefix
-      vlanString = vlanStringSet.vlanString
-    }
-    result = `${valuePrefix}${vlanString} ${valueSuffix}`
-    return <Button type='link' onClick={callback}>{result}</Button>
   }
-  return <>{result}</>
+
+  return {
+    vlanString: vlanId,
+    vlanType: VlanType.VLAN,
+    vlanText: $t(vlanContents.vlan, { isCustom, id: vlanId })
+  }
+}
+
+export const transformVLAN = (
+  currentVenue?: NetworkVenue,
+  wlan?: NetworkSaveData['wlan'],
+  callback?: React.MouseEventHandler<HTMLElement>
+): JSX.Element => {
+  const { $t } = getIntl()
+  const button = (text: string) => <Button type='link' onClick={callback}>{text}</Button>
+
+  if (!currentVenue) return <></>
+
+  if (!currentVenue.isAllApGroups && Array.isArray(currentVenue.apGroups) && currentVenue.apGroups.length > 1) {
+    return button($t({ defaultMessage: 'Per AP Group' }))
+  }
+
+  if (!currentVenue.isAllApGroups && currentVenue?.apGroups?.length === 1) {
+    const firstApGroup = currentVenue.apGroups[0]
+    const isVlanPool = firstApGroup?.vlanPoolId !== undefined
+    if (isVlanPool) {
+      return button($t(vlanContents.vlanPool, {
+        poolName: firstApGroup.vlanPoolName,
+        isCustom: true
+      }))
+    }
+
+    return button($t(vlanContents.vlan, {
+      id: firstApGroup?.vlanId?.toString() ?? '1',
+      isCustom: true
+    }))
+  }
+
+  const vlan = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
+  return button(vlan.vlanText)
 }
 
 export const transformAps = (currentVenue?: NetworkVenue, callback?: React.MouseEventHandler<HTMLElement>) => {

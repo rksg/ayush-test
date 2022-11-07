@@ -59,9 +59,17 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
 
   useEffect(() => {
     // onChange(selectedVlan)
-    const { vlanPrefix, vlanString, vlanType } = getVlanString(selectedVlan.vlanPool, selectedVlan.vlanId)
-    const valueSuffix = _.isEqual({ vlanPrefix, vlanString, vlanType }, defaultVlanString) ? $t({ defaultMessage: '(Default)' }) : $t({ defaultMessage: '(Custom)' })
-    setVlanLabel(`${vlanPrefix}${vlanString} ${valueSuffix}`)
+    const compareKeys = ['vlanString', 'vlanType']
+    const selected = getVlanString(selectedVlan.vlanPool, selectedVlan.vlanId)
+    const label = getVlanString(
+      selectedVlan.vlanPool,
+      selectedVlan.vlanId,
+      _.isEqual(
+        _.pick(selected, compareKeys),
+        _.pick(defaultVlanString, compareKeys)
+      ) !== true
+    ).vlanText
+    setVlanLabel(label)
 
     setDirty(!_.isEqual(selectedVlan, initVlanData))
   }, [selectedVlan])

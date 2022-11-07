@@ -268,7 +268,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                 { ({ getFieldValue }) => getFieldValue('selectionType') === 0 && (
                   <UI.FormItemRounded>
                     <Form.Item label={$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
-                      {`${defaultVlanString.vlanPrefix}${defaultVlanString.vlanString}`} {$t({ defaultMessage: '(Default)' })}
+                      {defaultVlanString.vlanText}
                     </Form.Item>
                     <Form.Item name='allApGroupsRadioTypes'
                       label={$t({ defaultMessage: 'Radio Band' })}

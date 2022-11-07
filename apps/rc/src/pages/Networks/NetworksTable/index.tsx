@@ -6,14 +6,13 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { useNetworkListQuery, useDeleteNetworkMutation }                  from '@acx-ui/rc/services'
 import {
-  VLAN_PREFIX,
   NetworkTypeEnum,
   useTableQuery,
   Network,
   NetworkType
 }                                                            from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                                   from '@acx-ui/utils'
+import { getIntl, notAvailableMsg }                          from '@acx-ui/utils'
 
 const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
 
@@ -127,11 +126,12 @@ function getCols (intl: ReturnType<typeof useIntl>) {
 
 
 const transformVLAN = (row: Network) => {
+  const { $t } = getIntl()
   if (row.vlanPool) {
     const vlanPool = row.vlanPool
-    return VLAN_PREFIX.POOL + (vlanPool ? vlanPool.name : '')
+    return $t({ defaultMessage: 'VLAN Pool: {poolName}' }, { poolName: vlanPool?.name ?? '' })
   }
-  return VLAN_PREFIX.VLAN + row.vlan
+  return $t({ defaultMessage: 'VLAN-{id}' }, { id: row.vlan })
 }
 
 const defaultPayload = {

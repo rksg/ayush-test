@@ -139,9 +139,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
                                               <div
                                                 class="ant-form-item-control-input-content"
                                               >
-                                                VLAN-1
-                                                 
-                                                (Default)
+                                                VLAN-1 (Default)
                                               </div>
                                             </div>
                                           </div>
