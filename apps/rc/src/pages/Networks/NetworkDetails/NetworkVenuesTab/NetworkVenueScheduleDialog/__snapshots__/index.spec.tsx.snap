@@ -4,7 +4,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
 <div
   aria-labelledby="test-id"
   aria-modal="true"
-  class="ant-modal"
+  class="ant-modal styledComponents__Modal-sc-k3durc-0 fZVPqM"
   role="dialog"
   style="width: 1280px;"
 >

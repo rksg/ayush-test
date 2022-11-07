@@ -1,10 +1,8 @@
 import '@testing-library/jest-dom'
 
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
 import { NetworkSaveData, NetworkVenue, SchedulerTypeEnum, Venue, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                              from '@acx-ui/store'
 import {
   fireEvent,
   render,
@@ -64,10 +62,6 @@ describe('NetworkVenueTabScheduleDialog', () => {
     fireEvent.click(mondayTimeSlot)
     const mondayLastTimeSlot = await within(dialog).findByTestId('mon_95')
 
-    const mouse = [
-      { clientX: 0, clientY: 0 },
-      { clientX: 5, clientY: 20 }
-    ]
     fireEvent.mouseDown(mondayTimeSlot)
     fireEvent.mouseMove(mondayLastTimeSlot)
     fireEvent.mouseUp(mondayLastTimeSlot)
