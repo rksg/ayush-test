@@ -151,8 +151,9 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
           const selectedList = map[key].split('').map(function (item: string, i: string) {
             if(item === '1'){
               return `${key}_${i}`
+            }else{
+              return false
             }
-            return false
           }).filter(Boolean)
           form.setFieldValue(['scheduler', key], selectedList)
 
@@ -273,7 +274,6 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         }
         return el.dataset.disableselect !== 'true'
       }
-
       return true
     },
     onSelectionChange: (box) => {

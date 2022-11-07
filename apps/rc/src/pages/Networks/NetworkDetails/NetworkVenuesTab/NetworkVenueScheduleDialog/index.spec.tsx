@@ -1,17 +1,22 @@
 import '@testing-library/jest-dom'
 
-import { NetworkSaveData, NetworkVenue, SchedulerTypeEnum, Venue } from '@acx-ui/rc/utils'
-import { Provider }                                                from '@acx-ui/store'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { NetworkSaveData, NetworkVenue, SchedulerTypeEnum, Venue, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                              from '@acx-ui/store'
 import {
   fireEvent,
   render,
   screen,
+  mockServer,
   waitFor,
   within
 } from '@acx-ui/test-utils'
 
 import {
   venueResponse,
+  timezoneResult,
   networkResponse,
   networkVenueResponse
 } from '../../__test__/fixtures'
@@ -19,30 +24,20 @@ import {
 import { NetworkVenueScheduleDialog } from './index'
 
 describe('NetworkVenueTabScheduleDialog', () => {
-  it('should render network venue tab schedule dialog successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
-    const props = {
-      formName: 'networkVenueScheduleForm',
-      venue: venueResponse as Venue,
-      network: networkResponse as NetworkSaveData,
-      networkVenue: networkVenueResponse as NetworkVenue
-    }
-
-    const { asFragment } = render(
-      <Provider>
-        <NetworkVenueScheduleDialog
-          {...props} />
-      </Provider>, {
-        route: { params }
-      })
-    expect(asFragment()).toMatchSnapshot()
+  beforeAll(async () => {
+    mockServer.use(
+      rest.put(
+        WifiUrlsInfo.updateNetworkVenue.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'f229e6d6-f728-4b56-81ce-507877a4f4da' }))
+      ),
+      rest.get(
+        'https://maps.googleapis.com/maps/api/timezone/*',
+        (req, res, ctx) => res(ctx.json(timezoneResult))
+      )
+    )
   })
 
-  it('should render network venue tab schedule dialog with ALWAYS_ON successfully', async () => {
-
-    networkVenueResponse.scheduler.type = SchedulerTypeEnum.ALWAYS_ON
-
+  it('should render network venue tab schedule dialog successfully', async () => {
     const props = {
       formName: 'networkVenueScheduleForm',
       venue: venueResponse as Venue,
@@ -56,11 +51,59 @@ describe('NetworkVenueTabScheduleDialog', () => {
         visible={true} />
     )
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
-    fireEvent.click(await within(dialog).findByTestId('checkbox_mon', { exact: false }))
-    fireEvent.click(await within(dialog).findByTestId('checkbox_mon', { exact: false }))
+    const alwaysOn = within(dialog).getByRole('radio', { name: '24/7' })
+    fireEvent.click(alwaysOn)
+    const customSchedule = within(dialog).getByRole('radio', { name: 'Custom Schedule' })
+    fireEvent.click(customSchedule)
+    expect(within(dialog).getAllByRole('checkbox')[0]).toBeVisible()
+    fireEvent.click(within(dialog).getAllByRole('checkbox')[0])
+    fireEvent.click(within(dialog).getAllByRole('checkbox')[0])
+    expect(await within(dialog).findByTestId('mon_0')).toBeVisible()
     const mondayTimeSlot = await within(dialog).findByTestId('mon_0')
     fireEvent.click(mondayTimeSlot)
     fireEvent.click(mondayTimeSlot)
-    fireEvent.click(within(dialog).getByLabelText('24/7'))
+    const mondayLastTimeSlot = await within(dialog).findByTestId('mon_95')
+
+    const mouse = [
+      { clientX: 0, clientY: 0 },
+      { clientX: 5, clientY: 20 }
+    ]
+    fireEvent.mouseDown(mondayTimeSlot)
+    fireEvent.mouseMove(mondayLastTimeSlot)
+    fireEvent.mouseUp(mondayLastTimeSlot)
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(dialog.querySelector('.ant-spin-spinning')).toBeVisible()
+  })
+
+  it('should render network venue tab schedule dialog with ALWAYS_ON successfully', async () => {
+
+    networkVenueResponse.scheduler.type = SchedulerTypeEnum.ALWAYS_ON
+
+    const props = {
+      formName: 'networkVenueScheduleForm',
+      venue: venueResponse as Venue,
+      network: networkResponse as NetworkSaveData,
+      networkVenue: networkVenueResponse as NetworkVenue
+    }
+
+    const { rerender } = render(
+      <NetworkVenueScheduleDialog
+        {...props}
+        visible={true} />
+    )
+
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+
+    expect(dialog).toMatchSnapshot()
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'See tips' }))
+    const tipsDialog = await screen.findAllByRole('dialog')
+    fireEvent.click(within(tipsDialog[1]).getByRole('button', { name: 'OK' }))
+
+    // update the props "visible"
+    rerender(<NetworkVenueScheduleDialog {...props} visible={false}/>)
+    expect(dialog).not.toBeVisible()
   })
 })
