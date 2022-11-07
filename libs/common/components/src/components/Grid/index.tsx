@@ -41,9 +41,6 @@ export const GridRow = styled(AntRow).attrs({ gutter: [20, 20] })<
   `
   : ''
 }`
-GridRow.defaultProps = {
-  divider: undefined
-}
 
 type GridColProps = React.HTMLAttributes<HTMLDivElement> & {
   col: AntColProps

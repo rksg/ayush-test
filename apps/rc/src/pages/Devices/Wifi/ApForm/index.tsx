@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select, Space, Tooltip, Typography } from 'antd'
-import { DefaultOptionType }                                         from 'antd/lib/select'
-import { omit, isEqual }                                             from 'lodash'
-import { useIntl }                                                   from 'react-intl'
+import { Col, Form, Input, Row, Select, Space, Tooltip } from 'antd'
+import { DefaultOptionType }                             from 'antd/lib/select'
+import { omit, isEqual }                                 from 'lodash'
+import { useIntl }                                       from 'react-intl'
 
 import {
   Button,
@@ -393,7 +393,7 @@ function CoordinatesModal (props: {
         width: 450,
         title: $t({ defaultMessage: 'Please confirm that...' }),
         content: $t({
-          defaultMessage: `Your GPS coordinates are outside the venue: 
+          defaultMessage: `Your GPS coordinates are outside the venue:
             {venueName}. Are you sure you want to place the device in this new position?"`
         }, { venueName: selectedVenue.name }),
         okText: $t({ defaultMessage: 'Drop It' }),
@@ -479,9 +479,9 @@ function CoordinatesModal (props: {
             onDragEnd={onDragEndMaker}
           />}
         </GoogleMap>
-        : <Typography.Title level={3}>
-          {$t({ defaultMessage: 'Map is not enabled' })}
-        </Typography.Title>}
+        :
+        <GoogleMap.NotEnabled />
+      }
     </GoogleMap.FormItem>
 
   </Modal>

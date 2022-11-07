@@ -29,11 +29,9 @@ export function NoActiveData ({ text }: NoDataWrapperProps) {
   )
 }
 
-export function NotAvailable (props: { height?: number }) {
+export function NotAvailable () {
   const { $t } = useIntl()
   return (
-    <div style={{ height: props.height || 150 }}>
-      <NoData text={$t(notAvailableMsg)}/>
-    </div>
+    <NoData text={$t(notAvailableMsg)}/>
   )
 }

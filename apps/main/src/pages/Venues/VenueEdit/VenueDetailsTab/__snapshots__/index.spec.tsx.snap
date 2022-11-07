@@ -309,11 +309,23 @@ exports[`VenueDetailsTab should render correctly 1`] = `
                                   </span>
                                 </span>
                               </span>
-                              <h3
-                                class="ant-typography"
+                              <div
+                                class="styledComponents__MapContainer-sc-ii13ud-0 fIoBmJ"
                               >
-                                Map is not enabled
-                              </h3>
+                                <div
+                                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                                >
+                                  <div
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                                  >
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      Map is not enabled
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                           <div
