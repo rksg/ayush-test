@@ -1,7 +1,10 @@
 import {
   DHCPConfigTypeEnum,
   ServiceTechnology
-} from '../constants'
+} from '../../constants'
+
+export * from './dhcpService'
+
 
 export enum AccessEnum {
   ALLOW = 'Allow',
@@ -82,9 +85,6 @@ export interface CloudpathServer {
     primary: RadiusService
   }
 }
-
-
-
 export interface RadiusService {
   ip: string
   port: number
