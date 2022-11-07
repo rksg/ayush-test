@@ -1,8 +1,10 @@
-import { ConfigProvider }          from '@acx-ui/components'
-import { PolicyType, ServiceType } from '@acx-ui/rc/utils'
-import { rootRoutes, Route }       from '@acx-ui/react-router-dom'
-import { Provider }                from '@acx-ui/store'
+import { PolicyType, ServiceType }           from '@acx-ui/rc/utils'
+import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
+import { Provider }                          from '@acx-ui/store'
 
+import SwitchesTable      from './pages/Devices/Switch/SwitchesTable'
+import ApDetails          from './pages/Devices/Wifi/ApDetails'
+import ApsTable           from './pages/Devices/Wifi/ApsTable'
 import { NetworkDetails } from './pages/Networks/NetworkDetails/NetworkDetails'
 import { NetworkForm }    from './pages/Networks/NetworkForm/NetworkForm'
 import { NetworksTable }  from './pages/Networks/NetworksTable'
@@ -13,24 +15,43 @@ import {
   getSelectPolicyRoutePath,
   PolicyOperation
 } from './pages/Policies/policyRouteUtils'
-import { SelectPolicyForm }                      from './pages/Policies/SelectPolicyForm'
-import { DHCPForm }                              from './pages/Services/DHCPForm/DHCPForm'
-import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
-import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
-import { ServicesTable }                         from './pages/Services/ServicesTable'
+import { SelectPolicyForm }  from './pages/Policies/SelectPolicyForm'
+import { DHCPForm }          from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyForm         from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import { SelectServiceForm } from './pages/Services/SelectServiceForm'
+import {
+  getSelectServiceRoutePath,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation
+} from './pages/Services/serviceRouteUtils'
+import ServicesTable from './pages/Services/ServicesTable'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
+      <Route path='devices/*' element={<DeviceRoutes />} />
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
       <Route path='policies/*' element={<PolicyRoutes />} />
     </Route>
   )
   return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
+    <Provider children={routes} />
+  )
+}
+
+function DeviceRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
+      <Route path='devices/aps' element={<ApsTable />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab'
+        element={<ApDetails />}
+      />
+      <Route path='devices/switches' element={<SwitchesTable />} />
+    </Route>
   )
 }
 
@@ -54,15 +75,15 @@ function NetworkRoutes () {
 function ServiceRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path='services' element={<ServicesTable />} />
-      <Route path='services/select' element={<SelectServiceForm />} />
+      <Route path={getServiceListRoutePath()} element={<ServicesTable />} />
+      <Route path={getSelectServiceRoutePath()} element={<SelectServiceForm />} />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
-        element={<h1>mDNS Proxy create page</h1>}
+        element={<MdnsProxyForm />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })}
-        element={<h1>mDNS Proxy edit page</h1>}
+        element={<MdnsProxyForm editMode={true} />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}

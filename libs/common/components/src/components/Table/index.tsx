@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Tooltip }                              from 'antd'
+import { Space }                                       from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
@@ -9,16 +9,17 @@ import AutoSizer                                       from 'react-virtualized-a
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { Button } from '../Button'
+import { Button }  from '../Button'
+import { Tooltip } from '../Tooltip'
 
 import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
 import { ResizableColumn }                                          from './ResizableColumn'
 import * as UI                                                      from './styledComponents'
 import { settingsKey, useColumnsState }                             from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
-import type { ParamsType }                                                  from '@ant-design/pro-provider'
-import type { SettingOptionType }                                           from '@ant-design/pro-table/lib/components/ToolBar'
+import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
+import type { ParamsType }                                                                    from '@ant-design/pro-provider'
+import type { SettingOptionType }                                                             from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
@@ -42,7 +43,7 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip' | 'form'
+    type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
@@ -89,7 +90,11 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProps<RecordType>) {
+// following the same typing from antd
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Table <RecordType extends Record<string, any>> (
+  { type = 'tall', columnState, ...props }: TableProps<RecordType>
+) {
   const intl = useIntl()
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
@@ -141,6 +146,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
           onClick={() => {
             columnsState.resetState()
             props.onResetState?.()
+            setColWidth({})
           }}
           children={$t({ defaultMessage: 'Reset to default' })}
         />
@@ -236,8 +242,10 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       ? col.width
       : colWidth[col.key as keyof typeof colWidth] || col.width,
     onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+      hasEllipsisColumn,
       width: colWidth[column.key],
-      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
+      definedWidth: col.width
     })
   })
 
@@ -288,6 +296,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       dataSource={getFilteredData<RecordType>(
         dataSource, filterValues, activeFilters, searchables, searchValue
       )}
+      sortDirections={['ascend', 'descend', 'ascend']}
       bordered={false}
       search={false}
       columns={(type === 'tall' ? columns.map(col=>({
@@ -296,7 +305,13 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       })): columns) as typeof columns}
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
-      columnsState={columnsState}
+      columnsState={{
+        ...columnsState,
+        onChange: (state: TableColumnState) => {
+          columnsState.onChange(state)
+          setColWidth({})
+        }
+      }}
       scroll={{ x: hasEllipsisColumn ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'

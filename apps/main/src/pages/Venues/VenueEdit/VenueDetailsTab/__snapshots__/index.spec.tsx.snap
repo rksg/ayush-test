@@ -3,7 +3,7 @@
 exports[`VenueDetailsTab should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -275,6 +275,7 @@ exports[`VenueDetailsTab should render correctly 1`] = `
                                   data-testid="address-input"
                                   disabled=""
                                   id="0_address_addressLine"
+                                  placeholder="Set address here"
                                   type="text"
                                   value="350 W Java Dr, Sunnyvale, CA 94089, USA"
                                 />

@@ -3,5 +3,6 @@ export enum Features {
   AP_GPS = 'ap-gps-toggle',
   TRI_RADIO = 'tri-band-radio-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',
+  SERVICES = 'acx-ui-services',
   POLICIES = 'acx-ui-policies'
 }

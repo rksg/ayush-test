@@ -77,7 +77,7 @@ interface WrapperProps {
   needPadding?: boolean
 }
 export const Wrapper = styled.div<WrapperProps>`
-  height: 140px;
+  height: 160px;
   width: 375px;
   padding: ${props => props.needPadding ? '10px 15px' : undefined};
   margin-bottom: ${props => !props.needPadding ? '-25px' : undefined};
@@ -85,7 +85,10 @@ export const Wrapper = styled.div<WrapperProps>`
 export const CellWrapper = styled(Space)`
   justify-content: left;
   width: 100%;
-  height: 15px;
+  height: 22px;
+`
+export const TextWrapper = styled(CellWrapper)`
+  color: var(--acx-neutrals-60)
 `
 export const InfoWindowHeader = styled.div`
   height: 35px;

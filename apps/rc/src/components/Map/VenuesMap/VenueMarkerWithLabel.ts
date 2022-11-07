@@ -14,12 +14,6 @@ export interface VenueMarkerOptions extends google.maps.MarkerOptions {
     clientsCount?: number;
     switchesCount: number;
     switchClientsCount?: number;
-    labelStyle?: {
-      [prop: string]: string
-    };
-    labelClass?: string;
-    tooltipVisible?: boolean;
-    deployedDpCount?: number;
   }
 
 class VenueMarkerWithLabel extends MarkerWithLabel {

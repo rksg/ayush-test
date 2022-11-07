@@ -5,17 +5,22 @@ import { useIntl } from 'react-intl'
 import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../..'
+import { getExternalAntennaPayload, VenueEditContext } from '../..'
 
-import { ExternalAntenna } from './ExternalAntenna'
-import { RadioSettings }   from './RadioSettings'
+import { ExternalAntennaSection } from './ExternalAntennaSection'
+import { RadioSettings }          from './RadioSettings'
 
 export function RadioTab () {
   const { $t } = useIntl()
-  const { venueId } = useParams()
+  const params = useParams()
+  const { venueId } = params
   const navigate = useNavigate()
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const { editContextData,
+    setEditContextData,
+    editRadioContextData
+  } = useContext(VenueEditContext)
   const basePath = useTenantLink('/venues/')
+
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const externalTitle = $t({ defaultMessage: 'External Antenna' })
   const anchorItems = [{
@@ -28,26 +33,37 @@ export function RadioTab () {
         <RadioSettings />
       </>
     )
-  }, {
+  },
+  {
     title: externalTitle,
     content: (
       <>
         <StepsForm.SectionTitle id='external-antenna'>
           { externalTitle }
         </StepsForm.SectionTitle>
-        <ExternalAntenna />
+        <ExternalAntennaSection />
       </>
     )
   }]
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
-      setEditContextData({
-        ...editContextData,
-        oldData: editContextData?.newData,
-        isDirty: false
-      })
-      //  TODO: Call APIs
+      if (editRadioContextData.apModels) {
+        const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
+        await editRadioContextData?.updateExternalAntenna?.(extPayload)
+      }
+      if (editRadioContextData.radioData) {
+        await editRadioContextData?.updateWifiRadio?.(editRadioContextData.radioData)
+      }
+
+      if (editRadioContextData.apModels || editRadioContextData.radioData) {
+        setEditContextData({
+          ...editContextData,
+          unsavedTabKey: 'radio',
+          isDirty: false
+        })
+      }
+
       if (redirect) {
         navigate({
           ...basePath,
@@ -64,7 +80,7 @@ export function RadioTab () {
 
   return (
     <StepsForm
-      onFinish={() => handleUpdateSetting(true)}
+      onFinish={() => handleUpdateSetting(false)}
       onCancel={() => navigate({
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`

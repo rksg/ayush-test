@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Switch, Tooltip } from 'antd'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Form, Switch } from 'antd'
+import { useIntl }      from 'react-intl'
+import { useParams }    from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Subtitle } from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Tooltip } from '@acx-ui/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -13,8 +13,6 @@ import {
 import { APMeshRole } from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../../../index'
-
-import * as UI from './styledComponents'
 
 export function MeshNetwork () {
   const { $t } = useIntl()
@@ -30,18 +28,18 @@ export function MeshNetwork () {
   const [apList] = useLazyApListQuery()
   const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useUpdateVenueMeshMutation()
 
+  const defaultToolTip = $t({ defaultMessage: 'Not available' })
   const [isAllowEnableMesh, setIsAllowEnableMesh] = useState(true)
   const [hasMeshAPs, setHasMeshAPs] = useState(false)
   const [meshEnabled, setMeshEnabled] = useState(false)
-  const [meshToolTipDisabledText, setMeshToolTipDisabledText] =
-    useState($t({ defaultMessage: 'Not available' }))
+  const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
   const { data } = useGetVenueSettingsQuery({ params })
 
   useEffect(() => {
     if(data){
-      setMeshEnabled(data.mesh.enabled as boolean)
-      const enableDhcpSetting = data && data.dhcpServiceSetting && data.dhcpServiceSetting.enabled
+      setMeshEnabled(data.mesh?.enabled as boolean)
+      const enableDhcpSetting = data && data.dhcpServiceSetting && data.dhcpServiceSetting?.enabled
       if(enableDhcpSetting){
         // eslint-disable-next-line max-len
         setMeshToolTipDisabledText($t({ defaultMessage: 'You cannot activate the Mesh Network on this venue because it already has enable DHCP settings' }))
@@ -50,7 +48,7 @@ export function MeshNetwork () {
       }
       setIsAllowEnableMesh(!enableDhcpSetting as boolean) //TODO: this.rbacService.isRoleAllowed('UpdateMeshButton')
 
-      if(data.mesh.enabled){
+      if(data.mesh?.enabled){
         checkMeshAPs()
       }
     }
@@ -132,24 +130,23 @@ export function MeshNetwork () {
     }
   }
 
-  return (
-    <>
-      <Subtitle level={3}>{$t({ defaultMessage: 'Mesh Network' })}</Subtitle>
-      <Loader states={[{ isLoading: false, isFetching: isUpdatingVenueMesh }]}>
-        <UI.FieldLabel width='125px'>
-          {$t({ defaultMessage: 'Mesh Network' })}
-          <UI.FieldLabel width='30px'>
-            <Tooltip title={meshToolTipDisabledText}>
-              <Switch
-                checked={meshEnabled}
-                disabled={!isAllowEnableMesh}
-                onClick={toggleMesh}
-                style={{ marginTop: isAllowEnableMesh ? '5px' : '0' }}
-              />
-            </Tooltip>
-          </UI.FieldLabel>
-        </UI.FieldLabel>
-      </Loader>
-    </>
+  return (<Loader states={[{
+    isLoading: !data || meshToolTipDisabledText === defaultToolTip,
+    isFetching: isUpdatingVenueMesh
+  }]}>
+    <Form.Item
+      label={$t({ defaultMessage: 'Mesh Network' })}
+      valuePropName='checked'
+      initialValue={meshEnabled}
+      children={<Tooltip title={meshToolTipDisabledText}>
+        <Switch
+          data-testid='mesh-switch'
+          checked={meshEnabled}
+          disabled={!isAllowEnableMesh}
+          onClick={toggleMesh}
+        />
+      </Tooltip>}
+    />
+  </Loader>
   )
 }

@@ -44,19 +44,20 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
               style="text-align: left; padding: 10px 0px;"
             >
               <div
-                class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+                class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
               >
                 <div
                   class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
                 >
                   <label
-                    class="ant-radio-button-wrapper"
+                    class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
                   >
                     <span
-                      class="ant-radio-button"
+                      class="ant-radio-button ant-radio-button-disabled"
                     >
                       <input
                         class="ant-radio-button-input"
+                        disabled=""
                         type="radio"
                         value="topology"
                       />
@@ -65,7 +66,9 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
                       />
                     </span>
                     <span>
-                      Topology
+                      <span>
+                        Topology
+                      </span>
                     </span>
                   </label>
                   <label
