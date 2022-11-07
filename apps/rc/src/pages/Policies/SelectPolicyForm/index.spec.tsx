@@ -8,7 +8,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { getPolicyRoutePath, getSelectPolicyRoutePath, PolicyOperation } from '../policyRouteUtils'
 
-import { SelectPolicyForm } from '.'
+import SelectPolicyForm from '.'
 
 const mockedUsedNavigate = jest.fn()
 const mockedTenantPath: Path = {

@@ -13,7 +13,7 @@ import {
 
 import { getPolicyListRoutePath } from '../policyRouteUtils'
 
-import { PoliciesTable } from '.'
+import PoliciesTable from '.'
 
 const mockTableResult = {
   totalCount: 3,
