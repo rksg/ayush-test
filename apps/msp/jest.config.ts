@@ -11,7 +11,7 @@ module.exports = {
     global: {
       statements: 71,
       branches: 58,
-      functions: 68,
+      functions: 62,
       lines: 72
     }
   }
