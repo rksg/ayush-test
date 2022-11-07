@@ -36,10 +36,9 @@ const HealthPage = (props: { filters? : AnalyticsFilter }) => {
   const { $t } = useIntl()
   const { filters: widgetFilters } = props
   const params = useParams()
-  let { activeTab = healthTabs[0].value } = params
-  activeTab =
+  const selectedTab =
     params[
-      widgetFilters?.urlTabParam ? widgetFilters?.urlTabParam : activeTab
+      widgetFilters?.urlTabParam ? widgetFilters?.urlTabParam : 'activeTab'
     ] ?? healthTabs[0].value
   const navigate = useNavigate()
   const basePath = useTenantLink(
@@ -73,7 +72,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter }) => {
             <ConnectedClientsOverTime filters={healthPageFilters}/>
           </GridCol>
           <GridCol col={{ span: 16 }} >
-            <Tabs activeKey={activeTab} onChange={onTabChange}>
+            <Tabs activeKey={selectedTab} onChange={onTabChange}>
               {healthTabs.map((tab) => (
                 <Tabs.TabPane
                   tab={$t(tabsMap[tab.value as HealthTab])}
@@ -88,7 +87,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter }) => {
             </UI.ThresholdTitle>
           </GridCol>
           <GridCol col={{ span: 24 }}>
-            <Kpis tab={activeTab as HealthTab} filters={healthPageFilters}/>
+            <Kpis tab={selectedTab as HealthTab} filters={healthPageFilters}/>
           </GridCol>
         </HealthPageContextProvider>
       </GridRow>
