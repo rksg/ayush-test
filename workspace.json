@@ -2,21 +2,25 @@
   "version": 2,
   "projects": {
     "analytics": "apps/analytics",
+    "analytics-components": "libs/analytics/components",
     "analytics-services": "libs/analytics/services",
     "analytics-utils": "libs/analytics/utils",
     "common-components": "libs/common/components",
-    "common-feature-toggle": "libs/common/feature-toggle",
     "common-config": "libs/common/config",
+    "common-feature-toggle": "libs/common/feature-toggle",
     "common-icons": "libs/common/icons",
     "common-store": "libs/common/store",
-    "common-types": "libs/common/types",
     "common-test-utils": "libs/common/test-utils",
+    "common-types": "libs/common/types",
     "common-utils": "libs/common/utils",
     "main": "apps/main",
+    "main-components": "libs/main/components",
     "msp": "apps/msp",
+    "msp-components": "libs/msp/components",
+    "rc": "apps/rc",
+    "rc-components": "libs/rc/components",
     "rc-services": "libs/rc/services",
     "rc-utils": "libs/rc/utils",
-    "rc": "apps/rc",
     "react-router-dom": "libs/common/react-router-dom"
   }
 }

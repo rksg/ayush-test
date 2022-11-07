@@ -15,7 +15,7 @@ exports[`Modal should render custom footer 1`] = `
     <div
       aria-labelledby="test-id"
       aria-modal="true"
-      class="ant-modal"
+      class="ant-modal styledComponents__Modal-sc-k3durc-0 fZVPqM"
       role="dialog"
       style="width: 520px;"
     >

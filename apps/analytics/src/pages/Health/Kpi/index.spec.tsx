@@ -1,23 +1,20 @@
-import { dataApiURL }                                     from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                                from '@acx-ui/analytics/utils'
-import { BrowserRouter as Router }                        from '@acx-ui/react-router-dom'
-import { Provider, store }                                from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, mockDOMWidth } from '@acx-ui/test-utils'
-import { TimeStampRange }                                 from '@acx-ui/types'
-import { DateRange }                                      from '@acx-ui/utils'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router }          from '@acx-ui/react-router-dom'
+import { Provider, store }                  from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { TimeStampRange }                   from '@acx-ui/types'
+import { DateRange }                        from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import { timeseriesApi, histogramApi } from './services'
+import { api } from './services'
 
 import KpiSection from '.'
 
-
 describe('Kpi Section', () => {
-  mockDOMWidth()
   beforeEach(() => {
-    store.dispatch(histogramApi.util.resetApiState())
-    store.dispatch(timeseriesApi.util.resetApiState())
+    store.dispatch(api.util.resetApiState())
   })
   const sampleTS = {
     time: [

@@ -22,6 +22,8 @@ export const GoogleMap: React.FC<MapProps> = ({
   const { $t } = useIntl()
   return <Wrapper
     apiKey={get('GOOGLE_MAPS_KEY')}
+    language={'en'}
+    version='3.49'
     libraries={libraries}
     render={(status) => {
       switch (status) {
@@ -54,6 +56,8 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
       <div ref={ref} style={{ height: '100%', width: '100%', margin: '0' }}/>
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
+          // set the map prop on the child component
+          // @ts-ignore
           return React.cloneElement(child, { map: mapRef.current })
         } else {
           return null
@@ -62,4 +66,3 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
     </>
   )
 }
-

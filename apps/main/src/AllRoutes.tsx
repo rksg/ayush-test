@@ -26,6 +26,9 @@ function AllRoutes () {
         <Route path='analytics/*' element={<AnalyticsBase />}>
           <Route path='*' element={<AnalyticsRoutes />} />
         </Route>
+        <Route path='devices/*' element={<DevicesBase />}>
+          <Route path='*' element={<RcRoutes />} />
+        </Route>
         <Route path='networks/*' element={<NetworksBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>

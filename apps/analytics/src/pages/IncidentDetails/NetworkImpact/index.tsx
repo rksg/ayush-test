@@ -4,9 +4,9 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
-import { Incident }                         from '@acx-ui/analytics/utils'
-import { Card, cssStr, DonutChart, Loader } from '@acx-ui/components'
-import { formatter, getIntl }               from '@acx-ui/utils'
+import { Incident }                                      from '@acx-ui/analytics/utils'
+import { Card, DonutChart, Loader, qualitativeColorSet } from '@acx-ui/components'
+import { formatter, getIntl }                            from '@acx-ui/utils'
 
 import {
   NetworkImpactChart,
@@ -15,14 +15,6 @@ import {
   NetworkImpactChartConfig
 } from './config'
 import { NetworkImpactChartData, useNetworkImpactChartsQuery } from './services'
-
-const colors = [
-  // TODO
-  cssStr('--acx-semantics-red-60'),
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-neutrals-50'),
-  cssStr('--acx-semantics-green-50')
-]
 
 export interface NetworkImpactProps {
   incident: Incident
@@ -54,6 +46,7 @@ export const transformData = (
   metric: NetworkImpactChartData
 ) => {
   const intl = getIntl()
+  const colors = qualitativeColorSet()
   return metric.data.map((record, index) => ({
     ...record,
     name: config.transformKeyFn ? config.transformKeyFn(record.name, intl) : record.name,

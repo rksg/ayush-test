@@ -1,8 +1,9 @@
+import { useRef } from 'react'
+
 import { LabelFormatterCallback, RegisteredSeriesOption }           from 'echarts'
 import { TooltipComponentFormatterCallbackParams }                  from 'echarts'
 import ReactECharts                                                 from 'echarts-for-react'
 import { CallbackDataParams, GridOption, TooltipFormatterCallback } from 'echarts/types/dist/shared'
-
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 
@@ -13,8 +14,10 @@ import {
   legendOptions,
   legendTextStyleOptions,
   tooltipOptions,
-  EventParams
-} from '../Chart/helper'
+  EventParams,
+  qualitativeColorSet
+}                 from '../Chart/helper'
+import { useLegendSelectChanged } from '../Chart/useLegendSelectChanged'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
@@ -24,7 +27,7 @@ export interface BarChartProps
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: TChartData,
   grid?: GridOption,
-  barColors: string[]
+  barColors?: string[]
   barWidth?: number
   labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
@@ -69,12 +72,16 @@ export function BarChart<TChartData extends BarChartData>
   labelFormatter,
   tooltipFormatter,
   labelRichStyle,
-  barColors,
+  barColors = qualitativeColorSet(),
   barWidth,
   onClick,
   ...props
 }: BarChartProps<TChartData>) {
+  const eChartsRef = useRef<ReactECharts>(null)
+  useLegendSelectChanged(eChartsRef)
+
   const option: EChartsOption = {
+    animation: false,
     grid: { ...gridOptions(), ...gridProps },
     dataset: {
       dimensions: data.dimensions,
@@ -122,12 +129,12 @@ export function BarChart<TChartData extends BarChartData>
         }
       }
     },
-
     series: getSeries(data, barColors, labelFormatter, labelRichStyle, !!onClick)
   }
 
   return (
     <ReactECharts
+      ref={eChartsRef}
       {...props}
       opts={{ renderer: 'svg' }}
       option={option}

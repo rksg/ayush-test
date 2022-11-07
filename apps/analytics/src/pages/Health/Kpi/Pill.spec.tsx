@@ -6,8 +6,8 @@ import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange, getIntl }               from '@acx-ui/utils'
 
-import HealthPill                      from './Pill'
-import { timeseriesApi, histogramApi } from './services'
+import HealthPill from './Pill'
+import { api }    from './services'
 
 
 const filters = {
@@ -17,10 +17,19 @@ const filters = {
   range: DateRange.last24Hours,
   filter: {}
 } as AnalyticsFilter
+const thresholdMap = {
+  timeToConnect: 2000,
+  rss: -75,
+  clientThroughput: 10000,
+  apCapacity: 50,
+  apServiceUptime: 0.995,
+  apToSZLatency: 200,
+  switchPoeUtilization: 0.8
+}
 const timeWindow: [string, string] = ['2022-01-01T00:00:00+08:00', '2022-01-02T00:00:00+08:00']
 describe('Pill with kpi threshold', () => {
   beforeEach(() => {
-    store.dispatch(histogramApi.util.resetApiState())
+    store.dispatch(api.util.resetApiState())
   })
 
   it('should render pill with data (success below threshold)', async () => {
@@ -29,7 +38,12 @@ describe('Pill with kpi threshold', () => {
     })
     render(
       <Provider>
-        <HealthPill filters={filters} kpi={'timeToConnect'} timeWindow={timeWindow}/>
+        <HealthPill
+          filters={filters}
+          kpi={'timeToConnect'}
+          timeWindow={timeWindow}
+          threshold={thresholdMap['timeToConnect']}
+        />
       </Provider>
     )
     await screen.findByText('Time To Connect')
@@ -41,7 +55,12 @@ describe('Pill with kpi threshold', () => {
     })
     render(
       <Provider>
-        <HealthPill filters={filters} kpi={'clientThroughput'} timeWindow={timeWindow}/>
+        <HealthPill
+          filters={filters}
+          kpi={'clientThroughput'}
+          timeWindow={timeWindow}
+          threshold={thresholdMap['clientThroughput']}
+        />
       </Provider>
     )
     await screen.findByText('Client Throughput')
@@ -54,7 +73,12 @@ describe('Pill with kpi threshold', () => {
     })
     render(
       <Provider>
-        <HealthPill filters={filters} kpi={'rss'} timeWindow={timeWindow}/>
+        <HealthPill
+          filters={filters}
+          kpi={'rss'}
+          timeWindow={timeWindow}
+          threshold={thresholdMap['rss']}
+        />
       </Provider>
     )
     await screen.findByText('Client RSS')
@@ -66,7 +90,12 @@ describe('Pill with kpi threshold', () => {
     })
     render(
       <Provider>
-        <HealthPill filters={filters} kpi={'timeToConnect'} timeWindow={timeWindow}/>
+        <HealthPill
+          filters={filters}
+          kpi={'timeToConnect'}
+          timeWindow={timeWindow}
+          threshold={thresholdMap['timeToConnect']}
+        />
       </Provider>
     )
     await screen.findByText('Time To Connect')
@@ -92,7 +121,7 @@ describe('Pill without kpi threshold', () => {
   }
 
   beforeEach(() => {
-    store.dispatch(timeseriesApi.util.resetApiState())
+    store.dispatch(api.util.resetApiState())
 
   })
 
@@ -100,9 +129,16 @@ describe('Pill without kpi threshold', () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleTS }
     })
-    render(<Provider>
-      <HealthPill filters={filters} kpi={'onlineAPs'} timeWindow={timeWindow}/>
-    </Provider>)
+    render(
+      <Provider>
+        <HealthPill
+          filters={filters}
+          kpi={'onlineAPs'}
+          timeWindow={timeWindow}
+          threshold={0}
+        />
+      </Provider>
+    )
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render pill with data', async () => {
@@ -111,7 +147,12 @@ describe('Pill without kpi threshold', () => {
     })
     render(
       <Provider>
-        <HealthPill filters={filters} kpi={'onlineAPs'} timeWindow={timeWindow}/>
+        <HealthPill
+          filters={filters}
+          kpi={'onlineAPs'}
+          timeWindow={timeWindow}
+          threshold={0}
+        />
       </Provider>
     )
     await screen.findByText('Online APs')
@@ -123,7 +164,12 @@ describe('Pill without kpi threshold', () => {
     })
     render(
       <Provider>
-        <HealthPill filters={filters} kpi={'onlineAPs'} timeWindow={timeWindow}/>
+        <HealthPill
+          filters={filters}
+          kpi={'onlineAPs'}
+          timeWindow={timeWindow}
+          threshold={0}
+        />
       </Provider>
     )
     await screen.findByText('Online APs')
@@ -135,7 +181,12 @@ describe('Pill without kpi threshold', () => {
     })
     render(
       <Provider>
-        <HealthPill filters={filters} kpi={'onlineAPs'} timeWindow={timeWindow}/>
+        <HealthPill
+          filters={filters}
+          kpi={'onlineAPs'}
+          timeWindow={timeWindow}
+          threshold={0}
+        />
       </Provider>
     )
     const { tooltip } = kpiConfig['onlineAPs'].pill
@@ -153,7 +204,12 @@ describe('Pill without kpi threshold', () => {
     const timeWindow: [string, string] = ['2022-04-07T09:15:00.000Z', '2022-04-07T10:00:00.000Z']
     render(
       <Provider>
-        <HealthPill filters={filters} kpi={'onlineAPs'} timeWindow={timeWindow}/>
+        <HealthPill
+          filters={filters}
+          kpi={'onlineAPs'}
+          timeWindow={timeWindow}
+          threshold={0}
+        />
       </Provider>
     )
     await screen.findByText('Online APs')

@@ -8,8 +8,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { header1 }          from '../../components/Header/__tests__/fixtures'
-import { networkHierarchy } from '../../components/NetworkFilter/__tests__/fixtures'
+import { header, networkHierarchy } from '../__tests__/fixtures'
 
 import HealthPage from '.'
 
@@ -28,7 +27,7 @@ jest.mock('./SummaryBoxes', () => ({
 describe('HealthPage', () => {
   beforeEach(() => {
     store.dispatch(dataApi.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', { data: header1.queryResult })
+    mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', { data: header.queryResult })
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
@@ -50,18 +49,18 @@ describe('HealthPage', () => {
   it('should render default tab when activeTab param is not set', async () => {
     const params = { tenantId: 'tenant-id' }
     render(<Provider><HealthPage /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     expect(screen.getByText('Overview')).toBeVisible()
   })
   it('should render other tab', async () => {
     const params = { activeTab: 'connection', tenantId: 'tenant-id' }
     render(<Provider><HealthPage /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     expect(screen.getByText('Connection')).toBeVisible()
   })
   it('should handle tab changes', async () => {
     render(<Provider><HealthPage /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     fireEvent.click(screen.getByText('Connection'))
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/analytics/health/tab/connection`,

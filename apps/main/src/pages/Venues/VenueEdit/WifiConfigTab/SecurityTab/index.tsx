@@ -1,9 +1,10 @@
 import { ReactNode, useContext, useEffect, useRef } from 'react'
 
-import { Form, FormItemProps, InputNumber, Select, Space, Tooltip } from 'antd'
-import { FormattedMessage, useIntl }                                from 'react-intl'
+import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
+import _                                                   from 'lodash'
+import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Fieldset, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
 import {
   useGetRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
@@ -43,8 +44,10 @@ export function SecurityTab () {
     setEditSecurityContextData
   } = useContext(VenueEditContext)
 
-  const [updateDenialOfServiceProtection] = useUpdateDenialOfServiceProtectionMutation()
-  const [updateVenueRogueAp] = useUpdateVenueRogueApMutation()
+  const [updateDenialOfServiceProtection, { isLoading:
+    isUpdatingDenialOfServiceProtection }] = useUpdateDenialOfServiceProtectionMutation()
+  const [updateVenueRogueAp, {
+    isLoading: isUpdatingVenueRogueAp }] = useUpdateVenueRogueApMutation()
 
   const { data: dosProctectionData } = useGetDenialOfServiceProtectionQuery({ params })
   const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
@@ -57,6 +60,14 @@ export function SecurityTab () {
       }
     }
   })
+
+  useEffect(() => {
+    if (selectOptions.length > 0) {
+      if (_.isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
+        formRef.current?.setFieldValue('roguePolicyId', selectOptions[0].key)
+      }
+    }
+  }, [selectOptions])
 
   useEffect(() => {
     if(dosProctectionData && venueRogueApData){
@@ -127,95 +138,100 @@ export function SecurityTab () {
   }
 
   return (
-    <StepsForm
-      formRef={formRef}
-      onFinish={handleUpdateSecuritySettings}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
-      onFormChange={handleChange}
-    >
-      <StepsForm.StepForm>
-        <FieldsetItem
-          name='dosProtectionEnabled'
-          label={$t({ defaultMessage: 'DoS Protection:' })}
-          initialValue={false}>
-          <FormattedMessage
-            defaultMessage={`
+    <Loader states={[{
+      isLoading: false,
+      isFetching: isUpdatingDenialOfServiceProtection || isUpdatingVenueRogueAp
+    }]}>
+      <StepsForm
+        formRef={formRef}
+        onFinish={handleUpdateSecuritySettings}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+        onFormChange={handleChange}
+      >
+        <StepsForm.StepForm>
+          <FieldsetItem
+            name='dosProtectionEnabled'
+            label={$t({ defaultMessage: 'DoS Protection:' })}
+            initialValue={false}>
+            <FormattedMessage
+              defaultMessage={`
               Block a client for <blockingPeriod></blockingPeriod> seconds
               after <failThreshold></failThreshold> repeat authentication failures
               within <checkPeriod></checkPeriod> seconds
             `}
-            values={{
-              blockingPeriod: () => (
-                <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
-                  <Form.Item
-                    style={{
-                      display: 'inline-block',
-                      verticalAlign: 'baseline'
-                    }}
-                    name='blockingPeriod'
-                    rules={[
-                      { required: true }
-                    ]}
-                    initialValue={60}
-                    children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
-                  />
-                </Tooltip>),
-              failThreshold: () => (
-                <Tooltip title={$t({ defaultMessage: 'Allowed values are 2-25' })}>
-                  <Form.Item
-                    style={{
-                      display: 'inline-block',
-                      verticalAlign: 'baseline'
-                    }}
-                    rules={[
-                      { required: true }
-                    ]}
-                    name='failThreshold'
-                    initialValue={5}
-                    children={<InputNumber min={2} max={25} style={{ width: '70px' }} />}
-                  />
-                </Tooltip>
-              ),
-              checkPeriod: () => (
-                <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
-                  <Form.Item
-                    style={{
-                      display: 'inline-block',
-                      verticalAlign: 'baseline'
-                    }}
-                    name='checkPeriod'
-                    initialValue={30}
-                    children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
-                  />
-                </Tooltip>
-              )
-            }}
-          />
-        </FieldsetItem>
-        <FieldsetItem
-          name='rogueApEnabled'
-          label={$t({ defaultMessage: 'Rogue AP Detection:' })}
-          initialValue={false}>
-          <Form.Item label={$t({ defaultMessage: 'Report SNR Threshold:' })}>
-            <Space>
-              <Form.Item noStyle
-                name='reportThreshold'
-                initialValue={0}
-                children={<InputNumber min={0} max={100} style={{ width: '120px' }} />} />
-              <span style={{ marginTop: '30px' }}>dB</span>
-            </Space>
-          </Form.Item>
-          <Form.Item
-            name='roguePolicyId'
-            label={$t({ defaultMessage: 'Report SNR Threshold:' })}
-            style={{ width: '200px' }}
-            initialValue={selected}
-          >
-            <Select children={selectOptions} />
-          </Form.Item>
-        </FieldsetItem>
-      </StepsForm.StepForm>
-    </StepsForm>
+              values={{
+                blockingPeriod: () => (
+                  <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
+                    <Form.Item
+                      style={{
+                        display: 'inline-block',
+                        verticalAlign: 'baseline'
+                      }}
+                      name='blockingPeriod'
+                      rules={[
+                        { required: true }
+                      ]}
+                      initialValue={60}
+                      children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+                    />
+                  </Tooltip>),
+                failThreshold: () => (
+                  <Tooltip title={$t({ defaultMessage: 'Allowed values are 2-25' })}>
+                    <Form.Item
+                      style={{
+                        display: 'inline-block',
+                        verticalAlign: 'baseline'
+                      }}
+                      rules={[
+                        { required: true }
+                      ]}
+                      name='failThreshold'
+                      initialValue={5}
+                      children={<InputNumber min={2} max={25} style={{ width: '70px' }} />}
+                    />
+                  </Tooltip>
+                ),
+                checkPeriod: () => (
+                  <Tooltip title={$t({ defaultMessage: 'Allowed values are 30-600' })}>
+                    <Form.Item
+                      style={{
+                        display: 'inline-block',
+                        verticalAlign: 'baseline'
+                      }}
+                      name='checkPeriod'
+                      initialValue={30}
+                      children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+                    />
+                  </Tooltip>
+                )
+              }}
+            />
+          </FieldsetItem>
+          <FieldsetItem
+            name='rogueApEnabled'
+            label={$t({ defaultMessage: 'Rogue AP Detection:' })}
+            initialValue={false}>
+            <Form.Item label={$t({ defaultMessage: 'Report SNR Threshold:' })}>
+              <Space>
+                <Form.Item noStyle
+                  name='reportThreshold'
+                  initialValue={0}
+                  children={<InputNumber min={0} max={100} style={{ width: '120px' }} />} />
+                <span style={{ marginTop: '30px' }}>dB</span>
+              </Space>
+            </Form.Item>
+            <Form.Item
+              name='roguePolicyId'
+              label={$t({ defaultMessage: 'Rogue AP Classification Profile:' })}
+              style={{ width: '200px' }}
+              initialValue={selected}
+            >
+              <Select children={selectOptions} />
+            </Form.Item>
+          </FieldsetItem>
+        </StepsForm.StepForm>
+      </StepsForm>
+    </Loader>
   )
 }
 
