@@ -1,10 +1,8 @@
-import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { dataApiURL, healthApi }            from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { Provider, store }                  from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
-
-import { getThresholdsApi } from './services'
 
 import { VenueHealth } from './index'
 
@@ -23,7 +21,7 @@ describe('Health Widget', () => {
   }
 
   beforeEach(() =>
-    store.dispatch(getThresholdsApi.util.resetApiState())
+    store.dispatch(healthApi.util.resetApiState())
   )
 
   it('should render loader', () => {

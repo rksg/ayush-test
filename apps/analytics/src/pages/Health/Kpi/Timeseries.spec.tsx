@@ -2,6 +2,7 @@ import { dataApiURL, healthApi }            from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { TimeStampRange }                   from '@acx-ui/types'
 import { DateRange }                        from '@acx-ui/utils'
 
 import KpiTimeseries, { formatYDataPoint } from './Timeseries'
@@ -31,34 +32,62 @@ describe('Kpi timeseries', () => {
     data: []
   }
 
+  const chartRef = jest.fn()
+  const setTimeWindow = jest.fn()
+  const timeWindow = ['2022-04-07T09:15:00.000Z', '2022-04-07T10:15:00.000Z'] as TimeStampRange
+  const threshold = 10
+
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
 
   })
 
-  it('should render loader', () => {
+  it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleTS }
     })
-    render(<Provider><KpiTimeseries filters={filters} kpi={'onlineAPs'}/></Provider>)
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    render(<Provider>
+      <KpiTimeseries
+        filters={filters}
+        kpi={'onlineAPs'}
+        chartRef={chartRef}
+        setTimeWindow={setTimeWindow}
+        timeWindow={timeWindow}
+        threshold={threshold}
+      />
+    </Provider>)
+    expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleTS }
     })
-    render(
-      <Provider> <KpiTimeseries filters={filters} kpi={'onlineAPs'}/></Provider>
-    )
+    render(<Provider>
+      <KpiTimeseries
+        filters={filters}
+        kpi={'onlineAPs'}
+        chartRef={chartRef}
+        setTimeWindow={setTimeWindow}
+        timeWindow={timeWindow}
+        threshold={threshold}
+      />
+    </Provider>)
     expect(await screen.findByText('80%')).toBeVisible()
   })
   it('should render chart with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleNoDataTS }
     })
-    render(
-      <Provider> <KpiTimeseries filters={filters} kpi={'onlineAPs'}/></Provider>
-    )
+    render(<Provider>
+      <KpiTimeseries
+        filters={filters}
+        kpi={'onlineAPs'}
+        chartRef={chartRef}
+        setTimeWindow={setTimeWindow}
+        timeWindow={timeWindow}
+        threshold={threshold}
+      />
+    </Provider>)
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
   it('should format y value for timeseries', async () => {

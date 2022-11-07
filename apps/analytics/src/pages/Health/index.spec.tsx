@@ -39,29 +39,29 @@ describe('HealthPage', () => {
   it('should render page header and grid layout', async () => {
     render(<Provider><HealthPage /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    expect(screen.getByText('Health')).toBeVisible()
-    expect(screen.getByTestId('Summary Boxes')).toBeVisible()
-    expect(screen.getByText('Summary TimeSeries')).toBeVisible()
-    expect(screen.getByText('Overview')).toBeVisible()
-    expect(screen.getByText('Customized SLA Threshold')).toBeVisible()
-    expect(screen.getByText('Kpi Section')).toBeVisible()
+    expect(await screen.findByText('Health')).toBeVisible()
+    expect(await screen.findByTestId('Summary Boxes')).toBeVisible()
+    expect(await screen.findByText('Summary TimeSeries')).toBeVisible()
+    expect(await screen.findByText('Overview')).toBeVisible()
+    expect(await screen.findByText('Customized SLA Threshold')).toBeVisible()
+    expect(await screen.findByText('Kpi Section')).toBeVisible()
   })
   it('should render default tab when activeTab param is not set', async () => {
     const params = { tenantId: 'tenant-id' }
     render(<Provider><HealthPage /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    expect(screen.getByText('Overview')).toBeVisible()
+    expect(await screen.findByText('Overview')).toBeVisible()
   })
   it('should render other tab', async () => {
     const params = { activeTab: 'connection', tenantId: 'tenant-id' }
     render(<Provider><HealthPage /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    expect(screen.getByText('Connection')).toBeVisible()
+    expect(await screen.findByText('Connection')).toBeVisible()
   })
   it('should handle tab changes', async () => {
     render(<Provider><HealthPage /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    fireEvent.click(screen.getByText('Connection'))
+    fireEvent.click(await screen.findByText('Connection'))
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/analytics/health/tab/connection`,
       hash: '',

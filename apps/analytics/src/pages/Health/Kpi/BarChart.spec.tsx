@@ -46,7 +46,7 @@ describe('Threshold barchart', () => {
 
   })
 
-  it('should render loader', () => {
+  it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: sampleTS }
     })
@@ -54,10 +54,10 @@ describe('Threshold barchart', () => {
       <BarChart
         filters={filters}
         kpi={'timeToConnect'}
-        threshold={thresholdMap['timeToConnect']}
+        threshold={thresholdMap['timeToConnect'] as unknown as number}
       />
     </Provider>)
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
@@ -68,7 +68,7 @@ describe('Threshold barchart', () => {
         <BarChart
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect']}
+          threshold={thresholdMap['timeToConnect'] as unknown as number}
         />
       </Provider>
     )
@@ -83,7 +83,7 @@ describe('Threshold barchart', () => {
         <BarChart
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect']}
+          threshold={thresholdMap['timeToConnect'] as unknown as number}
         />
       </Provider>
     )
@@ -94,4 +94,3 @@ describe('Threshold barchart', () => {
     expect(formatYDataPoint(0.1)).toStrictEqual('0.1%')
   })
 })
-
