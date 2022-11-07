@@ -2,23 +2,23 @@ import { PolicyType, ServiceType }           from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import SwitchesTable      from './pages/Devices/Switch/SwitchesTable'
-import ApDetails          from './pages/Devices/Wifi/ApDetails'
-import ApsTable           from './pages/Devices/Wifi/ApsTable'
-import { NetworkDetails } from './pages/Networks/NetworkDetails/NetworkDetails'
-import { NetworkForm }    from './pages/Networks/NetworkForm/NetworkForm'
-import { NetworksTable }  from './pages/Networks/NetworksTable'
-import { PoliciesTable }  from './pages/Policies/PoliciesTable'
+import SwitchesTable  from './pages/Devices/Switch/SwitchesTable'
+import ApDetails      from './pages/Devices/Wifi/ApDetails'
+import ApsTable       from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm    from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable  from './pages/Networks/NetworksTable'
+import PoliciesTable  from './pages/Policies/PoliciesTable'
 import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyOperation
 } from './pages/Policies/policyRouteUtils'
-import { SelectPolicyForm }  from './pages/Policies/SelectPolicyForm'
-import { DHCPForm }          from './pages/Services/DHCPForm/DHCPForm'
-import MdnsProxyForm         from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import { SelectServiceForm } from './pages/Services/SelectServiceForm'
+import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
+import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import SelectServiceForm from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,

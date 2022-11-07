@@ -11,7 +11,7 @@ import { getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation } from '../
 
 
 
-export function SelectPolicyForm () {
+export default function SelectPolicyForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))

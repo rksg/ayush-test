@@ -88,7 +88,7 @@ const defaultPayload = {
   ]
 }
 
-export function PoliciesTable () {
+export default function PoliciesTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
