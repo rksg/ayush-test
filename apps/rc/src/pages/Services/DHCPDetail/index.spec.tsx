@@ -115,7 +115,7 @@ describe('DHCP Detail Page', () => {
 
   it('should render detail page', async () => {
 
-    const { asFragment } = render(
+    render(
       <Provider>
         <DHCPServiceDetail />
       </Provider>, {
@@ -125,8 +125,6 @@ describe('DHCP Detail Page', () => {
 
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeInTheDocument()
     expect(await screen.findByText(('Number of Pools'))).toBeInTheDocument()
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
 })

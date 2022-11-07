@@ -409,7 +409,7 @@ describe('Server Configuration Conflict', () => {
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     expect(screen.getByText('1.1.1.1:20')).toBeVisible()
     expect(screen.getAllByDisplayValue('88888')).toHaveLength(2)
-  }, 20000)
+  })
 
   it('should open Modal with auth and accouting error message', async () => {
     mockServer.use(

@@ -1,8 +1,7 @@
 
 import React from 'react'
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import { Table, TableProps, Card, ProgressBar } from '@acx-ui/components'
 import { DHCPDetailInstances }                  from '@acx-ui/rc/utils'
@@ -19,7 +18,6 @@ export default function DHCPInstancesTable (
       key: 'VenueName',
       title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'venue',
-      width: 10,
       sorter: true,
       render: function (_data, row) {
         return (
@@ -31,58 +29,47 @@ export default function DHCPInstancesTable (
     {
       key: 'APs',
       title: $t({ defaultMessage: 'APs' }),
-      dataIndex: 'aps',
-      width: 100
+      dataIndex: 'aps'
 
     },
     {
       key: 'switches',
       title: $t({ defaultMessage: 'Switches' }),
-      dataIndex: 'switches',
-      width: 100
+      dataIndex: 'switches'
     },
     {
       key: 'serviceHealth',
       title: $t({ defaultMessage: 'Service Health' }),
-      width: 135,
       dataIndex: 'health',
       render: (data) => <ProgressBar percent={Number(data)}/>
     },
     {
       key: 'osa',
       title: $t({ defaultMessage: '# of Successful Allocations' }),
-      width: 200,
       dataIndex: 'successfulAllocations'
     },
     {
       key: 'ousa',
       title: $t({ defaultMessage: '# of Un-successful Allocations' }),
-      width: 220,
       dataIndex: 'unsuccessfulAllocations'
     },
     {
       key: 'droppedpackets',
       title: $t({ defaultMessage: 'Dropped Packets' }),
-      width: 160,
       dataIndex: 'droppedPackets',
-      render: (data) =>{
-        return data+'%'
-      }
+      render: data => <FormattedMessage defaultMessage='{number}%' values={{ number: data }} />
     },
     {
       key: 'capacity',
       title: $t({ defaultMessage: 'Capacity' }),
-      width: 100,
       dataIndex: 'capacity',
-      render: (data) =>{
-        return data+'%'
-      }
+      render: data => <FormattedMessage defaultMessage='{number}%' values={{ number: data }} />
     }
   ]
 
   return (
     <Card
-      title={$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}>
+      title={$t({ defaultMessage: 'Instances ({count})' }, { count: dataSource?.length })}>
       <div style={{ width: '100%' }}>
         <div >
           <Table
