@@ -290,7 +290,7 @@ export function ApTable (props?: ApTableProps) {
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
-      navigate(`/aps/${rows[0].serialNumber}/edit/details`, { replace: false })
+      navigate(`${rows[0].serialNumber}/edit/details`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),

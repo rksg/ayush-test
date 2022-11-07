@@ -71,6 +71,15 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    getAp: build.query<ApDeep, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     deleteAp: build.mutation<AP, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.deleteAps, params)
@@ -139,6 +148,7 @@ export const {
   useLazyApListQuery,
   useApDetailHeaderQuery,
   useAddApMutation,
+  useGetApQuery,
   useApGroupListQuery,
   useLazyApGroupListQuery,
   useWifiCapabilitiesQuery,

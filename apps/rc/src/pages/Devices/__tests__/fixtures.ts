@@ -140,3 +140,45 @@ export const apGrouplist = [{
   name: 'testgroup',
   venueId: '7ae27179b7b84de89eb7e56d9b15943d'
 }]
+
+export const apDetailsList = [{
+  apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+  clientCount: 0,
+  indoorModel: false,
+  lastUpdated: '2022-07-05T08:29:15.484Z',
+  mac: '456789876554',
+  meshRole: 'DISABLED',
+  name: 'test ap',
+  position: { xPercent: 0, yPercent: 0 },
+  radio: {
+    apRadioParams24G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
+    },
+    apRadioParams50G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
+    },
+    useVenueSettings: true
+  },
+  serialNumber: '456789876554',
+  softDeleted: false,
+  state: 'InSetupPhase',
+  subState: 'NeverContactedCloud',
+  updatedDate: '2022-07-05T08:29:15.484+0000',
+  uptime_seconds: 0,
+  venueId: '45aa5ab71bd040be8c445be8523e0b6c'
+}]
+
+export const dhcpAp = {
+}

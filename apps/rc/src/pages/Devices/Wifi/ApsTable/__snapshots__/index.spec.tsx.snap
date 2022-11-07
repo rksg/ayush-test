@@ -33,24 +33,14 @@ exports[`AP List Table should render table 1`] = `
             <div
               class="ant-space-item"
             >
-<<<<<<< HEAD
               <button
                 class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
                 type="button"
-=======
-              <a
-                href="/t/tenant-id/devices/aps/add"
->>>>>>> a477354e2d4015c4ede8f393d2462f0d55a40bb7
               >
-                <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                  type="button"
-                >
-                  <span>
-                    Add
-                  </span>
-                </button>
-              </a>
+                <span>
+                  Add
+                </span>
+              </button>
             </div>
           </div>
         </span>
