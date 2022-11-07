@@ -10,6 +10,7 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
+    "tslint": "tools/docker/tscValidator.sh",
     "extract": "formatjs extract",
     "compile": "formatjs compile",
     "extract-compile": "formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/{*.d.ts,*.spec.ts,*.spec.tsx,stories.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' && formatjs compile 'apps/main/src/locales/en-US.json' --out-file apps/main/src/locales/compiled/en-US.json"
@@ -29,7 +30,7 @@
     "@types/react-highlight-words": "0.16.4",
     "antd": "4.22.7",
     "core-js": "3.6.5",
-    "echarts": "5.3.3",
+    "echarts": "5.4.0",
     "echarts-for-react": "3.0.2",
     "fast-equals": "4.0.1",
     "file-saver": "2.0.5",

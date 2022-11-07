@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, InputNumber, Space, Switch, Tooltip } from 'antd'
-import { useIntl }                                   from 'react-intl'
+import { Form, InputNumber, Space, Switch } from 'antd'
+import { useIntl }                          from 'react-intl'
 
-import { StepsForm }                  from '@acx-ui/components'
+import { StepsForm, Tooltip }         from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { ExternalAntenna }            from '@acx-ui/rc/utils'
 

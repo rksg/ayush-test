@@ -4,9 +4,8 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
+import { ApTable }    from '@acx-ui/rc/components'
 import { TenantLink } from '@acx-ui/react-router-dom'
-
-import { ApTable } from '../../../../components/ApTable'
 
 export default function ApsTable () {
   const { $t } = useIntl()

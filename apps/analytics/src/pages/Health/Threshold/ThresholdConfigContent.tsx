@@ -1,7 +1,7 @@
 import { useIntl,  defineMessage, MessageDescriptor } from 'react-intl'
 
-import { Button }    from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+import { Button, DisabledButton } from '@acx-ui/components'
+import { formatter }              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -47,13 +47,13 @@ function ThresholdConfig ({
           onClick={onReset}>
           {$t(thresholdDescText.resetBtn)}
         </Button>
-        <Button
+        <DisabledButton
           style={{ width: 70 }}
           size='small'
           type='secondary'
           onClick={onReset}>
           {$t(thresholdDescText.applyBtn)}
-        </Button>
+        </DisabledButton>
       </UI.BtnWrapper>
     </UI.HistogramConfig>
   )

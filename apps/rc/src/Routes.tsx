@@ -3,10 +3,12 @@ import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
 import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
+import ApDetails         from './pages/Devices/Wifi/ApDetails'
 import ApsTable          from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable     from './pages/Networks/NetworksTable'
+import DHCPDetail        from './pages/Services/DHCPDetail'
 import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
 import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import SelectServiceForm from './pages/Services/SelectServiceForm'
@@ -17,6 +19,7 @@ import {
   ServiceOperation
 } from './pages/Services/serviceRouteUtils'
 import ServicesTable from './pages/Services/ServicesTable'
+
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -36,6 +39,10 @@ function DeviceRoutes () {
     <Route path='t/:tenantId'>
       <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
       <Route path='devices/aps' element={<ApsTable />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab'
+        element={<ApDetails />}
+      />
       <Route path='devices/switches' element={<SwitchesTable />} />
     </Route>
   )
@@ -99,7 +106,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
-        element={<h1>DHCP details page</h1>}
+        element={<DHCPDetail/>}
       />
     </Route>
   )

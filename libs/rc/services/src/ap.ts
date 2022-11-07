@@ -9,6 +9,7 @@ import {
   createHttpRequest,
   RequestPayload,
   TableResult,
+  ApDetailHeader,
   WifiUrlsInfo,
   CommonResult
 } from '@acx-ui/rc/utils'
@@ -35,6 +36,15 @@ export const apApi = baseApApi.injectEndpoints({
       transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
       }
+    }),
+    apDetailHeader: build.query<ApDetailHeader, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApDetailHeader, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     }),
     deleteAp: build.mutation<AP, RequestPayload>({
       query: ({ params, payload }) => {
@@ -84,12 +94,13 @@ export const apApi = baseApApi.injectEndpoints({
 
 export const {
   useApListQuery,
+  useLazyApListQuery,
+  useApDetailHeaderQuery,
   useDeleteApMutation,
   useDownloadApLogMutation,
   useRebootApMutation,
   useFactoryResetApMutation,
-  useLazyGetDhcpApQuery,
-  useLazyApListQuery
+  useLazyGetDhcpApQuery
 } = apApi
 
 

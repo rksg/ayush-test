@@ -4,6 +4,21 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import {
+  ConnectedClientsOverTime,
+  IncidentBySeverity,
+  NetworkHistory,
+  SwitchesTrafficByVolume,
+  TopSwitchModels,
+  TopApplicationsByTraffic,
+  TopSSIDsByClient,
+  TopSSIDsByTraffic,
+  TopSwitchesByError,
+  TopSwitchesByPoEUsage,
+  TopSwitchesByTraffic,
+  TrafficByVolume,
+  VenueHealth
+} from '@acx-ui/analytics/components'
+import {
   AnalyticsFilter,
   useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -12,10 +27,12 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
+import {
+  TopologyFloorPlanWidget,
+  VenueAlarmWidget,
+  VenueDevicesWidget
+} from '@acx-ui/rc/components'
 import { useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
-
-const WifiWidgets = React.lazy(() => import('rc/Widgets'))
-const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
@@ -56,21 +73,21 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
   return (
     <GridRow>
       <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
-        <WifiWidgets name='venueAlarmDonut' />
+        <VenueAlarmWidget />
       </GridCol>
       <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
-        <AnalyticsWidgets name='venueIncidentsDonut' filters={filters}/>
+        <IncidentBySeverity type='donut' filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
-        <WifiWidgets name='venueDevices'/>
+        <VenueDevicesWidget />
       </GridCol>
 
       <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
-        <AnalyticsWidgets name='venueHealth' filters={filters}/>
+        <VenueHealth filters={filters}/>
       </GridCol>
 
       <GridCol col={{ span: 24 }} style={{ height: '520px' }}>
-        <WifiWidgets name='floorPlans' />
+        <TopologyFloorPlanWidget />
       </GridCol>
     </GridRow>
   )
@@ -81,22 +98,22 @@ function ApWidgets (props: { filters: AnalyticsFilter }) {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='trafficByVolume' filters={filters}/>
+        <TrafficByVolume filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='networkHistory' filters={filters}/>
+        <NetworkHistory filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
+        <ConnectedClientsOverTime filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topApplicationsByTraffic' filters={filters}/>
+        <TopApplicationsByTraffic filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSSIDsByTraffic' filters={filters}/>
+        <TopSSIDsByTraffic filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSSIDsByClient' filters={filters}/>
+        <TopSSIDsByClient filters={filters} />
       </GridCol>
     </GridRow>
   )
@@ -107,19 +124,19 @@ function SwitchWidgets (props: { filters: AnalyticsFilter }) {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
+        <SwitchesTrafficByVolume filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/>
+        <TopSwitchesByPoEUsage filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
+        <TopSwitchesByTraffic filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByErrors'filters={filters} />
+        <TopSwitchesByError filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
+        <TopSwitchModels filters={filters} />
       </GridCol>
     </GridRow>
   )
