@@ -66,7 +66,7 @@ export default function DHCPForm () {
             $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' }) :
             $t({ defaultMessage: 'Add DHCP for Switch Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Service' }), link: '/services' }
+          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
 
