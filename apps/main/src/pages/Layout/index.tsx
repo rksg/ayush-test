@@ -16,14 +16,24 @@ import { notAvailableMsg } from '@acx-ui/utils'
 
 import { AlarmsHeaderButton } from '../../components/Alarms/HeaderButton'
 
+import LicenseBar        from './Header/LicenseBar'
+import RegionButton      from './Header/RegionButton'
 import { useMenuConfig } from './menuConfig'
 
+
 function Layout () {
+
   return (
     <SplitProvider>
       <LayoutComponent
         menuConfig={useMenuConfig()}
         content={<Outlet />}
+        leftHeaderContent={
+          <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
+            <RegionButton/>
+            <LicenseBar/>
+          </div>
+        }
         rightHeaderContent={<>
           <Tooltip title={useIntl().$t(notAvailableMsg)}>
             <LayoutUI.ButtonOutlined disabled shape='circle' icon={<SearchOutlined />} />
