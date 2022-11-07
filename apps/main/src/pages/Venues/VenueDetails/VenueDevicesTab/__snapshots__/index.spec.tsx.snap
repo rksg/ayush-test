@@ -163,19 +163,17 @@ exports[`VenueMeshAps should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
+                  class="ant-tabs-tab ant-tabs-tab-active"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-devices"
-                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-devices"
                     role="tab"
+                    tabindex="0"
                   >
-                    <span>
-                      Devices (0)
-                    </span>
+                    Devices (0)
                   </div>
                 </div>
                 <div
@@ -439,74 +437,170 @@ exports[`VenueMeshAps should render correctly 1`] = `
           role="tabpanel"
           tabindex="0"
         >
-          <span
-            class="ant-input-group ant-input-group-compact"
-          >
-            <button
-              class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              type="button"
-            >
-              <svg
-                class="styledComponents__LineChartIcon-sc-12uzynx-3 hUtzfY"
-              >
-                LineChartOutline.svg
-              </svg>
-            </button>
-            <button
-              class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              type="button"
-            >
-              <svg
-                class="styledComponents__ListIcon-sc-12uzynx-1 eqfHgC"
-              >
-                ListSolid.svg
-              </svg>
-            </button>
-            <button
-              class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only styledComponents__WhiteButton-sc-12uzynx-12 kIQrsn"
-              style="border-radius: 0 4px 4px 0;"
-              type="button"
-            >
-              <svg
-                class="styledComponents__MeshIcon-sc-12uzynx-5 kthAiW"
-              >
-                MeshSolid.svg
-              </svg>
-            </button>
-          </span>
           <div
-            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+            style="height: 100%; flex: 1; min-height: 50vh;"
           >
             <div
-              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+              style="overflow: visible; height: 0px; width: 0px;"
             >
-              <span
-                aria-label="loader"
-                role="img"
+              <div
+                style="width: 1280px; height: 800px;"
               >
                 <div
-                  aria-busy="true"
-                  aria-live="polite"
-                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                  style="text-align: left; padding: 10px 0px;"
                 >
-                  <span
-                    class="ant-spin-dot ant-spin-dot-spin"
+                  <div
+                    class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
                   >
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                  </span>
+                    <div
+                      class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+                    >
+                      <label
+                        class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+                      >
+                        <span
+                          class="ant-radio-button ant-radio-button-checked"
+                        >
+                          <input
+                            checked=""
+                            class="ant-radio-button-input"
+                            type="radio"
+                            value="apsList"
+                          />
+                          <span
+                            class="ant-radio-button-inner"
+                          />
+                        </span>
+                        <span>
+                          APs List
+                        </span>
+                      </label>
+                      <label
+                        class="ant-radio-button-wrapper"
+                      >
+                        <span
+                          class="ant-radio-button"
+                        >
+                          <input
+                            class="ant-radio-button-input"
+                            type="radio"
+                            value="apGroups"
+                          />
+                          <span
+                            class="ant-radio-button-inner"
+                          />
+                        </span>
+                        <span>
+                          AP Groups
+                        </span>
+                      </label>
+                      <label
+                        class="ant-radio-button-wrapper"
+                      >
+                        <span
+                          class="ant-radio-button"
+                        >
+                          <input
+                            class="ant-radio-button-input"
+                            type="radio"
+                            value="rogueAps"
+                          />
+                          <span
+                            class="ant-radio-button-inner"
+                          />
+                        </span>
+                        <span>
+                          Rogue APs
+                        </span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
-              </span>
+                <span
+                  class="ant-input-group ant-input-group-compact"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                    type="button"
+                  >
+                    <svg
+                      class="styledComponents__LineChartIcon-sc-12uzynx-3 hUtzfY"
+                    >
+                      LineChartOutline.svg
+                    </svg>
+                  </button>
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                    type="button"
+                  >
+                    <svg
+                      class="styledComponents__ListIcon-sc-12uzynx-1 eqfHgC"
+                    >
+                      ListSolid.svg
+                    </svg>
+                  </button>
+                  <button
+                    class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only styledComponents__WhiteButton-sc-12uzynx-12 kIQrsn"
+                    style="border-radius: 0 4px 4px 0;"
+                    type="button"
+                  >
+                    <svg
+                      class="styledComponents__MeshIcon-sc-12uzynx-5 kthAiW"
+                    >
+                      MeshSolid.svg
+                    </svg>
+                  </button>
+                </span>
+                <div
+                  class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                >
+                  <div
+                    class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                  >
+                    <span
+                      aria-label="loader"
+                      role="img"
+                    >
+                      <div
+                        aria-busy="true"
+                        aria-live="polite"
+                        class="ant-spin ant-spin-lg ant-spin-spinning"
+                      >
+                        <span
+                          class="ant-spin-dot ant-spin-dot-spin"
+                        >
+                          <i
+                            class="ant-spin-dot-item"
+                          />
+                          <i
+                            class="ant-spin-dot-item"
+                          />
+                          <i
+                            class="ant-spin-dot-item"
+                          />
+                          <i
+                            class="ant-spin-dot-item"
+                          />
+                        </span>
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="resize-triggers"
+            >
+              <div
+                class="expand-trigger"
+              >
+                <div
+                  style="width: 1281px; height: 801px;"
+                />
+              </div>
+              <div
+                class="contract-trigger"
+              />
             </div>
           </div>
         </div>
