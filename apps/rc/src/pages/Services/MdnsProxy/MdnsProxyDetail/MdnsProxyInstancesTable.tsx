@@ -33,9 +33,9 @@ export function MdnsProxyInstancesTable () {
       dataIndex: 'name',
       key: 'name',
       sorter: true,
-      render: (data) => {
-        // TODO: should return a link which can navigate to the AP detail page
-        return data
+      render: (data, row) => {
+        // eslint-disable-next-line max-len
+        return <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       }
     },
     {
@@ -97,7 +97,7 @@ export function MdnsProxyInstancesTable () {
     }
   ]
 
-  // TODO
+  // TODO:
   const dataSource: TempAp[] = [
     {
       serialNumber: '__AP_SERIAL__1',
