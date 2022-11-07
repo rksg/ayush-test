@@ -27,7 +27,7 @@ describe('VenueTabs', () => {
 
   it('should handle tab changes', async () => {
     render(<Provider>
-      <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader}/>
+      <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
     </Provider>, { route: { params } })
     await waitFor(() => screen.findByText('Networks (1)'))
     fireEvent.click(await screen.findByText('Networks (1)'))
