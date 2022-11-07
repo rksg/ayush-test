@@ -9,7 +9,8 @@ import {
   render,
   screen,
   fireEvent,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -20,7 +21,7 @@ import {
   networkDeepResponse,
   venueListResponse
 } from './__tests__/fixtures'
-import { NetworkForm } from './NetworkForm'
+import NetworkForm from './NetworkForm'
 
 describe('NetworkForm', () => {
 
@@ -94,7 +95,8 @@ describe('NetworkForm', () => {
     await userEvent.click(useCloudpathOption)
 
     const cloudpathServer = screen.getByRole('combobox')
-    fireEvent.mouseDown(cloudpathServer)
+    userEvent.click(cloudpathServer)
+    await waitFor(() => screen.findByText('cloud_01'))
     const option = screen.getByText('cloud_01')
     await userEvent.click(option)
 

@@ -46,6 +46,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }))
         return result
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -97,6 +98,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -287,6 +298,7 @@ export const {
   useUpdateNetworkMutation,
   useDeleteNetworkMutation,
   useAddNetworkVenueMutation,
+  useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,

@@ -79,6 +79,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/venue'
   },
+  updateVenue: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/venue/:venueId'
+  },
   getVenue: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId'
@@ -95,6 +99,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
   },
+  getVenueSettings: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId'
+  },
+  updateVenueMesh: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh'
+  },
+  getMeshAps: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/aps/mesh'
+  },
   getService: {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
@@ -106,6 +122,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueFloorplans: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
+  },
+  deleteFloorPlan: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
   },
   getVenueCapabilities: {
     method: 'get',
@@ -123,6 +143,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/led'
   },
+  getVenueLanPorts: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lan-port'
+  },
+  updateVenueLanPorts: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lan-port'
+  },
   getVenueNetworkList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
@@ -139,6 +167,26 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   },
+  getDenialOfServiceProtection: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection'
+  },
+  updateDenialOfServiceProtection: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection'
+  },
+  getVenueRogueAp: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
+  },
+  updateVenueRogueAp: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
+  },
+  getRoguePolicies: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/rogue-policy'
+  },
   getConfigProfiles: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
@@ -154,5 +202,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchConfigProfile: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/profile/:profileId'
+  },
+  getUserProfile: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/user-profile'
+  },
+  getApDetailHeader: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   }
 }

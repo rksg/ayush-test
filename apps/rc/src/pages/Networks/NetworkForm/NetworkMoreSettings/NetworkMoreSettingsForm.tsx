@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
-
+import { validationMessages }                                 from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -62,10 +62,10 @@ const listPayload = {
 export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData
 }) {
-  const { data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(() => {
-    if (data) {
+    if ((editMode || cloneMode) && data) {
       form.setFieldsValue({
         wlan: {
           ...data.wlan,
@@ -87,10 +87,10 @@ export function NetworkMoreSettingsForm (props: {
           'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate')
       })
     }
-  }, [data])
+  }, [data, editMode, cloneMode])
   const { $t } = useIntl()
   const [enableMoreSettings, setEnabled] = useState(false)
-  if (data) {
+  if (data && editMode) {
     return <MoreSettingsForm wlanData={props.wlanData} />
   } else {
     return <div>
@@ -225,7 +225,7 @@ export function MoreSettingsForm (props: {
               rules={[
                 { required: true }, {
                   type: 'number', max: 4094, min: 1,
-                  message: $t({ defaultMessage: 'VLAN ID must be between 1 and 4094' })
+                  message: $t(validationMessages.vlanRange)
                 }]}
               style={{ marginBottom: '15px' }}
               children={<InputNumber style={{ width: '80px' }} />}
@@ -403,7 +403,7 @@ export function MoreSettingsForm (props: {
           name={['wlan','advancedCustomization','enableNeighborReport']}
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
-          initialValue={false}
+          initialValue={true}
           children={
             <Checkbox children={$t({ defaultMessage: 'Enable 802.11k neighbor reports' })} />
           }

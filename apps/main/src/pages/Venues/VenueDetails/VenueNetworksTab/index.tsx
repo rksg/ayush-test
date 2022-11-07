@@ -8,7 +8,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
@@ -44,7 +44,7 @@ export function VenueNetworksTab () {
     useQuery: useVenueNetworkListQuery,
     defaultPayload
   })
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const [tableData, setTableData] = useState(defaultArray)
   const params = useParams()
 
@@ -115,7 +115,7 @@ export function VenueNetworksTab () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
         )
       }
     },

@@ -3,7 +3,7 @@
 exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -17,7 +17,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/a27e3eb0bd164e01ae731da8d976d3b1/venues"
+                href="/t/f378d3ba5dd44e62bacd9b625ffec681/venues"
               >
                 Venues
               </a>
@@ -66,17 +66,23 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
@@ -97,7 +103,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
         >
           <div
             class="ant-tabs-nav"
@@ -125,45 +131,51 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-analytics"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-analytics"
                     role="tab"
-                    tabindex="0"
                   >
-                    AI Analytics
+                    <span>
+                      AI Analytics
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients (0)
+                    <span>
+                      Clients (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-devices"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-devices"
                     role="tab"
-                    tabindex="0"
                   >
-                    Devices (0)
+                    <span>
+                      Devices (0)
+                    </span>
                   </div>
                 </div>
                 <div
@@ -181,31 +193,35 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline
+                    </span>
                   </div>
                 </div>
                 <div
@@ -333,7 +349,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
 exports[`VenueDetails should navigate to client tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -347,7 +363,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/a27e3eb0bd164e01ae731da8d976d3b1/venues"
+                href="/t/f378d3ba5dd44e62bacd9b625ffec681/venues"
               >
                 Venues
               </a>
@@ -396,17 +412,23 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
@@ -427,7 +449,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
         >
           <div
             class="ant-tabs-nav"
@@ -455,45 +477,51 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-analytics"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-analytics"
                     role="tab"
-                    tabindex="0"
                   >
-                    AI Analytics
+                    <span>
+                      AI Analytics
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients (0)
+                    <span>
+                      Clients (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-devices"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-devices"
                     role="tab"
-                    tabindex="0"
                   >
-                    Devices (0)
+                    <span>
+                      Devices (0)
+                    </span>
                   </div>
                 </div>
                 <div
@@ -511,31 +539,35 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline
+                    </span>
                   </div>
                 </div>
                 <div
@@ -663,7 +695,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
 exports[`VenueDetails should navigate to device tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -677,7 +709,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/a27e3eb0bd164e01ae731da8d976d3b1/venues"
+                href="/t/f378d3ba5dd44e62bacd9b625ffec681/venues"
               >
                 Venues
               </a>
@@ -726,17 +758,23 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
@@ -757,7 +795,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
         >
           <div
             class="ant-tabs-nav"
@@ -785,45 +823,51 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-analytics"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-analytics"
                     role="tab"
-                    tabindex="0"
                   >
-                    AI Analytics
+                    <span>
+                      AI Analytics
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients (0)
+                    <span>
+                      Clients (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-devices"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-devices"
                     role="tab"
-                    tabindex="0"
                   >
-                    Devices (0)
+                    <span>
+                      Devices (0)
+                    </span>
                   </div>
                 </div>
                 <div
@@ -841,31 +885,35 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline
+                    </span>
                   </div>
                 </div>
                 <div
@@ -986,14 +1034,193 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  Devices
+  <div
+    class="ant-tabs ant-tabs-top ant-tabs-card styledComponents__Tabs-sc-1afcsfc-0 jHmORd"
+  >
+    <div
+      class="ant-tabs-nav"
+      role="tablist"
+    >
+      <div
+        class="ant-tabs-nav-wrap"
+      >
+        <div
+          class="ant-tabs-nav-list"
+          style="transform: translate(0px, 0px);"
+        >
+          <div
+            class="ant-tabs-tab ant-tabs-tab-active"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-wifi"
+              aria-selected="true"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-wifi"
+              role="tab"
+              tabindex="0"
+            >
+              Wi-Fi
+            </div>
+          </div>
+          <div
+            class="ant-tabs-tab"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-switch"
+              aria-selected="false"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-switch"
+              role="tab"
+              tabindex="0"
+            >
+              Switch
+            </div>
+          </div>
+          <div
+            class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+          />
+        </div>
+      </div>
+      <div
+        class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+      >
+        <button
+          aria-controls="rc-tabs-test-more-popup"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-hidden="true"
+          class="ant-tabs-nav-more"
+          id="rc-tabs-test-more"
+          style="visibility: hidden; order: 1;"
+          tabindex="-1"
+          type="button"
+        >
+          <span
+            aria-label="ellipsis"
+            class="anticon anticon-ellipsis"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="ellipsis"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+              />
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+    <div
+      class="ant-tabs-content-holder"
+    >
+      <div
+        class="ant-tabs-content ant-tabs-content-top"
+      >
+        <div
+          aria-hidden="false"
+          aria-labelledby="rc-tabs-test-tab-wifi"
+          class="ant-tabs-tabpane ant-tabs-tabpane-active"
+          id="rc-tabs-test-panel-wifi"
+          role="tabpanel"
+          tabindex="0"
+        >
+          <span
+            class="ant-input-group ant-input-group-compact"
+          >
+            <button
+              class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              type="button"
+            >
+              <svg
+                class="styledComponents__LineChartIcon-sc-12uzynx-3 hUtzfY"
+              >
+                LineChartOutline.svg
+              </svg>
+            </button>
+            <button
+              class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              type="button"
+            >
+              <svg
+                class="styledComponents__ListIcon-sc-12uzynx-1 eqfHgC"
+              >
+                ListSolid.svg
+              </svg>
+            </button>
+            <button
+              class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only styledComponents__WhiteButton-sc-12uzynx-12 kIQrsn"
+              style="border-radius: 0 4px 4px 0;"
+              type="button"
+            >
+              <svg
+                class="styledComponents__MeshIcon-sc-12uzynx-5 kthAiW"
+              >
+                MeshSolid.svg
+              </svg>
+            </button>
+          </span>
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+          >
+            <div
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+            >
+              <span
+                aria-label="loader"
+                role="img"
+              >
+                <div
+                  aria-busy="true"
+                  aria-live="polite"
+                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                >
+                  <span
+                    class="ant-spin-dot ant-spin-dot-spin"
+                  >
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                  </span>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-switch"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-switch"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
+      </div>
+    </div>
+  </div>
 </DocumentFragment>
 `;
 
 exports[`VenueDetails should navigate to network tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1007,7 +1234,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/a27e3eb0bd164e01ae731da8d976d3b1/venues"
+                href="/t/f378d3ba5dd44e62bacd9b625ffec681/venues"
               >
                 Venues
               </a>
@@ -1056,17 +1283,23 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
@@ -1087,7 +1320,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
         >
           <div
             class="ant-tabs-nav"
@@ -1115,45 +1348,51 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-analytics"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-analytics"
                     role="tab"
-                    tabindex="0"
                   >
-                    AI Analytics
+                    <span>
+                      AI Analytics
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients (0)
+                    <span>
+                      Clients (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-devices"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-devices"
                     role="tab"
-                    tabindex="0"
                   >
-                    Devices (0)
+                    <span>
+                      Devices (0)
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1171,31 +1410,35 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1357,7 +1600,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
 exports[`VenueDetails should navigate to service tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1371,7 +1614,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/a27e3eb0bd164e01ae731da8d976d3b1/venues"
+                href="/t/f378d3ba5dd44e62bacd9b625ffec681/venues"
               >
                 Venues
               </a>
@@ -1420,17 +1663,23 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
@@ -1451,7 +1700,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
         >
           <div
             class="ant-tabs-nav"
@@ -1479,45 +1728,51 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-analytics"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-analytics"
                     role="tab"
-                    tabindex="0"
                   >
-                    AI Analytics
+                    <span>
+                      AI Analytics
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients (0)
+                    <span>
+                      Clients (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-devices"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-devices"
                     role="tab"
-                    tabindex="0"
                   >
-                    Devices (0)
+                    <span>
+                      Devices (0)
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1535,31 +1790,35 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1687,7 +1946,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
 exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1701,7 +1960,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/a27e3eb0bd164e01ae731da8d976d3b1/venues"
+                href="/t/f378d3ba5dd44e62bacd9b625ffec681/venues"
               >
                 Venues
               </a>
@@ -1750,17 +2009,23 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
@@ -1781,7 +2046,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
         >
           <div
             class="ant-tabs-nav"
@@ -1809,45 +2074,51 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-analytics"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-analytics"
                     role="tab"
-                    tabindex="0"
                   >
-                    AI Analytics
+                    <span>
+                      AI Analytics
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients (0)
+                    <span>
+                      Clients (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-devices"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-devices"
                     role="tab"
-                    tabindex="0"
                   >
-                    Devices (0)
+                    <span>
+                      Devices (0)
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1865,31 +2136,35 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline
+                    </span>
                   </div>
                 </div>
                 <div
@@ -2017,7 +2292,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
 exports[`VenueDetails should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -2031,7 +2306,7 @@ exports[`VenueDetails should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/a27e3eb0bd164e01ae731da8d976d3b1/venues"
+                href="/t/f378d3ba5dd44e62bacd9b625ffec681/venues"
               >
                 Venues
               </a>
@@ -2082,17 +2357,23 @@ exports[`VenueDetails should render correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <span
+                style="cursor: not-allowed;"
               >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
@@ -2113,7 +2394,7 @@ exports[`VenueDetails should render correctly 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
         >
           <div
             class="ant-tabs-nav"
@@ -2141,45 +2422,51 @@ exports[`VenueDetails should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-analytics"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-analytics"
                     role="tab"
-                    tabindex="0"
                   >
-                    AI Analytics
+                    <span>
+                      AI Analytics
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients (2)
+                    <span>
+                      Clients (2)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-devices"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-devices"
                     role="tab"
-                    tabindex="0"
                   >
-                    Devices (1)
+                    <span>
+                      Devices (1)
+                    </span>
                   </div>
                 </div>
                 <div
@@ -2197,31 +2484,35 @@ exports[`VenueDetails should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline
+                    </span>
                   </div>
                 </div>
                 <div
@@ -2398,7 +2689,7 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 88px;"
       >
         <div
-          data-testid="networks-venueHealth"
+          data-testid="analytics-venueHealth"
           title="venueHealth"
         />
       </div>
@@ -2422,7 +2713,7 @@ exports[`VenueDetails should render correctly 1`] = `
     style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-large"

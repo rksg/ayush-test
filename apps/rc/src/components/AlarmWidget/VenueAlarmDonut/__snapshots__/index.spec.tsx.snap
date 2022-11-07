@@ -43,23 +43,23 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="styledComponents__NoDataWrapper-sc-nsxigl-0 bdmYWy"
+              class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-nsxigl-2 fysri"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
               >
                 <div
                   class="ant-space-item"
                 >
                   <svg
-                    class="styledComponents__GreenTickIcon-sc-nsxigl-1 brkrJs"
+                    class="styledComponents__GreenTickIcon-sc-m7jeli-4 dlTCha"
                   >
                     CheckMarkCircleSolid.svg
                   </svg>
                 </div>
               </div>
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-nsxigl-2 fysri"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoActiveTextWrapper-sc-m7jeli-3 iRdLpd kuAEvr"
               >
                 <div
                   class="ant-space-item"
@@ -76,7 +76,7 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
               class="expand-trigger"
             >
               <div
-                style="width: 281px; height: 281px;"
+                style="width: 1281px; height: 801px;"
               />
             </div>
             <div

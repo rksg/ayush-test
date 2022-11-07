@@ -1,0 +1,833 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NetworkingTab should render correctly 1`] = `
+<DocumentFragment>
+  <section
+    class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
+  >
+    <div
+      class="ant-pro-steps-form"
+    >
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+          >
+            <div
+              class="ant-steps ant-steps-vertical ant-steps-dot"
+            >
+              <div
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+              >
+                <div
+                  class="ant-steps-item-container"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="ant-pro-steps-form-container"
+          >
+            <div
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="0"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-row Grid__GridRow-sc-5irhjd-2"
+                  style="margin: -10px -10px -10px -10px;"
+                >
+                  <div
+                    class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div>
+                        <div
+                          aria-hidden="true"
+                          style="width: 0px; height: 0px;"
+                        />
+                        <div
+                          class="ant-affix"
+                          style="position: fixed; top: 275px; width: 0px; height: 0px;"
+                        >
+                          <div
+                            class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 heWRRH"
+                            style="max-height: calc(100vh - 275px);"
+                          >
+                            <div
+                              class="ant-anchor"
+                            >
+                              <div
+                                class="ant-anchor-ink"
+                              >
+                                <span
+                                  class="ant-anchor-ink-ball visible"
+                                  style="top: 395.5px;"
+                                />
+                              </div>
+                              <div
+                                class="ant-anchor-link ant-anchor-link-active"
+                              >
+                                <a
+                                  class="ant-anchor-link-title ant-anchor-link-title-active"
+                                  href="#LAN-Ports"
+                                  title="LAN Ports"
+                                >
+                                  LAN Ports
+                                </a>
+                              </div>
+                              <div
+                                class="ant-anchor-link"
+                              >
+                                <a
+                                  class="ant-anchor-link-title"
+                                  href="#Cellular-Options"
+                                  title="Cellular Options"
+                                >
+                                  Cellular Options
+                                </a>
+                              </div>
+                              <div
+                                class="ant-anchor-link"
+                              >
+                                <a
+                                  class="ant-anchor-link-title"
+                                  href="#Mesh-Network"
+                                  title="Mesh Network"
+                                >
+                                  Mesh Network
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+                        id="LAN-Ports"
+                      >
+                        <h3
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                          id="lan-ports"
+                        >
+                          LAN Ports
+                        </h3>
+                        <div
+                          class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        >
+                          <div
+                            class="ant-row"
+                            style="margin-left: -12px; margin-right: -12px;"
+                          >
+                            <div
+                              class="ant-col ant-col-8"
+                              style="padding-left: 12px; padding-right: 12px;"
+                            >
+                              <div
+                                class="ant-form-item"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-label"
+                                  >
+                                    <label
+                                      class=""
+                                      for="0_model"
+                                      title="AP Model"
+                                    >
+                                      AP Model
+                                    </label>
+                                  </div>
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <div
+                                          class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                          data-testid="apModelSelect"
+                                        >
+                                          <div
+                                            class="ant-select-selector"
+                                          >
+                                            <span
+                                              class="ant-select-selection-search"
+                                            >
+                                              <input
+                                                aria-activedescendant="0_model_list_0"
+                                                aria-autocomplete="list"
+                                                aria-controls="0_model_list"
+                                                aria-haspopup="listbox"
+                                                aria-owns="0_model_list"
+                                                autocomplete="off"
+                                                class="ant-select-selection-search-input"
+                                                id="0_model"
+                                                readonly=""
+                                                role="combobox"
+                                                style="opacity: 0;"
+                                                type="search"
+                                                unselectable="on"
+                                                value=""
+                                              />
+                                            </span>
+                                            <span
+                                              class="ant-select-selection-item"
+                                              title="No model selected"
+                                            >
+                                              No model selected
+                                            </span>
+                                          </div>
+                                          <span
+                                            aria-hidden="true"
+                                            class="ant-select-arrow"
+                                            style="user-select: none;"
+                                            unselectable="on"
+                                          >
+                                            <span
+                                              aria-label="down"
+                                              class="anticon anticon-down ant-select-suffix"
+                                              role="img"
+                                            >
+                                              <svg
+                                                aria-hidden="true"
+                                                data-icon="down"
+                                                fill="currentColor"
+                                                focusable="false"
+                                                height="1em"
+                                                viewBox="64 64 896 896"
+                                                width="1em"
+                                              >
+                                                <path
+                                                  d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                                />
+                                              </svg>
+                                            </span>
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-row"
+                            style="margin-left: -12px; margin-right: -12px;"
+                          >
+                            <div
+                              class="ant-col ant-col-24"
+                              style="padding-left: 12px; padding-right: 12px;"
+                            >
+                                
+                            </div>
+                            <div
+                              class="ant-col ant-col-24"
+                              style="padding-left: 12px; padding-right: 12px;"
+                            >
+                              <div
+                                class="ant-col ant-col-8"
+                                style="padding-left: 12px; padding-right: 12px;"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                  style="padding: 16px 0px;"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <div
+                                      class="ant-image"
+                                    >
+                                      <img
+                                        alt="AP LAN port default image"
+                                        class="ant-image-img"
+                                        src="ap-model-placeholder.png"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+                        id="Cellular-Options"
+                      >
+                        <h3
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                          id="cellular-options"
+                        >
+                          Cellular Options
+                        </h3>
+                        <div
+                          class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        >
+                          <section
+                            class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
+                          >
+                            <div
+                              class="ant-pro-steps-form"
+                            >
+                              <div
+                                class="ant-row"
+                                style="margin-left: -12px; margin-right: -12px;"
+                              >
+                                <div
+                                  class="ant-col ant-col-24"
+                                  style="padding-left: 12px; padding-right: 12px;"
+                                >
+                                  <div
+                                    class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+                                  >
+                                    <div
+                                      class="ant-steps ant-steps-vertical ant-steps-dot"
+                                    >
+                                      <div
+                                        class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                                      >
+                                        <div
+                                          class="ant-steps-item-container"
+                                        >
+                                          <div
+                                            class="ant-steps-item-tail"
+                                          />
+                                          <div
+                                            class="ant-steps-item-icon"
+                                          >
+                                            <span
+                                              class="ant-steps-icon"
+                                            >
+                                              <span
+                                                class="ant-steps-icon-dot"
+                                              />
+                                            </span>
+                                          </div>
+                                          <div
+                                            class="ant-steps-item-content"
+                                          >
+                                            <div
+                                              class="ant-steps-item-title"
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="ant-row"
+                                style="margin-left: -12px; margin-right: -12px;"
+                              >
+                                <div
+                                  class="ant-col ant-col-24"
+                                  style="padding-left: 12px; padding-right: 12px;"
+                                >
+                                  <div
+                                    class="ant-pro-steps-form-container"
+                                  >
+                                    <div
+                                      class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+                                    >
+                                      <input
+                                        style="display: none;"
+                                        type="text"
+                                      />
+                                      <div
+                                        data-testid="primarySim"
+                                      >
+                                        <div
+                                          class="ant-form-item"
+                                        >
+                                          <div
+                                            class="ant-row ant-form-item-row"
+                                          >
+                                            <div
+                                              class="ant-col ant-form-item-control"
+                                            >
+                                              <div
+                                                class="ant-form-item-control-input"
+                                              >
+                                                <div
+                                                  class="ant-form-item-control-input-content"
+                                                >
+                                                  <fieldset
+                                                    class="styledComponents__Fieldset-sc-azs30w-0"
+                                                  >
+                                                    <legend
+                                                      class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
+                                                    >
+                                                      <label>
+                                                        1 Primary SIM
+                                                        <button
+                                                          aria-checked="false"
+                                                          class="ant-switch"
+                                                          role="switch"
+                                                          type="button"
+                                                        >
+                                                          <div
+                                                            class="ant-switch-handle"
+                                                          />
+                                                          <span
+                                                            class="ant-switch-inner"
+                                                          />
+                                                        </button>
+                                                      </label>
+                                                    </legend>
+                                                  </fieldset>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="ant-form-item"
+                                      >
+                                        <div
+                                          class="ant-row ant-form-item-row"
+                                        >
+                                          <div
+                                            class="ant-col ant-form-item-control"
+                                          >
+                                            <div
+                                              class="ant-form-item-control-input"
+                                            >
+                                              <div
+                                                class="ant-form-item-control-input-content"
+                                              >
+                                                <fieldset
+                                                  class="styledComponents__Fieldset-sc-azs30w-0"
+                                                >
+                                                  <legend
+                                                    class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
+                                                  >
+                                                    <label>
+                                                      2 Secondary SIM
+                                                      <button
+                                                        aria-checked="false"
+                                                        class="ant-switch"
+                                                        role="switch"
+                                                        type="button"
+                                                      >
+                                                        <div
+                                                          class="ant-switch-handle"
+                                                        />
+                                                        <span
+                                                          class="ant-switch-inner"
+                                                        />
+                                                      </button>
+                                                    </label>
+                                                  </legend>
+                                                </fieldset>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="ant-form-item"
+                                      >
+                                        <div
+                                          class="ant-row ant-form-item-row"
+                                        >
+                                          <div
+                                            class="ant-col ant-form-item-label"
+                                          >
+                                            <label
+                                              class="ant-form-item-required"
+                                              for="0_editData_wanConnection"
+                                              title="WAN Connection:"
+                                            >
+                                              WAN Connection:
+                                            </label>
+                                          </div>
+                                          <div
+                                            class="ant-col ant-form-item-control"
+                                          >
+                                            <div
+                                              class="ant-form-item-control-input"
+                                            >
+                                              <div
+                                                class="ant-form-item-control-input-content"
+                                              >
+                                                <div
+                                                  class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                                  style="width: 330px;"
+                                                >
+                                                  <div
+                                                    class="ant-select-selector"
+                                                  >
+                                                    <span
+                                                      class="ant-select-selection-search"
+                                                    >
+                                                      <input
+                                                        aria-activedescendant="0_editData_wanConnection_list_0"
+                                                        aria-autocomplete="list"
+                                                        aria-controls="0_editData_wanConnection_list"
+                                                        aria-haspopup="listbox"
+                                                        aria-owns="0_editData_wanConnection_list"
+                                                        autocomplete="off"
+                                                        class="ant-select-selection-search-input"
+                                                        id="0_editData_wanConnection"
+                                                        readonly=""
+                                                        role="combobox"
+                                                        style="opacity: 0;"
+                                                        type="search"
+                                                        unselectable="on"
+                                                        value=""
+                                                      />
+                                                    </span>
+                                                    <span
+                                                      class="ant-select-selection-item"
+                                                      title="Ethernet (Primary) with cellular failover"
+                                                    >
+                                                      Ethernet (Primary) with cellular failover
+                                                    </span>
+                                                  </div>
+                                                  <span
+                                                    aria-hidden="true"
+                                                    class="ant-select-arrow"
+                                                    style="user-select: none;"
+                                                    unselectable="on"
+                                                  >
+                                                    <span
+                                                      aria-label="down"
+                                                      class="anticon anticon-down ant-select-suffix"
+                                                      role="img"
+                                                    >
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        data-icon="down"
+                                                        fill="currentColor"
+                                                        focusable="false"
+                                                        height="1em"
+                                                        viewBox="64 64 896 896"
+                                                        width="1em"
+                                                      >
+                                                        <path
+                                                          d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </span>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="ant-form-item"
+                                      >
+                                        <div
+                                          class="ant-row ant-form-item-row"
+                                        >
+                                          <div
+                                            class="ant-col ant-form-item-label"
+                                          >
+                                            <label
+                                              class="ant-form-item-required"
+                                              for="0_editData_primaryWanRecoveryTimer"
+                                              title="Primary WAN Recovery Timer:"
+                                            >
+                                              Primary WAN Recovery Timer:
+                                            </label>
+                                          </div>
+                                          <div
+                                            class="ant-col ant-form-item-control"
+                                          >
+                                            <div
+                                              class="ant-form-item-control-input"
+                                            >
+                                              <div
+                                                class="ant-form-item-control-input-content"
+                                              >
+                                                <div
+                                                  class="ant-input-number ant-input-number-in-form-item"
+                                                  style="width: 150px;"
+                                                >
+                                                  <div
+                                                    class="ant-input-number-handler-wrap"
+                                                  >
+                                                    <span
+                                                      aria-disabled="false"
+                                                      aria-label="Increase Value"
+                                                      class="ant-input-number-handler ant-input-number-handler-up"
+                                                      role="button"
+                                                      unselectable="on"
+                                                    >
+                                                      <span
+                                                        aria-label="up"
+                                                        class="anticon anticon-up ant-input-number-handler-up-inner"
+                                                        role="img"
+                                                      >
+                                                        <svg
+                                                          aria-hidden="true"
+                                                          data-icon="up"
+                                                          fill="currentColor"
+                                                          focusable="false"
+                                                          height="1em"
+                                                          viewBox="64 64 896 896"
+                                                          width="1em"
+                                                        >
+                                                          <path
+                                                            d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                                          />
+                                                        </svg>
+                                                      </span>
+                                                    </span>
+                                                    <span
+                                                      aria-disabled="false"
+                                                      aria-label="Decrease Value"
+                                                      class="ant-input-number-handler ant-input-number-handler-down"
+                                                      role="button"
+                                                      unselectable="on"
+                                                    >
+                                                      <span
+                                                        aria-label="down"
+                                                        class="anticon anticon-down ant-input-number-handler-down-inner"
+                                                        role="img"
+                                                      >
+                                                        <svg
+                                                          aria-hidden="true"
+                                                          data-icon="down"
+                                                          fill="currentColor"
+                                                          focusable="false"
+                                                          height="1em"
+                                                          viewBox="64 64 896 896"
+                                                          width="1em"
+                                                        >
+                                                          <path
+                                                            d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                                          />
+                                                        </svg>
+                                                      </span>
+                                                    </span>
+                                                  </div>
+                                                  <div
+                                                    class="ant-input-number-input-wrap"
+                                                  >
+                                                    <input
+                                                      aria-valuenow="60"
+                                                      autocomplete="off"
+                                                      class="ant-input-number-input"
+                                                      id="0_editData_primaryWanRecoveryTimer"
+                                                      role="spinbutton"
+                                                      step="1"
+                                                      value="60"
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 12px;"
+                                  >
+                                    <button
+                                      class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                                      type="button"
+                                    >
+                                      <span>
+                                        Finish
+                                      </span>
+                                    </button>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <button
+                                      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                      type="button"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </section>
+                        </div>
+                      </div>
+                      <div
+                        class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
+                        id="Mesh-Network"
+                      >
+                        <h3
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
+                          id="mesh-network"
+                        >
+                          Mesh Network
+                        </h3>
+                        <div
+                          class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        >
+                          <div
+                            class="ant-form-item"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-label"
+                              >
+                                <label
+                                  class=""
+                                  title="Mesh Network"
+                                >
+                                  Mesh Network
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <button
+                                      aria-checked="true"
+                                      class="ant-switch ant-switch-checked"
+                                      data-testid="mesh-switch"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+      >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center"
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 12px;"
+          >
+            <button
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+              type="button"
+            >
+              <span>
+                Save
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <button
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              type="button"
+            >
+              <span>
+                Cancel
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</DocumentFragment>
+`;

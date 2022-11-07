@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom'
 
 import {
   AnalyticsFilter,
-  AnalyticsFilterProvider,
   useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   GridRow,
@@ -46,12 +45,10 @@ export function VenueOverviewTab () {
       children: <SwitchWidgets filters={venueSwitchFilter}/>
     }
   ]
-  return (
-    <AnalyticsFilterProvider>
-      <CommonDashboardWidgets filters={venueApFilter}/>
-      <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
-    </AnalyticsFilterProvider>
-  )
+  return (<>
+    <CommonDashboardWidgets filters={venueApFilter}/>
+    <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
+  </>)
 }
 
 function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
@@ -69,7 +66,7 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
       </GridCol>
 
       <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
-        <WifiWidgets name='venueHealth' />
+        <AnalyticsWidgets name='venueHealth' filters={filters}/>
       </GridCol>
 
       <GridCol col={{ span: 24 }} style={{ height: '520px' }}>

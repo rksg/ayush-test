@@ -2,16 +2,16 @@ import {
   Button,
   Divider as AntDivider,
   Input,
-  Select,
-  Tooltip as AntTooltip
+  Select
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { InformationOutlined, CancelCircle, SearchOutlined } from '@acx-ui/icons'
 
 import { Subtitle } from '../Subtitle'
+import { Tooltip }  from '../Tooltip'
 
-export const InformationTooltip = styled(AntTooltip).attrs({ children: <InformationOutlined /> })``
+export const InformationTooltip = styled(Tooltip).attrs({ children: <InformationOutlined /> })``
 
 export const TitleWithTooltip = styled.span`
   display: inline-flex;
@@ -66,36 +66,53 @@ export const ActionButton = styled.button.attrs({ type: 'button' })`
   background-color: transparent;
   color: var(--acx-accents-blue-50);
   cursor: pointer;
+  &[disabled] {
+    color: var(--acx-neutrals-50);
+    cursor: not-allowed;
+  }
 `
 
-export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })``
+export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })`
+  position: absolute;
+  left: 24px;
+  top: 16px;
+`
+export const SettingSection = styled.div`
+  border-top: 1px solid var(--acx-neutrals-20);
+  padding: 11px 16px 13px 16px;
+  > .ant-checkbox-wrapper {
+    padding: 0;
+  }
+`
 
 export const TableSettingsGlobalOverride = createGlobalStyle`
   .ant-pro-table-column-setting {
     &-overlay {
       .ant-popover-inner {
-        padding-bottom: 48px;
+        padding-top: 40px;
+        display: flex;
+        flex-direction: column-reverse;
       }
       .ant-popover-title {
         min-height: unset;
-        padding: 16px 24px;
-        padding-bottom: 8px;
         border-bottom: 0;
+        padding: 0;
       }
       .ant-popover-inner-content {
         padding-bottom: 8px;
-        border-bottom: 1px solid var(--acx-neutrals-20);
       }
       .ant-tree-switcher { display: none; }
       .ant-tree-treenode-disabled {
         .ant-tree-draggable-icon { visibility: hidden; }
       }
-      .ant-tree-treenode {
-        padding: 4px 0;
-        align-items: center;
+      .ant-tree-treenode, .ant-checkbox-wrapper {
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
         font-weight: var(--acx-body-font-weight);
+      }
+      .ant-tree-treenode {
+        padding: 4px 0;
+        align-items: center;
         &:hover { background-color: unset; }
         .ant-tree-checkbox { margin-left: 24px; }
         .ant-tree-draggable-icon ~ .ant-tree-checkbox { margin-left: 0; }
@@ -109,12 +126,8 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
 
     &-title {
       height: unset;
-      .ant-checkbox-wrapper { display: none; }
-      .ant-btn {
-        position: absolute;
-        left: 16px;
-        bottom: 13px;
-      }
+      > .ant-space, > .ant-space > .ant-space-item { width: 100%; }
+      > .ant-checkbox-wrapper { display: none; }
       h5${TableSettingTitle} {
         margin-bottom: 0;
       }
@@ -130,7 +143,7 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
 const actionsHeight = '36px'
 
 type StyledTable = {
-  $type: 'tall' | 'compact' | 'tooltip' | 'form',
+  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered',
   $rowSelectionActive: boolean
 }
 
@@ -304,11 +317,45 @@ const formStyle = css`
   }
 `
 
+const compactBorderedStyle = css`
+  .ant-pro-table {
+    .ant-table {
+      &-thead > tr:first-child > th,
+      &-thead > tr:last-child > th {
+        font-size: var(--acx-body-5-font-size);
+        line-height: var(--acx-body-5-line-height);
+        font-weight: var(--acx-body-font-weight-bold);
+        padding-top: 6px;
+        padding-bottom: 6px;
+      }
+
+      &-tbody > tr > td {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+        padding-top: 6px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--acx-neutrals-30) !important;
+      }
+
+      .ant-table-thead > tr:last-child > th, .ant-table-tbody > tr:last-child > td {
+        border-bottom: 0px !important;
+      }
+
+      .ant-table-tbody > tr:first-child {
+        display: none;
+      }
+    }
+  }
+
+`
+
 const styles = {
   tall: tallStyle,
   compact: compactStyle,
   tooltip: tooltipStyle,
-  form: formStyle
+  form: formStyle,
+  compactBordered: compactBorderedStyle
 }
 
 export const Header = styled.div`
@@ -363,11 +410,10 @@ export const Wrapper = styled.div<StyledTable>`
         }
 
         &.ant-table-column-has-sorters {
-          background: unset;
-
           .ant-table-column-sorters {
-            display: unset;
-            white-space: nowrap;
+            display: flex;
+            justify-content: left;
+            align-items: center;
 
             .ant-table-column-title { flex: unset; }
 
@@ -407,6 +453,15 @@ export const Wrapper = styled.div<StyledTable>`
 
         a {
           font-size: unset;
+        }
+
+        .ant-badge.ant-badge-status:not(.acx-chart-tooltip) {
+          display: flex;
+          justify-content: left;
+          align-items: center;
+          .ant-badge-status-dot {
+            flex-shrink: 0;
+          }
         }
       }
     }

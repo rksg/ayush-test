@@ -1,0 +1,11 @@
+export enum FacilityEnum {
+  KEEP_ORIGINAL = 'KEEP_ORIGINAL',
+  LOCAL0 = 'LOCAL0',
+  LOCAL1 = 'LOCAL1',
+  LOCAL2 = 'LOCAL2',
+  LOCAL3 = 'LOCAL3',
+  LOCAL4 = 'LOCAL4',
+  LOCAL5 = 'LOCAL5',
+  LOCAL6 = 'LOCAL6',
+  LOCAL7 = 'LOCAL7',
+}

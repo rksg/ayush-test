@@ -40,8 +40,7 @@ export default function TopApplicationsByTrafficWidget ({
     {
       title: $t({ defaultMessage: 'Traffic History' }),
       dataIndex: 'trafficHistory',
-      key: 'trafficHistory',
-      width: 100
+      key: 'trafficHistory'
     },
     {
       title: $t({ defaultMessage: 'Clients' }),
@@ -70,7 +69,6 @@ export default function TopApplicationsByTrafficWidget ({
         trafficHistory: <SparklineChart
           key={index}
           data={sparkLineData}
-          isTrendLine={true}
           style={sparklineChartStyle}/>
       }
     })

@@ -1,6 +1,6 @@
-import ReactECharts                   from 'echarts-for-react'
-import _                              from 'lodash'
-import { useIntl, MessageDescriptor } from 'react-intl'
+import ReactECharts          from 'echarts-for-react'
+import _                     from 'lodash'
+import { MessageDescriptor } from 'react-intl'
 
 import { incidentSeverities } from '@acx-ui/analytics/utils'
 
@@ -40,11 +40,11 @@ interface StackedBarOptionalProps {
 }
 
 const defaultProps: StackedBarOptionalProps = {
-  animation: true,
+  animation: false,
   showLabels: true,
   showTotal: true,
   showTooltip: true,
-  barWidth: 8
+  barWidth: 10
 }
 
 StackedBarChart.defaultProps = { ...defaultProps }
@@ -146,8 +146,8 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
     silent: !showTooltip,
     color: barColors,
     grid: {
-      left: showLabels ? 10 : 0,
-      right: showLabels ? 20 : 0,
+      left: showLabels ? 5 : 0,
+      right: showLabels ? 25 : 0,
       bottom: 0,
       top: 0,
       containLabel: showLabels
@@ -165,6 +165,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
         show: false
       },
       axisLabel: {
+        show: showLabels,
         formatter: '{label|{value}}',
         rich: {
           label: {
@@ -178,8 +179,8 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
     tooltip: {
       ...tooltipOptions(),
       trigger: 'item',
+      position: 'top',
       formatter: stackedBarTooltipFormatter(
-        useIntl(),
         dataFormatter,
         props.tooltipFormat),
       show: showTooltip

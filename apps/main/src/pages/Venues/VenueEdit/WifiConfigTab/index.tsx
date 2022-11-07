@@ -1,14 +1,16 @@
 import { useContext } from 'react'
 
-import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
 
 import { AdvancedSettingForm } from './AdvancedTab/AdvancedSettingForm'
+import { NetworkingTab }       from './NetworkingTab'
 import { RadioTab }            from './RadioTab/RadioTab'
+import { SecurityTab }         from './SecurityTab'
 
 export function WifiConfigTab () {
   const { $t } = useIntl()
@@ -60,10 +62,10 @@ export function WifiConfigTab () {
         <RadioTab />
       </Tabs.TabPane>
       <Tabs.TabPane tab={tabTitleMap('networking')} key='networking'>
-        {$t({ defaultMessage: 'Networking' })}
+        <NetworkingTab />
       </Tabs.TabPane>
       <Tabs.TabPane tab={tabTitleMap('security')} key='security'>
-        {$t({ defaultMessage: 'Security' })}
+        <SecurityTab />
       </Tabs.TabPane>
       <Tabs.TabPane tab={tabTitleMap('servers')} key='servers'>
         {$t({ defaultMessage: 'External Servers' })}

@@ -39,7 +39,7 @@ export function LoadControlForm () {
             MaxRateEnum.PER_AP : MaxRateEnum.UNLIMITED,
           totalUplinkLimited: get(data, 'wlan.advancedCustomization.totalUplinkRateLimiting') > 0,
           totalDownlinkLimited: get(data,
-            'wlan.advancedCustomization.totalDownlinkRateLimitingValue') > 0
+            'wlan.advancedCustomization.totalDownlinkRateLimiting') > 0
         })
       }
     }
@@ -87,7 +87,7 @@ export function LoadControlForm () {
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'enableBandBalancing']}
         valuePropName='checked'
-        initialValue={false}
+        initialValue={true}
         children={
           <Checkbox
             children={$t({ defaultMessage: 'Enable load balancing between all radios' })} />
@@ -96,7 +96,7 @@ export function LoadControlForm () {
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'clientLoadBalancingEnable']}
         valuePropName='checked'
-        initialValue={false}
+        initialValue={true}
         children={
           <Checkbox children={$t({ defaultMessage: 'Enable load balancing between APs' })} />
         }

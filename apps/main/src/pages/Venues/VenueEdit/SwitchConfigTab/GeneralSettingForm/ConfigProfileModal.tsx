@@ -1,12 +1,16 @@
 import { useState, Key } from 'react'
 
-import { Radio, Space, Tabs, Tooltip, Typography } from 'antd'
-import _                                           from 'lodash'
-import { FormattedMessage }                        from 'react-intl'
+import { Radio, Space, Typography } from 'antd'
+import _                            from 'lodash'
+import { FormattedMessage }         from 'react-intl'
 
-import { Button, cssStr, Modal, Table, TableProps }                                       from '@acx-ui/components'
-import { ConfigurationProfile, ProfileTypeEnum, VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { getIntl }                                                                        from '@acx-ui/utils'
+import { Button,
+  cssStr, Modal,
+  Table, TableProps,
+  Tabs, Tooltip } from '@acx-ui/components'
+import { ConfigurationProfile, ProfileTypeEnum,
+  VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { Picker, Notification  } from './styledComponents'
 
@@ -97,7 +101,7 @@ export function ConfigProfileModal (props: {
         title={disableButton ? $t(VenueMessages.MODEL_OVERLAPPING_TOOLTIP) : null}
       >
         <Space style={{ marginLeft: '8px' }}> {/* Fix Tooltip on disabled button */}
-          <Button key='submit' type='primary' disabled={disableButton} onClick={onOk}>
+          <Button key='submit' type='secondary' disabled={disableButton} onClick={onOk}>
             {$t({ defaultMessage: 'OK' })}
           </Button>
         </Space>

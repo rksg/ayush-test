@@ -4,6 +4,7 @@ import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import AnalyticsBase    from './pages/Analytics'
 import Dashboard        from './pages/Dashboard'
+import DevicesBase      from './pages/Devices'
 import Layout           from './pages/Layout'
 import NetworksBase     from './pages/Networks'
 import ServicesBase     from './pages/Services'
@@ -25,6 +26,9 @@ function AllRoutes () {
         <Route path='analytics/*' element={<AnalyticsBase />}>
           <Route path='*' element={<AnalyticsRoutes />} />
         </Route>
+        <Route path='devices/*' element={<DevicesBase />}>
+          <Route path='*' element={<RcRoutes />} />
+        </Route>
         <Route path='networks/*' element={<NetworksBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
@@ -44,7 +48,7 @@ function VenuesRoutes () {
       <Route index element={<VenuesTable />} />
       <Route path='add' element={<VenuesForm />} />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
-      <Route path=':venueId/edit/:activeTab' element={<VenueEdit />} />
+      <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
     </Route>
   )

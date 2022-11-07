@@ -1,6 +1,16 @@
 import { Key } from 'react'
 
-import { ApStatusDetails, ApModel } from './ap'
+import { CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
+import { BandBalancing }                                                      from '../models/BandBalancing'
+import { DenialOfServiceProtection }                                          from '../models/DenialOfServiceProtection'
+import { Mesh }                                                               from '../models/Mesh'
+import { VenueDhcpServiceSetting }                                            from '../models/VenueDhcpServiceSetting'
+import { VenueRadioCustomization }                                            from '../models/VenueRadioCustomization'
+import { VenueRogueAp }                                                       from '../models/VenueRogueAp'
+import { VenueSyslog }                                                        from '../models/VenueSyslog'
+
+
+import { ApStatusDetails, ApModel, LanPort } from './ap'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
@@ -85,16 +95,95 @@ export interface VenueApModels {
 	models: string[]
 }
 
+export interface VenueLanPorts {
+	model: string,
+	lanPorts: LanPort[],
+	poeMode?: string,
+	poeOut?: boolean
+}
+
+export interface Address {
+  addressLine?: string
+  city?: string
+  country?: string
+  latitude?: number
+  longitude?: number
+  notes?: string
+  timezone?: string
+}
+
+export interface MeshOptions {
+  enabled: boolean
+}
+
+export interface DhcpOptions {
+  enabled: boolean
+  mode: DhcpModeEnum
+}
+
+enum DhcpModeEnum {
+  DHCPMODE_EACH_AP = 'DHCPMODE_EACH_AP',
+  DHCPMODE_MULTIPLE_AP = 'DHCPMODE_MULTIPLE_AP',
+  DHCPMODE_HIERARCHICAL_AP = 'DHCPMODE_HIERARCHICAL_AP'
+}
+
+export interface VenueExtended {
+  name: string
+  description?: string
+  notes?: string
+  address: Address
+  latitude?: number
+  longitude?: number
+  networkCount?: number
+  apCount?: number
+  clientCount?: number
+  activeNetworksToolTip?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  activatedNetworks?: Array<any>
+  disabledActivation?: boolean
+  allApDisabled?: boolean
+  dataFulfilled?: boolean
+  disabledBySSIDActivated?: boolean
+  disableByMaxReached?: boolean
+  mesh: MeshOptions
+  dhcp: DhcpOptions
+  id?: string
+}
+
+export interface VenueSettings {
+  tenantId?: string
+  wifiFirmwareVersion?: string
+  countryCode?: string
+  apPassword?: string
+  mesh: Mesh
+  bandBalancing: BandBalancing
+  radioCustomization: VenueRadioCustomization
+  denialOfServiceProtection: DenialOfServiceProtection
+  syslog: VenueSyslog
+  dhcpServiceSetting: VenueDhcpServiceSetting
+  lteBandLockChannels?: LteBandLockChannel[]
+  rogueAp: VenueRogueAp
+  enableClientIsolationAllowlist?: boolean
+  id?: string
+}
+
+export interface VenueDosProtection {
+  blockingPeriod: number
+  checkPeriod: number
+  enabled: boolean
+  failThreshold: number
+}
+
 export interface VenueSwitchConfiguration {
-	cliApplied?: boolean,
-	id?: string,
-	name?: string,
-	profileId: Key[],
-	dns?: string[],
-	switchLoginPassword?: string,
-	switchLoginUsername?: string,
-	syslogEnabled: boolean,
-	syslogPrimaryServer?: string,
+  cliApplied?: boolean,
+  id?: string,
+  name?: string,
+  profileId: Key[],
+  dns?: string[],
+  switchLoginPassword?: string,
+  switchLoginUsername?: string,
+  syslogEnabled: boolean,
+  syslogPrimaryServer?: string,
   syslogSecondaryServer?: string
 }
 
@@ -155,4 +244,217 @@ export interface ConfigurationProfile {
 	vlans?: Vlan[],
 	acls?: Acl[],
 	venues?: string[]
+}
+export interface TriBandSettings {
+  enabled: boolean
+}
+export interface VenueDefaultRegulatoryChannels {
+  '2.4GChannels': {
+	[key: string]: string[]
+  },
+  '5GChannels': {
+	dfs: {
+	  [key: string]: string[]
+	},
+	indoor: {
+	  [key: string]: string[]
+	},
+	outdoor: {
+	  [key: string]: string[]
+	}
+  },
+  '5GLowerChannels': {
+	dfs: {
+	  [key: string]: string[]
+	},
+	indoor: {
+	  [key: string]: string[]
+	},
+	outdoor: {
+	  [key: string]: string[]
+	}
+  },
+  '5GUpperChannels': {
+	dfs: {
+	  [key: string]: string[]
+	},
+	indoor: {
+	  [key: string]: string[]
+	},
+	outdoor: {
+	  [key: string]: string[]
+	}
+  },
+  '6GChannels': {
+	[key: string]: string[]
+  }
+}
+
+export interface VenueDefaultRegulatoryChannelsForm {
+  radioParams24G: {
+		allowedChannels: string[],
+		channelBandwidth: string,
+		method: string,
+		changeInterval: number,
+		scanInterval: number,
+		txPower: string
+  },
+  radioParams50G: {
+		combineChannels: boolean,
+		allowedIndoorChannels: string[],
+		allowedOutdoorChannels: string[],
+		channelBandwidth: string,
+		method: string,
+		changeInterval: number,
+		scanInterval: number,
+		txPower: string
+  },
+  radioParamsDual5G: {
+		enabled: boolean,
+		inheritParamsLower5G: boolean,
+		radioParamsLower5G: {
+			combineChannels: boolean,
+			allowedIndoorChannels: string[],
+			allowedOutdoorChannels: string[],
+			channelBandwidth: string,
+			method: string,
+			changeInterval: number,
+			scanInterval: number,
+			txPower: string
+		},
+		inheritParamsUpper5G: boolean,
+		radioParamsUpper5G: {
+			combineChannels: boolean,
+			allowedIndoorChannels: string[],
+			allowedOutdoorChannels: string[],
+			channelBandwidth: string,
+			method: string,
+			changeInterval: number,
+			scanInterval: number,
+			txPower: string
+		}
+  },
+	radioParams6G: {
+	  method: string,
+	  scanInterval: number,
+	  allowedChannels: string[],
+	  channelBandwidth: string,
+	  bssMinRate6G: string,
+	  mgmtTxRate6G: string,
+	  changeInterval: number,
+	  txPower: string
+	}
+}
+
+export interface AvailableLteBands {
+	band3G?: string[],
+	band4G?: string[],
+	region: LteBandRegionEnum,
+	countryCodes?: string[]
+  }
+
+export interface VenueApModelCellular {
+	model?: string,
+	primarySim: SimSettings,
+	secondarySim: SimSettings,
+	wanConnection?: WanConnectionEnum,
+	primaryWanRecoveryTimer: number
+  }
+
+export interface SimSettings {
+	lteBands?: LteBandLockChannel[];
+	enabled?: boolean;
+	apn?: string;
+	roaming?: boolean;
+	networkSelection?: CellularNetworkSelectionEnum;
+}
+
+export interface LteBandLockChannel {
+	band3G?: string[];
+	band4G?: string[];
+	region: LteBandRegionEnum;
+}
+
+export interface AvailableLteBandOptions {
+	value: string,
+	label: string
+}
+
+export interface LteBandLockCountriesJson {
+	[LteBandRegionEnum.DOMAIN_1]: { name: string, countries: string },
+	[LteBandRegionEnum.DOMAIN_2]: { name: string, countries: string },
+	[LteBandRegionEnum.JAPAN]: { name: string, countries: string },
+	[LteBandRegionEnum.USA_CANADA]: { name: string, countries: string }
+}
+
+export enum AAAServerTypeEnum {
+  RADIUS = 'RADIUS',
+  TACACS = 'TACACS_PLUS',
+  LOCAL_USER = 'LOCAL'
+}
+
+export enum AAA_SERVER_TYPE {
+  RADIUS = 'RADIUS',
+  TACACS = 'TACACS_PLUS',
+  LOCAL = 'LOCAL',
+  NONE = 'NONE_TYPE'
+}
+
+export interface AAASetting {
+  authnEnabledSsh: boolean,
+  authnEnableTelnet: boolean,
+  authnFirstPref: AAAServerTypeEnum,
+  authnSecondPref?: AAA_SERVER_TYPE,
+  authnThirdPref?: AAA_SERVER_TYPE,
+  authnFourthPref?: AAA_SERVER_TYPE,
+  authzCommonsFirstServer?: AAAServerTypeEnum,
+  authzCommonsSecondServer?: AAA_SERVER_TYPE,
+  authzCommonsThirdServer?: AAA_SERVER_TYPE,
+  authzExecFirstServer?: AAAServerTypeEnum,
+  authzExecSecondServer?: AAA_SERVER_TYPE,
+  authzExecThirdServer?: AAA_SERVER_TYPE,
+  acctCommonsFirstServer?: AAAServerTypeEnum,
+  acctCommonsSecondServer?: AAA_SERVER_TYPE,
+  acctCommonsThirdServer?: AAA_SERVER_TYPE,
+  acctExecFirstServer?: AAAServerTypeEnum,
+  acctExecSecondServer?: AAA_SERVER_TYPE,
+  acctExecThirdServer?: AAA_SERVER_TYPE,
+  authzEnabledCommand: boolean,
+  authzEnabledExec: boolean,
+  acctEnabledCommand: boolean,
+  acctEnabledExec: boolean,
+  authzCommonsLevel?: string,
+  acctCommonsLevel?: string,
+  id: string
+}
+
+export interface RadiusServer {
+  serverType: AAAServerTypeEnum,
+  id: string,
+  name: string,
+  ip: string,
+  authPort: number,
+  acctPort: number,
+  secret: string
+}
+
+export interface TacacsServer {
+  serverType: AAAServerTypeEnum,
+  id: string,
+  name: string,
+  ip: string,
+  authPort: number,
+  purpose: string,
+  secret: string
+}
+
+export interface LocalUser {
+  serverType: AAAServerTypeEnum,
+  id: string,
+  level: string,
+  name: string,
+  username: string,
+  password: string,
+  authPort: number,
+  purpose: string
 }

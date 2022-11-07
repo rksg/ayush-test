@@ -11,7 +11,7 @@ import { getServiceDetailsLink, ServiceOperation } from '../../serviceRouteUtils
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
 import { MdnsProxyOverview }       from './MdnsProxyOverview'
 
-export function MdnsProxyDetail () {
+export default function MdnsProxyDetail () {
   const { $t } = useIntl()
   const params = useParams()
 

@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Col, Divider, Row, Space, Typography } from 'antd'
 import { useIntl }                              from 'react-intl'
 
-import { Button, Loader }                 from '@acx-ui/components'
+import { Button, DisabledButton, Loader } from '@acx-ui/components'
 import {
   ApplicationsSolid,
   MagnifyingGlassMinusOutlined,
@@ -51,25 +51,34 @@ export function getImageFitPercentage (containerCoordsX: number,
 
 export default function PlainView (props: { floorPlans: FloorPlanDto[],
   toggleGalleryView: Function,
-  defaultFloorPlan: FloorPlanDto }) {
-  const { floorPlans, toggleGalleryView, defaultFloorPlan } = props
+  defaultFloorPlan: FloorPlanDto,
+  deleteFloorPlan: Function }) {
+  const { floorPlans, toggleGalleryView, defaultFloorPlan, deleteFloorPlan } = props
   const { $t } = useIntl()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
 
-  const [selectedFloorPlan, setSelectedFloorPlan] = useState(defaultFloorPlan)
+  const [selectedFloorPlan, setSelectedFloorPlan] = useState<FloorPlanDto>(defaultFloorPlan)
   const [currentZoom, setCurrentZoom] = useState(1)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageMode, setImageMode] = useState(ImageMode.ORIGINAL)
   const [fitContainerSize, setFitContanierSize] = useState(0)
 
+  const prepareImageTofit = useCallback((floorPlan: FloorPlanDto) => {
+    zoom(ImageMode.ORIGINAL)
+    setFitContanierSize(0)
+    setImageLoaded(false)
+    setSelectedFloorPlan(floorPlan)
+  }, [])
+
+  useEffect(() => {
+    prepareImageTofit(defaultFloorPlan)
+  },[floorPlans, defaultFloorPlan, prepareImageTofit])
+
   function onFloorPlanSelectionHandler (floorPlan: FloorPlanDto) {
     if (floorPlan.imageId !== selectedFloorPlan.imageId)
     {
-      zoom(ImageMode.ORIGINAL)
-      setFitContanierSize(0)
-      setImageLoaded(false)
-      setSelectedFloorPlan(floorPlan)
+      prepareImageTofit(floorPlan)
     }
   }
 
@@ -140,6 +149,10 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
     toggleGalleryView()
   }
 
+  const deleteHandler = function () {
+    deleteFloorPlan(selectedFloorPlan?.id, selectedFloorPlan?.name)
+  }
+
   return (
     <>
       <Row justify='space-between'>
@@ -150,10 +163,10 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
         </Col>
         <Col>
           <Space split={<Divider type='vertical' />}>
-            <Button key='editBtn' type='link'>
+            <DisabledButton key='editBtn' type='link'>
               {$t({ defaultMessage: 'Edit' })}
-            </Button>
-            <Button key='deleteBtn' type='link'>
+            </DisabledButton>
+            <Button key='deleteBtn' type='link' onClick={deleteHandler} >
               {$t({ defaultMessage: 'Delete' })}
             </Button>
           </Space>

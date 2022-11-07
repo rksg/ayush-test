@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-acx-ui
+data:
+  google.maps.key: "AIzaSyAWQnu3C-y2DsQIQmixgQNFp6UjQdvDFFo"
+  split.io.key: "jj5d5r9hnhvb3avsroeiplbdp3rn7glvoei8"
+  captive.portal.domain.name: "asia.ruckus.cloud"
