@@ -134,6 +134,9 @@ describe('PortalDemo', () => {
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
     await userEvent.click(screen.getAllByText('Connection confirmed')[1])
     await userEvent.click(screen.getAllByText('Terms & Conditions')[1])
+    await userEvent.click(screen.getByPlaceholderText('buttonsetting'))
+    await userEvent.click(screen.getAllByRole('img',{ name: 'colorpick' })[1])
+    await userEvent.click(screen.getByTitle('#F5A623'))
 
     await userEvent.click(screen.getByText('Language Settings'))
     await userEvent.click(screen.getByText('Greek'))

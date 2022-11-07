@@ -82,7 +82,9 @@ export default function PortalViewContentPreview (props:{
       {view === PortalViewEnum.ConnectionConfirmed &&
       <PortalViewConfirm/>}
       {view === PortalViewEnum.TermCondition &&
-      <PortalViewTerms/>}
+      <PortalViewTerms
+        demoValue={demoValue}
+        isPreview={true}/>}
       {componentDisplay.TermsConditions &&<UI.FieldText>{$t({
         defaultMessage: 'By clicking the connect button, you are accepting the'
       })}&nbsp;&nbsp;

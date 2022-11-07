@@ -14,7 +14,7 @@ export default function PortalViewHostApproval (props:{
   const { $t } = useIntl()
   const { demoValue, updateBtn, isPreview } = props
   return (
-    <UI.ViewSection>
+    <UI.ViewSectionNoBorder>
       <UI.ViewSectionTabsBig
         defaultActiveKey='register'
         type='card'
@@ -62,7 +62,7 @@ export default function PortalViewHostApproval (props:{
           >{$t({ defaultMessage: 'Connect To Wi-Fi' })}</PortalButtonContent>
         </UI.ViewSectionTabsBig.TabPane>
       </UI.ViewSectionTabsBig>
-    </UI.ViewSection>
+    </UI.ViewSectionNoBorder>
 
   )
 }

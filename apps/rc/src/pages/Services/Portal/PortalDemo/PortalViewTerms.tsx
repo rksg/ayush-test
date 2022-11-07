@@ -4,10 +4,17 @@ import { Demo } from '@acx-ui/rc/utils'
 
 
 import * as UI from '../styledComponents'
+
+import PortalButtonContent from './PortalContent/PortalButtonContent'
 export default function PortalViewTerms (props:{
-  demoValue?: Demo
+  isPreview?: boolean,
+  demoValue: Demo,
+  updateBtn?: (value: {
+    url?: string, size?: number, show?: boolean,
+    color?: string, text?: string
+  }) => void
 }) {
-  const { demoValue } = props
+  const { demoValue, updateBtn, isPreview } = props
   const { $t } = useIntl()
   const terms = 'Terms and Conditions ("Terms")</br>'+
   'Last updated: January 29, 2019</br></br>'+
@@ -59,13 +66,18 @@ export default function PortalViewTerms (props:{
   'Contact Us</br>'+
   'If you have any questions about these Terms, please contact us.'
   return (
-    <UI.ViewSection>
+    <UI.ViewSectionNoBorder>
       <UI.ViewSectionTitle>
         {$t({ defaultMessage: 'Terms and Conditions' })}</UI.ViewSectionTitle>
       <UI.ViewTextArea
         dangerouslySetInnerHTML={{ __html: demoValue?.termsCondition || terms }}
       ></UI.ViewTextArea>
-    </UI.ViewSection>
+      <PortalButtonContent
+        demoValue={demoValue}
+        isPreview={isPreview}
+        updateButton={(data)=>updateBtn?.(data)}
+      >{$t({ defaultMessage: 'Back' })}</PortalButtonContent>
+    </UI.ViewSectionNoBorder>
 
   )
 }
