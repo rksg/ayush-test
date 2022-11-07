@@ -3,7 +3,7 @@
 exports[`MdnsProxyDetail should render the detail view 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -230,7 +230,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
               style="padding-top: 8px; padding-bottom: 8px;"
             >
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
+                class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
               >
                 <div
                   class="ant-pro-table"
@@ -319,7 +319,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           tabindex="0"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
                                             class="ant-table-column-sorters"
@@ -377,7 +377,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
@@ -385,7 +385,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           tabindex="0"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
                                             class="ant-table-column-sorters"
@@ -443,7 +443,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
@@ -451,7 +451,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           tabindex="0"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
                                             class="ant-table-column-sorters"
@@ -509,7 +509,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
@@ -517,7 +517,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           tabindex="0"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
                                             class="ant-table-column-sorters"
@@ -575,7 +575,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
@@ -583,7 +583,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           tabindex="0"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
                                             class="ant-table-column-sorters"
@@ -641,7 +641,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
@@ -649,7 +649,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           tabindex="0"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
                                             class="ant-table-column-sorters"
@@ -707,7 +707,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
@@ -715,7 +715,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           tabindex="0"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
                                             class="ant-table-column-sorters"
@@ -773,7 +773,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                         <th
@@ -781,10 +781,10 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                           style="position: sticky; right: 0px;"
                                         >
                                           <div
-                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
                                           />
                                           <div
-                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
                                           />
                                         </th>
                                       </tr>

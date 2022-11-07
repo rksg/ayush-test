@@ -4,7 +4,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { getServiceRoutePath, ServiceOperation, getServiceDetailsLink } from '../../serviceRouteUtils'
 
-import { MdnsProxyDetail } from './MdnsProxyDetail'
+import MdnsProxyDetail from './MdnsProxyDetail'
 
 
 describe('MdnsProxyDetail', () => {
