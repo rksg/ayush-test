@@ -121,27 +121,25 @@ describe('IncidentTable: utils', () => {
     const a = 1
     const b = 2
 
-    it('should return postive on a < b', () => {
-      const positive = clientImpactSort(a, b)
-      expect(positive).toBe(1)
+    it('should return negative on a < b', () => {
+      expect(clientImpactSort(a, b)).toBe(-1)
     })
 
-    it('should return negative on a > b', () => {
-      const negative = clientImpactSort(b, a)
-      expect(negative).toBe(-1)
+    it('should return positive on a > b', () => {
+      expect(clientImpactSort(b, a)).toBe(1)
     })
 
-    it('should return noDataSymbol on a', () => {
+    it('should return negative when a has noDataSymbol', () => {
       const noDataA = clientImpactSort(noDataSymbol, b)
-      expect(noDataA).toBe(1)
+      expect(noDataA).toBe(-1)
     })
 
-    it('should return noDataSymbol on b', () => {
+    it('should return positive when b has noDataSymbol', () => {
       const noDataB = clientImpactSort(a, noDataSymbol)
-      expect(noDataB).toBe(-1)
+      expect(noDataB).toBe(1)
     })
 
-    it('should return noDataSymbol on both', () => {
+    it('should return 0 when noDataSymbol on both', () => {
       const noData = clientImpactSort(noDataSymbol, noDataSymbol)
       expect(noData).toBe(0)
     })
@@ -252,12 +250,12 @@ describe('IncidentTable: utils', () => {
 
     it('should sort smaller date time', () => {
       const smaller = dateSort(startTime, endTime)
-      expect(smaller).toBe(1)
+      expect(smaller).toBe(-1)
     })
 
     it('should sort greater date time', () => {
       const greater = dateSort(endTime, startTime)
-      expect(greater).toBe(-1)
+      expect(greater).toBe(1)
     })
 
     it('should sort 0 date time', () => {
