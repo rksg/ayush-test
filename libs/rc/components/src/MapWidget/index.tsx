@@ -9,7 +9,6 @@ import VenuesMap             from './VenuesMap'
 import { massageVenuesData } from './VenuesMap/helper'
 
 export function MapWidget () {
-  const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   if (!isMapEnabled) {
     return <GoogleMap.NotEnabled />
