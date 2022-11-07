@@ -92,5 +92,13 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   addAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap'
+  },
+  getVenueDefaultApGroup: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group'
+  },
+  getApGroupsList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/ap-groups'
   }
 }
