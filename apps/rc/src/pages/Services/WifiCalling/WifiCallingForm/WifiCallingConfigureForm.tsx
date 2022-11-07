@@ -72,9 +72,7 @@ const WifiCallingConfigureForm = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Configure Wi-Fi Calling Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' },
-          { text: $t({ defaultMessage: 'WiFiCallingService' }),
-            link: `/services/wifiCalling/${params.serviceId}/edit` }
+          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
       <StepsForm<CreateNetworkFormFields>

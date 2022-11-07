@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { Col, Row, Typography } from 'antd'
-import { useIntl }              from 'react-intl'
-import { useParams }            from 'react-router-dom'
+import { Row, Typography } from 'antd'
+import { useIntl }         from 'react-intl'
+import { useParams }       from 'react-router-dom'
 
 // import { StackedBarChart }                  from '@acx-ui/components'
-import { Card }                          from '@acx-ui/components'
+import { Card, GridCol, GridRow }        from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 
 const WifiCallingDetailContent = (props: { tenantId: string }) => {
@@ -19,10 +19,10 @@ const WifiCallingDetailContent = (props: { tenantId: string }) => {
 
   if (data) {
     return <Card>
-      <Row gutter={24} justify='space-between' style={{ width: '100%' }}>
+      <GridRow style={{ width: '100%' }}>
         {/*TODO: Temporarily hidden this component until Health api is ready*/}
-        {/*<Col span={4}>*/}
-        {/*  <Typography.Title level={TYPOGRAPHY_LEVEL}>*/}
+        {/*<GridCol col={{ span: 4 }}>*/}
+        {/*  <Typography.Title level='3'>*/}
         {/*    {$t({ defaultMessage: 'Service Health' })}*/}
         {/*  </Typography.Title>*/}
         {/*  <StackedBarChart*/}
@@ -36,40 +36,36 @@ const WifiCallingDetailContent = (props: { tenantId: string }) => {
         {/*    showTotal={false}*/}
         {/*    barColors={['#63a103', '#e1e600', '#910012']}*/}
         {/*  />*/}
-        {/*</Col>*/}
-
-        <Col span={4}>
-          <Typography.Title level={3}>
+        {/*</GridCol>*/}
+        <GridCol col={{ span: 4 }}>
+          <Card.Title>
             {$t({ defaultMessage: 'Description' })}
-          </Typography.Title>
+          </Card.Title>
           <Paragraph>{data.description}</Paragraph>
-        </Col>
-
-        <Col span={4}>
-          <Typography.Title level={3}>
+        </GridCol>
+        <GridCol col={{ span: 4 }}>
+          <Card.Title>
             {$t({ defaultMessage: 'Service Name' })}
-          </Typography.Title>
+          </Card.Title>
           <Paragraph>{data.serviceName}</Paragraph>
-        </Col>
-
-        <Col span={4}>
-          <Typography.Title level={3}>
+        </GridCol>
+        <GridCol col={{ span: 4 }}>
+          <Card.Title>
             {$t({ defaultMessage: 'Qos Priority' })}
-          </Typography.Title>
+          </Card.Title>
           <Paragraph>{data.qosPriority}</Paragraph>
-        </Col>
-
-        <Col span={4}>
-          <Typography.Title level={3}>
+        </GridCol>
+        <GridCol col={{ span: 4 }}>
+          <Card.Title>
             {$t({ defaultMessage: 'Evolved Packet Data Gateway (ePDG)' })}
-          </Typography.Title>
+          </Card.Title>
           <>
             {data.epdgs?.map(epdg => {
               return <div key={`${epdg.domain}`}>{epdg.domain} ({epdg.ip})</div>
             })}
           </>
-        </Col>
-      </Row>
+        </GridCol>
+      </GridRow>
     </Card>
   } else {
     return <Card>

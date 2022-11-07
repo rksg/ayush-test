@@ -130,7 +130,7 @@ exports[`WifiCallingSettingForm should render WifiCallingSettingForm successfull
             class="ant-col ant-form-item-label"
           >
             <label
-              class=""
+              class="ant-form-item-required"
               for="description"
               title="Description"
             >

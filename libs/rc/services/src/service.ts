@@ -255,13 +255,12 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const wifiCallingServiceReq = createHttpRequest(
+      query: ({ params }) => {
+        const wifiCallingServiceListReq = createHttpRequest(
           WifiCallingUrls.getWifiCallingList, params, RKS_NEW_UI
         )
         return {
-          ...wifiCallingServiceReq,
-          body: payload
+          ...wifiCallingServiceListReq
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]

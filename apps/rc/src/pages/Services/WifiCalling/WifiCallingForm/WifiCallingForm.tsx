@@ -26,7 +26,7 @@ const WifiCallingForm = () => {
   const params = useParams()
 
   const serviceName = ''
-  const description = '--'
+  const description = ''
   const qosPriority:QosPriorityEnum = QosPriorityEnum.WIFICALLING_PRI_VOICE
   const tags:string[] = []
   const ePDG:EPDG[] = []
@@ -66,7 +66,7 @@ const WifiCallingForm = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Service' }), link: '/service' }
+          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
       <StepsForm<CreateNetworkFormFields>

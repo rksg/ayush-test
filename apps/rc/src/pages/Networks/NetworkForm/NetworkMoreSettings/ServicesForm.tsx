@@ -164,30 +164,28 @@ export function ServicesForm () {
       </UI.FieldLabel>
 
 
-      <Tooltip title={$t({ defaultMessage: 'Wi-Fi Calling service section.' })}>
-        <UI.FieldLabel width='125px'>
-          {$t({ defaultMessage: 'Wi-Fi Calling:' })}
-          <UI.FieldLabel width='30px'>
+      <UI.FieldLabel width='125px'>
+        {$t({ defaultMessage: 'Wi-Fi Calling:' })}
+        <UI.FieldLabel width='30px'>
+          <Form.Item
+            name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+          <WifiCallingSettingContext.Provider
+            value={{ wifiCallingSettingList, setWifiCallingSettingList }}>
             <Form.Item
-              name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
-              style={{ marginBottom: '10px' }}
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch />}
-            />
-            <WifiCallingSettingContext.Provider
-              value={{ wifiCallingSettingList, setWifiCallingSettingList }}>
-              <Form.Item
-                name={['wlan', 'advancedCustomization', 'wifiCallingIds']}
-                initialValue={wifiCallingSettingList}
-              >
-                {enableWifiCalling && <WifiCallingSettingModal />}
-                {enableWifiCalling && <WifiCallingSettingTable />}
-              </Form.Item>
-            </WifiCallingSettingContext.Provider>
-          </UI.FieldLabel>
+              name={['wlan', 'advancedCustomization', 'wifiCallingIds']}
+              initialValue={wifiCallingSettingList}
+            >
+              {enableWifiCalling && <WifiCallingSettingModal />}
+              {enableWifiCalling && <WifiCallingSettingTable />}
+            </Form.Item>
+          </WifiCallingSettingContext.Provider>
         </UI.FieldLabel>
-      </Tooltip>
+      </UI.FieldLabel>
 
       <ClientIsolationForm/>
       <>

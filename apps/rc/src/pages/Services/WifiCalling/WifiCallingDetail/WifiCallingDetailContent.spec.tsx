@@ -47,7 +47,8 @@ describe('WifiCallingDetailContent', () => {
     ))
 
     render(
-      <WifiCallingDetailContent tenantId={'tenantId'}/>, {
+      <WifiCallingDetailContent tenantId={'tenantId'}/>
+      , {
         wrapper: wrapper,
         route: {
           path: '/services/wifiCalling/:serviceId/details',
@@ -57,18 +58,11 @@ describe('WifiCallingDetailContent', () => {
     )
 
     await screen.findByText('des1')
-    expect(screen.getByRole('heading', {
-      name: /description/i
-    })).toBeTruthy()
-    expect(screen.getByRole('heading', {
-      name: /service name/i
-    })).toBeTruthy()
-    expect(screen.getByRole('heading', {
-      name: /qos priority/i
-    })).toBeTruthy()
-    expect(screen.getByRole('heading', {
-      name: /evolved packet data gateway \(epdg\)/i
-    })).toBeTruthy()
+
+    expect(screen.getByText(/description/i)).toBeTruthy()
+    expect(screen.getByText(/service name/i)).toBeTruthy()
+    expect(screen.getByText(/qos priority/i)).toBeTruthy()
+    expect(screen.getByText(/evolved packet data gateway \(epdg\)/i)).toBeTruthy()
   })
 
   it('should render wifiCallingDetailContent error', async () => {

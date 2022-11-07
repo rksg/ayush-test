@@ -3,8 +3,13 @@ import { useContext } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer }                                                 from '@acx-ui/components'
-import { EPDG, WifiCallingActionPayload, WifiCallingActionTypes } from '@acx-ui/rc/utils'
+import { Drawer }          from '@acx-ui/components'
+import {
+  domainNameRegExp,
+  serverIpAddressRegExp,
+  WifiCallingActionPayload,
+  WifiCallingActionTypes
+} from '@acx-ui/rc/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
@@ -34,33 +39,14 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
 
   const content = <Form layout='vertical'
     form={form}
-    onFinish={(data: EPDG) => {
-      if (isEditMode) {
-        dispatch({
-          type: WifiCallingActionTypes.UPDATE_EPDG,
-          payload: {
-            domain: data.domain,
-            ip: data.ip,
-            id: serviceIndex
-          }
-        } as WifiCallingActionPayload)
-      } else {
-        dispatch({
-          type: WifiCallingActionTypes.ADD_EPDG,
-          payload: {
-            domain: data.domain,
-            ip: data.ip
-          }
-        } as WifiCallingActionPayload)
-      }
-
-      form.resetFields()
-    }
-    }>
+  >
     <Form.Item
       name='domain'
       label={$t({ defaultMessage: 'Domain Name' })}
-      rules={[{ required: true }]}
+      rules={[
+        { required: true },
+        { validator: (_, value) => domainNameRegExp(value) }
+      ]}
       initialValue={serviceIndex !== undefined ? state.ePDG[serviceIndex].domain : ''}
       children={<Input
         placeholder={$t({ defaultMessage: 'Please enter the domain name' })} />}
@@ -68,7 +54,10 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
     <Form.Item
       name='ip'
       label={$t({ defaultMessage: 'IP Address' })}
-      rules={[{ required: true }]}
+      rules={[
+        { required: true },
+        { validator: (_, value) => serverIpAddressRegExp(value) }
+      ]}
       initialValue={serviceIndex !== undefined ? state.ePDG[serviceIndex].ip : ''}
       children={<Input
         placeholder={$t({ defaultMessage: 'Please enter the ip address' })} />}
@@ -92,6 +81,27 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
           onSave={async (addAnotherRuleChecked: boolean) => {
             try {
               await form.validateFields()
+
+              if (isEditMode) {
+                dispatch({
+                  type: WifiCallingActionTypes.UPDATE_EPDG,
+                  payload: {
+                    domain: form.getFieldValue('domain'),
+                    ip: form.getFieldValue('ip'),
+                    id: serviceIndex
+                  }
+                } as WifiCallingActionPayload)
+              } else {
+                dispatch({
+                  type: WifiCallingActionTypes.ADD_EPDG,
+                  payload: {
+                    domain: form.getFieldValue('domain'),
+                    ip: form.getFieldValue('ip')
+                  }
+                } as WifiCallingActionPayload)
+              }
+
+
               form.submit()
 
               if (!addAnotherRuleChecked) {

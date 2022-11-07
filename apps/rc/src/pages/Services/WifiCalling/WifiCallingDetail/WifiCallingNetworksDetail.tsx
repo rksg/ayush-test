@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Col, Row }  from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -73,17 +72,15 @@ const WifiCallingNetworksDetail = (props: { tenantId: string }) => {
     })
 
   return (
-    <Card title={`${$t({ defaultMessage: 'Instance' })}(${basicData?.length})`}>
-      <Row gutter={24} style={{ width: '100%' }}>
-        <Col span={24}>
-          <Table
-            columns={basicColumns}
-            dataSource={basicData}
-            pagination={tableQuery.pagination}
-            rowKey='id'
-          />
-        </Col>
-      </Row>
+    <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length})`}>
+      <div style={{ width: '100%' }}>
+        <Table
+          columns={basicColumns}
+          dataSource={basicData}
+          pagination={tableQuery.pagination}
+          rowKey='id'
+        />
+      </div>
     </Card>
   )
 }

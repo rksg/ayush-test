@@ -7,7 +7,7 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { StepsForm }                                                        from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery }                                    from '@acx-ui/rc/services'
+import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import { CreateNetworkFormFields, QosPriorityEnum, WifiCallingActionTypes } from '@acx-ui/rc/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
@@ -29,6 +29,8 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
     state, dispatch
   } = useContext(WifiCallingFormContext)
   const { data } = useGetWifiCallingServiceQuery({ params: useParams() })
+
+  const { data: dataList } = useGetWifiCallingServiceListQuery({ params: useParams() })
 
   const handleServiceName = (serviceName: string) => {
     dispatch({
@@ -119,7 +121,19 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
           rules={[
             { required: true },
             { min: 2 },
-            { max: 32 }
+            { max: 32 },
+            { validator: async (rule, value) => {
+              return new Promise<void>((resolve, reject) => {
+                if (!edit && value && dataList?.findIndex((profile) =>
+                  profile.serviceName === value) !== -1
+                ) {
+                  return reject(
+                    $t({ defaultMessage: 'The wifi calling service with that name already exists' })
+                  )
+                }
+                return resolve()
+              })
+            } }
           ]}
           validateFirst
           hasFeedback
@@ -137,6 +151,10 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
         <Form.Item
           name='description'
           label={$t({ defaultMessage: 'Description' })}
+          rules={[
+            { required: true },
+            { min: 2 }
+          ]}
           initialValue={state.description}
           children={<TextArea
             rows={4}

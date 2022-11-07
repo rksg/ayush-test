@@ -15,6 +15,8 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
+import { EPDG } from './wifiCallingService'
+
 
 export * from './ap'
 export * from './venue'
@@ -353,7 +355,9 @@ export interface WifiCallingSetting {
   id: string,
   serviceName: string,
   description: string | undefined,
-  qosPriority: QosPriorityEnum
+  qosPriority: QosPriorityEnum,
+  epdgs?: EPDG[],
+  networkIds?: string[]
 }
 
 export interface WifiCallingSettingContextType {

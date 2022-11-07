@@ -32,22 +32,6 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
             <span
               class="ant-breadcrumb-link"
             >
-              <a
-                href="/t/tenantId1/services/wifiCalling/serviceId1/edit"
-              >
-                WiFiCallingService
-              </a>
-            </span>
-            <span
-              class="ant-breadcrumb-separator"
-            >
-              /
-            </span>
-          </li>
-          <li>
-            <span
-              class="ant-breadcrumb-link"
-            >
                
             </span>
             <span
@@ -305,7 +289,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                       </div>
                     </div>
                     <div
-                      class="ant-form-item"
+                      class="ant-form-item ant-form-item-is-validating"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -314,7 +298,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                           class="ant-col ant-form-item-label"
                         >
                           <label
-                            class=""
+                            class="ant-form-item-required"
                             for="settings_description"
                             title="Description"
                           >
@@ -331,7 +315,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                               class="ant-form-item-control-input-content"
                             >
                               <textarea
-                                class="ant-input"
+                                class="ant-input ant-input-status-validating"
                                 id="settings_description"
                                 rows="4"
                               />

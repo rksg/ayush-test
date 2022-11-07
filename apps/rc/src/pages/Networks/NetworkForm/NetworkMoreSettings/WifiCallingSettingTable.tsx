@@ -33,7 +33,7 @@ const WifiCallingSettingTable = () => {
   return <Table style={{ width: '355px' }}
     columns={compactColumns}
     dataSource={wifiCallingSettingList}
-    type={'compact'}
+    type={'form'}
   />
 }
 

@@ -17,9 +17,9 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/service"
+                href="/t/undefined/services"
               >
-                Service
+                Services
               </a>
             </span>
             <span
@@ -320,7 +320,7 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                       </div>
                     </div>
                     <div
-                      class="ant-form-item"
+                      class="ant-form-item ant-form-item-is-validating"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -329,7 +329,7 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                           class="ant-col ant-form-item-label"
                         >
                           <label
-                            class=""
+                            class="ant-form-item-required"
                             for="settings_description"
                             title="Description"
                           >
@@ -346,12 +346,10 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                               class="ant-form-item-control-input-content"
                             >
                               <textarea
-                                class="ant-input"
+                                class="ant-input ant-input-status-validating"
                                 id="settings_description"
                                 rows="4"
-                              >
-                                --
-                              </textarea>
+                              />
                             </div>
                           </div>
                         </div>
@@ -1168,9 +1166,7 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                                   <div
                                     class="ant-typography"
                                     id="summary_description"
-                                  >
-                                    --
-                                  </div>
+                                  />
                                 </div>
                               </div>
                             </div>
