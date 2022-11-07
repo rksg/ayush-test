@@ -110,6 +110,17 @@ const list = {
       venueName: 'My-Venue',
       managedAs: 'MSP',
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+    },
+    {
+      apMac: '89:28:38:22:77:31',
+      serialNumber: '892838227723',
+      deviceType: 'DVCNWTYPE_SWITCH',
+      name: "EC 111's AP",
+      customerName: 'EC 111',
+      deviceStatus: '',
+      venueName: 'My-Venue',
+      managedAs: 'MSP',
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
     }
   ]
 }

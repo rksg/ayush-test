@@ -1211,13 +1211,100 @@ exports[`MspCustomers should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
+                              >
+                                11/02/2022
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="701fe9df5f6b4c17928a29851c07cc04"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-selection-column"
+                              >
+                                <label
+                                  class="ant-radio-wrapper"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  ec 222
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Active
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                1
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0%
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
                               >
                                 08/04/2022
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                11/02/2022
+                                --
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"

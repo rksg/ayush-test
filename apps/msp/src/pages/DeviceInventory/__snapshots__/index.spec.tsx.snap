@@ -1793,6 +1793,63 @@ exports[`Device Inventory Table should render table 1`] = `
                                 style="position: sticky; right: 0px;"
                               />
                             </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="EC 111's AP"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                89:28:38:22:77:31
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                892838227723
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Switch
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
+                              >
+                                EC 111's AP
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                EC 111
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Never contacted cloud
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                My-Venue
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                MSP
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                1456b8a156354b6e98dff3ebc7b25b82
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
                           </tbody>
                         </table>
                       </div>

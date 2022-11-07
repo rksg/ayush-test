@@ -857,7 +857,196 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
+                                10/09/2023 (0 AP)
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="2ea8eaabc07840caa5fed7a80913a83a"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  Dog Company 151
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                dog152@email.com
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  0
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                100
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0%
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                20
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
                                 09/09/2023 (0 AP)
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="2ea8eaabc07840caa5fed7a80913a83a"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  Dog Company 151
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                dog151@email.com
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  0
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0%
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                80
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                09/09/2023 (0 AP)
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="2ea8eaabc07840caa5fed7a80913a83a"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  Dog Company 151
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                dog155@email.com
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  0
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0%
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                -- ()
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
