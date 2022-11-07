@@ -3,9 +3,9 @@ import { useContext, useEffect } from 'react'
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
-import NetworkHistoryWidget  from '../../../components/NetworkHistory'
-import { HealthPageContext } from '../HealthPageContext'
+import { NetworkHistory } from '@acx-ui/analytics/components'
 
+import { HealthPageContext } from '../HealthPageContext'
 
 const ConnectedClientsOverTime = () => {
   const healthFilter = useContext(HealthPageContext)
@@ -19,7 +19,7 @@ const ConnectedClientsOverTime = () => {
   }
   useEffect(() => { connect('timeSeriesGroup') }, [])
   return (
-    <NetworkHistoryWidget
+    <NetworkHistory
       filters={filters}
       ref={connectChart}
       brush={{ timeWindow, setTimeWindow }}

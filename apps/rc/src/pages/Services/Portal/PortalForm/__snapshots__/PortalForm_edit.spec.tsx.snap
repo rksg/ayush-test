@@ -373,7 +373,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                     style="flex-basis: auto; text-align: right; padding-right: 5px;"
                                   >
                                     <button
-                                      class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD styledComponents__Popover-sc-cby53p-41"
+                                      class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD styledComponents__Popover-sc-cby53p-43"
                                       type="button"
                                     >
                                       <span>
@@ -381,7 +381,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                       </span>
                                     </button>
                                     <button
-                                      class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD styledComponents__Popover-sc-cby53p-41"
+                                      class="ant-btn ant-btn-link styledComponents__Button-sc-cby53p-7 cRXWRD styledComponents__Popover-sc-cby53p-43"
                                       type="button"
                                     >
                                       <span>
@@ -405,7 +405,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                               >
                                 <img
                                   alt="background setting"
-                                  class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
+                                  class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-43"
                                   src="imgToggle.svg"
                                   style="position: absolute; left: 10px; top: 60px; cursor: pointer;"
                                 />
@@ -422,12 +422,12 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                     />
                                     <img
                                       alt="Logo"
-                                      class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
+                                      class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-43"
                                       src="small-logo-img.svg"
                                       style="height: 105px; cursor: none; outline: none; max-width: 425px;"
                                     />
                                     <input
-                                      class="styledComponents__Input-sc-cby53p-18 lafdeX styledComponents__Popover-sc-cby53p-41"
+                                      class="styledComponents__Input-sc-cby53p-18 lafdeX styledComponents__Popover-sc-cby53p-43"
                                       placeholder="welcometext"
                                       style="cursor: none; outline: none; height: 25px; width: 280px; max-width: 425px; font-size: 14px;"
                                       type="text"
@@ -435,35 +435,35 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                     />
                                     <img
                                       alt="Photo png"
-                                      class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
+                                      class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-43"
                                       src="main-photo.svg"
                                       style="cursor: none; outline: none; height: 170px; max-width: 425px;"
                                     />
                                     <div
-                                      class="styledComponents__FieldText-sc-cby53p-19 jnKkCj styledComponents__Popover-sc-cby53p-41"
+                                      class="styledComponents__FieldText-sc-cby53p-19 jnKkCj styledComponents__Popover-sc-cby53p-43"
                                       placeholder="sectexthere"
                                       style="cursor: none; outline: none; line-height: 24px; max-width: 425px; font-size: 14px;"
                                     >
                                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
                                     </div>
                                     <button
-                                      class="styledComponents__PortalButton-sc-cby53p-23 eRnPwL styledComponents__Popover-sc-cby53p-41"
+                                      class="styledComponents__PortalButton-sc-cby53p-23 eRnPwL styledComponents__Popover-sc-cby53p-43"
                                       placeholder="buttonsetting"
                                       style="cursor: none; outline: none;"
                                     >
                                       Connect To Wi-Fi
                                     </button>
                                     <div
-                                      class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
+                                      class="styledComponents__SelectedDiv-sc-cby53p-45 AubOh"
                                       style="padding-left: 200px;"
                                     >
                                       <div
-                                        class="styledComponents__Popover-sc-cby53p-41"
+                                        class="styledComponents__Popover-sc-cby53p-43"
                                         placeholder="poweredbackground"
                                         style="outline: none; cursor: none;"
                                       >
                                         <div
-                                          class="styledComponents__FieldText-sc-cby53p-19 jnKkCj styledComponents__Popover-sc-cby53p-41"
+                                          class="styledComponents__FieldText-sc-cby53p-19 jnKkCj styledComponents__Popover-sc-cby53p-43"
                                           placeholder="poweredtext"
                                           style="font-size: 14px; width: 152px; line-height: 24px; max-width: 425px; text-align: left; cursor: none; outline: none;"
                                         >
@@ -471,7 +471,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                         </div>
                                         <img
                                           alt="poweredimage"
-                                          class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-41"
+                                          class="styledComponents__Img-sc-cby53p-16 hGxGzA styledComponents__Popover-sc-cby53p-43"
                                           src="powered-logo-img.svg"
                                           style="margin-left: 50px; cursor: none; outline: none; height: 50px; max-width: 425px;"
                                         />

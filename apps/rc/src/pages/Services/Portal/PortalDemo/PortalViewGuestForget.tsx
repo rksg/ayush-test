@@ -23,12 +23,12 @@ export default function PortalViewGuestForget (props: {
           ' to receive a new password based on how it was provided to you originally'
       })}</UI.FieldText>
 
-      <UI.ViewSectionTabsBig
+      <UI.ViewSectionTabs
         defaultActiveKey='text'
         type='card'
         size={'middle'}
       >
-        <UI.ViewSectionTabsBig.TabPane tab={$t({ defaultMessage: 'Text Message' })} key='text'>
+        <UI.ViewSectionTabs.TabPane tab={$t({ defaultMessage: 'Text Message' })} key='text'>
           <UI.FieldText style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
             {$t({
               defaultMessage: 'Please enter the mobile phone number where you' +
@@ -41,8 +41,8 @@ export default function PortalViewGuestForget (props: {
             isPreview={isPreview}
             updateButton={(data) => updateBtn?.(data)}
           >{$t({ defaultMessage: 'Get Password' })}</PortalButtonContent>
-        </UI.ViewSectionTabsBig.TabPane>
-        <UI.ViewSectionTabsBig.TabPane tab={$t({ defaultMessage: 'Email Message' })} key='email'>
+        </UI.ViewSectionTabs.TabPane>
+        <UI.ViewSectionTabs.TabPane tab={$t({ defaultMessage: 'Email Message' })} key='email'>
           <UI.FieldText style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
             {$t({
               defaultMessage: 'Please enter the E-mail address where you received' +
@@ -55,16 +55,16 @@ export default function PortalViewGuestForget (props: {
             isPreview={isPreview}
             updateButton={(data) => updateBtn?.(data)}
           >{$t({ defaultMessage: 'Get Password' })}</PortalButtonContent>
-        </UI.ViewSectionTabsBig.TabPane>
-        <UI.ViewSectionTabsBig.TabPane tab={$t({ defaultMessage: 'Other' })} key='other'>
+        </UI.ViewSectionTabs.TabPane>
+        <UI.ViewSectionTabs.TabPane tab={$t({ defaultMessage: 'Other' })} key='other'>
           <UI.FieldText style={{ textAlign: 'left', padding: '0 20px 0 20px' }}>
             {$t({
               defaultMessage: 'If you received a password for this network through another ' +
                 'channel (printout for example) please request a new code from the ' +
                 'person that provided it for your use'
             })}</UI.FieldText>
-        </UI.ViewSectionTabsBig.TabPane>
-      </UI.ViewSectionTabsBig>
+        </UI.ViewSectionTabs.TabPane>
+      </UI.ViewSectionTabs>
       <UI.FieldTextLink>{$t({ defaultMessage: 'Back' })}</UI.FieldTextLink>
     </UI.ViewSection>
 

@@ -14,7 +14,7 @@ export default function PortalViewSelfSignRegister (props:{
   const { $t } = useIntl()
   const { demoValue, updateBtn, isPreview } = props
   return (
-    <UI.ViewSection>
+    <UI.ViewSectionNoBorder>
       <UI.ViewSectionTabsBig
         defaultActiveKey='register'
         type='card'
@@ -59,7 +59,7 @@ export default function PortalViewSelfSignRegister (props:{
         </UI.ViewSectionTabsBig.TabPane>
       </UI.ViewSectionTabsBig>
       <UI.FieldTextLink>{$t({ defaultMessage: 'Back' })}</UI.FieldTextLink>
-    </UI.ViewSection>
+    </UI.ViewSectionNoBorder>
 
   )
 }

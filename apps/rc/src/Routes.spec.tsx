@@ -55,6 +55,10 @@ jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
   return <div data-testid='PortalForm' />
 })
 
+jest.mock('./pages/Services/DHCPDetail', () => () => {
+  return <div data-testid='DHCPDetail' />
+})
+
 jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
@@ -265,7 +269,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('DHCP details page')).toBeVisible()
+    expect(screen.getByTestId('DHCPDetail')).toBeVisible()
   })
 
   test('should navigate to create Portal page', async () => {

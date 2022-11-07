@@ -227,8 +227,16 @@ export const ViewSection = styled.div`
   width:420px;
   max-width:100%;
   text-align:center;
-  padding:10px 0 10px 0;
+  padding:25px 0 25px 0;
   border: 2px solid var(--acx-neutrals-40);
+`
+export const ViewSectionNoBorder = styled.div`
+  height:auto;
+  width:420px;
+  max-width:100%;
+  text-align:center;
+  padding:10px 0 10px 0;
+
 `
 export const ViewSectionLink = styled.div`
   text-align: right;
@@ -249,6 +257,37 @@ export const ViewSectionTitle = styled.div`
   font-weight:700;
   color:var(--acx-primary-black);
 `
+export const ViewSectionTabs = styled(AntTabs)`
+  padding-left:15px;
+  margin-top:10px;
+  margin-bottom:10px;
+  width:400px;
+  &.ant-tabs-card {
+    .ant-tabs-nav::before {
+      display: none;
+    }
+    .ant-tabs-nav {
+      .ant-tabs-nav-list{
+        .ant-tabs-tab {
+          background: var(--acx-neutrals-20);
+          margin-bottom:3px;
+          &.ant-tabs-tab-active {
+            border:1px solid var(--acx-accents-orange-50);
+            color:var(--acx-neutrals-20);
+            background: var(--acx-neutrals-20);
+            margin-bottom: -3px;
+          }
+      }
+    }
+  }
+  .ant-tabs-content {
+    margin-top:-17px;
+    height: auto;
+    min-height:200px;
+    border: 1px solid var(--acx-accents-orange-50);
+    width: 380px;
+  }
+`
 export const ViewSectionTabsBig = styled(AntTabs)`
 
   margin-top:10px;
@@ -261,12 +300,18 @@ export const ViewSectionTabsBig = styled(AntTabs)`
     .ant-tabs-nav {
       padding-left:0 !important;
       .ant-tabs-nav-list{
+        .ant-tabs-tab:hover{
+          color:var(--acx-neutrals-20);
+          border:0px;
+        }
         .ant-tabs-tab {
-          &.ant-tabs-tab-active {
+          background:var(--acx-primary-white);
+          border:0px;
+          margin-bottom:3px;
+          &.ant-tabs-tab-active{
             border-color:var(--acx-neutrals-20);
             border:2px solid var(--acx-neutrals-20);
-            border-bottom:3px solid var(--acx-primary-white);
-            color:var(--acx-neutrals-20);
+            margin-bottom: -2px;
           }
       }
     }
@@ -275,7 +320,7 @@ export const ViewSectionTabsBig = styled(AntTabs)`
     height: auto;
     min-height:200px;
     margin-top:-18px;
-    border-top: 2px solid var(--acx-neutrals-20);
+    border: 2px solid var(--acx-neutrals-20);
   }
 `
 export const ViewSectionSocial=styled.div<{ $type: string | null }>`
@@ -338,13 +383,12 @@ export const ViewSectionSpan = styled.span`
 `
 export const ViewTextArea = styled.div`
  width:100%;
- border:0;
  height: 327px;
  line-height:20px;
- border-top: 2px solid var(--acx-neutrals-20);
+ border: 2px solid var(--acx-neutrals-20);
  overflow-y:auto;
  text-align: left;
- padding: 5px 5px 0 20px;
+ padding: 5px 5px 20px 20px;
 `
 export const Popover = styled(AntPopover)`
 

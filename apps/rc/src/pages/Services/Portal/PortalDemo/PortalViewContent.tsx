@@ -128,7 +128,9 @@ export default function PortalViewContent (props:{
       {view === PortalViewEnum.ConnectionConfirmed &&
       <PortalViewConfirm/>}
       {view === PortalViewEnum.TermCondition &&
-      <PortalViewTerms demoValue={demoValue}/>}
+      <PortalViewTerms demoValue={demoValue}
+        updateBtn={(data)=>{
+          updateViewContent({ ...demoValue, buttonColor: data.color })}}/>}
       {componentDisplay.TermsConditions &&<UI.FieldText>{$t({
         defaultMessage: 'By clicking the connect button, you are accepting the'
       })}&nbsp;&nbsp;
