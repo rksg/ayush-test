@@ -6,7 +6,11 @@ import { ClockOutlined }         from '@acx-ui/icons'
 import { ServiceType }           from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { getServiceDetailsLink, ServiceOperation } from '../../serviceRouteUtils'
+import {
+  getServiceDetailsLink,
+  getServiceListRoutePath,
+  ServiceOperation
+} from '../../serviceRouteUtils'
 
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
 import { MdnsProxyOverview }       from './MdnsProxyOverview'
@@ -25,7 +29,7 @@ export default function MdnsProxyDetail () {
       <PageHeader
         title={mockedData.name}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={[
           <Button key={'date-filter'} icon={<ClockOutlined />}>

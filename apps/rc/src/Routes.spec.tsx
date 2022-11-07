@@ -5,6 +5,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import {
   getSelectServiceRoutePath,
+  getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation
@@ -45,6 +46,10 @@ jest.mock('./pages/Services/SelectServiceForm', () => () => {
 
 jest.mock('./pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm', () => () => {
   return <div data-testid='MdnsProxyForm' />
+})
+
+jest.mock('./pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail', () => () => {
+  return <div data-testid='MdnsProxyDetail' />
 })
 
 jest.mock('./pages/Services/DHCPForm/DHCPForm', () => () => {
@@ -169,8 +174,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to edit MdnsProxy page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -181,15 +185,14 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to MdnsProxy details page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('mDNS Proxy details page')).toBeVisible()
+    expect(screen.getByTestId('MdnsProxyDetail')).toBeVisible()
   })
 
   test('should navigate to create WIFI_CALLING page', async () => {
