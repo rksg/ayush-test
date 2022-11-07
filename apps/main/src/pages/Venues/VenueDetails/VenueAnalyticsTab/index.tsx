@@ -1,12 +1,14 @@
-import AnalyticsWidgets from 'analytics/Widgets'
-import { Tooltip }      from 'antd'
-import { useIntl }      from 'react-intl'
+import React from 'react'
+
+import { Tooltip } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { useAnalyticsFilter, AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Tabs }                                from '@acx-ui/components'
 import { useVenueDetailsHeaderQuery }          from '@acx-ui/rc/services'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { defaultNetworkPath, notAvailableMsg } from '@acx-ui/utils'
+const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 export function VenueAnalyticsTab () {
   const { $t } = useIntl()
@@ -22,7 +24,8 @@ export function VenueAnalyticsTab () {
   const healthFilter = {
     ...filters,
     path: [{ type: 'zone', name: venueName }],
-    urlTabParam: 'activeSubSubTab'
+    urlTabParam: 'activeSubSubTab',
+    urlBasePath: `venues/${venueId}/venue-details/analytics/health`
   } as AnalyticsFilter
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -67,8 +70,7 @@ export function VenueAnalyticsTab () {
         <AnalyticsWidgets
           name='healthPageWidget'
           filters={{
-            ...healthFilter,
-            urlBasePath: `venues/${venueId}/venue-details/analytics/health`
+            ...healthFilter
           }}
         />
       </Tabs.TabPane>
