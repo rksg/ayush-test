@@ -84,7 +84,7 @@ describe('NetworkForm', () => {
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
     })
-  }, 20000)
+  })
 
   it('should create PSK network with WPA2 and mac auth', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -104,7 +104,7 @@ describe('NetworkForm', () => {
 
     const secretTextbox = screen.getByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
-  }, 20000)
+  })
 
 
   it('should create PSK network with WP3 and mac auth security protocol', async () => {
@@ -201,5 +201,5 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.3.3:3333')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-3')).toHaveLength(2)
     }, true)
-  }, 20000)
+  })
 })

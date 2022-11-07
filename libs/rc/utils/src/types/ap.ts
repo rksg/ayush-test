@@ -26,6 +26,16 @@ export interface AP {
   venueName: string
 }
 
+export interface ApDetailHeader {
+  title: string,
+  headers: {
+    overview: string,
+    clients: number,
+    networks: number,
+    services: number
+  }
+}
+
 export interface ApExtraParams {
   channel24: boolean,
   channel50: boolean,

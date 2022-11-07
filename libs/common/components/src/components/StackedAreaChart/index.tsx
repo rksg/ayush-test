@@ -102,6 +102,7 @@ export function StackedAreaChart <
   }, [tooltipTotalTitle, initialData])
 
   const option: EChartsOption = {
+    animation: false,
     color: props.stackColors || qualitativeColorSet(),
     grid: { ...gridOptions({ disableLegend }) },
     ...(disableLegend ? {} : {

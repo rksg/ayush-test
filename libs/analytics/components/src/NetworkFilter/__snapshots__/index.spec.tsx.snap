@@ -1,0 +1,445 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Network Filter with incident severity should not show any severity circle when hierarchyNode is empty 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    >
+      <div
+        class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+      >
+        <div
+          class="ant-select-selector"
+        >
+          <span
+            class="ant-select-selection-search"
+          >
+            <input
+              aria-autocomplete="list"
+              aria-controls="rc_select_TEST_OR_SSR_list"
+              aria-expanded="true"
+              aria-haspopup="listbox"
+              aria-owns="rc_select_TEST_OR_SSR_list"
+              autocomplete="off"
+              class="ant-select-selection-search-input"
+              id="rc_select_TEST_OR_SSR"
+              role="combobox"
+              type="search"
+              value=""
+            />
+          </span>
+          <span
+            class="ant-select-selection-placeholder"
+          >
+            Entire Organization
+          </span>
+        </div>
+        <span
+          aria-hidden="true"
+          class="ant-select-arrow"
+          style="user-select: none;"
+          unselectable="on"
+        >
+          <span
+            aria-label="search"
+            class="anticon anticon-search ant-select-suffix"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="search"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M909.6 854.5L649.9 594.8C690.2 542.7 712 479 712 412c0-80.2-31.3-155.4-87.9-212.1-56.6-56.7-132-87.9-212.1-87.9s-155.5 31.3-212.1 87.9C143.2 256.5 112 331.8 112 412c0 80.1 31.3 155.5 87.9 212.1C256.5 680.8 331.8 712 412 712c67 0 130.6-21.8 182.7-62l259.7 259.6a8.2 8.2 0 0011.6 0l43.6-43.5a8.2 8.2 0 000-11.6zM570.4 570.4C528 612.7 471.8 636 412 636s-116-23.3-158.4-65.6C211.3 528 188 471.8 188 412s23.3-116.1 65.6-158.4C296 211.3 352.2 188 412 188s116.1 23.2 158.4 65.6S636 352.2 636 412s-23.3 116.1-65.6 158.4z"
+              />
+            </svg>
+          </span>
+        </span>
+        <div
+          style="position: absolute; top: 0px; left: 0px; width: 100%;"
+        >
+          <div>
+            <div
+              class="ant-select-dropdown ant-cascader-dropdown ant-select-dropdown-empty"
+              style="opacity: 0; min-width: 1280px;"
+            >
+              <div>
+                <div
+                  class="ant-cascader-menus ant-cascader-menu-empty"
+                >
+                  <ul
+                    class="ant-cascader-menu"
+                    role="menu"
+                  >
+                    <li
+                      aria-checked="false"
+                      class="ant-cascader-menu-item ant-cascader-menu-item-disabled"
+                      data-path-key="__EMPTY__"
+                      role="menuitemcheckbox"
+                    >
+                      <div
+                        class="ant-cascader-menu-item-content"
+                      >
+                        <div
+                          class="ant-empty ant-empty-normal ant-empty-small"
+                        >
+                          <div
+                            class="ant-empty-image"
+                          >
+                            <svg
+                              class="ant-empty-img-simple"
+                              height="41"
+                              viewBox="0 0 64 41"
+                              width="64"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g
+                                fill="none"
+                                fill-rule="evenodd"
+                                transform="translate(0 1)"
+                              >
+                                <ellipse
+                                  class="ant-empty-img-simple-ellipse"
+                                  cx="32"
+                                  cy="33"
+                                  rx="32"
+                                  ry="7"
+                                />
+                                <g
+                                  class="ant-empty-img-simple-g"
+                                  fill-rule="nonzero"
+                                >
+                                  <path
+                                    d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                  />
+                                  <path
+                                    class="ant-empty-img-simple-path"
+                                    d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                  />
+                                </g>
+                              </g>
+                            </svg>
+                          </div>
+                          <div
+                            class="ant-empty-description"
+                          >
+                            No Data
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Network Filter with incident severity should show only venue severities 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    >
+      <div
+        class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+      >
+        <div
+          class="ant-select-selector"
+        >
+          <span
+            class="ant-select-selection-search"
+          >
+            <input
+              aria-autocomplete="list"
+              aria-controls="rc_select_TEST_OR_SSR_list"
+              aria-expanded="true"
+              aria-haspopup="listbox"
+              aria-owns="rc_select_TEST_OR_SSR_list"
+              autocomplete="off"
+              class="ant-select-selection-search-input"
+              id="rc_select_TEST_OR_SSR"
+              role="combobox"
+              type="search"
+              value=""
+            />
+          </span>
+          <span
+            class="ant-select-selection-placeholder"
+          >
+            Entire Organization
+          </span>
+        </div>
+        <span
+          aria-hidden="true"
+          class="ant-select-arrow"
+          style="user-select: none;"
+          unselectable="on"
+        >
+          <span
+            aria-label="search"
+            class="anticon anticon-search ant-select-suffix"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="search"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M909.6 854.5L649.9 594.8C690.2 542.7 712 479 712 412c0-80.2-31.3-155.4-87.9-212.1-56.6-56.7-132-87.9-212.1-87.9s-155.5 31.3-212.1 87.9C143.2 256.5 112 331.8 112 412c0 80.1 31.3 155.5 87.9 212.1C256.5 680.8 331.8 712 412 712c67 0 130.6-21.8 182.7-62l259.7 259.6a8.2 8.2 0 0011.6 0l43.6-43.5a8.2 8.2 0 000-11.6zM570.4 570.4C528 612.7 471.8 636 412 636s-116-23.3-158.4-65.6C211.3 528 188 471.8 188 412s23.3-116.1 65.6-158.4C296 211.3 352.2 188 412 188s116.1 23.2 158.4 65.6S636 352.2 636 412s-23.3 116.1-65.6 158.4z"
+              />
+            </svg>
+          </span>
+        </span>
+        <div
+          style="position: absolute; top: 0px; left: 0px; width: 100%;"
+        >
+          <div>
+            <div
+              class="ant-select-dropdown ant-cascader-dropdown ant-select-dropdown-empty"
+              style="opacity: 0; min-width: 1280px;"
+            >
+              <div>
+                <div
+                  class="ant-cascader-menus ant-cascader-menu-empty"
+                >
+                  <ul
+                    class="ant-cascader-menu"
+                    role="menu"
+                  >
+                    <li
+                      aria-checked="false"
+                      class="ant-cascader-menu-item ant-cascader-menu-item-disabled"
+                      data-path-key="__EMPTY__"
+                      role="menuitemcheckbox"
+                    >
+                      <div
+                        class="ant-cascader-menu-item-content"
+                      >
+                        <div
+                          class="ant-empty ant-empty-normal ant-empty-small"
+                        >
+                          <div
+                            class="ant-empty-image"
+                          >
+                            <svg
+                              class="ant-empty-img-simple"
+                              height="41"
+                              viewBox="0 0 64 41"
+                              width="64"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g
+                                fill="none"
+                                fill-rule="evenodd"
+                                transform="translate(0 1)"
+                              >
+                                <ellipse
+                                  class="ant-empty-img-simple-ellipse"
+                                  cx="32"
+                                  cy="33"
+                                  rx="32"
+                                  ry="7"
+                                />
+                                <g
+                                  class="ant-empty-img-simple-g"
+                                  fill-rule="nonzero"
+                                >
+                                  <path
+                                    d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                  />
+                                  <path
+                                    class="ant-empty-img-simple-path"
+                                    d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                  />
+                                </g>
+                              </g>
+                            </svg>
+                          </div>
+                          <div
+                            class="ant-empty-description"
+                          >
+                            No Data
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Network Filter with incident severity should show severity only once on each node 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    >
+      <div
+        class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+      >
+        <div
+          class="ant-select-selector"
+        >
+          <span
+            class="ant-select-selection-search"
+          >
+            <input
+              aria-autocomplete="list"
+              aria-controls="rc_select_TEST_OR_SSR_list"
+              aria-expanded="true"
+              aria-haspopup="listbox"
+              aria-owns="rc_select_TEST_OR_SSR_list"
+              autocomplete="off"
+              class="ant-select-selection-search-input"
+              id="rc_select_TEST_OR_SSR"
+              role="combobox"
+              type="search"
+              value=""
+            />
+          </span>
+          <span
+            class="ant-select-selection-placeholder"
+          >
+            Entire Organization
+          </span>
+        </div>
+        <span
+          aria-hidden="true"
+          class="ant-select-arrow"
+          style="user-select: none;"
+          unselectable="on"
+        >
+          <span
+            aria-label="search"
+            class="anticon anticon-search ant-select-suffix"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="search"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M909.6 854.5L649.9 594.8C690.2 542.7 712 479 712 412c0-80.2-31.3-155.4-87.9-212.1-56.6-56.7-132-87.9-212.1-87.9s-155.5 31.3-212.1 87.9C143.2 256.5 112 331.8 112 412c0 80.1 31.3 155.5 87.9 212.1C256.5 680.8 331.8 712 412 712c67 0 130.6-21.8 182.7-62l259.7 259.6a8.2 8.2 0 0011.6 0l43.6-43.5a8.2 8.2 0 000-11.6zM570.4 570.4C528 612.7 471.8 636 412 636s-116-23.3-158.4-65.6C211.3 528 188 471.8 188 412s23.3-116.1 65.6-158.4C296 211.3 352.2 188 412 188s116.1 23.2 158.4 65.6S636 352.2 636 412s-23.3 116.1-65.6 158.4z"
+              />
+            </svg>
+          </span>
+        </span>
+        <div
+          style="position: absolute; top: 0px; left: 0px; width: 100%;"
+        >
+          <div>
+            <div
+              class="ant-select-dropdown ant-cascader-dropdown ant-select-dropdown-empty"
+              style="opacity: 0; min-width: 1280px;"
+            >
+              <div>
+                <div
+                  class="ant-cascader-menus ant-cascader-menu-empty"
+                >
+                  <ul
+                    class="ant-cascader-menu"
+                    role="menu"
+                  >
+                    <li
+                      aria-checked="false"
+                      class="ant-cascader-menu-item ant-cascader-menu-item-disabled"
+                      data-path-key="__EMPTY__"
+                      role="menuitemcheckbox"
+                    >
+                      <div
+                        class="ant-cascader-menu-item-content"
+                      >
+                        <div
+                          class="ant-empty ant-empty-normal ant-empty-small"
+                        >
+                          <div
+                            class="ant-empty-image"
+                          >
+                            <svg
+                              class="ant-empty-img-simple"
+                              height="41"
+                              viewBox="0 0 64 41"
+                              width="64"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g
+                                fill="none"
+                                fill-rule="evenodd"
+                                transform="translate(0 1)"
+                              >
+                                <ellipse
+                                  class="ant-empty-img-simple-ellipse"
+                                  cx="32"
+                                  cy="33"
+                                  rx="32"
+                                  ry="7"
+                                />
+                                <g
+                                  class="ant-empty-img-simple-g"
+                                  fill-rule="nonzero"
+                                >
+                                  <path
+                                    d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                  />
+                                  <path
+                                    class="ant-empty-img-simple-path"
+                                    d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                  />
+                                </g>
+                              </g>
+                            </svg>
+                          </div>
+                          <div
+                            class="ant-empty-description"
+                          >
+                            No Data
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
