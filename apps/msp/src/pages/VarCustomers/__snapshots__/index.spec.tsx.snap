@@ -52,7 +52,7 @@ exports[`VarCustomers should render correctly 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
       style="display: flex; direction: ltr; width: 400px; float: left;"
@@ -69,7 +69,7 @@ exports[`VarCustomers should render correctly 1`] = `
     </div>
     <hr />
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 dvVAeG"
     >
       <div
         class="styledComponents__Header-sc-1abm7iv-11 lWiiO"
@@ -135,14 +135,6 @@ exports[`VarCustomers should render correctly 1`] = `
           class="styledComponents__HeaderRight-sc-1abm7iv-12 bHNaiJ"
         />
       </div>
-    </div>
-  </div>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
-  >
-    <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 dvVAeG"
-    >
       <div
         class="ant-pro-table"
       >

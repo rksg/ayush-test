@@ -98,7 +98,7 @@ export const validationMessages = {
   emailAddress: defineMessage({
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
-  })    
+  })
 }
 
 export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessages {
