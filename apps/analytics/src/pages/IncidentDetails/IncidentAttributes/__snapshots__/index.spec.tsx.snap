@@ -3,7 +3,7 @@
 exports[`IncidentAttributes should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="ant-descriptions styledComponents__Descriptions-sc-1627zcn-1 iCdUGT"
+    class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 egwqKx"
   >
     <div
       class="ant-descriptions-view"
@@ -42,7 +42,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
                   >
                     5 of 27 clients (18.52%)
                   </span>
@@ -82,7 +82,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 bPTCfM"
                   >
                     1 of 1 AP (100%)
                   </span>
@@ -122,7 +122,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0"
                   >
                     Connection
                   </span>
@@ -162,7 +162,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0"
                   >
                     EAP
                   </span>
@@ -202,7 +202,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0"
                   >
                     Access Point
                   </span>
@@ -242,7 +242,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0"
                   >
                     RuckusAP (70:CA:97:01:A0:C0)
                   </span>
@@ -282,7 +282,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0"
                   >
                     21 h 27 m
                   </span>
@@ -322,7 +322,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0"
                   >
                     Jul 19 2022 05:15
                   </span>
@@ -362,7 +362,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0"
                   >
                     Jul 20 2022 02:42
                   </span>

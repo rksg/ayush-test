@@ -1,6 +1,6 @@
-import { dataApiURL }         from '@acx-ui/analytics/services'
-import { AnalyticsFilter }    from '@acx-ui/analytics/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { dataApiURL, dataApi } from '@acx-ui/analytics/services'
+import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
+import { Provider, store }     from '@acx-ui/store'
 import {
   render,
   cleanup,
@@ -11,15 +11,13 @@ import {
 import { TimeStampRange } from '@acx-ui/types'
 import { DateRange }      from '@acx-ui/utils'
 
-
-import { api }               from '../../../components/NetworkHistory/services'
 import { HealthPageContext } from '../HealthPageContext'
 
 import ConnectedClientsOverTime from '.'
 
 describe('HealthConnectedClientsOverTime', () => {
 
-  beforeEach(() => store.dispatch(api.util.resetApiState()))
+  beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
 
   afterEach(() => cleanup())
 

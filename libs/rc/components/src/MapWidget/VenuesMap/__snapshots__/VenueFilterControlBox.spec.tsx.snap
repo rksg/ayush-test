@@ -1,0 +1,127 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VenueFilterControlBox should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__VenueFilterContainer-sc-1g4gbr4-2 hYwDaN"
+  >
+    <span
+      class="styledComponents__FilterBoxTitle-sc-1g4gbr4-1 emEkjD"
+    >
+      Show
+    </span>
+    <label
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-1g4gbr4-0 dbUxgy"
+    >
+      <span
+        class="ant-checkbox ant-checkbox-checked"
+      >
+        <input
+          checked=""
+          class="ant-checkbox-input"
+          name="3_RequiresAttention"
+          type="checkbox"
+          value=""
+        />
+        <span
+          class="ant-checkbox-inner"
+        />
+      </span>
+      <span>
+        <span
+          class="anticon"
+          role="img"
+        >
+          <div
+            data-testid="VenueMarkerRed"
+          />
+        </span>
+      </span>
+    </label>
+    <label
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-1g4gbr4-0 dbUxgy"
+    >
+      <span
+        class="ant-checkbox ant-checkbox-checked"
+      >
+        <input
+          checked=""
+          class="ant-checkbox-input"
+          name="4_TransientIssue"
+          type="checkbox"
+          value=""
+        />
+        <span
+          class="ant-checkbox-inner"
+        />
+      </span>
+      <span>
+        <span
+          class="anticon"
+          role="img"
+        >
+          <div
+            data-testid="VenueMarkerOrange"
+          />
+        </span>
+      </span>
+    </label>
+    <label
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-1g4gbr4-0 dbUxgy"
+    >
+      <span
+        class="ant-checkbox ant-checkbox-checked"
+      >
+        <input
+          checked=""
+          class="ant-checkbox-input"
+          name="1_InSetupPhase"
+          type="checkbox"
+          value=""
+        />
+        <span
+          class="ant-checkbox-inner"
+        />
+      </span>
+      <span>
+        <span
+          class="anticon"
+          role="img"
+        >
+          <div
+            data-testid="VenueMarkerGrey"
+          />
+        </span>
+      </span>
+    </label>
+    <label
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-1g4gbr4-0 dbUxgy"
+    >
+      <span
+        class="ant-checkbox ant-checkbox-checked"
+      >
+        <input
+          checked=""
+          class="ant-checkbox-input"
+          name="2_Operational"
+          type="checkbox"
+          value=""
+        />
+        <span
+          class="ant-checkbox-inner"
+        />
+      </span>
+      <span>
+        <span
+          class="anticon"
+          role="img"
+        >
+          <div
+            data-testid="VenueMarkerGreen"
+          />
+        </span>
+      </span>
+    </label>
+  </div>
+</DocumentFragment>
+`;

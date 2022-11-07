@@ -6,14 +6,14 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { histogramApi } from '../Kpi/services'
+import { api } from '../Kpi/services'
 
 import ThresholdConfig from './ThresholdConfigContent'
 
 const shortXFormat = jest.fn()
 describe('Threshold Histogram chart', () => {
   beforeEach(() => {
-    store.dispatch(histogramApi.util.resetApiState())
+    store.dispatch(api.util.resetApiState())
   })
 
   it('should render Slider', async () => {

@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { histogramApi } from '../Kpi/services'
+import { api } from '../Kpi/services'
 
 import Histogram from './Histogram'
 
@@ -33,7 +33,7 @@ const setKpiThreshold = jest.fn()
 
 describe('Threshold Histogram chart', () => {
   beforeEach(() => {
-    store.dispatch(histogramApi.util.resetApiState())
+    store.dispatch(api.util.resetApiState())
   })
 
   it('should render Histogram with data', async () => {

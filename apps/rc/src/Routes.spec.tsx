@@ -55,6 +55,10 @@ jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
   return <div data-testid='PortalForm' />
 })
 
+jest.mock('./pages/Services/DHCPDetail', () => () => {
+  return <div data-testid='DHCPDetail' />
+})
+
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/aps', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -261,7 +265,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('DHCP details page')).toBeVisible()
+    expect(screen.getByTestId('DHCPDetail')).toBeVisible()
   })
 
   test('should navigate to create Portal page', async () => {
