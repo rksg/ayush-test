@@ -15,7 +15,8 @@ import {
   showActivityMessage,
   TableResult,
   VenueCapabilities,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -36,11 +37,11 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
+      providesTags: [{ type: 'Ap', id: 'LIST' }],
       transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'Ap', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -70,9 +71,36 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    deleteAp: build.mutation<AP, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteAps, params)
+        return {
+          ...req,
+          ...(!!payload && { body: payload })
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
     wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getDhcpAp: build.query<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    downloadApLog: build.mutation<{ fileURL: string }, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.downloadApLog, params)
         return{
           ...req
         }
@@ -86,6 +114,22 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
+    }),
+    rebootAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    factoryResetAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.factoryResetAp, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -97,7 +141,12 @@ export const {
   useAddApMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
-  useWifiCapabilitiesQuery
+  useWifiCapabilitiesQuery,
+  useDeleteApMutation,
+  useDownloadApLogMutation,
+  useRebootApMutation,
+  useFactoryResetApMutation,
+  useLazyGetDhcpApQuery
 } = apApi
 
 

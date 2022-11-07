@@ -22,6 +22,7 @@ export type ToastType = 'info' | 'success' | 'error'
 export interface ToastProps extends ArgsProps {
   type: ToastType
   extraContent?: React.ReactNode
+  closable?: boolean
   link?: { text?: string, onClick: Function }
 }
 
@@ -40,7 +41,7 @@ export const showToast = (config: ToastProps): string | number => {
 }
 
 const toastContent = (key: string | number, config: ToastProps) => {
-  const { content, extraContent, link, type: toastType, onClose } = config
+  const { content, extraContent, link, type: toastType, onClose, closable = true } = config
   return (
     <UI.Toast>
       <UI.Content>
@@ -54,12 +55,14 @@ const toastContent = (key: string | number, config: ToastProps) => {
           )
         }
       </UI.Content>
-      <UI.CloseButton onClick={() => {
-        message.destroy(key)
-        if (onClose) onClose()
-      }}>
-        <CloseOutlined />
-      </UI.CloseButton>
+      { closable && (
+        <UI.CloseButton onClick={() => {
+          message.destroy(key)
+          if (onClose) onClose()
+        }}>
+          <CloseOutlined />
+        </UI.CloseButton>
+      )}
     </UI.Toast>
   )
 }
