@@ -18,6 +18,7 @@ import { ApTable } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
   ...jest.requireActual('@acx-ui/icons'),
+  CancelCircle: () => <div data-testid='cancel-circle' />,
   SettingsOutlined: () => <div data-testid='SettingsOutlined'/>
 }))
 
