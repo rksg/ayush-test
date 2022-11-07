@@ -1,4 +1,4 @@
-import { dataApiURL }              from '@acx-ui/analytics/services'
+import { dataApiURL, healthApi }   from '@acx-ui/analytics/services'
 import { AnalyticsFilter }         from '@acx-ui/analytics/utils'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { Provider, store }         from '@acx-ui/store'
@@ -15,16 +15,11 @@ import { DateRange }      from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import { timeseriesApi, histogramApi, thresholdApi } from './services'
-
 import KpiSection from '.'
-
 
 describe('Kpi Section', () => {
   beforeEach(() => {
-    store.dispatch(histogramApi.util.resetApiState())
-    store.dispatch(timeseriesApi.util.resetApiState())
-    store.dispatch(thresholdApi.util.resetApiState())
+    store.dispatch(healthApi.util.resetApiState())
   })
   const sampleTS = {
     time: [

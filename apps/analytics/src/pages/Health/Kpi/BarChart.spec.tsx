@@ -1,14 +1,11 @@
 
-import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { dataApiURL, healthApi }            from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
 import BarChart, { formatYDataPoint } from './BarChart'
-import { timeseriesApi }              from './services'
-
-
 
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -45,7 +42,7 @@ describe('Threshold barchart', () => {
   }
 
   beforeEach(() => {
-    store.dispatch(timeseriesApi.util.resetApiState())
+    store.dispatch(healthApi.util.resetApiState())
 
   })
 
@@ -97,4 +94,3 @@ describe('Threshold barchart', () => {
     expect(formatYDataPoint(0.1)).toStrictEqual('0.1%')
   })
 })
-

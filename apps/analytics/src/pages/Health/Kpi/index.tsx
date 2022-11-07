@@ -5,6 +5,10 @@ import ReactECharts from 'echarts-for-react'
 import moment       from 'moment-timezone'
 
 import {
+  KpiThresholdType,
+  healthApi
+} from '@acx-ui/analytics/services'
+import {
   kpisForTab,
   useAnalyticsFilter,
   kpiConfig
@@ -14,14 +18,9 @@ import { GridCol, GridRow, Loader } from '@acx-ui/components'
 import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
 
-import BarChart                      from './BarChart'
-import Histogram                     from './Histogram'
-import HealthPill                    from './Pill'
-import {
-  KpiThresholdType,
-  useGetKpiThresholdsQuery,
-  useFetchThresholdPermissionQuery
-} from './services'
+import BarChart      from './BarChart'
+import Histogram     from './Histogram'
+import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
 
 export const defaultThreshold: KpiThresholdType = {
@@ -38,6 +37,7 @@ export default function KpiSections (props: { tab: HealthTab }) {
   const { filters } = useAnalyticsFilter()
   const { tab } = props
   const { kpis } = kpisForTab[tab]
+  const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const customThresholdQuery = useGetKpiThresholdsQuery({ ...filters, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery

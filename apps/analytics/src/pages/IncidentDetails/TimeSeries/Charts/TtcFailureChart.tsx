@@ -3,14 +3,14 @@ import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import AutoSizer       from 'react-virtualized-auto-sizer'
 
+import { healthApi, KpiPayload }                          from '@acx-ui/analytics/services'
 import { getSeriesData, kpiConfig }                       from '@acx-ui/analytics/utils'
 import { Card, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
 import { formatter }                                      from '@acx-ui/utils'
 
-import { useKpiTimeseriesQuery, KpiPayload } from '../../../Health/Kpi/services'
-import { getIncidentTimeSeriesPeriods }      from '../services'
-import { TimeSeriesChartProps }              from '../types'
+import { getIncidentTimeSeriesPeriods } from '../services'
+import { TimeSeriesChartProps }         from '../types'
 
 import { getMarkers, onMarkAreaClick } from './incidentTimeSeriesMarker'
 
@@ -48,7 +48,7 @@ export const TtcFailureChart = ({ chartRef, data, incident, buffer }: TimeSeries
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
   const { start, end } = getIncidentTimeSeriesPeriods(incident, buffer)
-  const queryResults = useKpiTimeseriesQuery({
+  const queryResults = healthApi.useKpiTimeseriesQuery({
     path: incident.path,
     startDate: start.toISOString(),
     endDate: end.toISOString(),

@@ -1,8 +1,8 @@
 import { act } from 'react-dom/test-utils'
 
-import { dataApiURL }      from '@acx-ui/analytics/services'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Provider, store } from '@acx-ui/store'
+import { dataApiURL, healthApi } from '@acx-ui/analytics/services'
+import { AnalyticsFilter }       from '@acx-ui/analytics/utils'
+import { Provider, store }       from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
@@ -10,8 +10,6 @@ import {
   fireEvent
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
-
-import { histogramApi } from '../Kpi/services'
 
 import Histogram from './Histogram'
 
@@ -35,7 +33,7 @@ const setKpiThreshold = jest.fn()
 
 describe('Threshold Histogram chart', () => {
   beforeEach(() => {
-    store.dispatch(histogramApi.util.resetApiState())
+    store.dispatch(healthApi.util.resetApiState())
   })
 
   it('should render Histogram with data', async () => {

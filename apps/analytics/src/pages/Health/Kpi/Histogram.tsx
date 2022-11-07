@@ -4,17 +4,12 @@ import { sum, max } from 'lodash'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
+import { KpiThresholdType, KPIHistogramResponse, healthApi }                     from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }                                            from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import type { TimeStamp }                                                        from '@acx-ui/types'
 
-import { defaultThreshold }  from '../Kpi'
-import {
-  KpiThresholdType,
-  useKpiHistogramQuery,
-  KPIHistogramResponse,
-  useSaveThresholdMutation
-} from '../Kpi/services'
+import { defaultThreshold } from '../Kpi'
 
 import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
@@ -74,7 +69,7 @@ function Histogram ({
   const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
-  const [ triggerSave ] = useSaveThresholdMutation()
+  const [ triggerSave ] = healthApi.useSaveThresholdMutation()
   const onButtonReset = useCallback(() => {
     const defaultConfig = defaultThreshold[kpi as keyof typeof defaultThreshold]
     setThresholdValue(defaultConfig)
@@ -108,7 +103,7 @@ function Histogram ({
     setThresholdValue(splitsAfterIsReverseCheck[newValue - 1])
     setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
   }
-  const queryResults = useKpiHistogramQuery(
+  const queryResults = healthApi.useKpiHistogramQuery(
     { ...filters, kpi, threshold: histogram?.initialThreshold },
     {
       selectFromResult: ({ data, ...rest }) => ({

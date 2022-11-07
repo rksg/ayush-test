@@ -1,14 +1,12 @@
 import userEvent from '@testing-library/user-event'
 
-import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { dataApiURL, healthApi }            from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }       from '@acx-ui/analytics/utils'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange, getIntl }               from '@acx-ui/utils'
 
-import HealthPill                      from './Pill'
-import { timeseriesApi, histogramApi } from './services'
-
+import HealthPill from './Pill'
 
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -29,7 +27,7 @@ const thresholdMap = {
 const timeWindow: [string, string] = ['2022-01-01T00:00:00+08:00', '2022-01-02T00:00:00+08:00']
 describe('Pill with kpi threshold', () => {
   beforeEach(() => {
-    store.dispatch(histogramApi.util.resetApiState())
+    store.dispatch(healthApi.util.resetApiState())
   })
 
   it('should render pill with data (success below threshold)', async () => {
@@ -121,7 +119,7 @@ describe('Pill without kpi threshold', () => {
   }
 
   beforeEach(() => {
-    store.dispatch(timeseriesApi.util.resetApiState())
+    store.dispatch(healthApi.util.resetApiState())
 
   })
 

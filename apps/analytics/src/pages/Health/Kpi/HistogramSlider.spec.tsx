@@ -1,10 +1,9 @@
+import { healthApi }       from '@acx-ui/analytics/services'
 import { Provider, store } from '@acx-ui/store'
 import {
   render,
   screen
 } from '@acx-ui/test-utils'
-
-import { histogramApi } from '../Kpi/services'
 
 import HistogramSlider from './HistogramSlider'
 
@@ -13,7 +12,7 @@ const splits = [1,2,3,4,5,6]
 const onSliderChange = jest.fn()
 describe('Threshold Histogram chart', () => {
   beforeEach(() => {
-    store.dispatch(histogramApi.util.resetApiState())
+    store.dispatch(healthApi.util.resetApiState())
   })
 
   it('should render Slider', async () => {

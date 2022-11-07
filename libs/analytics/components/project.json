@@ -1,0 +1,22 @@
+{
+  "sourceRoot": "libs/analytics/components/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/analytics/components/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/analytics/components"],
+      "options": {
+        "jestConfig": "libs/analytics/components/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
