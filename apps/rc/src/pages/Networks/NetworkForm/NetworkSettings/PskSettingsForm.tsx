@@ -18,6 +18,7 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { ToggleButton, IpPortSecretForm }               from '@acx-ui/rc/components'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -36,8 +37,6 @@ import {
   generateHexKey
 } from '@acx-ui/rc/utils'
 
-import { IpPortSecretForm }        from '../../../../components/IpPortSecretForm'
-import { ToggleButton }            from '../../../../components/ToggleButton'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'

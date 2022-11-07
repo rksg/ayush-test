@@ -1,0 +1,4403 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VenueClusterRenderer should match with snapshot for renderItemForList 1`] = `
+<Popover
+  content={
+    <h2>
+      Popover content
+    </h2>
+  }
+  mouseEnterDelay={0.1}
+  mouseLeaveDelay={0.1}
+  overlayStyle={Object {}}
+  placement="right"
+  trigger="hover"
+>
+  <ForwardRef(InternalItem)>
+    <Space>
+      <h3>
+        Some React node instead of icon
+      </h3>
+      <div
+        className="ListWithIcon-item-title"
+      >
+        Some Title
+      </div>
+    </Space>
+  </ForwardRef(InternalItem)>
+</Popover>
+`;
+
+exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip 1`] = `
+<styledComponents__VenueClusterTooltip>
+  <List
+    bordered={true}
+    dataSource={
+      Array [
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #1",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#1",
+              }
+            }
+          />,
+          "title": "Venue #1",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #3",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#3",
+              }
+            }
+          />,
+          "title": "Venue #3",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #5",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#5",
+              }
+            }
+          />,
+          "title": "Venue #5",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #7",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#7",
+              }
+            }
+          />,
+          "title": "Venue #7",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #9",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#9",
+              }
+            }
+          />,
+          "title": "Venue #9",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #11",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#11",
+              }
+            }
+          />,
+          "title": "Venue #11",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #13",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#13",
+              }
+            }
+          />,
+          "title": "Venue #13",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #15",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#15",
+              }
+            }
+          />,
+          "title": "Venue #15",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #2",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#2",
+              }
+            }
+          />,
+          "title": "Venue #2",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #4",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#4",
+              }
+            }
+          />,
+          "title": "Venue #4",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #6",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#6",
+              }
+            }
+          />,
+          "title": "Venue #6",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #8",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#8",
+              }
+            }
+          />,
+          "title": "Venue #8",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #10",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#10",
+              }
+            }
+          />,
+          "title": "Venue #10",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #12",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#12",
+              }
+            }
+          />,
+          "title": "Venue #12",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #14",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#14",
+              }
+            }
+          />,
+          "title": "Venue #14",
+        },
+      ]
+    }
+    header={
+      <div
+        className="venueInfoHeader"
+      >
+        <span>
+          15
+           Venues
+        </span>
+        <span
+          onClick={[Function]}
+          style={
+            Object {
+              "cursor": "pointer",
+              "float": "right",
+            }
+          }
+        >
+          <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1086389032,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__CloseIcon-sc-1g4gbr4-11",
+                  "isStatic": false,
+                  "rules": Array [
+                    "font-size:large;margin-top:2px;",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__CloseIcon-sc-1g4gbr4-11",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />
+        </span>
+      </div>
+    }
+    itemLayout="vertical"
+    pagination={
+      Object {
+        "pageSize": 5,
+        "simple": false,
+        "size": "small",
+      }
+    }
+    renderItem={[Function]}
+  />
+</styledComponents__VenueClusterTooltip>
+`;
+
+exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip for more than 20 venues 1`] = `
+<styledComponents__VenueClusterTooltip>
+  <List
+    bordered={true}
+    dataSource={
+      Array [
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #1",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#1",
+              }
+            }
+          />,
+          "title": "Venue #1",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #3",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#3",
+              }
+            }
+          />,
+          "title": "Venue #3",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #5",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#5",
+              }
+            }
+          />,
+          "title": "Venue #5",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #7",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#7",
+              }
+            }
+          />,
+          "title": "Venue #7",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #9",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#9",
+              }
+            }
+          />,
+          "title": "Venue #9",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #11",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#11",
+              }
+            }
+          />,
+          "title": "Venue #11",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #13",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#13",
+              }
+            }
+          />,
+          "title": "Venue #13",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #15",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#15",
+              }
+            }
+          />,
+          "title": "Venue #15",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #17",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#17",
+              }
+            }
+          />,
+          "title": "Venue #17",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #19",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#19",
+              }
+            }
+          />,
+          "title": "Venue #19",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #21",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#21",
+              }
+            }
+          />,
+          "title": "Venue #21",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #23",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#23",
+              }
+            }
+          />,
+          "title": "Venue #23",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1401875747,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-1g4gbr4-10",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #25",
+                "status": "3_RequiresAttention",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#25",
+              }
+            }
+          />,
+          "title": "Venue #25",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #2",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#2",
+              }
+            }
+          />,
+          "title": "Venue #2",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #4",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#4",
+              }
+            }
+          />,
+          "title": "Venue #4",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #6",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#6",
+              }
+            }
+          />,
+          "title": "Venue #6",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #8",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#8",
+              }
+            }
+          />,
+          "title": "Venue #8",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #10",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#10",
+              }
+            }
+          />,
+          "title": "Venue #10",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #12",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#12",
+              }
+            }
+          />,
+          "title": "Venue #12",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #14",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#14",
+              }
+            }
+          />,
+          "title": "Venue #14",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #16",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#16",
+              }
+            }
+          />,
+          "title": "Venue #16",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #18",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#18",
+              }
+            }
+          />,
+          "title": "Venue #18",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #20",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#20",
+              }
+            }
+          />,
+          "title": "Venue #20",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #22",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#22",
+              }
+            }
+          />,
+          "title": "Venue #22",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #24",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#24",
+              }
+            }
+          />,
+          "title": "Venue #24",
+        },
+      ]
+    }
+    header={
+      <div
+        className="venueInfoHeader"
+      >
+        <span>
+          25
+           Venues
+        </span>
+        <span
+          onClick={[Function]}
+          style={
+            Object {
+              "cursor": "pointer",
+              "float": "right",
+            }
+          }
+        >
+          <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1086389032,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__CloseIcon-sc-1g4gbr4-11",
+                  "isStatic": false,
+                  "rules": Array [
+                    "font-size:large;margin-top:2px;",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__CloseIcon-sc-1g4gbr4-11",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />
+        </span>
+      </div>
+    }
+    itemLayout="vertical"
+    pagination={
+      Object {
+        "pageSize": 5,
+        "simple": true,
+        "size": "small",
+      }
+    }
+    renderItem={[Function]}
+  />
+</styledComponents__VenueClusterTooltip>
+`;
+
+exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip without pagination 1`] = `
+<styledComponents__VenueClusterTooltip>
+  <List
+    bordered={true}
+    dataSource={
+      Array [
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #1",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#1",
+              }
+            }
+          />,
+          "title": "Venue #1",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #2",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#2",
+              }
+            }
+          />,
+          "title": "Venue #2",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "Venue #3",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#3",
+              }
+            }
+          />,
+          "title": "Venue #3",
+        },
+      ]
+    }
+    header={
+      <div
+        className="venueInfoHeader"
+      >
+        <span>
+          3
+           Venues
+        </span>
+        <span
+          onClick={[Function]}
+          style={
+            Object {
+              "cursor": "pointer",
+              "float": "right",
+            }
+          }
+        >
+          <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1086389032,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__CloseIcon-sc-1g4gbr4-11",
+                  "isStatic": false,
+                  "rules": Array [
+                    "font-size:large;margin-top:2px;",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__CloseIcon-sc-1g4gbr4-11",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />
+        </span>
+      </div>
+    }
+    itemLayout="vertical"
+    renderItem={[Function]}
+  />
+</styledComponents__VenueClusterTooltip>
+`;

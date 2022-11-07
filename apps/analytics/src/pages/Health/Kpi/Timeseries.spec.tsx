@@ -1,10 +1,9 @@
-import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { dataApiURL, healthApi }            from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { timeseriesApi }                   from './services'
 import KpiTimeseries, { formatYDataPoint } from './Timeseries'
 
 const filters = {
@@ -33,7 +32,7 @@ describe('Kpi timeseries', () => {
   }
 
   beforeEach(() => {
-    store.dispatch(timeseriesApi.util.resetApiState())
+    store.dispatch(healthApi.util.resetApiState())
 
   })
 
