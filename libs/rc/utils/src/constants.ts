@@ -102,6 +102,13 @@ export enum CloudpathDeploymentTypeEnum {
   Cloud = 'Cloud',
 }
 
+export enum QosPriorityEnum {
+  WIFICALLING_PRI_VOICE = 'WIFICALLING_PRI_VOICE',
+  WIFICALLING_PRI_VIDEO = 'WIFICALLING_PRI_VIDEO',
+  WIFICALLING_PRI_BE = 'WIFICALLING_PRI_BE',
+  WIFICALLING_PRI_BG = 'WIFICALLING_PRI_BG'
+}
+
 export enum ServiceType {
   PORTAL = 'PORTAL',
   DHCP = 'DHCP',

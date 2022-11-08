@@ -3,10 +3,10 @@ import styled   from 'styled-components/macro'
 
 export const MapContainer = styled.div`
   position: relative;
-  aspect-ratio: 470 / 260;
   height: 100%;
   width: 100%;
   margin: 0;
+  aspect-ratio: 470 / 260;
 `
 
 export const FormItem = styled(Form.Item)`

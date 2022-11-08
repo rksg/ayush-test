@@ -10,6 +10,7 @@ import ApsTable          from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable     from './pages/Networks/NetworksTable'
+import DHCPDetail        from './pages/Services/DHCPDetail'
 import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
 import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import SelectServiceForm from './pages/Services/SelectServiceForm'
@@ -19,7 +20,11 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from './pages/Services/serviceRouteUtils'
-import ServicesTable from './pages/Services/ServicesTable'
+import ServicesTable            from './pages/Services/ServicesTable'
+import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
+import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
+import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -91,16 +96,16 @@ function ServiceRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
-        element={<h1>WIFI_CALLING create page</h1>}
+        element={<WifiCallingForm />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })}
-        element={<h1>WIFI_CALLING edit page</h1>}
+        element={<WifiCallingConfigureForm />}
       />
       <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
-        element={<h1>WIFI_CALLING details page</h1>}
+        element={<WifiCallingDetailView />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
@@ -112,7 +117,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
-        element={<h1>DHCP details page</h1>}
+        element={<DHCPDetail/>}
       />
     </Route>
   )

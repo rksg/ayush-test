@@ -6,6 +6,7 @@ import { useIntl }                       from 'react-intl'
 import { get } from '@acx-ui/config'
 
 import { Loader } from '../Loader'
+import { NoData } from '../NoData'
 
 import * as UI from './styledComponents'
 
@@ -69,4 +70,12 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
   )
 }
 
+const NotEnabled = () => {
+  const { $t } = useIntl()
+  return <UI.MapContainer>
+    <NoData text={$t({ defaultMessage: 'Map is not enabled' })} />
+  </UI.MapContainer>
+}
+
+GoogleMap.NotEnabled = NotEnabled
 GoogleMap.FormItem = UI.FormItem

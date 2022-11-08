@@ -1,8 +1,8 @@
 import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
-import { Row, Col, Form, Input, Typography } from 'antd'
-import _                                     from 'lodash'
-import { useIntl }                           from 'react-intl'
+import { Row, Col, Form, Input } from 'antd'
+import _                         from 'lodash'
+import { useIntl }               from 'react-intl'
 
 import {
   GoogleMap,
@@ -336,9 +336,7 @@ export function VenuesForm () {
                     {marker && <GoogleMapMarker position={marker} />}
                   </GoogleMap>
                   :
-                  <Typography.Title level={3}>
-                    {intl.$t({ defaultMessage: 'Map is not enabled' })}
-                  </Typography.Title>
+                  <GoogleMap.NotEnabled />
                 }
               </GoogleMap.FormItem>
             </Col>
