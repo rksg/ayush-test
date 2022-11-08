@@ -385,38 +385,6 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab ant-tabs-tab-disabled"
-          >
-            <div
-              aria-controls="rc-tabs-test-panel-configuration"
-              aria-disabled="true"
-              aria-selected="false"
-              class="ant-tabs-tab-btn"
-              id="rc-tabs-test-tab-configuration"
-              role="tab"
-            >
-              <span>
-                Configuration
-              </span>
-            </div>
-          </div>
-          <div
-            class="ant-tabs-tab ant-tabs-tab-disabled"
-          >
-            <div
-              aria-controls="rc-tabs-test-panel-reccomendations"
-              aria-disabled="true"
-              aria-selected="false"
-              class="ant-tabs-tab-btn"
-              id="rc-tabs-test-tab-reccomendations"
-              role="tab"
-            >
-              <span>
-                Reccomendations
-              </span>
-            </div>
-          </div>
-          <div
             class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
           />
         </div>
@@ -478,24 +446,6 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
           aria-labelledby="rc-tabs-test-tab-health"
           class="ant-tabs-tabpane"
           id="rc-tabs-test-panel-health"
-          role="tabpanel"
-          style="display: none;"
-          tabindex="-1"
-        />
-        <div
-          aria-hidden="true"
-          aria-labelledby="rc-tabs-test-tab-configuration"
-          class="ant-tabs-tabpane"
-          id="rc-tabs-test-panel-configuration"
-          role="tabpanel"
-          style="display: none;"
-          tabindex="-1"
-        />
-        <div
-          aria-hidden="true"
-          aria-labelledby="rc-tabs-test-tab-reccomendations"
-          class="ant-tabs-tabpane"
-          id="rc-tabs-test-panel-reccomendations"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"
