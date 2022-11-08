@@ -93,4 +93,4 @@ const HealthPage = (props: { filters? : AnalyticsFilter }) => {
     </>
   )
 }
-export default HealthPage
+export { HealthPage }

@@ -17,6 +17,11 @@ import { HealthPageContext } from '../HealthPageContext'
 
 import KpiSection from '.'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  InformationOutlined: () => <div data-testid='information-outlined'/>
+}))
+
 describe('Kpi Section', () => {
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
@@ -98,7 +103,7 @@ describe('Kpi Section', () => {
 
 
 
-  it('should render disabled tooltip with non-network path', async () => {
+  it('should render disabled tooltip with network path', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 2, 3, 3, 0] } }
     })
@@ -122,17 +127,16 @@ describe('Kpi Section', () => {
         }
       }
     })
+    const path = [{ type: 'network', name: 'Network' }]
     render(<Router><Provider>
       <HealthPageContext.Provider
-        value={{ ...healthContext, path: [{ type: 'network', name: 'Network' }] }}
+        value={{ ...healthContext, path }}
       >
-        <KpiSection tab={'overview'} />
+        <KpiSection tab={'overview'} filters={{ path }} />
       </HealthPageContext.Provider>
     </Provider></Router>)
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     // eslint-disable-next-line max-len
-    const disabledTooltips = await screen.findAllByTitle(/^Cannot save threshold at organisation level*/)
-    expect(disabledTooltips).toHaveLength(4)
+    await screen.findAllByTitle(/^Cannot save threshold at organisation level*/)
   }, 60000)
 
   it('should render disabled tooltip with no permissions', async () => {
@@ -160,15 +164,16 @@ describe('Kpi Section', () => {
       }
     })
 
+    const path = [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }]
     const period = Buffer.from(JSON.stringify(filters)).toString('base64')
     const analyticsNetworkFilter = Buffer.from(JSON.stringify({
-      path: [{ type: 'network', name: 'Network' }, { type: 'ap', name: 'AP' }],
+      path,
       raw: []
     })).toString('base64')
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} />
+        <KpiSection tab={'overview'} filters={{ path }} />
       </HealthPageContext.Provider>
     </Provider>, {
       route: {
@@ -177,10 +182,8 @@ describe('Kpi Section', () => {
         wrapRoutes: false
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     // eslint-disable-next-line max-len
-    const disabledTooltips = await screen.findAllByTitle(/^You don't have permission to set threshold for selected network node./)
-    expect(disabledTooltips).toHaveLength(4)
+    await screen.findAllByTitle(/^You don't have permission to set threshold for selected network node./)
   }, 60000)
 
 })

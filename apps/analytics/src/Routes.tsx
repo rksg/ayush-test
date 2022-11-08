@@ -1,11 +1,10 @@
 import { useIntl } from 'react-intl'
 
+import { HealthPage, IncidentListPage }      from '@acx-ui/analytics/components'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import HealthPage          from './pages/Health'
 import IncidentDetailsPage from './pages/IncidentDetails'
-import IncidentListPage    from './pages/Incidents'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()

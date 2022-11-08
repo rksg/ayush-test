@@ -7,11 +7,6 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { VenueDetails } from '../'
 
-jest.mock(
-  'analytics/Widgets',
-  () => <div data-testid='analytics/Widgets' />,
-  { virtual: true })
-
 const data: Dashboard = {
   summary: {
     clients: {

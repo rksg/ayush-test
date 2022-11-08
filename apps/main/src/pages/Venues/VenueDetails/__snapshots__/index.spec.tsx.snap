@@ -1,8 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-<<<<<<< HEAD
-exports[`VenueDetails should navigate to analytic tab correctly 1`] = `<DocumentFragment />`;
-=======
 exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
 <DocumentFragment>
   <div
@@ -443,7 +440,10 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
           role="tabpanel"
           tabindex="0"
         >
-          Incident Venue Table
+          <div
+            data-testid="analytics-IncidentTabContent"
+            title="IncidentTabContent"
+          />
         </div>
         <div
           aria-hidden="true"
@@ -459,7 +459,6 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
   </div>
 </DocumentFragment>
 `;
->>>>>>> 0a990f483f2e8915765a83b9d832dbe8a36c2b29
 
 exports[`VenueDetails should navigate to client tab correctly 1`] = `
 <DocumentFragment>

@@ -61,7 +61,7 @@ export const IncidentTabContent = (props: { tabSelection?: IncidentListTabs,
   )
 }
 
-function Incidents () {
+function IncidentListPage () {
   const { $t } = useIntl()
   const { activeTab = incidentTabs[0].value } = useParams()
   const navigate = useNavigate()
@@ -93,4 +93,4 @@ function Incidents () {
     </>
   )
 }
-export default Incidents
+export { IncidentListPage }
