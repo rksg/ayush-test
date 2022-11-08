@@ -46,12 +46,12 @@ export function MdnsProxyInstancesTable () {
       key: 'rx',
       sorter: true,
       render: () => {
-        // TODO: API is not ready
+        // TODO: API is not ready, this is mocked data for display
         return (
           <>
-            {Math.floor(Math.random() * 10000)}
+            {1000}
             <Divider type='vertical' />
-            {bytesFormatter(Math.floor(Math.random() * 100000))}
+            {bytesFormatter(860000)}
           </>
         )
       }
@@ -62,12 +62,12 @@ export function MdnsProxyInstancesTable () {
       key: 'tx',
       sorter: true,
       render: () => {
-        // TODO: API is not ready
+        // TODO: API is not ready, this is mocked data for display
         return (
           <>
-            {Math.floor(Math.random() * 100000)}
+            {1500}
             <Divider type='vertical' />
-            {bytesFormatter(Math.floor(Math.random() * 10000))}
+            {bytesFormatter(1060000)}
           </>
         )
       }
@@ -78,7 +78,7 @@ export function MdnsProxyInstancesTable () {
       key: 'clientQueries',
       sorter: true,
       render: () => {
-        // TODO: API is not ready
+        // TODO: API is not ready, this is mocked data for display
         return 0
       }
     },
@@ -88,7 +88,7 @@ export function MdnsProxyInstancesTable () {
       key: 'serverResponses',
       sorter: true,
       render: () => {
-        // TODO: API is not ready
+        // TODO: API is not ready, this is mocked data for display
         return 0
       }
     },
@@ -98,7 +98,7 @@ export function MdnsProxyInstancesTable () {
       key: 'typesCount',
       sorter: true,
       render: () => {
-        // TODO: API is not ready
+        // TODO: API is not ready, this is mocked data for display
         return 0
       }
     }
