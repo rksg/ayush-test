@@ -64,6 +64,10 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [network] }))
+      ),
       rest.get(
         CommonUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
@@ -106,18 +110,20 @@ describe('NetworkVenuesTab', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
+    const newApGroup2 = {
+      ...networkVenue_apgroup,
+      venueId: '02e2ddbc88e1428987666d31edbc3d9a',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz', '6-GHz'],
+      isAllApGroups: false,
+      scheduler: {
+        type: 'ALWAYS_ON'
+      },
+      apGroups: [{ ...networkVenue_apgroup.apGroups[0], id: '6cb1e831973a4d60924ac59f1bda073c' }]
+    }
+
     const newVenues = [
       ...network.venues,
-      {
-        ...network.venues[0],
-        venueId: '02e2ddbc88e1428987666d31edbc3d9a',
-        allApGroupsRadioTypes: ['2.4-GHz', '5-GHz', '6-GHz'],
-        isAllApGroups: false,
-        scheduler: {
-          type: 'ALWAYS_ON'
-        },
-        apGroups: networkVenue_apgroup.apGroups
-      }
+      newApGroup2
     ]
     mockServer.use(
       rest.get(
@@ -125,8 +131,16 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
+      ),
+      rest.post(
         WifiUrlsInfo.addNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, newApGroup2] }))
       )
     )
 
@@ -140,6 +154,9 @@ describe('NetworkVenuesTab', () => {
     await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
 
     const row2 = await screen.findByRole('row', { name: /My-Venue/i })
+
+    await screen.findByRole('row', { name: /VLAN Pool/i })
+
     expect(row2).toHaveTextContent('VLAN Pool: pool1 (Custom)')
     expect(row2).toHaveTextContent('Unassigned APs')
     expect(row2).toHaveTextContent('24/7')
@@ -158,9 +175,17 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
+      ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
       )
     )
 
@@ -185,6 +210,10 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
@@ -235,6 +264,10 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
+      ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
@@ -271,6 +304,10 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
@@ -357,6 +394,10 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
+      ),
+      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [
           networkVenue_allAps,
@@ -420,6 +461,10 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
