@@ -33,7 +33,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
       <Tabs.TabPane
         disabled={!enableVenueAnalytics}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
+        tab={<Tooltip {...enableVenueAnalytics ? {} : { title: $t(notAvailableMsg) }}>
           {$t({ defaultMessage: 'AI Analytics' })}
         </Tooltip>}
         key='analytics/incidents/overview'
