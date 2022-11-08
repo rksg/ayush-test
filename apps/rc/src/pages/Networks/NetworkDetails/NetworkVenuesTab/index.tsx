@@ -11,7 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { NetworkApGroupDialog }   from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
@@ -35,7 +36,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import WifiWidgets       from '../../../../Widgets'
 import { useGetNetwork } from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
@@ -91,7 +91,7 @@ export function NetworkVenuesTab () {
   const params = useParams()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
@@ -399,7 +399,7 @@ export function NetworkVenuesTab () {
       <Form.Provider
         onFormFinish={handleFormFinish}
       >
-        <WifiWidgets name='networkApGroupDialog'
+        <NetworkApGroupDialog
           {...apGroupModalState}
           tenantId={params.tenantId}
           formName='networkApGroupForm'

@@ -1,6 +1,7 @@
-import { Form, Input, InputNumber, Select, Space, Switch, Tooltip } from 'antd'
-import { FormattedMessage, useIntl }                                from 'react-intl'
+import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
+import { FormattedMessage, useIntl }                       from 'react-intl'
 
+import { Tooltip }                    from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   ApLanPortTypeEnum,
@@ -63,7 +64,7 @@ export function LanPortSettings (props: {
     {isDhcpEnabled && !useVenueSettings && <FormattedMessage
       defaultMessage={`<section>
         <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
-        <p>You cannot edit LAN Port setting on this device because it has assigned 
+        <p>You cannot edit LAN Port setting on this device because it has assigned
           to the venue which already has enabled DHCP service.</p>
       </section>`}
       values={{

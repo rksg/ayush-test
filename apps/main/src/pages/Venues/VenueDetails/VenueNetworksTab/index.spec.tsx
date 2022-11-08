@@ -2,13 +2,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
-import { networkApi }        from '@acx-ui/rc/services'
-import {
-  CommonUrlsInfo,
-  WifiUrlsInfo
-} from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { networkApi }                   from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -76,7 +73,7 @@ describe('VenueNetworksTab', () => {
   })
 
   it('activate Network', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
@@ -157,7 +154,7 @@ describe('VenueNetworksTab', () => {
     fireEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
     fireEvent.click(within(row).getByText('All APs'))
 
-    const dialog = await waitFor(async () => screen.findByTestId(/^dialog/))
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
 
     expect(dialog).toBeVisible()
   })

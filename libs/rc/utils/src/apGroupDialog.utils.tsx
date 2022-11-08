@@ -29,7 +29,6 @@ import {
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
 export interface ApGroupModalWidgetProps extends AntdModalProps {
-  name: string
   formName?: string
   networkVenue?: NetworkVenue
   venueName?: string

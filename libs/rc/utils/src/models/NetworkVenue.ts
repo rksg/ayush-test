@@ -5,6 +5,8 @@ import { NetworkApGroup }        from './NetworkApGroup'
 import { NetworkVenueScheduler } from './NetworkVenueScheduler'
 
 export class NetworkVenue {
+  name?: string
+
   // Venue ID
   venueId?: string
 

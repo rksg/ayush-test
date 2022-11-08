@@ -10,7 +10,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { NetworkApGroupDialog }   from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
@@ -30,7 +31,6 @@ import {
   Network,
   NetworkSaveData,
   NetworkVenue,
-  ApGroupModalWidgetProps,
   transformVLAN,
   transformAps,
   transformRadios,
@@ -40,9 +40,6 @@ import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-
-type LazyComponentType = React.LazyExoticComponent<React.ComponentType<ApGroupModalWidgetProps>>
-const WifiWidgets: LazyComponentType = React.lazy(() => import('rc/Widgets'))
 
 interface ApGroupModalState { // subset of ApGroupModalWidgetProps
   visible: boolean,
@@ -93,8 +90,7 @@ export function VenueNetworksTab () {
     useQuery: useVenueNetworkListQuery,
     defaultPayload
   })
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
-
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -313,7 +309,7 @@ export function VenueNetworksTab () {
       <Form.Provider
         onFormFinish={handleFormFinish}
       >
-        <WifiWidgets name='networkApGroupDialog'
+        <NetworkApGroupDialog
           {...apGroupModalState}
           formName='networkApGroupForm'
           tenantId={params.tenantId}

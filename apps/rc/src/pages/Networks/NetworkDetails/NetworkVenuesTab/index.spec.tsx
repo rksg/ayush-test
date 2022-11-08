@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import * as config           from '@acx-ui/config'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
-import { networkApi }        from '@acx-ui/rc/services'
+import * as config      from '@acx-ui/config'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { networkApi }   from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   WifiUrlsInfo
@@ -31,7 +31,7 @@ import {
   networkVenue_allAps,
   networkVenue_apgroup,
   vlanPoolList
-} from '../../../../components/NetworkApGroupDialog/__tests__/NetworkVenueTestData'
+} from './__tests__/fixtures'
 
 import { NetworkVenuesTab } from './index'
 
@@ -98,7 +98,7 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('activate Network', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -172,7 +172,7 @@ describe('NetworkVenuesTab', () => {
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
-  }, 20000)
+  })
 
   it('Table action bar activate Network', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {

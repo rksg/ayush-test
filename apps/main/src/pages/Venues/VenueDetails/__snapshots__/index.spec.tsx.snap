@@ -2647,8 +2647,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 176px;"
       >
         <div
-          data-testid="networks-venueAlarmDonut"
-          title="venueAlarmDonut"
+          data-testid="rc-VenueAlarmWidget"
+          title="VenueAlarmWidget"
         />
       </div>
     </div>
@@ -2661,8 +2661,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 176px;"
       >
         <div
-          data-testid="analytics-venueIncidentsDonut"
-          title="venueIncidentsDonut"
+          data-testid="analytics-IncidentBySeverity"
+          title="IncidentBySeverity"
         />
       </div>
     </div>
@@ -2675,8 +2675,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 176px;"
       >
         <div
-          data-testid="networks-venueDevices"
-          title="venueDevices"
+          data-testid="rc-VenueDevicesWidget"
+          title="VenueDevicesWidget"
         />
       </div>
     </div>
@@ -2689,8 +2689,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 88px;"
       >
         <div
-          data-testid="analytics-venueHealth"
-          title="venueHealth"
+          data-testid="analytics-VenueHealth"
+          title="VenueHealth"
         />
       </div>
     </div>
@@ -2703,8 +2703,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 520px;"
       >
         <div
-          data-testid="networks-floorPlans"
-          title="floorPlans"
+          data-testid="rc-TopologyFloorPlanWidget"
+          title="TopologyFloorPlanWidget"
         />
       </div>
     </div>
@@ -2713,7 +2713,7 @@ exports[`VenueDetails should render correctly 1`] = `
     style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-large"
@@ -2773,8 +2773,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-trafficByVolume"
-          title="trafficByVolume"
+          data-testid="analytics-TrafficByVolume"
+          title="TrafficByVolume"
         />
       </div>
     </div>
@@ -2787,8 +2787,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-networkHistory"
-          title="networkHistory"
+          data-testid="analytics-NetworkHistory"
+          title="NetworkHistory"
         />
       </div>
     </div>
@@ -2801,8 +2801,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-connectedClientsOverTime"
-          title="connectedClientsOverTime"
+          data-testid="analytics-ConnectedClientsOverTime"
+          title="ConnectedClientsOverTime"
         />
       </div>
     </div>
@@ -2815,8 +2815,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-topApplicationsByTraffic"
-          title="topApplicationsByTraffic"
+          data-testid="analytics-TopApplicationsByTraffic"
+          title="TopApplicationsByTraffic"
         />
       </div>
     </div>
@@ -2829,8 +2829,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-topSSIDsByTraffic"
-          title="topSSIDsByTraffic"
+          data-testid="analytics-TopSSIDsByTraffic"
+          title="TopSSIDsByTraffic"
         />
       </div>
     </div>
@@ -2843,8 +2843,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-topSSIDsByClient"
-          title="topSSIDsByClient"
+          data-testid="analytics-TopSSIDsByClient"
+          title="TopSSIDsByClient"
         />
       </div>
     </div>

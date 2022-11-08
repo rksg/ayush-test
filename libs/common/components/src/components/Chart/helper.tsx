@@ -68,9 +68,10 @@ const defaultRichTextFormatValues: Record<
 export const gridOptions = ({
   disableLegend = false,
   hasXAxisName = false,
-  xAxisOffset = 0
+  xAxisOffset = 0,
+  yAxisOffset = 0
 } = {}) => ({
-  left: 0,
+  left: yAxisOffset,
   right: 0,
   bottom: hasXAxisName ? 16 + xAxisOffset : 0,
   top: disableLegend ? 6 : '15%',
@@ -148,8 +149,8 @@ export const barChartSeriesLabelOptions = () => ({
   show: true,
   position: 'right',
   fontFamily: cssStr('--acx-neutral-brand-font'),
-  fontSize: cssNumber('--acx-body-3-font-size'),
-  lineHeight: cssNumber('--acx-body-3-line-height'),
+  fontSize: cssNumber('--acx-body-4-font-size'),
+  lineHeight: cssNumber('--acx-body-4-line-height'),
   color: cssStr('--acx-primary-black'),
   fontWeight: cssNumber('--acx-body-font-weight'),
   silent: true
@@ -242,7 +243,11 @@ export const timeSeriesTooltipFormatter = (
                 value: formatter(value, undefined, dataIndex)
               }}
             />
-            text = data.show !== false ? <UI.Badge color={(color) as string} text={text} /> : text
+            text = data.show !== false ? <UI.Badge
+              className='acx-chart-tooltip'
+              color={(color) as string}
+              text={text}
+            /> : text
             text = <li key={data.name}>{text}</li>
             return text
           })
@@ -291,7 +296,7 @@ export const stackedBarTooltipFormatter = (
   return renderToString(
     <RawIntlProvider value={intl}>
       <UI.TooltipWrapper>
-        <UI.Badge color={param.color?.toString()} text={text} />
+        <UI.Badge className='acx-chart-tooltip' color={param.color?.toString()} text={text} />
       </UI.TooltipWrapper>
     </RawIntlProvider>
   )
@@ -327,7 +332,7 @@ export const donutChartTooltipFormatter = (
   return renderToString(
     <RawIntlProvider value={intl}>
       <UI.TooltipWrapper>
-        <UI.Badge color={parameters.color?.toString()} text={text} />
+        <UI.Badge className='acx-chart-tooltip' color={parameters.color?.toString()} text={text} />
       </UI.TooltipWrapper>
     </RawIntlProvider>
   )

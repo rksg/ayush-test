@@ -96,7 +96,6 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram successfu
         class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
       >
         <img
-          alt="Enterprise AAA (802.1X)"
           src="aaa.png"
         />
       </div>
@@ -453,7 +452,7 @@ exports[`NetworkDiagram NetworkDiagram - PSK should render AAA diagram successfu
         class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
       >
         <img
-          alt="Pre-Shared Key (PSK)"
+          alt="Enterprise AAA (802.1X)"
           src="aaa.png"
         />
       </div>

@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import moment       from 'moment-timezone'
 import { useIntl  } from 'react-intl'
 
+import { DescriptionRowProps, DescriptionSection } from '@acx-ui/analytics/components'
 import {
   impactValues,
   Incident,
@@ -12,7 +13,6 @@ import {
 } from '@acx-ui/analytics/utils'
 import { formatter } from '@acx-ui/utils'
 
-import { DescriptionRowProps, DescriptionSection } from '../../../components/DescriptionSection'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 

@@ -1,10 +1,9 @@
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
+import { Header }                                from '@acx-ui/analytics/components'
 import { categoryNames }                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Tabs }                from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
-import Header from '../../components/Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
 import { HealthPageContextProvider } from './HealthPageContext'

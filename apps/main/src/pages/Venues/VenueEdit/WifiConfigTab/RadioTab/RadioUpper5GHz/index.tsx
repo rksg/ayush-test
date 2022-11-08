@@ -141,7 +141,7 @@ export function RadioUpper5GHz () {
 
   return (
     <>
-      <Row gutter={20}>
+      <Row gutter={20} data-testid='radio-u5g-tab'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: '5GHz settings:' })}
@@ -200,7 +200,8 @@ export function RadioUpper5GHz () {
               options={defaultChannelsData &&
                 defaultChannelsData['5GUpperChannels'] &&
             Object.keys(defaultChannelsData['5GUpperChannels']['dfs'])
-              .map(item => ({ label: item === 'auto' ? item.toUpperCase() : item, value: item }))}
+              .map(item => ({ label: item === 'auto' ? _.upperFirst(item) : item,
+                value: item === 'auto' ? item.toUpperCase() : item }))}
               defaultValue={'auto'}
               disabled={inheritSettings}
             />

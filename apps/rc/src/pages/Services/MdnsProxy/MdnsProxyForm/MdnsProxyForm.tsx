@@ -21,7 +21,7 @@ export interface MdnsProxyFormProps {
   editMode?: boolean;
 }
 
-export function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps) {
+export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
