@@ -5,6 +5,7 @@ import {
 } from '@ant-design/icons'
 import {
   Checkbox,
+  Descriptions,
   Form,
   Popover,
   Tooltip
@@ -12,10 +13,12 @@ import {
 import { useWatch } from 'antd/lib/form/Form'
 import { useIntl }  from 'react-intl'
 
-import { Button, Subtitle }                                              from '@acx-ui/components'
+import { Button }                                                        from '@acx-ui/components'
 import { useGetDefaultGuestDhcpServiceProfileQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { IpUtilsService, Venue }                                         from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponents'
 
 export function DhcpCheckbox () {
   const intl = useIntl()
@@ -104,18 +107,24 @@ export function DhcpCheckbox () {
       <Popover
         placement='bottom'
         content={
-          <div>
-            <Subtitle level={4}>{intl.$t({ defaultMessage: 'Guest network pool details:' })}</Subtitle>
-            <label>{intl.$t({ defaultMessage: 'IP address space:' })}</label> {guestDhcp.guestDhcpIpSpec} <br />
-            <label>{intl.$t({ defaultMessage: 'Subnet mask:' })}</label> {guestDhcp.subnetMask} <br />
-            <label>{intl.$t({ defaultMessage: 'Start IP Address:' })}</label> {guestDhcp.startIpAddress} <br />
-            <label>{intl.$t({ defaultMessage: 'End IP Address:' })}</label> {guestDhcp.endIpAddress} <br />
-            <label>{intl.$t({ defaultMessage: 'Lease time:' })}</label> {guestDhcp.guestDhcpLeaseTime}
-          </div>
+          <UI.PopOverDiv>
+            <Descriptions title={intl.$t({ defaultMessage: 'Guest network pool details:' })}>
+              <Descriptions.Item label={intl.$t({ defaultMessage: 'IP address space' })}>{guestDhcp.guestDhcpIpSpec}</Descriptions.Item>
+              <Descriptions.Item label={intl.$t({ defaultMessage: 'Subnet mask' })}>{guestDhcp.subnetMask}</Descriptions.Item>
+              <Descriptions.Item label={intl.$t({ defaultMessage: 'Start IP Address' })}>{guestDhcp.startIpAddress}</Descriptions.Item>
+              <Descriptions.Item label={intl.$t({ defaultMessage: 'End IP Address' })}>{guestDhcp.endIpAddress}</Descriptions.Item>
+              <Descriptions.Item label={intl.$t({ defaultMessage: 'Lease time' })}>{guestDhcp.guestDhcpLeaseTime}</Descriptions.Item>
+            </Descriptions>
+          </UI.PopOverDiv>
         }
+        overlayStyle={{
+          width: '800px'
+        }}
         trigger='click'
       >
-        <Button type='link' style={{ height: 'auto', marginLeft: '14px' }}>More details</Button>
+        <Button type='link' style={{ height: 'auto', marginLeft: '14px' }}>
+          {intl.$t({ defaultMessage: 'More details' })}
+        </Button>
       </Popover>
     </Form.Item>
   )

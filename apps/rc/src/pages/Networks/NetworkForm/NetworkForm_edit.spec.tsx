@@ -18,7 +18,10 @@ import {
   venueListResponse,
   policyListResponse
 } from './__tests__/fixtures'
+import { types }   from './NetworkDetail/NetworkDetailForm'
 import NetworkForm from './NetworkForm'
+
+types[3].disabled = false
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText(/Network Name/)

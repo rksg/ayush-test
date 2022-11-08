@@ -22,7 +22,10 @@ import {
   cloudpathResponse,
   networkDeepResponse
 } from './__tests__/fixtures'
+import { types }   from './NetworkDetail/NetworkDetailForm'
 import NetworkForm from './NetworkForm'
+
+types[3].disabled = false
 
 export const dhcpResponse = {
   name: 'DHCP-Guest',
