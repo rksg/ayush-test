@@ -11,10 +11,9 @@ import {
   QuestionMarkCircleSolid,
   SearchOutlined
 }                          from '@acx-ui/icons'
-import { Outlet }          from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
-
-import { AlarmsHeaderButton } from '../../components/Alarms/HeaderButton'
+import { AlarmsHeaderButton } from '@acx-ui/main/components'
+import { Outlet }             from '@acx-ui/react-router-dom'
+import { notAvailableMsg }    from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 
