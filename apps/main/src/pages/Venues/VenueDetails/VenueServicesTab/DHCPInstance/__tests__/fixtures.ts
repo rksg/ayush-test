@@ -296,6 +296,18 @@ const serviceById = {
     secondaryDnsIp: '8.8.8.8',
     leaseTimeHours: 22,
     leaseTimeMinutes: 0
+  },
+  {
+    id: 'PoolId2',
+    name: 'dhcp pool 2',
+    description: 'dhcp pool 2',
+    vlanId: 3000,
+    subnetAddress: '172.21.232.0',
+    subnetMask: '255.255.252.0',
+    primaryDnsIp: '168.195.1.1',
+    secondaryDnsIp: '8.8.8.9',
+    leaseTimeHours: 22,
+    leaseTimeMinutes: 0
   }],
   venueIds: ['3b11bcaffd6f4f4f9b2805b6fe24bf8b', 'venueId2']
 }

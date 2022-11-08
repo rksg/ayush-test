@@ -31,10 +31,15 @@ describe('Venue DHCP Instance', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
-    await userEvent.click(screen.getByRole('switch'))
-    const activeButton = await screen.findByText('Confirm')
-    fireEvent.click(activeButton)
-    screen.getByRole('switch',{ checked: true })
+    const button = screen.getAllByRole('switch')
+    await userEvent.click(button[1])
+    let activeButton = await screen.findByText('Confirm')
+    await fireEvent.click(activeButton)
+
+    await userEvent.click(button[0])
+    activeButton = await screen.findByText('Confirm')
+    await fireEvent.click(activeButton)
+
     await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (1 Online)' }))
   })
 
