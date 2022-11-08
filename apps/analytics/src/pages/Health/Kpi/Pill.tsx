@@ -2,6 +2,11 @@ import { sum }     from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
+import {
+  healthApi,
+  KPITimeseriesResponse,
+  KPIHistogramResponse
+} from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { Tooltip }                    from '@acx-ui/components'
 import { ProgressPill, Loader }       from '@acx-ui/components'
@@ -11,12 +16,6 @@ import { formatter }                  from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
-import {
-  useKpiHistogramQuery,
-  useKpiTimeseriesQuery,
-  KPITimeseriesResponse,
-  KPIHistogramResponse
-} from './services'
 
 type PillData = { success: number, total: number }
 
@@ -63,7 +62,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   let queryResults
   if (histogram) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    queryResults = useKpiHistogramQuery(
+    queryResults = healthApi.useKpiHistogramQuery(
       { ...filters, startDate, endDate, kpi }, {
         selectFromResult: ({ data, ...rest }) => ({
           ...rest,
@@ -72,7 +71,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
       })
   } else {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    queryResults = useKpiTimeseriesQuery({ ...filters, kpi }, {
+    queryResults = healthApi.useKpiTimeseriesQuery({ ...filters, kpi }, {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
         data: data ? transformTSResponse(data!, { startDate, endDate }) : { success: 0, total: 0 }

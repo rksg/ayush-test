@@ -1,6 +1,5 @@
+import { ApTable }   from '@acx-ui/rc/components'
 import { useParams } from '@acx-ui/react-router-dom'
-
-import { ApTable } from '../../../components/ApTable'
 
 import { NetworkEventsTab }    from './NetworkEventsTab'
 import { NetworkIncidentsTab } from './NetworkIncidentsTab'

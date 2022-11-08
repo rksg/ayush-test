@@ -1,0 +1,260 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WifiCallingSummaryForm should render form successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row"
+    style="margin-left: -10px; margin-right: -10px;"
+  >
+    <div
+      class="ant-col ant-col-18"
+      style="padding-left: 10px; padding-right: 10px;"
+    >
+      <h3
+        class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+      >
+        Summary
+      </h3>
+      <div
+        class="ant-row"
+      >
+        <div
+          class="ant-col ant-col-6"
+        >
+          <div
+            class="ant-form-item"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-label"
+              >
+                <label
+                  class=""
+                  for="serviceName"
+                  title="Service Name"
+                >
+                  Service Name
+                </label>
+              </div>
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <div
+                      class="ant-typography"
+                      id="serviceName"
+                    >
+                      serviceNameId1
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-6"
+        >
+          <div
+            class="ant-form-item"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-label"
+              >
+                <label
+                  class=""
+                  for="tags"
+                  title="Tags"
+                >
+                  Tags
+                </label>
+              </div>
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <div
+                      class="ant-typography"
+                      id="tags"
+                    >
+                      tag1, tag2, tag3
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-6"
+        >
+          <div
+            class="ant-form-item"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-label"
+              >
+                <label
+                  class=""
+                  for="description"
+                  title="Description"
+                >
+                  Description
+                </label>
+              </div>
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <div
+                      class="ant-typography"
+                      id="description"
+                    >
+                      description1
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-form-item"
+      >
+        <div
+          class="ant-row ant-form-item-row"
+        >
+          <div
+            class="ant-col ant-form-item-label"
+          >
+            <label
+              class=""
+              for="qosPriority"
+              title="QoS Priority"
+            >
+              QoS Priority
+            </label>
+          </div>
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <div
+                  class="ant-typography"
+                  id="qosPriority"
+                >
+                  WIFICALLING_PRI_VOICE
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-form-item"
+      >
+        <div
+          class="ant-row ant-form-item-row"
+        >
+          <div
+            class="ant-col ant-form-item-label"
+          >
+            <label
+              class=""
+              for="dataGateway"
+              title="Evolved Packet Data Gateway (ePDG)"
+            >
+              Evolved Packet Data Gateway (ePDG)
+            </label>
+          </div>
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <div>
+                  init.aaa.com (10.10.10.10)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-form-item"
+      >
+        <div
+          class="ant-row ant-form-item-row"
+        >
+          <div
+            class="ant-col ant-form-item-label"
+          >
+            <label
+              class=""
+              for="wirelessNetworks"
+              title="Wireless Networks(2)"
+            >
+              Wireless Networks(2)
+            </label>
+          </div>
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <div>
+                  nwId1
+                </div>
+                <div>
+                  nwId2
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-14"
+      style="padding-left: 10px; padding-right: 10px;"
+    />
+  </div>
+</DocumentFragment>
+`;

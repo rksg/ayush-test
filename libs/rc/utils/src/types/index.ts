@@ -6,7 +6,7 @@ import {
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
-  NetworkTypeEnum
+  NetworkTypeEnum, QosPriorityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
@@ -15,14 +15,17 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
+import { EPDG } from './wifiCallingService'
+
 
 export * from './ap'
 export * from './venue'
 export * from './network'
 export * from './user'
-export * from './service'
+export * from './services'
 export * from './msp'
 export * from './policy'
+export * from './wifiCallingService'
 
 export interface CommonResult {
   requestId: string
@@ -347,4 +350,18 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+}
+
+export interface WifiCallingSetting {
+  id: string,
+  serviceName: string,
+  description: string | undefined,
+  qosPriority: QosPriorityEnum,
+  epdgs?: EPDG[],
+  networkIds?: string[]
+}
+
+export interface WifiCallingSettingContextType {
+  wifiCallingSettingList: WifiCallingSetting[],
+  setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
 }
