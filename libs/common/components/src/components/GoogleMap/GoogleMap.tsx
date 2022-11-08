@@ -6,6 +6,9 @@ import { useIntl }                       from 'react-intl'
 import { get } from '@acx-ui/config'
 
 import { Loader } from '../Loader'
+import { NoData } from '../NoData'
+
+import * as UI from './styledComponents'
 
 export interface MapProps extends google.maps.MapOptions {
   style?: React.CSSProperties
@@ -15,10 +18,10 @@ export interface MapProps extends google.maps.MapOptions {
   libraries: WrapperProps['libraries']
 }
 
-export const GoogleMap: React.FC<MapProps> = ({
+export const GoogleMap = ({
   libraries,
   ...props
-}) => {
+}: MapProps) => {
   const { $t } = useIntl()
   return <Wrapper
     apiKey={get('GOOGLE_MAPS_KEY')}
@@ -53,7 +56,7 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
 
   return (
     <>
-      <div ref={ref} style={{ height: '100%', width: '100%', margin: '0' }}/>
+      <UI.MapContainer ref={ref} />
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           // set the map prop on the child component
@@ -66,3 +69,13 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
     </>
   )
 }
+
+const NotEnabled = () => {
+  const { $t } = useIntl()
+  return <UI.MapContainer>
+    <NoData text={$t({ defaultMessage: 'Map is not enabled' })} />
+  </UI.MapContainer>
+}
+
+GoogleMap.NotEnabled = NotEnabled
+GoogleMap.FormItem = UI.FormItem

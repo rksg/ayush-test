@@ -9,9 +9,9 @@ import { useAddMdnsProxyMutation, useGetMdnsProxyQuery } from '@acx-ui/rc/servic
 import { MdnsProxyFormData }                             from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                    from '@acx-ui/react-router-dom'
 
-import { getSelectServiceRoutePath, getServiceListRoutePath } from '../../serviceRouteUtils'
-import { MdnsProxyScope }                                     from '../MdnsProxyScope/MdnsProxyScope'
-import { MdnsProxySummary }                                   from '../MdnsProxySummary/MdnsProxySummary'
+import { getServiceListRoutePath } from '../../serviceRouteUtils'
+import { MdnsProxyScope }          from '../MdnsProxyScope/MdnsProxyScope'
+import { MdnsProxySummary }        from '../MdnsProxySummary/MdnsProxySummary'
 
 import MdnsProxyFormContext      from './MdnsProxyFormContext'
 import { MdnsProxySettingsForm } from './MdnsProxySettingsForm'
@@ -25,8 +25,8 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const servicesPath = useTenantLink('/services')
   const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
-  const selectServicePath: Path = useTenantLink(getSelectServiceRoutePath(true))
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
@@ -67,13 +67,13 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
           : $t({ defaultMessage: 'Add mDNS Proxy Service' })
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Add Service' }), link: getSelectServiceRoutePath() }
+          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm<MdnsProxyFormData>
           editMode={editMode}
-          onCancel={() => navigate(selectServicePath)}
+          onCancel={() => navigate(servicesPath)}
           onFinish={(data) => saveData(editMode, data)}
         >
           <StepsForm.StepForm
