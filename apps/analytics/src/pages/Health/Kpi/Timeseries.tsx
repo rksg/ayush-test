@@ -4,12 +4,11 @@ import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
+import { KPITimeseriesResponse, healthApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }               from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
 import { formatter }                                from '@acx-ui/utils'
-
-import { KPITimeseriesResponse, useKpiTimeseriesQuery } from './services'
 
 const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   .map((datum, index) => ([
@@ -31,16 +30,16 @@ function KpiTimeseries ({
   timeWindow
 }: {
   filters: AnalyticsFilter;
-  kpi: string;
-  threshold: string;
+  kpi: keyof typeof kpiConfig;
+  threshold: number;
   chartRef: RefCallback<ReactECharts>;
   setTimeWindow: { (timeWidow: TimeStampRange, isReset: boolean): void };
-  timeWindow?: TimeStampRange // no set if there is no zoom
+  timeWindow: TimeStampRange | undefined // not set if there is no zoom
 }) {
   const { $t } = useIntl()
   const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-  const queryResults = useKpiTimeseriesQuery(
-    { ...filters, kpi, threshold: threshold },
+  const queryResults = healthApi.useKpiTimeseriesQuery(
+    { ...filters, kpi, threshold: threshold as unknown as string },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,

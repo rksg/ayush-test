@@ -15,13 +15,13 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 function execute_copy(source_domain, tab) {
-  chrome.cookies.getAll({"domain": source_domain}, function(cookie) {
-
-    let message = '';
-    cookie.forEach(function (item, index) {
-      message += (item.name + '=' + item.value + ';');
+  chrome.cookies.getAll({ domain: "localhost" }, function (cookies) {
+    cookies.forEach(function (item, i) {
+      chrome.cookies.remove({ url: "http://localhost" + cookies[i].path, name: cookies[i].name });
     });
+  });
 
+  chrome.cookies.getAll({"domain": source_domain}, function(cookie) {
     // Set to localhost
     cookie.forEach(function (item, index) {
       item.domain = '';
