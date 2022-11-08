@@ -16,11 +16,12 @@ import {
   useVenuesListQuery,
   useLazyVenueDefaultApGroupQuery,
   useAddApGroupMutation,
-  useLazyApGroupListQuery
+  useLazyApGroupsListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
-  AddApGroup
+  AddApGroup,
+  checkObjectNotExists
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -35,15 +36,9 @@ const defaultPayload = {
   sortOrder: 'ASC'
 }
 
-const defaultApPayload = {
-  fields: ['id', 'name'],
-  pageSize: 10000
-}
-
-
-
 export function ApGroupForm () {
   const { $t } = useIntl()
+  const params = useParams()
   const { tenantId, action } = useParams()
   const formRef = useRef<StepsFormInstance<ApDeep>>()
   const navigate = useNavigate()
@@ -52,7 +47,7 @@ export function ApGroupForm () {
   const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apsOption, setApsOption] = useState([] as TransferItem[])
-  const apGroupList = useLazyApGroupListQuery()
+  const [apGroupsList] = useLazyApGroupsListQuery()
 
 
   useEffect(() => {
@@ -71,6 +66,7 @@ export function ApGroupForm () {
         }))
       : []
 
+    formRef.current?.validateFields(['name'])
     setApsOption(defaultApGroupOption as TransferItem[])
   }
   const [addApGroup] = useAddApGroupMutation()
@@ -90,6 +86,29 @@ export function ApGroupForm () {
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })
       })
+    }
+  }
+
+  const apGroupsListPayload = {
+    searchString: '',
+    fields: ['name', 'id'],
+    searchTargetFields: ['name'],
+    filters: {},
+    pageSize: 10000
+  }
+
+  const nameValidator = async (value: string) => {
+    const venueId = formRef.current?.getFieldValue('venueId')
+    if (venueId) {
+      const payload = {
+        ...apGroupsListPayload,
+        searchString: value, filters: { venueId: [venueId] }
+      }
+      const list = (await apGroupsList({ params, payload }, true)
+        .unwrap()).data.map(n => ({ name: n.name }))
+      return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'Venue' }))
+    } else {
+      return false
     }
   }
 
@@ -128,19 +147,7 @@ export function ApGroupForm () {
                   { required: true },
                   { min: 2, transform: (value) => value.trim() },
                   { max: 64, transform: (value) => value.trim() },
-                  // { validator: (_, value) => {
-                  //   const groupOption = value ?
-                  //   (await apGroupList({ params: { tenantId: tenantId, venueId: value } }, true)).data
-                  //     ?.filter((item) => !item.isDefault)
-                  //     ?.map((item) => ({
-                  //       label: item.name, value: item.id
-                  //     }))
-                  //   : []
-
-                  //   const nameList = apList?.data?.data?.map(item => item.name) ?? []
-                  //   return checkObjectNotExists(nameList, value,
-                  //     $t({ defaultMessage: 'AP Name' }), 'value')
-                  // } }
+                  { validator: (_, value) => nameValidator(value) }
                 ]}
                 validateFirst
                 hasFeedback
