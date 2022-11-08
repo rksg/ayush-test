@@ -20,7 +20,12 @@ export function ApProperties (props: { apDetailsQuery: any }) {
 
   return (
     <Loader states={[apDetailsQuery]}>
-      <Card title={$t({ defaultMessage: 'AP Properties' })} onMoreClick={()=>{}}>
+      <Card title={$t({ defaultMessage: 'AP Properties' })} 
+            action={{
+              actionName: $t({ defaultMessage: 'More' }),
+              onActionClick: ()=>{}
+            }}
+      >
         <UI.Container>
           <Form
             labelCol={{ span: 10 }}
