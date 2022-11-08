@@ -69,6 +69,10 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, { route: true })
     await screen.findByTestId('speed-indicator-outlined')
+    await screen.findByRole('menuitem', {
+      name: (name, element) => name === 'Dashboard' &&
+        (element as HTMLElement).hasAttribute('data-menu-id')
+    })
     expect(asFragment()).toMatchSnapshot()
   })
   it('should collapsed', async () => {

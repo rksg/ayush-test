@@ -22,7 +22,7 @@ import {
   cloudpathResponse,
   networkDeepResponse
 } from './__tests__/fixtures'
-import { NetworkForm } from './NetworkForm'
+import NetworkForm from './NetworkForm'
 
 export const dhcpResponse = {
   name: 'DHCP-Guest',

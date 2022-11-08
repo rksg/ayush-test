@@ -1,11 +1,10 @@
 import { useState } from 'react'
 
-import { Tooltip }                                   from 'antd'
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { noDataSymbol, useAnalyticsFilter }        from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, Loader }                from '@acx-ui/components'
+import { GridRow, GridCol, Loader, Tooltip }       from '@acx-ui/components'
 import { formatter, intlFormats, notAvailableMsg } from '@acx-ui/utils'
 
 import { useSummaryQuery }                        from './services'

@@ -982,6 +982,16 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                         </div>
                       </div>
                     </div>
+                    <div>
+                      <button
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        type="button"
+                      >
+                        <span>
+                          Show more settings
+                        </span>
+                      </button>
+                    </div>
                   </div>
                   <div
                     class="ant-col ant-col-14"
@@ -1077,7 +1087,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
+                              class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                             >
                               <div
                                 class="ant-pro-table"
@@ -3111,6 +3121,16 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                         </div>
                       </div>
                     </div>
+                    <div>
+                      <button
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        type="button"
+                      >
+                        <span>
+                          Show more settings
+                        </span>
+                      </button>
+                    </div>
                   </div>
                   <div
                     class="ant-col ant-col-14"
@@ -3206,7 +3226,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
+                              class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                             >
                               <div
                                 class="ant-pro-table"
@@ -4887,6 +4907,16 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           </div>
                         </div>
                       </div>
+                    </div>
+                    <div>
+                      <button
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        type="button"
+                      >
+                        <span>
+                          Show more settings
+                        </span>
+                      </button>
                     </div>
                   </div>
                   <div

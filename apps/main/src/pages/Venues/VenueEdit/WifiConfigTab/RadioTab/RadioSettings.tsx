@@ -1,11 +1,11 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Radio, RadioChangeEvent, Row, Switch, Tooltip } from 'antd'
-import { useIntl }                                                  from 'react-intl'
+import { Form, Radio, RadioChangeEvent, Space, Switch } from 'antd'
+import { useIntl }                                      from 'react-intl'
 
-import { Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { Features, useSplitTreatment }                from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
+import { Loader, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                          from '@acx-ui/icons'
 import {
   // useLazyApListQuery,
   // useGetVenueCapabilitiesQuery,
@@ -34,6 +34,7 @@ export function RadioSettings () {
   const {
     editContextData,
     setEditContextData,
+    editRadioContextData,
     setEditRadioContextData
   } = useContext(VenueEditContext)
 
@@ -62,7 +63,7 @@ export function RadioSettings () {
 
   // const [apList] = useLazyApListQuery()
 
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   // const triBandApModelNames = _.isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
   // let filters = { model: triBandApModelNames }
@@ -106,6 +107,7 @@ export function RadioSettings () {
       formRef?.current?.setFieldsValue(venueSavedChannelsData)
       setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
       setEditRadioContextData({
+        ...editRadioContextData,
         radioData: formRef.current?.getFieldsValue(),
         updateWifiRadio: handleUpdateRadioSettings
       })
@@ -114,6 +116,7 @@ export function RadioSettings () {
       formRef?.current?.setFieldsValue(defaultChannelsData)
       setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
       setEditRadioContextData({
+        ...editRadioContextData,
         radioData: formRef.current?.getFieldsValue(),
         updateWifiRadio: handleUpdateRadioSettings
       })
@@ -175,6 +178,7 @@ export function RadioSettings () {
       isDirty: true
     })
     setEditRadioContextData({
+      ...editRadioContextData,
       radioData: formRef.current?.getFieldsValue(),
       updateWifiRadio: handleUpdateRadioSettings
     })
@@ -186,12 +190,11 @@ export function RadioSettings () {
         formRef={formRef}
         onFormChange={handleChange}
       >
-        <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={10}>
-              {triBandRadioFeatureFlag &&
-              <>
-                {$t({ defaultMessage: 'Tri-band radio settings' })}
+        <StepsForm.StepForm data-testid='radio-settings'>
+          {triBandRadioFeatureFlag &&
+            <StepsForm.FieldLabel width='max-content'>
+              {$t({ defaultMessage: 'Tri-band radio settings' })}
+              <Space>
                 <Switch
                   checked={triBandRadio}
                   onClick={(checked, event) => {
@@ -213,29 +216,27 @@ export function RadioSettings () {
                 >
                   <QuestionMarkCircleOutlined />
                 </Tooltip>
-              </>
-              }
-              {triBandRadioFeatureFlag && triBandRadio &&
-              <div style={{ marginTop: '1em' }}>
-                <span>{$t({ defaultMessage: 'R760 radio bands management' })}</span>
-                <Form.Item
-                  name={['radioParamsDual5G', 'enabled']}
-                  initialValue={true}
-                >
-                  <Radio.Group onChange={onRadioChange}>
-                    <Radio value={true}>
-                      {$t({ defaultMessage: 'Split 5GHz into lower and upper bands' })}
-                    </Radio>
+              </Space>
+            </StepsForm.FieldLabel>
+          }
+          {triBandRadioFeatureFlag && triBandRadio &&
+          <Form.Item
+            name={['radioParamsDual5G', 'enabled']}
+            label='R760 radio bands management'
+            style={{ marginTop: '16px' }}
+            initialValue={true}
+          >
+            <Radio.Group onChange={onRadioChange}>
+              <Radio value={true}>
+                {$t({ defaultMessage: 'Split 5GHz into lower and upper bands' })}
+              </Radio>
 
-                    <Radio value={false}>
-                      {$t({ defaultMessage: 'Use 5 and 6 Ghz bands' })}
-                    </Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </div>
-              }
-            </Col>
-          </Row>
+              <Radio value={false}>
+                {$t({ defaultMessage: 'Use 5 and 6 Ghz bands' })}
+              </Radio>
+            </Radio.Group>
+          </Form.Item>
+          }
           <Tabs onChange={onTabChange}
             activeKey={currentTab}
             type='third'

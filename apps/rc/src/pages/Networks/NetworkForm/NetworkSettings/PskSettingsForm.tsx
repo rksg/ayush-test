@@ -7,7 +7,6 @@ import {
   Row,
   Select,
   Switch,
-  Tooltip,
   Input
 } from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
@@ -15,9 +14,11 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import {
   StepsForm,
   Button,
-  Subtitle
+  Subtitle,
+  Tooltip
 } from '@acx-ui/components'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { ToggleButton, IpPortSecretForm }               from '@acx-ui/rc/components'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -36,8 +37,6 @@ import {
   generateHexKey
 } from '@acx-ui/rc/utils'
 
-import { IpPortSecretForm }        from '../../../../components/IpPortSecretForm'
-import { ToggleButton }            from '../../../../components/ToggleButton'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -78,7 +77,7 @@ export function PskSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />

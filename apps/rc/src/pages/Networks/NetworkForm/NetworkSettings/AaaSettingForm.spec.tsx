@@ -17,7 +17,7 @@ import {
   networkDeepResponse
 } from '../__tests__/fixtures'
 import { radiusErrorMessage, multipleConflictMessage } from '../contentsMap'
-import { NetworkForm }                                 from '../NetworkForm'
+import NetworkForm                                     from '../NetworkForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -153,12 +153,16 @@ describe('NetworkForm', () => {
     const secretTextbox = await screen.findByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
+
+    const toggle = screen.getAllByRole('switch')
+    fireEvent.click(toggle[0])
+    fireEvent.click(toggle[0])
     await fillInAfterSettings(async () => {
       expect(screen.getByText('AAA network test')).toBeVisible()
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  }, 20000)
+  })
 
   it('should create AAA network with secondary server', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -193,7 +197,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.2.2:2222')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
     })
-  }, 20000)
+  })
 
   it('should render Network AAA diagram with AAA buttons', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })

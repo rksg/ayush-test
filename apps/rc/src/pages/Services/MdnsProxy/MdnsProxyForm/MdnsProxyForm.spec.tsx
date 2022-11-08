@@ -9,7 +9,7 @@ import { mockServer, render, renderHook, screen }                         from '
 import { getSelectServiceRoutePath, getServiceRoutePath, ServiceOperation } from '../../serviceRouteUtils'
 
 import { mockedFormData, mockedTenantId, mockedVenueList } from './__tests__/fixtures'
-import { MdnsProxyForm }                                   from './MdnsProxyForm'
+import MdnsProxyForm                                       from './MdnsProxyForm'
 
 
 const mockedUseNavigate = jest.fn()
