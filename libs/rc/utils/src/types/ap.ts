@@ -35,6 +35,14 @@ export interface ApGroup {
   name: string,
   venueId: string
 }
+
+export interface AddApGroup {
+  venueId: string,
+  apSerialNumbers?: unknown[],
+  name: string,
+  id?: string
+}
+
 export interface ApDetailHeader {
   title: string,
   headers: {

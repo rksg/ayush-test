@@ -14,7 +14,8 @@ import {
   VenueCapabilities,
   WifiUrlsInfo,
   ApDetailHeader,
-  VenueDefaultApGroup
+  VenueDefaultApGroup,
+  AddApGroup
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -56,9 +57,9 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    addApGroup: build.mutation<ApGroup, RequestPayload>({
+    addApGroup: build.mutation<AddApGroup, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addApaddAp, params)
+        const req = createHttpRequest(WifiUrlsInfo.addApGroup, params)
         return {
           ...req,
           body: payload

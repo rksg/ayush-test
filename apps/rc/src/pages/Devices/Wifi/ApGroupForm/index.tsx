@@ -13,23 +13,14 @@ import {
   StepsFormInstance
 } from '@acx-ui/components'
 import {
-  useLazyApGroupListQuery,
   useVenuesListQuery,
-  useApListQuery,
-  useApGroupListQuery,
   useLazyVenueDefaultApGroupQuery,
-  useAddApGroupMutation
+  useAddApGroupMutation,
+  useLazyApGroupListQuery
 } from '@acx-ui/rc/services'
 import {
-  ApGroup,
   ApDeep,
-  DeviceGps,
-  apNameRegExp,
-  checkObjectNotExists,
-  checkValuesNotEqual,
-  hasGraveAccentAndDollarSign,
-  serialNumberRegExp,
-  VenueExtended
+  AddApGroup
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -37,14 +28,18 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
-
 const defaultPayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
 }
+
+const defaultApPayload = {
+  fields: ['id', 'name'],
+  pageSize: 10000
+}
+
 
 
 export function ApGroupForm () {
@@ -54,12 +49,10 @@ export function ApGroupForm () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
-
-  const [apGroupList] = useLazyApGroupListQuery()
   const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
-  const [selectedVenue, setSelectedVenue] = useState({} as VenueExtended)
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apsOption, setApsOption] = useState([] as TransferItem[])
+  const apGroupList = useLazyApGroupListQuery()
 
 
   useEffect(() => {
@@ -71,7 +64,6 @@ export function ApGroupForm () {
   }, [venuesList])
 
   const handleVenueChange = async (value: string) => {
-    const selected = venuesList?.data?.data?.filter(item => item.id === value)[0] ?? {}
     const defaultApGroupOption = value ?
       (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } })).data
         ?.aps?.map((item: ApDeep) => ({
@@ -80,16 +72,17 @@ export function ApGroupForm () {
       : []
 
     setApsOption(defaultApGroupOption as TransferItem[])
-    setSelectedVenue(selected as VenueExtended)
   }
   const [addApGroup] = useAddApGroupMutation()
 
-  const handleAddApGroup = async (values: ApGroup) => {
+  const handleAddApGroup = async (values: AddApGroup) => {
     try {
-      const payload = [{
-        ...values,
-        // ...(deviceGps && { deviceGps: deviceGps })
-      }]
+      if (values.apSerialNumbers) {
+        values.apSerialNumbers = values.apSerialNumbers.map(i => { return { serialNumber: i } })
+      }
+      const payload = {
+        ...values
+      }
       await addApGroup({ params: { tenantId: tenantId }, payload }).unwrap()
       navigate(`${basePath.pathname}/aps`, { replace: true })
     } catch {
@@ -99,8 +92,6 @@ export function ApGroupForm () {
       })
     }
   }
-
-
 
   return <>
     {action === 'add' && <PageHeader
@@ -136,14 +127,20 @@ export function ApGroupForm () {
                 rules={[
                   { required: true },
                   { min: 2, transform: (value) => value.trim() },
-                  { max: 64, transform: (value) => value.trim() }
-                  // {
-                  //   validator: (_, value) => {
-                  //     const nameList = apGroupList?.data?.data?.map(item => item.name) ?? []
-                  //     return checkObjectNotExists(nameList, value,
-                  //       $t({ defaultMessage: 'Group Name' }), 'value')
-                  //   }
-                  // }
+                  { max: 64, transform: (value) => value.trim() },
+                  // { validator: (_, value) => {
+                  //   const groupOption = value ?
+                  //   (await apGroupList({ params: { tenantId: tenantId, venueId: value } }, true)).data
+                  //     ?.filter((item) => !item.isDefault)
+                  //     ?.map((item) => ({
+                  //       label: item.name, value: item.id
+                  //     }))
+                  //   : []
+
+                  //   const nameList = apList?.data?.data?.map(item => item.name) ?? []
+                  //   return checkObjectNotExists(nameList, value,
+                  //     $t({ defaultMessage: 'AP Name' }), 'value')
+                  // } }
                 ]}
                 validateFirst
                 hasFeedback
@@ -176,12 +173,7 @@ export function ApGroupForm () {
               </StepsForm.Title>
               <Form.Item
                 name='apSerialNumbers'
-                // label={$t({ defaultMessage: 'Set Priority' })}
                 valuePropName='targetKeys'
-                rules={[
-                  // { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
-                  // { validator: (_, value) => orderValidator(value, AUTHEN_SERVERS_OBJ.NONE_TYPE) }
-                ]}
               >
                 <Transfer
                   listStyle={{ width: 250, height: 316 }}
