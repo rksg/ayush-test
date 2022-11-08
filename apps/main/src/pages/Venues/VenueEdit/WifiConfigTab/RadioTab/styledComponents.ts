@@ -30,7 +30,7 @@ div.ant-checkbox-group {
     border-right: 5px solid transparent;
 
     > span {
-      width: 50px;  
+      width: 50px;
       padding: 0;
     }
 
@@ -68,7 +68,7 @@ export const CheckboxGroup = styled(Checkbox.Group)`
       padding-left: 6px;
     }
     > span {
-      width: 100%;  
+      width: 100%;
       padding: 0;
       &:first-child {
         display: none;
@@ -89,7 +89,7 @@ export const CheckboxGroup = styled(Checkbox.Group)`
     &.ant-checkbox-wrapper-checked {
       border-bottom-color: var(--acx-accents-blue-50);
       &:hover {
-        border-bottom-color: var(--acx-accents-blue-60);
+        border-bottom-color: var(--acx-accents-blue-55);
       }
     }
 
@@ -143,7 +143,7 @@ export const Button5G = styled(BarButton)`
   &:hover, &:focus, &:active {
     border-color: var(--acx-accents-orange-30);
     background: var(--acx-accents-orange-25);
-  }  
+  }
 `
 export const ButtonDFS = styled(BarButton)`
   border: 1px solid var(--acx-accents-orange-10);
@@ -156,5 +156,5 @@ export const ButtonDFS = styled(BarButton)`
   &:hover, &:focus, &:active {
     border-color: var(--acx-accents-orange-20);
     background: var(--acx-accents-orange-10);
-  }  
+  }
 `

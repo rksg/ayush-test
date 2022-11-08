@@ -1,9 +1,9 @@
-import { Tooltip as AntTooltip } from 'antd'
-import { useIntl }               from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { intlFormats } from '@acx-ui/utils'
 
-import { cssStr } from '../../theme/helper'
+import { cssStr }  from '../../theme/helper'
+import { Tooltip } from '../Tooltip'
 
 import * as UI from './styledComponents'
 
@@ -42,7 +42,7 @@ export function ProgressBar ({
 }: ProgressBarProps) {
   const { $t } = useIntl()
 
-  return <AntTooltip
+  return <Tooltip
     placement={'top'}
     title={$t(intlFormats.percentFormat, { value: percent/100 })}>
     <UI.Progress
@@ -52,5 +52,5 @@ export function ProgressBar ({
       trailColor={cssStr('--acx-neutrals-30')}
       strokeWidth={10}
       strokeColor={strokeColorsByPercent(percent)} />
-  </AntTooltip>
+  </Tooltip>
 }

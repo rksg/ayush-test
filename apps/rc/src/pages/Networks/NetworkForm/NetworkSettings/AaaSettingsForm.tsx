@@ -6,17 +6,18 @@ import {
   Form,
   Row,
   Select,
-  Switch,
-  Tooltip
+  Switch
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   StepsForm,
-  Subtitle
+  Subtitle,
+  Tooltip
 } from '@acx-ui/components'
-import { Features, useSplitTreatment }                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { ToggleButton, IpPortSecretForm }               from '@acx-ui/rc/components'
 import {
   WlanSecurityEnum,
   AaaServerTypeEnum,
@@ -24,10 +25,8 @@ import {
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 
-import { IpPortSecretForm } from '../../../../components/IpPortSecretForm'
-import { ToggleButton }     from '../../../../components/ToggleButton'
-import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext   from '../NetworkFormContext'
+import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { CloudpathServerForm }     from './CloudpathServerForm'
@@ -47,7 +46,7 @@ export function AaaSettingsForm (props: {
         isCloudpathEnabled: data.isCloudpathEnabled,
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.enableAccountingService,
+        enableAccountingService: data.accountingRadius,
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
         enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
         authRadius: data.authRadius,
@@ -61,7 +60,7 @@ export function AaaSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -88,7 +87,7 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`

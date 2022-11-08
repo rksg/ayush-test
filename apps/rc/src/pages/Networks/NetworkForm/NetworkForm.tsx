@@ -267,7 +267,7 @@ export default function NetworkForm () {
                   ...{ type: saveState.type },
                   ...data
                 }
-                let settingSaveData = tranferSettingsToSave(settingData)
+                let settingSaveData = tranferSettingsToSave(settingData, editMode)
                 if(!editMode) {
                   settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
                 }
@@ -362,7 +362,7 @@ function showConfigConflictModal (
       ...tranferSettingsToSave({
         ...saveState,
         ...data
-      }),
+      }, editMode),
       ...authRadius && { authRadius },
       ...accountingRadius && { accountingRadius }
     } as Partial<CreateNetworkFormFields>
@@ -385,7 +385,7 @@ function showConfigConflictModal (
       ...{ type: saveState.type },
       ...data
     }
-    let settingSaveData = tranferSettingsToSave(settingData)
+    let settingSaveData = tranferSettingsToSave(settingData, editMode)
     if(!editMode) {
       settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
     }
