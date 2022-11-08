@@ -106,6 +106,10 @@ export const validationMessages = {
   validateLowerThan65535: defineMessage({
     defaultMessage: 'This value should be lower than or equal to 65535',
     description: 'Validation - This value should be lower than or equal to 65535'
+  }),
+  gpsCoordinates: defineMessage({
+    defaultMessage: 'Please enter valid GPS coordinates',
+    description: 'Validation - GPS coordinates checks'
   })
 }
 
