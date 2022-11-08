@@ -15,7 +15,7 @@ export function ApOverviewTab () {
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
       'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
       'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo'],
+      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
     filters: { serialNumber: [params.serialNumber] }
   }
   const apDetailsQuery = useApDetailsQuery({ params, payload })

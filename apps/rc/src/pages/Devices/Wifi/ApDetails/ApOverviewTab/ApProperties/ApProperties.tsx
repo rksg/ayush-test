@@ -10,20 +10,24 @@ import { ApVenueStatusEnum } from '@acx-ui/rc/utils'
 import { TenantLink }        from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
+import { ApDetailsDrawer } from './ApDetailsDrawer'
+import { useState } from 'react'
 
 export function ApProperties (props: { apDetailsQuery: any }) {
-  // UseQueryResult<TableResult<AP, ApExtraParams>>
+  // UseQueryResult<TableResult<AP, ApExtraParams>> TODO:
   const { $t } = useIntl()
+  const [visible, setVisible] = useState(false)
   const { apDetailsQuery } = props
-
   const currentAP = apDetailsQuery.data
-
+  const onMoreAction = () => {
+    setVisible(true)
+  }
   return (
     <Loader states={[apDetailsQuery]}>
       <Card title={$t({ defaultMessage: 'AP Properties' })} 
             action={{
               actionName: $t({ defaultMessage: 'More' }),
-              onActionClick: ()=>{}
+              onActionClick: onMoreAction
             }}
       >
         <UI.Container>
@@ -41,10 +45,7 @@ export function ApProperties (props: { apDetailsQuery: any }) {
             <Form.Item
               label={$t({ defaultMessage: 'AP Group:' })}
               children={
-                currentAP?.deviceGroupName ||
-                <UI.NoneField>
-                  {$t({ defaultMessage: 'None' })}
-                </UI.NoneField>
+                currentAP?.deviceGroupName || $t({ defaultMessage: 'None' })
               }
             />
             <Divider/>
@@ -162,6 +163,12 @@ export function ApProperties (props: { apDetailsQuery: any }) {
           </Form>
         </UI.Container>
       </Card>
+      <ApDetailsDrawer
+        visible={visible}
+        setVisible={setVisible}
+        currentAP={currentAP}
+      />
     </Loader>
   )
 }
+

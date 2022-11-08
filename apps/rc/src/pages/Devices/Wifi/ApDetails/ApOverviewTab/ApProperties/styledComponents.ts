@@ -35,8 +35,3 @@ export const TextNumber = styled.div`
     padding: 7px;
   }
 `
-
-export const NoneField = styled.span`
-  font-style: italic;
-  color: var(--acx-neutrals-50);
-`

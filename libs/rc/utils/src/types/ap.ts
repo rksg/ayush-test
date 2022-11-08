@@ -148,3 +148,9 @@ export interface RadioProperties {
   channel: string;
   band?: string;
 }
+
+export enum GpsFieldStatus {
+  INITIAL,
+  FROM_VENUE,
+  MANUAL
+}
