@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useMemo } from 'react'
 
 import {
   SelectProps,
+  ModalProps as AntdModalProps,
   Checkbox,
   Col,
   Form,
@@ -31,8 +32,9 @@ import {
   VlanPool,
   VlanType,
   WlanSecurityEnum,
-  ApGroupModalWidgetProps,
-  getVlanString
+  getVlanString,
+  NetworkVenue,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 
 import * as UI       from './styledComponents'
@@ -67,6 +69,14 @@ const defaultAG: NetworkApGroupWithSelected = {
   radio: RadioEnum.Both,
   radioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
   vlanId: 1
+}
+
+export interface ApGroupModalWidgetProps extends AntdModalProps {
+  formName?: string
+  networkVenue?: NetworkVenue
+  venueName?: string
+  wlan?: NetworkSaveData['wlan']
+  tenantId?: string
 }
 
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {

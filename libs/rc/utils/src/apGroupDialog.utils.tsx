@@ -1,15 +1,10 @@
 import React from 'react'
 
-import { ClockCircleOutlined }   from '@ant-design/icons'
-import {
-  Tooltip,
-  ModalProps as AntdModalProps
-} from 'antd'
-import _                 from 'lodash'
-import { defineMessage } from 'react-intl'
+import { ClockCircleOutlined } from '@ant-design/icons'
+import { Tooltip, Button }     from 'antd'
+import _                       from 'lodash'
+import { defineMessage }       from 'react-intl'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { Button }  from '@acx-ui/components'
 import { getIntl } from '@acx-ui/utils'
 
 import {
@@ -28,14 +23,6 @@ import {
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-export interface ApGroupModalWidgetProps extends AntdModalProps {
-  formName?: string
-  networkVenue?: NetworkVenue
-  venueName?: string
-  wlan?: NetworkSaveData['wlan']
-  tenantId?: string
-}
-
 /* eslint-disable max-len */
 
 const vlanContents = {
@@ -53,7 +40,7 @@ const vlanContents = {
   })
 }
 
-export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number, isCustom = false) => { // TODO: move to apGroupDialog.utils.tsx
+export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number, isCustom = false) => {
   const { $t } = getIntl()
 
   if (vlanPool) {
@@ -114,13 +101,11 @@ export const transformAps = (currentVenue?: NetworkVenue, callback?: React.Mouse
       result = $t({ defaultMessage: 'All APs' })
     } else if (Array.isArray(currentVenue.apGroups)) {
       const firstApGroup = currentVenue.apGroups[0]
-      if (currentVenue.apGroups.length > 1) {
-        result = `${currentVenue.apGroups.length} ${$t({ defaultMessage: 'AP Groups' })}`
-      } else if(firstApGroup?.isDefault) {
-        result = $t({ defaultMessage: 'Unassigned APs' })
-      } else if(firstApGroup?.apGroupName) {
-        result = firstApGroup.apGroupName
-      }
+      const apGroupName = firstApGroup?.isDefault ? $t({ defaultMessage: 'Unassigned APs' }) : firstApGroup.apGroupName
+      result = $t({ defaultMessage: `{count, plural,
+        one {{apGroupName}}
+        other {{count} AP Groups}
+      }` }, { count: currentVenue.apGroups.length, apGroupName: apGroupName })
     }
     return <Button type='link' onClick={callback}>{result}</Button>
   }
