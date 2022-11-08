@@ -1,21 +1,21 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 
 import { sum, max } from 'lodash'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig }                                 from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, NoData } from '@acx-ui/components'
-import type { TimeStamp }                                             from '@acx-ui/types'
+import { KpiThresholdType, KPIHistogramResponse, healthApi }                     from '@acx-ui/analytics/services'
+import { AnalyticsFilter, kpiConfig }                                            from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
+import type { TimeStamp }                                                        from '@acx-ui/types'
 
-import { KpiThresholdType }                            from '../Kpi'
-import {  useKpiHistogramQuery, KPIHistogramResponse } from '../Kpi/services'
+import { defaultThreshold } from '../Kpi'
 
 import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
 
 const getGoalPercent = (
-  { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue : string }
+  { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue: number }
 ) : number => {
   const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
@@ -52,20 +52,47 @@ function Histogram ({
   kpi,
   threshold,
   setKpiThreshold,
-  thresholds
+  thresholds,
+  mutationAllowed,
+  isNetwork
 }: {
   filters: AnalyticsFilter;
-  kpi: string;
-  threshold: string;
+  kpi: keyof typeof kpiConfig;
+  threshold: number;
   setKpiThreshold: CallableFunction;
-  thresholds: KpiThresholdType
+  thresholds: KpiThresholdType;
+  mutationAllowed: boolean;
+  isNetwork: boolean;
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
-
+  const [ triggerSave ] = healthApi.useSaveThresholdMutation()
+  const onButtonReset = useCallback(() => {
+    const defaultConfig = defaultThreshold[kpi as keyof typeof defaultThreshold]
+    setThresholdValue(defaultConfig)
+    setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
+  }, [kpi, setKpiThreshold, thresholds])
+  const onButtonApply = async () => {
+    try {
+      await triggerSave({ path: filters.path, name: kpi, value: thresholdValue }).unwrap()
+      showToast({
+        type: 'success',
+        content: $t({
+          defaultMessage: 'Threshold set successfully.'
+        })
+      })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({
+          defaultMessage: 'Error setting threshold, please try again later.'
+        })
+      })
+    }
+  }
   /* istanbul ignore next */
   const onSliderChange = (newValue: number) => {
     if (
@@ -76,7 +103,7 @@ function Histogram ({
     setThresholdValue(splitsAfterIsReverseCheck[newValue - 1])
     setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
   }
-  const queryResults = useKpiHistogramQuery(
+  const queryResults = healthApi.useKpiHistogramQuery(
     { ...filters, kpi, threshold: histogram?.initialThreshold },
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -91,10 +118,6 @@ function Histogram ({
       })
     }
   )
-  const onReset = () => {
-    setThresholdValue(histogram?.initialThreshold )
-    setKpiThreshold({ ...thresholds, [kpi]: histogram?.initialThreshold })
-  }
 
   /* istanbul ignore next */
   const onBarClick = ( barData: [number, number] ) =>{
@@ -102,11 +125,11 @@ function Histogram ({
 
     if(splitsAfterIsReverseCheck.indexOf(reformattedBarData) === -1){
       const selectSecondLastBar = splitsAfterIsReverseCheck.length - 1
-      setThresholdValue(splitsAfterIsReverseCheck[selectSecondLastBar] as unknown as string)
+      setThresholdValue(splitsAfterIsReverseCheck[selectSecondLastBar])
       setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[selectSecondLastBar] })
       return
     }
-    setThresholdValue(reformattedBarData as unknown as string)
+    setThresholdValue(reformattedBarData)
     setKpiThreshold({ ...thresholds, [kpi]: reformattedBarData })
   }
 
@@ -145,6 +168,7 @@ function Histogram ({
   )
   const yAxisLabelOffset = max(queryResults?.data?.[0]?.rawData?.data)?.toString()?.length
   const unit = histogram?.xUnit
+
   return (
     <Loader states={[queryResults]} key={kpi}>
       <GridRow>
@@ -191,7 +215,10 @@ function Histogram ({
             percent={percent}
             unit={histogram?.xUnit}
             shortXFormat={histogram?.shortXFormat}
-            onReset={onReset}
+            onReset={onButtonReset}
+            onApply={onButtonApply}
+            canSave={mutationAllowed}
+            isNetwork={isNetwork}
           />
         </GridCol>
       </GridRow>

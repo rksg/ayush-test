@@ -1,6 +1,8 @@
-import { dataApiURL }      from '@acx-ui/analytics/services'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Provider, store } from '@acx-ui/store'
+import { act } from 'react-dom/test-utils'
+
+import { dataApiURL, healthApi } from '@acx-ui/analytics/services'
+import { AnalyticsFilter }       from '@acx-ui/analytics/utils'
+import { Provider, store }       from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
@@ -8,8 +10,6 @@ import {
   fireEvent
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
-
-import { api } from '../Kpi/services'
 
 import Histogram from './Histogram'
 
@@ -33,7 +33,7 @@ const setKpiThreshold = jest.fn()
 
 describe('Threshold Histogram chart', () => {
   beforeEach(() => {
-    store.dispatch(api.util.resetApiState())
+    store.dispatch(healthApi.util.resetApiState())
   })
 
   it('should render Histogram with data', async () => {
@@ -45,9 +45,11 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -62,9 +64,11 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -80,9 +84,11 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'rss'}
-          threshold={thresholdMap['rss'] as unknown as string}
+          threshold={thresholdMap['rss']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -97,9 +103,11 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
         />
       </Provider>
     )
@@ -115,18 +123,48 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
         />
       </Provider>
     )
-    fireEvent.mouseDown(await screen.findByRole('slider'))
-    fireEvent.mouseMove(await screen.findByRole('slider'))
-    fireEvent.mouseUp(await screen.findByRole('slider'))
+    const slider = await screen.findByRole('slider')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.mouseDown(slider)
+      fireEvent.mouseMove(slider)
+      fireEvent.mouseUp(slider)
+    })
     expect(setKpiThreshold).not.toBeCalled()
   })
   it('should call setKpiThreshold on clicking reset btn', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+    })
+
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect']}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
+        />
+      </Provider>
+    )
+
+    const resetBtn = await screen.findByRole('button', { name: 'Reset' })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => { fireEvent.click(resetBtn) })
+  })
+
+  it('should call setKpiThreshold on clicking apply btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
@@ -135,15 +173,40 @@ describe('Threshold Histogram chart', () => {
         <Histogram
           filters={filters}
           kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect'] as unknown as string}
+          threshold={thresholdMap['timeToConnect']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork
         />
       </Provider>
     )
 
-    fireEvent.click(await screen.findByText('Reset'))
-    expect(setKpiThreshold).toBeCalled()
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => { fireEvent.click(applyBtn) })
+  })
+
+  it('should see error setKpiThreshold on clicking apply btn', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect']}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
+        />
+      </Provider>
+    )
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => { fireEvent.click(applyBtn) })
   })
 })
 

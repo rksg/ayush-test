@@ -3,12 +3,10 @@ import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
 import AutoSizer         from 'react-virtualized-auto-sizer'
 
+import { KPITimeseriesResponse, healthApi } from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }       from '@acx-ui/analytics/utils'
 import { Loader, VerticalBarChart, NoData } from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/utils'
-
-
-import { KPITimeseriesResponse, useKpiTimeseriesQuery } from '../Kpi/services'
 
 const barChartText = {
   title: defineMessage({ defaultMessage: 'last 7 days' })
@@ -33,17 +31,17 @@ function BarChart ({
 }: {
   filters: AnalyticsFilter;
   kpi: string;
-  threshold: string;
+  threshold: number;
 }) {
   const { $t } = useIntl()
   const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { endDate } = filters
   const startDate = moment(endDate).subtract(6, 'd').format()
-  const queryResults = useKpiTimeseriesQuery(
+  const queryResults = healthApi.useKpiTimeseriesQuery(
     {
       ...filters,
       kpi,
-      threshold: threshold,
+      threshold: threshold as unknown as string,
       granularity: 'PT24H',
       startDate
     },
