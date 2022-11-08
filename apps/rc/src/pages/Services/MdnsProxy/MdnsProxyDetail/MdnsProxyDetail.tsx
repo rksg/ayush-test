@@ -1,11 +1,10 @@
-import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }    from '@acx-ui/components'
-import { ClockOutlined }         from '@acx-ui/icons'
-import { useGetMdnsProxyQuery }  from '@acx-ui/rc/services'
-import { ServiceType }           from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { Button, DisabledButton, GridCol, GridRow, PageHeader } from '@acx-ui/components'
+import { ClockOutlined }                                        from '@acx-ui/icons'
+import { useGetMdnsProxyQuery }                                 from '@acx-ui/rc/services'
+import { ServiceType }                                          from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                from '@acx-ui/react-router-dom'
 
 import {
   getServiceDetailsLink,
@@ -29,9 +28,9 @@ export default function MdnsProxyDetail () {
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={[
-          <Button key={'date-filter'} icon={<ClockOutlined />}>
+          <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
-          </Button>,
+          </DisabledButton>,
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.MDNS_PROXY,
@@ -44,13 +43,17 @@ export default function MdnsProxyDetail () {
           </TenantLink>
         ]}
       />
-      <Row>
-        {data && <MdnsProxyOverview data={data} />}
-      </Row>
+      <GridRow>
+        <GridCol col={{ span: 24 }}>
+          {data && <MdnsProxyOverview data={data} />}
+        </GridCol>
+      </GridRow>
 
-      <Row style={{ marginTop: 25 }}>
-        <MdnsProxyInstancesTable />
-      </Row>
+      <GridRow style={{ marginTop: 25 }}>
+        <GridCol col={{ span: 24 }}>
+          <MdnsProxyInstancesTable />
+        </GridCol>
+      </GridRow>
     </>
   )
 }
