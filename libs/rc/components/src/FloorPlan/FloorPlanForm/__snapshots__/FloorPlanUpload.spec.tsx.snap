@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Floor Plan Upload should render correctly 1`] = `[Function]`;
+
+exports[`Floor Plan Upload should show error correctly 1`] = `[Function]`;
