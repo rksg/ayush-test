@@ -59,9 +59,6 @@ const WifiCallingNetworksDetail = (props: { tenantId: string }) => {
   })
 
   const basicData = tableQuery.data?.data
-    .filter((network) => {
-      return data?.networkIds.includes(network.id)
-    })
     .map((network) => {
       return {
         id: network.id,
@@ -70,6 +67,12 @@ const WifiCallingNetworksDetail = (props: { tenantId: string }) => {
         venues: network.venues.count
       }
     })
+
+  if (data && data.hasOwnProperty('networkIds') && basicData) {
+    basicData.filter((network) => {
+      return data?.networkIds.includes(network.id)
+    })
+  }
 
   return (
     <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length})`}>

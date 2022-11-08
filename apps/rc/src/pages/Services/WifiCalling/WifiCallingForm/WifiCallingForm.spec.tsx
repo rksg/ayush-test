@@ -1,9 +1,12 @@
 import { fireEvent } from '@testing-library/react'
+import userEvent     from '@testing-library/user-event'
 import { rest }      from 'msw'
 
-import { WifiCallingUrls }            from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                         from '@acx-ui/store'
+import { mockServer, render, screen }       from '@acx-ui/test-utils'
+
+import WifiCallingFormContext from '../WifiCallingFormContext'
 
 import WifiCallingForm from './WifiCallingForm'
 
@@ -40,12 +43,44 @@ const wifiCallingServiceResponse = {
   ]
 }
 
+const wifiCallingListResponse = [
+  {
+    networkIds: [
+      'c8cd8bbcb8cc42caa33c991437ecb983',
+      '44c5604da90443968e1ee91706244e63'
+    ],
+    qosPriority: 'WIFICALLING_PRI_VOICE',
+    serviceName: 'wifiCSP1',
+    id: 'ad7309563e004b36861f662bfbfd0144',
+    epdgs: [
+      {
+        ip: '1.2.3.4',
+        domain: 'abc.com'
+      }
+    ]
+  }
+]
+
+const initState = {
+  serviceName: '',
+  ePDG: [],
+  qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE,
+  tags: [],
+  description: '',
+  networkIds: [],
+  networksName: []
+}
+
 describe('WifiCallingForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
         WifiCallingUrls.addWifiCalling.url,
         (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))
+      ),
+      rest.get(
+        WifiCallingUrls.getWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))
       )
     )
   })
@@ -56,10 +91,19 @@ describe('WifiCallingForm', () => {
 
   it('should render wifiCallingForm successfully', async () => {
     const { asFragment } = render(
-      <Provider>
-        <WifiCallingForm />
-      </Provider>, {
-        route: { path: '/services/wifiCalling/create' }
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          path: '/services/wifiCalling/create',
+          params: { tenantId: 'tenantId1' }
+        }
       }
     )
 
@@ -67,13 +111,46 @@ describe('WifiCallingForm', () => {
     expect(screen.getAllByText('Scope')).toBeTruthy()
     expect(screen.getAllByText('Summary')).toBeTruthy()
 
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
     fireEvent.change(screen.getByRole('textbox', { name: /service name/i }),
-      { target: { value: 'servieName1' } })
+      { target: { value: 'wifiCSP1' } })
 
-    fireEvent.click(screen.getByText('Next'))
+    fireEvent.change(screen.getByRole('textbox', { name: /service name/i }),
+      { target: { value: 'serviceNameTest' } })
 
-    await screen.findAllByText('Scope')
-    fireEvent.click(screen.getByText('Next'))
+    fireEvent.change(screen.getByRole('textbox', { name: /tags/i }),
+      { target: { value: 'a,b,c' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
+      { target: { value: 'descriptionTest' } })
+
+    await screen.findByTestId('selectQosPriorityId')
+
+    const WIFICALLING_PRI_BE = 'WIFICALLING_PRI_BE'
+
+    fireEvent.select(screen.getByTestId('selectQosPriorityId'), {
+      target: { WIFICALLING_PRI_BE }
+    })
+
+    await userEvent.click(screen.getByRole('combobox'))
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: 'WIFICALLING_PRI_BE' })
+    )
+
+    await screen.findByText('WIFICALLING_PRI_BE')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { name: 'Scope', level: 3 })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { name: 'Summary', level: 3 })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
 
     expect(asFragment()).toMatchSnapshot()
   })

@@ -9,8 +9,9 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { ClockOutlined } from '@acx-ui/icons'
-import { TenantLink }    from '@acx-ui/react-router-dom'
+import { ClockOutlined }                 from '@acx-ui/icons'
+import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
+import { TenantLink }                    from '@acx-ui/react-router-dom'
 
 import WifiCallingDetailContent from './WifiCallingDetailContent'
 // import WifiCallingNetworks       from './WifiCallingNetworks'
@@ -19,11 +20,14 @@ import WifiCallingNetworksDetail from './WifiCallingNetworksDetail'
 const WifiCallingDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const { data } = useGetWifiCallingServiceQuery({
+    params: params
+  })
 
   return (
     <>
       <PageHeader
-        title={`${$t({ defaultMessage: 'Wi-Fi Calling Service' })}`}
+        title={data?.serviceName}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}

@@ -55,8 +55,8 @@ const WifiCallingDetailContent = (props: { tenantId: string }) => {
           </Card.Title>
           <Paragraph>{data.qosPriority}</Paragraph>
         </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
+        <GridCol col={{ span: 10 }}>
+          <Card.Title style={{ width: 'maxContent' }}>
             {$t({ defaultMessage: 'Evolved Packet Data Gateway (ePDG)' })}
           </Card.Title>
           <>

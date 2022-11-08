@@ -1,10 +1,10 @@
 import React, { MutableRefObject, useContext, useEffect } from 'react'
 
-import { ProFormInstance }               from '@ant-design/pro-form'
-import { Col, Form, Input, Row, Select } from 'antd'
-import TextArea                          from 'antd/lib/input/TextArea'
-import { useIntl }                       from 'react-intl'
-import { useParams }                     from 'react-router-dom'
+import { ProFormInstance }       from '@ant-design/pro-form'
+import { Col, Form, Input, Row } from 'antd'
+import TextArea                  from 'antd/lib/input/TextArea'
+import { useIntl }               from 'react-intl'
+import { useParams }             from 'react-router-dom'
 
 import { StepsForm }                                                        from '@acx-ui/components'
 import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
@@ -13,8 +13,6 @@ import { CreateNetworkFormFields, QosPriorityEnum, WifiCallingActionTypes } from
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
 import EpdgTable from './EpdgTable'
-
-const { Option } = Select
 
 type WifiCallingSettingFormProps = {
   edit?: boolean,
@@ -69,22 +67,23 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   }
 
   const selectQosPriority = (
-    <Select
+    <select
+      style={{ width: '100%' }}
       data-testid='selectQosPriorityId'
       onChange={(options) => handleQosPriority(options.toString() as QosPriorityEnum)}>
-      <Option value='WIFICALLING_PRI_VOICE'>
+      <option value='WIFICALLING_PRI_VOICE'>
         {$t({ defaultMessage: 'WIFICALLING_PRI_VOICE' })}
-      </Option>
-      <Option value='WIFICALLING_PRI_VIDEO'>
+      </option>
+      <option value='WIFICALLING_PRI_VIDEO'>
         {$t({ defaultMessage: 'WIFICALLING_PRI_VIDEO' })}
-      </Option>
-      <Option value='WIFICALLING_PRI_BE'>
+      </option>
+      <option value='WIFICALLING_PRI_BE'>
         {$t({ defaultMessage: 'WIFICALLING_PRI_BE' })}
-      </Option>
-      <Option value='WIFICALLING_PRI_BG'>
+      </option>
+      <option value='WIFICALLING_PRI_BG'>
         {$t({ defaultMessage: 'WIFICALLING_PRI_BG' })}
-      </Option>
-    </Select>
+      </option>
+    </select>
   )
 
   useEffect(() => {
@@ -124,7 +123,7 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
             { max: 32 },
             { validator: async (rule, value) => {
               return new Promise<void>((resolve, reject) => {
-                if (!edit && value && dataList?.findIndex((profile) =>
+                if (!edit && value && dataList?.length && dataList?.findIndex((profile) =>
                   profile.serviceName === value) !== -1
                 ) {
                   return reject(

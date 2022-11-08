@@ -229,7 +229,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText(/wi\-fi calling service/i)).toBeVisible()
+    expect(screen.getByText(/instance/i)).toBeVisible()
   })
 
   test('should navigate to create DHCP page', async () => {
