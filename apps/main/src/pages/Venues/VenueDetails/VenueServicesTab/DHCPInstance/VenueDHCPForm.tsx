@@ -54,7 +54,8 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
 
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
     const currentVal = form.getFieldsValue().gateways[index]
-    return <div key={index}><GridRow style={{ margin: 0 }}>
+    return <div key={index}><GridRow style={{ marginLeft: 0, marginRight: 0,
+      marginTop: 0, marginBottom: 0 }}>
       <StyledForm.Item name={['gateways', index, 'serialNumber']}>
         <AntSelect onChange={() => {
           const gatewayRawData = form.getFieldsValue().gateways
@@ -90,7 +91,8 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
         {$t({ defaultMessage: 'Add gateway' })}
       </Button>
     </AddBtnContainer>}</div>
-  }) : <><GridRow style={{ margin: 0 }}>
+  }) : <><GridRow style={{ marginLeft: 0, marginRight: 0,
+    marginTop: 0, marginBottom: 0 }}>
     <StyledForm.Item name={['gateways', 0, 'serialNumber']}>
       <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
         {apList?.data?.map(ap =>

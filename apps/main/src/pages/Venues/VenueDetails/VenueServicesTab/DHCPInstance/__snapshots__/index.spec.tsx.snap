@@ -6,177 +6,209 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
     class="styledComponents__RowWrapper-sc-19q2fpg-0 kwRner"
   >
     <div
-      class="ant-row ant-row-space-between"
-      style="margin-left: -12px; margin-right: -12px; width: 100%;"
+      class="ant-row ant-row-space-between Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px; width: 100%;"
     >
       <div
-        class="ant-col ant-col-3"
-        style="padding-left: 12px; padding-right: 12px;"
+        class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
       >
-        <h4
-          class="ant-typography"
-        >
-          <span
-            class="ant-typography"
-          >
-            <strong>
-              Service Name
-            </strong>
-          </span>
-        </h4>
-        <a
-          href="/t/tenant-id/services/dhcp/serviceProfileId1/detail"
-        >
-          service 1
-        </a>
-      </div>
-      <div
-        class="ant-col ant-col-3"
-        style="padding-left: 12px; padding-right: 12px;"
-      >
-        <h4
-          class="ant-typography"
-        >
-          <span
-            class="ant-typography"
-          >
-            <strong>
-              Service Status
-            </strong>
-          </span>
-        </h4>
         <div
-          class="ant-typography"
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          ON
+          <h4
+            class="ant-typography"
+          >
+            <span
+              class="ant-typography"
+            >
+              <strong>
+                Service Name
+              </strong>
+            </span>
+          </h4>
+          <a
+            href="/t/tenant-id/services/dhcp/serviceProfileId1/detail"
+          >
+            service 1
+          </a>
         </div>
       </div>
       <div
-        class="ant-col ant-col-3"
-        style="padding-left: 12px; padding-right: 12px;"
+        class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
       >
-        <h4
-          class="ant-typography"
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <span
+          <h4
             class="ant-typography"
           >
-            <strong>
-              DHCP Configuration
-            </strong>
-          </span>
-        </h4>
-        <div
-          class="ant-typography"
-        >
-          Each APs
+            <span
+              class="ant-typography"
+            >
+              <strong>
+                Service Status
+              </strong>
+            </span>
+          </h4>
+          <div
+            class="ant-typography"
+          >
+            ON
+          </div>
         </div>
       </div>
       <div
-        class="ant-col ant-col-3"
-        style="padding-left: 12px; padding-right: 12px;"
+        class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
       >
-        <h4
-          class="ant-typography"
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <span
+          <h4
             class="ant-typography"
           >
-            <strong>
-              DHCP Pools
-            </strong>
-          </span>
-        </h4>
-        <div
-          class="ant-typography"
-        >
-          1
+            <span
+              class="ant-typography"
+            >
+              <strong>
+                DHCP Configuration
+              </strong>
+            </span>
+          </h4>
+          <div
+            class="ant-typography"
+          >
+            Each APs
+          </div>
         </div>
       </div>
       <div
-        class="ant-col ant-col-3"
-        style="padding-left: 12px; padding-right: 12px;"
+        class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
       >
-        <h4
-          class="ant-typography"
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <span
+          <h4
             class="ant-typography"
           >
-            <strong>
-              Primary DHCP Server
-            </strong>
-          </span>
-        </h4>
-        <div
-          class="ant-typography"
-        >
-          Keda-00001
+            <span
+              class="ant-typography"
+            >
+              <strong>
+                DHCP Pools
+              </strong>
+            </span>
+          </h4>
+          <div
+            class="ant-typography"
+          >
+            1
+          </div>
         </div>
       </div>
       <div
-        class="ant-col ant-col-3"
-        style="padding-left: 12px; padding-right: 12px;"
+        class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
       >
-        <h4
-          class="ant-typography"
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <span
+          <h4
             class="ant-typography"
           >
-            <strong>
-              Secondary DHCP Server
-            </strong>
-          </span>
-        </h4>
-        <div
-          class="ant-typography"
-        >
-          Keda-00002
+            <span
+              class="ant-typography"
+            >
+              <strong>
+                Primary DHCP Server
+              </strong>
+            </span>
+          </h4>
+          <div
+            class="ant-typography"
+          >
+            Keda-00001
+          </div>
         </div>
       </div>
       <div
-        class="ant-col ant-col-3"
-        style="padding-left: 12px; padding-right: 12px;"
+        class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
       >
-        <h4
-          class="ant-typography"
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <span
+          <h4
             class="ant-typography"
           >
-            <strong>
-              Gateway
-            </strong>
-          </span>
-        </h4>
-        <div
-          class="ant-typography"
-          style="margin-bottom: 5px;"
-        >
-          Keda-00003
+            <span
+              class="ant-typography"
+            >
+              <strong>
+                Secondary DHCP Server
+              </strong>
+            </span>
+          </h4>
+          <div
+            class="ant-typography"
+          >
+            Keda-00002
+          </div>
         </div>
-        <div
-          class="ant-typography"
-          style="margin-bottom: 5px;"
-        >
-          Keda-00004
-        </div>
-        ...
       </div>
       <div
-        class="ant-col ant-col-3"
-        style="padding-left: 12px; padding-right: 12px;"
+        class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-block"
-          style="padding-left: 0px;"
-          type="button"
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <span>
-            Manage Local Service
-          </span>
-        </button>
+          <h4
+            class="ant-typography"
+          >
+            <span
+              class="ant-typography"
+            >
+              <strong>
+                Gateway
+              </strong>
+            </span>
+          </h4>
+          <div
+            class="ant-typography"
+            style="margin-bottom: 5px;"
+          >
+            Keda-00003
+          </div>
+          <div
+            class="ant-typography"
+            style="margin-bottom: 5px;"
+          >
+            Keda-00004
+          </div>
+          ...
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-block"
+            style="padding-left: 0px;"
+            type="button"
+          >
+            <span>
+              Manage Local Service
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -225,7 +257,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
     </label>
   </div>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 jAgorv"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
   >
     <div
       class="ant-pro-table"
@@ -538,7 +570,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                             <td
                               class="ant-table-cell"
                             >
-                              22 hrs,0mins
+                              22 hrs, 0 mins
                             </td>
                             <td
                               class="ant-table-cell"
