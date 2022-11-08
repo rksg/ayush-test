@@ -5,7 +5,7 @@ import { clone, isEmpty } from 'lodash'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
-import { Button, DisabledButton, Loader, showActionModal }                                                                        from '@acx-ui/components'
+import { DisabledButton, Loader, showActionModal }                                                                from '@acx-ui/components'
 import { BulbOutlined }                                                                                           from '@acx-ui/icons'
 import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useUpdateFloorPlanMutation } from '@acx-ui/rc/services'
 import { FloorPlanDto, FloorPlanFormDto }                                                                         from '@acx-ui/rc/utils'
