@@ -35,7 +35,7 @@ import {
   APMeshRole,
   apNameRegExp,
   checkObjectNotExists,
-  checkValuesNotEqual,
+  checkValues,
   DeviceGps,
   DhcpApInfo,
   DhcpModeEnum,
@@ -76,6 +76,7 @@ export function ApForm () {
   const formRef = useRef<StepsFormInstance<ApDeep>>()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const isEditMode = action === 'edit'
 
   const {
     editContextData,
@@ -101,7 +102,7 @@ export function ApForm () {
   const [getDhcpAp] = useLazyGetDhcpApQuery()
   const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
   const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
-  const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(true)
+  const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
 
   useEffect(() => {
@@ -113,7 +114,7 @@ export function ApForm () {
   }, [wifiCapabilities])
 
   useEffect(() => {
-    if (!apDetails.isLoading && apDetails?.data) {
+    if (!apDetails.isLoading && apDetails?.data && isEditMode) {
       const setData = async (apDetails: ApDeep) => {
         const selected = getVenueById(
           venuesList?.data as unknown as VenueExtended[], apDetails.venueId)
@@ -123,7 +124,7 @@ export function ApForm () {
         setSelectedVenue(selected as unknown as VenueExtended)
         setApGroupOption(options as DefaultOptionType[])
         setApMeshRoleDisabled(
-          apDetails?.meshRole !== '' && apDetails?.meshRole !== APMeshRole.DISABLED)
+          !!apDetails?.meshRole && (apDetails?.meshRole !== APMeshRole.DISABLED))
         setDhcpRoleDisabled(checkDhcpRoleDisabled(dhcpAp as DhcpApInfo))
         setDeviceGps((apDetails?.deviceGps ?? null) as unknown as DeviceGps)
         formRef?.current?.setFieldsValue(apDetails)
@@ -141,64 +142,14 @@ export function ApForm () {
     }
   }, [venuesList])
 
-  // const handleAddAp = async (values: ApDeep) => {
-  //   try {
-  //     const payload = [{
-  //       ...omit(values, 'deviceGps'),
-  //       ...(deviceGps && { deviceGps: deviceGps })
-  //     }]
-  //     await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
-  //     navigate(`${basePath.pathname}/aps`, { replace: true })
-  //   } catch {
-  //     showToast({
-  //       type: 'error',
-  //       content: $t({ defaultMessage: 'An error occurred' })
-  //     })
-  //   }
-  // }
-
-  const getApGroupOptions = async (venueId: string) => {
-    const groupList = venueId
-      ? (await apGroupList({ params: { tenantId, venueId } }, true)).data
-      : []
-
-    return venueId && groupList?.length
-      ? groupList?.map((item) => ({
-        label: !item.isDefault
-          ? item.name
-          : $t({ defaultMessage: 'No group (inherit from Venue)' }),
-        value: item.isDefault && action === 'add' ? null : item.id
-      })) : [{
-        label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
-        value: null
-      }]
-  }
-
-  const handleFinish = async (values: ApDeep) => {
+  const handleAddAp = async (values: ApDeep) => {
     try {
-      if (action === 'add') {
-        const payload = {
-          ...omit(values, 'deviceGps'),
-          ...(deviceGps && { deviceGps: deviceGps })
-        }
-        await addAp({ params: { tenantId }, payload: [payload] }).unwrap()
-        navigate(`${basePath.pathname}/aps`, { replace: true })
-      } else {
-        const latlng = (values?.deviceGps as string)?.split(',').map((v: string) => v.trim())
-        const payload = {
-          ...values,
-          deviceGps: {
-            latitude: latlng[0],
-            longitude: latlng[1]
-          }
-        }
-        await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
-        setEditContextData && setEditContextData({
-          ...editContextData,
-          isDirty: false,
-          hasError: false
-        })
-      }
+      const payload = [{
+        ...omit(values, 'deviceGps'),
+        ...(deviceGps && { deviceGps: deviceGps })
+      }]
+      await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
+      navigate(`${basePath.pathname}/aps`, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -207,41 +158,76 @@ export function ApForm () {
     }
   }
 
+  const handleUpdateAp = async (values: ApDeep) => {
+    try {
+      const payload = {
+        ...values,
+        deviceGps: transformLatLng(values?.deviceGps as string)
+      }
+      await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
+      setEditContextData && setEditContextData({
+        ...editContextData,
+        isDirty: false,
+        hasError: false
+      })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
+  const getApGroupOptions = async (venueId: string) => {
+    const list = venueId
+      ? (await apGroupList({ params: { tenantId, venueId } }, true)).data
+      : []
+
+    return venueId && list?.length
+      ? list?.map((item) => ({
+        label: !item.isDefault
+          ? item.name
+          : $t({ defaultMessage: 'No group (inherit from Venue)' }),
+        value: item.isDefault && !isEditMode ? null : item.id
+      })) : [{
+        label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
+        value: null
+      }]
+  }
+
   const handleVenueChange = async (value: string) => {
     const selected = getVenueById(venuesList?.data as unknown as VenueExtended[], value)
     const options = await getApGroupOptions(value)
     setSelectedVenue(selected as unknown as VenueExtended)
     setApGroupOption(options as DefaultOptionType[])
     setDeviceGps(null as unknown as DeviceGps)
-    formRef?.current?.setFieldValue('apGroupId',
-      value === apDetails?.data?.venueId ? apDetails?.data?.apGroupId : ( value ? null : '')
-    )
+    formRef?.current?.setFieldValue('apGroupId', options?.[0]?.value ?? (value ? null : ''))
   }
 
   const onSaveCoordinates = (latLng: DeviceGps) => {
     setDeviceGps(latLng)
     setGpsModalVisible(false)
-    handleEditContext()
+    handleUpdateContext()
 
     if (!latLng) {
       formRef?.current?.setFieldValue('deviceGps', latLng)
     }
   }
 
-  const handleEditContext = () => {
-    if (action === 'edit') {
+  const handleUpdateContext = () => {
+    if (isEditMode) {
       setEditContextData && setEditContextData({
         ...editContextData,
         tabTitle: $t({ defaultMessage: 'AP Details' }),
         isDirty: getFormDirty(formRef?.current as StepsFormInstance, apDetails?.data as ApDeep),
         hasError: getFormValid(formRef?.current as StepsFormInstance),
-        updateChanges: () => handleFinish(formRef?.current?.getFieldsValue() as ApDeep)
+        updateChanges: () => handleUpdateAp(formRef?.current?.getFieldsValue() as ApDeep)
       })
     }
   }
 
   return <>
-    {action === 'add' && <PageHeader
+    {!isEditMode && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
@@ -249,14 +235,18 @@ export function ApForm () {
     />}
     <StepsForm
       formRef={formRef}
-      onFinish={handleFinish}
-      onFormChange={handleEditContext}
+      onFinish={
+        !isEditMode
+          ? handleAddAp
+          : handleUpdateAp
+      }
+      onFormChange={handleUpdateContext}
       onCancel={() => navigate({
         ...basePath,
         pathname: `${basePath.pathname}/aps`
       })}
       buttonLabel={{
-        submit: action === 'add'
+        submit: !isEditMode
           ? $t({ defaultMessage: 'Add' })
           : $t({ defaultMessage: 'Apply' })
       }}
@@ -299,7 +289,7 @@ export function ApForm () {
                       apDetails?.data?.venueId as string
                     )
                     if (selected?.country && originalVenue?.country) {
-                      return checkValuesNotEqual(selected?.country, originalVenue?.country, true)
+                      return checkValues(selected?.country, originalVenue?.country, true)
                     }
                     return Promise.resolve()
                   },
@@ -318,6 +308,7 @@ export function ApForm () {
                   message: $t(validationMessages.cellularApDhcpLimitation)
                 }]}
                 children={<Select
+                  disabled={apMeshRoleDisabled || dhcpRoleDisabled}
                   options={[
                     { label: $t({ defaultMessage: 'Select venue...' }), value: null },
                     ...venueOption
@@ -349,7 +340,7 @@ export function ApForm () {
                   { required: true },
                   { min: 2, transform: (value) => value.trim() },
                   { max: 32, transform: (value) => value.trim() },
-                  { validator: (_, value) => checkValuesNotEqual(value, 'aaaa') },
+                  { validator: (_, value) => checkValues(value, 'aaaa') },
                   { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
                   { validator: (_, value) => apNameRegExp(value) },
                   {
@@ -384,7 +375,7 @@ export function ApForm () {
                 ]}
                 validateFirst
                 hasFeedback
-                children={<Input />}
+                children={<Input disabled={isEditMode} />}
               />
               <Form.Item
                 name='description'
@@ -511,9 +502,9 @@ function CoordinatesModal (props: {
   }
 
   const onApplyCoordinates = () => {
-    const latLng = formRef?.current?.getFieldValue(fieldName).split(',')
-      .map((v: string) => v.trim())
-    if (!isEqual([selectedVenue?.latitude, selectedVenue?.longitude], latLng)) {
+    const venueLatLng = pick(selectedVenue, ['latitude', 'longitude'])
+    const latLng = transformLatLng(formRef?.current?.getFieldValue(fieldName))
+    if (!isEqual(venueLatLng, latLng)) {
       showActionModal({
         type: 'confirm',
         width: 450,
@@ -523,10 +514,7 @@ function CoordinatesModal (props: {
             {venueName}. Are you sure you want to place the device in this new position?"`
         }, { venueName: selectedVenue.name }),
         okText: $t({ defaultMessage: 'Drop It' }),
-        onOk: () => onSaveCoordinates({
-          latitude: latLng[0].trim(),
-          longitude: latLng[1].trim()
-        }),
+        onOk: () => onSaveCoordinates(latLng),
         onCancel: () => setGpsModalVisible(false)
       })
     } else {
@@ -627,9 +615,19 @@ function checkDhcpRoleDisabled (dhcpAp: DhcpApInfo) {
     ))
 }
 
+function transformLatLng (value: string) {
+  const latLng = value?.split(',').map((v: string) => v.trim())
+  return (
+    latLng?.length ? {
+      latitude: latLng[0],
+      longitude: latLng[1]
+    } : null
+  ) as DeviceGps
+}
+
 function getFormDirty (form: StepsFormInstance, originalData: ApDeep) {
   const formData = form?.getFieldsValue()
-  const checkFields = Object.keys(form?.getFieldsValue() ?? {})
+  const checkFields = Object.keys(form?.getFieldsValue() ?? {}).concat(['deviceGps'])
   const oldData = pick(originalData, checkFields)
   const newData = omitBy(formData, v => !v)
   return !isEqual(oldData, newData)

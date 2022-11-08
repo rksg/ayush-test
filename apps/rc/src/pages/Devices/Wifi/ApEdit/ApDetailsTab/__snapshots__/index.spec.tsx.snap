@@ -143,9 +143,9 @@ exports[`ApDetailsTab should render correctly 1`] = `
                                     </span>
                                     <span
                                       class="ant-select-selection-item"
-                                      title="45aa5ab71bd040be8c445be8523e0b6c"
+                                      title="Select venue..."
                                     >
-                                      45aa5ab71bd040be8c445be8523e0b6c
+                                      Select venue...
                                     </span>
                                   </div>
                                   <span
@@ -235,11 +235,8 @@ exports[`ApDetailsTab should render correctly 1`] = `
                                       />
                                     </span>
                                     <span
-                                      class="ant-select-selection-item"
-                                      title="f9903daeeadb4af88969b32d185cbf27"
-                                    >
-                                      f9903daeeadb4af88969b32d185cbf27
-                                    </span>
+                                      class="ant-select-selection-placeholder"
+                                    />
                                   </div>
                                   <span
                                     aria-hidden="true"
@@ -347,10 +344,11 @@ exports[`ApDetailsTab should render correctly 1`] = `
                                 class="ant-form-item-control-input-content"
                               >
                                 <span
-                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
+                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled ant-input-affix-wrapper-has-feedback"
                                 >
                                   <input
-                                    class="ant-input"
+                                    class="ant-input ant-input-disabled"
+                                    disabled=""
                                     id="0_serialNumber"
                                     type="text"
                                     value=""

@@ -1,4 +1,5 @@
 import { initialize } from '@googlemaps/jest-mocks'
+import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
@@ -87,7 +88,32 @@ describe('ApEdit', () => {
       }))
     }))
 
-    xit('should open unsaved changes modal', async () => {
+    it('should handle form changed', async () => {
+      mockServer.use(
+        rest.post(WifiUrlsInfo.getDhcpAp.url,
+          (_, res, ctx) => res(ctx.json({})))
+      )
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+      })
+
+      await screen.findByText('test ap')
+      await waitFor(async () => {
+        expect(screen.getByLabelText(/AP Name/)).toHaveValue('test ap')
+      })
+
+      fireEvent.mouseDown(screen.getByLabelText(/Venue/))
+      await userEvent.click(await screen.getAllByText('My-Venue-dhcp')[0])
+      fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'test ap 2' } })
+
+      fireEvent.click(await screen.findByText('Back to device details'))
+      expect(
+        await screen.findByText('Cannot move AP to another venue in different country')
+      ).toBeVisible()
+    })
+
+    it('should open unsaved changes modal', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
         path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
@@ -104,7 +130,7 @@ describe('ApEdit', () => {
       await showUnsavedChangesModal('AP Details', false)
     })
 
-    xit('should open invalid changes modal', async () => {
+    it('should open invalid changes modal', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
         path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'

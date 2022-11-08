@@ -23,7 +23,9 @@ import {
   venueCaps,
   aplist,
   apGrouplist,
-  successResponse
+  successResponse,
+  apDetailsList,
+  dhcpAp
 } from '../__tests__/fixtures'
 
 import { ApForm } from '.'
@@ -94,7 +96,11 @@ describe('AP Form - Add', () => {
       rest.get(CommonUrlsInfo.getApGroupList.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
-        (_, res, ctx) => res(ctx.json(successResponse)))
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(WifiUrlsInfo.getAp.url,
+        (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
+      rest.post(WifiUrlsInfo.getDhcpAp.url,
+        (_, res, ctx) => res(ctx.json(dhcpAp)))
     )
   })
   afterEach(() => {

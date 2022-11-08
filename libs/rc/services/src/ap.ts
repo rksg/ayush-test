@@ -81,7 +81,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    updateAp: build.mutation<AP, RequestPayload>({
+    updateAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.updateAp, params)
         return {
