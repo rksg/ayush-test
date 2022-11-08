@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react'
 
-import { Col, Row, Typography } from 'antd'
-import { useIntl }              from 'react-intl'
-import { useParams }            from 'react-router-dom'
+import { Row, Typography } from 'antd'
+import { useIntl }         from 'react-intl'
+import { useParams }       from 'react-router-dom'
 
-import { Card }                from '@acx-ui/components'
-import { useRoguePolicyQuery } from '@acx-ui/rc/services'
+import { Card, GridCol, GridRow } from '@acx-ui/components'
+import { useRoguePolicyQuery }    from '@acx-ui/rc/services'
 
 import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 
@@ -28,21 +28,21 @@ const RogueAPDetectionDetailContent = () => {
 
   if (data) {
     return <Card>
-      <Row gutter={24} justify='start' style={{ width: '100%' }}>
-        <Col span={4}>
-          <Typography.Title level={3}>
+      <GridRow style={{ width: '100%' }}>
+        <GridCol col={{ span: 4 }}>
+          <Card.Title>
             {$t({ defaultMessage: 'Tags' })}
-          </Typography.Title>
+          </Card.Title>
           <Paragraph>{[].join(', ')}</Paragraph>
-        </Col>
+        </GridCol>
 
-        <Col span={4}>
-          <Typography.Title level={3}>
+        <GridCol col={{ span: 4 }}>
+          <Card.Title>
             {$t({ defaultMessage: 'Classification Rules' })}
-          </Typography.Title>
+          </Card.Title>
           <Paragraph>{data.rules.length}</Paragraph>
-        </Col>
-      </Row>
+        </GridCol>
+      </GridRow>
     </Card>
   } else {
     return <Card>

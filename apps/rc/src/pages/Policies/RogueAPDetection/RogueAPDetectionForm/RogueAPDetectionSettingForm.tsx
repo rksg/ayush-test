@@ -30,7 +30,9 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
   } = useContext(RogueAPDetectionContext)
 
   const { data } = useGetRoguePolicyListQuery({
-    params: params
+    params: edit ? params : {
+      ...params, policyId: 'none'
+    }
   })
 
   const handlePolicyName = (policyName: string) => {
@@ -83,7 +85,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
             { validator: async (rule, value) => {
               return new Promise<void>((resolve, reject) => {
                 if (!edit && value
-                  && data?.findIndex((policy) => policy.name === value) !== -1) {
+                  && data && data?.findIndex((policy) => policy.name === value) !== -1) {
                   return reject(
                     $t({ defaultMessage: 'The rogue policy with that name already exists' })
                   )

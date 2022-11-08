@@ -33,7 +33,7 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const { edit } = props
 
   const policyName = ''
-  const description = '--'
+  const description = ''
   const tags:string[] = []
   const rules:RogueAPRule[] = []
   const venues:RogueVenue[] = []

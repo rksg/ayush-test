@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { Card, Table, TableProps }             from '@acx-ui/components'
 import { useVenueRoguePolicyQuery }            from '@acx-ui/rc/services'
@@ -68,18 +67,16 @@ const RogueAPDetectionVenueDetail = () => {
   const basicData = tableQuery.data?.data
 
   return (
-    <Card title={`${$t({ defaultMessage: 'Instance' })}(${basicData?.length ?? 0})`}>
-      <Row gutter={24} style={{ width: '100%' }}>
-        <Col span={24}>
-          <Table
-            columns={basicColumns}
-            dataSource={basicData}
-            pagination={tableQuery.pagination}
-            onChange={tableQuery.handleTableChange}
-            rowKey='id'
-          />
-        </Col>
-      </Row>
+    <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length ?? 0})`}>
+      <div style={{ width: '100%' }}>
+        <Table
+          columns={basicColumns}
+          dataSource={basicData}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+        />
+      </div>
     </Card>
   )
 }

@@ -52,7 +52,7 @@ const RogueAPDetectionSummaryForm = () => {
         <Row>
           <Col span={24}>
             <Subtitle level={4}>{
-              $t({ defaultMessage: 'Venues' }) + `(${state.venues.length})`
+              $t({ defaultMessage: 'Venues' }) + ` (${state.venues.length})`
             }</Subtitle>
           </Col>
           <Col span={6}>

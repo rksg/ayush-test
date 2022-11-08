@@ -14,7 +14,6 @@ import RogueAPDetectionContext from '../RogueAPDetectionContext'
 import RogueAPDetectionForm from './RogueAPDetectionForm'
 
 
-
 const policyListContent = {
   fields: null,
   totalCount: 2,
@@ -131,6 +130,12 @@ const initState = {
   venues: [] as RogueVenue[]
 } as RogueAPDetectionContextType
 
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: jest.fn(),
+  useTenantLink: jest.fn()
+}))
+
 describe('RogueAPDetectionForm', () => {
   beforeEach(() => {
     act(() => {
@@ -161,6 +166,7 @@ describe('RogueAPDetectionForm', () => {
       , {
         wrapper: wrapper,
         route: {
+          path: '/policies/rogueAPDetection/create',
           params: { tenantId: 'tenantId1' }
         }
       }
@@ -176,7 +182,7 @@ describe('RogueAPDetectionForm', () => {
       { target: { value: 'test' } })
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'policyName112' } })
+      { target: { value: 'policyTestName' } })
 
     fireEvent.change(screen.getByRole('textbox', { name: /tags/i }),
       { target: { value: 'a,b,c' } })
@@ -194,11 +200,15 @@ describe('RogueAPDetectionForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    await screen.findByText('test-venue2')
+    await screen.findByRole('heading', { name: 'Scope', level: 3 })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    await screen.findByText(/venues\(0\)/i)
+    await screen.findByText(/venues \(0\)/i)
+
+    await screen.findByRole('heading', { name: 'Summary', level: 3 })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
   it('should render RogueAPDetectionForm with editMode successfully', async () => {

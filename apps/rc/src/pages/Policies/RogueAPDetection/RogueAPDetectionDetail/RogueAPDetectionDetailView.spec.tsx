@@ -112,15 +112,11 @@ describe('RogueAPDetectionDetailView', () => {
       }
     )
 
-    await screen.findByRole('heading', {
-      name: /classification rules/i
-    })
+    await screen.findByText(/classification rules/i)
 
     screen.getByText(1)
 
-    await screen.findByRole('columnheader', {
-      name: /venue name/i
-    })
+    await screen.findByText(/venue name/i)
 
     await screen.findByRole('cell', {
       name: /test-venue2/i
