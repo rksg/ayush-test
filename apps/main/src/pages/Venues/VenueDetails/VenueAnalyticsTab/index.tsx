@@ -29,18 +29,10 @@ export function VenueAnalyticsTab () {
     path: defaultNetworkPath
   } as AnalyticsFilter
   const onTabChange = (tab: string) => {
-    if (params.activeSubTab) {
-      const newPath = location.pathname.replace(params.activeSubTab, tab)
-      navigate({
-        ...location,
-        pathname: newPath
-      })
-    } else {
-      navigate({
-        ...location,
-        pathname: `${location.pathname}/${tab}/overview`
-      })
-    }
+    navigate({
+      ...location,
+      pathname: location.pathname.replace(params.activeSubTab as string, tab)
+    })
   }
   return <Tabs
     onChange={onTabChange}
