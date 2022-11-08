@@ -3,7 +3,6 @@ import { render } from '@acx-ui/test-utils'
 import { NoActiveData, NoData, NotAvailable } from '.'
 
 jest.mock('@acx-ui/icons', ()=>({
-  ...jest.requireActual('@acx-ui/icons'),
   CheckMarkCircleSolid: () => <div data-testid='CheckMarkCircleSolid'/>
 }), { virtual: true })
 
