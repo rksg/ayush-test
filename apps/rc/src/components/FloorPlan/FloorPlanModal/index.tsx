@@ -29,7 +29,7 @@ const useResetFormOnCloseModal = ({ form, open }: {
 
 export const getFileExtension = function (fileName: string) {
   // eslint-disable-next-line max-len
-  const extensionsRegex: RegExp = /(png|jpeg|jpg|gif|bmp|svg|log|txt|csv|pdf|doc|docx|xls|xlsx|xml|json|jfif|tiff)$/i
+  const extensionsRegex: RegExp = /(png|jpeg|jpg|gif|svg)$/i
   const matched = extensionsRegex.exec(fileName)
   if (matched) {
     return matched[0]

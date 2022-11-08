@@ -108,12 +108,13 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
               maxWidth: '100%'
             }} /> : <div>
             <PlusCircleOutlined />
-            <div className='ant-upload-text'>Upload</div>
+            <div className='ant-upload-text'>
+              { $t({ defaultMessage: 'Upload' }) }</div>
           </div>}
       </Upload>
       <Typography.Text type='secondary'>
         { $t({
-          defaultMessage: 'Max. image weight 20 Mb Supported formats: PNG, JPEG, GIF, SVG' }) }
+          defaultMessage: 'Max. image weight 20 MB Supported formats: PNG, JPEG, GIF, SVG' }) }
       </Typography.Text>
     </>
   )

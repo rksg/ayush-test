@@ -5,7 +5,7 @@ import { clone, isEmpty } from 'lodash'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
-import { Button, Loader, showActionModal }                                                                        from '@acx-ui/components'
+import { Button, DisabledButton, Loader, showActionModal }                                                                        from '@acx-ui/components'
 import { BulbOutlined }                                                                                           from '@acx-ui/icons'
 import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useUpdateFloorPlanMutation } from '@acx-ui/rc/services'
 import { FloorPlanDto, FloorPlanFormDto }                                                                         from '@acx-ui/rc/utils'
@@ -118,9 +118,9 @@ export default function FloorPlan () {
               buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
               onAddEditFloorPlan={onAddEditFloorPlan}
               isEditMode={false}/>
-            <Button size='small' type='link'>
+            <DisabledButton size='small' type='link'>
               {$t({ defaultMessage: 'Unplaced Devices (0)' })}
-            </Button>
+            </DisabledButton>
           </UI.StyledSpace>
         </UI.FloorPlanContainer>
         :

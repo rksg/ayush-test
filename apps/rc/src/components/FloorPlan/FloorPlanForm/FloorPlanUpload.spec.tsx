@@ -9,22 +9,17 @@ import FloorplanUpload from './FloorPlanUpload'
 
 describe('Floor Plan Upload', () => {
 
-  jest.mock('antd', () => {
-    const antd = jest.requireActual('antd')
-    const { Upload } = antd
-    return { Upload }
-  })
-
-  Object.defineProperty(URL, 'createObjectURL', {
-    writable: true,
-    value: jest.fn()
-  })
+  global.URL.createObjectURL = jest.fn()
+  jest.spyOn(global.URL, 'createObjectURL')
 
   beforeEach(() => {
     mockServer.use(rest.post('',
       (_, res, ctx) => res(ctx.json({})))
     )})
 
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
 
   it('should render correctly', async () => {
     const validateFile = jest.fn()

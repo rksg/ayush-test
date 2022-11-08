@@ -370,14 +370,20 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         <div
           class="ant-space-item"
         >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-            type="button"
+          <span
+            style="cursor: not-allowed;"
           >
-            <span>
-              Unplaced Devices (0)
-            </span>
-          </button>
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              disabled=""
+              style="pointer-events: none;"
+              type="button"
+            >
+              <span>
+                Unplaced Devices (0)
+              </span>
+            </button>
+          </span>
         </div>
       </div>
     </div>
