@@ -131,14 +131,14 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
-                    aria-selected="true"
+                    aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -281,12 +281,13 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                 tabindex="-1"
               />
               <div
-                aria-hidden="false"
-                aria-labelledby="rc-tabs-test-tab-analytics"
-                class="ant-tabs-tabpane ant-tabs-tabpane-active"
-                id="rc-tabs-test-panel-analytics"
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
-                tabindex="0"
+                style="display: none;"
+                tabindex="-1"
               />
               <div
                 aria-hidden="true"
@@ -590,11 +591,11 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -738,9 +739,9 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -936,11 +937,11 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -1084,9 +1085,9 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -1461,11 +1462,11 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -1609,9 +1610,9 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -1841,11 +1842,11 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -1989,9 +1990,9 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -2187,11 +2188,11 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -2335,9 +2336,9 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -2535,11 +2536,11 @@ exports[`VenueDetails should render correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -2683,9 +2684,9 @@ exports[`VenueDetails should render correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
