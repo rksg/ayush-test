@@ -57,14 +57,13 @@ const settingTitle = defineMessage({
   }`
 })
 
-export function NetworkForm () {
+export default function NetworkForm () {
   const intl = useIntl()
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
-  const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
@@ -100,7 +99,6 @@ export function NetworkForm () {
       if (cloneMode) {
         formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
-      setNetworkType(data.type)
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
   }, [data])
@@ -230,10 +228,10 @@ export function NetworkForm () {
         ]}
       />
       <NetworkFormContext.Provider value={{
-        setNetworkType,
         editMode,
         cloneMode,
-        data: data ?? null
+        data: saveState,
+        setData: updateSaveState
       }}>
         <StepsForm<NetworkSaveData>
           formRef={formRef}
@@ -255,7 +253,7 @@ export function NetworkForm () {
 
           <StepsForm.StepForm
             name='settings'
-            title={intl.$t(settingTitle, { type: networkType })}
+            title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
               const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
                           || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
@@ -269,7 +267,7 @@ export function NetworkForm () {
                   ...{ type: saveState.type },
                   ...data
                 }
-                let settingSaveData = tranferSettingsToSave(settingData)
+                let settingSaveData = tranferSettingsToSave(settingData, editMode)
                 if(!editMode) {
                   settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
                 }
@@ -364,7 +362,7 @@ function showConfigConflictModal (
       ...tranferSettingsToSave({
         ...saveState,
         ...data
-      }),
+      }, editMode),
       ...authRadius && { authRadius },
       ...accountingRadius && { accountingRadius }
     } as Partial<CreateNetworkFormFields>
@@ -387,7 +385,7 @@ function showConfigConflictModal (
       ...{ type: saveState.type },
       ...data
     }
-    let settingSaveData = tranferSettingsToSave(settingData)
+    let settingSaveData = tranferSettingsToSave(settingData, editMode)
     if(!editMode) {
       settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
     }

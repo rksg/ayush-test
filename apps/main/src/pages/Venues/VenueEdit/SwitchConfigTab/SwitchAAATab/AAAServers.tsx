@@ -1,6 +1,9 @@
 /* eslint-disable max-len */
+import {  useEffect, useState } from 'react'
+
 import { Collapse }               from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
+
 
 import { Alert, Loader }                                           from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
@@ -66,6 +69,24 @@ export function AAAServers () {
     }
   })
 
+  const [aaaServerCount, setAaaServerCount] = useState({
+    localUserTotalCount: 0,
+    tacasTotalCount: 0,
+    radiusTotalCount: 0
+  })
+
+  useEffect(() => {
+    if (localUserTableQuery.data &&
+      tacasTableQuery.data &&
+      radiusTableQuery.data) {
+      setAaaServerCount({
+        localUserTotalCount: localUserTableQuery.data.totalCount,
+        tacasTotalCount: tacasTableQuery.data.totalCount,
+        radiusTotalCount: radiusTableQuery.data.totalCount
+      })
+    }
+  }, [localUserTableQuery.data, tacasTableQuery.data, radiusTableQuery.data])
+
   return (
     <Loader states={[
       {
@@ -85,15 +106,15 @@ export function AAAServers () {
           ghost={true}
           bordered={false}
         >
-          <Panel header={getPanelHeader(AAAServerTypeEnum.RADIUS, 0)} key='1' >
+          <Panel header={getPanelHeader(AAAServerTypeEnum.RADIUS, aaaServerCount.radiusTotalCount)} key='1' >
             <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} aaaSetting={aaaSetting} />
           </Panel>
 
-          <Panel header={getPanelHeader(AAAServerTypeEnum.TACACS, 0)} key='2' >
+          <Panel header={getPanelHeader(AAAServerTypeEnum.TACACS, aaaServerCount.tacasTotalCount)} key='2' >
             <AAAServerTable type={AAAServerTypeEnum.TACACS} tableQuery={tacasTableQuery} aaaSetting={aaaSetting} />
           </Panel>
 
-          <Panel header={getPanelHeader(AAAServerTypeEnum.LOCAL_USER, 0)} key='3' >
+          <Panel header={getPanelHeader(AAAServerTypeEnum.LOCAL_USER, aaaServerCount.localUserTotalCount)} key='3' >
             <AAAServerTable type={AAAServerTypeEnum.LOCAL_USER} tableQuery={localUserTableQuery} />
           </Panel>
         </Collapse>

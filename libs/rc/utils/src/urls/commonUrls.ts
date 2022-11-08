@@ -171,6 +171,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   },
+  getDHCPVenueInstances: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/dhcp-service-profile/instances/:serviceId'
+  },
+  getDHCProfileDetail: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/dhcp-service-profile/:serviceId'
+  },
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection'
@@ -235,6 +243,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     //Get Venue Active DHCP Pool
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/venues/:venueId/dhcppools/:dhcppoolId'
+  },
+  getApDetailHeader: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   }
-
 }

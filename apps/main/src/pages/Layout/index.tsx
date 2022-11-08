@@ -1,16 +1,19 @@
+import { useIntl } from 'react-intl'
+
+import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI
-} from '@acx-ui/components'
+}                        from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   AccountCircleSolid,
   QuestionMarkCircleSolid,
   SearchOutlined
-} from '@acx-ui/icons'
-import { Outlet } from '@acx-ui/react-router-dom'
-
-import { AlarmsHeaderButton } from '../../components/Alarms/HeaderButton'
+}                          from '@acx-ui/icons'
+import { AlarmsHeaderButton } from '@acx-ui/main/components'
+import { Outlet }             from '@acx-ui/react-router-dom'
+import { notAvailableMsg }    from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 
@@ -21,11 +24,17 @@ function Layout () {
         menuConfig={useMenuConfig()}
         content={<Outlet />}
         rightHeaderContent={<>
-          <LayoutUI.ButtonOutlined shape='circle' icon={<SearchOutlined />} />
+          <Tooltip title={useIntl().$t(notAvailableMsg)}>
+            <LayoutUI.ButtonOutlined disabled shape='circle' icon={<SearchOutlined />} />
+          </Tooltip>
           <LayoutUI.Divider />
           <AlarmsHeaderButton />
-          <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
-          <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+            <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
+          </Tooltip>
+          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+            <LayoutUI.ButtonSolid disabled icon={<AccountCircleSolid />} />
+          </Tooltip>
         </>}
       />
     </SplitProvider>

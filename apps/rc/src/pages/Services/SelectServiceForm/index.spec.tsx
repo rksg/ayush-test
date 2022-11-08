@@ -9,7 +9,7 @@ import { render, screen }          from '@acx-ui/test-utils'
 
 import { getSelectServiceRoutePath, getServiceListRoutePath, getServiceRoutePath, ServiceOperation } from '../serviceRouteUtils'
 
-import { SelectServiceForm } from '.'
+import SelectServiceForm from '.'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {

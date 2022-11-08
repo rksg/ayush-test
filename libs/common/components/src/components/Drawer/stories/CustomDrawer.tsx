@@ -52,7 +52,7 @@ export function CustomDrawer () {
     <Drawer.FormFooter
       showAddAnother={showAddAnother}
       onCancel={resetFields}
-      onSave={() => form.submit()}
+      onSave={async () => form.submit()}
     />
   )
 

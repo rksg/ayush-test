@@ -8,7 +8,8 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   RequestPayload,
-  TableResult
+  TableResult,
+  ApDetailHeader
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -32,13 +33,23 @@ export const apApi = baseApApi.injectEndpoints({
       transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
       }
+    }),
+    apDetailHeader: build.query<ApDetailHeader, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApDetailHeader, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     })
   })
 })
 
 export const {
   useApListQuery,
-  useLazyApListQuery
+  useLazyApListQuery,
+  useApDetailHeaderQuery
 } = apApi
 
 

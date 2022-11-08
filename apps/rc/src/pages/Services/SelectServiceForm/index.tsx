@@ -18,7 +18,7 @@ import {
 import * as UI from './styledComponents'
 
 
-export function SelectServiceForm () {
+export default function SelectServiceForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))

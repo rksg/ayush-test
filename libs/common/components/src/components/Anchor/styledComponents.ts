@@ -22,7 +22,7 @@ export const Anchor = styled(AntAnchor)`
     color: var(--acx-accents-blue-50);
     &:hover, &-active {
       border-color: var(--acx-accents-blue-20);
-      color: var(--acx-accents-blue-60);
+      color: var(--acx-accents-blue-55);
     }
   }
 `

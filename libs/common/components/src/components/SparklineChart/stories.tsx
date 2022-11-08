@@ -30,7 +30,7 @@ const basicColumns = [
   }
 ]
 
-const sparklineChartStyle = { height: 16, width: '100%', display: 'inline' }
+const sparklineChartStyle = { height: 25, width: '100%', display: 'inline' }
 
 const SparkLineColumn = (
   data: SparklineChartProps['data'],
@@ -45,7 +45,7 @@ const getTableData = (isTrendLine:boolean=false) =>{
       client: 'xxxxx',
       traffic: 'xxxx (28%)',
       trafficHistory: SparkLineColumn([0, 10, 100, 400, 820, 932, 901, 934, 1290, 1330,
-        1320, 820, 932, 901, 934, 1290, 1330, 1320],isTrendLine)
+        1320, 820, 932, 901, 934, 1290, 1330, 1320], isTrendLine)
     },
     {
       key: '2',
@@ -53,7 +53,7 @@ const getTableData = (isTrendLine:boolean=false) =>{
       client: 'xxxxx',
       traffic: 'xxxx (18%)',
       trafficHistory: SparkLineColumn([1320, 820, 932, 901, 934, 1290, 1330, 1320,
-        0, 10, 100, 400, 820, 932, 901, 934, 1290, 1311],isTrendLine)
+        0, 10, 100, 400, 820, 932, 901, 934, 1290, 1311], isTrendLine)
     },
     {
       key: '3',
@@ -61,7 +61,7 @@ const getTableData = (isTrendLine:boolean=false) =>{
       client: 'xxxxx',
       traffic: 'xxxx (48%)',
       trafficHistory: SparkLineColumn([200, 1500, 1200, 1400, 1250, 1000, 1200, 1050, 900, 800,
-        980, 780, 650, 900, 500, 400, 203, 345, 150],isTrendLine)
+        980, 780, 650, 900, 500, 400, 203, 345, 150], isTrendLine)
     },
     {
       key: '4',
@@ -69,7 +69,7 @@ const getTableData = (isTrendLine:boolean=false) =>{
       client: 'xxxxx',
       traffic: 'xxxx (20%)',
       trafficHistory: SparkLineColumn([220, 1000, 1200, 1400, 1290, 1330, 1320, 820, 932,
-        1320, 820, 932, 901, 934, 901, 934, 1290, 1330],isTrendLine)
+        1320, 820, 932, 901, 934, 901, 934, 1290, 1330], isTrendLine)
     }
   ]
 }

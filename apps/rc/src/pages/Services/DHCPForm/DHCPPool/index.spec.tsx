@@ -55,5 +55,5 @@ describe('Create DHCP: Pool detail', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     userEvent.click(screen.getByText('pool1'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
-  }, 15000)
+  }, 20000)
 })

@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: configmap-acx-ui
 data:
-    splitio.ff.key: "mv0ie7nqslfon47mabelfdloqdem1alfctqp"
-    google.maps.key: "AIzaSyCO5O4se2-GDzFXqfUFAMDZHycyZfugqSc"
-    captive.portal.domain.name: "stage.qaalto.ruckuswireless.com"
+  split.io.key: "mv0ie7nqslfon47mabelfdloqdem1alfctqp"
+  google.maps.key: "AIzaSyCO5O4se2-GDzFXqfUFAMDZHycyZfugqSc"
+  captive.portal.domain.name: "stage.qaalto.ruckuswireless.com"

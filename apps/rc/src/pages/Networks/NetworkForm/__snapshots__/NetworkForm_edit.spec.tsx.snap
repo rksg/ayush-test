@@ -3,7 +3,7 @@
 exports[`NetworkForm should edit open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -404,7 +404,8 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                         >
                           <img
-                            src="none.png"
+                            alt="Open Network"
+                            src="open.png"
                           />
                         </div>
                       </div>
@@ -476,16 +477,6 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         </div>
                       </div>
                     </div>
-                    <div>
-                      <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                        type="button"
-                      >
-                        <span>
-                          Show more settings
-                        </span>
-                      </button>
-                    </div>
                   </div>
                   <div
                     class="ant-col ant-col-14"
@@ -523,15 +514,1845 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                   style="display: none;"
                   type="text"
                 />
-                <div>
-                  <button
-                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                    type="button"
+                <div
+                  class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollapsePanel-sc-lhsic1-3 bvaGkz"
+                  style="width: 100%; max-width: 600px;"
+                >
+                  <div
+                    class="ant-collapse-item ant-collapse-item-active"
                   >
-                    <span>
-                      Show more settings
-                    </span>
-                  </button>
+                    <div
+                      aria-expanded="true"
+                      class="ant-collapse-header"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <div
+                        class="ant-collapse-expand-icon"
+                      >
+                        <span
+                          aria-label="right"
+                          class="anticon anticon-right ant-collapse-arrow"
+                          role="img"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            data-icon="right"
+                            fill="currentColor"
+                            focusable="false"
+                            height="1em"
+                            style="transform: rotate(90deg);"
+                            viewBox="64 64 896 896"
+                            width="1em"
+                          >
+                            <path
+                              d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                            />
+                          </svg>
+                        </span>
+                      </div>
+                      <span
+                        class="ant-collapse-header-text"
+                      >
+                        VLAN
+                      </span>
+                    </div>
+                    <div
+                      class="ant-collapse-content ant-collapse-content-active"
+                    >
+                      <div
+                        class="ant-collapse-content-box"
+                      >
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
+                          width="90px"
+                        >
+                          VLAN Pooling:
+                          <div
+                            class="ant-form-item ant-form-item-has-success"
+                            style="margin-bottom: 10px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <button
+                                      class="ant-switch"
+                                      id="moreSettings_enableVlanPooling"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          style="display: grid; grid-template-columns: 90px 1fr;"
+                        >
+                          <div
+                            class="ant-form-item"
+                            style="margin-bottom: 15px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-label"
+                              >
+                                <label
+                                  class="ant-form-item-required"
+                                  for="moreSettings_wlan_vlanId"
+                                  title="VLAN ID"
+                                >
+                                  VLAN ID
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <div
+                                      class="ant-input-number ant-input-number-in-form-item"
+                                      style="width: 80px;"
+                                    >
+                                      <div
+                                        class="ant-input-number-handler-wrap"
+                                      >
+                                        <span
+                                          aria-disabled="false"
+                                          aria-label="Increase Value"
+                                          class="ant-input-number-handler ant-input-number-handler-up"
+                                          role="button"
+                                          unselectable="on"
+                                        >
+                                          <span
+                                            aria-label="up"
+                                            class="anticon anticon-up ant-input-number-handler-up-inner"
+                                            role="img"
+                                          >
+                                            <svg
+                                              aria-hidden="true"
+                                              data-icon="up"
+                                              fill="currentColor"
+                                              focusable="false"
+                                              height="1em"
+                                              viewBox="64 64 896 896"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                              />
+                                            </svg>
+                                          </span>
+                                        </span>
+                                        <span
+                                          aria-disabled="false"
+                                          aria-label="Decrease Value"
+                                          class="ant-input-number-handler ant-input-number-handler-down"
+                                          role="button"
+                                          unselectable="on"
+                                        >
+                                          <span
+                                            aria-label="down"
+                                            class="anticon anticon-down ant-input-number-handler-down-inner"
+                                            role="img"
+                                          >
+                                            <svg
+                                              aria-hidden="true"
+                                              data-icon="down"
+                                              fill="currentColor"
+                                              focusable="false"
+                                              height="1em"
+                                              viewBox="64 64 896 896"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                              />
+                                            </svg>
+                                          </span>
+                                        </span>
+                                      </div>
+                                      <div
+                                        class="ant-input-number-input-wrap"
+                                      >
+                                        <input
+                                          aria-valuenow="1"
+                                          autocomplete="off"
+                                          class="ant-input-number-input"
+                                          id="moreSettings_wlan_vlanId"
+                                          role="spinbutton"
+                                          step="1"
+                                          value="1"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
+                          width="90px"
+                        >
+                          Proxy ARP:
+                          <div
+                            class="ant-form-item"
+                            style="margin-bottom: 10px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <button
+                                      aria-checked="false"
+                                      class="ant-switch"
+                                      id="moreSettings_wlan_advancedCustomization_proxyARP"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-collapse-item ant-collapse-item-active"
+                  >
+                    <div
+                      aria-expanded="true"
+                      class="ant-collapse-header"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <div
+                        class="ant-collapse-expand-icon"
+                      >
+                        <span
+                          aria-label="right"
+                          class="anticon anticon-right ant-collapse-arrow"
+                          role="img"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            data-icon="right"
+                            fill="currentColor"
+                            focusable="false"
+                            height="1em"
+                            style="transform: rotate(90deg);"
+                            viewBox="64 64 896 896"
+                            width="1em"
+                          >
+                            <path
+                              d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                            />
+                          </svg>
+                        </span>
+                      </div>
+                      <span
+                        class="ant-collapse-header-text"
+                      >
+                        Services
+                      </span>
+                    </div>
+                    <div
+                      class="ant-collapse-content ant-collapse-content-active"
+                    >
+                      <div
+                        class="ant-collapse-content-box"
+                      >
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
+                          width="125px"
+                        >
+                          DNS Proxy:
+                          <div
+                            class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
+                            width="30px"
+                          >
+                            <div
+                              class="ant-form-item"
+                              style="margin-bottom: 10px;"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="moreSettings_wlan_advancedCustomization_dnsProxyEnabled"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="ant-form-item"
+                              style="margin-bottom: 10px;"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
+                          width="125px"
+                        >
+                          Wi-Fi Calling:
+                          <div
+                            class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
+                            width="30px"
+                          >
+                            <div
+                              class="ant-form-item"
+                              style="margin-bottom: 10px;"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch ant-switch-disabled"
+                                        disabled=""
+                                        id="moreSettings_wlan_advancedCustomization_wifiCallingEnabled"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
+                          width="125px"
+                        >
+                          Client Isolation:
+                          <div
+                            class="ant-form-item"
+                            style="margin-bottom: 10px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <button
+                                      aria-checked="false"
+                                      class="ant-switch"
+                                      id="moreSettings_wlan_advancedCustomization_clientIsolation"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
+                          width="125px"
+                        >
+                          Anti-spoofing:
+                          <div
+                            class="ant-form-item"
+                            style="margin-bottom: 10px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <button
+                                      aria-checked="false"
+                                      class="ant-switch"
+                                      id="moreSettings_wlan_advancedCustomization_enableAntiSpoofing"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        id="moreSettings_wlan_advancedCustomization_forceMobileDeviceDhcp"
+                                        type="checkbox"
+                                        value=""
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Force DHCP
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        id="moreSettings_wlan_advancedCustomization_enableSyslog"
+                                        type="checkbox"
+                                        value=""
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Enable logging client data to external syslog
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-collapse-item ant-collapse-item-active"
+                  >
+                    <div
+                      aria-expanded="true"
+                      class="ant-collapse-header"
+                      role="button"
+                      tabindex="0"
+                    >
+                      <div
+                        class="ant-collapse-expand-icon"
+                      >
+                        <span
+                          aria-label="right"
+                          class="anticon anticon-right ant-collapse-arrow"
+                          role="img"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            data-icon="right"
+                            fill="currentColor"
+                            focusable="false"
+                            height="1em"
+                            style="transform: rotate(90deg);"
+                            viewBox="64 64 896 896"
+                            width="1em"
+                          >
+                            <path
+                              d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                            />
+                          </svg>
+                        </span>
+                      </div>
+                      <span
+                        class="ant-collapse-header-text"
+                      >
+                        Radio
+                      </span>
+                    </div>
+                    <div
+                      class="ant-collapse-content ant-collapse-content-active"
+                    >
+                      <div
+                        class="ant-collapse-content-box"
+                      >
+                        <div
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        id="moreSettings_wlan_advancedCustomization_hideSsid"
+                                        type="checkbox"
+                                        value=""
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Hide SSID
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <h4
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
+                        >
+                          Load Control
+                        </h4>
+                        <div
+                          class="ant-form-item"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-label"
+                            >
+                              <label
+                                class=""
+                                for="moreSettings_maxRate"
+                                title="Max Rate:"
+                              >
+                                Max Rate:
+                              </label>
+                            </div>
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <div
+                                    class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                    style="width: 240px;"
+                                  >
+                                    <div
+                                      class="ant-select-selector"
+                                    >
+                                      <span
+                                        class="ant-select-selection-search"
+                                      >
+                                        <input
+                                          aria-activedescendant="moreSettings_maxRate_list_0"
+                                          aria-autocomplete="list"
+                                          aria-controls="moreSettings_maxRate_list"
+                                          aria-haspopup="listbox"
+                                          aria-owns="moreSettings_maxRate_list"
+                                          autocomplete="off"
+                                          class="ant-select-selection-search-input"
+                                          id="moreSettings_maxRate"
+                                          readonly=""
+                                          role="combobox"
+                                          style="opacity: 0;"
+                                          type="search"
+                                          unselectable="on"
+                                          value=""
+                                        />
+                                      </span>
+                                      <span
+                                        class="ant-select-selection-item"
+                                        title="Unlimited"
+                                      >
+                                        Unlimited
+                                      </span>
+                                    </div>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ant-select-arrow"
+                                      style="user-select: none;"
+                                      unselectable="on"
+                                    >
+                                      <span
+                                        aria-label="down"
+                                        class="anticon anticon-down ant-select-suffix"
+                                        role="img"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          data-icon="down"
+                                          fill="currentColor"
+                                          focusable="false"
+                                          height="1em"
+                                          viewBox="64 64 896 896"
+                                          width="1em"
+                                        >
+                                          <path
+                                            d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                          />
+                                        </svg>
+                                      </span>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-label"
+                            >
+                              <label
+                                class=""
+                                for="moreSettings_wlan_advancedCustomization_maxClientsOnWlanPerRadio"
+                                title="Max clients per radio:"
+                              >
+                                Max clients per radio:
+                              </label>
+                            </div>
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <div
+                                    class="ant-slider ant-slider-horizontal ant-slider-with-marks"
+                                    style="width: 240px;"
+                                  >
+                                    <div
+                                      class="ant-slider-rail"
+                                    />
+                                    <div
+                                      class="ant-slider-track"
+                                      style="left: 0%; width: 19.373776908023483%;"
+                                    />
+                                    <div
+                                      class="ant-slider-step"
+                                    >
+                                      <span
+                                        class="ant-slider-dot ant-slider-dot-active"
+                                        style="left: 0%; transform: translateX(-50%);"
+                                      />
+                                      <span
+                                        class="ant-slider-dot"
+                                        style="left: 100%; transform: translateX(-50%);"
+                                      />
+                                    </div>
+                                    <div
+                                      aria-disabled="false"
+                                      aria-valuemax="512"
+                                      aria-valuemin="1"
+                                      aria-valuenow="100"
+                                      class="ant-slider-handle"
+                                      role="slider"
+                                      style="left: 19.373776908023483%; transform: translateX(-50%);"
+                                      tabindex="0"
+                                    />
+                                    <div
+                                      class="ant-slider-mark"
+                                    >
+                                      <span
+                                        class="ant-slider-mark-text ant-slider-mark-text-active"
+                                        style="left: 0%; transform: translateX(-50%);"
+                                      >
+                                        1
+                                      </span>
+                                      <span
+                                        class="ant-slider-mark-text"
+                                        style="left: 100%; transform: translateX(-50%);"
+                                      >
+                                        512
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox ant-checkbox-checked"
+                                    >
+                                      <input
+                                        checked=""
+                                        class="ant-checkbox-input"
+                                        id="moreSettings_wlan_advancedCustomization_enableBandBalancing"
+                                        type="checkbox"
+                                        value=""
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Enable load balancing between all radios
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox ant-checkbox-checked"
+                                    >
+                                      <input
+                                        checked=""
+                                        class="ant-checkbox-input"
+                                        id="moreSettings_wlan_advancedCustomization_clientLoadBalancingEnable"
+                                        type="checkbox"
+                                        value=""
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Enable load balancing between APs
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          style="margin-bottom: 30px;"
+                        >
+                          <span
+                            style="display: grid; grid-template-columns: 220px 130px auto; align-items: baseline; margin: 20px 0px;"
+                          >
+                            <h4
+                              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
+                            >
+                              Access Control
+                            </h4>
+                            <span>
+                              <button
+                                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                disabled=""
+                                type="button"
+                              >
+                                <span>
+                                  Save as AC Profile
+                                </span>
+                              </button>
+                            </span>
+                            <button
+                              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                              type="button"
+                            >
+                              <span>
+                                Select Access Control profile
+                              </span>
+                            </button>
+                          </span>
+                          <div
+                            class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
+                            width="175px"
+                          >
+                            Layer 2
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_wlan_advancedCustomization_l2AclEnable"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
+                            width="175px"
+                          >
+                            Layer 3
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_wlan_advancedCustomization_l3AclEnable"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
+                            width="175px"
+                          >
+                            Device & OS
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_enableDeviceOs"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
+                            width="175px"
+                          >
+                            Applications
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_wlan_advancedCustomization_applicationPolicyEnable"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
+                            width="175px"
+                          >
+                            Client Rate Limit
+                            <div
+                              class="ant-form-item"
+                              style="margin-bottom: 10px;"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="moreSettings_enableClientRateLimit"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          style="margin-bottom: 15px;"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox"
+                                    >
+                                      <input
+                                        class="ant-checkbox-input"
+                                        id="moreSettings_enableOfdmOnly"
+                                        type="checkbox"
+                                        value=""
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Enable OFDM only (disable 802.11b)
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <h4
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
+                        >
+                          Data Rate Control (2.4 GHz & 5 GHz)
+                        </h4>
+                        <div
+                          style="display: grid; grid-template-columns: auto 1fr; column-gap: 20px;"
+                        >
+                          <div
+                            class="ant-form-item"
+                            style="margin-bottom: 15px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-label"
+                              >
+                                <label
+                                  class=""
+                                  for="moreSettings_bssMinimumPhyRate"
+                                  title="BSS Min Rate:"
+                                >
+                                  BSS Min Rate:
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <div
+                                      class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                      style="width: 150px;"
+                                    >
+                                      <div
+                                        class="ant-select-selector"
+                                      >
+                                        <span
+                                          class="ant-select-selection-search"
+                                        >
+                                          <input
+                                            aria-activedescendant="moreSettings_bssMinimumPhyRate_list_0"
+                                            aria-autocomplete="list"
+                                            aria-controls="moreSettings_bssMinimumPhyRate_list"
+                                            aria-haspopup="listbox"
+                                            aria-owns="moreSettings_bssMinimumPhyRate_list"
+                                            autocomplete="off"
+                                            class="ant-select-selection-search-input"
+                                            id="moreSettings_bssMinimumPhyRate"
+                                            readonly=""
+                                            role="combobox"
+                                            style="opacity: 0;"
+                                            type="search"
+                                            unselectable="on"
+                                            value=""
+                                          />
+                                        </span>
+                                        <span
+                                          class="ant-select-selection-item"
+                                          title="None"
+                                        >
+                                          None
+                                        </span>
+                                      </div>
+                                      <span
+                                        aria-hidden="true"
+                                        class="ant-select-arrow"
+                                        style="user-select: none;"
+                                        unselectable="on"
+                                      >
+                                        <span
+                                          aria-label="down"
+                                          class="anticon anticon-down ant-select-suffix"
+                                          role="img"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="down"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-form-item"
+                            style="margin-bottom: 15px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-label"
+                              >
+                                <label
+                                  class=""
+                                  for="moreSettings_managementFrameMinimumPhyRate"
+                                  title="Mgmt Tx Rate:"
+                                >
+                                  Mgmt Tx Rate:
+                                </label>
+                              </div>
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <div
+                                      class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow ant-select-disabled"
+                                      data-testid="mgmtTxRateSelect"
+                                      style="width: 150px;"
+                                    >
+                                      <div
+                                        class="ant-select-selector"
+                                      >
+                                        <span
+                                          class="ant-select-selection-search"
+                                        >
+                                          <input
+                                            aria-activedescendant="moreSettings_managementFrameMinimumPhyRate_list_0"
+                                            aria-autocomplete="list"
+                                            aria-controls="moreSettings_managementFrameMinimumPhyRate_list"
+                                            aria-expanded="false"
+                                            aria-haspopup="listbox"
+                                            aria-owns="moreSettings_managementFrameMinimumPhyRate_list"
+                                            autocomplete="off"
+                                            class="ant-select-selection-search-input"
+                                            disabled=""
+                                            id="moreSettings_managementFrameMinimumPhyRate"
+                                            readonly=""
+                                            role="combobox"
+                                            style="opacity: 0;"
+                                            type="search"
+                                            unselectable="on"
+                                            value=""
+                                          />
+                                        </span>
+                                        <span
+                                          class="ant-select-selection-item"
+                                          title="1 Mbps"
+                                        >
+                                          1 Mbps
+                                        </span>
+                                      </div>
+                                      <span
+                                        aria-hidden="true"
+                                        class="ant-select-arrow"
+                                        style="user-select: none;"
+                                        unselectable="on"
+                                      >
+                                        <span
+                                          aria-label="down"
+                                          class="anticon anticon-down ant-select-suffix"
+                                          role="img"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="down"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          style="margin-bottom: 15px;"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <label
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-checkbox ant-checkbox-checked"
+                                    >
+                                      <input
+                                        checked=""
+                                        class="ant-checkbox-input"
+                                        id="moreSettings_wlan_advancedCustomization_enableNeighborReport"
+                                        type="checkbox"
+                                        value=""
+                                      />
+                                      <span
+                                        class="ant-checkbox-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Enable 802.11k neighbor reports
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item"
+                          style="margin-bottom: 15px;"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-label"
+                            >
+                              <label
+                                class=""
+                                for="moreSettings_wlan_advancedCustomization_clientInactivityTimeout"
+                                title="Client Inactivity Timeout:"
+                              >
+                                Client Inactivity Timeout:
+                              </label>
+                            </div>
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <div
+                                    class="ant-input-number ant-input-number-in-form-item"
+                                    style="width: 150px;"
+                                  >
+                                    <div
+                                      class="ant-input-number-handler-wrap"
+                                    >
+                                      <span
+                                        aria-disabled="false"
+                                        aria-label="Increase Value"
+                                        class="ant-input-number-handler ant-input-number-handler-up"
+                                        role="button"
+                                        unselectable="on"
+                                      >
+                                        <span
+                                          aria-label="up"
+                                          class="anticon anticon-up ant-input-number-handler-up-inner"
+                                          role="img"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="up"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                      <span
+                                        aria-disabled="false"
+                                        aria-label="Decrease Value"
+                                        class="ant-input-number-handler ant-input-number-handler-down"
+                                        role="button"
+                                        unselectable="on"
+                                      >
+                                        <span
+                                          aria-label="down"
+                                          class="anticon anticon-down ant-input-number-handler-down-inner"
+                                          role="img"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="down"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </div>
+                                    <div
+                                      class="ant-input-number-input-wrap"
+                                    >
+                                      <input
+                                        aria-valuenow="120"
+                                        autocomplete="off"
+                                        class="ant-input-number-input"
+                                        id="moreSettings_wlan_advancedCustomization_clientInactivityTimeout"
+                                        role="spinbutton"
+                                        step="1"
+                                        value="120"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item"
+                          style="margin-bottom: 15px; width: 300px;"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-label"
+                            >
+                              <label
+                                class=""
+                                for="moreSettings_wlan_advancedCustomization_directedThreshold"
+                                title="Directed MC/BC Threshold:"
+                              >
+                                Directed MC/BC Threshold:
+                              </label>
+                            </div>
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <div
+                                    class="ant-input-number ant-input-number-in-form-item"
+                                    style="width: 150px;"
+                                  >
+                                    <div
+                                      class="ant-input-number-handler-wrap"
+                                    >
+                                      <span
+                                        aria-disabled="false"
+                                        aria-label="Increase Value"
+                                        class="ant-input-number-handler ant-input-number-handler-up"
+                                        role="button"
+                                        unselectable="on"
+                                      >
+                                        <span
+                                          aria-label="up"
+                                          class="anticon anticon-up ant-input-number-handler-up-inner"
+                                          role="img"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="up"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                      <span
+                                        aria-disabled="false"
+                                        aria-label="Decrease Value"
+                                        class="ant-input-number-handler ant-input-number-handler-down"
+                                        role="button"
+                                        unselectable="on"
+                                      >
+                                        <span
+                                          aria-label="down"
+                                          class="anticon anticon-down ant-input-number-handler-down-inner"
+                                          role="img"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="down"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </div>
+                                    <div
+                                      class="ant-input-number-input-wrap"
+                                    >
+                                      <input
+                                        aria-valuenow="5"
+                                        autocomplete="off"
+                                        class="ant-input-number-input"
+                                        id="moreSettings_wlan_advancedCustomization_directedThreshold"
+                                        role="spinbutton"
+                                        step="1"
+                                        value="5"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="ant-form-item-extra"
+                              >
+                                Per radio client count at which an AP will stop converting group addressed data traffic to unicast
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
+                          width="190px"
+                        >
+                          Airtime Decongestion:
+                          <div
+                            class="ant-form-item"
+                            style="margin-bottom: 10px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <button
+                                      aria-checked="false"
+                                      class="ant-switch"
+                                      id="moreSettings_wlan_advancedCustomization_enableAirtimeDecongestion"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
+                          width="190px"
+                        >
+                          Join RSSI Threshold:
+                          <div
+                            style="display: grid; grid-template-columns: 50px 75px auto;"
+                          >
+                            <div
+                              class="ant-form-item"
+                              style="margin-bottom: 10px;"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="moreSettings_wlan_advancedCustomization_enableJoinRSSIThreshold"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
+                          width="190px"
+                        >
+                          Transient Client Management:
+                          <div
+                            class="ant-form-item"
+                            style="margin-bottom: 10px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <button
+                                      aria-checked="false"
+                                      class="ant-switch"
+                                      id="moreSettings_wlan_advancedCustomization_enableTransientClientManagement"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__FieldLabel-sc-lhsic1-0 dKJWxS"
+                          width="250px"
+                        >
+                          Optimized Connectivity Experience (OCE):
+                          <div
+                            class="ant-form-item"
+                            style="margin-bottom: 10px;"
+                          >
+                            <div
+                              class="ant-row ant-form-item-row"
+                            >
+                              <div
+                                class="ant-col ant-form-item-control"
+                              >
+                                <div
+                                  class="ant-form-item-control-input"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input-content"
+                                  >
+                                    <button
+                                      aria-checked="false"
+                                      class="ant-switch"
+                                      id="moreSettings_wlan_advancedCustomization_enableOptimizedConnectivityExperience"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </form>
             </div>
@@ -556,7 +2377,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                   Select venues to activate this network
                 </p>
                 <div
-                  class="ant-form-item"
+                  class="ant-form-item ant-form-item-has-success"
                 >
                   <div
                     class="ant-row ant-form-item-row"

@@ -1,5 +1,5 @@
-import { Modal as AntdModal, ModalProps as AntdModalProps } from 'antd'
-import { useIntl }                                          from 'react-intl'
+import { ModalProps as AntModalProps } from 'antd'
+import { useIntl }                     from 'react-intl'
 
 import { CloseSymbol } from '@acx-ui/icons'
 
@@ -7,7 +7,7 @@ import { Button, ButtonProps } from '../Button'
 
 import * as UI from './styledComponents'
 
-interface ModalProps extends AntdModalProps {
+interface ModalProps extends AntModalProps {
   title: string
   subTitle?: string
 }
@@ -34,7 +34,7 @@ export function Modal ({
     ]
   }
   return (
-    <AntdModal
+    <UI.Modal
       {...props}
       onCancel={onCancel}
       closeIcon={<CloseSymbol />}

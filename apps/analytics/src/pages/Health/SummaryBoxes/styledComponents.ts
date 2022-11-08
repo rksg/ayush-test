@@ -34,9 +34,10 @@ const arrowStyle = css`
   vertical-align: middle;
 `
 
-export const Wrapper = styled.button.attrs({ type: 'button' })<{ $type: string }>`
+export const Wrapper = styled.button
+  .attrs({ type: 'button' })<{ $type: string, $disabled?: boolean }>`
   border: 0;
-  cursor: pointer;
+  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   padding-block: 10px;
   background: var(${props => colors[props.$type as Type].background});
   border-radius: 3px;

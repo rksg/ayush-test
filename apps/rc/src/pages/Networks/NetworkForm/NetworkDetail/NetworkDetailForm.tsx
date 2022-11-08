@@ -1,14 +1,19 @@
 import { useContext } from 'react'
 
-import { Form, Input, Col, Radio, Row, Space, Tooltip } from 'antd'
-import TextArea                                         from 'antd/lib/input/TextArea'
-import { useIntl }                                      from 'react-intl'
+import { Form, Input, Col, Radio, Row, Space } from 'antd'
+import TextArea                                from 'antd/lib/input/TextArea'
+import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                                                                               from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                                              from '@acx-ui/icons'
-import { useLazyNetworkListQuery }                                                                 from '@acx-ui/rc/services'
-import { NetworkTypeEnum, WifiNetworkMessages, checkObjectNotExists, hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
-import { useParams }                                                                               from '@acx-ui/react-router-dom'
+import { StepsForm, Tooltip }         from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useLazyNetworkListQuery }    from '@acx-ui/rc/services'
+import {
+  NetworkTypeEnum,
+  WifiNetworkMessages,
+  checkObjectNotExists,
+  hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
+import { useParams }       from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 import { networkTypesDescription, networkTypes } from '../contentsMap'
 import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
@@ -23,12 +28,13 @@ export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
   const {
-    setNetworkType: setSettingStepTitle,
     editMode,
-    cloneMode
+    cloneMode,
+    data,
+    setData
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
-    setSettingStepTitle(e.target.value as NetworkTypeEnum)
+    setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
   }
   const networkListPayload = {
     searchString: '',
@@ -101,8 +107,7 @@ export function NetworkDetailForm () {
                     <Radio key={type} value={type} disabled={disabled}>
                       <Tooltip
                         title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
-                          .indexOf(type) > -1 ?
-                          intl.$t({ defaultMessage: 'Not available in Beta1' }) : ''}>
+                          .indexOf(type) > -1 ? intl.$t(notAvailableMsg) : ''}>
                         {intl.$t(networkTypes[type])}
                         <RadioDescription>
                           {intl.$t(networkTypesDescription[type])}
@@ -126,8 +131,10 @@ export function NetworkDetailForm () {
       </Col>
 
       <Col span={14}>
-        <NetworkDiagram type={type}/>
+        <NetworkDiagram />
       </Col>
     </Row>
   )
 }
+
+

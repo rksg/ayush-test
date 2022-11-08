@@ -36,8 +36,8 @@ describe('transformData', () => {
       NetworkImpactData.incident.WLAN
     )
     expect(result).toEqual([
-      { color: '#D61119', key: 'ssid1', name: 'ssid1', value: 2 },
-      { color: '#F9C34B', key: 'ssid2', name: 'ssid2', value: 1 }
+      { color: '#66B1E8', key: 'ssid1', name: 'ssid1', value: 2 },
+      { color: '#EC7100', key: 'ssid2', name: 'ssid2', value: 1 }
     ])
   })
 })

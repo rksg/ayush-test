@@ -10,7 +10,10 @@ import {
   useLocation,
   useTenantLink,
   TenantNavLink
-} from '@acx-ui/react-router-dom'
+}                          from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
+
+import { Tooltip } from '../Tooltip'
 
 import * as UI from './styledComponents'
 
@@ -23,6 +26,7 @@ interface MenuItem {
   activeIcon?: React.FC
   routes?: Array<MenuItem>
   pro_layout_parentKeys?: string[]
+  disabled?: boolean
 }
 
 export interface LayoutProps {
@@ -62,7 +66,7 @@ export function Layout ({
     }
   }))
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
-    return <TenantNavLink to={item.uri!} tenantType={item.tenantType}>
+    const link = <TenantNavLink to={item.uri!} tenantType={item.tenantType}>
       {({ isActive }) => {
         let icon: JSX.Element | undefined
         if (isActive) {
@@ -78,6 +82,12 @@ export function Layout ({
         </>
       }}
     </TenantNavLink>
+    return item.disabled
+      ? <Tooltip placement='right' title={$t(notAvailableMsg)}>
+        {/* workaround for showing tooltip when link disabled */}
+        <span>{link}</span>
+      </Tooltip>
+      : link
   }
 
   return <UI.Wrapper>
@@ -88,7 +98,14 @@ export function Layout ({
       fixedHeader={true}
       fixSiderbar={true}
       location={location}
-      menuHeaderRender={() => <Logo />}
+      menuHeaderRender={() =>
+        <TenantNavLink
+          to='/dashboard'
+          tenantType={routes.find(({ path })=> path === '/dashboard')?.tenantType || 't'}
+        >
+          <Logo />
+        </TenantNavLink>
+      }
       subMenuItemRender={menuRender}
       menuItemRender={menuRender}
       headerContentRender={() => leftHeaderContent && <UI.LeftHeaderContentWrapper>

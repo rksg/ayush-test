@@ -31,8 +31,8 @@ interface DonutChartOptionalProps {
 }
 
 const defaultProps: DonutChartOptionalProps = {
-  showLegend: true,
-  animation: true,
+  showLegend: false,
+  animation: false,
   showLabel: false,
   showTotal: true,
   legend: 'value',
@@ -173,7 +173,7 @@ export function DonutChart ({
     color: colors,
     series: [
       {
-        animation: !isEmpty,
+        animation: false,
         data,
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
