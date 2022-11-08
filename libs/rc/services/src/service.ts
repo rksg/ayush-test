@@ -17,6 +17,7 @@ import {
   MdnsProxyFormData,
   MdnsProxyUrls,
   DHCPSaveData,
+  DHCPDetailInstances,
   WifiCallingUrls,
   WifiUrlsInfo,
   MdnsProxyForwardingRule
@@ -232,6 +233,24 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    dhcpVenueInstances: build.query<TableResult<DHCPDetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes = createHttpRequest(CommonUrlsInfo.getDHCPVenueInstances, params)
+        return {
+          ...instancesRes
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getDHCPProfileDetail: build.query<DHCPSaveData | undefined, RequestPayload>({
+      query: ({ params }) => {
+        const dhcpDetailReq = createHttpRequest(CommonUrlsInfo.getDHCProfileDetail, params)
+        return {
+          ...dhcpDetailReq
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
     })
   })
 })
@@ -246,6 +265,8 @@ export const {
   useServiceListQuery,
   useGetDHCPQuery,
   useSaveDHCPMutation,
+  useDhcpVenueInstancesQuery,
+  useGetDHCPProfileDetailQuery,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
   useGetMdnsProxyQuery,
