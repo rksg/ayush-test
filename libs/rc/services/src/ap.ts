@@ -48,7 +48,7 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     apDetails: build.query<ApDetailHeader, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getAps, params)
+        const req = createHttpRequest(CommonUrlsInfo.getApsList, params)
         return {
           ...req,
           body: payload

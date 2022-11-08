@@ -12,6 +12,9 @@ export interface AP {
   apMac?: string
   apStatusData?: {
     APRadio?: Array<APRadio>
+    // APSystem?: {
+    //   uptime?: number
+    // },
   },
   clients?: number,
   deviceGroupId: string,
@@ -23,7 +26,14 @@ export interface AP {
   serialNumber: string,
   tags: string,
   venueId: string,
-  venueName: string
+  venueName: string,
+  // lastSeenTime: string,
+  // uptime?: string,
+  // channel24?: RadioProperties,
+  // channel50?: RadioProperties,
+  // channelL50?: RadioProperties,
+  // channelU50?: RadioProperties,
+  // channel60?: RadioProperties
 }
 
 export interface ApDetailHeader {

@@ -1,5 +1,3 @@
-import { useIntl } from 'react-intl'
-
 import { AnalyticsFilter, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                    from '@acx-ui/components'
 import { useApDetailsQuery }                   from '@acx-ui/rc/services'
@@ -9,7 +7,6 @@ import { useParams }                           from '@acx-ui/react-router-dom'
 import { ApProperties } from './ApProperties/ApProperties'
 
 export function ApOverviewTab () {
-  const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
   const params = useParams()
   const payload = {
@@ -36,10 +33,10 @@ export function ApOverviewTab () {
       <GridCol col={{ span: 6 }} style={{ height: '152px', background: '#F7F7F7' }}>
         AP
       </GridCol>
-      <GridCol col={{ span: 18 }} style={{ height: '380px', background: '#F7F7F7' }}>
+      <GridCol col={{ span: 18 }} style={{ background: '#F7F7F7' }}>
        Floor Plan
       </GridCol>
-      <GridCol col={{ span: 6 }} style={{ height: '380px', background: '#F7F7F7' }}>
+      <GridCol col={{ span: 6 }} style={{ background: '#F7F7F7' }}>
         <ApProperties apDetailsQuery={apDetailsQuery} />
       </GridCol>
       <ApWidgets filters={venueApFilter}/>
@@ -49,6 +46,7 @@ export function ApOverviewTab () {
 
 function ApWidgets (props: { filters: AnalyticsFilter }) {
   const filters = props.filters
+  console.log(filters) // eslint-disable-line no-console
   return (
     <>
       <GridCol col={{ span: 12 }} style={{ height: '280px', background: '#F7F7F7' }}>
