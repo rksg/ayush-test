@@ -50,7 +50,7 @@ export default function VenueLeaseTable (){
     },
     {
       key: 'LeaseExpires',
-      title: $t({ defaultMessage: 'Lease expires in..' }),
+      title: $t({ defaultMessage: 'Lease Expires In..' }),
       dataIndex: 'leaseExpiration'
     }
   ]

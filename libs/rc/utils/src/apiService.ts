@@ -1,5 +1,5 @@
+import _                        from 'lodash'
 import { generatePath, Params } from 'react-router-dom'
-
 export interface ApiInfo {
   url: string;
   method: string;
@@ -17,10 +17,25 @@ export const createHttpRequest = (
 ) => {
   const headers = { ...defaultHeaders, ...customHeaders }
   const url = generatePath(`${apiInfo.url}`, paramValues)
+  let prefix = window.location.origin
+  let method = apiInfo.method
+  const urls = [
+    '/api/viewmodel/:tenantId/aps',
+    '/api/venues/:venueId/dhcpconfigserviceprofilesettings',
+    '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles/:serviceId',
+    '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles',
+    '/api/venues/:venueId/dhcpConfigServiceProfileLeases',
+    '/api/tenant/:tenantId/wifi/venues/:venueId/dhcppools/:dhcppoolId',
+    '/api/venues/:venueId/activedhcppools'
+  ]
+  if(_.findIndex(urls,(i)=>{return apiInfo.url===i})!==-1){
+    prefix = 'http://localhost:8081'
+    method = 'get'
+  }
   return {
     headers,
-    method: apiInfo.method,
-    url: `${window.location.origin}${url}`
+    method: method,
+    url: `${prefix}${url}`
   }
 }
 

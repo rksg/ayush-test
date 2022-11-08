@@ -173,7 +173,7 @@ export enum RadioEnum {
 
 
 export const DHCPConfigTypeMessages = {
-  [DHCPConfigTypeEnum.MULTIPLE]: 'Multiple APs',
-  [DHCPConfigTypeEnum.SIMPLE]: 'Each APs',
-  [DHCPConfigTypeEnum.HIERARCHICAL]: 'Hierarchical APs'
+  [DHCPConfigTypeEnum.MULTIPLE]: defineMessage({ defaultMessage: 'Multiple APs' }),
+  [DHCPConfigTypeEnum.SIMPLE]: defineMessage({ defaultMessage: 'Each APs' }),
+  [DHCPConfigTypeEnum.HIERARCHICAL]: defineMessage({ defaultMessage: 'Hierarchical APs' })
 }

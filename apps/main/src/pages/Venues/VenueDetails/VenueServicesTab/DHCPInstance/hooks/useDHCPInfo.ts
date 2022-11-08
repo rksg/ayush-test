@@ -27,7 +27,7 @@ export default function useDHCPInfo () {
     id: dhcpProfile?.id,
     name: dhcpProfile?.serviceName,
     status: venueDHCPProfile?.enabled === true,
-    configurationType: dhcpProfile ? DHCPConfigTypeMessages[dhcpProfile.dhcpMode]:'',
+    configurationType: dhcpProfile ? DHCPConfigTypeMessages[dhcpProfile.dhcpMode]:null,
     poolsNum: dhcpProfile? dhcpProfile?.dhcpPools.length : 0,
     primaryDHCP: {
       name: primaryServerSN && apList ? apListGroupSN[primaryServerSN].name:'',

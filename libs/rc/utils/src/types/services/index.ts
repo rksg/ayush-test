@@ -1,6 +1,5 @@
 import {
-  DHCPConfigTypeEnum,
-  ServiceTechnology
+  DHCPConfigTypeEnum
 } from '../../constants'
 
 export * from './dhcpService'

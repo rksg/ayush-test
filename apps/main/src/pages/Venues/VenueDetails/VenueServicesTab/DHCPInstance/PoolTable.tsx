@@ -1,10 +1,10 @@
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
-import { Switch }    from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Switch }                    from 'antd'
+import _                             from 'lodash'
+import { useIntl, FormattedMessage } from 'react-intl'
+import { useParams }                 from 'react-router-dom'
 
 import { Table, TableProps, showActionModal } from '@acx-ui/components'
 import {
@@ -95,8 +95,13 @@ export default function VenuePoolTable (){
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseTimeHours',
       render: (data, rowData)=>{
-        return rowData.leaseTimeHours +' ' + $t({ defaultMessage: 'hrs, ' })
-        + rowData.leaseTimeMinutes + $t({ defaultMessage: 'mins' })
+        return <FormattedMessage defaultMessage='{leaseTimeHours} {hrs}, {leaseTimeMinutes} {mins} '
+          values={
+            { leaseTimeHours: rowData.leaseTimeHours,
+              leaseTimeMinutes: rowData.leaseTimeMinutes,
+              hrs: $t({ defaultMessage: 'hrs' }),
+              mins: $t({ defaultMessage: 'mins' })
+            }} />
       }
     },
     {
@@ -104,8 +109,8 @@ export default function VenuePoolTable (){
       title: $t({ defaultMessage: 'DNS IP' }),
       dataIndex: 'primaryDnsIp',
       render: (data, rowData)=>{
-        return rowData.primaryDnsIp + ', '
-        + rowData.secondaryDnsIp
+        return <FormattedMessage defaultMessage='{primaryDnsIp}, {secondaryDnsIp}'
+          values={{ primaryDnsIp: rowData.primaryDnsIp, secondaryDnsIp: rowData.secondaryDnsIp }} />
       }
     },
     {

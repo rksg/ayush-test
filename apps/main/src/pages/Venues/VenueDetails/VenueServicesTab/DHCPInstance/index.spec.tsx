@@ -8,7 +8,7 @@ import { mockServer,
   fireEvent
 } from '@acx-ui/test-utils'
 
-import handlers from './mockData'
+import handlers from './__tests__/fixtures'
 
 import DHCPInstance from '.'
 

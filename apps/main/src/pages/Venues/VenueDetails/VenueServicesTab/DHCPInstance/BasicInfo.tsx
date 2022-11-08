@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react'
 
-import { Col, Row, Typography, Button, FormInstance } from 'antd'
-import _                                              from 'lodash'
-import { useIntl }                                    from 'react-intl'
-import { useLocation }                                from 'react-router-dom'
+import { Typography, Button, FormInstance } from 'antd'
+import _                                    from 'lodash'
+import { useIntl }                          from 'react-intl'
+import { useLocation }                      from 'react-router-dom'
 
-import { Modal }      from '@acx-ui/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { Modal, GridRow, GridCol } from '@acx-ui/components'
+import { TenantLink }              from '@acx-ui/react-router-dom'
 
 import useDHCPInfo    from './hooks/useDHCPInfo'
 import { RowWrapper } from './styledComponents'
@@ -32,52 +32,52 @@ export default function BasicInfo () {
 
   return <>
     <RowWrapper>
-      <Row gutter={24} justify='space-between' style={{ width: '100%' }}>
-        <Col span={SPAN_NUM}>
+      <GridRow justify='space-between' style={{ width: '100%' }}>
+        <GridCol col={{ span: SPAN_NUM }}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'Service Name' })}</Text>
           </Title>
           <TenantLink
             to={`/services/dhcp/${dhcpInfo?.id}/detail`}>{dhcpInfo.name}
           </TenantLink>
-        </Col>
+        </GridCol>
 
-        <Col span={SPAN_NUM}>
+        <GridCol col={{ span: SPAN_NUM }}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'Service Status' })}</Text>
           </Title>
           <Paragraph>
             {dhcpInfo.status? $t({ defaultMessage: 'ON' }): $t({ defaultMessage: 'OFF' }) }
           </Paragraph>
-        </Col>
+        </GridCol>
 
-        <Col span={SPAN_NUM}>
+        <GridCol col={{ span: SPAN_NUM }}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'DHCP Configuration' })}</Text>
           </Title>
-          <Paragraph>{dhcpInfo.configurationType}</Paragraph>
-        </Col>
+          <Paragraph>{dhcpInfo.configurationType ? $t(dhcpInfo.configurationType) : ''}</Paragraph>
+        </GridCol>
 
-        <Col span={SPAN_NUM}>
+        <GridCol col={{ span: SPAN_NUM }}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'DHCP Pools' })}</Text>
           </Title>
           <Paragraph>{dhcpInfo.poolsNum}</Paragraph>
-        </Col>
+        </GridCol>
 
-        <Col span={SPAN_NUM}>
+        <GridCol col={{ span: SPAN_NUM }}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'Primary DHCP Server' })}</Text>
           </Title>
           <Paragraph>{dhcpInfo.primaryDHCP.name}</Paragraph>
-        </Col>
-        <Col span={SPAN_NUM}>
+        </GridCol>
+        <GridCol col={{ span: SPAN_NUM }}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'Secondary DHCP Server' })}</Text>
           </Title>
           <Paragraph>{dhcpInfo.secondaryDHCP.name}</Paragraph>
-        </Col>
-        <Col span={SPAN_NUM}>
+        </GridCol>
+        <GridCol col={{ span: SPAN_NUM }}>
           <Title level={TYPOGRAPHY_LEVEL}>
             <Text strong>{$t({ defaultMessage: 'Gateway' })}</Text>
           </Title>
@@ -86,8 +86,8 @@ export default function BasicInfo () {
               style={{ marginBottom: 5 }}>{ data.name }</Paragraph>
           })}
           { dhcpInfo.gateway.length>DISPLAY_GATEWAY_MAX_NUM && '...' }
-        </Col>
-        <Col span={SPAN_NUM}>
+        </GridCol>
+        <GridCol col={{ span: SPAN_NUM }}>
           <Button style={{ paddingLeft: 0 }}
             onClick={()=>{
               setVisible(true)
@@ -96,8 +96,8 @@ export default function BasicInfo () {
             block>
             {$t({ defaultMessage: 'Manage Local Service' })}
           </Button>
-        </Col>
-      </Row>
+        </GridCol>
+      </GridRow>
     </RowWrapper>
     <Modal
       title={$t({ defaultMessage: 'Manage Local DHCP for Wi-Fi Service' })}

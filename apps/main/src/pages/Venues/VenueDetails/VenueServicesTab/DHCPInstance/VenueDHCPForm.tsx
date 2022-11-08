@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { DeleteTwoTone } from '@ant-design/icons'
 import {
   Switch,
-  Row,
-  Button,
   FormInstance,
   Space
 } from 'antd'
@@ -12,6 +10,7 @@ import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams, Link } from 'react-router-dom'
 
+import { GridRow, Button }                                                      from '@acx-ui/components'
 import { useGetDHCPProfileListQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
 import {  DHCPProfileAps }                                                      from '@acx-ui/rc/utils'
 import {
@@ -55,7 +54,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
 
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
     const currentVal = form.getFieldsValue().gateways[index]
-    return <div key={index}><Row key={index}>
+    return <div key={index}><GridRow style={{ margin: 0 }}>
       <StyledForm.Item name={['gateways', index, 'serialNumber']}>
         <AntSelect onChange={() => {
           const gatewayRawData = form.getFieldsValue().gateways
@@ -70,7 +69,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
         </AntSelect>
       </StyledForm.Item>
       {(gateways?.length > 1) && <IconContainer>
-        <Button type='text'
+        <Button type='link'
           onClick={()=>{
             const gatewayRawData = form.getFieldsValue().gateways
             _.pullAt(gatewayRawData, [index])
@@ -79,7 +78,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
           }}
           icon={<DeleteTwoTone />} />
       </IconContainer>}
-    </Row>
+    </GridRow>
     {(gateways?.length===index+1) && <AddBtnContainer>
       <Button disabled={_.isEmpty(currentVal?.serialNumber)}
         onClick={()=>{
@@ -91,7 +90,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
         {$t({ defaultMessage: 'Add gateway' })}
       </Button>
     </AddBtnContainer>}</div>
-  }) : <><Row>
+  }) : <><GridRow style={{ margin: 0 }}>
     <StyledForm.Item name={['gateways', 0, 'serialNumber']}>
       <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
         {apList?.data?.map(ap =>
@@ -101,14 +100,15 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
         )}
       </AntSelect>
     </StyledForm.Item>
-  </Row>
+  </GridRow>
   <AddBtnContainer>
-    <Button onClick={()=>{
-      form.setFieldsValue({ gateways: [...form.getFieldsValue().gateways, { }] })
-      setGateways([{ serialNumber: '' , role: '' }, { serialNumber: '' , role: '' }])
-    }}
-    type='link'
-    block>
+    <Button
+      onClick={()=>{
+        form.setFieldsValue({ gateways: [...form.getFieldsValue().gateways, { }] })
+        setGateways([{ serialNumber: '' , role: '' }, { serialNumber: '' , role: '' }])
+      }}
+      type='link'
+      block>
       {$t({ defaultMessage: 'Add gateway' })}
     </Button>
   </AddBtnContainer></>
@@ -120,7 +120,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
     ref={formRef as React.Ref<FormInstance<unknown>>}
   >
     <StyledForm.Item name='enabled'
-      label='Service State'
+      label={$t({ defaultMessage: 'Service State' })}
       valuePropName='checked'>
       <Switch
         defaultChecked={venueDHCPProfile?.enabled}
@@ -132,7 +132,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
         <StyledForm.Item
           name='serviceId'
           noStyle
-          rules={[{ required: true, message: 'Username is required' }]}
+          rules={[{ required: true, message: $t({ defaultMessage: 'Username is required' }) }]}
         >
           <AntSelect placeholder={$t({ defaultMessage: 'Select Service...' })}>
             {dhcpProfileList?.map( dhcp =>
