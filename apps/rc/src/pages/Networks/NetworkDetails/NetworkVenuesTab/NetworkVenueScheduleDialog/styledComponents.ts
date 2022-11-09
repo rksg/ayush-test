@@ -86,12 +86,13 @@ export const CheckboxGroup = styled(Checkbox.Group)`
 `
 
 export const Timetick = styled.div`
-  width: 40px;
+  width: 80px;
   height: 15px;
+  color: var(--acx-neutrals-60);
   float: left;
-  font-size: 9px;
-  &:first-child {
-	  width: 45px;
+  font-size: 12px;
+  &:nth-child(2) {
+    margin-left: 15px;
   }
 `
 
@@ -136,4 +137,17 @@ export const Section = styled.section`
       }
     }
   }
+`
+
+export const TitleSpan = styled.span`
+  color: var(--acx-neutrals-60);
+`
+
+export const DaySpan = styled.span`
+  text-transform: capitalize;
+`
+
+export const TipSpan = styled.span`
+  margin-top: 5px;
+  margin-left: 20px;
 `

@@ -680,7 +680,6 @@ export function NetworkVenuesTab () {
           formName='networkApGroupForm'
           network={networkQuery.data}
           onCancel={handleCancel}
-          // onOk={handleOk}
         />
       </Form.Provider>
       <Form.Provider
@@ -691,7 +690,6 @@ export function NetworkVenuesTab () {
           formName='networkVenueScheduleForm'
           network={networkQuery.data}
           onCancel={handleCancel}
-          // onOk={handleOk}
         />
       </Form.Provider>
     </Loader>

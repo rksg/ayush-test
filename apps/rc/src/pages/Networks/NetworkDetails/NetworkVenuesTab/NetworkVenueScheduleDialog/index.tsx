@@ -18,7 +18,8 @@ import {
   Radio,
   RadioChangeEvent
 } from 'antd'
-import { useIntl } from 'react-intl'
+import _                             from 'lodash'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -195,12 +196,12 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const _genTimeTicks = () => {
     const timeticks: string[] = []
     timeticks.push('Midnight')
-    for (let i = 1; i < 12; i++) {
-      timeticks.push(i + ' AM')
+    for (let i = 1; i < 6; i++) {
+      timeticks.push((i * 2) + ' AM')
     }
     timeticks.push('Noon')
-    for (let i = 1; i < 12; i++) {
-      timeticks.push(i + ' PM')
+    for (let i = 1; i < 6; i++) {
+      timeticks.push((i * 2) + ' PM')
     }
     timeticks.push('Midnight')
     setTimeTicks(timeticks)
@@ -262,9 +263,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
     setIsModalOpen(false)
   }
 
-  const handleCancel = () => {
-    setIsModalOpen(false)
-  }
+  let deselectedItems: string[] = []
   const { DragSelection } = useSelectionContainer({
     shouldStartSelecting: (target) => {
       if (target instanceof HTMLElement) {
@@ -288,24 +287,33 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
 
       for (let daykey in dayIndex) {
         let selectedItems: string[] = []
+        const schedule = form.getFieldValue(['scheduler', daykey]) || []
+
         Array.from({ length: 96 }, (_, i) => {
-          const item = document.getElementById(`${daykey}_${i}`)
+          const itemKey = `${daykey}_${i}`
+          const item = document.getElementById(itemKey)
           if(item){
             const { left, top, width, height } = item.getBoundingClientRect()
             const boxItem = { left, top, width, height }
             if (boxesIntersect(scrollAwareBox, boxItem)) {
-              selectedItems.push(`${daykey}_${i}`)
+              if(schedule.indexOf(itemKey)> -1){
+                deselectedItems.push(itemKey)
+              } else {
+                selectedItems.push(itemKey)
+              }
             }
           }
         })
-        const schedule = form.getFieldValue(['scheduler', daykey])
-        form.setFieldValue(['scheduler', daykey], selectedItems)
-        if(schedule && schedule.length === 96){
+
+        let mergeSchedule = _.uniq([...schedule, ...selectedItems])
+
+        form.setFieldValue(['scheduler', daykey], mergeSchedule)
+        if(mergeSchedule && mergeSchedule.length === 96){
           arrCheckAll[dayIndex[daykey]] = true
           setCheckAll(arrCheckAll)
           arrIndeterminate[dayIndex[daykey]] = false
           setIndeterminate(arrIndeterminate)
-        }else if(schedule && schedule.length > 0 && schedule.length < 96){
+        }else if(mergeSchedule && mergeSchedule.length > 0 && mergeSchedule.length < 96){
           arrIndeterminate[dayIndex[daykey]] = true
           setIndeterminate(arrIndeterminate)
         }else{
@@ -324,7 +332,6 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       <Modal
         {...props}
         title={$t({ defaultMessage: 'Schedule for Network "{NetworkName}" in Venue "{VenueName}"' }, { NetworkName: network?.name, VenueName: venue?.name })}
-        // subTitle={$t({ defaultMessage: 'Define how this network will be activated on venue "{venueName}"' }, { venueName: venueName })}
         okText={$t({ defaultMessage: 'Apply' })}
         maskClosable={false}
         keyboard={false}
@@ -343,7 +350,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
           <div className='non-selectable-area'>
             <Row gutter={24} key={'row1'}>
               <Col span={4} key={'col1'}>
-                <span>{$t({ defaultMessage: 'Network availability' })}</span>
+                <UI.TitleSpan>{$t({ defaultMessage: 'Network availability' })}</UI.TitleSpan>
                 <div style={{ marginTop: '1em' }}>
                   <Form.Item
                     name={['scheduler', 'type']}
@@ -364,8 +371,10 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
             </Row>
             <Card type='inner'
               title={<><span>{$t({ defaultMessage: 'Mark/ unmark areas to change network availability' })}</span>
-                <Button type='link' onClick={showModal}>See tips</Button></>}
-              extra={`Venue time zone: ${transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset)} (${timezone.timeZoneName})`}>
+                <Button type='link' onClick={showModal}><UI.TipSpan>See tips</UI.TipSpan></Button></>}
+              extra={<>Venue time zone: <b>{transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset)} ({timezone.timeZoneName})</b></>}
+              style={{ pointerEvents: ( disabled ? 'none' : 'auto' ), opacity: ( disabled ? '0.5' : '1.0' ) }}
+            >
               <Spin spinning={loading}>
                 <div className='selectable-area'>
                   {scheduleList && scheduleList.map((item, i) => (
@@ -378,16 +387,18 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
                           checked={checkAll[i]}
                           key={`checkbox_${item.key}`}
                           value={item.key}
-                          style={{ marginTop: i === 0 ? '25px': '5px', paddingRight: '5px' }}
+                          style={{ marginTop: i === 0 ? '35px': '5px', paddingRight: '5px' }}
                           disabled={disabled}
                         />
-                        {$t({ defaultMessage: '{day}' }, { day: item.key })}
+                        <UI.DaySpan>{$t({ defaultMessage: '{day}' }, { day: item.key })}</UI.DaySpan>
                       </Col>
                       <Col span={22} key={`col2_${item.key}`}>
                         { i === 0 &&
-                          <div style={{ width: '100%', height: '15px', marginLeft: '-15px' }}>
+                          <div style={{ width: '100%', height: '25px', marginLeft: '-30px' }}>
                             {timeTicks.map((item: string, i: number) => {
-                              return (<UI.Timetick key={`timetick_${i}`}>{item}</UI.Timetick>)
+                              return (
+                                <UI.Timetick key={`timetick_${i}`}>{item}</UI.Timetick>
+                              )
                             })}
                           </div>
                         }
@@ -435,11 +446,35 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         </Form>
       </Modal>
 
-      <Modal title='Network Scheduler Tips' width={800} visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal
+        title='Network Scheduler Tips'
+        width={800}
+        cancelButtonProps={{ style: { display: 'none' } }}
+        visible={isModalOpen}
+        onOk={handleOk}
+      >
         <p>{$t({ defaultMessage: 'You can set custom schedule using the following options:' })}</p>
-        <p>- {$t({ defaultMessage: 'Activate or deactivate the network for entire day' })}</p>
-        <p>- {$t({ defaultMessage: 'Activate or deactivate the network for any time-slot by clicking on it' })}</p>
-        <p>- {$t({ defaultMessage: 'Activate or deactivate the network for multiple adjacent time-slots by dragging your mouse over them' })}</p>
+        <p>- <FormattedMessage
+          defaultMessage='Activate or deactivate the network for <b>entire day</b>'
+          values={{
+            b: (contents) => <b>{contents}</b>
+          }}
+        />
+        </p>
+        <p>- <FormattedMessage
+          defaultMessage='Activate or deactivate the network for <b>any time-slot</b> by clicking on it'
+          values={{
+            b: (contents) => <b>{contents}</b>
+          }}
+        />
+        </p>
+        <p>- <FormattedMessage
+          defaultMessage='Activate or deactivate the network for <b>multiple adjacent time-slots</b> by dragging your mouse over them'
+          values={{
+            b: (contents) => <b>{contents}</b>
+          }}
+        />
+        </p>
         <video preload='auto' controls>
           <source src='/assets/videos/scheduling/entireDay.mp4' type='video/mp4' />
         </video>
@@ -451,7 +486,13 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         <video preload='auto' controls>
           <source src='/assets/videos/scheduling/multipleDays.mp4' type='video/mp4' />
         </video>
-        <p>- {$t({ defaultMessage: 'To set the network schedule for multiple adjacent time-slots, drag the mouse over them' })}</p>
+        <p>- <FormattedMessage
+          defaultMessage='To set the network schedule for <b>multiple adjacent time-slots</b>, drag the mouse over them'
+          values={{
+            b: (contents) => <b>{contents}</b>
+          }}
+        />
+        </p>
         <p>- {$t({ defaultMessage: 'All the rectangles in the drag area will receive the same status – opposite the status of the rectangle where the drag started' })}</p>
       </Modal>
     </>

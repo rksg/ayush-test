@@ -44,7 +44,9 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
               class="ant-col ant-col-4"
               style="padding-left: 12px; padding-right: 12px;"
             >
-              <span>
+              <span
+                class="styledComponents__TitleSpan-sc-b7odqf-6 jSIYfb"
+              >
                 Network availability
               </span>
               <div
@@ -120,6 +122,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
           </div>
           <div
             class="ant-card ant-card-bordered ant-card-small ant-card-type-inner"
+            style="pointer-events: none; opacity: 0.5;"
           >
             <div
               class="ant-card-head"
@@ -137,7 +140,9 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                     class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                     type="button"
                   >
-                    <span>
+                    <span
+                      class="styledComponents__TipSpan-sc-b7odqf-8 iTvcfF"
+                    >
                       See tips
                     </span>
                   </button>
@@ -145,7 +150,12 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                 <div
                   class="ant-card-extra"
                 >
-                  Venue time zone: UTC +00:00 ()
+                  Venue time zone: 
+                  <b>
+                    UTC +00:00
+                     (
+                    )
+                  </b>
                 </div>
               </div>
             </div>
@@ -171,7 +181,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                       >
                         <label
                           class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled"
-                          style="margin-top: 25px; padding-right: 5px;"
+                          style="margin-top: 35px; padding-right: 5px;"
                         >
                           <span
                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
@@ -189,137 +199,81 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                             />
                           </span>
                         </label>
-                        mon
+                        <span
+                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                        >
+                          mon
+                        </span>
                       </div>
                       <div
                         class="ant-col ant-col-22"
                         style="padding-left: 12px; padding-right: 12px;"
                       >
                         <div
-                          style="width: 100%; height: 15px; margin-left: -15px;"
+                          style="width: 100%; height: 25px; margin-left: -30px;"
                         >
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             Midnight
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            1 AM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             2 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            3 AM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             4 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            5 AM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             6 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            7 AM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             8 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            9 AM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             10 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            11 AM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             Noon
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            1 PM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             2 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            3 PM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             4 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            5 PM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             6 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            7 PM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             8 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            9 PM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             10 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
-                          >
-                            11 PM
-                          </div>
-                          <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 giRgvB"
+                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
                           >
                             Midnight
                           </div>
@@ -3029,7 +2983,11 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                             />
                           </span>
                         </label>
-                        tue
+                        <span
+                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                        >
+                          tue
+                        </span>
                       </div>
                       <div
                         class="ant-col ant-col-22"
@@ -5589,7 +5547,11 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                             />
                           </span>
                         </label>
-                        wed
+                        <span
+                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                        >
+                          wed
+                        </span>
                       </div>
                       <div
                         class="ant-col ant-col-22"
@@ -8149,7 +8111,11 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                             />
                           </span>
                         </label>
-                        thu
+                        <span
+                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                        >
+                          thu
+                        </span>
                       </div>
                       <div
                         class="ant-col ant-col-22"
@@ -10709,7 +10675,11 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                             />
                           </span>
                         </label>
-                        fri
+                        <span
+                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                        >
+                          fri
+                        </span>
                       </div>
                       <div
                         class="ant-col ant-col-22"
@@ -13269,7 +13239,11 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                             />
                           </span>
                         </label>
-                        sat
+                        <span
+                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                        >
+                          sat
+                        </span>
                       </div>
                       <div
                         class="ant-col ant-col-22"
@@ -15733,7 +15707,11 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                             />
                           </span>
                         </label>
-                        sun
+                        <span
+                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                        >
+                          sun
+                        </span>
                       </div>
                       <div
                         class="ant-col ant-col-22"
