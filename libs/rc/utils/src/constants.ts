@@ -78,6 +78,13 @@ export enum DeviceConnectionStatus {
   ALERTING = 'alerting'
 }
 
+export enum DeviceCategory {
+  Malicious = 'Malicious',
+  Ignored = 'Ignored',
+  Unclassified = 'Unclassified',
+  Known = 'Known'
+}
+
 export enum ApRadioBands {
   band24 = '2.4G',
   band50 = '5G',
@@ -100,6 +107,13 @@ export enum AaaServerOrderEnum {
 export enum CloudpathDeploymentTypeEnum {
   OnPremise = 'OnPremise',
   Cloud = 'Cloud',
+}
+
+export enum QosPriorityEnum {
+  WIFICALLING_PRI_VOICE = 'WIFICALLING_PRI_VOICE',
+  WIFICALLING_PRI_VIDEO = 'WIFICALLING_PRI_VIDEO',
+  WIFICALLING_PRI_BE = 'WIFICALLING_PRI_BE',
+  WIFICALLING_PRI_BG = 'WIFICALLING_PRI_BG'
 }
 
 export enum ServiceType {
@@ -132,12 +146,6 @@ export enum RadiusErrorsType {
   AUTH_AND_ACC = 'AUTH_AND_ACC',
   AUTH = 'AUTH',
   ACCOUNTING = 'ACCOUNTING'
-}
-
-export enum ApLanPortTypeEnum {
-  ACCESS = 'ACCESS',
-  GENERAL = 'GENERAL',
-  TRUNK = 'TRUNK'
 }
 
 export enum ProfileTypeEnum {

@@ -131,14 +131,14 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
-                    aria-selected="true"
+                    aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -279,12 +279,13 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                 tabindex="-1"
               />
               <div
-                aria-hidden="false"
-                aria-labelledby="rc-tabs-test-tab-analytics"
-                class="ant-tabs-tabpane ant-tabs-tabpane-active"
-                id="rc-tabs-test-panel-analytics"
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
-                tabindex="0"
+                style="display: none;"
+                tabindex="-1"
               />
               <div
                 aria-hidden="true"
@@ -340,7 +341,117 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  AI Analytics
+  <div
+    class="ant-tabs ant-tabs-top ant-tabs-card styledComponents__Tabs-sc-1afcsfc-0 jHmORd"
+  >
+    <div
+      class="ant-tabs-nav"
+      role="tablist"
+    >
+      <div
+        class="ant-tabs-nav-wrap"
+      >
+        <div
+          class="ant-tabs-nav-list"
+          style="transform: translate(0px, 0px);"
+        >
+          <div
+            class="ant-tabs-tab ant-tabs-tab-active"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-incidents"
+              aria-selected="true"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-incidents"
+              role="tab"
+              tabindex="0"
+            >
+              Incidents
+            </div>
+          </div>
+          <div
+            class="ant-tabs-tab"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-health"
+              aria-selected="false"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-health"
+              role="tab"
+              tabindex="0"
+            >
+              Health
+            </div>
+          </div>
+          <div
+            class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+          />
+        </div>
+      </div>
+      <div
+        class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+      >
+        <button
+          aria-controls="rc-tabs-test-more-popup"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-hidden="true"
+          class="ant-tabs-nav-more"
+          id="rc-tabs-test-more"
+          style="visibility: hidden; order: 1;"
+          tabindex="-1"
+          type="button"
+        >
+          <span
+            aria-label="ellipsis"
+            class="anticon anticon-ellipsis"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="ellipsis"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+              />
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+    <div
+      class="ant-tabs-content-holder"
+    >
+      <div
+        class="ant-tabs-content ant-tabs-content-top"
+      >
+        <div
+          aria-hidden="false"
+          aria-labelledby="rc-tabs-test-tab-incidents"
+          class="ant-tabs-tabpane ant-tabs-tabpane-active"
+          id="rc-tabs-test-panel-incidents"
+          role="tabpanel"
+          tabindex="0"
+        >
+          Incident Venue Table
+        </div>
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-health"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-health"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
+      </div>
+    </div>
+  </div>
 </DocumentFragment>
 `;
 
@@ -478,11 +589,11 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -624,9 +735,9 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -822,11 +933,11 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -968,9 +1079,9 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -1441,11 +1552,11 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -1587,9 +1698,9 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -1819,11 +1930,11 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -1965,9 +2076,9 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -2163,11 +2274,11 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -2309,9 +2420,9 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -2509,11 +2620,11 @@ exports[`VenueDetails should render correctly 1`] = `
                   class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
-                    aria-controls="rc-tabs-test-panel-analytics"
+                    aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
                     aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-analytics"
+                    id="rc-tabs-test-tab-analytics/incidents/overview"
                     role="tab"
                   >
                     <span>
@@ -2655,9 +2766,9 @@ exports[`VenueDetails should render correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-analytics"
+                aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
                 class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-analytics"
+                id="rc-tabs-test-panel-analytics/incidents/overview"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -2729,8 +2840,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 176px;"
       >
         <div
-          data-testid="networks-venueAlarmDonut"
-          title="venueAlarmDonut"
+          data-testid="rc-VenueAlarmWidget"
+          title="VenueAlarmWidget"
         />
       </div>
     </div>
@@ -2743,8 +2854,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 176px;"
       >
         <div
-          data-testid="analytics-venueIncidentsDonut"
-          title="venueIncidentsDonut"
+          data-testid="analytics-IncidentBySeverity"
+          title="IncidentBySeverity"
         />
       </div>
     </div>
@@ -2757,8 +2868,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 176px;"
       >
         <div
-          data-testid="networks-venueDevices"
-          title="venueDevices"
+          data-testid="rc-VenueDevicesWidget"
+          title="VenueDevicesWidget"
         />
       </div>
     </div>
@@ -2771,8 +2882,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 88px;"
       >
         <div
-          data-testid="analytics-venueHealth"
-          title="venueHealth"
+          data-testid="analytics-VenueHealth"
+          title="VenueHealth"
         />
       </div>
     </div>
@@ -2785,8 +2896,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 520px;"
       >
         <div
-          data-testid="networks-floorPlans"
-          title="floorPlans"
+          data-testid="rc-TopologyFloorPlanWidget"
+          title="TopologyFloorPlanWidget"
         />
       </div>
     </div>
@@ -2855,8 +2966,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-trafficByVolume"
-          title="trafficByVolume"
+          data-testid="analytics-TrafficByVolume"
+          title="TrafficByVolume"
         />
       </div>
     </div>
@@ -2869,8 +2980,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-networkHistory"
-          title="networkHistory"
+          data-testid="analytics-NetworkHistory"
+          title="NetworkHistory"
         />
       </div>
     </div>
@@ -2883,8 +2994,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-connectedClientsOverTime"
-          title="connectedClientsOverTime"
+          data-testid="analytics-ConnectedClientsOverTime"
+          title="ConnectedClientsOverTime"
         />
       </div>
     </div>
@@ -2897,8 +3008,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-topApplicationsByTraffic"
-          title="topApplicationsByTraffic"
+          data-testid="analytics-TopApplicationsByTraffic"
+          title="TopApplicationsByTraffic"
         />
       </div>
     </div>
@@ -2911,8 +3022,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-topSSIDsByTraffic"
-          title="topSSIDsByTraffic"
+          data-testid="analytics-TopSSIDsByTraffic"
+          title="TopSSIDsByTraffic"
         />
       </div>
     </div>
@@ -2925,8 +3036,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 280px;"
       >
         <div
-          data-testid="analytics-topSSIDsByClient"
-          title="topSSIDsByClient"
+          data-testid="analytics-TopSSIDsByClient"
+          title="TopSSIDsByClient"
         />
       </div>
     </div>

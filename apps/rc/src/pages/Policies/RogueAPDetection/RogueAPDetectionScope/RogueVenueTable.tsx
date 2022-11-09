@@ -10,6 +10,7 @@ import {
   RogueVenueData,
   useTableQuery, VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -45,9 +46,22 @@ const RogueVenueTable = () => {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aggregatedApStatus',
       key: 'aggregatedApStatus',
+      align: 'center',
       render: (data, row) => {
+        if (row.aggregatedApStatus?.hasOwnProperty('1_01_NeverContactedCloud')) {
+          return <span style={{ color: '#acaeb0' }}>
+            {row.aggregatedApStatus['1_01_NeverContactedCloud']}
+          </span>
+        }
         if (row.aggregatedApStatus?.hasOwnProperty('2_00_Operational')) {
-          return row.aggregatedApStatus['2_00_Operational']
+          return <TenantLink
+            to={`/venues/${row.id}/venue-details/devices`}
+            target='_blank'
+          >
+            <span style={{ color: '#39b54a' }}>
+              {row.aggregatedApStatus['2_00_Operational']}
+            </span>
+          </TenantLink>
         }
         return 0
       }
@@ -56,6 +70,7 @@ const RogueVenueTable = () => {
       title: $t({ defaultMessage: 'Switches' }),
       dataIndex: 'switches',
       key: 'switches',
+      align: 'center',
       render: (data, row) => {
         return row.switches ?? 0
       }
@@ -64,6 +79,7 @@ const RogueVenueTable = () => {
       title: $t({ defaultMessage: 'Rogue AP Detection' }),
       dataIndex: 'rogueDetection',
       key: 'rogueDetection',
+      align: 'center',
       render: (data, row) => {
         if (row.rogueDetection?.enabled) {
           return <div style={{ textAlign: 'center' }}>
@@ -71,13 +87,16 @@ const RogueVenueTable = () => {
             <div>({row.rogueDetection.policyName})</div>
           </div>
         }
-        return 'OFF'
+        return <div style={{ textAlign: 'center' }}>
+          OFF
+        </div>
       }
     },
     {
       title: $t({ defaultMessage: 'Activate' }),
       dataIndex: 'activate',
       key: 'activate',
+      align: 'center',
       render: (data, row) => {
         return <Switch checked={
           state.venues

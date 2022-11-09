@@ -19,7 +19,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
               <a
                 href="/t/tenant-id/services"
               >
-                Service
+                Services
               </a>
             </span>
             <span

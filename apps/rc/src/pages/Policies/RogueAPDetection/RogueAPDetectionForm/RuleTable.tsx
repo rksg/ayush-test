@@ -19,11 +19,14 @@ type RuleTableProps = {
 const RuleTable = (props: RuleTableProps) => {
   const { $t } = useIntl()
   const { edit } = props
+  const params = useParams()
 
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
   const { data } = useRoguePolicyQuery({
-    params: useParams()
+    params: edit ? params : {
+      ...params, policyId: 'none'
+    }
   })
 
   const [ruleName, setRuleName] = useState('')

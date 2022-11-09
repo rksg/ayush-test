@@ -34,11 +34,11 @@ exports[`VenueTabs should render correctly 1`] = `
             class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
-              aria-controls="rc-tabs-test-panel-analytics"
+              aria-controls="rc-tabs-test-panel-analytics/incidents/overview"
               aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
-              id="rc-tabs-test-tab-analytics"
+              id="rc-tabs-test-tab-analytics/incidents/overview"
               role="tab"
             >
               <span>
@@ -179,9 +179,9 @@ exports[`VenueTabs should render correctly 1`] = `
         />
         <div
           aria-hidden="true"
-          aria-labelledby="rc-tabs-test-tab-analytics"
+          aria-labelledby="rc-tabs-test-tab-analytics/incidents/overview"
           class="ant-tabs-tabpane"
-          id="rc-tabs-test-panel-analytics"
+          id="rc-tabs-test-panel-analytics/incidents/overview"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"

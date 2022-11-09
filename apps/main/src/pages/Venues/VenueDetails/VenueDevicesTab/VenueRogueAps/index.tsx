@@ -1,9 +1,18 @@
+import React from 'react'
+
+import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }             from '@acx-ui/components'
-import { LocationSolid, SignalUp }               from '@acx-ui/icons'
-import { useGetOldVenueRogueApQuery }            from '@acx-ui/rc/services'
-import { RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
+import { deviceCategoryColors, Loader, Table, TableProps } from '@acx-ui/components'
+import {
+  SignalBad,
+  SignalExcellent,
+  SignalGood, SignalPoor,
+  VenueMarkerGrey,
+  VenueMarkerRed
+} from '@acx-ui/icons'
+import { useGetOldVenueRogueApQuery }                            from '@acx-ui/rc/services'
+import { DeviceCategory, RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue/{venueId}/rogue/ap',
@@ -32,43 +41,29 @@ const defaultPayload = {
   pageSize: 25
 }
 
-// {
-//   "rogueMac": "D4:5D:64:0C:97:C8",
-//   "category": "Unclassified",
-//   "classificationPolicyName": "No policy matched",
-//   "classificationRuleName": "No rule matched",
-//   "ssid": "JDL3F",
-//   "channel": 3,
-//   "band": "2.4 GHz",
-//   "closestAp": {
-//   "apSerialNumber": "121749001049",
-//     "apName": "Raymond-R610",
-//     "snr": 5
-// },
-//   "detectingAps": [
-//   {
-//     "apMac": "D8:38:FC:36:76:F0",
-//     "apName": "Raymond-R610"
-//   }
-// ],
-//   "numberOfDetectingAps": 1,
-//   "lastUpdTime": "1666938118",
-//   "locatable": false
-// }
+const renderSignal = (snr: number) => {
+  if (snr <= 10) return <SignalBad height={21} />
 
-// {
-//   key: 'rougeMac',
-//     title: intl.$t({ defaultMessage: 'BSSID' }),
-//   dataIndex: 'rougeMac',
-//   align: 'center',
-//   render: function (data, row) {
-//   return row.rougeMac
-// }
-// },
+  const value = Math.floor(snr / 10)
+  if (value >= 4) {
+    return <SignalExcellent height={21}/>
+  }
+  if (value >= 3) {
+    return <SignalGood height={21} />
+  }
+  if (value >= 2) {
+    return <SignalPoor height={21} />
+  }
 
+  return <SignalBad height={21} />
+}
+
+const handleCategoryColor = (status: DeviceCategory) => {
+  return `var(${deviceCategoryColors[status]})`
+}
 
 export function VenueRogueAps () {
-  function getCols (intl: ReturnType<typeof useIntl>) {
+  const getCols = (intl: ReturnType<typeof useIntl>) => {
     const columns: TableProps<RogueOldApResponseType>['columns'] = [
       {
         key: 'rogueMac',
@@ -82,7 +77,15 @@ export function VenueRogueAps () {
         dataIndex: 'category',
         filterable: true,
         sorter: true,
-        align: 'left'
+        align: 'left',
+        render: (data, row) => {
+          return <span>
+            <Badge
+              color={handleCategoryColor(row.category as DeviceCategory)}
+              text={row.category}
+            />
+          </span>
+        }
       },
       {
         key: 'classificationPolicyName',
@@ -116,10 +119,10 @@ export function VenueRogueAps () {
         dataIndex: 'closestAp_snr',
         sorter: true,
         align: 'left',
-        render: function (data, row) {
+        render: (data, row) => {
           return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
             <span>{row.closestAp_snr}</span>
-            <SignalUp height={21}/>
+            {renderSignal(row.closestAp_snr ?? 0)}
           </div>
         }
       },
@@ -137,7 +140,7 @@ export function VenueRogueAps () {
         dataIndex: 'detectingAps',
         sorter: true,
         align: 'center',
-        render: function (data, row) {
+        render: (data, row) => {
           return row.detectingAps.length
         }
       },
@@ -147,7 +150,7 @@ export function VenueRogueAps () {
         dataIndex: 'lastUpdTime',
         sorter: true,
         align: 'center',
-        render: function (data, row) {
+        render: (data, row) => {
           return row.lastUpdTime
         }
       },
@@ -157,10 +160,10 @@ export function VenueRogueAps () {
         dataIndex: 'locatable',
         sorter: true,
         align: 'center',
-        render: function (data, row) {
+        render: (data, row) => {
           return row.locatable
-            ? <LocationSolid fill={'#f00'} stroke={'#f00'}/>
-            : <LocationSolid fill={'#facd91'} stroke={'#facd91'} fillOpacity={'0.5'}/>
+            ? <VenueMarkerRed />
+            : <VenueMarkerGrey />
         }
       }
     ]
