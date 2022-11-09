@@ -59,8 +59,7 @@ function useColumns () {
       key: 'scope',
       title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'scope',
-      sorter: true,
-      align: 'center'
+      sorter: true
     },
     {
       key: 'tags',
