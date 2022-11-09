@@ -24,13 +24,16 @@ import {
   aplist,
   apGrouplist,
   successResponse,
-  apDetailsList,
-  dhcpAp
+  apDetailsList
 } from '../__tests__/fixtures'
 
 import { ApForm } from '.'
 
-const validCoordinates = ['40.769141, -101.629519', '51.508506, -0.124915']
+const validCoordinates = [
+  '40.769141, -101.629519',
+  '51.508506, -0.124915',
+  '40.769141, -73.9429713'
+]
 const invalidCoordinates = '51.508506, -0.12xxxx'
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -99,10 +102,8 @@ describe('AP Form - Add', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(WifiUrlsInfo.getAp.url,
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
-      rest.post(WifiUrlsInfo.getDhcpAp.url,
-        (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
-      rest.post(WifiUrlsInfo.updateAp.url,
-        (_, res, ctx) => res(ctx.json(successResponse)))
+      rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
+        (_, res, ctx) => res(ctx.json(apDetailsList)))
     )
   })
   afterEach(() => {
@@ -162,6 +163,23 @@ describe('AP Form - Add', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     })
 
+    it('should handle error occurred', async () => {
+      mockServer.use(
+        rest.post(WifiUrlsInfo.addAp.url,
+          (_, res, ctx) => {
+            return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-10000' }] }))
+          })
+      )
+      render(<Provider><ApForm /></Provider>, {
+        route: { params, path: '/:tenantId/devices/aps/:action' }
+      })
+      await changeVenue()
+      await fillInForm()
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+      await screen.findByText('An error occurred')
+    })
+
     it('should handle discard coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/devices/aps/:action' }
@@ -182,6 +200,9 @@ describe('AP Form - Add', () => {
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
       await userEvent.click(await screen.findByRole('button', { name: 'Same as Venue' }))
+      expect(await screen.findByText('40.769141, -73.9429713 (As venue)')).toBeVisible()
+
+      await changeCoordinates(validCoordinates[2], true)
       expect(await screen.findByText('40.769141, -73.9429713 (As venue)')).toBeVisible()
     })
 

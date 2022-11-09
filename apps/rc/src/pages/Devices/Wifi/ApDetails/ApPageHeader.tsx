@@ -61,7 +61,7 @@ function ApPageHeader () {
         <Button key='date-filter' icon={<ClockOutlined />}>
           {$t({ defaultMessage: 'Last 24 Hours' })}
         </Button>,
-        <Dropdown overlay={menu}>
+        <Dropdown overlay={menu} key='actionMenu'>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}

@@ -37,6 +37,12 @@ export const venuelist = {
       latitude: '37.4112751',
       longitude: '-122.0191908',
       name: 'Venue-DHCP 2'
+    }, {
+      country: 'Canada',
+      id: 'b6cd663931b34a8b8fc97a81bfaa0929',
+      latitude: '51.12090129999999',
+      longitude: '-114.0044601',
+      name: 'Venue-MESH'
     }
   ]
 }
@@ -278,5 +284,14 @@ export const dhcpAp = [{
     venueDhcpEnabled: true,
     venueDhcpMode: 'EnableOnMultipleAPs',
     venueId: 'a4f9622e9c7547ba934fbb5ee55646c2'
+  }]
+}, {
+  requestId: '3be06d50-5ae9-4d7f-92b6-146b5b7d77b4',
+  response: [{
+    dhcpApRole: 'BackupServer',
+    serialNumber: '422039000034',
+    venueDhcpEnabled: true,
+    venueDhcpMode: 'EnableOnMultipleAPs',
+    venueId: '16b11938ee934928a796534e2ee47661'
   }]
 }]

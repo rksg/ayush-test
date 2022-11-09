@@ -69,7 +69,7 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
         (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
-      rest.post(WifiUrlsInfo.updateAp.url,
+      rest.put(WifiUrlsInfo.updateAp.url,
         (_, res, ctx) => res(ctx.json(successResponse)))
     )
   })
@@ -109,15 +109,61 @@ describe('ApEdit', () => {
         expect(screen.getByLabelText(/AP Name/)).toHaveValue('test ap')
       })
 
+      expect(screen.getByLabelText(/Venue/)).not.toBeDisabled() // not Mesh & Dhcp AP
       fireEvent.mouseDown(screen.getByLabelText(/Venue/))
       await userEvent.click(await screen.getAllByText('Venue-DHCP')[0])
 
       fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'aaaa' } })
       fireEvent.blur(screen.getByLabelText(/AP Name/))
 
-      fireEvent.click(await screen.findByText('Back to device details'))
+      await userEvent.click(await screen.findByText('Back to device details'))
       await screen.findByText('This field is invalid')
       await screen.findByText('Cannot move AP to another venue in different country')
+    })
+
+    it('should disable venue select when editing mesh AP', async () => {
+      mockServer.use(
+        rest.post(WifiUrlsInfo.getDhcpAp.url,
+          (_, res, ctx) => res(ctx.json(dhcpAp[1]))),
+        rest.get(WifiUrlsInfo.getAp.url,
+          (_, res, ctx) => res(ctx.json({
+            ...apDetailsList[0],
+            meshRole: 'RAP'
+          })))
+      )
+
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+      })
+      await screen.findByText('test ap')
+      await waitFor(async () => {
+        expect(screen.getByLabelText(/AP Name/)).toHaveValue('test ap')
+      })
+
+      expect(screen.getByLabelText(/Venue/)).toBeDisabled()
+    })
+
+    it('should handle error occurred', async () => {
+      mockServer.use(
+        rest.put(WifiUrlsInfo.updateAp.url,
+          (_, res, ctx) => {
+            return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-10000' }] }))
+          })
+      )
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+      })
+      await screen.findByText('test ap')
+      await waitFor(async () => {
+        expect(screen.getByLabelText(/AP Name/)).toHaveValue('test ap')
+      })
+
+      expect(screen.getByLabelText(/Venue/)).toBeDisabled()
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      await screen.findByText('An error occurred')
+      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
 
     it('should open unsaved changes modal', async () => {
@@ -133,7 +179,7 @@ describe('ApEdit', () => {
 
       fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'test ap 2' } })
       fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'description' } })
-      fireEvent.click(await screen.findByText('Back to device details'))
+      await userEvent.click(await screen.findByText('Back to device details'))
       await showUnsavedChangesModal('AP Details', false)
     })
 
@@ -154,9 +200,9 @@ describe('ApEdit', () => {
         fireEvent.blur(screen.getByLabelText(/AP Name/))
       })
 
-      fireEvent.click(await screen.findByText('Back to device details'))
+      await userEvent.click(await screen.findByText('Back to device details'))
       await showInvalidChangesModal('AP Details', false)
-      fireEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
+      await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
       await showInvalidChangesModal('AP Details', true)
     })
   })
