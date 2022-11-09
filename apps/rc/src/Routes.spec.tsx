@@ -51,6 +51,12 @@ jest.mock('./pages/Services/DHCPForm/DHCPForm', () => () => {
   return <div data-testid='DHCPForm' />
 })
 
+jest.mock('./pages/Services/DHCPDetail', () => () => {
+  return <div data-testid='DHCPDetail' />
+})
+
+
+
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/aps', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -199,7 +205,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('WIFI_CALLING create page')).toBeVisible()
+    expect(screen.getByText(/add wi\-fi calling service/i)).toBeVisible()
   })
 
   test('should navigate to edit WIFI_CALLING page', async () => {
@@ -211,7 +217,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('WIFI_CALLING edit page')).toBeVisible()
+    expect(screen.getByText(/configure wi\-fi calling service/i)).toBeVisible()
   })
 
   test('should navigate to WIFI_CALLING details page', async () => {
@@ -223,7 +229,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('WIFI_CALLING details page')).toBeVisible()
+    expect(screen.getByText(/instance/i)).toBeVisible()
   })
 
   test('should navigate to create DHCP page', async () => {
@@ -257,7 +263,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('DHCP details page')).toBeVisible()
+    expect(screen.getByTestId('DHCPDetail')).toBeVisible()
   })
 
 })
