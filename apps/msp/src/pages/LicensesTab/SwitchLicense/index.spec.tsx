@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
-import { Provider }                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                                       from '@acx-ui/rc/utils'
+import { Provider }                                                          from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
 import { SwitchLicense } from '.'
 
@@ -50,8 +50,14 @@ describe('SwitchLicense', () => {
         route: { params, path: '/:tenantId/msplicenses' }
       })
 
+
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const showEXpiredButton = await screen.findByText('Show Expired Licenses')
+    fireEvent.click(showEXpiredButton)
+    const licenseManagementButton = await screen.findByText('License Management')
+    fireEvent.click(licenseManagementButton)
 
     expect(asFragment()).toMatchSnapshot()
+
   })
 })

@@ -177,5 +177,20 @@ describe('MspCustomers', () => {
     const deleteEcButton = await screen.findByText('Delete EC')
     fireEvent.click(deleteEcButton)
   })
+  it('should resend invite for selected row', async () => {
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('radio'))
+
+    const resendInviteButton = screen.getByRole('button', { name: /Resend Invitation Email/i })
+    fireEvent.click(resendInviteButton)
+  })
 })

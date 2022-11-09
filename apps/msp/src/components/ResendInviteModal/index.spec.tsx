@@ -24,6 +24,11 @@ describe('ResendInviteModal', () => {
 
     fireEvent.click(cancelButton)
     expect(handleCancel).toBeCalled()
+    const showEXpiredButton = await screen.findByText('Resend Invitation')
+    fireEvent.click(showEXpiredButton)
+    const licenseManagementButton = await screen.findByText('Cancel')
+    fireEvent.click(licenseManagementButton)
+
 
   })
 })
