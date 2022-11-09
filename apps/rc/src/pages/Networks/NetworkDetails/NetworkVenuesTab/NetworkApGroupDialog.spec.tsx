@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   RadioTypeEnum,
   WlanSecurityEnum
@@ -79,7 +79,7 @@ describe('NetworkApGroupDialog', () => {
 
   it('should has 6 GHz and could click apply', async () => {
 
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     let networkWPA3 = { ...network, wlan: { ...network.wlan, wlanSecurity: WlanSecurityEnum.WPA3 } }
 

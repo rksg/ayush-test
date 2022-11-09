@@ -3,7 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { useSplitTreatment }            from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { apApi, venueApi }              from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -68,7 +68,7 @@ async function changeCoordinates (data, applyData) {
   })
 
   if (!validCoordinates.includes(data)) {
-    expect(await screen.findByText('Please enter the valid GPS coordinates')).toBeVisible()
+    expect(await screen.findByText('Please enter valid GPS coordinates')).toBeVisible()
     fireEvent.change(
       within(dialog).getByTestId('coordinates-input'), { target: { value: validCoordinates[1] } }
     )
@@ -120,7 +120,7 @@ describe('AP Form - Add', () => {
 
   describe('handle Add AP and Coordinates Modal', () => {
     beforeEach(async () => {
-      jest.mocked(useSplitTreatment).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
     it('should handle Add AP', async () => {

@@ -9,6 +9,10 @@ import { act, render, screen, waitFor } from '@acx-ui/test-utils'
 import { GoogleMap }       from './GoogleMap'
 import { GoogleMapMarker } from './GoogleMapMarker'
 
+jest.mock('@acx-ui/icons', ()=>({
+  CheckMarkCircleSolid: () => <div data-testid='CheckMarkCircleSolid'/>
+}), { virtual: true })
+
 // taken from @googlemaps/react-wrapper
 // ref: https://github.com/googlemaps/react-wrapper/blob/main/src/index.test.tsx#L34-L47
 const executeLoaderCallback = async (e?: string | Error): Promise<void> => {
@@ -95,5 +99,12 @@ describe('GoogleMap', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Toggle' }))
 
     expect(markers[0].setMap).toHaveBeenCalledWith(null)
+  })
+})
+
+describe('GoogleMap.NotEnabled', () => {
+  it('should render correctly', () => {
+    const { asFragment } = render(<GoogleMap.NotEnabled/>)
+    expect(asFragment()).toMatchSnapshot()
   })
 })

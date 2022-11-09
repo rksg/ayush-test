@@ -10,14 +10,16 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Tooltip }                   from '@acx-ui/components'
-import { DnsProxyRule, DnsProxyContextType } from '@acx-ui/rc/utils'
-import { notAvailableMsg }                   from '@acx-ui/utils'
+import { Tooltip }                                                                              from '@acx-ui/components'
+import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
+import { notAvailableMsg }                                                                      from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
-import { DnsProxyModal } from './DnsProxyModal'
-import * as UI           from './styledComponents'
+import { DnsProxyModal }           from './DnsProxyModal'
+import * as UI                     from './styledComponents'
+import { WifiCallingSettingModal } from './WifiCallingSettingModal'
+import WifiCallingSettingTable     from './WifiCallingSettingTable'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -97,6 +99,8 @@ function ClientIsolationForm () {
 
 export const DnsProxyContext = createContext({} as DnsProxyContextType)
 
+export const WifiCallingSettingContext = createContext({} as WifiCallingSettingContextType)
+
 export function ServicesForm () {
   const { $t } = useIntl()
   const [
@@ -110,7 +114,7 @@ export function ServicesForm () {
     useWatch<boolean>(['wlan','advancedCustomization','enableAntiSpoofing']),
     useWatch<boolean>(['wlan','advancedCustomization','enableArpRequestRateLimit']),
     useWatch<boolean>(['wlan','advancedCustomization','enableDhcpRequestRateLimit']),
-    useWatch<boolean>(['wlan', 'advancedCustomization', 'wifiCallingEnabled'])
+    useWatch<boolean>(['wlan','advancedCustomization', 'wifiCallingEnabled'])
   ]
 
   const { data } = useContext(NetworkFormContext)
@@ -130,6 +134,8 @@ export function ServicesForm () {
   }, [data])
 
   const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
+
+  const [wifiCallingSettingList, setWifiCallingSettingList] = useState([] as WifiCallingSetting[])
 
   return (
     <>
@@ -158,28 +164,28 @@ export function ServicesForm () {
       </UI.FieldLabel>
 
 
-      <Tooltip title={$t(notAvailableMsg)}>
-        <UI.FieldLabel width='125px'>
-          {$t({ defaultMessage: 'Wi-Fi Calling:' })}
-          <UI.FieldLabel width='30px'>
+      <UI.FieldLabel width='125px'>
+        {$t({ defaultMessage: 'Wi-Fi Calling:' })}
+        <UI.FieldLabel width='30px'>
+          <Form.Item
+            name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+          <WifiCallingSettingContext.Provider
+            value={{ wifiCallingSettingList, setWifiCallingSettingList }}>
             <Form.Item
-              name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
-              style={{ marginBottom: '10px' }}
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch disabled={true}/>}
-            />
-            {enableWifiCalling &&
-              <div>
-                <Button type='link'
-                  disabled={true}>
-                  {$t({ defaultMessage: 'Select profiles' })}
-                </Button>
-              </div>
-            }
-          </UI.FieldLabel>
+              name={['wlan', 'advancedCustomization', 'wifiCallingIds']}
+              initialValue={wifiCallingSettingList}
+            >
+              {enableWifiCalling && <WifiCallingSettingModal />}
+              {enableWifiCalling && <WifiCallingSettingTable />}
+            </Form.Item>
+          </WifiCallingSettingContext.Provider>
         </UI.FieldLabel>
-      </Tooltip>
+      </UI.FieldLabel>
 
       <ClientIsolationForm/>
       <>

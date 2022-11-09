@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useSplitTreatment }       from '@acx-ui/feature-toggle'
+import { useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                from '@acx-ui/store'
 import { render, screen, cleanup } from '@acx-ui/test-utils'
@@ -20,6 +20,7 @@ jest.mock('rc/Routes', () => () => {
       <div data-testid='devices' />
       <div data-testid='networks' />
       <div data-testid='services' />
+      <div data-testid='policies' />
     </>
   )
 },{ virtual: true })
@@ -77,7 +78,7 @@ describe('AllRoutes', () => {
   })
 
   test('should navigate to services/* if the feature flag is on', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -86,11 +87,11 @@ describe('AllRoutes', () => {
       }
     })
 
-    await screen.findByTestId('services')
+    expect(await screen.findByTestId('services')).toBeInTheDocument()
   })
 
   test('should not navigate to services/* if the feature flag is off', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -99,7 +100,33 @@ describe('AllRoutes', () => {
       }
     })
 
-    await screen.findByText('Services is not enabled')
+    expect(await screen.findByText('Services is not enabled')).toBeInTheDocument()
+  })
+
+  test('should navigate to policies/* if the feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/policies/some-page',
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByTestId('policies')).toBeInTheDocument()
+  })
+
+  test('should not navigate to policies/* if the feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/policies/some-page',
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('Policies is not enabled')).toBeInTheDocument()
   })
 
   test('should navigate to venues/*', async () => {

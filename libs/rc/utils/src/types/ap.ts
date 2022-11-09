@@ -27,7 +27,6 @@ export interface AP {
   venueName: string
 }
 
-
 export interface ApGroup {
   aps?: ApDeep[],
   id: string,

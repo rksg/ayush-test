@@ -5,23 +5,28 @@ import { Button, Dropdown, PageHeader } from '@acx-ui/components'
 // import { ApTable } from '../../../../components/ApTable'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-export const addMenu = <Menu
-  items={[
-    { key: 'ap', label: <TenantLink to='devices/aps/add'>AP</TenantLink> },
-    { key: 'import-from-file', label: <TenantLink to='TBD'>Import from file</TenantLink> },
-    { key: 'ap-group', label: <TenantLink to='devices/apgroups/add'>AP Group</TenantLink> }
-  ]}
-/>
-
 export default function ApsTable () {
   const { $t } = useIntl()
+  const addMenu = <Menu
+    items={[{
+      key: 'ap',
+      label: <TenantLink to='devices/aps/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
+    }, {
+      key: 'import-from-file',
+      label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Import from file' })}</TenantLink>
+    }, {
+      key: 'ap-group',
+      label: <TenantLink to='devices/apgroups/add'>
+        {$t({ defaultMessage: 'AP Group' })}</TenantLink> }
+    ]}
+  />
 
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'WiFi' })}
         extra={[
-          <Dropdown overlay={addMenu}>{() =>
+          <Dropdown overlay={addMenu} key='addMenu'>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
           }</Dropdown>
         ]}
