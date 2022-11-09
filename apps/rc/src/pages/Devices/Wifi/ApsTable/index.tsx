@@ -9,7 +9,6 @@ import {
 import { ApTable }    from '@acx-ui/rc/components'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-
 export default function ApsTable () {
   const { $t } = useIntl()
   const addMenu = <Menu
