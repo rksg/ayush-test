@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import { IncidentTabContent, HealthPage }      from '@acx-ui/analytics/components'
 import { useAnalyticsFilter, AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Tabs }                                from '@acx-ui/components'
-import { useVenueDetailsHeaderQuery }          from '@acx-ui/rc/services'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { defaultNetworkPath }                  from '@acx-ui/utils'
 
@@ -12,33 +11,31 @@ export function VenueAnalyticsTab () {
   const location = useLocation()
   const navigate = useNavigate()
   const params = useParams()
-  const { data } = useVenueDetailsHeaderQuery({ params })
+  const { activeSubTab, venueId } = params
   const { filters } = useAnalyticsFilter()
-  const venueName = data?.venue.name
-  const venueId = data?.venue.id
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const healthFilter = {
     ...filters,
-    path: [{ type: 'zone', name: venueName }]
+    path: [{ type: 'zone', name: venueId }]
   } as AnalyticsFilter
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const incidentFilter = {
     ...filters,
     filter: {
-      networkNodes: [[{ type: 'zone', name: venueName }]],
-      switchNodes: [[{ type: 'switchGroup', name: venueName }]]
+      networkNodes: [[{ type: 'zone', name: venueId }]],
+      switchNodes: [[{ type: 'switchGroup', name: venueId }]]
     },
     path: defaultNetworkPath
   } as AnalyticsFilter
   const onTabChange = (tab: string) => {
     navigate({
       ...location,
-      pathname: location.pathname.replace(params.activeSubTab as string, tab)
+      pathname: location.pathname.replace(activeSubTab as string, tab)
     })
   }
   return <Tabs
     onChange={onTabChange}
-    activeKey={params.activeSubTab}
+    activeKey={activeSubTab}
     defaultActiveKey='incidents'
     type='card'
   >
