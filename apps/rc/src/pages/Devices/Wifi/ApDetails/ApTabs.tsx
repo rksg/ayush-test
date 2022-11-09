@@ -10,12 +10,13 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const params = useParams()
   const basePath = useTenantLink(`/devices/aps/${params.serialNumber}/details/`)
   const navigate = useNavigate()
-  const onTabChange = (tab: string) =>
+  const onTabChange = (tab: string) => {
+    if (tab === 'troubleshooting') tab = `${tab}/ping`
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
-
+  }
   const { apDetail } = props
 
   return (
