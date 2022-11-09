@@ -42,7 +42,6 @@ import {
   gpsRegExp,
   hasGraveAccentAndDollarSign,
   serialNumberRegExp,
-  // Venue,
   VenueExtended,
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
@@ -76,31 +75,27 @@ export function ApForm () {
   const formRef = useRef<StepsFormInstance<ApDeep>>()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
-  const isEditMode = action === 'edit'
+  const { editContextData, setEditContextData } = useContext(ApEditContext)
 
-  const {
-    editContextData,
-    setEditContextData
-  } = useContext(ApEditContext)
-
-  const apList = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
+  const { data: apList } = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
   const { data: venuesList, isLoading: isVenuesListLoading }
     = useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
-  const [apGroupList] = useLazyApGroupListQuery()
-  const apDetails = useGetApQuery({ params: {
-    tenantId, serialNumber: serialNumber ? serialNumber : '' } })
+  const { data: apDetails, isLoading: isApDetailsLoading }
+    = useGetApQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
+  const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
 
+  const [addAp] = useAddApMutation()
+  const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
+  const [getDhcpAp] = useLazyGetDhcpApQuery()
+  const [apGroupList] = useLazyApGroupListQuery()
+
+  const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
   const [gpsModalVisible, setGpsModalVisible] = useState(false)
-  const [deviceGps, setDeviceGps] = useState(null as unknown as DeviceGps)
+  const [deviceGps, setDeviceGps] = useState(null as DeviceGps | null)
 
-  const [addAp] = useAddApMutation()
-  const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
-
-  const [getDhcpAp] = useLazyGetDhcpApQuery()
-  const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
   const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
@@ -114,25 +109,27 @@ export function ApForm () {
   }, [wifiCapabilities])
 
   useEffect(() => {
-    if (!apDetails.isLoading && apDetails?.data && isEditMode) {
+    if (isEditMode && !isVenuesListLoading && !isApDetailsLoading && apDetails) {
       const setData = async (apDetails: ApDeep) => {
-        const selected = getVenueById(
+        const selectVenue = getVenueById(
           venuesList?.data as unknown as VenueExtended[], apDetails.venueId)
+        const venueLatLng = pick(selectVenue, ['latitude', 'longitude'])
         const options = await getApGroupOptions(apDetails.venueId)
         const dhcpAp = (await getDhcpAp({
           params: { tenantId }, payload: [serialNumber] }, true).unwrap())?.response?.[0]
-        setSelectedVenue(selected as unknown as VenueExtended)
+
+        setSelectedVenue(selectVenue as unknown as VenueExtended)
         setApGroupOption(options as DefaultOptionType[])
         setApMeshRoleDisabled(
           !!apDetails?.meshRole && (apDetails?.meshRole !== APMeshRole.DISABLED))
         setDhcpRoleDisabled(checkDhcpRoleDisabled(dhcpAp as DhcpApInfo))
-        setDeviceGps((apDetails?.deviceGps ?? null) as unknown as DeviceGps)
-        formRef?.current?.setFieldsValue(apDetails)
+        setDeviceGps((apDetails?.deviceGps || venueLatLng) as unknown as DeviceGps)
+        formRef?.current?.setFieldsValue({ description: '', ...apDetails })
       }
 
-      setData(apDetails.data)
+      setData(apDetails)
     }
-  }, [apDetails])
+  }, [apDetails, venuesList])
 
   useEffect(() => {
     if (!isVenuesListLoading) {
@@ -141,6 +138,10 @@ export function ApForm () {
       })) ?? [])
     }
   }, [venuesList])
+
+  useEffect(() => {
+    handleUpdateContext()
+  }, [deviceGps])
 
   const handleAddAp = async (values: ApDeep) => {
     try {
@@ -196,32 +197,36 @@ export function ApForm () {
   }
 
   const handleVenueChange = async (value: string) => {
-    const selected = getVenueById(venuesList?.data as unknown as VenueExtended[], value)
+    const selectVenue = getVenueById(venuesList?.data as unknown as VenueExtended[], value)
     const options = await getApGroupOptions(value)
-    setSelectedVenue(selected as unknown as VenueExtended)
+    setSelectedVenue(selectVenue as unknown as VenueExtended)
     setApGroupOption(options as DefaultOptionType[])
-    setDeviceGps(null as unknown as DeviceGps)
+    setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
     formRef?.current?.setFieldValue('apGroupId', options?.[0]?.value ?? (value ? null : ''))
   }
 
-  const onSaveCoordinates = (latLng: DeviceGps) => {
+  const onSaveCoordinates = (latLng: DeviceGps | null) => {
     setDeviceGps(latLng)
     setGpsModalVisible(false)
-    handleUpdateContext()
-
-    if (!latLng) {
-      formRef?.current?.setFieldValue('deviceGps', latLng)
-    }
   }
 
   const handleUpdateContext = () => {
     if (isEditMode) {
+      const form = formRef?.current as StepsFormInstance
+      const originalData = {
+        deviceGps: {
+          latitude: selectedVenue?.latitude,
+          longitude: selectedVenue?.longitude
+        },
+        ...apDetails
+      } as ApDeep
+
       setEditContextData && setEditContextData({
         ...editContextData,
         tabTitle: $t({ defaultMessage: 'AP Details' }),
-        isDirty: getFormDirty(formRef?.current as StepsFormInstance, apDetails?.data as ApDeep),
-        hasError: getFormValid(formRef?.current as StepsFormInstance),
-        updateChanges: () => handleUpdateAp(formRef?.current?.getFieldsValue() as ApDeep)
+        isDirty: checkFormIsDirty(form, originalData, deviceGps as DeviceGps),
+        hasError: checkFormIsInvalid(form),
+        updateChanges: () => handleUpdateAp(form?.getFieldsValue() as ApDeep)
       })
     }
   }
@@ -255,7 +260,7 @@ export function ApForm () {
         <Row gutter={20}>
           <Col span={8}>
             <Loader states={[{
-              isLoading: isVenuesListLoading || apDetails.isLoading,
+              isLoading: isVenuesListLoading || isApDetailsLoading,
               isFetching: isApDetailsUpdating
             }]}>
               <Form.Item
@@ -281,26 +286,22 @@ export function ApForm () {
                   required: true
                 }, {
                   validator: (_, value) => {
-                    const selected = getVenueById(
-                      venuesList?.data as unknown as VenueExtended[], value
-                    )
-                    const originalVenue = getVenueById(
-                      venuesList?.data as unknown as VenueExtended[],
-                      apDetails?.data?.venueId as string
-                    )
-                    if (selected?.country && originalVenue?.country) {
-                      return checkValues(selected?.country, originalVenue?.country, true)
+                    const venues = venuesList?.data as unknown as VenueExtended[]
+                    const selectVenue = getVenueById(venues, value)
+                    const originalVenue = getVenueById(venues, apDetails?.venueId as string)
+                    if (selectVenue?.country && originalVenue?.country) {
+                      return checkValues(selectVenue?.country, originalVenue?.country, true)
                     }
                     return Promise.resolve()
                   },
                   message: $t(validationMessages.diffVenueCountry)
                 }, {
                   validator: (_, value) => {
-                    const selectedVenue = getVenueById(
-                      venuesList?.data as unknown as VenueExtended[], value)
-                    if (selectedVenue?.dhcp && selectedVenue?.dhcp?.enabled) {
+                    const venues = venuesList?.data as unknown as VenueExtended[]
+                    const selectVenue = getVenueById(venues, value)
+                    if (!!selectVenue?.dhcp?.enabled) {
                       return checkObjectNotExists(
-                        cellularApModels, apDetails?.data?.model, $t({ defaultMessage: 'Venue' })
+                        cellularApModels, apDetails?.model, $t({ defaultMessage: 'Venue' })
                       )
                     }
                     return Promise.resolve()
@@ -345,8 +346,8 @@ export function ApForm () {
                   { validator: (_, value) => apNameRegExp(value) },
                   {
                     validator: (_, value) => {
-                      const nameList = apList?.data?.data?.filter(
-                        item => item.serialNumber !== apDetails?.data?.serialNumber
+                      const nameList = apList?.data?.filter(
+                        item => item.serialNumber !== apDetails?.serialNumber
                       ).map(item => item.name) ?? []
                       return checkObjectNotExists(nameList, value,
                         $t({ defaultMessage: 'AP Name' }), 'value')
@@ -365,8 +366,8 @@ export function ApForm () {
                   { validator: (_, value) => serialNumberRegExp(value) },
                   {
                     validator: (_, value) => {
-                      const serialNumbers = apList?.data?.data?.filter(
-                        item => item.serialNumber !== apDetails?.data?.serialNumber
+                      const serialNumbers = apList?.data?.filter(
+                        item => item.serialNumber !== apDetails?.serialNumber
                       ).map(item => item.serialNumber) ?? []
                       return checkObjectNotExists(serialNumbers, value,
                         $t({ defaultMessage: 'Serial Number' }), 'value')
@@ -380,6 +381,7 @@ export function ApForm () {
               <Form.Item
                 name='description'
                 label={$t({ defaultMessage: 'Description' })}
+                initialValue=''
                 children={<Input.TextArea rows={4} maxLength={180} />}
               />
               {/* TODO: */}
@@ -388,32 +390,7 @@ export function ApForm () {
                 label={$t({ defaultMessage: 'Tags' })}
                 children={<Input />}
               /> */}
-              {isApGpsFeatureEnabled && <Form.Item
-                label={$t({ defaultMessage: 'GPS Coordinates' })}
-                children={selectedVenue?.id
-                  ? <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    {$t({ defaultMessage: '{latitude}, {longitude} {status}' }, {
-                      latitude: deviceGps?.latitude || selectedVenue?.latitude,
-                      longitude: deviceGps?.longitude || selectedVenue?.longitude,
-                      status: !deviceGps ? '(As venue)' : ''
-                    })}
-                    <Space size={0} split={<UI.Divider />} >
-                      <Button
-                        type='link'
-                        size='small'
-                        onClick={() => setGpsModalVisible(true)}>
-                        {$t({ defaultMessage: 'Change' })}
-                      </Button>
-                      {deviceGps && <Button
-                        type='link'
-                        size='small'
-                        onClick={() => onSaveCoordinates(null as unknown as DeviceGps)}>
-                        {$t({ defaultMessage: 'Same as Venue' })}
-                      </Button>}
-                    </Space>
-                  </Space>
-                  : '-'}
-              />}
+              {isApGpsFeatureEnabled && <GpsCoordinatesFormItem />}
             </Loader>
           </Col>
         </Row>
@@ -431,16 +408,56 @@ export function ApForm () {
       </StepsForm.StepForm>
     </StepsForm>
   </>
+
+  function GpsCoordinatesFormItem () {
+    const sameAsVenue = isEqual(
+      [deviceGps?.latitude, deviceGps?.longitude],
+      [selectedVenue?.latitude, selectedVenue?.longitude]
+    )
+    return <Form.Item
+      label={$t({ defaultMessage: 'GPS Coordinates' })}
+      children={selectedVenue?.id
+        ? <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {$t({ defaultMessage: '{latitude}, {longitude} {status}' }, {
+            latitude: deviceGps?.latitude || selectedVenue?.latitude,
+            longitude: deviceGps?.longitude || selectedVenue?.longitude,
+            status: sameAsVenue ? '(As venue)' : ''
+          })}
+          <Space size={0} split={<UI.Divider />} >
+            <Button
+              type='link'
+              size='small'
+              onClick={() => setGpsModalVisible(true)}>
+              {$t({ defaultMessage: 'Change' })}
+            </Button>
+            {!sameAsVenue && <Button
+              type='link'
+              size='small'
+              onClick={() => onSaveCoordinates(
+                selectedVenue?.latitude ? {
+                  latitude: selectedVenue.latitude,
+                  longitude: selectedVenue.longitude
+                } as unknown as DeviceGps
+                  : null
+              )}
+            >
+              {$t({ defaultMessage: 'Same as Venue' })}
+            </Button>}
+          </Space>
+        </Space>
+        : '-'}
+    />
+  }
 }
 
 function CoordinatesModal (props: {
   formRef: React.MutableRefObject<StepsFormInstance<ApDeep> | undefined>,
   fieldName: string,
   selectedVenue: VenueExtended,
-  deviceGps: DeviceGps,
+  deviceGps: DeviceGps | null,
   gpsModalVisible: boolean,
   setGpsModalVisible: (data: boolean) => void,
-  onSaveCoordinates: (data: DeviceGps) => void
+  onSaveCoordinates: (data: DeviceGps | null) => void
 }) {
   const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -533,7 +550,6 @@ function CoordinatesModal (props: {
       updateMarkerPosition(event?.latLng as google.maps.LatLng)
       formRef.current?.setFields([{ name: fieldName, value: latLng.join(', '), errors: [] }])
     }
-    // formRef?.current?.validateFields([fieldName])
     formRef?.current?.setFieldValue(fieldName, `${latLng.join(', ')}`)
     setCoordinatesValid(true)
   }
@@ -553,7 +569,7 @@ function CoordinatesModal (props: {
     onCancel={() => setGpsModalVisible(false)}
   >
     <GoogleMap.FormItem>
-      <Form.Item
+      {<Form.Item
         noStyle
         label={false}
         name={fieldName}
@@ -563,8 +579,8 @@ function CoordinatesModal (props: {
         }, {
           validator: (_, value) => {
             const latLng = value.split(',').map((v: string) => v.trim())
-            const asVeneue = isEqual([selectedVenue?.latitude, selectedVenue?.longitude], latLng)
-            return asVeneue
+            const sameAsVenue = isEqual([selectedVenue?.latitude, selectedVenue?.longitude], latLng)
+            return sameAsVenue
               ? Promise.resolve()
               : gpsRegExp(latLng[0], latLng[1])
           }
@@ -578,7 +594,7 @@ function CoordinatesModal (props: {
         data-testid='coordinates-input'
         onChange={onChangeCoordinates}
         />
-      </Form.Item>
+      </Form.Item>}
       {isMapEnabled ?
         <GoogleMap
           libraries={['places']}
@@ -625,14 +641,14 @@ function transformLatLng (value: string) {
   ) as DeviceGps
 }
 
-function getFormDirty (form: StepsFormInstance, originalData: ApDeep) {
+function checkFormIsDirty (form: StepsFormInstance, originalData: ApDeep, deviceGps: DeviceGps) {
   const formData = form?.getFieldsValue()
   const checkFields = Object.keys(form?.getFieldsValue() ?? {}).concat(['deviceGps'])
   const oldData = pick(originalData, checkFields)
-  const newData = omitBy(formData, v => !v)
+  const newData = omitBy({ ...omit(formData, 'deviceGps'), deviceGps: deviceGps }, v => !v)
   return !isEqual(oldData, newData)
 }
 
-function getFormValid (form: StepsFormInstance) {
+function checkFormIsInvalid (form: StepsFormInstance) {
   return form?.getFieldsError().map(item => item.errors).flat().length > 0
 }

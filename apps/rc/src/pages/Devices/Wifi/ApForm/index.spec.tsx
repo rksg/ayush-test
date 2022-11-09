@@ -100,7 +100,9 @@ describe('AP Form - Add', () => {
       rest.get(WifiUrlsInfo.getAp.url,
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
-        (_, res, ctx) => res(ctx.json(dhcpAp)))
+        (_, res, ctx) => res(ctx.json(dhcpAp))),
+      rest.post(WifiUrlsInfo.updateAp.url,
+        (_, res, ctx) => res(ctx.json(successResponse)))
     )
   })
   afterEach(() => {

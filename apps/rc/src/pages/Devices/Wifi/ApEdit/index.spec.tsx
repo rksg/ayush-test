@@ -68,7 +68,9 @@ describe('ApEdit', () => {
       rest.get(WifiUrlsInfo.getAp.url,
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
-        (_, res, ctx) => res(ctx.json(dhcpAp)))
+        (_, res, ctx) => res(ctx.json(dhcpAp))),
+      rest.post(WifiUrlsInfo.updateAp.url,
+        (_, res, ctx) => res(ctx.json(successResponse)))
     )
   })
   afterEach(() => Modal.destroyAll())
@@ -88,9 +90,13 @@ describe('ApEdit', () => {
       }))
     }))
 
-    it('should handle form changed', async () => {
+    it('should handle invalid changes', async () => {
       mockServer.use(
+        rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+          (_, res, ctx) => res(ctx.json({}))),
         rest.post(WifiUrlsInfo.getDhcpAp.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        rest.get(CommonUrlsInfo.getApGroupList.url,
           (_, res, ctx) => res(ctx.json({})))
       )
       render(<Provider><ApEdit /></Provider>, {
@@ -104,13 +110,17 @@ describe('ApEdit', () => {
       })
 
       fireEvent.mouseDown(screen.getByLabelText(/Venue/))
+      await userEvent.click(await screen.getAllByText('Select venue...')[0])
+
+      fireEvent.mouseDown(screen.getByLabelText(/Venue/))
       await userEvent.click(await screen.getAllByText('My-Venue-dhcp')[0])
-      fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'test ap 2' } })
+
+      fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'aaaa' } })
+      fireEvent.blur(screen.getByLabelText(/AP Name/))
 
       fireEvent.click(await screen.findByText('Back to device details'))
-      expect(
-        await screen.findByText('Cannot move AP to another venue in different country')
-      ).toBeVisible()
+      await screen.findByText('This field is invalid')
+      await screen.findByText('Cannot move AP to another venue in different country')
     })
 
     it('should open unsaved changes modal', async () => {
@@ -143,7 +153,7 @@ describe('ApEdit', () => {
 
       // eslint-disable-next-line testing-library/no-unnecessary-act
       await act(() => {
-        fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: '' } })
+        fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'aaaa' } })
         fireEvent.blur(screen.getByLabelText(/AP Name/))
       })
 
