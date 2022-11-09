@@ -48,7 +48,8 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     deleteAp: build.mutation<AP, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteAps, params)
+        const api = !!payload ? WifiUrlsInfo.deleteAps : WifiUrlsInfo.deleteAp
+        const req = createHttpRequest(api, params)
         return {
           ...req,
           ...(!!payload && { body: payload })
