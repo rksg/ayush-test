@@ -4,7 +4,7 @@ import { Provider }                          from '@acx-ui/store'
 
 import SwitchesTable  from './pages/Devices/Switch/SwitchesTable'
 import ApDetails      from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }        from './pages/Devices/Wifi/ApEdit'
+import { ApEdit }     from './pages/Devices/Wifi/ApEdit'
 import { ApForm }     from './pages/Devices/Wifi/ApForm'
 import ApsTable       from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails from './pages/Networks/NetworkDetails/NetworkDetails'
