@@ -30,20 +30,13 @@ const tabsMap : Record<HealthTab, MessageDescriptor> = {
   })
 }
 
-const HealthPage = (props: { filters? : AnalyticsFilter }) => {
+const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
   const { filters: widgetFilters } = props
   const params = useParams()
-  const selectedTab =
-    params[
-      widgetFilters?.urlTabParam ? widgetFilters?.urlTabParam : 'activeTab'
-    ] ?? healthTabs[0].value
+  const selectedTab = params['categoryTab'] ?? healthTabs[0].value
   const navigate = useNavigate()
-  const basePath = useTenantLink(
-    widgetFilters?.urlBasePath
-      ? widgetFilters?.urlBasePath
-      : '/analytics/health/tab/'
-  )
+  const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
 

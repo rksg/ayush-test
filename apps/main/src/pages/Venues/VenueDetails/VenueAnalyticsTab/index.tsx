@@ -19,9 +19,7 @@ export function VenueAnalyticsTab () {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const healthFilter = {
     ...filters,
-    path: [{ type: 'zone', name: venueName }],
-    urlTabParam: 'activeSubSubTab',
-    urlBasePath: `venues/${venueId}/venue-details/analytics/health`
+    path: [{ type: 'zone', name: venueName }]
   } as AnalyticsFilter
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const incidentFilter = {
@@ -48,7 +46,10 @@ export function VenueAnalyticsTab () {
       <IncidentTabContent filters={incidentFilter} />
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Health' })} key='health'>
-      <HealthPage filters={healthFilter} />
+      <HealthPage
+        filters={healthFilter}
+        path={`venues/${venueId}/venue-details/analytics/health`}
+      />
     </Tabs.TabPane>
   </Tabs>
 }
