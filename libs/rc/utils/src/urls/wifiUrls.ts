@@ -85,6 +85,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
   },
+  getWifiCapabilities: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/capabilities'
+  },
+  addAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap'
+  },
   getDhcpAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/dhcp-ap'
