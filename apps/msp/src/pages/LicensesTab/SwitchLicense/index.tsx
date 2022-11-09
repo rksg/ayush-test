@@ -45,7 +45,6 @@ export function SwitchLicense () {
       dataIndex: 'effectiveDate',
       sorter: true,
       key: 'effectiveDate',
-      align: 'center',
       render: function (data, row) {
         return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
       }
@@ -55,7 +54,6 @@ export function SwitchLicense () {
       dataIndex: 'expirationDate',
       sorter: true,
       key: 'expirationDate',
-      align: 'center',
       render: function (data, row) {
         return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
       }
@@ -100,7 +98,7 @@ export function SwitchLicense () {
         <Table
           columns={columns}
           actions={actions}
-          dataSource={queryResults?.data}
+          // dataSource={queryResults?.data}
           rowKey='id'
         />
       </Loader>
