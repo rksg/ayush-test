@@ -11,7 +11,8 @@ import {
   venueDetailHeaderData,
   venueNetworkList,
   networkDeepList,
-  venueNetworkApGroup
+  venueNetworkApGroup,
+  serviceProfile
 } from '../__tests__/fixtures'
 
 import { VenueDetails } from '.'
@@ -75,6 +76,10 @@ describe('VenueDetails', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueDHCPServiceProfile.url,
+        (_,res,ctx) => res(ctx.json(serviceProfile))
       )
     )
   })

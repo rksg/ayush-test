@@ -41,6 +41,7 @@ describe('Venue DHCP Instance', () => {
     await fireEvent.click(activeButton)
 
     await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (1 Online)' }))
+    jest.setTimeout(100)
   })
 
 })
