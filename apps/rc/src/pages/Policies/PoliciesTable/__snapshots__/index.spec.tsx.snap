@@ -326,7 +326,6 @@ exports[`PoliciesTable should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
-                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -568,7 +567,6 @@ exports[`PoliciesTable should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 5
                               </td>
@@ -625,7 +623,6 @@ exports[`PoliciesTable should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 7
                               </td>
@@ -665,7 +662,7 @@ exports[`PoliciesTable should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/rougeAp/aa080e33-26a7-4d34-870f-b7f312fcfccc/detail"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/rogueAp/aa080e33-26a7-4d34-870f-b7f312fcfccc/detail"
                                 >
                                   Policy 3
                                 </a>
@@ -682,7 +679,6 @@ exports[`PoliciesTable should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 8
                               </td>

@@ -60,12 +60,6 @@ function useColumns () {
       title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'scope',
       sorter: true
-    },
-    {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      sorter: true
     }
   ]
 

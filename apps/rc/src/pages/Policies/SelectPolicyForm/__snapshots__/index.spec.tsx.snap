@@ -227,7 +227,7 @@ exports[`SelectPolicyForm should render form 1`] = `
                                     <input
                                       class="ant-radio-input"
                                       type="radio"
-                                      value="Rouge AP detection"
+                                      value="Rogue AP detection"
                                     />
                                     <span
                                       class="ant-radio-inner"

@@ -27,7 +27,7 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.AAA]: 'aaa',
   [PolicyType.ACCESS_CONTROL]: 'accessControl',
   [PolicyType.CLIENT_ISOLATION]: 'clientIsolation',
-  [PolicyType.ROGUE_AP_DETECTION]: 'rougeAp',
+  [PolicyType.ROGUE_AP_DETECTION]: 'rogueAp',
   [PolicyType.SYSLOG]: 'syslog',
   [PolicyType.VLAN_POOL]: 'vlanPool'
 }
