@@ -22,7 +22,6 @@ import { QuestionMarkCircleOutlined }                                   from '@a
 import {
   useApListQuery,
   useAddApMutation,
-  useGetApQuery,
   useLazyApGroupListQuery,
   useVenuesListQuery
   // TODO: edit ap
@@ -64,7 +63,7 @@ const defaultApPayload = {
 export function ApForm () {
   const { $t } = useIntl()
   const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
-  const { tenantId, action, serialNumber } = useParams()
+  const { tenantId, action } = useParams()
   const formRef = useRef<StepsFormInstance<ApDeep>>()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
@@ -72,8 +71,6 @@ export function ApForm () {
   const apList = useApListQuery({ params: { tenantId: tenantId }, payload: defaultApPayload })
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
   const [apGroupList] = useLazyApGroupListQuery()
-  const apDetails = useGetApQuery({ params: {
-    tenantId, serialNumber: serialNumber ? serialNumber : '' } })
 
   const [selectedVenue, setSelectedVenue] = useState({} as VenueExtended)
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
@@ -96,12 +93,6 @@ export function ApForm () {
   //       .map(apModel => apModel.model) ?? [])
   //   }
   // }, [wifiCapabilities])
-
-  useEffect(() => {
-    if (!apDetails.isLoading && apDetails?.data) {
-      formRef?.current?.setFieldsValue(apDetails?.data)
-    }
-  }, [apDetails])
 
   useEffect(() => {
     if (!venuesList.isLoading) {
@@ -175,7 +166,7 @@ export function ApForm () {
         <Row gutter={20}>
           <Col span={8}>
             <Loader states={[{
-              isLoading: venuesList.isLoading || apDetails.isLoading
+              isLoading: venuesList.isLoading
             }]}>
               <Form.Item
                 name='venueId'
