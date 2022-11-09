@@ -1,4 +1,5 @@
 import { APMeshRole } from '../constants'
+import { ApDeep }     from '../models/ApDeep'
 
 export interface APRadio {
   channel?: number,
@@ -26,6 +27,13 @@ export interface AP {
   venueName: string
 }
 
+export interface ApGroup {
+  aps?: ApDeep[],
+  id: string,
+  isDefault: boolean,
+  name: string,
+  venueId: string
+}
 export interface ApDetailHeader {
   title: string,
   headers: {
