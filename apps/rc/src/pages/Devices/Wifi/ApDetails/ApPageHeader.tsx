@@ -75,7 +75,7 @@ function ApPageHeader () {
           onClick={() =>
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/edit`
+              pathname: `${basePath.pathname}/edit/details`
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
