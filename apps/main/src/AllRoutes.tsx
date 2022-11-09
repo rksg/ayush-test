@@ -7,6 +7,7 @@ import Dashboard        from './pages/Dashboard'
 import DevicesBase      from './pages/Devices'
 import Layout           from './pages/Layout'
 import NetworksBase     from './pages/Networks'
+import PoliciesBase     from './pages/Policies'
 import ServicesBase     from './pages/Services'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
@@ -33,6 +34,9 @@ function AllRoutes () {
           <Route path='*' element={<RcRoutes />} />
         </Route>
         <Route path='services/*' element={<ServicesBase />}>
+          <Route path='*' element={<RcRoutes />} />
+        </Route>
+        <Route path='policies/*' element={<PoliciesBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
         <Route path='venues/*' element={<VenuesRoutes />} />
