@@ -4,6 +4,7 @@ import _                             from 'lodash'
 import {
   ApExtraParams,
   AP,
+  ApDetails,
   APRadio,
   ApRadioBands,
   CommonUrlsInfo,
@@ -11,7 +12,8 @@ import {
   RequestPayload,
   TableResult,
   ApDetailHeader,
-  RadioProperties
+  RadioProperties,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { getShortDurationFormat, getUserDateFormat } from '@acx-ui/utils'
 
@@ -46,7 +48,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     }),
-    apDetails: build.query<ApDetailHeader, RequestPayload>({
+    apViewModel: build.query<ApDetailHeader, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getApsList, params)
         return {
@@ -57,6 +59,14 @@ export const apApi = baseApApi.injectEndpoints({
       transformResponse (result: ApDetailHeader) {
         return transformApDetails(result)
       }
+    }),
+    apDetails: build.query<ApDetails, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getAp, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -65,6 +75,7 @@ export const {
   useApListQuery,
   useLazyApListQuery,
   useApDetailHeaderQuery,
+  useApViewModelQuery,
   useApDetailsQuery
 } = apApi
 

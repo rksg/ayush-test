@@ -36,6 +36,30 @@ export interface AP {
   // channel60?: RadioProperties
 }
 
+export interface ApDetails {
+  IP?: string
+  apMac?: string
+  apStatusData?: {
+    APRadio?: Array<APRadio>
+  },
+  clients?: number,
+  deviceGroupId: string,
+  deviceGroupName?: string,
+  deviceStatus: string,
+  meshRole: string,
+  model: string,
+  name?: string,
+  serialNumber: string,
+  tags: string,
+  venueId: string,
+  venueName: string,
+  description:string
+  deviceGps: {
+    latitude: string,
+    longitude:string
+  }
+}
+
 export interface ApDetailHeader {
   title: string,
   headers: {

@@ -1,6 +1,6 @@
 import { AnalyticsFilter, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                    from '@acx-ui/components'
-import { useApDetailsQuery }                   from '@acx-ui/rc/services'
+import { useApDetailsQuery, useApViewModelQuery }                   from '@acx-ui/rc/services'
 import { WifiEntityEnum }                      from '@acx-ui/rc/utils'
 import { useParams }                           from '@acx-ui/react-router-dom'
 
@@ -9,7 +9,7 @@ import { ApProperties } from './ApProperties/ApProperties'
 export function ApOverviewTab () {
   const { filters } = useAnalyticsFilter()
   const params = useParams()
-  const payload = {
+  const viewModelPayload = {
     entityType: WifiEntityEnum.apsTree,
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
@@ -18,14 +18,14 @@ export function ApOverviewTab () {
       'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
     filters: { serialNumber: [params.serialNumber] }
   }
-  const apDetailsQuery = useApDetailsQuery({ params, payload })
-
+  const apViewModelQuery = useApViewModelQuery({ params, payload: viewModelPayload })
+  const apDetailsQuery = useApDetailsQuery({ params })
   const venueApFilter = {
     ...filters
     // path: [{ type: 'zone', name: data?.venue.name }]
   } as AnalyticsFilter
 
-  return (  // TODO: Remove background: '#F7F7F7'
+  return (  // TODO: Remove background: '#F7F7F7' and Add other widgets
     <GridRow>
       <GridCol col={{ span: 18 }} style={{ height: '152px', background: '#F7F7F7' }}>
         Charts
@@ -37,14 +37,14 @@ export function ApOverviewTab () {
        Floor Plan
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ background: '#F7F7F7' }}>
-        <ApProperties apDetailsQuery={apDetailsQuery} />
+        <ApProperties apViewModelQuery={apViewModelQuery} apDetailsQuery={apDetailsQuery} />  
       </GridCol>
       <ApWidgets filters={venueApFilter}/>
     </GridRow>
   )
 }
 
-function ApWidgets (props: { filters: AnalyticsFilter }) {
+function ApWidgets (props: { filters: AnalyticsFilter }) { // TODO: Add charts
   const filters = props.filters
   console.log(filters) // eslint-disable-line no-console
   return (

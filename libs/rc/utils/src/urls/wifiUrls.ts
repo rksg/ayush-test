@@ -84,5 +84,9 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueCellularSettings: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
-  }
+  },
+  getAp: {
+    method: 'get',
+    url: `/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=false`,
+  },
 }

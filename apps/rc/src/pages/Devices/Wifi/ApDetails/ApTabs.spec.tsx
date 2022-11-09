@@ -8,7 +8,7 @@ import {
 } from './__tests__/fixtures'
 import ApTabs from './ApTabs'
 
-const params = { apId: 'ap-id', tenantId: 'tenant-id' }
+const params = { serialNumber: 'serialNumber', tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -31,7 +31,7 @@ describe('ApTabs', () => {
     await waitFor(() => screen.findByText('Clients (1)'))
     fireEvent.click(await screen.findByText('Clients (1)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/aps/${params.apId}/details/clients`,
+      pathname: `/t/${params.tenantId}/devices/aps/${params.serialNumber}/details/clients`,
       hash: '',
       search: ''
     })

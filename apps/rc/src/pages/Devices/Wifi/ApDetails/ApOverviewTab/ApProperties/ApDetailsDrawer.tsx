@@ -3,18 +3,20 @@ import { ContentSwitcher, ContentSwitcherProps, Drawer }                  from '
 import { Divider, Form } from 'antd'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import * as UI from './styledComponents'
-import { DeviceGps, GpsFieldStatus } from '@acx-ui/rc/utils'
+import { AP, ApDetails, ApVenueStatusEnum, DeviceGps, GpsFieldStatus, gpsToFixed } from '@acx-ui/rc/utils'
+import { useGetVenueQuery } from '@acx-ui/rc/services'
 
 interface ApDetailsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  currentAP: any
+  currentAP: any,
+  apDetails: ApDetails
 }
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, currentAP } = props
-  const { venueId } = useParams()
+  const { tenantId } = useParams()
+  const { visible, setVisible, currentAP, apDetails } = props
   const onClose = () => {
     setVisible(false)
   }
@@ -31,7 +33,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
           children={
             <TenantLink to={`/venues/${currentAP?.venueId}/venue-details/overview`}>
               {currentAP?.venueName}
-            </TenantLink>}
+            </TenantLink>
+          }
         />
         <Form.Item
           label={$t({ defaultMessage: 'AP Group:' })}
@@ -42,10 +45,10 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'Description:' })}
           children={
-            currentAP?.description || $t({ defaultMessage: 'None' })
+            apDetails?.description || $t({ defaultMessage: 'None' })
           }
         />
-        {/* <Form.Item
+        {/* <Form.Item  TODO: Wait tags feature support 
           label={$t({ defaultMessage: 'Tags:' })}
           children={
             currentAP?.tags || '--'
@@ -54,18 +57,265 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'GPS Coordinates:' })}
           children={
-            getGpsFieldStatus(currentAP.deviceGps, venueId as string)
+            getGpsFieldStatus(apDetails.deviceGps, currentAP.venueId)
           }
         />
         <Divider/>
+        <Form.Item
+          label={$t({ defaultMessage: 'S/N:' })}
+          children={
+            currentAP?.serialNumber || '--'
+          }
+        />
+        <Form.Item
+          label={$t({ defaultMessage: 'MAC Address:' })}
+          children={
+            (currentAP?.apMac && (currentAP?.apMac !== currentAP?.serialNumber)) ? currentAP.apMac : '--'
+          }
+        />
+        <Form.Item
+          label={$t({ defaultMessage: 'IP Address:' })}
+          children={
+            currentAP?.IP || '--'
+          }
+        />
+        <Form.Item
+          label={$t({ defaultMessage: 'Ext. IP Address:' })}
+          children={
+            currentAP?.extIp || '--'
+          }
+        />
+        <Form.Item
+          label={$t({ defaultMessage: 'Model:' })}
+          children={
+            currentAP?.model || '--'
+          }
+        />
+        <Form.Item
+          label={$t({ defaultMessage: 'Type:' })}
+          children={
+            currentAP?.deviceModelType || '--'
+          }
+        />
+        <Form.Item
+          label={$t({ defaultMessage: 'Version:' })}
+          children={
+            currentAP?.fwVersion || '--'
+          }
+        />
+        {
+          currentAP?.isMeshEnable && (
+            <>
+             <Divider/>
+              <Form.Item
+                label={$t({ defaultMessage: 'Mesh Role:' })}
+                children={
+                  currentAP?.meshRole ? 
+                  currentAP.meshRole + ' (' + currentAP.hops + ' hop)' : $t({ defaultMessage: 'AP' })
+                }
+              />
+              { currentAP?.rootAP?.name && 
+                <Form.Item
+                  label={$t({ defaultMessage: 'Root AP:' })}
+                  children={
+                    <TenantLink to={`/devices/aps/${currentAP.rootAP.serialNumber}/details/overview`}>
+                      {currentAP.rootAP.name}
+                    </TenantLink>
+                  }
+                />
+              }
+              {
+                currentAP?.apDownRssi && 
+                <Form.Item
+                  label={$t({ defaultMessage: 'Signal to previous hop:' })}
+                  children={
+                    currentAP?.apDownRssi
+                  }
+                />
+              }
+              {
+                currentAP?.apUpRssi && 
+                <Form.Item
+                  label={$t({ defaultMessage: 'Signal from previous hop:' })}
+                  children={
+                    currentAP?.apUpRssi
+                  }
+                />
+              }
+            </>
+          )
+        }
+        {
+          currentAP.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL &&
+          <>
+            <Divider/>
+            <Form.Item
+              label={$t({ defaultMessage: 'Uptime:' })}
+              children={currentAP?.uptime}
+            />
+            <Form.Item
+              label={$t({ defaultMessage: 'Last Seen:' })}
+              children={currentAP?.lastSeenTime}
+            />
+          </>
+        }
      </Form>
     )
    }
+
+   const getGpsFieldStatus = (deviceGps: DeviceGps, venueId: string) => {
+      if (deviceGps?.latitude && deviceGps?.longitude) {
+        return deviceGps.latitude+ ', ' + deviceGps.longitude
+      } else if (venueId) {
+        const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
+        const latitude = gpsToFixed(data?.address.latitude)
+        const longitude = gpsToFixed(data?.address.longitude)
+        return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As venue)' }) }</>
+      } else {
+        return '--'
+      }
+   }
    
    const SettingsTab = () => {
-     return (
-       <>SettingsTab</>
-      )
+    return (
+      <Form
+        labelCol={{ span: 10 }}
+        labelAlign='left'
+        style={{ marginTop: '25px' }}
+      >
+         <Form.Item
+           label={$t({ defaultMessage: 'Venue:' })}
+           children={
+             <TenantLink to={`/venues/${currentAP?.venueId}/venue-details/overview`}>
+               {currentAP?.venueName}
+             </TenantLink>
+           }
+         />
+         <Form.Item
+           label={$t({ defaultMessage: 'AP Group:' })}
+           children={
+             currentAP?.deviceGroupName || $t({ defaultMessage: 'None' })
+           }
+         />
+         <Form.Item
+           label={$t({ defaultMessage: 'Description:' })}
+           children={
+             apDetails?.description || $t({ defaultMessage: 'None' })
+           }
+         />
+         {/* <Form.Item  TODO: Wait tags feature support 
+           label={$t({ defaultMessage: 'Tags:' })}
+           children={
+             currentAP?.tags || '--'
+           }
+         /> */}
+         <Form.Item
+           label={$t({ defaultMessage: 'GPS Coordinates:' })}
+           children={
+             getGpsFieldStatus(apDetails.deviceGps, currentAP.venueId)
+           }
+         />
+         <Divider/>
+         <Form.Item
+           label={$t({ defaultMessage: 'S/N:' })}
+           children={
+             currentAP?.serialNumber || '--'
+           }
+         />
+         <Form.Item
+           label={$t({ defaultMessage: 'MAC Address:' })}
+           children={
+             (currentAP?.apMac && (currentAP?.apMac !== currentAP?.serialNumber)) ? currentAP.apMac : '--'
+           }
+         />
+         <Form.Item
+           label={$t({ defaultMessage: 'IP Address:' })}
+           children={
+             currentAP?.IP || '--'
+           }
+         />
+         <Form.Item
+           label={$t({ defaultMessage: 'Ext. IP Address:' })}
+           children={
+             currentAP?.extIp || '--'
+           }
+         />
+         <Form.Item
+           label={$t({ defaultMessage: 'Model:' })}
+           children={
+             currentAP?.model || '--'
+           }
+         />
+         <Form.Item
+           label={$t({ defaultMessage: 'Type:' })}
+           children={
+             currentAP?.deviceModelType || '--'
+           }
+         />
+         <Form.Item
+           label={$t({ defaultMessage: 'Version:' })}
+           children={
+             currentAP?.fwVersion || '--'
+           }
+         />
+         {
+           currentAP?.isMeshEnable && (
+             <>
+              <Divider/>
+               <Form.Item
+                 label={$t({ defaultMessage: 'Mesh Role:' })}
+                 children={
+                   currentAP?.meshRole ? 
+                   currentAP.meshRole + ' (' + currentAP.hops + ' hop)' : $t({ defaultMessage: 'AP' })
+                 }
+               />
+               { currentAP?.rootAP?.name && 
+                 <Form.Item
+                   label={$t({ defaultMessage: 'Root AP:' })}
+                   children={
+                     <TenantLink to={`/devices/aps/${currentAP.rootAP.serialNumber}/details/overview`}>
+                       {currentAP.rootAP.name}
+                     </TenantLink>
+                   }
+                 />
+               }
+               {
+                 currentAP?.apDownRssi && 
+                 <Form.Item
+                   label={$t({ defaultMessage: 'Signal to previous hop:' })}
+                   children={
+                     currentAP?.apDownRssi
+                   }
+                 />
+               }
+               {
+                 currentAP?.apUpRssi && 
+                 <Form.Item
+                   label={$t({ defaultMessage: 'Signal from previous hop:' })}
+                   children={
+                     currentAP?.apUpRssi
+                   }
+                 />
+               }
+             </>
+           )
+         }
+         {
+           currentAP.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL &&
+           <>
+             <Divider/>
+             <Form.Item
+               label={$t({ defaultMessage: 'Uptime:' })}
+               children={currentAP?.uptime}
+             />
+             <Form.Item
+               label={$t({ defaultMessage: 'Last Seen:' })}
+               children={currentAP?.lastSeenTime}
+             />
+           </>
+         }
+      </Form>
+     )
    }
 
    const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -93,19 +343,6 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   )
 }
 
-const getGpsFieldStatus = (deviceGps: DeviceGps, venueId: string) => {
-  let gpsFieldStatus // TODO: check apDetails
-  if (deviceGps?.latitude && deviceGps?.longitude) {
-    gpsFieldStatus = GpsFieldStatus.MANUAL
-    return deviceGps.latitude+ ', ' + deviceGps.longitude
-  } else if (venueId) {
-    gpsFieldStatus = GpsFieldStatus.FROM_VENUE
-    // TODO: getVenueQuery rc-ui: applyVenueGpsCoordinates()
-    return '(As venue)'
-  } else {
-    gpsFieldStatus = GpsFieldStatus.INITIAL
-    return '--'
-  }
-}
+
 
  

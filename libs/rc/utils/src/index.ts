@@ -10,6 +10,7 @@ export * from './validator'
 
 export * from './network.utils'
 export * from './schedule.utils'
+export * from './wifi.utils'
 export * from './toast/toastService'
 export * from './models'
 

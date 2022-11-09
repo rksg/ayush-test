@@ -6,24 +6,25 @@ import {
   Card,
   Subtitle
 } from '@acx-ui/components'
-import { ApVenueStatusEnum } from '@acx-ui/rc/utils'
+import { AP, ApDetails, ApVenueStatusEnum } from '@acx-ui/rc/utils'
 import { TenantLink }        from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import { useState } from 'react'
 
-export function ApProperties (props: { apDetailsQuery: any }) {
+export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any }) {
   // UseQueryResult<TableResult<AP, ApExtraParams>> TODO:
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const { apDetailsQuery } = props
-  const currentAP = apDetailsQuery.data
+  const { apViewModelQuery, apDetailsQuery } = props
+  const currentAP = apViewModelQuery.data
+  const apDetails = apDetailsQuery.data
   const onMoreAction = () => {
     setVisible(true)
   }
   return (
-    <Loader states={[apDetailsQuery]}>
+    <Loader states={[apViewModelQuery, apDetailsQuery]}>
       <Card title={$t({ defaultMessage: 'AP Properties' })} 
             action={{
               actionName: $t({ defaultMessage: 'More' }),
@@ -48,9 +49,9 @@ export function ApProperties (props: { apDetailsQuery: any }) {
                 currentAP?.deviceGroupName || $t({ defaultMessage: 'None' })
               }
             />
-            <Divider/>
+            <Divider style={{ margin: '20px 0' }}/>
             {
-              currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL &&
+              currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ?
               (
                 <>
                   <Form.Item
@@ -126,7 +127,9 @@ export function ApProperties (props: { apDetailsQuery: any }) {
                     )
                   }
                 </>
-              )
+              ) : <UI.NoOnlineInfo>
+                    {$t({ defaultMessage: 'No Online information' })}
+                  </UI.NoOnlineInfo>
             }
             {
               currentAP?.apStatusData?.cellularInfo &&
@@ -167,6 +170,7 @@ export function ApProperties (props: { apDetailsQuery: any }) {
         visible={visible}
         setVisible={setVisible}
         currentAP={currentAP}
+        apDetails={apDetails}
       />
     </Loader>
   )

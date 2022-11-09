@@ -35,3 +35,8 @@ export const TextNumber = styled.div`
     padding: 7px;
   }
 `
+
+export const NoOnlineInfo = styled.div`
+  text-align: center;
+  color: var(--acx-neutrals-50);
+`
