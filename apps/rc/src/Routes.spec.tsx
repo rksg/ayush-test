@@ -211,7 +211,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('WIFI_CALLING create page')).toBeVisible()
+    expect(screen.getByText(/add wi\-fi calling service/i)).toBeVisible()
   })
 
   test('should navigate to edit WIFI_CALLING page', async () => {
@@ -223,7 +223,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('WIFI_CALLING edit page')).toBeVisible()
+    expect(screen.getByText(/configure wi\-fi calling service/i)).toBeVisible()
   })
 
   test('should navigate to WIFI_CALLING details page', async () => {
@@ -235,7 +235,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('WIFI_CALLING details page')).toBeVisible()
+    expect(screen.getByText(/instance/i)).toBeVisible()
   })
 
   test('should navigate to create DHCP page', async () => {

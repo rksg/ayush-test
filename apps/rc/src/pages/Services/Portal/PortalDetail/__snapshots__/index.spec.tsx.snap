@@ -335,9 +335,12 @@ exports[`Portal Detail Page should render detail page 1`] = `
                                   >
                                     <tr>
                                       <th
-                                        class="ant-table-cell ant-table-column-has-sorters"
+                                        class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                         tabindex="0"
                                       >
+                                        <div
+                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                        />
                                         <div
                                           class="ant-table-column-sorters"
                                         >
@@ -393,41 +396,87 @@ exports[`Portal Detail Page should render detail page 1`] = `
                                             </span>
                                           </span>
                                         </div>
+                                        <div
+                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                        />
                                       </th>
                                       <th
-                                        class="ant-table-cell"
+                                        class="ant-table-cell react-resizable"
                                       >
+                                        <div
+                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                        />
                                         Type
+                                        <div
+                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                        />
                                       </th>
                                       <th
-                                        class="ant-table-cell"
+                                        class="ant-table-cell react-resizable"
                                       >
+                                        <div
+                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                        />
                                         Venues
+                                        <div
+                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                        />
                                       </th>
                                       <th
-                                        class="ant-table-cell"
+                                        class="ant-table-cell react-resizable"
                                       >
+                                        <div
+                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                        />
                                         Service Health
+                                        <div
+                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                        />
                                       </th>
                                       <th
-                                        class="ant-table-cell"
+                                        class="ant-table-cell react-resizable"
                                       >
+                                        <div
+                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                        />
                                         Abandonment rate
+                                        <div
+                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                        />
                                       </th>
                                       <th
-                                        class="ant-table-cell"
+                                        class="ant-table-cell react-resizable"
                                       >
+                                        <div
+                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                        />
                                         Number of clients
+                                        <div
+                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                        />
                                       </th>
                                       <th
-                                        class="ant-table-cell"
+                                        class="ant-table-cell react-resizable"
                                       >
+                                        <div
+                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                        />
                                         Clients per portal type
+                                        <div
+                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                        />
                                       </th>
                                       <th
-                                        class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                        class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                         style="position: sticky; right: 0px;"
-                                      />
+                                      >
+                                        <div
+                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                        />
+                                        <div
+                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                        />
+                                      </th>
                                     </tr>
                                   </thead>
                                   <tbody

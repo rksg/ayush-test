@@ -23,7 +23,8 @@ import {
   MdnsProxyForwardingRule,
   PortalDetailInstances,
   Portal,
-  PortalUrlsInfo
+  PortalUrlsInfo,
+  WifiCallingFormContextType, WifiCallingSetting
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -34,6 +35,10 @@ import {
   VlanPool,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
+
+const RKS_NEW_UI = {
+  'x-rks-new-ui': true
+}
 
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -282,6 +287,57 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
     }),
+    getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const reqParams = { ...params }
+        if (params && !params.serviceId) {
+          reqParams.serviceId = 'none'
+        }
+        const wifiCallingServiceReq = createHttpRequest(
+          WifiCallingUrls.getWifiCalling, reqParams, RKS_NEW_UI
+        )
+        return {
+          ...wifiCallingServiceReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
+      query: ({ params }) => {
+        const wifiCallingServiceListReq = createHttpRequest(
+          WifiCallingUrls.getWifiCallingList, params, RKS_NEW_UI
+        )
+        return {
+          ...wifiCallingServiceListReq
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    createWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const createWifiCallingServiceReq = createHttpRequest(
+          WifiCallingUrls.addWifiCalling, params, RKS_NEW_UI
+        )
+        return {
+          ...createWifiCallingServiceReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updateWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          WifiCallingUrls.updateWifiCalling, params, RKS_NEW_UI
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
         const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
@@ -323,6 +379,10 @@ export const {
   useDeleteMdnsProxyMutation,
   useDeleteMdnsProxyListMutation,
   useDeleteWifiCallingServiceMutation,
+  useGetWifiCallingServiceQuery,
+  useGetWifiCallingServiceListQuery,
+  useCreateWifiCallingServiceMutation,
+  useUpdateWifiCallingServiceMutation,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,

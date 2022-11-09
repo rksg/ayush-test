@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
+import { healthApi }                      from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }     from '@acx-ui/analytics/utils'
 import { Card, GridRow, GridCol, Loader } from '@acx-ui/components'
 
 import { KpiWidget } from '../KpiWidget'
 
-import { useGetKpiThresholdsQuery } from './services'
-import * as UI                      from './styledComponents'
+import * as UI from './styledComponents'
 
 export { VenueHealthWidget as VenueHealth }
 
@@ -16,7 +16,7 @@ function VenueHealthWidget ({
   filters: AnalyticsFilter;
 }){
   const { $t } = useIntl()
-  const queryResults= useGetKpiThresholdsQuery({ ...filters,
+  const queryResults= healthApi.useGetKpiThresholdsQuery({ ...filters,
     kpis: ['timeToConnect','clientThroughput'] })
   const { data } = queryResults
 
