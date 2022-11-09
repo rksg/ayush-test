@@ -44,7 +44,7 @@ const mockTableResult = {
     {
       id: 'aa080e33-26a7-4d34-870f-b7f312fcfccc',
       name: 'Policy 3',
-      type: 'Rogue AP detection',
+      type: 'Rogue AP Detection',
       technology: 'WI-FI',
       scope: '8',
       tags: [
