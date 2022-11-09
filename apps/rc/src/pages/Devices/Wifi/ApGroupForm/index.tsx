@@ -105,7 +105,7 @@ export function ApGroupForm () {
       }
       const list = (await apGroupsList({ params, payload }, true)
         .unwrap()).data.map(n => ({ name: n.name }))
-      return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'Venue' }))
+      return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'Group' }))
     } else {
       return false
     }
