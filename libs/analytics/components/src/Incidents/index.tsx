@@ -1,16 +1,15 @@
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
-import {
-  Header,
-  IncidentBySeverity,
-  IncidentTable,
-  NetworkHistory
-} from '@acx-ui/analytics/components'
 import { useAnalyticsFilter }                           from '@acx-ui/analytics/utils'
 import { categoryNames, categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
 import { AnalyticsFilter }                              from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Tabs }                       from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
+
+import { Header }             from '../Header'
+import { IncidentBySeverity } from '../IncidentBySeverity'
+import { IncidentTable }      from '../IncidentTable'
+import { NetworkHistory }     from '../NetworkHistory'
 
 const incidentTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
 type IncidentListTabs = 'overview' | 'connection' | 'performance' | 'infrastructure'

@@ -3,9 +3,9 @@ import { useContext, useEffect } from 'react'
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
-import { NetworkHistory }  from '@acx-ui/analytics/components'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
+import { NetworkHistory }    from '../../NetworkHistory'
 import { HealthPageContext } from '../HealthPageContext'
 
 const ConnectedClientsOverTime = (props: { filters : AnalyticsFilter }) => {
