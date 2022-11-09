@@ -31,10 +31,7 @@ jest.mock('./pages/Venues/VenuesTable', () => ({
 jest.mock('msp/Routes', () => () => {
   return <div data-testid='msp' />
 }, { virtual: true })
-jest.mock(
-  'analytics/Widgets',
-  () => <div data-testid='analytics/Widgets' />,
-  { virtual: true })
+
 describe('AllRoutes', () => {
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', {})
