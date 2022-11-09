@@ -264,17 +264,17 @@ export const expectedResult = [
   }
 ]
 
-describe('useImpactedEntitiesQuery', () => {
+describe('useWanthroughputTable', () => {
   beforeEach(() => {
     store.dispatch(impactedApi.util.resetApiState())
   })
 
   it('should call api correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
-      data: { incident: { impactedEntities: expectedResult } }
+    mockGraphqlQuery(dataApiURL, 'wanthroughputTable', {
+      data: { incident: { wanthroughputTable: expectedResult } }
     })
     const { status, data, error } = await store.dispatch(
-      impactedApi.endpoints.impactedEntities.initiate({
+      impactedApi.endpoints.wanthroughputTable.initiate({
         id: fakeIncidentApInfraWanthroughput.id,
         search: '',
         n: 100

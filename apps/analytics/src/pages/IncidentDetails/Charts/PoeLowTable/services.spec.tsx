@@ -30,17 +30,17 @@ export const expectedResult = [
   }
 ]
 
-describe('useImpactedEntitiesQuery', () => {
+describe('usePoeLowTableQuery', () => {
   beforeEach(() => {
     store.dispatch(impactedApi.util.resetApiState())
   })
 
   it('should call api correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
-      data: { incident: { impactedEntities: expectedResult } }
+    mockGraphqlQuery(dataApiURL, 'poeLowTable', {
+      data: { incident: { poeLowTable: expectedResult } }
     })
     const { status, data, error } = await store.dispatch(
-      impactedApi.endpoints.impactedEntities.initiate({
+      impactedApi.endpoints.poeLowTable.initiate({
         id: fakeIncidentPoeLow.id,
         search: '',
         n: 100

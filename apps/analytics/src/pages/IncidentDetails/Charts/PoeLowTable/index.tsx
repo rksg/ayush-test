@@ -5,13 +5,13 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { noDataSymbol }                      from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, NoData } from '@acx-ui/components'
-import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
 
 import { ImpactedTableProps, defaultSort, json2keymap } from '../utils'
 
-import poeApPwrModeEnumMap                      from './poeApPwrModeEnumMap.json'
-import poeCurPwrSrcEnumMap                      from './poeCurPwrSrcEnumMap.json'
-import { ImpactedAP, useImpactedEntitiesQuery } from './services'
+import poeApPwrModeEnumMap                 from './poeApPwrModeEnumMap.json'
+import poeCurPwrSrcEnumMap                 from './poeCurPwrSrcEnumMap.json'
+import { ImpactedAP, usePoeLowTableQuery } from './services'
 
 type PoeLowTableFields = {
   name: string
@@ -27,14 +27,13 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
   const { $t } = intl
   const [ search ] = useState('')
 
-  const queryResults = useImpactedEntitiesQuery({
+  const queryResults = usePoeLowTableQuery({
     id: props.incident.id,
     search,
     n: 100
   },{ selectFromResult: (states) => ({
     ...states
   }) })
-  const basePath = useTenantLink('/analytics/incidents/')
 
   const pwrModeMap = json2keymap(['code'], 'text', [''])(poeApPwrModeEnumMap)
   const pwrSrcMap = json2keymap(['code'], 'text', [''])(poeCurPwrSrcEnumMap)
@@ -60,11 +59,7 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
       width: 200,
       dataIndex: 'name',
       key: 'name',
-      render: (_, value) => {
-        return <Link to={{ ...basePath, pathname: `${basePath.pathname}` }}>
-          {value.name}
-        </Link>
-      },
+      render: (_, value) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
       sorter: {
         compare: (a, b) => defaultSort(a.name, b.name)
       },

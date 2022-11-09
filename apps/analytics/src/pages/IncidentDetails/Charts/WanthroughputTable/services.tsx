@@ -28,7 +28,7 @@ interface Response <T> {
 
 export const impactedApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    impactedEntities: build.query<
+    wanthroughputTable: build.query<
       ImpactedAP[], RequestPayload
     >({
       query: (payload) => ({
@@ -57,5 +57,5 @@ export const impactedApi = dataApi.injectEndpoints({
   })
 })
 export const {
-  useImpactedEntitiesQuery
+  useWanthroughputTableQuery
 } = impactedApi

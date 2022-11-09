@@ -5,11 +5,11 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { noDataSymbol }                      from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, NoData } from '@acx-ui/components'
-import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
 
 import { ImpactedTableProps, defaultSort } from '../utils'
 
-import { ImpactedAP, useImpactedEntitiesQuery } from './services'
+import { ImpactedAP, useWanthroughputTableQuery } from './services'
 
 type WanthroughputTableFields = {
   name: string
@@ -26,14 +26,13 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
   const { $t } = intl
   const [ search ] = useState('')
 
-  const queryResults = useImpactedEntitiesQuery({
+  const queryResults = useWanthroughputTableQuery({
     id: props.incident.id,
     search,
     n: 100
   },{ selectFromResult: (states) => ({
     ...states
   }) })
-  const basePath = useTenantLink('/analytics/incidents/')
 
   const convertData = (data: ImpactedAP[]) => data.flatMap(datum =>
     datum.ports.flatMap(result => ({
@@ -53,15 +52,12 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
       width: 200,
       dataIndex: 'apName',
       key: 'apName',
-      render: (_, value) => {
-        return <Link to={{ ...basePath, pathname: `${basePath.pathname}` }}>
-          {value.name}
-        </Link>
-      },
+      render: (_, value) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
       sorter: {
         compare: (a, b) => defaultSort(a.name, b.name)
       },
       defaultSortOrder: 'descend',
+      fixed: 'left',
       searchable: true
     },
     {

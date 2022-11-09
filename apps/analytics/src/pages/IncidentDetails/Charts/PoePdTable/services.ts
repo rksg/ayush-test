@@ -25,7 +25,7 @@ interface Response <T> {
 
 export const impactedApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    impactedEntities: build.query<
+    poePdTable: build.query<
       ImpactedSwitch[], RequestPayload
     >({
       query: (payload) => ({
@@ -51,5 +51,5 @@ export const impactedApi = dataApi.injectEndpoints({
   })
 })
 export const {
-  useImpactedEntitiesQuery
+  usePoePdTableQuery
 } = impactedApi

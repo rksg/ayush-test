@@ -5,11 +5,11 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { noDataSymbol }                      from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, NoData } from '@acx-ui/components'
-import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
 
 import { ImpactedTableProps, defaultSort } from '../utils'
 
-import { ImpactedSwitch, useImpactedEntitiesQuery } from './services'
+import { ImpactedSwitch, usePoePdTableQuery } from './services'
 
 type PoePdTableFields = {
   name: string,
@@ -23,21 +23,21 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
   const { $t } = intl
   const [ search ] = useState('')
 
-  const queryResults = useImpactedEntitiesQuery({
+  const queryResults = usePoePdTableQuery({
     id: props.incident.id,
     search,
     n: 100
   }, { selectFromResult: (states) => ({
     ...states
   }) })
-  const basePath = useTenantLink('/analytics/incidents/')
 
   const convertData = (data: ImpactedSwitch[]) => data.flatMap(datum =>
     datum.ports.flatMap(result => ({
       name: datum.name,
       mac: datum.mac,
       portNumber: result.portNumber,
-      metadata: result.metadata
+      metadata: result.metadata,
+      eventTime: moment(Number((result.metadata.match(/(\d+)/))?.[0]))
     }))
   )
 
@@ -47,11 +47,7 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
       width: 200,
       dataIndex: 'name',
       key: 'name',
-      render: (_, value) => {
-        return <Link to={{ ...basePath, pathname: `${basePath.pathname}` }}>
-          {value.name}
-        </Link>
-      },
+      render: (_, value) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
       sorter: {
         compare: (a, b) => defaultSort(a.name, b.name)
       },
