@@ -20,6 +20,7 @@ describe('Floor Plan Form', () => {
     const onFormSubmit = jest.fn()
     const { asFragment } = render(<Provider>
       <FloorPlanForm
+        formLoading={false}
         form={formRef.current}
         onFormSubmit={onFormSubmit}
         imageFile={''}/></Provider>)
