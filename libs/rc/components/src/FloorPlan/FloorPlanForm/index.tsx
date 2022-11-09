@@ -6,9 +6,8 @@ import { FormInstance }                         from 'antd/es/form/Form'
 import { FileValidation } from '@acx-ui/rc/utils'
 import { getIntl }        from '@acx-ui/utils'
 
-import ground from '../../../assets/images/ground_floor_0.png'
-
 import FloorplanUpload from './FloorPlanUpload'
+import ground          from './ground_floor_0.png'
 
 export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageFile }: {
     form: FormInstance,
