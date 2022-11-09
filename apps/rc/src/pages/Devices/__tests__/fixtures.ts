@@ -14,7 +14,7 @@ export const venuelist = {
       id: '908c47ee1cd445838c3bf71d4addccdf',
       latitude: '37.4112751',
       longitude: '-122.0191908',
-      name: 'DEMO_VENUE test 5'
+      name: 'Test-Venue'
     },
     {
       country: 'United States',
@@ -29,14 +29,14 @@ export const venuelist = {
       id: 'a4f9622e9c7547ba934fbb5ee55646c2',
       latitude: '4.854995099999999',
       longitude: '100.751032',
-      name: 'My-Venue-dhcp'
+      name: 'Venue-DHCP'
     }, {
       country: 'United States',
       dhcp: { enabled: true, mode: 'DHCPMODE_MULTIPLE_AP' },
       id: '16b11938ee934928a796534e2ee47661',
       latitude: '37.4112751',
       longitude: '-122.0191908',
-      name: 'venue-dhcp-ui'
+      name: 'Venue-DHCP 2'
     }
   ]
 }
@@ -270,13 +270,13 @@ export const apDetailsList = [{
   venueId: '16b11938ee934928a796534e2ee47661'
 }]
 
-export const dhcpAp = {
+export const dhcpAp = [{
   requestId: '3be06d50-5ae9-4d7f-92b6-146b5b7d77b4',
   response: [{
     dhcpApRole: 'PrimaryServer',
     serialNumber: '422039000034',
     venueDhcpEnabled: true,
     venueDhcpMode: 'EnableOnMultipleAPs',
-    venueId: '16b11938ee934928a796534e2ee47661'
+    venueId: 'a4f9622e9c7547ba934fbb5ee55646c2'
   }]
-}
+}]

@@ -68,7 +68,7 @@ describe('ApEdit', () => {
       rest.get(WifiUrlsInfo.getAp.url,
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
-        (_, res, ctx) => res(ctx.json(dhcpAp))),
+        (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
       rest.post(WifiUrlsInfo.updateAp.url,
         (_, res, ctx) => res(ctx.json(successResponse)))
     )
@@ -110,10 +110,7 @@ describe('ApEdit', () => {
       })
 
       fireEvent.mouseDown(screen.getByLabelText(/Venue/))
-      await userEvent.click(await screen.getAllByText('Select venue...')[0])
-
-      fireEvent.mouseDown(screen.getByLabelText(/Venue/))
-      await userEvent.click(await screen.getAllByText('My-Venue-dhcp')[0])
+      await userEvent.click(await screen.getAllByText('Venue-DHCP')[0])
 
       fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'aaaa' } })
       fireEvent.blur(screen.getByLabelText(/AP Name/))

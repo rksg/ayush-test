@@ -569,7 +569,7 @@ function CoordinatesModal (props: {
     onCancel={() => setGpsModalVisible(false)}
   >
     <GoogleMap.FormItem>
-      {<Form.Item
+      <Form.Item
         noStyle
         label={false}
         name={fieldName}
@@ -594,7 +594,7 @@ function CoordinatesModal (props: {
         data-testid='coordinates-input'
         onChange={onChangeCoordinates}
         />
-      </Form.Item>}
+      </Form.Item>
       {isMapEnabled ?
         <GoogleMap
           libraries={['places']}
