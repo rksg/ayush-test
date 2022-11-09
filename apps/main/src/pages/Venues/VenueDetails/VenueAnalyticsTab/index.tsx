@@ -10,8 +10,7 @@ export function VenueAnalyticsTab () {
   const { $t } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
-  const params = useParams()
-  const { activeSubTab, venueId } = params
+  const { activeSubTab, venueId } = useParams()
   const { filters } = useAnalyticsFilter()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const healthFilter = {

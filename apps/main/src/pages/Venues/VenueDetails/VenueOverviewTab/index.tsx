@@ -32,22 +32,20 @@ import {
   VenueAlarmWidget,
   VenueDevicesWidget
 } from '@acx-ui/rc/components'
-import { useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
-  const params = useParams()
-  const { data } = useVenueDetailsHeaderQuery({ params })
+  const { venueId } = useParams()
 
   const venueApFilter = {
     ...filters,
-    path: [{ type: 'zone', name: data?.venue.name }]
+    path: [{ type: 'zone', name: venueId }]
   } as AnalyticsFilter
 
   const venueSwitchFilter = {
     ...filters,
-    path: [{ type: 'switchGroup', name: data?.venue.name }]
+    path: [{ type: 'switchGroup', name: venueId }]
   } as AnalyticsFilter
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
