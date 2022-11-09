@@ -12,10 +12,10 @@ import { ImpactedTableProps, defaultSort } from '../utils'
 import { ImpactedSwitch, usePoePdTableQuery } from './services'
 
 type PoePdTableFields = {
-  name: string,
-  mac: string,
-  portNumber: string,
-  metadata: string
+  name: string
+  mac: string
+  portNumber: string
+  eventTime: number
 }
 
 export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
@@ -36,8 +36,7 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
       name: datum.name,
       mac: datum.mac,
       portNumber: result.portNumber,
-      metadata: result.metadata,
-      eventTime: moment(Number((result.metadata.match(/(\d+)/))?.[0]))
+      eventTime: Number((result.metadata.match(/(\d+)/))?.[0])
     }))
   )
 
@@ -82,10 +81,9 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
       width: 100,
       dataIndex: 'eventTime',
       key: 'eventTime',
-      render: (_, value) => moment(Number((value.metadata.match(/(\d+)/))?.[0]))
-        .format('MMMM DD YYYY HH:mm'),
+      render: (_, value) => moment(value.eventTime).format('MMMM DD YYYY HH:mm'),
       sorter: {
-        compare: (a, b) => defaultSort(a.metadata, b.metadata)
+        compare: (a, b) => defaultSort(a.eventTime, b.eventTime)
       }
     } // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
