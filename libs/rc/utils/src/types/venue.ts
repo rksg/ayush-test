@@ -122,14 +122,6 @@ export interface DhcpOptions {
   mode: DhcpModeEnum
 }
 
-export interface VenueDefaultApGroup {
-  id: string
-  isDefault: boolean
-  venueId: string,
-  aps?: ApDeep[]
-}
-
-
 enum DhcpModeEnum {
   DHCPMODE_EACH_AP = 'DHCPMODE_EACH_AP',
   DHCPMODE_MULTIPLE_AP = 'DHCPMODE_MULTIPLE_AP',

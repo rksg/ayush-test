@@ -38,17 +38,26 @@ const defaultPayload = {
 
 export function ApGroupForm () {
   const { $t } = useIntl()
-  const params = useParams()
   const { tenantId, action } = useParams()
-  const formRef = useRef<StepsFormInstance<ApDeep>>()
   const navigate = useNavigate()
+  const params = useParams()
+  const formRef = useRef<StepsFormInstance<ApDeep>>()
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
+
   const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
+  const [apGroupsList] = useLazyApGroupsListQuery()
+  const [addApGroup] = useAddApGroupMutation()
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apsOption, setApsOption] = useState([] as TransferItem[])
-  const [apGroupsList] = useLazyApGroupsListQuery()
 
+  const apGroupsListPayload = {
+    searchString: '',
+    fields: ['name', 'id'],
+    searchTargetFields: ['name'],
+    filters: {},
+    pageSize: 10000
+  }
 
   useEffect(() => {
     if (!venuesList.isLoading) {
@@ -63,13 +72,11 @@ export function ApGroupForm () {
       (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } })).data
         ?.aps?.map((item: ApDeep) => ({
           name: item.name.toString(), key: item.serialNumber
-        }))
-      : []
+        })) : []
 
     formRef.current?.validateFields(['name'])
     setApsOption(defaultApGroupOption as TransferItem[])
   }
-  const [addApGroup] = useAddApGroupMutation()
 
   const handleAddApGroup = async (values: AddApGroup) => {
     try {
@@ -87,14 +94,6 @@ export function ApGroupForm () {
         content: $t({ defaultMessage: 'An error occurred' })
       })
     }
-  }
-
-  const apGroupsListPayload = {
-    searchString: '',
-    fields: ['name', 'id'],
-    searchTargetFields: ['name'],
-    filters: {},
-    pageSize: 10000
   }
 
   const nameValidator = async (value: string) => {
@@ -195,7 +194,6 @@ export function ApGroupForm () {
             </Col>
           </Row>
         </Loader>
-
       </StepsForm.StepForm>
     </StepsForm>
   </>

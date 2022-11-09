@@ -42,6 +42,13 @@ export interface AddApGroup {
   id?: string
 }
 
+export interface VenueDefaultApGroup {
+  id: string
+  isDefault: boolean
+  venueId: string,
+  aps?: ApDeep[]
+}
+
 export interface ApDetailHeader {
   title: string,
   headers: {
