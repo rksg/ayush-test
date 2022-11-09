@@ -127,9 +127,7 @@ export function ApGroupForm () {
         pathname: `${basePath.pathname}/aps`
       })}
       buttonLabel={{
-        submit: action === 'add'
-          ? $t({ defaultMessage: 'Add' })
-          : $t({ defaultMessage: 'Apply' })
+        submit: $t({ defaultMessage: 'Add' })
       }}
     >
       <StepsForm.StepForm>
