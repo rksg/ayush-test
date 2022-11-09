@@ -5,27 +5,29 @@ import {
   EditOutlined as AntEditOutlined,
   SettingFilled as AntSettingOutlined
 } from '@ant-design/icons'
-import { Tabs as AntTabs, Popover as AntPopover, Button as AntButton,
-  Select as AntSelect, Layout as AntLayout, Switch as AntSwitch, Modal as AntModal } from 'antd'
+import { Popover as AntPopover, Layout as AntLayout,
+  Select as AntSelect } from 'antd'
 import styled, { css  } from 'styled-components/macro'
+
+import { Tabs as UITabs, Button as UIButton } from '@acx-ui/components'
+import { EyeSlashSolid as UIEyeSlashSolid,
+  MobilePhoneOutlined as UIMobilePhoneOutlined,
+  DesktopOutlined as UIDesktopOutlined,
+  TabletOutlined as UITabletOutlined,
+  PictureSolid as UIPictureSolid,
+  BrushSolid as UIBrushSolid,
+  Plus as UIPlus,
+  Minus as UIMinus,
+  TextMinus as UITextMinus,
+  TextPlus as UITextPlus
+}   from '@acx-ui/icons'
+
 export const CommonLabel = styled.div`
   padding: 10px 10px;
 `
 export const CommonHints = styled.div`
   font-size:12px;
   color:var(--acx-neutrals-50);
-`
-export const Switch = styled(AntSwitch)`
-  &.ant-switch {
-    background-color: var(--acx-neutrals-60);
-    .ant-switch-handle::before { background-color: var(--acx-primary-white); }
-
-  }
-
-  &.ant-switch-checked {
-    background-color: var(--acx-accents-blue-50);
-    }
-  }
 `
 export const ComponentLabel = styled.label`
   width: 160px;
@@ -58,10 +60,11 @@ const buttonStyle= css`
   background-color: var(--acx-neutrals-20);
   cursor: pointer;
 `
-export const Button = styled(AntButton)`
+export const Button = styled(UIButton)`
   ${buttonStyle}
+  margin-right:20px;
 `
-export const PopoverButton = styled(AntButton)`
+export const PopoverButton = styled(UIButton)`
   ${buttonStyle}
   padding-left:0px;
   background-color: var(--acx-primary-white);
@@ -110,7 +113,7 @@ export const LayoutViewContent = styled(AntLayout)<{ isbg: string | null }>`
   padding-bottom:10px;
 `
 export const Label = styled.label`
-  font-size:14px;
+  font-size:12px;
 `
 export const Select = styled(AntSelect)`
   &.ant-select-in-form-item { width: 200px; }
@@ -207,21 +210,6 @@ export const FieldTextLink = styled.div`
 export const FieldLabelLink = styled.label`
   ${linkStyle}
 `
-export const Modal = styled(AntModal)`
-&.ant-modal{
-  &:not(.ant-modal-confirm) {
-    .ant-modal-content {
-      border-radius: 0px;
-    border:0;
-    .ant-modal-body {
-      overflow-y:auto;
-    }
-  }
-  .ant-modal-footer {
-    background:var(--acx-primary-white);
-  }
-}
-`
 export const ViewSection = styled.div`
   height:auto;
   width:420px;
@@ -257,7 +245,7 @@ export const ViewSectionTitle = styled.div`
   font-weight:700;
   color:var(--acx-primary-black);
 `
-export const ViewSectionTabs = styled(AntTabs)`
+export const ViewSectionTabs = styled(UITabs)`
   padding-left:15px;
   margin-top:10px;
   margin-bottom:10px;
@@ -267,10 +255,12 @@ export const ViewSectionTabs = styled(AntTabs)`
       display: none;
     }
     .ant-tabs-nav {
+      padding-left:0px;
       .ant-tabs-nav-list{
         .ant-tabs-tab {
           background: var(--acx-neutrals-20);
           margin-bottom:3px;
+          margin-left:2px !important;
           &.ant-tabs-tab-active {
             border:1px solid var(--acx-accents-orange-50);
             color:var(--acx-neutrals-20);
@@ -282,13 +272,14 @@ export const ViewSectionTabs = styled(AntTabs)`
   }
   .ant-tabs-content {
     margin-top:-17px;
+    margin-left:2px;
     height: auto;
     min-height:200px;
     border: 1px solid var(--acx-accents-orange-50);
     width: 380px;
   }
 `
-export const ViewSectionTabsBig = styled(AntTabs)`
+export const ViewSectionTabsBig = styled(UITabs)`
 
   margin-top:10px;
   margin-bottom:10px;
@@ -308,6 +299,7 @@ export const ViewSectionTabsBig = styled(AntTabs)`
           background:var(--acx-primary-white);
           border:0px;
           margin-bottom:3px;
+          margin-left:2px !important;
           &.ant-tabs-tab-active{
             border-color:var(--acx-neutrals-20);
             border:2px solid var(--acx-neutrals-20);
@@ -317,6 +309,7 @@ export const ViewSectionTabsBig = styled(AntTabs)`
     }
   }
   .ant-tabs-content {
+    margin-left:2px;
     height: auto;
     min-height:200px;
     margin-top:-18px;
@@ -392,8 +385,6 @@ export const ViewTextArea = styled.div`
 `
 export const Popover = styled(AntPopover)`
 
-
-
 `
 export const SettingOutlined = styled(AntSettingOutlined)`
   color: var(--acx-accents-blue-50);
@@ -407,9 +398,96 @@ export const SelectedDiv = styled.div`
   padding-left: 200px;
   padding-right: 73px;
 `
-export const WrappedButton = styled(AntButton)`
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  margin-right: 5px;
+const iconsEditStyle = css`
+  &:hover{
+    background-color:var(--acx-neutrals-50);
+  }
+  padding-left:5px;
+  padding-right:5px;
+`
+export const PlusOutlined = styled(UIPlus)<{ $showPlus: boolean | null }>`
+  ${iconsEditStyle}
+  ${props=>!props.$showPlus?css`path{stroke:var(--acx-neutrals-30);}`:
+    css`path{stroke:var(--acx-primary-black);}`}
+`
+export const MinusOutlined = styled(UIMinus)<{ $showMinus: boolean | null }>`
+  ${iconsEditStyle}
+  ${props=>!props.$showMinus?css`path{stroke:var(--acx-neutrals-30);}`:
+    css`path{stroke:var(--acx-primary-black);}`}
+`
+export const TextMinus = styled(UITextMinus)<{ $showMinus: boolean | null }>`
+  ${iconsEditStyle}
+  ${props=>!props.$showMinus?css`path{stroke:var(--acx-neutrals-30);}`:
+    css`path{stroke:var(--acx-primary-black);}`}
+`
+export const TextPlus = styled(UITextPlus)<{ $showPlus: boolean | null }>`
+  ${iconsEditStyle}
+  ${props=>!props.$showPlus?css`path{stroke:var(--acx-neutrals-30);}`:
+    css`path{stroke:var(--acx-primary-black);}`}
+`
+export const FontColorsOutlined = styled(UIBrushSolid)<{ $showColorPicker: boolean | undefined }>`
+  ${iconsEditStyle}
+  ${props=>props.$showColorPicker?css`path{
+    stroke:var(--acx-accents-orange-50);
+    fill:var(--acx-accents-orange-50);
+  }`:
+    css`path{
+      stroke:var(--acx-primary-black);
+      fill:var(--acx-primary-black);
+    }`}
+`
+export const PictureFilled = styled(UIPictureSolid)`
+  ${iconsEditStyle}
+`
+export const EyeSlashSolid = styled(UIEyeSlashSolid)`
+  ${iconsEditStyle}
+`
+const deviceIcons = css`
+  &:hover{
+    background-color:var(--acx-accents-orange-10);
+  }
+  padding-left:5px;
+  padding-right:5px;
+  margin-left:8px;
+  height:40px;
+  rect {
+    fill:none;
+  }
+  width:40px;
+  color:var(--acx-primary-black);
+`
+const deviceSelectedIcons = css`
+  border:1px solid;
+  border-radius:5px;
+  color:var(--acx-accents-orange-50);
+  background-color:var(--acx-accents-orange-20);
+  path,rect,circle{
+    stroke:var(--acx-accents-orange-50);
+  }
+`
+export const TabletOutlined = styled(UITabletOutlined)<{ $marked: boolean | null }>`
+  ${deviceIcons}
+  ${props => props.$marked ? deviceSelectedIcons:''}
+`
+export const DesktopOutlined = styled(UIDesktopOutlined)<{ $marked: boolean | null }>`
+  ${deviceIcons}
+  ${props => props.$marked ? deviceSelectedIcons:''}
+  margin-left: 50px;
+`
+export const MobileOutlined = styled(UIMobilePhoneOutlined)<{ $marked: boolean | null }>`
+  ${deviceIcons}
+  ${props => props.$marked ? deviceSelectedIcons:''}
+`
+export const PictureOutlined = styled(UIPictureSolid)<{ $isDesk: boolean | null }>`
+  position: absolute;
+  left: 10px;
+  top: 60px;
+  font-size: 32px;
+  ${props => !props.$isDesk ? css`
+  path,rect,circle{stroke:var(--acx-primary-black);}
+  path,circle{fill:var(--acx-primary-black);}
+  ` : css`
+  path,rect,circle{stroke:var(--acx-accents-blue-50);}
+  path,circle{fill:var(--acx-accents-blue-50);}
+  `}
 `

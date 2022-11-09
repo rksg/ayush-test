@@ -5,14 +5,15 @@ import { useIntl }    from 'react-intl'
 import { Card } from '@acx-ui/components'
 import { Demo } from '@acx-ui/rc/utils'
 
-import Photo              from '../../../../assets/images/portal-demo/main-photo.svg'
-import Powered            from '../../../../assets/images/portal-demo/powered-logo-img.svg'
-import Logo               from '../../../../assets/images/portal-demo/small-logo-img.svg'
+import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 import PortalPreviewModal from '../PortalSummary/PortalPreviewModal'
 export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
   const { demoValue } = props
-  const newDemo = { ...demoValue, poweredImg: Powered, logo: Logo, photo: Photo }
+  const newDemo = { ...demoValue, poweredImg: demoValue.poweredImg || Powered,
+    logo: demoValue.logo || Logo, photo: demoValue.photo || Photo }
   return (
     <Card>
       <div style={{ display: 'flex' }}>

@@ -70,7 +70,8 @@ export default function PortalViewTerms (props:{
       <UI.ViewSectionTitle>
         {$t({ defaultMessage: 'Terms and Conditions' })}</UI.ViewSectionTitle>
       <UI.ViewTextArea
-        dangerouslySetInnerHTML={{ __html: demoValue?.termsCondition || terms }}
+        dangerouslySetInnerHTML={{ __html: demoValue?.termsCondition ||
+          $t({ defaultMessage: '{terms}' },{ terms: terms } ) }}
       ></UI.ViewTextArea>
       <PortalButtonContent
         demoValue={demoValue}

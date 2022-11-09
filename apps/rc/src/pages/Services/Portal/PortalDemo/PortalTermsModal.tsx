@@ -3,7 +3,7 @@ import { useState } from 'react'
 import TextArea    from 'antd/lib/input/TextArea'
 import { useIntl } from 'react-intl'
 
-import { Button } from '@acx-ui/components'
+import { Button, Modal } from '@acx-ui/components'
 
 import * as UI from '../styledComponents'
 
@@ -47,7 +47,7 @@ export default function PortalTermsModal (props:{
       <UI.SettingOutlined onClick={() => {
         setNewTerms(terms)
         setVisible(true)}}/>
-      <UI.Modal
+      <Modal
         title={$t({ defaultMessage: 'Terms & Conditions' })}
         visible={visible}
         width={400}
@@ -56,7 +56,7 @@ export default function PortalTermsModal (props:{
         maskClosable={false}
       >
         {getContent}
-      </UI.Modal>
+      </Modal>
     </>
 
 

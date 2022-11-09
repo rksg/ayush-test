@@ -2,7 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Demo } from '@acx-ui/rc/utils'
+import { Modal } from '@acx-ui/components'
+import { Demo }  from '@acx-ui/rc/utils'
 
 import PortalDemo from '../PortalDemo'
 import * as UI    from '../styledComponents'
@@ -20,7 +21,7 @@ export default function PortalPreviewModal (props:{
       <UI.FieldTextLink onClick={()=>setVisible(true)}>
         {$t({ defaultMessage: 'Preview' })}
       </UI.FieldTextLink>
-      <UI.Modal
+      <Modal
         title={$t({ defaultMessage: 'Preview' })}
         visible={visible}
         onCancel={()=>setVisible(false)}
@@ -31,7 +32,7 @@ export default function PortalPreviewModal (props:{
         maskClosable={false}
       >
         {getContent}
-      </UI.Modal>
+      </Modal>
     </>
 
   )

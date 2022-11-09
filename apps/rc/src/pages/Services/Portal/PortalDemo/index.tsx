@@ -5,15 +5,9 @@ import { Tooltip }                                  from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { Alert }                                      from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
 import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
 
-import Mobile                       from '../../../../assets/images/portal-demo/mobile.svg'
-import Mobile_select                from '../../../../assets/images/portal-demo/mobile_selected.svg'
-import Tablet                       from '../../../../assets/images/portal-demo/pad.svg'
-import Tablet_select                from '../../../../assets/images/portal-demo/pad_selected.svg'
-import Desk                         from '../../../../assets/images/portal-demo/pc.svg'
-import Desk_select                  from '../../../../assets/images/portal-demo/pc_selected.svg'
-import Question                     from '../../../../assets/images/portal-demo/question.svg'
 import { capativeTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
 import * as UI                      from '../styledComponents'
 
@@ -76,17 +70,18 @@ export default function PortalDemo ({
       <UI.LayoutHeader>
         <div style={{ display: 'flex' }}>
           <div
-            style={{ flex: isPreview? '0 0 305px':'0 0 345px' }}>
+            style={{ flex: '0 0 345px' }}>
             <UI.Label>
               {$t({ defaultMessage: 'View as:' })}
             </UI.Label>
             <UI.Select
               onChange={(data) => {setView(data as PortalViewEnum)}}
               defaultValue={PortalViewEnum.ClickThrough}
-              style={{ width: isPreview? 250:300 }}>
+              style={{ width: 300 }}>
               {Object.keys(PortalViewEnum).map((key =>
                 <Option key={key} value={PortalViewEnum[key as keyof typeof PortalViewEnum]}>
-                  {PortalViewEnum[key as keyof typeof PortalViewEnum]}</Option>
+                  {$t({ defaultMessage: '{viewValue}' },
+                    { viewValue: PortalViewEnum[key as keyof typeof PortalViewEnum] })}</Option>
               ))}
             </UI.Select>
           </div>
@@ -97,25 +92,25 @@ export default function PortalDemo ({
                 title={<FormattedMessage
                   {...capativeTypesDescription[type]}
                 />}
-                children={<UI.Img src={Question} />}
+                children={<QuestionMarkCircleOutlined/>}
               />
             </UI.FieldExtraTooltip>
           </div>
-          <div style={{ flex: '0 0 160px' }}>
-            <UI.ImgDesk src={marked.desk?Desk_select:Desk}
-              alt='deskicon'
+          <div style={{ flex: '0 0 190px', marginTop: -5 }}>
+            <UI.DesktopOutlined $marked={marked.desk}
+              title='deskicon'
               onClick={()=>{
                 setScreen('desk')
                 setMarked({ desk: true, tablet: false, mobile: false })
               }}/>
-            <UI.ImgTablet src={marked.tablet?Tablet_select:Tablet}
-              alt='tableticon'
+            <UI.TabletOutlined $marked={marked.tablet}
+              title='tableticon'
               onClick={()=>{
                 setScreen('tablet')
                 setMarked({ desk: false, tablet: true, mobile: false })
               }}/>
-            <UI.ImgMobile src={marked.mobile?Mobile_select:Mobile}
-              alt='mobileicon'
+            <UI.MobileOutlined $marked={marked.mobile}
+              title='mobileicon'
               onClick={()=>{
                 setScreen('mobile')
                 setMarked({ desk: false, tablet: false, mobile: true })
@@ -136,6 +131,7 @@ export default function PortalDemo ({
                 {$t({ defaultMessage: 'Language Settings' })}</UI.Button></UI.Popover>
             <UI.Popover
               overlayClassName='uipopover'
+              overlayInnerStyle={{ minWidth: 260 }}
               getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
               content={compContent}
               trigger='click'

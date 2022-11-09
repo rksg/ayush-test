@@ -2,15 +2,6 @@ import { Upload }       from 'antd'
 import { RcFile }       from 'antd/lib/upload'
 import { SketchPicker } from 'react-color'
 
-import ColorPick  from '../../../../assets/images/portal-demo/colorPick.svg'
-import EyeHide    from '../../../../assets/images/portal-demo/eyeHide.svg'
-import PictureOut from '../../../../assets/images/portal-demo/imgToggle.svg'
-import MinusDis   from '../../../../assets/images/portal-demo/minusDisable.svg'
-import MinusEn    from '../../../../assets/images/portal-demo/minusToggle.svg'
-import PlusDis    from '../../../../assets/images/portal-demo/plusDisable.svg'
-import PlusEn     from '../../../../assets/images/portal-demo/plusToggle.svg'
-import TextMinus  from '../../../../assets/images/portal-demo/textMinus.svg'
-import TextPlus   from '../../../../assets/images/portal-demo/textPlus.svg'
 import * as Utils from '../../commonUtils'
 import * as UI    from '../styledComponents'
 const maxSize = 2.25
@@ -48,47 +39,48 @@ export default function PortalImageTools (props:{
         >
           {showImg !== false && <label htmlFor='contentimageupload'
             placeholder='contentimageupload'>
-            <UI.ToolImg src={PictureOut}
-              alt='pictureout'
+            <UI.PictureFilled
+              title='pictureout'
               onClick={(e)=>e.stopPropagation()}/></label>}
         </Upload>
 
         {showImg!==false
-        &&<UI.ToolImg src={showPlusEn? PlusEn:PlusDis}
-          alt={showPlusEn?'plusen':'plusdis'}
+        &&<UI.PlusOutlined $showPlus={showPlusEn}
+          title='plusen'
           onClick={(e)=>{
             showPlusEn? updateDemoImg({ url: url||'', size: (size as number)*1.5, show: true }):
               e.preventDefault()
           }}/>}
-        {showImg!==false &&<UI.WrappedButton type='text'
-          onClick={(e) => {
-            showMinusEn? updateDemoImg({ url: url||'', size: (size as number)/1.5, show: true }):
-              e.preventDefault()
-          }}>
-          <UI.ToolImg src={showMinusEn? MinusEn:MinusDis}
-            alt='minusen'
-          /></UI.WrappedButton>}
-        {showText!==false && <UI.ToolImg src={TextPlus}
-          alt='textplus'
+        {showImg!==false &&
+          <UI.MinusOutlined $showMinus={showMinusEn}
+            title='minusen'
+            onClick={(e) => {
+              showMinusEn? updateDemoImg({ url: url||'', size: (size as number)/1.5, show: true }):
+                e.preventDefault()
+            }}/>}
+        {showText!==false &&<UI.TextPlus $showPlus={showPlusEn}
+          title='textplus'
           onClick={()=>{
             if(size !== maxSize*(defaultSize as number))updateDemoImg({ size: (size as number)*1.5,
               show: true, color: color })
-          }}/>}
-        {showText!==false && <UI.ToolImg src={TextMinus}
-          alt='textminus'
+          }}
+        /> }
+        {showText!==false && <UI.TextMinus $showMinus={showMinusEn}
+          title='textminus'
           onClick={()=>{
             if(size!==minSize*(defaultSize as number))updateDemoImg({ size: (size as number)/1.5,
               show: true, color: color })
           }}/>}
-        {showColorPic!==false && <UI.ToolImg src={ColorPick}
-          alt='colorpick'
+        {showColorPic!==false && <UI.FontColorsOutlined
+          $showColorPicker={showColorPicker}
+          title='colorpick'
           onClick={(e)=>{
             setShowColorPicker?.(!showColorPicker)
             e.stopPropagation()
           }}
         />}
-        {showEye !== false &&<UI.ToolImg src={EyeHide}
-          alt='eyehide'
+        {showEye !== false &&<UI.EyeSlashSolid
+          title='eyehide'
           onClick={()=>{
             updateDemoImg({ url: url||'', size: size, show: false } )
           }}/>}

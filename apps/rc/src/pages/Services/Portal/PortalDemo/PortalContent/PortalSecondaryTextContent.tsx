@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-import { Demo } from '@acx-ui/rc/utils'
+import { useIntl } from 'react-intl'
 
+import { Demo } from '@acx-ui/rc/utils'
 
 import { PortalDemoDefaultSize } from '../../../commonUtils'
 import * as UI                   from '../../styledComponents'
@@ -14,6 +15,7 @@ export default function PortalSecondaryTextContent (props: {
     color?:string, text?:string }) => void
 }) {
   const { demoValue, updateSecText } = props
+  const { $t } = useIntl()
   const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
   const [cursor, setCursor] = useState('none')
   const [outline, setOutline]=useState('none')
@@ -55,7 +57,8 @@ export default function PortalSecondaryTextContent (props: {
           setClicked(true)
           setOutline(dashedOutline)
         }}
-      >{demoValue.secondaryText}</UI.FieldText>
+      >{$t({ defaultMessage: '{secondaryValue}' }, { secondaryValue: demoValue.secondaryText } )}
+      </UI.FieldText>
     </PortalPopover>
   )
 }

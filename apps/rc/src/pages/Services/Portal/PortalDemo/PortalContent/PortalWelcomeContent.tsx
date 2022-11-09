@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { Demo } from '@acx-ui/rc/utils'
 
 
@@ -18,7 +20,7 @@ export default function PortalWelcomeContent (props: {
   const [cursor, setCursor] = useState('none')
   const [outline, setOutline]=useState('none')
   const [clicked, setClicked] = useState(false)
-
+  const { $t } = useIntl()
   const welcomeTools = <PortalImageTools
     showImg={false}
     color={demoValue.welcomeColor}
@@ -34,7 +36,7 @@ export default function PortalWelcomeContent (props: {
       visible={clicked}
       onVisibleChange={(value) => setClicked(value)}
     ><UI.Input type='text'
-        value={demoValue.welcomeText}
+        value={$t({ defaultMessage: '{welcomeValue}' }, { welcomeValue: demoValue.welcomeText } )}
         placeholder='welcometext'
         style={{ cursor: cursor, outline: outline, height: 25 * (demoValue.welcomeSize
           /PortalDemoDefaultSize.welcomeSize) ,

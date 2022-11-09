@@ -1,3 +1,4 @@
+import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Demo, PortalComponentsEnum } from '@acx-ui/rc/utils'
@@ -20,16 +21,17 @@ export default function PortalComponents (props:{
 
       {Object.keys(PortalComponentsEnum).map((key => <UI.CommonLabel key={key+'label'}>
         <UI.ComponentLabel key={key}>
-          {PortalComponentsEnum[key as keyof typeof PortalComponentsEnum]}
+          {$t({ defaultMessage: '{lanValue}' },{ lanValue:
+             PortalComponentsEnum[key as keyof typeof PortalComponentsEnum] })}
         </UI.ComponentLabel>
-        <UI.Switch checkedChildren={$t({ defaultMessage: 'ON' })}
+        <Switch
           key={key+'switch'}
           checked={demoValue?.componentDisplay?.[key]}
           onClick={(value)=>{
             updateViewContent({ ...demoValue, componentDisplay:
                { ...demoValue.componentDisplay, [key]: value } })
           }}
-          unCheckedChildren={$t({ defaultMessage: 'OFF' })}/>
+        />
         {key === 'TermsConditions'&&<PortalTermsModal
           terms={demoValue?.termsCondition}
           updateTermsConditions={(value)=>

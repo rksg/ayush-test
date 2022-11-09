@@ -6,9 +6,9 @@ import { CommonUrlsInfo, defaultComDisplay, Portal }                        from
 import { Provider }                                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import Photo                     from '../../../../assets/images/portal-demo/main-photo.svg'
-import Powered                   from '../../../../assets/images/portal-demo/powered-logo-img.svg'
-import Logo                      from '../../../../assets/images/portal-demo/small-logo-img.svg'
+import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo                      from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
 
 import { PortalForm } from './PortalForm'

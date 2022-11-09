@@ -36,7 +36,8 @@ export default function PortalLanguageSettings (props:{
               [key as keyof typeof PortalLanguageEnum]: e.target.checked
             } })
           }}>
-          {PortalLanguageEnum[key as keyof typeof PortalLanguageEnum]} </Checkbox>
+          {$t({ defaultMessage: '{altValue}' },{ altValue:
+             PortalLanguageEnum[key as keyof typeof PortalLanguageEnum] })} </Checkbox>
       </UI.CommonLabel>
       ))}
     </div>

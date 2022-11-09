@@ -6,8 +6,6 @@ import { RcFile }       from 'antd/lib/upload'
 import { SketchPicker } from 'react-color'
 import { useIntl }      from 'react-intl'
 
-import PictureSec from '../../../../assets/images/portal-demo/icon_pic.svg'
-import PictureOut from '../../../../assets/images/portal-demo/imgToggle.svg'
 import * as Utils from '../../commonUtils'
 import * as UI    from '../styledComponents'
 
@@ -59,8 +57,8 @@ export default function PortalBackground (props:{
       onVisibleChange={(value)=>{
         setShowColorPicker(false)
         setClicked(value)}}>
-      <UI.Img src={$isDesk?PictureOut:PictureSec}
-        alt='background setting'
+      <UI.PictureOutlined $isDesk={$isDesk}
+        title='background setting'
         style={{ position: 'absolute',left: 10,top: 60, cursor: 'pointer' }}
       />
     </UI.Popover>

@@ -17,7 +17,7 @@ export default function PortalPopover (props:{
       trigger='click'
       placement='leftTop'
       overlayClassName='uipopover'
-      overlayInnerStyle={{ backgroundColor: '#80ffff', height: 30 }}
+      overlayInnerStyle={{ backgroundColor: 'var(--acx-neutrals-20)', height: 30 }}
       visible={visible}
       onVisibleChange={(value) => {
         onVisibleChange(value)

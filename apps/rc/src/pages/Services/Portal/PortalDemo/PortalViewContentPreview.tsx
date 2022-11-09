@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Demo, PortalViewEnum } from '@acx-ui/rc/utils'
 
-import Wifi4eu                   from '../../../../assets/images/portal-demo/wifi4eu-banner.svg'
+import Wifi4eu                   from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
 import * as UI                   from '../styledComponents'
 
@@ -37,7 +37,8 @@ export default function PortalViewContentPreview (props:{
         style={{ height: (demoValue.logoSize||PortalDemoDefaultSize.logoSize) ,maxWidth: 425 }}
       />}
       {componentDisplay.WelcomeText && <UI.Input type='text'
-        defaultValue={demoValue.welcomeText}
+        defaultValue={$t({ defaultMessage: '{welcomeValue}' },
+          { welcomeValue: demoValue.welcomeText } )}
         style={{ height: 25 * ((demoValue.welcomeSize)
           /PortalDemoDefaultSize.welcomeSize) ,
         width: 280*((demoValue.welcomeSize)
@@ -54,7 +55,8 @@ export default function PortalViewContentPreview (props:{
           PortalDemoDefaultSize.secondarySize)/PortalDemoDefaultSize.secondarySize)+'px' ,
         maxWidth: 425, color: demoValue.secondaryColor,
         fontSize: (demoValue.secondarySize||PortalDemoDefaultSize.secondarySize) }}
-      >{demoValue.secondaryText}</UI.FieldText>}
+      >{$t({ defaultMessage: '{secondaryValue}' }, { secondaryValue: demoValue.secondaryText } )}
+      </UI.FieldText>}
       {view === PortalViewEnum.ClickThrough && <PortalViewGoThrough
         demoValue={demoValue}
         isPreview={true}
