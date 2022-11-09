@@ -1,34 +1,33 @@
 import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { NetworkFilter, Option, Loader }       from '@acx-ui/components'
+import { NetworkFilter, Loader }               from '@acx-ui/components'
 import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
+import { useVenuesListQuery }                  from '@acx-ui/rc/services'
+import { useTableQuery }                       from '@acx-ui/rc/utils'
 
-import { Child, useVenueFilterQuery } from './services'
-import * as UI                        from './styledComponents'
+import * as UI from './styledComponents'
 
-const getFilterData = (data: Child[]): Option [] => {
-  const venues: { [key: string]: Option; } = {}
-  for (const { name, id } of data) {
-    if (!venues[id]) {
-      venues[id] = { label: name, value: id }
-    }
-  }
-  return Object.values(venues)
-}
+type Venue = { id: string, name: string }
+
+const transformResult = (data: Venue[]) => data.map(
+  ({ id, name }) => ({ label: name, value: id })
+)
 
 export function VenueFilter () {
   const { $t } = useIntl()
   const { setNodeFilter, filters } = useDashboardFilter()
   const { filter: { networkNodes } } = filters
-  const queryResults = useVenueFilterQuery(omit(filters, 'filter','path'), {
-    selectFromResult: ({ data, ...rest }) => {
-      return { data: data ? getFilterData(data) : [],
-        ...rest
-      }
+  const value = networkNodes?.map((networkNode: NetworkNodePath) => [networkNode[0].name])
+  const queryResults = useTableQuery({
+    useQuery: useVenuesListQuery,
+    defaultPayload :{
+      fields: ['name', 'id'],
+      filters: {},
+      sortField: 'name',
+      sortOrder: 'ASC'
     }
   })
-  const value = networkNodes?.map((networkNode: NetworkNodePath) => [networkNode[0].name])
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
@@ -37,7 +36,7 @@ export function VenueFilter () {
           multiple
           defaultValue={value}
           value={value}
-          options={queryResults.data}
+          options={transformResult(queryResults.data?.data as Venue[] || [])}
           onApply={(selectedOptions) => setNodeFilter(selectedOptions as string[][])}
           placement='bottomRight'
         />
