@@ -19,7 +19,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
               <a
                 href="/t/tenant-id/service"
               >
-                Service
+                Services
               </a>
             </span>
             <span
