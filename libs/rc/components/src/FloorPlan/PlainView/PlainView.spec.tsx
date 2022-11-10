@@ -176,6 +176,7 @@ describe('Floor Plan Plain View', () => {
     await expect(getImageFitPercentage(0, 0, 450, 0)).toBe(0)
     await expect(getImageFitPercentage(-3,24,1150,23)).toBe(-0.26086956521739135)
     await expect(getImageFitPercentage(3,-24,1150,28)).toBe(-85.71428571428571)
+    await expect(getImageFitPercentage(0,0,0,0)).toBe(0)
   })
 
   it('Should click delete button', async () => {

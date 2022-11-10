@@ -1,10 +1,18 @@
 import '@testing-library/jest-dom'
 
+import { renderHook } from '@testing-library/react'
+import { Form }       from 'antd'
+
 import { Provider }                  from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import AddEditFloorplanModal, { getFileExtension } from '.'
 
+
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  PlusCircleOutlined: () => <div data-testid='PlusCircleOutlined'/>
+}))
 
 describe('Floor Plan Modal', () => {
 
@@ -21,16 +29,36 @@ describe('Floor Plan Modal', () => {
 
   it('handles click on add floorplan', async () => {
     const onAddEditFloorPlan = jest.fn()
-    const { asFragment } = render(<Provider><AddEditFloorplanModal
-      buttonTitle='+ Add Floor Plan'
-      onAddEditFloorPlan={onAddEditFloorPlan}
-      isEditMode={false}/></Provider>)
+    const { asFragment } = render(
+      <Provider>
+        <AddEditFloorplanModal
+          buttonTitle='+ Add Floor Plan'
+          onAddEditFloorPlan={onAddEditFloorPlan}
+          isEditMode={false}/>
+      </Provider>)
 
     const component = await screen.findByText('+ Add Floor Plan')
     await fireEvent.click(component)
 
     const saveBtn = await screen.findByRole('button', { name: 'Save' })
     await expect(saveBtn).toBeVisible()
+
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    await formRef.current.setFieldsValue({
+      name: 'Test1',
+      floorNumber: 1,
+      imageName: 'test.jpg'
+    })
+
+    render(<Form
+      form={formRef.current}
+    ></Form>)
+
+    await fireEvent.click(saveBtn)
 
     const cancelBtn = await screen.findByRole('button', { name: 'Cancel' })
     await expect(cancelBtn).toBeVisible()

@@ -384,7 +384,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
     class="sc-kDDrLX jEFAtp"
   >
     <div
-      class="styledComponents__ImageContainer-rlzd0s-7 gGnYHE"
+      class="sc-iqcoie hDlZyw"
       data-testid="image-container"
     >
       <img
@@ -1581,7 +1581,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
     class="sc-kDDrLX jEFAtp"
   >
     <div
-      class="sc-iqcoie cGPjJN"
+      class="sc-iqcoie hDlZyw"
       data-testid="image-container"
     >
       <img
@@ -2502,7 +2502,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
     class="sc-kDDrLX jEFAtp"
   >
     <div
-      class="styledComponents__ImageContainer-rlzd0s-7 jlAFgK"
+      class="sc-iqcoie fOay"
       data-testid="image-container"
     >
       <img

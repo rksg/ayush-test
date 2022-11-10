@@ -7,7 +7,8 @@ module.exports = {
     '^antd/es/(.*)$': `${__dirname}/node_modules/antd/lib/$1`
   },
   transform: {
-    '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`
+    '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`,
+    '\\.png$': `${__dirname}/tools/tests/pngrTransformer.js`
   },
   coverageReporters: [ 'lcov', 'text-summary' ],
   collectCoverageFrom: [

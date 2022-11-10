@@ -4,11 +4,15 @@ import { renderHook } from '@testing-library/react'
 import { Form }       from 'antd'
 import { act }        from 'react-dom/test-utils'
 
-import { Provider } from '@acx-ui/store'
-import { render }   from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import FloorPlanForm from '.'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  PlusCircleOutlined: () => <div data-testid='PlusCircleOutlined'/>
+}))
 
 describe('Floor Plan Form', () => {
 
@@ -30,8 +34,10 @@ describe('Floor Plan Form', () => {
       floorNumber: 1,
       imageName: 'test.jpg'
     })
+    const form: Form = await screen.findByTestId('floor-plan-form')
+    form.form = formRef.current
     await act(() => {
-      formRef.current.submit()
+      form.submit()
     })
     expect(onFormSubmit).toBeCalled()
     expect(asFragment()).toMatchSnapshot()

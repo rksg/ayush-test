@@ -7,12 +7,16 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import FloorplanUpload from './FloorPlanUpload'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  PlusCircleOutlined: () => <div data-testid='PlusCircleOutlined'/>
+}))
+
 describe('Floor Plan Upload', () => {
 
-  global.URL.createObjectURL = jest.fn()
-  jest.spyOn(global.URL, 'createObjectURL')
-
   beforeEach(() => {
+    global.URL.createObjectURL = jest.fn()
+    jest.spyOn(global.URL, 'createObjectURL')
     mockServer.use(rest.post('',
       (_, res, ctx) => res(ctx.json({})))
     )})
@@ -52,7 +56,7 @@ describe('Floor Plan Upload', () => {
       target: { files: [{ file: 'foo.png', type: 'image/png' }] }
     })
 
-    expect(asFragment).toMatchSnapshot()
+    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should show error correctly', async () => {
@@ -94,7 +98,37 @@ describe('Floor Plan Upload', () => {
 
     await expect(sizeError[0]).toBeVisible()
 
-    expect(asFragment).toMatchSnapshot()
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should pass file validation', async () => {
+    const validateFile = jest.fn()
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' })
+
+    const { asFragment } = render(<FloorplanUpload
+      validateFile={validateFile}
+      imageFile=''
+    />)
+
+    render(<Upload
+      name='floorplan'
+      listType='picture-card'
+      className='avatar-uploader'
+      showUploadList={false}
+      action={URL.createObjectURL(file)}
+      beforeUpload={jest.fn()}
+      onChange={jest.fn()}
+      accept='image/*'
+    />)
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await fireEvent.change(document.querySelector('input')!, {
+      target: { files: [{ file: 'foo.png', type: 'image/png', size: 10000 }] }
+    })
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = jest.fn()
+    expect(asFragment()).toMatchSnapshot()
   })
 
 })
