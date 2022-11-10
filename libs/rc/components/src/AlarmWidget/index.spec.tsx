@@ -1,8 +1,9 @@
 import { omit } from 'lodash'
 import { rest } from 'msw'
 
-import { Dashboard, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }                 from '@acx-ui/store'
+import { useSplitTreatmentWithConfig } from '@acx-ui/feature-toggle'
+import { Dashboard, CommonUrlsInfo }   from '@acx-ui/rc/utils'
+import { Provider  }                   from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
@@ -104,6 +105,8 @@ describe('Alarm widget', () => {
       rest.get(CommonUrlsInfo.getDashboardOverview.url,
         (req, res, ctx) => res(ctx.json(data)))
     )
+    // @ts-ignore
+    jest.mocked(useSplitTreatmentWithConfig).mockReturnValue({ enable: true, beta: false })
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -146,6 +149,7 @@ describe('Alarm widget', () => {
       rest.get(CommonUrlsInfo.getDashboardOverview.url,
         (req, res, ctx) => res(ctx.json(noAlarms)))
     )
+    jest.mocked(useSplitTreatmentWithConfig).mockReturnValue({ enable: false, beta: false })
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }

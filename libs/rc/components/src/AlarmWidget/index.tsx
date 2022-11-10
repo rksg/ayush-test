@@ -3,6 +3,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader , Card, DonutChart, NoActiveData } from '@acx-ui/components'
 import type { DonutChartData }                             from '@acx-ui/components'
+import { useSplitTreatmentWithConfig }                     from '@acx-ui/feature-toggle'
 import { useDashboardOverviewQuery }                       from '@acx-ui/rc/services'
 import {  useAlarmsListQuery }                             from '@acx-ui/rc/services'
 import {
@@ -104,12 +105,18 @@ export function AlarmWidget () {
   })
 
   const { data } = overviewQuery
+  // Usage of PLM FF example. Here `ADMN-ESNTLS` is a feature Id value
+  const splitConfig = useSplitTreatmentWithConfig('ADMN-ESNTLS')
+  // @ts-ignore
+  let enable = splitConfig?.['enable']
+  // eslint-disable-next-line no-console
+  console.log('PLM FF Config ---> ', enable)
   return (
     <Loader states={[overviewQuery, alarmQuery]}>
       <Card title={$t({ defaultMessage: 'Alarms' })}>
         <AutoSizer>
           {({ height, width }) => (
-            data && data.length > 0
+            data && data.length > 0 && enable
               ? <>
                 <DonutChart
                   style={{ width, height: height / 3 }}
