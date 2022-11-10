@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { NetworkFilter, Loader }               from '@acx-ui/components'
 import { useVenuesListQuery }                  from '@acx-ui/rc/services'
-import { useTableQuery }                       from '@acx-ui/rc/utils'
+import { useParams }                           from '@acx-ui/react-router-dom'
 import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -18,15 +18,23 @@ export function VenueFilter () {
   const { setNodeFilter, filters } = useDashboardFilter()
   const { filter: { networkNodes } } = filters
   const value = networkNodes?.map((networkNode: NetworkNodePath) => [networkNode[0].name])
-  const queryResults = useTableQuery({
-    useQuery: useVenuesListQuery,
-    defaultPayload: {
+
+  const queryResults = useVenuesListQuery({
+    params: { ...useParams() },
+    payload: {
       fields: ['name', 'id'],
       filters: {},
       sortField: 'name',
       sortOrder: 'ASC'
     }
+  }, {
+    selectFromResult: ({ data, ...rest }) => {
+      return { data: data ? transformResult(data?.data as Venue[]) : [],
+        ...rest
+      }
+    }
   })
+
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
@@ -35,7 +43,7 @@ export function VenueFilter () {
           multiple
           defaultValue={value}
           value={value}
-          options={transformResult(queryResults.data?.data as Venue[] || [])}
+          options={queryResults.data}
           onApply={(selectedOptions) => setNodeFilter(selectedOptions as string[][])}
           placement='bottomRight'
         />
