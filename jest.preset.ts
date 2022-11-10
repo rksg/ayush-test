@@ -8,7 +8,7 @@ module.exports = {
   },
   transform: {
     '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`,
-    '\\.png$': `${__dirname}/tools/tests/pngrTransformer.js`
+    '\\.(png|jpg|jpeg|webp)$': `${__dirname}/tools/tests/imagerTransformer.js`
   },
   coverageReporters: [ 'lcov', 'text-summary' ],
   collectCoverageFrom: [
