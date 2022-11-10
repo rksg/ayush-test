@@ -16,6 +16,9 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
+  ResendInviteModal
+} from '@acx-ui/msp/components'
+import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery
 } from '@acx-ui/rc/services'
@@ -27,8 +30,6 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-
-import { ResendInviteModal } from '../../components/ResendInviteModal'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
