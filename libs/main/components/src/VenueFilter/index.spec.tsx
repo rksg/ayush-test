@@ -1,13 +1,10 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { rest } from 'msw'
-
-import { dataApiURL }                             from '@acx-ui/analytics/services'
-import { Provider, store }                        from '@acx-ui/store'
-import { render, screen, fireEvent, mockServer }  from '@acx-ui/test-utils'
-import { PathNode, DateRange }                    from '@acx-ui/utils'
-import { venueApi }                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { render, screen, fireEvent, mockServer } from '@acx-ui/test-utils'
+import { PathNode, DateRange }                   from '@acx-ui/utils'
 
 import { VenueFilter } from '.'
 
@@ -26,7 +23,7 @@ jest.mock('@acx-ui/utils', () => ({
   useDashboardFilter: () => mockUseDashboardFilter
 }))
 describe('venue Filter', () => {
-  const route = { 
+  const route = {
     params: { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' },
     path: '/:tenantId/venues'
   }
@@ -36,16 +33,15 @@ describe('venue Filter', () => {
         CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json({ data: [
           { name: 'venue A', id: 'venue1' },
-          { name: 'venue B', id: 'venue2' },
-        ]}))
+          { name: 'venue B', id: 'venue2' }
+        ] }))
       )
     )
-    store.dispatch(venueApi.util.resetApiState())
     jest.clearAllMocks()
     mockUseDashboardFilter = { filters: filters([]), setNodeFilter }
   })
   it('should render loader', () => {
-    render(<Provider><VenueFilter /></Provider>)
+    render(<Provider><VenueFilter /></Provider>, { route })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render venue filter', async () => {

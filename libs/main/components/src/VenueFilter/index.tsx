@@ -1,10 +1,9 @@
-import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { NetworkFilter, Loader }               from '@acx-ui/components'
-import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
 import { useVenuesListQuery }                  from '@acx-ui/rc/services'
 import { useTableQuery }                       from '@acx-ui/rc/utils'
+import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -21,7 +20,7 @@ export function VenueFilter () {
   const value = networkNodes?.map((networkNode: NetworkNodePath) => [networkNode[0].name])
   const queryResults = useTableQuery({
     useQuery: useVenuesListQuery,
-    defaultPayload :{
+    defaultPayload: {
       fields: ['name', 'id'],
       filters: {},
       sortField: 'name',
