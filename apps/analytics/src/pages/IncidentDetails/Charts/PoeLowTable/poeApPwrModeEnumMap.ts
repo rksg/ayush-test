@@ -1,6 +1,6 @@
 import { defineMessage } from 'react-intl'
 
-export const TESTpoeApPwrModeEnumMap = {
+export const poeApPwrModeEnumMap = {
   RKS_AP_PWR_MODE_AUTO: defineMessage({ defaultMessage: 'Auto' }),
   RKS_AP_PWR_MODE_AF: defineMessage({ defaultMessage: '802.3af' }),
   RKS_AP_PWR_MODE_AT: defineMessage({ defaultMessage: '802.3at' }),

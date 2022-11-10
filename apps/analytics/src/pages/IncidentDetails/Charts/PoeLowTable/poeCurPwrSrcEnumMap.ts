@@ -1,6 +1,6 @@
 import { defineMessage } from 'react-intl'
 
-export const TESTpoeCurPwrSrcEnumMap = {
+export const poeCurPwrSrcEnumMap = {
   RKS_AP_PWR_SRC_UNKNOWN: defineMessage({ defaultMessage: 'Unknown' }),
   RKS_AP_PWR_SRC_DC: defineMessage({ defaultMessage: 'AC/DC Power supply' }),
   RKS_AP_PWR_SRC_AT: defineMessage({ defaultMessage: '802.3at Switch/Injector' }),
