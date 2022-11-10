@@ -25,6 +25,7 @@ export * from './network'
 export * from './user'
 export * from './services'
 export * from './msp'
+export * from './policy'
 export * from './wifiCallingService'
 export * from './rougeAPDetectionPolicy'
 

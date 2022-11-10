@@ -219,6 +219,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/profile/:profileId'
   },
+  getPoliciesList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/policies'
+  },
   getUserProfile: {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'

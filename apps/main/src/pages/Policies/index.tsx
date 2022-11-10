@@ -1,10 +1,23 @@
-import { Loader } from '@acx-ui/components'
-import { Outlet } from '@acx-ui/react-router-dom'
+import { useIntl } from 'react-intl'
+
+import { Loader }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Outlet }                 from '@acx-ui/react-router-dom'
+
 
 function Policies () {
-  return <Loader>
-    <Outlet />
-  </Loader>
+  const isPoliciesEnabled = useIsSplitOn(Features.POLICIES)
+  const { $t } = useIntl()
+
+  if (!isPoliciesEnabled) {
+    return <span>{ $t({ defaultMessage: 'Policies is not enabled' }) }</span>
+  }
+
+  return (
+    <Loader>
+      <Outlet />
+    </Loader>
+  )
 }
 
 export default Policies

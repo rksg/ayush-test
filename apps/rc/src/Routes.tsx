@@ -1,17 +1,25 @@
-import { ServiceType }                       from '@acx-ui/rc/utils'
+import { PolicyType, ServiceType }           from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
-import ApDetails                  from './pages/Devices/Wifi/ApDetails'
-import { ApForm }                 from './pages/Devices/Wifi/ApForm'
-import ApsTable                   from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable              from './pages/Networks/NetworksTable'
+import SwitchesTable  from './pages/Devices/Switch/SwitchesTable'
+import ApDetails      from './pages/Devices/Wifi/ApDetails'
+import { ApForm }     from './pages/Devices/Wifi/ApForm'
+import ApsTable       from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm    from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable  from './pages/Networks/NetworksTable'
+import PoliciesTable  from './pages/Policies/PoliciesTable'
+import {
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  getSelectPolicyRoutePath,
+  PolicyOperation
+} from './pages/Policies/policyRouteUtils'
 import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
+import SelectPolicyForm     from './pages/Policies/SelectPolicyForm'
 import DHCPDetail           from './pages/Services/DHCPDetail'
 import DHCPForm             from './pages/Services/DHCPForm/DHCPForm'
 import MdnsProxyForm        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
@@ -26,7 +34,6 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
-
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -124,16 +131,21 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
+      <Route path={getPolicyListRoutePath()} element={<PoliciesTable />} />
+      <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
       <Route
-        path='policies/rogueAPDetection/create'
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
         element={<RogueAPDetectionForm edit={false}/>}
       />
       <Route
-        path='policies/rogueAPDetection/:policyId/edit'
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })}
         element={<RogueAPDetectionForm edit={true}/>}
       />
       <Route
-        path='policies/rogueAPDetection/:policyId/detail'
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<RogueAPDetectionDetailView />}
       />
     </Route>

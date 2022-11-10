@@ -6,9 +6,14 @@ import {
 
 import {
   createHttpRequest,
+  CommonUrlsInfo,
   RequestPayload,
+  Policy,
   RogueAPDetectionUrls,
-  RogueAPDetectionContextType, RogueAPDetectionTempType, VenueRoguePolicyType, TableResult
+  RogueAPDetectionContextType,
+  RogueAPDetectionTempType,
+  VenueRoguePolicyType,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -72,6 +77,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    policyList: build.query<TableResult<Policy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params)
+        return {
+          ...policyListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     })
   })
 })
@@ -82,5 +97,6 @@ export const {
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
-  useVenueRoguePolicyQuery
+  useVenueRoguePolicyQuery,
+  usePolicyListQuery
 } = policyApi
