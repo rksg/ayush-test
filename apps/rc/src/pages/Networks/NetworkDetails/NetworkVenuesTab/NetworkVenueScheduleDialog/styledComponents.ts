@@ -68,21 +68,26 @@ export const CheckboxGroup = styled(Checkbox.Group)`
 		  background: var(--acx-accents-blue-60);
     }
 
-    &.ant-checkbox-wrapper-checked:not(.ant-checkbox-wrapper-disabled) {
-		  background:  var(--acx-accents-blue-50);
-      &:hover {
-        background:  var(--acx-accents-blue-60);
-      }
-    }
-
     &.ant-checkbox-wrapper-disabled {
 	    background:  var(--acx-neutrals-20);
       &:before {
         background:  var(--acx-neutrals-20);
       }
     }
+
+    &.ant-checkbox-wrapper-checked {
+		  background:  var(--acx-accents-blue-50);
+      &:hover {
+        background:  var(--acx-accents-blue-60);
+      }
+    }
   }
 }
+`
+export const DayCheckbox = styled(Checkbox)`
+  .ant-checkbox-inner{
+    background-color: var(--acx-accents-blue-50);
+  }
 `
 
 export const Timetick = styled.div`

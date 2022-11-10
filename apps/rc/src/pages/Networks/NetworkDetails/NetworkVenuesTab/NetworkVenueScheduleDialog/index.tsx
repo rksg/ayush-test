@@ -30,7 +30,8 @@ import {
   NetworkSaveData,
   fetchVenueTimeZone,
   Venue,
-  transformTimezoneDifference
+  transformTimezoneDifference,
+  NetworkVenueScheduler
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -112,6 +113,45 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const arrCheckedList = [...checkedList]
   const arrCheckAll = [...checkAll]
   const arrIndeterminate = [...indeterminate]
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const initialValues = (scheduler: NetworkVenueScheduler) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let map: { [key: string]: any } = scheduler
+    for (let key in map) {
+      if(key === 'type'){
+        if(map[key] === 'ALWAYS_ON'){
+          for (let daykey in dayIndex) {
+            form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
+            arrCheckAll[dayIndex[daykey]] = true
+            setCheckAll(arrCheckAll)
+          }
+        }
+        continue
+      } else {
+        const list = map[key].split('').map((item: string, i: string) => `${key}_${i}`)
+        const selectedList = map[key].split('').map(function (item: string, i: string) {
+          if(item === '1'){
+            return `${key}_${i}`
+          }else{
+            return false
+          }
+        }).filter(Boolean)
+        form.setFieldValue(['scheduler', key], selectedList)
+
+        const index = dayIndex[key]
+        arrCheckedList[index] = selectedList
+        setCheckedList(arrCheckedList)
+
+        arrCheckAll[index] = true
+        setCheckAll(arrCheckAll)
+
+        arrIndeterminate[index] = !!selectedList.length && selectedList.length < list.length
+        setIndeterminate(arrIndeterminate)
+      }
+    }
+  }
+
   useEffect(() => {
     const getTimeZone = async (venueLatitude: string, venueLongitude: string) => {
       const timeZone = await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
@@ -134,40 +174,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       form.setFieldValue(['scheduler', 'type'], networkVenue?.scheduler.type)
       setDisabled(networkVenue?.scheduler.type === 'ALWAYS_ON')
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let map: { [key: string]: any } = networkVenue?.scheduler
-      for (let key in map) {
-        if(key === 'type'){
-          if(map[key] === 'ALWAYS_ON'){
-            for (let daykey in dayIndex) {
-              form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
-              arrCheckAll[dayIndex[daykey]] = true
-              setCheckAll(arrCheckAll)
-            }
-          }
-          continue
-        } else {
-          const list = map[key].split('').map((item: string, i: string) => `${key}_${i}`)
-          const selectedList = map[key].split('').map(function (item: string, i: string) {
-            if(item === '1'){
-              return `${key}_${i}`
-            }else{
-              return false
-            }
-          }).filter(Boolean)
-          form.setFieldValue(['scheduler', key], selectedList)
-
-          const index = dayIndex[key]
-          arrCheckedList[index] = selectedList
-          setCheckedList(arrCheckedList)
-
-          arrCheckAll[index] = true
-          setCheckAll(arrCheckAll)
-
-          arrIndeterminate[index] = !!selectedList.length && selectedList.length < list.length
-          setIndeterminate(arrIndeterminate)
-        }
-      }
+      initialValues(networkVenue?.scheduler)
     }
   }, [form, networkVenue, networkVenue?.scheduler])
 
@@ -247,6 +254,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         setIndeterminate(arrIndeterminate)
       }
     }else{
+      initialValues(networkVenue?.scheduler as NetworkVenueScheduler)
       setDisabled(false)
     }
   }

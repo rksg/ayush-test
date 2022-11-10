@@ -45,7 +45,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
               style="padding-left: 12px; padding-right: 12px;"
             >
               <span
-                class="styledComponents__TitleSpan-sc-b7odqf-6 jSIYfb"
+                class="styledComponents__TitleSpan-sc-b7odqf-7 kozrue"
               >
                 Network availability
               </span>
@@ -141,7 +141,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                     type="button"
                   >
                     <span
-                      class="styledComponents__TipSpan-sc-b7odqf-8 iTvcfF"
+                      class="styledComponents__TipSpan-sc-b7odqf-9 WVvyY"
                     >
                       See tips
                     </span>
@@ -200,7 +200,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                           </span>
                         </label>
                         <span
-                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                          class="styledComponents__DaySpan-sc-b7odqf-8 hmTsPO"
                         >
                           mon
                         </span>
@@ -213,67 +213,67 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                           style="width: 100%; height: 25px; margin-left: -30px;"
                         >
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             Midnight
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             2 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             4 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             6 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             8 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             10 AM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             Noon
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             2 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             4 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             6 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             8 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             10 PM
                           </div>
                           <div
-                            class="styledComponents__Timetick-sc-b7odqf-3 itHGjN"
+                            class="styledComponents__Timetick-sc-b7odqf-4 gwVhuC"
                           >
                             Midnight
                           </div>
@@ -282,151 +282,151 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                           style="width: 980px; height: 5px;"
                         >
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                           <div
-                            class="styledComponents__Timetickborder-sc-b7odqf-4 kXIJLS"
+                            class="styledComponents__Timetickborder-sc-b7odqf-5 cIpuOb"
                           />
                         </div>
                         <div
@@ -445,7 +445,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 blIVb"
+                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 cscIfh"
                                     id="networkVenueScheduleForm_scheduler_mon"
                                   >
                                     <label
@@ -2984,7 +2984,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                           </span>
                         </label>
                         <span
-                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                          class="styledComponents__DaySpan-sc-b7odqf-8 hmTsPO"
                         >
                           tue
                         </span>
@@ -3009,7 +3009,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 blIVb"
+                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 cscIfh"
                                     id="networkVenueScheduleForm_scheduler_tue"
                                   >
                                     <label
@@ -5548,7 +5548,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                           </span>
                         </label>
                         <span
-                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                          class="styledComponents__DaySpan-sc-b7odqf-8 hmTsPO"
                         >
                           wed
                         </span>
@@ -5573,7 +5573,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 blIVb"
+                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 cscIfh"
                                     id="networkVenueScheduleForm_scheduler_wed"
                                   >
                                     <label
@@ -8112,7 +8112,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                           </span>
                         </label>
                         <span
-                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                          class="styledComponents__DaySpan-sc-b7odqf-8 hmTsPO"
                         >
                           thu
                         </span>
@@ -8137,7 +8137,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 blIVb"
+                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 cscIfh"
                                     id="networkVenueScheduleForm_scheduler_thu"
                                   >
                                     <label
@@ -10676,7 +10676,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                           </span>
                         </label>
                         <span
-                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                          class="styledComponents__DaySpan-sc-b7odqf-8 hmTsPO"
                         >
                           fri
                         </span>
@@ -10701,7 +10701,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 blIVb"
+                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 cscIfh"
                                     id="networkVenueScheduleForm_scheduler_fri"
                                   >
                                     <label
@@ -13240,7 +13240,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                           </span>
                         </label>
                         <span
-                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                          class="styledComponents__DaySpan-sc-b7odqf-8 hmTsPO"
                         >
                           sat
                         </span>
@@ -13265,7 +13265,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 blIVb"
+                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 cscIfh"
                                     id="networkVenueScheduleForm_scheduler_sat"
                                   >
                                     <label
@@ -15708,7 +15708,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                           </span>
                         </label>
                         <span
-                          class="styledComponents__DaySpan-sc-b7odqf-7 cPUmjF"
+                          class="styledComponents__DaySpan-sc-b7odqf-8 hmTsPO"
                         >
                           sun
                         </span>
@@ -15733,7 +15733,7 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 blIVb"
+                                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-b7odqf-2 cscIfh"
                                     id="networkVenueScheduleForm_scheduler_sun"
                                   >
                                     <label
