@@ -174,7 +174,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
+        style="min-height: 180px;"
       >
         <div
           data-testid="poeLowTable"
@@ -359,7 +359,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
+        style="min-height: 180px;"
       >
         <div
           data-testid="wanthroughputTable"
@@ -2512,7 +2512,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
+        style="min-height: 180px;"
       >
         <div
           data-testid="poePdTable"

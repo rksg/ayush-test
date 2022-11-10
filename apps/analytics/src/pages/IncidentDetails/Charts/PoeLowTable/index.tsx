@@ -3,9 +3,8 @@ import React, { useMemo, useState } from 'react'
 import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { noDataSymbol }              from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table } from '@acx-ui/components'
-import { TenantLink }                from '@acx-ui/react-router-dom'
+import { Loader, TableProps, Table, Card } from '@acx-ui/components'
+import { TenantLink }                      from '@acx-ui/react-router-dom'
 
 import { ImpactedTableProps, sortedColumn } from '../utils'
 
@@ -53,7 +52,7 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
 
   const columnHeaders: TableProps<PoeLowTableFields>['columns'] = useMemo(() => [
     sortedColumn('name', {
-      title: $t(defineMessage({ defaultMessage: 'AP Name1' })),
+      title: $t(defineMessage({ defaultMessage: 'AP Name' })),
       width: 200,
       dataIndex: 'name',
       key: 'name',
@@ -104,12 +103,13 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
   return (
     <Loader states={[queryResults]}>
       {queryResults.data &&
-        <Table
-          type='tall'
-          dataSource={convertData(queryResults.data)}
-          columns={columnHeaders}
-          columnEmptyText={noDataSymbol}
-        />
+        <Card title={$t({ defaultMessage: 'Impacted APs' })} type='no-border'>
+          <Table
+            type='tall'
+            dataSource={convertData(queryResults.data)}
+            columns={columnHeaders}
+          />
+        </Card>
       }
     </Loader>
   )

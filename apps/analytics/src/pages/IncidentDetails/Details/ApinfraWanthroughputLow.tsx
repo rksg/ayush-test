@@ -78,7 +78,7 @@ export const ApinfraWanthroughputLow = (incident: Incident) => {
             buffer={buffer}
           />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '180px' }}>
           <WanthroughputTable incident={incident}/>
         </GridCol>
       </GridRow>

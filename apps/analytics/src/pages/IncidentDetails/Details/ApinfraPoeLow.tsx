@@ -78,7 +78,7 @@ export const ApinfraPoeLow = (incident: Incident) => {
             buffer={buffer}
           />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '180px' }}>
           <PoeLowTable incident={incident}/>
         </GridCol>
       </GridRow>

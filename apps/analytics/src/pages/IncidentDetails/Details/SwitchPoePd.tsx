@@ -51,7 +51,7 @@ export const SwitchPoePd = (incident: Incident) => {
             <NotAvailable/>
           </Card>
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '180px' }}>
           <PoePdTable incident={incident}/>
         </GridCol>
       </GridRow>
