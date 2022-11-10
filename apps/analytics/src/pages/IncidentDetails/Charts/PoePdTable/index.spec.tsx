@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }         from '@acx-ui/analytics/services'
-import { fakeIncidentPoePd }  from '@acx-ui/analytics/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { dataApiURL }        from '@acx-ui/analytics/services'
+import { fakeIncidentPoePd } from '@acx-ui/analytics/utils'
+import { Provider, store }   from '@acx-ui/store'
 import {
   fireEvent,
   mockGraphqlQuery,

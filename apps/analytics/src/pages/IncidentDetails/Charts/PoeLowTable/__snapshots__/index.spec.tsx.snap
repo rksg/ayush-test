@@ -32,7 +32,7 @@ exports[`PoeLowTable should render correctly 1`] = `
                 </span>
                 <input
                   class="ant-input"
-                  placeholder="Search AP Name, MAC Address"
+                  placeholder="Search AP Name1, MAC Address"
                   type="text"
                   value=""
                 />
@@ -336,7 +336,7 @@ exports[`PoeLowTable should render correctly 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    AP Name
+                                    AP Name1
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"

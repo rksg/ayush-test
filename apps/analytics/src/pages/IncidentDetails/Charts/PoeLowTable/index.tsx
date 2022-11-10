@@ -7,7 +7,7 @@ import { noDataSymbol }              from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table } from '@acx-ui/components'
 import { TenantLink }                from '@acx-ui/react-router-dom'
 
-import { ImpactedTableProps, defaultSort } from '../utils'
+import { ImpactedTableProps, sortedColumn } from '../utils'
 
 import { poeApPwrModeEnumMap }             from './poeApPwrModeEnumMap'
 import { poeCurPwrSrcEnumMap }             from './poeCurPwrSrcEnumMap'
@@ -52,72 +52,53 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
   )
 
   const columnHeaders: TableProps<PoeLowTableFields>['columns'] = useMemo(() => [
-    {
-      title: $t(defineMessage({ defaultMessage: 'AP Name' })),
+    sortedColumn('name', {
+      title: $t(defineMessage({ defaultMessage: 'AP Name1' })),
       width: 200,
       dataIndex: 'name',
       key: 'name',
-      render: (_, value) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
-      sorter: {
-        compare: (a, b) => defaultSort(a.name, b.name)
-      },
+      render: (_, value: PoeLowTableFields) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
       defaultSortOrder: 'descend',
       fixed: 'left',
       searchable: true
-    },
-    {
+    }),
+    sortedColumn('mac', {
       title: $t(defineMessage({ defaultMessage: 'MAC Address' })),
       width: 120,
       dataIndex: 'mac',
       key: 'mac',
-      sorter: {
-        compare: (a, b) => defaultSort(a.mac, b.mac)
-      },
       searchable: true
-    },
+    }),
     ...(props.incident.sliceType === 'zone'
-      ? [{
+      ? [sortedColumn<PoeLowTableFields>('apGroup', {
         title: $t(defineMessage({ defaultMessage: 'AP Group' })),
         width: 110,
         dataIndex: 'apGroup',
         key: 'apGroup',
-        sorter: {
-          compare: (a: { apGroup: string }, b: { apGroup: string } ) =>
-            defaultSort(a.apGroup as string, b.apGroup as string)
-        },
         searchable: true
-      }]
+      })]
       : []),
-    {
+    sortedColumn('configured', {
       title: $t(defineMessage({ defaultMessage: 'Configured PoE Mode' })),
       width: 120,
       dataIndex: 'configured',
       key: 'configured',
-      sorter: {
-        compare: (a, b) => defaultSort(a.configured, b.configured)
-      },
       filterable: true
-    },
-    {
+    }),
+    sortedColumn('operating', {
       title: $t(defineMessage({ defaultMessage: 'Operating PoE Mode' })),
       width: 120,
       dataIndex: 'operating',
       key: 'operating',
-      sorter: {
-        compare: (a, b) => defaultSort(a.operating, b.operating)
-      },
       filterable: true
-    },
-    {
+    }),
+    sortedColumn('eventTime', {
       title: $t(defineMessage({ defaultMessage: 'Event Time' })),
       width: 130,
       dataIndex: 'eventTime',
       key: 'eventTime',
-      render: (_, value) => moment(value.eventTime).format('MMMM DD YYYY HH:mm'),
-      sorter: {
-        compare: (a, b) => defaultSort(a.eventTime, b.eventTime)
-      }
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
+      render: (_, value: PoeLowTableFields) => moment(value.eventTime).format('MMMM DD YYYY HH:mm')
+    }) // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' 'sliceType' are not changing
 
   return (

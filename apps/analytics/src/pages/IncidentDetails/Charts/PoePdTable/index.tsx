@@ -7,7 +7,7 @@ import { noDataSymbol }              from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table } from '@acx-ui/components'
 import { TenantLink }                from '@acx-ui/react-router-dom'
 
-import { ImpactedTableProps, defaultSort } from '../utils'
+import { ImpactedTableProps, sortedColumn } from '../utils'
 
 import { ImpactedSwitch, usePoePdTableQuery } from './services'
 
@@ -42,51 +42,39 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
   )
 
   const columnHeaders: TableProps<PoePdTableFields>['columns'] = useMemo(() => [
-    {
+    sortedColumn('name', {
       title: $t(defineMessage({ defaultMessage: 'Switch Name' })),
       width: 200,
       dataIndex: 'name',
       key: 'name',
-      render: (_, value) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
-      sorter: {
-        compare: (a, b) => defaultSort(a.name, b.name)
-      },
+      render: (_, value: PoePdTableFields) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
       defaultSortOrder: 'descend',
       fixed: 'left',
       searchable: true
-    },
-    {
+    }),
+    sortedColumn('mac', {
       title: $t(defineMessage({ defaultMessage: 'MAC Address' })),
       width: 110,
       dataIndex: 'mac',
       key: 'mac',
-      sorter: {
-        compare: (a, b) => defaultSort(a.mac, b.mac)
-      },
       fixed: 'left',
       searchable: true
-    },
-    {
+    }),
+    sortedColumn('portNumber', {
       title: $t(defineMessage({ defaultMessage: 'Port Number' })),
       width: 130,
       dataIndex: 'portNumber',
       key: 'portNumber',
-      sorter: {
-        compare: (a, b) => defaultSort(a.portNumber as string, b.portNumber as string)
-      },
       fixed: 'left',
       filterable: true
-    },
-    {
+    }),
+    sortedColumn('eventTime', {
       title: $t(defineMessage({ defaultMessage: 'Event Time' })),
       width: 100,
       dataIndex: 'eventTime',
       key: 'eventTime',
-      render: (_, value) => moment(value.eventTime).format('MMMM DD YYYY HH:mm'),
-      sorter: {
-        compare: (a, b) => defaultSort(a.eventTime, b.eventTime)
-      }
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
+      render: (_, value: PoePdTableFields) => moment(value.eventTime).format('MMMM DD YYYY HH:mm')
+    }) // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
 
   return (
