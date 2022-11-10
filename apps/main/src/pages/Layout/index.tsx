@@ -1,13 +1,14 @@
-import { useIntl } from 'react-intl'
+import { Input, Dropdown, Menu, Button, Avatar } from 'antd'
+import { useIntl }         from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+
+import { Tooltip, GridRow, GridCol, cssStr } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI
 }                        from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
-  AccountCircleSolid,
   QuestionMarkCircleSolid,
   SearchOutlined
 }                          from '@acx-ui/icons'
@@ -15,10 +16,13 @@ import { AlarmsHeaderButton } from '@acx-ui/main/components'
 import { Outlet }             from '@acx-ui/react-router-dom'
 import { notAvailableMsg }    from '@acx-ui/utils'
 
+import ActivityButton    from './Header/ActivityButton'
+import AlarmButton       from './Header/AlarmButton'
+import HelpButton        from './Header/HelpButton'
 import LicenseBar        from './Header/LicenseBar'
 import RegionButton      from './Header/RegionButton'
+import UserButton        from './Header/UserButton'
 import { useMenuConfig } from './menuConfig'
-
 
 function Layout () {
 
@@ -35,15 +39,34 @@ function Layout () {
         }
         rightHeaderContent={<>
           <Tooltip title={useIntl().$t(notAvailableMsg)}>
-            <LayoutUI.ButtonOutlined disabled shape='circle' icon={<SearchOutlined />} />
+            <GridRow>
+              <GridCol col={{ span: 19 }}>
+                <Input disabled
+                  placeholder={useIntl().$t(({ defaultMessage: 'Search here...' }))}
+                  style={{
+                    color: cssStr('--acx-primary-white')
+                  }}
+                  bordered={false}/>
+              </GridCol>
+              <GridCol col={{ span: 5 }}>
+                <LayoutUI.ButtonOutlined disabled
+                  shape='circle'
+                  style={{ background: cssStr('--acx-neutrals-70') }}
+                  icon={
+                    <SearchOutlined/>
+                  } />
+              </GridCol>
+            </GridRow>
           </Tooltip>
           <LayoutUI.Divider />
-          <AlarmsHeaderButton />
+          {/* <AlarmsHeaderButton /> */}
+          <AlarmButton/>
+          <ActivityButton/>
           <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-            <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
+            <HelpButton/>
           </Tooltip>
           <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-            <LayoutUI.ButtonSolid disabled icon={<AccountCircleSolid />} />
+            <UserButton/>
           </Tooltip>
         </>}
       />

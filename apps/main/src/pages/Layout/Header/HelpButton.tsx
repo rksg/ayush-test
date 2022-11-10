@@ -1,35 +1,40 @@
+import React from 'react'
 
-import { Menu }    from 'antd'
-import { useIntl } from 'react-intl'
+import { LogoutOutlined } from '@ant-design/icons'
+import { Menu, Dropdown } from 'antd'
+import { useIntl }        from 'react-intl'
 
 import {
-  LayoutUI,
-  Dropdown
+  LayoutUI
 }                        from '@acx-ui/components'
-import {
-  WorldSolid,
-  ArrowExpand
-} from '@acx-ui/icons'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import {  QuestionMarkCircleSolid } from '@acx-ui/icons'
 
-
-export default function RegionButton () {
+const HelpButton = () => {
   const { $t } = useIntl()
-  const regionMenu = <Menu
-    selectable
-    defaultSelectedKeys={['US']}
-    items={[
-      { key: 'US', label: <TenantLink to='TBD'>{$t({ defaultMessage: 'US' })}</TenantLink> },
-      { key: 'EU', label: <TenantLink to='TBD'>{$t({ defaultMessage: 'EU' })}</TenantLink> },
-      { key: 'Asia', label: <TenantLink to='TBD'>{$t({ defaultMessage: 'ASIA' })}</TenantLink> }
-    ]}
-  />
 
-  return <Dropdown overlay={regionMenu}>{(selectedKeys) =>
-    <LayoutUI.DropdownText>
-      <LayoutUI.Icon children={<WorldSolid />} />
-      {selectedKeys}
-      <LayoutUI.Icon children={<ArrowExpand />} />
-    </LayoutUI.DropdownText>
-  }</Dropdown>
+  const menuHeaderDropdown = (
+    <Menu selectedKeys={[]} onClick={()=>{}}>
+      <Menu.Item key='center'>
+        {$t({ defaultMessage: 'User Profile' })}
+      </Menu.Item>
+
+      <Menu.Item key='settings'>
+        {$t({ defaultMessage: 'Change Password' })}
+      </Menu.Item>
+
+      <Menu.Divider />
+
+      <Menu.Item key='logout'>
+        <LogoutOutlined />
+        {$t({ defaultMessage: 'Log out' })}
+      </Menu.Item>
+    </Menu>
+  )
+  return (
+    <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft'>
+      <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
+    </Dropdown>
+  )
 }
+
+export default HelpButton

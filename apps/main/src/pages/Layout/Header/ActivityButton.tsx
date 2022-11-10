@@ -1,35 +1,42 @@
 
-import { Menu }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Badge, Popover } from 'antd'
 
-import {
-  LayoutUI,
-  Dropdown
-}                        from '@acx-ui/components'
-import {
-  WorldSolid,
-  ArrowExpand
-} from '@acx-ui/icons'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { LayoutUI }                  from '@acx-ui/components'
+import { ClockCircleFilled } from '@ant-design/icons';
+import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
+import { useParams }                 from '@acx-ui/react-router-dom'
 
 
-export default function RegionButton () {
-  const { $t } = useIntl()
-  const regionMenu = <Menu
-    selectable
-    defaultSelectedKeys={['US']}
-    items={[
-      { key: 'US', label: <TenantLink to='TBD'>{$t({ defaultMessage: 'US' })}</TenantLink> },
-      { key: 'EU', label: <TenantLink to='TBD'>{$t({ defaultMessage: 'EU' })}</TenantLink> },
-      { key: 'Asia', label: <TenantLink to='TBD'>{$t({ defaultMessage: 'ASIA' })}</TenantLink> }
-    ]}
-  />
 
-  return <Dropdown overlay={regionMenu}>{(selectedKeys) =>
-    <LayoutUI.DropdownText>
-      <LayoutUI.Icon children={<WorldSolid />} />
-      {selectedKeys}
-      <LayoutUI.Icon children={<ArrowExpand />} />
-    </LayoutUI.DropdownText>
-  }</Dropdown>
+export default function ActivityHeaderButton () {
+  const params = useParams()
+  const { data } = useDashboardOverviewQuery({ params })
+
+  const getCount = function () {
+    if (data?.summary?.alarms?.totalCount) {
+      const clearedAlarms = data.summary.alarms.summary?.clear || 0
+      return data.summary.alarms.totalCount - clearedAlarms
+    } else {
+      return 0
+    }
+  }
+
+  const content = (
+    <div>content here...</div>
+  )
+
+  const ActivityHeaderButton = () => {
+    return <Popover arrowPointAtCenter
+      content={content}
+      trigger='click'>
+      <Badge
+        count={getCount()}
+        overflowCount={9}
+        offset={[-3, 0]}
+        children={<LayoutUI.ButtonSolid icon={<ClockCircleFilled />} />}
+      />
+    </Popover>
+  }
+
+  return <ActivityHeaderButton />
 }

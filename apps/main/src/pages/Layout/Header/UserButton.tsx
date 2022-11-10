@@ -1,29 +1,41 @@
+import React from 'react'
 
-import { ReactElement, JSXElementConstructor } from 'react'
-import { Menu, Avatar } from 'antd'
+import {  QuestionMarkCircleSolid } from '@acx-ui/icons'
+import { LogoutOutlined, SettingOutlined } from '@ant-design/icons'
+import { Avatar, Menu, Dropdown, Button }                        from 'antd'
 import { useIntl } from 'react-intl'
-
 import {
-  LayoutUI,
-  Dropdown
+  LayoutUI
 }                        from '@acx-ui/components'
-import { QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { TenantLink }              from '@acx-ui/react-router-dom'
+import { UserNameButton } from './styledComponents'
 
-
-
-export default function RegionButton () {
+const UserButton = () => {
   const { $t } = useIntl()
-  const menus = <Menu
-    selectable
-    defaultSelectedKeys={['US']}
-    items={[
-      { key: 'US', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'US' })}</TenantLink> },
-      { key: 'EU', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'EU' })}</TenantLink> },
-      { key: 'Asia', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'ASIA' })}</TenantLink> }
-    ]}
-  />
-  return <Dropdown overlay={menus}>{() =>
-    <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
-  }</Dropdown>
+
+  const menuHeaderDropdown = (
+    <Menu selectedKeys={[]} onClick={()=>{}}>
+      <Menu.Item key='center'>
+        {$t({ defaultMessage: 'User Profile' })}
+      </Menu.Item>
+
+      <Menu.Item key='settings'>
+        {$t({ defaultMessage: 'Change Password' })}
+      </Menu.Item>
+
+      <Menu.Divider />
+
+      <Menu.Item key='logout'>
+        <LogoutOutlined />
+        {$t({ defaultMessage: 'Log out' })}
+      </Menu.Item>
+    </Menu>
+  )
+
+  return (
+    <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft'>
+      <UserNameButton>JS</UserNameButton>
+    </Dropdown>
+  )
 }
+
+export default UserButton
