@@ -1350,7 +1350,9 @@ exports[`Device Inventory Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                R750
+                              </td>
                               <td
                                 class="ant-table-cell"
                               >
@@ -1388,7 +1390,7 @@ exports[`Device Inventory Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="EC 111's AP"
+                              data-row-key="EC 222's AP"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
@@ -1413,12 +1415,12 @@ exports[`Device Inventory Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111's AP
+                                EC 222's AP
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111
+                                EC 222
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1428,7 +1430,7 @@ exports[`Device Inventory Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                My-Venue
+                                Venue 2
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1447,7 +1449,7 @@ exports[`Device Inventory Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="EC 111's AP"
+                              data-row-key="EC 333's AP"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
@@ -1461,33 +1463,29 @@ exports[`Device Inventory Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
                               >
-                                Switch
+                                ICX-7550
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                ICX-7650
+                                EC 333's AP
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111's AP
+                                EC 333
                               </td>
                               <td
                                 class="ant-table-cell"
-                              >
-                                EC 111
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
                               >
-                                Initializing
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                My-Venue
+                                Venue 3
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1506,7 +1504,7 @@ exports[`Device Inventory Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="EC 111's AP"
+                              data-row-key="EC 444's Switch"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
@@ -1520,33 +1518,29 @@ exports[`Device Inventory Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
                               >
-                                Switch
+                                ICX-7150-08
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                ICX-7150
+                                EC 444's Switch
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111's AP
+                                EC 444
                               </td>
                               <td
                                 class="ant-table-cell"
-                              >
-                                EC 111
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
                               >
-                                Firmware updating
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                My-Venue
+                                Venue 4
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1565,7 +1559,7 @@ exports[`Device Inventory Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="EC 111's AP"
+                              data-row-key="EC 555's Switch"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
@@ -1579,9 +1573,7 @@ exports[`Device Inventory Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                              >
-                                Switch
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -1590,22 +1582,20 @@ exports[`Device Inventory Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111's AP
+                                EC 555's Switch
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111
+                                EC 555
                               </td>
                               <td
                                 class="ant-table-cell"
-                              >
-                                Operational
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
                               >
-                                My-Venue
+                                Venue 5
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1624,7 +1614,7 @@ exports[`Device Inventory Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="EC 111's AP"
+                              data-row-key="EC 666's Switch"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
@@ -1638,33 +1628,29 @@ exports[`Device Inventory Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
                               >
-                                Switch
+                                R650
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                ICX-7550
+                                EC 666's Switch
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111's AP
+                                EC 666
                               </td>
                               <td
                                 class="ant-table-cell"
-                              >
-                                EC 111
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
                               >
-                                Requires Attention
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                My-Venue
+                                Venue 6
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1683,7 +1669,7 @@ exports[`Device Inventory Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="EC 111's AP"
+                              data-row-key="EC 777's Switch"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
@@ -1697,9 +1683,7 @@ exports[`Device Inventory Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                              >
-                                Switch
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -1708,22 +1692,20 @@ exports[`Device Inventory Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111's AP
+                                EC 777's Switch
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111
+                                EC 777
                               </td>
                               <td
                                 class="ant-table-cell"
-                              >
-                                Never contacted Active Switch
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
                               >
-                                My-Venue
+                                Venue 7
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1742,7 +1724,7 @@ exports[`Device Inventory Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="EC 111's AP"
+                              data-row-key="EC 888's RA"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
@@ -1759,16 +1741,18 @@ exports[`Device Inventory Table should render table 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
-                                EC 111's AP
+                                ANALYTIC
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111
+                                EC 888's RA
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                EC 888
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1776,7 +1760,7 @@ exports[`Device Inventory Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                My-Venue
+                                Venue 8
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1795,7 +1779,7 @@ exports[`Device Inventory Table should render table 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="EC 111's AP"
+                              data-row-key="EC 999's Switch"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
@@ -1809,8 +1793,21 @@ exports[`Device Inventory Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
                               >
-                                Switch
+                                R720
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                EC 999's Switch
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                EC 999
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1818,22 +1815,7 @@ exports[`Device Inventory Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                EC 111's AP
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                EC 111
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Never contacted cloud
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                My-Venue
+                                Venue 9
                               </td>
                               <td
                                 class="ant-table-cell"

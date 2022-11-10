@@ -26,7 +26,7 @@ import {
   useTableQuery,
   MspEc
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length
@@ -189,9 +189,9 @@ export function Integrators () {
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <TenantLink to='/integrators/create' tenantType='v' key='add'>
+          <MspTenantLink to='/integrators/create' key='add'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
-          </TenantLink>,
+          </MspTenantLink>,
           <Button key='download' icon={<DownloadOutlined />} />
         ]}
       />

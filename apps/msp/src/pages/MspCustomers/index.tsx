@@ -29,7 +29,7 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
@@ -302,9 +302,9 @@ export function MspCustomers () {
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <TenantLink to='/dashboard/mspcustomers/create' tenantType='v' key='addMspEc'>
+          <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
-          </TenantLink>,
+          </MspTenantLink>,
           <Button key='download' icon={<DownloadOutlined />} />
         ]}
       />

@@ -2,7 +2,7 @@ import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
-import { TenantLink }         from '@acx-ui/react-router-dom'
+import { MspTenantLink }      from '@acx-ui/react-router-dom'
 
 import { SwitchLicense } from './SwitchLicense'
 import { WifiLicense }   from './WifiLicense'
@@ -15,12 +15,12 @@ export function LicensesTab () {
       <PageHeader
         title='MSP Licenses'
         extra={[
-          <TenantLink to='/msplicenses/updateLicenses' key='updateLicenses'>
+          <MspTenantLink to='/msplicenses/updateLicenses' key='updateLicenses'>
             <Button>{$t({ defaultMessage: 'Update Licenses' })}</Button>
-          </TenantLink>,
-          <TenantLink to='/msplicenses/generateReport' key='GenerateReport'>
+          </MspTenantLink>,
+          <MspTenantLink to='/msplicenses/generateReport' key='GenerateReport'>
             <Button>{$t({ defaultMessage: 'Generate Usage Report' })}</Button>
-          </TenantLink>
+          </MspTenantLink>
         ]}
       />
       <Tabs>
