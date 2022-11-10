@@ -129,3 +129,33 @@ export const getShortDurationFormat = (value: number | string) => {
 
   return result.join(', ')
 }
+
+export const millisToProperDuration = (ms:number) => {
+  const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+  const daysms = ms % (24 * 60 * 60 * 1000);
+  const hours = Math.floor((daysms) / (60 * 60 * 1000));
+  const hoursms = ms % (60 * 60 * 1000);
+  const minutes = Math.floor((hoursms) / (60 * 1000));
+  const minutesms = ms % (60 * 1000);
+  const seconds = Math.floor((minutesms) / (1000));
+  if (days > 0) {
+    return days + ' ' + (days === 1 ? 'Day' : 'Days') + ' ' + hours + ' ' + (hours <= 1 ? 'Hour' : 'Hours');
+  }
+  if (hours > 0) {
+    return hours + ' ' + (hours === 1 ? 'Hour' : 'Hours') + ' ' + minutes + ' ' + (minutes <= 1 ? 'Minute' : 'Minutes');
+  } else {
+    return minutes + ' ' + (minutes <= 1 ? 'Minute' : 'Minutes') + ' ' + seconds + ' ' + (seconds <= 1 ? 'Second' : 'Seconds');
+  }
+}
+
+export const secondToTime = (value:number) => {
+  if (!value) {
+    return '';
+  }
+  
+  return millisToProperDuration(value * 1000).
+    replace(/\sDay[s]?/, 'd').
+    replace(/\sHour[s]?/, 'h').
+    replace(/\sMinute[s]?/, 'm').
+    replace(/\sSecond[s]?/, 's')
+}

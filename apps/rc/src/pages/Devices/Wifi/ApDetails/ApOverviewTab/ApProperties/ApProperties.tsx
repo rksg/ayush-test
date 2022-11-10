@@ -37,14 +37,14 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
             labelAlign='left'
           >
             <Form.Item
-              label={$t({ defaultMessage: 'Venue:' })}
+              label={$t({ defaultMessage: 'Venue' })}
               children={
                 <TenantLink to={`/venues/${currentAP?.venueId}/venue-details/overview`}>
                   {currentAP?.venueName}
                 </TenantLink>}
             />
             <Form.Item
-              label={$t({ defaultMessage: 'AP Group:' })}
+              label={$t({ defaultMessage: 'AP Group' })}
               children={
                 currentAP?.deviceGroupName || $t({ defaultMessage: 'None' })
               }
@@ -55,15 +55,15 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
               (
                 <>
                   <Form.Item
-                    label={$t({ defaultMessage: 'Uptime:' })}
+                    label={$t({ defaultMessage: 'Uptime' })}
                     children={currentAP?.uptime}
                   />
                   <Form.Item
-                    label={$t({ defaultMessage: 'Last Seen:' })}
+                    label={$t({ defaultMessage: 'Last Seen' })}
                     children={currentAP?.lastSeenTime}
                   />
                   <Form.Item
-                    label={$t({ defaultMessage: 'Wireless Radio:' })}
+                    label={$t({ defaultMessage: 'Wireless Radio' })}
                   />
                   <UI.TextHeader>
                     <label></label>
@@ -136,25 +136,25 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
               (
                 <>
                   <Form.Item
-                    label={$t({ defaultMessage: 'Cellular Radio:' })}
+                    label={$t({ defaultMessage: 'Cellular Radio' })}
                     style={{ marginBottom: '0px' }}
                   />
                   <Form.Item
-                    label={$t({ defaultMessage: 'Active SIM:' })}
+                    label={$t({ defaultMessage: 'Active SIM' })}
                     style={{ marginLeft: '10px', marginBottom: '0px' }}
                     children={
                       currentAP.apStatusData.cellularInfo.cellularActiveSim || '--'
                     }
                   />
                   <Form.Item
-                    label={$t({ defaultMessage: 'Connection Status:' })}
+                    label={$t({ defaultMessage: 'Connection Status' })}
                     style={{ marginLeft: '10px', marginBottom: '0px' }}
                     children={
                       currentAP.apStatusData.cellularInfo.cellularConnectionStatus || '--'
                     }
                   />
                   <Form.Item
-                    label={$t({ defaultMessage: 'Signal Strength:' })}
+                    label={$t({ defaultMessage: 'Signal Strength' })}
                     style={{ marginLeft: '10px' }}
                     children={
                       currentAP.apStatusData.cellularInfo.cellularSignalStrength || '--'
