@@ -1,15 +1,15 @@
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
-import {
-  Header,
-  IncidentBySeverity,
-  IncidentTable,
-  NetworkHistory
-} from '@acx-ui/analytics/components'
 import { useAnalyticsFilter }                           from '@acx-ui/analytics/utils'
 import { categoryNames, categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }                              from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Tabs }                       from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
+
+import { Header }             from '../Header'
+import { IncidentBySeverity } from '../IncidentBySeverity'
+import { IncidentTable }      from '../IncidentTable'
+import { NetworkHistory }     from '../NetworkHistory'
 
 const incidentTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
 type IncidentListTabs = 'overview' | 'connection' | 'performance' | 'infrastructure'
@@ -29,9 +29,11 @@ const tabsMap : Record<IncidentListTabs, MessageDescriptor> = {
   })
 }
 
-const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
-  const { tabSelection } = props
+export const IncidentTabContent = (props: { tabSelection?: IncidentListTabs,
+  filters? : AnalyticsFilter }) => {
+  const { tabSelection,filters: widgetFilters } = props
   const { filters } = useAnalyticsFilter()
+  const incidentsPageFilters = widgetFilters ? widgetFilters : filters
   const incidentCodesBasedOnCategory: IncidentCode[] | undefined = categoryCodeMap[
     tabSelection as Exclude<IncidentListTabs, 'overview'>
   ]?.codes as IncidentCode[]
@@ -41,24 +43,24 @@ const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
       <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
         <IncidentBySeverity
           type='bar'
-          filters={{ ...filters, code: incidentCodesBasedOnCategory }}
+          filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
         />
       </GridCol>
       <GridCol col={{ span: 20 }} style={{ height: '210px' }}>
         <NetworkHistory
           hideTitle
-          filters={{ ...filters, code: incidentCodesBasedOnCategory }}
+          filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
           type='no-border'
         />
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ minHeight: '248px' }}>
-        <IncidentTable filters={{ ...filters, code: incidentCodesBasedOnCategory }} />
+        <IncidentTable filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }} />
       </GridCol>
     </GridRow>
   )
 }
 
-function Incidents () {
+function IncidentListPage () {
   const { $t } = useIntl()
   const { activeTab = incidentTabs[0].value } = useParams()
   const navigate = useNavigate()
@@ -90,4 +92,4 @@ function Incidents () {
     </>
   )
 }
-export default Incidents
+export { IncidentListPage }

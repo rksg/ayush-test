@@ -1,9 +1,10 @@
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
-import { Header }                                from '@acx-ui/analytics/components'
-import { categoryNames }                         from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Tabs }                from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { AnalyticsFilter, useAnalyticsFilter, categoryNames } from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Tabs }                             from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink }              from '@acx-ui/react-router-dom'
+
+import { Header } from '../Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
 import { HealthPageContextProvider } from './HealthPageContext'
@@ -29,36 +30,40 @@ const tabsMap : Record<HealthTab, MessageDescriptor> = {
   })
 }
 
-
-
-export default function HealthPage () {
+const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
-  const { activeTab = healthTabs[0].value } = useParams()
+  const { filters: widgetFilters } = props
+  const params = useParams()
+  const selectedTab = params['categoryTab'] ?? healthTabs[0].value
   const navigate = useNavigate()
-  const basePath = useTenantLink('/analytics/health/tab/')
+  const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
+  const { filters } = useAnalyticsFilter()
+  const healthPageFilters = widgetFilters ? widgetFilters : filters
+
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
-
   return (
     <>
+      { !widgetFilters &&
       <Header
         title={$t({ defaultMessage: 'Health' })}
         shouldQuerySwitch={false}
         withIncidents={false}
       />
+      }
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
-          <SummaryBoxes/>
+          <SummaryBoxes filters={healthPageFilters} />
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
-            <ConnectedClientsOverTime />
+            <ConnectedClientsOverTime filters={healthPageFilters} />
           </GridCol>
           <GridCol col={{ span: 16 }} >
-            <Tabs activeKey={activeTab} onChange={onTabChange}>
+            <Tabs activeKey={selectedTab} onChange={onTabChange}>
               {healthTabs.map((tab) => (
                 <Tabs.TabPane
                   tab={$t(tabsMap[tab.value as HealthTab])}
@@ -73,10 +78,11 @@ export default function HealthPage () {
             </UI.ThresholdTitle>
           </GridCol>
           <GridCol col={{ span: 24 }}>
-            <Kpis tab={activeTab as HealthTab} />
+            <Kpis tab={selectedTab as HealthTab} filters={healthPageFilters}/>
           </GridCol>
         </HealthPageContextProvider>
       </GridRow>
     </>
   )
 }
+export { HealthPage }

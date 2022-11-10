@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { noDataSymbol, useAnalyticsFilter }        from '@acx-ui/analytics/utils'
+import { noDataSymbol, AnalyticsFilter }           from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader, Tooltip }       from '@acx-ui/components'
 import { formatter, intlFormats, notAvailableMsg } from '@acx-ui/utils'
 
@@ -40,11 +40,10 @@ export const Box = (props: BoxProps) => {
     : box
 }
 
-export const SummaryBoxes = () => {
+export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
   const intl = useIntl()
   const { $t } = intl
   const [ openType, setOpenType ] = useState<'stats' | 'ttc' | 'none'>('none')
-  const { filters } = useAnalyticsFilter()
   const payload = {
     path: filters.path,
     start: filters.startDate,

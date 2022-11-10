@@ -6,8 +6,12 @@ import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { networkHierarchy } from '../__tests__/fixtures'
 
-import Incidents from '.'
+import { IncidentListPage as Incidents } from '.'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  ClockOutlined: () => <div data-testid='clock-outlined'/>
+}))
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({
@@ -19,12 +23,9 @@ jest.mock('@acx-ui/analytics/utils', () => ({
       })
   })
 }))
-jest.mock('@acx-ui/analytics/components', () => ({
-  ...jest.requireActual('@acx-ui/analytics/components'),
-  NetworkHistory: () => <div>Network</div>,
-  IncidentBySeverity: () => <div>IncidentBySeverity</div>,
-  IncidentTable: () => <div>IncidentTable</div>
-}))
+jest.mock('../NetworkHistory', () => ({ NetworkHistory: () => <div>Network</div> }))
+jest.mock('../IncidentBySeverity', () => ({ IncidentBySeverity: () => <div>IByS</div> }))
+jest.mock('../IncidentTable', () => ({ IncidentTable: () => <div>IncidentTable</div> }))
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

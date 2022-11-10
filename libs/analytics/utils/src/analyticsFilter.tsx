@@ -4,8 +4,8 @@ import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { useLocation }                                                                      from '@acx-ui/react-router-dom'
-import { getDateRangeFilter, DateFilter, pathFilter, NetworkPath, NodeType, useDateFilter } from '@acx-ui/utils'
+import { useLocation }                                                                                           from '@acx-ui/react-router-dom'
+import { generateVenueFilter, getDateRangeFilter, DateFilter, pathFilter, NetworkPath, NodeType, useDateFilter } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
@@ -36,12 +36,7 @@ export function useAnalyticsFilter () {
         }
       } else { // incident page, ...
         if (currentPath.length === 2) { // venues
-          filter = {
-            networkNodes: [currentPath.slice(1)]
-              .map(([node]) => [{ type: 'zone', name: node.name }]),
-            switchNodes: [currentPath.slice(1)]
-              .map(([node]) => [{ type: 'switchGroup', name: node.name }])
-          } as pathFilter
+          filter = generateVenueFilter([currentPath[1].name])
           path = defaultNetworkPath
         } else {
           path = currentPath

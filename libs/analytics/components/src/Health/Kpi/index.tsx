@@ -10,7 +10,7 @@ import {
 } from '@acx-ui/analytics/services'
 import {
   kpisForTab,
-  useAnalyticsFilter,
+  AnalyticsFilter,
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
@@ -33,9 +33,8 @@ export const defaultThreshold: KpiThresholdType = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
-export default function KpiSections (props: { tab: HealthTab }) {
-  const { filters } = useAnalyticsFilter()
-  const { tab } = props
+export default function KpiSections (props: { tab: HealthTab, filters: AnalyticsFilter }) {
+  const { tab, filters } = props
   const { kpis } = kpisForTab[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
@@ -53,6 +52,7 @@ export default function KpiSections (props: { tab: HealthTab }) {
       kpis={kpis}
       thresholds={thresholds}
       mutationAllowed={mutationAllowed}
+      filters={filters}
     />}
   </Loader>
 }
@@ -61,11 +61,12 @@ function KpiSection (props: {
   kpis: string[]
   thresholds: KpiThresholdType
   mutationAllowed: boolean
+  filters : AnalyticsFilter
 }) {
+  const { kpis, filters, thresholds } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
-  const { filters } = useAnalyticsFilter()
   const isNetwork = filters.path.length === 1
-  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(props.thresholds)
+  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -79,7 +80,7 @@ function KpiSection (props: {
   useEffect(() => { connect('timeSeriesGroup') }, [])
   return (
     <>
-      {props.kpis.map((kpi) => (
+      {kpis.map((kpi) => (
         <GridRow key={kpi+defaultZoom} $divider>
           <GridCol col={{ span: 16 }}>
             <GridRow style={{ height: '160px' }}>
