@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -32,36 +30,27 @@ import {
   VenueAlarmWidget,
   VenueDevicesWidget
 } from '@acx-ui/rc/components'
+import { generateVenueFilter } from '@acx-ui/utils'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
   const { venueId } = useParams()
-
-  const venueApFilter = {
-    ...filters,
-    path: [{ type: 'zone', name: venueId }]
-  } as AnalyticsFilter
-
-  const venueSwitchFilter = {
-    ...filters,
-    path: [{ type: 'switchGroup', name: venueId }]
-  } as AnalyticsFilter
-
+  const venueFilter = { ...filters, filter: generateVenueFilter([venueId as string]) }
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
       value: 'ap',
-      children: <ApWidgets filters={venueApFilter}/>
+      children: <ApWidgets filters={venueFilter}/>
     },
     {
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
-      children: <SwitchWidgets filters={venueSwitchFilter}/>
+      children: <SwitchWidgets filters={venueFilter}/>
     }
   ]
   return (<>
-    <CommonDashboardWidgets filters={venueApFilter}/>
+    <CommonDashboardWidgets filters={venueFilter}/>
     <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
   </>)
 }
