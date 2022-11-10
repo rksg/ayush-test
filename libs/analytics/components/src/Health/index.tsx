@@ -56,11 +56,11 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
       }
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
-          <SummaryBoxes/>
+          <SummaryBoxes filters={healthPageFilters} />
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
-            <ConnectedClientsOverTime filters={healthPageFilters}/>
+            <ConnectedClientsOverTime filters={healthPageFilters} />
           </GridCol>
           <GridCol col={{ span: 16 }} >
             <Tabs activeKey={selectedTab} onChange={onTabChange}>
