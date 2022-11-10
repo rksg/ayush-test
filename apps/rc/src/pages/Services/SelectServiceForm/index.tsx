@@ -1,19 +1,19 @@
 import { Form, Radio, Space, Typography } from 'antd'
 import { useIntl }                        from 'react-intl'
 
-import { PageHeader, StepsForm }            from '@acx-ui/components'
-import { ServiceType }                      from '@acx-ui/rc/utils'
+import { PageHeader, StepsForm } from '@acx-ui/components'
+import {
+  ServiceType,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation
+} from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import {
   serviceTypeDescMapping,
   serviceTypeLabelMapping
 } from '../contentsMap'
-import {
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation
-} from '../serviceRouteUtils'
 
 import * as UI from './styledComponents'
 

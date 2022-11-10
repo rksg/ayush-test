@@ -1,4 +1,11 @@
-import { PolicyType, ServiceType }           from '@acx-ui/rc/utils'
+import {
+  PolicyType,
+  ServiceType,
+  getSelectServiceRoutePath,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation
+}           from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
@@ -16,17 +23,11 @@ import {
   getSelectPolicyRoutePath,
   PolicyOperation
 } from './pages/Policies/policyRouteUtils'
-import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
-import DHCPDetail        from './pages/Services/DHCPDetail'
-import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
-import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import SelectServiceForm from './pages/Services/SelectServiceForm'
-import {
-  getSelectServiceRoutePath,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation
-} from './pages/Services/serviceRouteUtils'
+import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
+import DHCPDetail               from './pages/Services/DHCPDetail'
+import DHCPForm                 from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import SelectServiceForm        from './pages/Services/SelectServiceForm'
 import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
