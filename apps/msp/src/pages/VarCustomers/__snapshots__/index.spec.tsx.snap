@@ -857,7 +857,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                10/09/2023 (0 AP)
+                                10/09/2023 (0 APs)
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -920,7 +920,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                09/09/2023 (0 AP)
+                                09/09/2023 (0 APs)
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -983,7 +983,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                09/09/2023 (0 AP)
+                                09/09/2023 (0 APs)
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"

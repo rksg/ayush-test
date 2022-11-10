@@ -1,11 +1,20 @@
-import moment from 'moment-timezone'
+import moment            from 'moment-timezone'
+import { defineMessage } from 'react-intl'
+
+import { getIntl } from '@acx-ui/utils'
 
 import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType,
-  MspEntitlement }
-  from './types/msp'
+  MspEntitlement
+} from './types/msp'
+
+const devicesCountMap = {
+  switch: defineMessage({ defaultMessage:
+    '{count} {count, plural, one {Switch} other {Switches}}' }),
+  ap: defineMessage({ defaultMessage: '{count} {count, plural, one {AP} other {APs}}' })
+}
 
 export class EntitlementUtil {
   public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {
@@ -23,7 +32,7 @@ export class EntitlementUtil {
       case EntitlementDeviceSubType.ICXTEMP:
       case EntitlementDeviceSubType.ICX_ANY:
       case EntitlementDeviceSubType.MSP_WIFI_TEMP:
-        return 'Trial'
+        return getIntl().$t({ defaultMessage: 'Trial' })
       case EntitlementDeviceSubType.MSP_WIFI:
         return 'Wi-Fi'
     }
@@ -32,39 +41,28 @@ export class EntitlementUtil {
 
   public static getNetworkDeviceTypeUnitText (networkDeviceType: EntitlementNetworkDeviceType,
     count: number): string {
-    const unitArray = [count, ' ']
-
+    let type: keyof typeof devicesCountMap
     switch (networkDeviceType) {
-      case EntitlementNetworkDeviceType.SWITCH:
-        unitArray.push(count > 1 ? 'Switches' : 'Switch')
-        break
+      case EntitlementNetworkDeviceType.SWITCH: type = 'switch'; break
       case EntitlementNetworkDeviceType.WIFI:
-        unitArray.push(count > 1 ? 'APs' : 'AP')
-        break
-      case EntitlementNetworkDeviceType.LTE:
-        unitArray.push(count > 1 ? 'APs' : 'AP')
-        break
+      case EntitlementNetworkDeviceType.LTE: type = 'ap'; break
     }
-    return unitArray.join('')
+    return getIntl().$t(devicesCountMap[type], { count })
   }
 
   public static getMspDeviceTypeUnitText (deviceType: EntitlementDeviceType,
     count: number): string {
-    const unitArray = [count, ' ']
-
+    let type: keyof typeof devicesCountMap = 'ap'
     switch (deviceType) {
-      case 'MSP_SWITCH':
-        unitArray.push(count > 1 ? 'Switches' : 'Switch')
-        break
-      case 'MSP_WIFI':
-        unitArray.push(count > 1 ? 'APs' : 'AP')
-        break
+      case 'MSP_SWITCH': type = 'switch'; break
+      case 'MSP_WIFI': type = 'ap'; break
     }
-    return unitArray.join('')
+    return getIntl().$t(devicesCountMap[type], { count })
   }
 
   public static tempLicenseToString (isTempLicense:boolean): string {
-    return isTempLicense ? 'Trial' : 'Basic'
+    return isTempLicense ? getIntl().$t({ defaultMessage: 'Trial' }) :
+      getIntl().$t({ defaultMessage: 'Basic' })
   }
 
   public static hasMspEntitlement (entitlementsData: MspEntitlement[]): boolean {
