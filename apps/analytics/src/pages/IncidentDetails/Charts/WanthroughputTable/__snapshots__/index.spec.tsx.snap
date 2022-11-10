@@ -369,7 +369,7 @@ exports[`WanthroughputTable should render correctly 1`] = `
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
@@ -413,7 +413,8 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             <tr>
                               <th
                                 aria-sort="descending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-column-has-sorters"
+                                style="position: sticky; left: 0px;"
                                 tabindex="0"
                               >
                                 <div
@@ -921,12 +922,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="W12C-R750-South-Exit0"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   W12C-R750-South-Exit
                                 </a>
@@ -968,12 +971,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="W06-R650-Chihuahua0"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   W06-R650-Chihuahua
                                 </a>
@@ -1015,12 +1020,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="Out08_T350C0"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   Out08_T350C
                                 </a>
@@ -1062,12 +1069,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="Out07-WarehouseBack-T7500"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   Out07-WarehouseBack-T750
                                 </a>
@@ -1109,12 +1118,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="Out06-DataCenter-T7500"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   Out06-DataCenter-T750
                                 </a>
@@ -1156,12 +1167,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="Out04-CAM04_NorthEastEntrance-T7500"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   Out04-CAM04_NorthEastEntrance-T750
                                 </a>
@@ -1203,12 +1216,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="Out04-CAM04_NorthEastEntrance-T7501"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   Out04-CAM04_NorthEastEntrance-T750
                                 </a>
@@ -1250,12 +1265,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="Out03-MainEntranceRight-T3500"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   Out03-MainEntranceRight-T350
                                 </a>
@@ -1297,12 +1314,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="E11-R550-Bassett0"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   E11-R550-Bassett
                                 </a>
@@ -1344,12 +1363,14 @@ exports[`WanthroughputTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="E10-QA-Lab-R7600"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   E10-QA-Lab-R760
                                 </a>
@@ -1491,6 +1512,46 @@ exports[`WanthroughputTable should render correctly 1`] = `
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`WanthroughputTable should render correctly without Ap Group 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+  >
+    <div
+      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+    >
+      <span
+        aria-label="loader"
+        role="img"
+      >
+        <div
+          aria-busy="true"
+          aria-live="polite"
+          class="ant-spin ant-spin-lg ant-spin-spinning"
+        >
+          <span
+            class="ant-spin-dot ant-spin-dot-spin"
+          >
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+          </span>
+        </div>
+      </span>
     </div>
   </div>
 </DocumentFragment>

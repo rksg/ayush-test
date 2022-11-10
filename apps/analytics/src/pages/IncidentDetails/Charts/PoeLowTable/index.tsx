@@ -36,7 +36,7 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
   }) })
 
   const convertData = (data?: ImpactedAP[]) => (
-    data!.map(datum => {
+    data!.map((datum, index) => {
       const configured = datum.poeMode.configured
       const operating = datum.poeMode.operating
       return {
@@ -46,7 +46,7 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
         operating: $t(poeCurPwrSrcEnumMap[operating as keyof typeof poeCurPwrSrcEnumMap]),
         eventTime: datum.poeMode.eventTime,
         apGroup: datum.poeMode.apGroup,
-        key: datum.poeMode.eventTime + datum.name
+        key: datum.name + index
       }
     })
   )

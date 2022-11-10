@@ -32,12 +32,12 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
   }) })
 
   const convertData = (data: ImpactedSwitch[]) => data.flatMap(datum =>
-    datum.ports.flatMap(result => ({
+    datum.ports.flatMap((result, index) => ({
       name: datum.name,
       mac: datum.mac,
       portNumber: result.portNumber,
       eventTime: Number((result.metadata.match(/(\d+)/))?.[0]),
-      key: result.portNumber + datum.name
+      key: datum.name + index
     }))
   )
 

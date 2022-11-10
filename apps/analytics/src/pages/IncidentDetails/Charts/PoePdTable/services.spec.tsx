@@ -46,8 +46,8 @@ describe('usePoePdTableQuery', () => {
   })
 
   it('should call api correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'poePdTable', {
-      data: { incident: { poePdTable: expectedResult } }
+    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
+      data: { incident: { impactedEntities: expectedResult } }
     })
     const { status, data, error } = await store.dispatch(
       impactedApi.endpoints.poePdTable.initiate({

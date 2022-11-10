@@ -3,12 +3,12 @@ import { dataApiURL }            from '@acx-ui/analytics/services'
 import {
   fakeIncidentPoeLow, Incident
 } from '@acx-ui/analytics/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
   mockGraphqlQuery,
-  render, screen,
-  waitForElementToBeRemoved
+  render,
+  screen
 } from '@acx-ui/test-utils'
 
 import { impactedApi }    from './services'
@@ -36,7 +36,9 @@ describe('PoeLowTable', () => {
         }
       }
     )
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await screen.findAllByText('84:23:88:2F:ED:60')
+    await screen.findAllByText('RuckusAP')
+    await screen.findAllByText('Auto')
     await screen.findAllByText('Configured PoE Mode')
     await screen.findAllByText('Operating PoE Mode')
     expect(asFragment()).toMatchSnapshot()
@@ -60,7 +62,6 @@ describe('PoeLowTable', () => {
         }
       }
     )
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findAllByText('AP Group')
   })
   it('should handle sorting column for mac address', async () => {

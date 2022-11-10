@@ -546,13 +546,14 @@ exports[`PoeLowTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="ICX7550-48ZP Router0"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left"
                                 style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   ICX7550-48ZP Router
                                 </a>
@@ -581,13 +582,14 @@ exports[`PoeLowTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="ICX7550-48ZP Router1"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left"
                                 style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   ICX7550-48ZP Router
                                 </a>
@@ -616,13 +618,14 @@ exports[`PoeLowTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="ICX7550-48ZP Router2"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left"
                                 style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   ICX7550-48ZP Router
                                 </a>
@@ -651,13 +654,14 @@ exports[`PoeLowTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="ICX7550-48ZP Router3"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left"
                                 style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   ICX7550-48ZP Router
                                 </a>
@@ -686,13 +690,14 @@ exports[`PoeLowTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="ICX7550-48ZP Router4"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left"
                                 style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   ICX7550-48ZP Router
                                 </a>
@@ -721,13 +726,14 @@ exports[`PoeLowTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="ICX7550-48ZP Router5"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left"
                                 style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   ICX7550-48ZP Router
                                 </a>

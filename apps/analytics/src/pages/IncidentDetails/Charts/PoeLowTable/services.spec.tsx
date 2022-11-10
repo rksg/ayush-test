@@ -36,8 +36,8 @@ describe('usePoeLowTableQuery', () => {
   })
 
   it('should call api correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'poeLowTable', {
-      data: { incident: { poeLowTable: expectedResult } }
+    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
+      data: { incident: { impactedEntities: expectedResult } }
     })
     const { status, data, error } = await store.dispatch(
       impactedApi.endpoints.poeLowTable.initiate({

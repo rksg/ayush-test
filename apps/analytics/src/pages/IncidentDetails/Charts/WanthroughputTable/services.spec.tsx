@@ -270,8 +270,8 @@ describe('useWanthroughputTable', () => {
   })
 
   it('should call api correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'wanthroughputTable', {
-      data: { incident: { wanthroughputTable: expectedResult } }
+    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
+      data: { incident: { impactedEntities: expectedResult } }
     })
     const { status, data, error } = await store.dispatch(
       impactedApi.endpoints.wanthroughputTable.initiate({

@@ -6,8 +6,8 @@ import { Provider, store }                            from '@acx-ui/store'
 import {
   fireEvent,
   mockGraphqlQuery,
-  render, screen,
-  waitForElementToBeRemoved
+  render,
+  screen
 } from '@acx-ui/test-utils'
 
 import { impactedApi }    from './services'
@@ -36,13 +36,14 @@ describe('WanthroughputTable', () => {
       }
     )
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await screen.findAllByText('100/1000/2500Mbps')
+    await screen.findAllByText('20:58:69:3B:CB:70')
     await screen.findAllByText('Interface')
     await screen.findAllByText('WAN Link Capability')
     await screen.findAllByText('WAN Link')
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should not show Ap Group column when sliceType is not zone', async () => {
+  it('should render correctly without Ap Group', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
       data: { incident: { impactedEntities: expectedResult } }
     })
@@ -50,8 +51,7 @@ describe('WanthroughputTable', () => {
       ...fakeIncidentApInfraWanthroughput,
       sliceType: 'ap'
     }
-
-    render(
+    const { asFragment } = render(
       <Provider>
         <WanthroughputTable incident={incidentWithZone as Incident}/>
       </Provider>,
@@ -62,9 +62,7 @@ describe('WanthroughputTable', () => {
         }
       }
     )
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    // expect(screen.findAllByText('AP Group')).toBeDisabled()
+    expect(asFragment()).toMatchSnapshot()
   })
   it('should handle sorting column for mac address', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {

@@ -697,13 +697,14 @@ exports[`PoeLowTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="RuckusAP21"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
                                 style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   RuckusAP2
                                 </a>
@@ -735,13 +736,14 @@ exports[`PoeLowTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="RuckusAP0"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
                                 style="position: sticky; left: 0px;"
                               >
                                 <a
-                                  href="/t/undefined/analytics/incidents"
+                                  href="/t/undefined/TDB"
                                 >
                                   RuckusAP
                                 </a>

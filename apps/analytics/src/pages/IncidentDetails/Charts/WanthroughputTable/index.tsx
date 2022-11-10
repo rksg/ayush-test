@@ -35,7 +35,7 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
   }) })
 
   const convertData = (data: ImpactedAP[]) => data.flatMap(datum =>
-    datum.ports.flatMap(result => ({
+    datum.ports.flatMap((result, index) => ({
       name: datum.name,
       mac: datum.mac,
       interface: result.interface,
@@ -43,7 +43,7 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
       link: result.link,
       eventTime: result.eventTime,
       apGroup: result.apGroup,
-      key: result.eventTime + datum.name
+      key: datum.name + index
     }))
   )
 

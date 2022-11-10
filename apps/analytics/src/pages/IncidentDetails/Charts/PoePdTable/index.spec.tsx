@@ -6,8 +6,8 @@ import { Provider, store }    from '@acx-ui/store'
 import {
   fireEvent,
   mockGraphqlQuery,
-  render, screen,
-  waitForElementToBeRemoved
+  render,
+  screen
 } from '@acx-ui/test-utils'
 
 import { impactedApi }    from './services'
@@ -36,7 +36,9 @@ describe('PoeLowTable', () => {
       }
     )
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await screen.findAllByText('ICX7550-48ZP Router')
+    await screen.findAllByText('28:B3:71:29:8C:B6')
+    await screen.findAllByText('1/1/13')
     await screen.findAllByText('Port Number')
     expect(asFragment()).toMatchSnapshot()
   })
