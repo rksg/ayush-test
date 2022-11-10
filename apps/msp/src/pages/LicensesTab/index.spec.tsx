@@ -26,7 +26,6 @@ describe('LicensesTab', () => {
       <Provider>
         <LicensesTab />
       </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
     await screen.findByRole('tab', { name: 'Wi-Fi' })
     await screen.findByRole('tab', { name: 'Switch' })
   })
