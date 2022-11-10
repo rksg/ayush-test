@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Tabs }          from '@acx-ui/components'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+import { ApPingForm } from './apPingForm'
 
 const { TabPane } = Tabs
 
@@ -27,7 +28,7 @@ export function ApTroubleshootingTab () {
       type='card'
     >
       <TabPane tab={$t({ defaultMessage: 'Ping' })} key='ping'>
-        {$t({ defaultMessage: 'Ping' })}
+        <ApPingForm/>
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Traceroute' })} key='traceroute'>
         {$t({ defaultMessage: 'Configuration History' })}
