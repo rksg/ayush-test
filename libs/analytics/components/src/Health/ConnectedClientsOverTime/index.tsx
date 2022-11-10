@@ -3,14 +3,16 @@ import { useContext, useEffect } from 'react'
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
-import { NetworkHistory } from '@acx-ui/analytics/components'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
+import { NetworkHistory }    from '../../NetworkHistory'
 import { HealthPageContext } from '../HealthPageContext'
 
-const ConnectedClientsOverTime = () => {
+const ConnectedClientsOverTime = (props: { filters : AnalyticsFilter }) => {
   const healthFilter = useContext(HealthPageContext)
-  const { startDate, endDate, range, path, timeWindow, setTimeWindow, filter } = healthFilter
-  const filters = { startDate, endDate, range, path, filter }
+  const { filters: healthPageFilters } = props
+  const { startDate, endDate, range, timeWindow, setTimeWindow } = healthFilter
+  const filters = { ...healthPageFilters, startDate, endDate, range }
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()

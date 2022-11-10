@@ -17,11 +17,11 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 dDtnzP"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 keQgVo"
             type="button"
           >
             <div
-              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
                 class="ant-statistic-title"
@@ -57,11 +57,11 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 ihItkv"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 hIDgxU"
             type="button"
           >
             <div
-              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
                 class="ant-statistic-title"
@@ -97,11 +97,11 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 hjaQGp"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 tiuFm"
             type="button"
           >
             <div
-              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
                 class="ant-statistic-title"
@@ -132,11 +132,11 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 hcpWvL"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 etgcNs"
             type="button"
           >
             <div
-              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 hAiNJH"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 fbqrqQ"
             >
               <div
                 class="ant-statistic-title"
@@ -181,11 +181,11 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 dDtnzP"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 keQgVo"
             type="button"
           >
             <div
-              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
                 class="ant-statistic-title"
@@ -221,11 +221,11 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 ihItkv"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 hIDgxU"
             type="button"
           >
             <div
-              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
                 class="ant-statistic-title"
@@ -261,11 +261,11 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 hjaQGp"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 tiuFm"
             type="button"
           >
             <div
-              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
                 class="ant-statistic-title"
@@ -296,11 +296,11 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-9l0oc9-0 hcpWvL"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 etgcNs"
             type="button"
           >
             <div
-              class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 hAiNJH"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 fbqrqQ"
             >
               <div
                 class="ant-statistic-title"
@@ -331,11 +331,11 @@ exports[`Incidents Page should show - when no data 1`] = `
 exports[`box should render correctly 1`] = `
 <DocumentFragment>
   <button
-    class="styledComponents__Wrapper-sc-9l0oc9-0 eLiTEU"
+    class="styledComponents__Wrapper-sc-1tt9ql2-0 iJmtoz"
     type="button"
   >
     <div
-      class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+      class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
     >
       <div
         class="ant-statistic-title"
@@ -371,11 +371,11 @@ exports[`box should render correctly 1`] = `
 exports[`box should render correctly when disabled 1`] = `
 <DocumentFragment>
   <button
-    class="styledComponents__Wrapper-sc-9l0oc9-0 dDtnzP"
+    class="styledComponents__Wrapper-sc-1tt9ql2-0 keQgVo"
     type="button"
   >
     <div
-      class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
+      class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
     >
       <div
         class="ant-statistic-title"
