@@ -95,13 +95,19 @@ export const networkVenue_apgroup = {
     radio: RadioEnum._2_4_GHz,
     radioTypes: [RadioTypeEnum._2_4_GHz],
     isDefault: true,
-    id: '6cb1e831973a4d60924ac59f1bda073c',
     apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
     apGroupName: 'APs not assigned to any group',
     vlanPoolId: '1c061cf2649344adaf1e79a9d624a451',
     vlanPoolName: 'pool1'
   }]
 }
+
+export const vlanPoolList = [{
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  name: 'pool1',
+  vlanMembers: ['123'],
+  id: '1c061cf2649344adaf1e79a9d624a451'
+}]
 
 export const timezoneRes = { // location=-37.8145092,144.9704868
   dstOffset: 0,
