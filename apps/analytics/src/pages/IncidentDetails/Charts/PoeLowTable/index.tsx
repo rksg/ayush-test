@@ -7,10 +7,10 @@ import { noDataSymbol }                      from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, NoData } from '@acx-ui/components'
 import { TenantLink }                        from '@acx-ui/react-router-dom'
 
-import { ImpactedTableProps, defaultSort, json2keymap } from '../utils'
+import { ImpactedTableProps, defaultSort } from '../utils'
 
-import poeApPwrModeEnumMap                 from './poeApPwrModeEnumMap.json'
-import poeCurPwrSrcEnumMap                 from './poeCurPwrSrcEnumMap.json'
+import { poeApPwrModeEnumMap }             from './poeApPwrModeEnumMap'
+import { poeCurPwrSrcEnumMap }             from './poeCurPwrSrcEnumMap'
 import { ImpactedAP, usePoeLowTableQuery } from './services'
 
 type PoeLowTableFields = {
@@ -35,9 +35,6 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
     ...states
   }) })
 
-  const pwrModeMap = json2keymap(['code'], 'text', [''])(poeApPwrModeEnumMap)
-  const pwrSrcMap = json2keymap(['code'], 'text', [''])(poeCurPwrSrcEnumMap)
-
   const convertData = (data?: ImpactedAP[]) => (
     data!.map(datum => {
       const configured = datum.poeMode.configured
@@ -45,8 +42,8 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
       return {
         name: datum.name,
         mac: datum.mac,
-        configured: pwrModeMap.get(configured)!,
-        operating: pwrSrcMap.get(operating)!,
+        configured: $t(poeApPwrModeEnumMap[configured as keyof typeof poeApPwrModeEnumMap]),
+        operating: $t(poeCurPwrSrcEnumMap[operating as keyof typeof poeCurPwrSrcEnumMap]),
         eventTime: datum.poeMode.eventTime,
         apGroup: datum.poeMode.apGroup
       }
