@@ -219,7 +219,6 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
     const arrIndeterminate = [...indeterminate]
     arrIndeterminate[index] = !!arrCheckedList[index].length && arrCheckedList[index].length < scheduleList[index].value.length
     setIndeterminate(arrIndeterminate)
-    // setCheckAll(list.length === availableLteBand4G.length)
   }
 
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
@@ -242,11 +241,11 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
     if(e.target.value === 'ALWAYS_ON'){
       setDisabled(true)
       for (let daykey in dayIndex) {
-        arrCheckAll[dayIndex[daykey]] = false
+        form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
+        arrCheckAll[dayIndex[daykey]] = true
         setCheckAll(arrCheckAll)
         arrIndeterminate[dayIndex[daykey]] = false
         setIndeterminate(arrIndeterminate)
-        form.setFieldValue(['scheduler', daykey], [])
       }
     }else{
       setDisabled(false)
@@ -263,7 +262,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
     setIsModalOpen(false)
   }
 
-  let deselectedItems: string[] = []
+  const selectedItems: string[] = []
   const { DragSelection } = useSelectionContainer({
     shouldStartSelecting: (target) => {
       if (target instanceof HTMLElement) {
@@ -286,9 +285,6 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       }
 
       for (let daykey in dayIndex) {
-        let selectedItems: string[] = []
-        const schedule = form.getFieldValue(['scheduler', daykey]) || []
-
         Array.from({ length: 96 }, (_, i) => {
           const itemKey = `${daykey}_${i}`
           const item = document.getElementById(itemKey)
@@ -296,33 +292,42 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
             const { left, top, width, height } = item.getBoundingClientRect()
             const boxItem = { left, top, width, height }
             if (boxesIntersect(scrollAwareBox, boxItem)) {
-              if(schedule.indexOf(itemKey)> -1){
-                deselectedItems.push(itemKey)
-              } else {
-                selectedItems.push(itemKey)
+              selectedItems.push(itemKey)
+              if(selectedItems.length > 0){
+                localStorage.setItem('selectedTimeslots', JSON.stringify(selectedItems))
               }
             }
           }
         })
+      }
+    },
+    onSelectionEnd: () => {
+      const uniqSelectedItems = _.uniq(JSON.parse(localStorage.getItem('selectedTimeslots') || '[]'))
+      for (let daykey in dayIndex) {
+        const schedule = form.getFieldValue(['scheduler', daykey]) || []
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if(uniqSelectedItems.filter((item: any) => item.indexOf(daykey) > -1)){
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          let uniqSchedule = _.uniq(_.xor(schedule, uniqSelectedItems.filter((item: any) => item.indexOf(daykey) > -1)))
 
-        let mergeSchedule = _.uniq([...schedule, ...selectedItems])
-
-        form.setFieldValue(['scheduler', daykey], mergeSchedule)
-        if(mergeSchedule && mergeSchedule.length === 96){
-          arrCheckAll[dayIndex[daykey]] = true
-          setCheckAll(arrCheckAll)
-          arrIndeterminate[dayIndex[daykey]] = false
-          setIndeterminate(arrIndeterminate)
-        }else if(mergeSchedule && mergeSchedule.length > 0 && mergeSchedule.length < 96){
-          arrIndeterminate[dayIndex[daykey]] = true
-          setIndeterminate(arrIndeterminate)
-        }else{
-          arrCheckAll[dayIndex[daykey]] = false
-          setCheckAll(arrCheckAll)
-          arrIndeterminate[dayIndex[daykey]] = false
-          setIndeterminate(arrIndeterminate)
+          form.setFieldValue(['scheduler', daykey], uniqSchedule)
+          if(uniqSchedule && uniqSchedule.length === 96){
+            arrCheckAll[dayIndex[daykey]] = true
+            setCheckAll(arrCheckAll)
+            arrIndeterminate[dayIndex[daykey]] = false
+            setIndeterminate(arrIndeterminate)
+          }else if(uniqSchedule && uniqSchedule.length > 0 && uniqSchedule.length < 96){
+            arrIndeterminate[dayIndex[daykey]] = true
+            setIndeterminate(arrIndeterminate)
+          }else{
+            arrCheckAll[dayIndex[daykey]] = false
+            setCheckAll(arrCheckAll)
+            arrIndeterminate[dayIndex[daykey]] = false
+            setIndeterminate(arrIndeterminate)
+          }
         }
       }
+      localStorage.removeItem('selectedTimeslots')
     },
     isEnabled: true
   })
@@ -452,6 +457,9 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         cancelButtonProps={{ style: { display: 'none' } }}
         visible={isModalOpen}
         onOk={handleOk}
+        maskClosable={false}
+        keyboard={false}
+        closable={false}
       >
         <p>{$t({ defaultMessage: 'You can set custom schedule using the following options:' })}</p>
         <p>- <FormattedMessage
