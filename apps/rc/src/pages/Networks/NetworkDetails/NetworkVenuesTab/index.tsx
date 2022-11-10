@@ -12,7 +12,13 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { NetworkApGroupDialog }   from '@acx-ui/rc/components'
+import {
+  NetworkApGroupDialog,
+  transformVLAN,
+  transformAps,
+  transformRadios,
+  transformScheduling
+} from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
@@ -28,11 +34,7 @@ import {
   generateDefaultNetworkVenue,
   useScheduleSlotIndexMap,
   aggregateApGroupPayload,
-  RadioTypeEnum,
-  transformVLAN,
-  transformAps,
-  transformRadios,
-  transformScheduling
+  RadioTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
