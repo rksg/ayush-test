@@ -3,9 +3,9 @@ import React, { useMemo, useState } from 'react'
 import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { noDataSymbol }                      from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, NoData } from '@acx-ui/components'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { noDataSymbol }              from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table } from '@acx-ui/components'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 
 import { ImpactedTableProps, defaultSort } from '../utils'
 
@@ -19,11 +19,11 @@ type WanthroughputTableFields = {
   link: string
   eventTime: number
   apGroup: string
+  key: string
 }
 
 export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
-  const intl = useIntl()
-  const { $t } = intl
+  const { $t } = useIntl()
   const [ search ] = useState('')
 
   const queryResults = useWanthroughputTableQuery({
@@ -42,7 +42,8 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
       capability: result.capability,
       link: result.link,
       eventTime: result.eventTime,
-      apGroup: result.apGroup
+      apGroup: result.apGroup,
+      key: result.eventTime + datum.name
     }))
   )
 
@@ -127,17 +128,14 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
 
   return (
     <Loader states={[queryResults]}>
-      {queryResults.data ?
+      {queryResults.data &&
         <Table
           type='tall'
           dataSource={convertData(queryResults.data!)}
           columns={columnHeaders}
-          rowKey='id'
-          showSorterTooltip={false}
           columnEmptyText={noDataSymbol}
-          indentSize={6}
         />
-        : <NoData />}
+      }
     </Loader>
   )
 }

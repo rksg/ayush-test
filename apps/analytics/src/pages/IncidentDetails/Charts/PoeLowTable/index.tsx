@@ -3,9 +3,9 @@ import React, { useMemo, useState } from 'react'
 import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { noDataSymbol }                      from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, NoData } from '@acx-ui/components'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { noDataSymbol }              from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table } from '@acx-ui/components'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 
 import { ImpactedTableProps, defaultSort } from '../utils'
 
@@ -13,18 +13,18 @@ import { poeApPwrModeEnumMap }             from './poeApPwrModeEnumMap'
 import { poeCurPwrSrcEnumMap }             from './poeCurPwrSrcEnumMap'
 import { ImpactedAP, usePoeLowTableQuery } from './services'
 
-type PoeLowTableFields = {
+export type PoeLowTableFields = {
   name: string
   mac: string
   configured: string
   operating: string
   eventTime: number
   apGroup: string
+  key: string
 }
 
 export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
-  const intl = useIntl()
-  const { $t } = intl
+  const { $t } = useIntl()
   const [ search ] = useState('')
 
   const queryResults = usePoeLowTableQuery({
@@ -45,7 +45,8 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
         configured: $t(poeApPwrModeEnumMap[configured as keyof typeof poeApPwrModeEnumMap]),
         operating: $t(poeCurPwrSrcEnumMap[operating as keyof typeof poeCurPwrSrcEnumMap]),
         eventTime: datum.poeMode.eventTime,
-        apGroup: datum.poeMode.apGroup
+        apGroup: datum.poeMode.apGroup,
+        key: datum.poeMode.eventTime + datum.name
       }
     })
   )
@@ -121,17 +122,14 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
 
   return (
     <Loader states={[queryResults]}>
-      {queryResults.data ?
+      {queryResults.data &&
         <Table
           type='tall'
           dataSource={convertData(queryResults.data)}
           columns={columnHeaders}
-          rowKey='id'
-          showSorterTooltip={false}
           columnEmptyText={noDataSymbol}
-          indentSize={6}
         />
-        : <NoData />}
+      }
     </Loader>
   )
 }
