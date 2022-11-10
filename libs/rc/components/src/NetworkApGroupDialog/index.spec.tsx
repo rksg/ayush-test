@@ -1,44 +1,66 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
+import { rest } from 'msw'
+
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  CommonUrlsInfo,
   RadioTypeEnum,
+  WifiUrlsInfo,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   fireEvent,
+  mockServer,
   render,
   screen,
   waitFor,
   within
 } from '@acx-ui/test-utils'
 
-import { NetworkApGroupDialog } from './NetworkApGroupDialog'
 import {
   network,
   networkVenue_apgroup,
   networkVenue_allAps,
-  params
-} from './NetworkVenueTestData'
+  params,
+  vlanPoolList
+} from './__tests__/NetworkVenueTestData'
+
+import { NetworkApGroupDialog } from './index'
+
 
 const venueName = 'My-Venue'
 
 describe('NetworkApGroupDialog', () => {
-  it('should render correctly', async () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getVlanPools.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolList))
+      )
+    )
+  })
 
+  it('should render correctly', async () => {
     const props = {
+      name: 'xxx',
       formName: 'networkApGroupForm',
       venueName: venueName,
+      tenantId: params.tenantId,
       networkVenue: networkVenue_allAps,
-      network: network
+      wlan: network.wlan
     }
 
     const { rerender } = render(
-      <NetworkApGroupDialog
+      <Provider><NetworkApGroupDialog
         {...props}
         visible={true}
-      />)
+      /></Provider>, { route: { params } })
 
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
 
@@ -56,18 +78,19 @@ describe('NetworkApGroupDialog', () => {
     expect(within(dialog).getByLabelText('Tags')).toBeVisible()
 
     // update the props "visible"
-    rerender(<NetworkApGroupDialog {...props} visible={false}/>)
+    rerender(<Provider><NetworkApGroupDialog {...props} visible={false}/></Provider>)
     expect(dialog).not.toBeVisible()
   })
 
   it('should select specific AP groups', async () => {
-
     render(<Provider><NetworkApGroupDialog
+      name='xxx'
       visible={true}
       formName={'networkApGroupForm'}
       venueName={venueName}
+      tenantId={params.tenantId}
       networkVenue={networkVenue_apgroup}
-      network={network}
+      wlan={network.wlan}
     /></Provider>, { route: { params } })
 
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
@@ -81,14 +104,16 @@ describe('NetworkApGroupDialog', () => {
 
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
-    let networkWPA3 = { ...network, wlan: { ...network.wlan, wlanSecurity: WlanSecurityEnum.WPA3 } }
+    let wlanWPA3 = { ...network.wlan, wlanSecurity: WlanSecurityEnum.WPA3 }
 
     render(<Provider><NetworkApGroupDialog
+      name='xxx'
       visible={true}
       formName={'networkApGroupForm'}
       venueName={venueName}
+      tenantId={params.tenantId}
       networkVenue={{ ...networkVenue_allAps, allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz, RadioTypeEnum._6_GHz] }}
-      network={networkWPA3}
+      wlan={wlanWPA3}
     /></Provider>, { route: { params } })
 
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
@@ -100,7 +125,7 @@ describe('NetworkApGroupDialog', () => {
 
     const checkbox = within(dialog).getByLabelText('APs not assigned to any group')
     expect(checkbox).toBeVisible()
-    expect(checkbox).toBeChecked()
+    expect(checkbox).not.toBeChecked()
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
     // eslint-disable-next-line testing-library/no-node-access

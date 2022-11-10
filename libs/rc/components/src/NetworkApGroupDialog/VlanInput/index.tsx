@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { EditOutlined, ReloadOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import {
@@ -17,30 +17,31 @@ import {
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
 import {
+  getVlanString,
   NetworkApGroup,
   NetworkSaveData,
   VlanType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { getVlanString, VlanDate } from './NetworkApGroupDialog'
+import { VlanDate } from '../index'
 
-export function VlanInput ({ apgroup, network, onChange }: { apgroup: NetworkApGroup, network?:NetworkSaveData|null , onChange: (data: VlanDate) => void }) {
+export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGroup, wlan?:NetworkSaveData['wlan'], onChange: (data: VlanDate) => void }) {
   const { $t } = useIntl()
 
   const [isEditMode, setEditMode] = useState(false)
   const [isDirty, setDirty] = useState(false)
 
-  const apGroupVlanId = apgroup?.vlanId || network?.wlan?.vlanId
+  const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
   const apGroupVlanPool = apgroup?.vlanPoolId ? {
     name: apgroup.vlanPoolName || '',
     id: apgroup.vlanPoolId || '',
     vlanMembers: []
-  } : network?.wlan?.advancedCustomization?.vlanPool
+  } : wlan?.advancedCustomization?.vlanPool
 
   const apGroupVlanType = apGroupVlanPool ? VlanType.Pool : VlanType.VLAN
 
-  const defaultVlanString = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
+  const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
 
   const initVlanData = { vlanId: apGroupVlanId, vlanPool: apGroupVlanPool, vlanType: apGroupVlanType }
 
@@ -58,9 +59,17 @@ export function VlanInput ({ apgroup, network, onChange }: { apgroup: NetworkApG
 
   useEffect(() => {
     // onChange(selectedVlan)
-    const { vlanPrefix, vlanString, vlanType } = getVlanString(selectedVlan.vlanPool, selectedVlan.vlanId)
-    const valueSuffix = _.isEqual({ vlanPrefix, vlanString, vlanType }, defaultVlanString) ? $t({ defaultMessage: '(Default)' }) : $t({ defaultMessage: '(Custom)' })
-    setVlanLabel(`${vlanPrefix}${vlanString} ${valueSuffix}`)
+    const compareKeys = ['vlanString', 'vlanType']
+    const selected = getVlanString(selectedVlan.vlanPool, selectedVlan.vlanId)
+    const label = getVlanString(
+      selectedVlan.vlanPool,
+      selectedVlan.vlanId,
+      _.isEqual(
+        _.pick(selected, compareKeys),
+        _.pick(defaultVlanString, compareKeys)
+      ) !== true
+    ).vlanText
+    setVlanLabel(label)
 
     setDirty(!_.isEqual(selectedVlan, initVlanData))
   }, [selectedVlan])
