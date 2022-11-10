@@ -26,9 +26,9 @@ function Layout () {
     selectable
     defaultSelectedKeys={['US']}
     items={[
-      { key: 'US', label: <TenantLink to='TBD'>{$t({ defaultMessage: 'US' })}</TenantLink> },
-      { key: 'EU', label: <TenantLink to='TBD'>{$t({ defaultMessage: 'EU' })}</TenantLink> },
-      { key: 'Asia', label: <TenantLink to='TBD'>{$t({ defaultMessage: 'ASIA' })}</TenantLink> }
+      { key: 'US', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'US' })}</TenantLink> },
+      { key: 'EU', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'EU' })}</TenantLink> },
+      { key: 'Asia', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'ASIA' })}</TenantLink> }
     ]}
   />
   return (

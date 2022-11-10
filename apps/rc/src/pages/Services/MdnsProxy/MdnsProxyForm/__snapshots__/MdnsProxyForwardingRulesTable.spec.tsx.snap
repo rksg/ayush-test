@@ -3,7 +3,7 @@
 exports[`MdnsProxyForwardingRulesTable should render the readonly table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 dvVAeG"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
   >
     <div
       class="ant-pro-table"
@@ -485,7 +485,7 @@ exports[`MdnsProxyForwardingRulesTable should render the readonly table 1`] = `
 exports[`MdnsProxyForwardingRulesTable should render the table with the given data 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 dluZvl"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
   >
     <div
       class="ant-space ant-space-horizontal ant-space-align-center"

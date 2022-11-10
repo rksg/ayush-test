@@ -129,7 +129,7 @@ export function ExternalAntennaSection () {
       isLoading: isLoadingCapabilities || isLoadingExternalAntenna,
       isFetching: isUpdatingExternalAntenna }]}
     >
-      <Row gutter={24}>
+      <Row gutter={24} data-testid='external-antenna-section'>
         <Col span={8}>
           <Form.Item
             label={$t({ defaultMessage: 'AP Model' })}

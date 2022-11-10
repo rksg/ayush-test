@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tooltip }                                                        from '@acx-ui/components'
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { useNetworkListQuery, useDeleteNetworkMutation }                  from '@acx-ui/rc/services'
 import {

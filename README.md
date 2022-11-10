@@ -131,7 +131,7 @@ npx nx affected:test --coverage --verbose
 
 Remove `--coverage` if updating the coverage folder is not needed.
 
-Use command below if you intent to run test for selected packages
+Use command below if you intend to run test for selected packages
 
 ```sh
 npx nx run-many --target=test --projects=rc,rc-utils --coverage --runInBand --verbose
@@ -143,6 +143,12 @@ The `--fix` will help resolve error for simple lint rules.
 
 ```sh
 npx nx affected:lint --fix
+```
+
+### Run tsc validation
+
+```sh
+./tools/docker/tscValidator.sh
 ```
 
 ### Run Storybook
@@ -158,5 +164,5 @@ Refer to [Nx.md](Nx.md) for other Nx related commands.
 ### Split.io Feature toggle
 Refer to [Feature Flag Operators & Usage in ACX-UI](https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=260188984) wiki on how to make use of feature toggle with Split.io
 
-### I18n strings extraction and compilation 
-Refer to  [Locale.md](Locale.md)  
+### I18n strings extraction and compilation
+Refer to  [Locale.md](Locale.md)

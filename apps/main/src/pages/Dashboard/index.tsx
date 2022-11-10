@@ -4,6 +4,21 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
+  ConnectedClientsOverTime,
+  IncidentsDashboard,
+  NetworkHistory,
+  SwitchesTrafficByVolume,
+  TopApplicationsByTraffic,
+  TopSSIDsByClient,
+  TopSSIDsByTraffic,
+  TopSwitchesByError,
+  TopSwitchesByPoEUsage,
+  TopSwitchesByTraffic,
+  TopSwitchModels,
+  TrafficByVolume,
+  VenuesHealthDashboard
+} from '@acx-ui/analytics/components'
+import {
   DisabledButton,
   GridRow,
   GridCol,
@@ -12,22 +27,21 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { useSplitTreatmentWithConfig } from '@acx-ui/feature-toggle'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
+import { VenueFilter }    from '@acx-ui/main/components'
+import {
+  AlarmWidget,
+  ClientsWidget,
+  DevicesDashboardWidget,
+  MapWidget,
+  VenuesDashboardWidget
+} from '@acx-ui/rc/components'
 import { useDateFilter, dateRangeForLast, useDashboardFilter } from '@acx-ui/utils'
-
-import VenueFilter from '../../components/VenueFilter'
-
-const WifiWidgets = React.lazy(() => import('rc/Widgets'))
-const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 export default function Dashboard () {
   const { $t } = useIntl()
-  // eslint-disable-next-line no-console
-  console.log('PLM FF', useSplitTreatmentWithConfig('ADMIN-BASE'))
-
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -80,22 +94,22 @@ function ApWidgets () {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='trafficByVolume' filters={filters}/>
+        <TrafficByVolume filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='networkHistory' filters={filters}/>
+        <NetworkHistory filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
+        <ConnectedClientsOverTime filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topApplicationsByTraffic' filters={filters}/>
+        <TopApplicationsByTraffic filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSSIDsByTraffic' filters={filters}/>
+        <TopSSIDsByTraffic filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSSIDsByClient' filters={filters}/>
+        <TopSSIDsByClient filters={filters}/>
       </GridCol>
     </GridRow>
   )
@@ -106,19 +120,19 @@ function SwitchWidgets () {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
+        <SwitchesTrafficByVolume filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/>
+        <TopSwitchesByPoEUsage filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
+        <TopSwitchesByTraffic filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByErrors'filters={filters} />
+        <TopSwitchesByError filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
+        <TopSwitchModels filters={filters}/>
       </GridCol>
     </GridRow>
   )
@@ -130,27 +144,27 @@ function CommonDashboardWidgets () {
   return (
     <GridRow>
       <GridCol col={{ span: 6 }} style={{ height: '384px' }}>
-        <WifiWidgets name='alarms' />
+        <AlarmWidget />
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ height: '384px' }}>
-        <AnalyticsWidgets name='incidents' filters={filters}/>
+        <IncidentsDashboard filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '384px' }}>
-        <AnalyticsWidgets name='health' filters={filters}/>
+        <VenuesHealthDashboard filters={filters}/>
       </GridCol>
 
       <GridCol col={{ span: 6 }} style={{ height: '176px' }}>
-        <WifiWidgets name='venues' />
+        <VenuesDashboardWidget />
       </GridCol>
       <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
-        <WifiWidgets name='devices' />
+        <DevicesDashboardWidget />
       </GridCol>
       <GridCol col={{ span: 8 }} style={{ height: '176px' }}>
-        <WifiWidgets name='clients' />
+        <ClientsWidget />
       </GridCol>
 
       <GridCol col={{ span: 24 }} style={{ height: '428px' }}>
-        <WifiWidgets name='map' />
+        <MapWidget />
       </GridCol>
 
     </GridRow>

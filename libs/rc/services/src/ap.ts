@@ -3,12 +3,19 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   ApExtraParams,
   AP,
+  ApDeep,
+  ApDetailHeader,
+  ApGroup,
   APRadio,
   ApRadioBands,
   CommonUrlsInfo,
   createHttpRequest,
+  onSocketActivityChanged,
   RequestPayload,
-  TableResult
+  showActivityMessage,
+  TableResult,
+  VenueCapabilities,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -31,14 +38,66 @@ export const apApi = baseApApi.injectEndpoints({
       },
       transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Ap', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddAps'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
+          })
+        })
       }
+    }),
+    apGroupList: build.query<ApGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApGroupList, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    addAp: build.mutation<ApDeep, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    apDetailHeader: build.query<ApDetailHeader, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApDetailHeader, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     })
   })
 })
 
 export const {
   useApListQuery,
-  useLazyApListQuery
+  useLazyApListQuery,
+  useApDetailHeaderQuery,
+  useAddApMutation,
+  useApGroupListQuery,
+  useLazyApGroupListQuery,
+  useWifiCapabilitiesQuery
 } = apApi
 
 
