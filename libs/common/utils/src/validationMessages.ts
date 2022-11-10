@@ -95,6 +95,10 @@ export const validationMessages = {
     defaultMessage: 'VLAN ID must be between 1 and 4094',
     description: 'Validation - VLAN range checks'
   }),
+  gpsCoordinates: defineMessage({
+    defaultMessage: 'Please enter valid GPS coordinates',
+    description: 'Validation - GPS coordinates checks'
+  }),
   emailAddress: defineMessage({
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'

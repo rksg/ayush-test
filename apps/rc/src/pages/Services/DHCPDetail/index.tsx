@@ -50,9 +50,7 @@ export default function DHCPServiceDetail () {
         <GridCol col={{ span: 24 }}>
           <DHCPOverview poolNumber={data?.dhcpPools.length} />
         </GridCol>
-      </GridRow>
-      <GridRow>
-        <GridCol col={{ span: 24 }} style={{ marginTop: 25 }}>
+        <GridCol col={{ span: 24 }}>
           <DHCPInstancesTable
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
