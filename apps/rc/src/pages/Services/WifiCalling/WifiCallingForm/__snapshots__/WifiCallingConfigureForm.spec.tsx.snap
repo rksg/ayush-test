@@ -300,7 +300,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                           class="ant-col ant-form-item-label"
                         >
                           <label
-                            class="ant-form-item-required"
+                            class=""
                             for="settings_description"
                             title="Description"
                           >

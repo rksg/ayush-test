@@ -47,12 +47,8 @@ const WifiCallingDetailView = () => {
         <GridCol col={{ span: 24 }}>
           <WifiCallingDetailContent tenantId={params.tenantId as string}/>
         </GridCol>
-        {/*TODO: Temporarily hidden this component until Health api is ready*/}
-        {/*<GridCol col={{ span: 24 }}>*/}
-        {/*  <WifiCallingNetworks tenantId={params.tenantId as string} />*/}
-        {/*</GridCol>*/}
         <GridCol col={{ span: 24 }}>
-          <WifiCallingNetworksDetail tenantId={params.tenantId as string}/>
+          <WifiCallingNetworksDetail tenantId={params.tenantId as string} />
         </GridCol>
       </GridRow>
     </>

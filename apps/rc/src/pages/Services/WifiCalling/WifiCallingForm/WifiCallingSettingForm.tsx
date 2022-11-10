@@ -150,10 +150,6 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
         <Form.Item
           name='description'
           label={$t({ defaultMessage: 'Description' })}
-          rules={[
-            { required: true },
-            { min: 2 }
-          ]}
           initialValue={state.description}
           children={<TextArea
             rows={4}

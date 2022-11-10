@@ -36,17 +36,6 @@ const WifiCallingNetworksDetail = (props: { tenantId: string }) => {
       dataIndex: 'venues',
       key: 'venues'
     }
-    // TODO: Temporarily hidden this block until Health api is ready
-    // {
-    //   title: $t({ defaultMessage: 'Service Health' }),
-    //   dataIndex: 'serviceHealth',
-    //   key: 'serviceHealth'
-    // },
-    // {
-    //   title: $t({ defaultMessage: 'Voice quality/MoS score' }),
-    //   dataIndex: 'voiceQualityScore',
-    //   key: 'voiceQualityScore'
-    // }
   ]
 
   const { data } = useGetWifiCallingServiceQuery({
@@ -58,7 +47,7 @@ const WifiCallingNetworksDetail = (props: { tenantId: string }) => {
     defaultPayload
   })
 
-  const basicData = tableQuery.data?.data
+  let basicData = tableQuery.data?.data
     .map((network) => {
       return {
         id: network.id,
@@ -68,9 +57,10 @@ const WifiCallingNetworksDetail = (props: { tenantId: string }) => {
       }
     })
 
-  if (data && data.hasOwnProperty('networkIds') && basicData) {
-    basicData.filter((network) => {
-      return data?.networkIds.includes(network.id)
+  if (data && basicData) {
+    const filterNetworkIds = data.hasOwnProperty('networkIds') ? data.networkIds : []
+    basicData = basicData.filter((network) => {
+      return filterNetworkIds.includes(network.id)
     })
   }
 
