@@ -113,7 +113,6 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const arrCheckAll = [...checkAll]
   const arrIndeterminate = [...indeterminate]
   useEffect(() => {
-    // form.setFieldsValue(formInitData)
     const getTimeZone = async (venueLatitude: string, venueLongitude: string) => {
       const timeZone = await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
       setTimezone(timeZone)
