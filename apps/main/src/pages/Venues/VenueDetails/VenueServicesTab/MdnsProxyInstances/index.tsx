@@ -1,16 +1,38 @@
+import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle, Table, TableProps } from '@acx-ui/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { useApListQuery }            from '@acx-ui/rc/services'
 import {
   AP,
   getServiceDetailsLink,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useTableQuery
 }   from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponents'
 
 export default function MdnsProxyInstances () {
   const { $t } = useIntl()
+  const params = useParams()
+  const navigate = useNavigate()
+  const addApPath = useTenantLink('devices/aps/add')
+
+  const tableQuery = useTableQuery({
+    useQuery: useApListQuery,
+    defaultPayload: {
+      // TODO: API is not ready to return these fields
+      // fields: ['name', 'serialNumber', 'mdnsProxyServiceId', 'mdnsProxyServiceName', 'forwardingRules'],
+      fields: ['name', 'serialNumber'],
+      filters: { venueId: [params.venueId] }
+    }
+  })
+
+  const handleAddAction = () => {
+    navigate(addApPath)
+  }
 
   const columns: TableProps<AP>['columns'] = [
     {
@@ -33,7 +55,7 @@ export default function MdnsProxyInstances () {
           to={getServiceDetailsLink({
             type: ServiceType.MDNS_PROXY,
             oper: ServiceOperation.DETAIL,
-            // TODO: API is not ready to return mDNS Proxy ID
+            // TODO: API is not ready to return this field
             // serviceId: row.mdnsProxyServiceId
             serviceId: '12345'
           })}>
@@ -50,19 +72,36 @@ export default function MdnsProxyInstances () {
         // TODO: API is not ready, this is mocked data for display
         return 0
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Active' }),
+      dataIndex: 'mdnsProxyServiceId',
+      key: 'mdnsProxyServiceId',
+      render: function () {
+        // TODO: API is not ready
+        return <Switch
+          checked={false}
+        />
+      }
     }
   ]
 
   return (
     <>
-      <Subtitle level={4}>
+      <UI.TableTitle>
         { $t({ defaultMessage: 'APs Running mDNS Proxy service' }) }
-      </Subtitle>
-      <Table<AP>
-        columns={columns}
-        dataSource={tableQuery.data?.data}
-        rowKey='serialNumber'
-      />
+      </UI.TableTitle>
+      <Loader states={[tableQuery]}>
+        <Table<AP>
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          actions={[{
+            label: $t({ defaultMessage: 'Add AP' }),
+            onClick: handleAddAction
+          }]}
+          rowKey='serialNumber'
+        />
+      </Loader>
     </>
   )
 }

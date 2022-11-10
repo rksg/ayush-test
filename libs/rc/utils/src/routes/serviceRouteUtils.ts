@@ -1,5 +1,6 @@
-import { ServiceType }  from '@acx-ui/rc/utils'
 import { generatePath } from '@acx-ui/react-router-dom'
+
+import { ServiceType } from '../constants'
 
 export enum ServiceOperation {
   CREATE,
