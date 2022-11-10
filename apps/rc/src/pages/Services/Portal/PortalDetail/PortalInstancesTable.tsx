@@ -16,7 +16,6 @@ export default function PortalInstancesTable (
       key: 'NetworkName',
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'network',
-      width: 200,
       sorter: true,
       render: function (_data, row) {
         return (
@@ -30,7 +29,6 @@ export default function PortalInstancesTable (
       key: 'Type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
-      width: 100,
       render: function (_data, row) {
         return row.network.captiveType
       }
@@ -39,20 +37,17 @@ export default function PortalInstancesTable (
     {
       key: 'Venues',
       title: $t({ defaultMessage: 'Venues' }),
-      dataIndex: 'venues',
-      width: 50
+      dataIndex: 'venues'
     },
     {
       key: 'serviceHealth',
       title: $t({ defaultMessage: 'Service Health' }),
-      width: 135,
       dataIndex: 'health',
       render: (data) => <ProgressBar percent={data as number}/>
     },
     {
       key: 'abrate',
       title: $t({ defaultMessage: 'Abandonment rate' }),
-      width: 180,
       dataIndex: 'abandonmentRate',
       render: (data) =>{
         return data+'%'
@@ -61,7 +56,6 @@ export default function PortalInstancesTable (
     {
       key: 'clients',
       title: $t({ defaultMessage: 'Number of clients' }),
-      width: 160,
       dataIndex: 'clients',
       render: (data) =>{
         return data+'%'
@@ -70,7 +64,6 @@ export default function PortalInstancesTable (
     {
       key: 'clientsPortal',
       title: $t({ defaultMessage: 'Clients per portal type' }),
-      width: 200,
       dataIndex: 'clientsPortal',
       render: (data) =>{
         return data+'%'

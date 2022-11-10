@@ -27,7 +27,7 @@ export default function PortalPreviewModal (props:{
         onCancel={()=>setVisible(false)}
         width={1000}
         style={{ paddingLeft: 50 }}
-        footer={null}
+        footer={[]}
         closable={true}
         maskClosable={false}
       >
