@@ -205,6 +205,24 @@ describe('Services for health kpis', () => {
       expect(data).toStrictEqual(expectedResult)
       expect(error).toBe(undefined)
     })
+    it('should return correct data even with filter passed on', async () => {
+      const expectedResult = {
+        timeToConnectThreshold: {
+          value: 1000
+        }
+      }
+      mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+        data: expectedResult
+      })
+      const { status, data, error } = await store.dispatch(
+        healthApi.endpoints.getKpiThresholds.initiate({ ...props, filter: {
+          networkNodes: [[{ type: 'zoneName', name: 'z1' }]]
+        } })
+      )
+      expect(status).toBe('fulfilled')
+      expect(data).toStrictEqual(expectedResult)
+      expect(error).toBe(undefined)
+    })
     it('should return correct data for no result', async () => {
       const expectedResult = {
         timeToConnectThreshold: {

@@ -55,7 +55,7 @@ describe('HealthConnectedClientsOverTime', () => {
     const { asFragment } = render(
       <Provider>
         <HealthPageContext.Provider value={healthContext}>
-          <ConnectedClientsOverTime />
+          <ConnectedClientsOverTime filters={filters}/>
         </HealthPageContext.Provider>
       </Provider>
     )
