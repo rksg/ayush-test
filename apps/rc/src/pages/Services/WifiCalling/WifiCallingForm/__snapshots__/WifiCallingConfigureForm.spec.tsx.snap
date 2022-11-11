@@ -218,7 +218,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                   class="ant-input"
                                   id="settings_serviceName"
                                   type="text"
-                                  value="wifiCSP1"
+                                  value="service-name-test"
                                 />
                                 <span
                                   class="ant-input-suffix"
@@ -320,7 +320,9 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                 class="ant-input ant-input-status-success"
                                 id="settings_description"
                                 rows="4"
-                              />
+                              >
+                                descriptionTest
+                              </textarea>
                             </div>
                           </div>
                         </div>
