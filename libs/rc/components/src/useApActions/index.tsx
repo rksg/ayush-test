@@ -1,0 +1,286 @@
+import {
+  Loading3QuartersOutlined
+} from '@ant-design/icons'
+import { Form, Input, Modal, Radio, Typography } from 'antd'
+import saveAs                                    from 'file-saver'
+import moment                                    from 'moment'
+import { RawIntlProvider, useIntl }              from 'react-intl'
+
+import { cssStr, showActionModal, showToast } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import {
+  useBlinkLedApMutation,
+  useDeleteApMutation,
+  useDeleteSoloApMutation,
+  useDownloadApLogMutation,
+  useLazyGetDhcpApQuery,
+  useRebootApMutation
+} from '@acx-ui/rc/services'
+import {
+  AP,
+  ApDeviceStatusEnum,
+  ApDhcpRoleEnum,
+  CommonResult
+} from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
+
+
+export const useApActions = () => {
+  const { $t } = useIntl()
+  const [ downloadApLog ] = useDownloadApLogMutation()
+  const [ getDhcpAp ] = useLazyGetDhcpApQuery()
+  const [ rebootAp ] = useRebootApMutation()
+  const [ deleteAp ] = useDeleteApMutation()
+  const [ deleteSoloAp ] = useDeleteSoloApMutation()
+  const [ blinkLedAp ] = useBlinkLedApMutation()
+
+  const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
+
+  const showRebootAp = (serialNumber: string, tenantId: string, callBack?: ()=>void ) => {
+
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
+          text: $t({ defaultMessage: 'Cancel' }),
+          type: 'default',
+          key: 'cancel'
+        }, {
+          text: $t({ defaultMessage: 'Reboot' }),
+          type: 'primary',
+          key: 'ok',
+          closeAfterAction: true,
+          handler: () => {
+            rebootAp({ params: { tenantId: tenantId, serialNumber } })
+            callBack && callBack()
+          }
+        }]
+      },
+      title: $t({ defaultMessage: 'Reboot Access Point?' }),
+      content: $t({ defaultMessage: `Rebooting the AP will disconnect all connected clients.
+        Are you sure you want to reboot?` })
+    })
+  }
+
+
+  const showDownloadApLog = ( serialNumber: string, tenantId: string, callBack?: ()=>void ) => {
+    const toastKey = showToast({
+      type: 'info',
+      closable: false,
+      extraContent: <div style={{ width: '60px' }}>
+        <Loading3QuartersOutlined spin
+          style={{ margin: 0, fontSize: '18px', color: cssStr('--acx-primary-white') }}/>
+      </div>,
+      content: $t({ defaultMessage: 'Preparing log ...' })
+    })
+
+    downloadApLog({ params: { tenantId, serialNumber } })
+      .unwrap().then((result) => {
+        showToast({
+          key: toastKey,
+          type: 'success',
+          content: $t({ defaultMessage: 'Log is ready.' })
+        })
+
+        const timeString = moment().format('DDMMYYYY-HHmm')
+        saveAs(result.fileURL, `SupportLog_${serialNumber}_${timeString}.log.gz`) //TODO: CORS policy
+
+        callBack && callBack()
+      })
+      .catch(() => {
+        showToast({
+          key: toastKey,
+          type: 'error',
+          content: $t({ defaultMessage: 'Failed to download AP support log.' })
+        })
+      })
+  }
+
+
+  const showDeleteDialog = async ( rows: AP[], tenantId: string, callBack?: ()=>void ) => {
+    const dhcpAps = await getDhcpAp({
+      params: { tenantId: tenantId },
+      payload: rows.map(row => row.serialNumber)
+    }, true).unwrap()
+
+    if (hasDhcpAps(dhcpAps)) {
+      showActionModal({
+        type: 'warning',
+        content: $t({ defaultMessage: 'Not allow to delete DHCP APs' })
+      })
+      return
+    }
+
+    genDeleteModal(rows, deleteSoloFlag, (resetType) => {
+      const deleteApApi = resetType === 'solo' ? deleteSoloAp : deleteAp
+      rows.length === 1 ?
+        deleteApApi({ params: { tenantId: tenantId, serialNumber: rows[0].serialNumber } })
+          .then(callBack) :
+        deleteApApi({
+          params: { tenantId },
+          payload: rows.map(row => row.serialNumber)
+        }).then(callBack)
+    })
+  }
+
+  const showBlinkLedAp = ( serialNumber: string, tenantId: string, callBack?: ()=>void ) => {
+    blinkLedAp({ params: { tenantId: tenantId, serialNumber } })
+    showToast({
+      type: 'info',
+      closable: false,
+      duration: 30,
+      extraContent: <div style={{ width: '60px' }}>
+        <Loading3QuartersOutlined spin
+          style={{ margin: 0, fontSize: '18px', color: cssStr('--acx-primary-white') }}/>
+      </div>,
+      content: $t({ defaultMessage: 'AP LEDs Blink ...' }),
+      onClose: () => callBack && callBack()
+    })
+  }
+
+  return {
+    showDeleteDialog,
+    showDownloadApLog,
+    showRebootAp,
+    showBlinkLedAp
+  }
+}
+
+const hasContactedAp = (selectedRows: AP[]) => {
+  return !selectedRows.every(selectedAp =>
+    selectedAp.deviceStatus === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
+    selectedAp.deviceStatus === ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD)
+}
+const allOperationalAp = (selectedRows: AP[]) => {
+  return selectedRows.every(ap =>
+    ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL
+  )
+}
+const hasInvaildAp = (selectedRows: AP[]) => {
+  return !selectedRows.every(ap =>
+    ap.fwVersion.localeCompare('6.2.0.103.486',
+      undefined, { numeric: true, sensitivity: 'base' }) >= 0
+  )
+}
+
+type DhcpApInfo = {
+  serialNumber: string,
+  dhcpApRole: ApDhcpRoleEnum,
+  venueDhcpEnabled?: boolean
+}
+const hasDhcpAps = (dhcpAps: CommonResult) => {
+  if (dhcpAps && dhcpAps.response) {
+    const res: DhcpApInfo[] = Array.isArray(dhcpAps.response)? dhcpAps.response : []
+    const dhcpApMap = res.filter(dhcpAp =>
+      dhcpAp.venueDhcpEnabled === true &&
+      (dhcpAp.dhcpApRole === ApDhcpRoleEnum.PrimaryServer ||
+        dhcpAp.dhcpApRole === ApDhcpRoleEnum.BackupServer))
+
+    return dhcpApMap.length > 0
+  }
+  return false
+}
+
+const genDeleteModal = (
+  rows: AP[],
+  deleteSoloFlag: boolean,
+  okHandler: (resetType: string) => void
+) => {
+  const { $t } = getIntl()
+
+  const showResetFirmwareOption = allOperationalAp(rows) && !hasInvaildAp(rows)
+  const invalidAp = allOperationalAp(rows) && hasInvaildAp(rows)
+  const hideConfirmation = !hasContactedAp(rows)
+
+  const entityValue = rows.length === 1 ? rows[0].name : undefined
+  const modal = Modal.confirm({})
+
+  const title = $t({
+    defaultMessage: `Delete {count, plural,
+      one {"{entityValue}"}
+      other {{count} APs}
+    }?`
+  }, { count: rows.length, entityValue })
+
+  const confirmText = 'Delete'
+  let resetType = 'cloud'
+
+  const content = (<Form layout='vertical'>
+    <Form.Item>{$t({
+      defaultMessage: `Are you sure you want to delete {count, plural,
+        one {this AP}
+        other {these APs}
+      } ?`
+    }, { count: rows.length })}</Form.Item >
+
+    {hideConfirmation && <Form.Item>{$t({ defaultMessage: `
+      You are deleting one or more offline APs.
+      When these offline devices come back online
+      their configuration will be factory reset and they will be removed from Ruckus Cloud.`
+    })}</Form.Item >}
+
+    {!showResetFirmwareOption && !invalidAp && !hideConfirmation && <Form.Item>{$t({
+      defaultMessage: `Once deleted, the AP will factory reset to Cloud ready.
+      The existing configuration will be wiped, AP firmware will remain Cloud-only firmware.
+      AP will be ready to re-connect to the Cloud.`
+    })}</Form.Item >}
+
+    {invalidAp && <Form.Item>{$t({
+      defaultMessage: `Once deleted, the AP will factory reset to Cloud ready.
+      The existing configuration will be wiped, AP firmware will remain Cloud-only firmware.
+      AP will be ready to re-connect to the Cloud.
+      These APs’ firmware does not support resetting them to standalone AP.`
+    })}</Form.Item >}
+
+    {showResetFirmwareOption && <Form.Item
+      label={$t({ defaultMessage: 'Type the word "{text}" to confirm:' }, { text: confirmText })}>
+      <Input onChange={(e) => {
+        const disabled = e.target.value.toLowerCase() !== confirmText.toLowerCase()
+        modal.update({
+          okButtonProps: { disabled }
+        })
+      }} />
+    </Form.Item>}
+
+    {deleteSoloFlag && showResetFirmwareOption && <Form.Item
+      label={$t({ defaultMessage: 'Select what should happen to the APs’ configuration:' })}>
+      <Radio.Group defaultValue={'cloud'} onChange={(e) => {resetType = e.target.value}}>
+        <Radio value='cloud'>
+          {$t({ defaultMessage: 'Factory reset to Cloud ready' })}
+          <Typography.Paragraph>{$t({ defaultMessage: `
+          Existing configuration will be wiped,
+          AP firmware will remain Cloud-only firmware.
+          AP will be ready to re-connect to the Cloud.` })}
+          </Typography.Paragraph>
+        </Radio>
+        <Radio value='solo'>
+          {$t({ defaultMessage: 'Factory reset to standalone firmware' })}
+          <Typography.Paragraph>{$t({ defaultMessage: `
+          Existing configuration will be wiped,
+          AP firmware will be modified to standalone image.
+          AP will be ready to connect to any controller or operate standalone.
+          Please note that this option will download and update your AP firmware,
+          which will take longer.` })}
+          </Typography.Paragraph>
+        </Radio>
+      </Radio.Group>
+    </Form.Item>}
+  </Form>)
+
+  const config = {
+    icon: <> </>,
+    title: title,
+    content: content,
+    cancelText: $t({ defaultMessage: 'Cancel' }),
+    okText: $t({ defaultMessage: 'Delete' }),
+    okButtonProps: { disabled: showResetFirmwareOption },
+    onOk: () => {okHandler(resetType)}
+  }
+  modal.update({
+    ...config,
+    content: <RawIntlProvider value={getIntl()} children={config.content} />
+  })
+
+  return modal
+}

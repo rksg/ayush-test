@@ -24,7 +24,8 @@ export interface AP {
   serialNumber: string,
   tags: string,
   venueId: string,
-  venueName: string
+  venueName: string,
+  fwVersion: string
 }
 
 export interface ApGroup {

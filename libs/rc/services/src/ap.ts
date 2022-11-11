@@ -99,6 +99,17 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    deleteSoloAp: build.mutation<AP, RequestPayload>({
+      query: ({ params, payload }) => {
+        const api = !!payload ? WifiUrlsInfo.deleteSoloAps : WifiUrlsInfo.deleteSoloAp
+        const req = createHttpRequest(api, params)
+        return {
+          ...req,
+          ...(!!payload && { body: payload })
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
     getDhcpAp: build.query<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
@@ -131,6 +142,14 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    blinkLedAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.blinkLedAp, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -144,8 +163,10 @@ export const {
   useLazyApGroupListQuery,
   useWifiCapabilitiesQuery,
   useDeleteApMutation,
+  useDeleteSoloApMutation,
   useDownloadApLogMutation,
   useRebootApMutation,
+  useBlinkLedApMutation,
   useFactoryResetApMutation,
   useLazyGetDhcpApQuery
 } = apApi
