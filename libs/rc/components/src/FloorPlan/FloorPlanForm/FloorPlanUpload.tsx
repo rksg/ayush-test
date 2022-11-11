@@ -112,10 +112,6 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
               { $t({ defaultMessage: 'Upload' }) }</div>
           </div>}
       </Upload>
-      <Typography.Text type='secondary'>
-        { $t({
-          defaultMessage: 'Max. image weight 20 MB Supported formats: PNG, JPEG, GIF, SVG' }) }
-      </Typography.Text>
     </>
   )
 

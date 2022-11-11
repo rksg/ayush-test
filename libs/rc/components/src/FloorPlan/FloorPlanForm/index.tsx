@@ -1,13 +1,14 @@
 import { useState } from 'react'
 
-import { Form, Input, InputNumber, Typography } from 'antd'
-import { FormInstance }                         from 'antd/es/form/Form'
+import { Form, Input, InputNumber, Space } from 'antd'
+import { FormInstance }                    from 'antd/es/form/Form'
 
 import { FileValidation } from '@acx-ui/rc/utils'
 import { getIntl }        from '@acx-ui/utils'
 
 import FloorplanUpload from './FloorPlanUpload'
 import ground          from './ground_floor_0.png'
+import * as UI         from './styledComponents'
 
 export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageFile }: {
     form: FormInstance,
@@ -49,39 +50,36 @@ export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageF
       <Form.Item
         style={{ marginBottom: '0px' }}
       >
-        <Form.Item name='floorNumber'
+        <UI.FloorNumberFormItem name='floorNumber'
           label={$t({ defaultMessage: 'Floor Number' })}
           initialValue={0}
           rules={[
             { required: true },
             { type: 'number', min: -32768, max: 32767 }
           ]}
+          extra={<Space>
+            {$t({ defaultMessage: 'When ground floor is 0 ' })}
+            <div style={{
+              backgroundImage: `url(${ground})`,
+              width: '45px',
+              height: '45px',
+              marginLeft: '8px'
+            }}></div>
+          </Space>}
         >
           <InputNumber />
-        </Form.Item>
-        <div style={{
-          display: 'inline-flex',
-          position: 'absolute',
-          right: '0',
-          top: '8px',
-          alignItems: 'center'
-        }}>
-          <Typography.Text type='secondary'>
-            {$t({ defaultMessage: 'When ground floor is 0 ' })}
-          </Typography.Text>
-          <div style={{
-            backgroundImage: `url(${ground})`,
-            width: '45px',
-            height: '45px',
-            marginLeft: '8px'
-          }}></div>
-        </div>
+        </UI.FloorNumberFormItem>
       </Form.Item>
       <Form.Item name='imageName'
         label={$t({ defaultMessage: 'Floor Plan Image' })}
         rules={[
           { required: true, message: $t({ defaultMessage: 'This field is required' }) }
         ]}
+        extra={<>
+          {$t({ defaultMessage: 'Max. image size: 20 MB' })}
+          <br />
+          {$t({ defaultMessage: 'Supported formats: PNG, JPEG, GIF, SVG' })}
+        </>}
       >
         <FloorplanUpload
           validateFile={validateFile}
