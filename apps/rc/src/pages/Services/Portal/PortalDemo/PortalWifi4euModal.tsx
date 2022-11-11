@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
 import { Button, Modal } from '@acx-ui/components'
 
@@ -31,14 +32,19 @@ export default function PortalWifi4euModal (props:{
       children={$t({ defaultMessage: 'OK' })}
     />
   ]
-  const getContent = <div>
-    <UI.FieldLabel>{$t({ defaultMessage: 'WiFi4EU UUID' })}</UI.FieldLabel>
-    <UI.FieldInput onChange={(e)=>setNewWifi4eu(e.target.value)}
-      value={newWifi4eu}
-      placeholder={
-        $t({ defaultMessage: 'Copy from your WiFi4EU installation report' })}></UI.FieldInput>
-  </div>
 
+  const getContent = <Form
+    layout='vertical'>
+    <Form.Item
+      name='wifi4eu'
+      label={$t({ defaultMessage: 'WiFi4EU UUID' })}
+      validateFirst
+      hasFeedback
+      children={<Input placeholder={
+        $t({ defaultMessage: 'Copy from your WiFi4EU installation report' })}
+      onChange={(e)=>setNewWifi4eu(e.target.value)}
+      value={newWifi4eu}/>}
+    /></Form>
   return (
     <>
       <UI.SettingOutlined onClick={() => {

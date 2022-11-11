@@ -9,6 +9,7 @@ import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
 import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import { capativeTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
+import { portalViewTypes }          from '../contentsMap'
 import * as UI                      from '../styledComponents'
 
 import PortalBackground         from './PortalBackground'
@@ -16,6 +17,7 @@ import PortalComponents         from './PortalComponents'
 import PortalLanguageSettings   from './PortalLanguageSettings'
 import PortalViewContent        from './PortalViewContent'
 import PortalViewContentPreview from './PortalViewContentPreview'
+
 
 
 
@@ -59,6 +61,7 @@ export default function PortalDemo ({
         GuestNetworkTypeEnum.SelfSignIn:
         view === PortalViewEnum.HostApproval?
           GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
+  const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
   return (
     <>
       {demoValue.componentDisplay.WiFi4EU && !demoValue.wifi4EU
@@ -78,10 +81,9 @@ export default function PortalDemo ({
               onChange={(data) => {setView(data as PortalViewEnum)}}
               defaultValue={PortalViewEnum.ClickThrough}
               style={{ width: 300 }}>
-              {Object.keys(PortalViewEnum).map((key =>
-                <Option key={key} value={PortalViewEnum[key as keyof typeof PortalViewEnum]}>
-                  {$t({ defaultMessage: '{viewValue}' },
-                    { viewValue: PortalViewEnum[key as keyof typeof PortalViewEnum] })}</Option>
+              {viewKeys.map((key =>
+                <Option key={key} value={key}>
+                  {$t(portalViewTypes[key])}</Option>
               ))}
             </UI.Select>
           </div>

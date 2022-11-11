@@ -7,6 +7,8 @@ import { useNetworkListQuery }                                       from '@acx-
 import { Network, Portal, PortalLanguageEnum, transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }                                                 from '@acx-ui/react-router-dom'
 
+import { getLanguage } from '../../commonUtils'
+
 import PortalPreviewModal from './PortalPreviewModal'
 
 
@@ -21,7 +23,8 @@ const defaultPayload = {
 export function PortalSummaryForm (props: {
   summaryData: Portal | undefined
 }) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const $t = intl.$t
   const { summaryData } = props
   const params = useParams()
 
@@ -52,12 +55,13 @@ export function PortalSummaryForm (props: {
     }
   }
   const getAlternativeLang = (alternativeLang:{ [key:string]: boolean } )=>{
-    let langs = ''
-    Object.keys(alternativeLang || {}).map((key) =>{
-      return langs+=alternativeLang?.[key]?PortalLanguageEnum[key as keyof typeof PortalLanguageEnum]+
-      '  ':''
+    let langs = [] as string[]
+    const langKeys = Object.keys(alternativeLang || {}) as Array<keyof typeof PortalLanguageEnum>
+    langKeys.map((key) =>{
+      if(alternativeLang?.[key]) langs.push(getLanguage(key))
+      return langs
     })
-    return langs || transformDisplayText()
+    return intl.formatList(langs,{ type: 'conjunction' }) || transformDisplayText()
   }
   return (
     <>

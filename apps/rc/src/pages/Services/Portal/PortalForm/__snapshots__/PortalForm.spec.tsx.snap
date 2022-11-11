@@ -701,7 +701,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                             <div
                               class="ant-form-item-control-input-content"
                             >
-                              English
+                              en
                             </div>
                           </div>
                         </div>
@@ -736,9 +736,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                           >
                             <div
                               class="ant-form-item-control-input-content"
-                            >
-                              --
-                            </div>
+                            />
                           </div>
                         </div>
                       </div>

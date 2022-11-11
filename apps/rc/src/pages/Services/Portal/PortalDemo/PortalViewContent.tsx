@@ -34,7 +34,6 @@ export default function PortalViewContent (props:{
   const { $t } = useIntl()
   const [cursor, setCursor]=useState('none')
   const [outline, setOutline]=useState('none')
-  const alternativeLang = demoValue.alternativeLang
   const componentDisplay = demoValue.componentDisplay
   const isbg = demoValue?.backgroundImage ? 'true' : 'false'
   const [clicked, setClicked]=useState(false)
@@ -54,7 +53,7 @@ export default function PortalViewContent (props:{
       {componentDisplay.WiFi4EU && <UI.Img src={Wifi4eu}
         alt={$t({ defaultMessage: 'Wifi4eu' })}
         height={120} />}
-      <PortalAlternativeLanguage alternativeLang={alternativeLang}/>
+      <PortalAlternativeLanguage demoValue={demoValue}/>
       {componentDisplay.Logo &&<PortalPopover
         content={logoTools}
         visible={clicked}

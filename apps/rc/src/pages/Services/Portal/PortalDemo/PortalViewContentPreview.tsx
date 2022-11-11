@@ -23,7 +23,6 @@ export default function PortalViewContentPreview (props:{
 }) {
   const { view, demoValue } = props
   const { $t } = useIntl()
-  const alternativeLang = demoValue?.alternativeLang
   const componentDisplay = demoValue?.componentDisplay
   const isbg = demoValue?.backgroundImage ? 'true' : 'false'
   return (
@@ -31,7 +30,7 @@ export default function PortalViewContentPreview (props:{
       {componentDisplay.WiFi4EU && <UI.Img src={Wifi4eu}
         alt={$t({ defaultMessage: 'Wifi4eu' })}
         height={120} />}
-      <PortalAlternativeLanguage alternativeLang={alternativeLang}/>
+      <PortalAlternativeLanguage demoValue={demoValue}/>
       {componentDisplay.Logo &&<UI.Img src={demoValue.logo}
         alt={$t({ defaultMessage: 'Logo' })}
         style={{ height: (demoValue.logoSize||PortalDemoDefaultSize.logoSize) ,maxWidth: 425 }}

@@ -4,7 +4,8 @@ import { useIntl } from 'react-intl'
 import { Demo, PortalComponentsEnum } from '@acx-ui/rc/utils'
 
 
-import * as UI from '../styledComponents'
+import { portalComponentsValue } from '../contentsMap'
+import * as UI                   from '../styledComponents'
 
 import PortalTermsModal   from './PortalTermsModal'
 import PortalWifi4euModal from './PortalWifi4euModal'
@@ -12,17 +13,16 @@ export default function PortalComponents (props:{
   demoValue:Demo,
   updateViewContent:(value:Demo)=>void,
 }) {
-
+  const valueKeys = Object.keys(PortalComponentsEnum) as Array<keyof typeof PortalComponentsEnum>
   const { $t } = useIntl()
   const { updateViewContent, demoValue } = props
   return (
     <div>
       <UI.CommonLabel>{$t({ defaultMessage: 'Manage Components' })}</UI.CommonLabel>
 
-      {Object.keys(PortalComponentsEnum).map((key => <UI.CommonLabel key={key+'label'}>
+      {valueKeys.map((key => <UI.CommonLabel key={key+'label'}>
         <UI.ComponentLabel key={key}>
-          {$t({ defaultMessage: '{lanValue}' },{ lanValue:
-             PortalComponentsEnum[key as keyof typeof PortalComponentsEnum] })}
+          {$t(portalComponentsValue[key])}
         </UI.ComponentLabel>
         <Switch
           key={key+'switch'}
