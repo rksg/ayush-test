@@ -81,6 +81,7 @@ export function BarChart<TChartData extends BarChartData>
   useLegendSelectChanged(eChartsRef)
 
   const option: EChartsOption = {
+    animation: false,
     grid: { ...gridOptions(), ...gridProps },
     dataset: {
       dimensions: data.dimensions,

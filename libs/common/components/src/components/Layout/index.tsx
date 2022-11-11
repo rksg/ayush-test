@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 
 import ProLayout             from '@ant-design/pro-layout'
-import { Tooltip }           from 'antd'
 import { isEmpty, uniqueId } from 'lodash'
 import { useIntl }           from 'react-intl'
 
@@ -13,6 +12,8 @@ import {
   TenantNavLink
 }                          from '@acx-ui/react-router-dom'
 import { notAvailableMsg } from '@acx-ui/utils'
+
+import { Tooltip } from '../Tooltip'
 
 import * as UI from './styledComponents'
 

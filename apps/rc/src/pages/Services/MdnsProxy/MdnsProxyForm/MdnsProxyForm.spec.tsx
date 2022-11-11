@@ -6,10 +6,10 @@ import { Path, To, useTenantLink }                                        from '
 import { Provider }                                                       from '@acx-ui/store'
 import { mockServer, render, renderHook, screen }                         from '@acx-ui/test-utils'
 
-import { getSelectServiceRoutePath, getServiceRoutePath, ServiceOperation } from '../../serviceRouteUtils'
+import { getServiceRoutePath, ServiceOperation } from '../../serviceRouteUtils'
 
 import { mockedFormData, mockedTenantId, mockedVenueList } from './__tests__/fixtures'
-import { MdnsProxyForm }                                   from './MdnsProxyForm'
+import MdnsProxyForm                                       from './MdnsProxyForm'
 
 
 const mockedUseNavigate = jest.fn()
@@ -122,7 +122,7 @@ describe('MdnsProxyForm', () => {
 
   it('should navigate to the Select service page when clicking Cancel button', async () => {
     const { result: selectServicePath } = renderHook(() => {
-      return useTenantLink(getSelectServiceRoutePath(true))
+      return useTenantLink('/services')
     })
 
     render(

@@ -17,7 +17,7 @@ import {
   venueListResponse
 } from '../__tests__/fixtures'
 import { radiusErrorMessage, multipleConflictMessage } from '../contentsMap'
-import { NetworkForm }                                 from '../NetworkForm'
+import NetworkForm                                     from '../NetworkForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -130,7 +130,9 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
     )
   })
 
@@ -156,7 +158,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  }, 20000)
+  })
 
   it('should create AAA network with secondary server', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -191,7 +193,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.2.2:2222')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
     })
-  }, 20000)
+  })
 
   it('should render Network AAA diagram with AAA buttons', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -283,7 +285,9 @@ describe('Server Configuration Conflict', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
     )
   })
 

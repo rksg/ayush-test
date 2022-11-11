@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, Switch, Tooltip } from 'antd'
-import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
+import { Form, Switch } from 'antd'
+import { useIntl }      from 'react-intl'
+import { useParams }    from 'react-router-dom'
 
-import { Loader, showActionModal, showToast } from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Tooltip } from '@acx-ui/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
