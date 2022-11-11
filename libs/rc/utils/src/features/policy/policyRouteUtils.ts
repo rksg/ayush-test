@@ -1,6 +1,6 @@
 import { generatePath } from '@acx-ui/react-router-dom'
 
-import { PolicyType } from '../types'
+import { PolicyType } from '../../types'
 
 export enum PolicyOperation {
   CREATE,
