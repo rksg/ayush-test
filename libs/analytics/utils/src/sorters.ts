@@ -3,17 +3,19 @@ import moment from 'moment-timezone'
 
 import { noDataSymbol } from '../src/constants'
 
-export function defaultSort (a: string | number, b: string | number) {
+type SortResult = -1 | 0 | 1
+
+export function defaultSort (a: string | number, b: string | number): SortResult {
   if (a < b) return -1
   if (a > b) return 1
   return 0
 }
 
-export function dateSort (dateA: string, dateB: string) {
-  return Math.sign(moment(dateA).diff(moment(dateB)))
+export function dateSort (a: string, b: string): SortResult {
+  return Math.sign(moment(a).diff(moment(b))) as SortResult
 }
 
-export function clientImpactSort (a: unknown, b: unknown) {
+export function clientImpactSort (a: unknown, b: unknown): SortResult {
   let c = (a === noDataSymbol) ? -1 : parseFloat(a as string)
   let d = (b === noDataSymbol) ? -1 : parseFloat(b as string)
   if (isNaN(c)) c = -2
@@ -23,7 +25,7 @@ export function clientImpactSort (a: unknown, b: unknown) {
   return 0
 }
 
-export function severitySort (a: unknown, b: unknown) {
+export function severitySort (a: unknown, b: unknown): SortResult {
   if (typeof a !== 'number' && typeof b !== 'number') return 0
   const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
   const c = a as number
@@ -33,7 +35,6 @@ export function severitySort (a: unknown, b: unknown) {
   return 0
 }
 
-type SortResult = -1 | 0 | 1
 export function sortProp<RecordType> (
   prop: string,
   sortFn:
