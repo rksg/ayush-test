@@ -76,14 +76,12 @@ const WifiCallingNetworksDetail = (props: { tenantId: string }) => {
 
   return (
     <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length})`}>
-      <div style={{ width: '100%' }}>
-        <Table
-          columns={basicColumns}
-          dataSource={basicData}
-          pagination={tableQuery.pagination}
-          rowKey='id'
-        />
-      </div>
+      <Table
+        columns={basicColumns}
+        dataSource={basicData}
+        pagination={tableQuery.pagination}
+        rowKey='id'
+      />
     </Card>
   )
 }
