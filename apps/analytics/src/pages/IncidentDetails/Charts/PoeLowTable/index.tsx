@@ -21,7 +21,7 @@ export const PoeLowTable: React.FC<ChartProps> = (props) => {
       title: $t(defineMessage({ defaultMessage: 'AP Name' })),
       dataIndex: 'name',
       key: 'name',
-      render: (_, value) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
+      render: (_, value) => <TenantLink to={'TODO'}>{value.name}</TenantLink>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',

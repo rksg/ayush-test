@@ -22,7 +22,7 @@ export const WanthroughputTable: React.FC<ChartProps> = (props) => {
       dataIndex: 'name',
       key: 'name',
       render: (_, value) =>
-        <TenantLink to={'TDB'}>{value.name}</TenantLink>,
+        <TenantLink to={'TODO'}>{value.name}</TenantLink>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
