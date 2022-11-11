@@ -1,9 +1,14 @@
 /* eslint-disable max-len */
+import { useEffect, useState } from 'react'
+
 import moment from 'moment'
 
 import { get } from '@acx-ui/config'
 
+import { NetworkVenue }          from './models/NetworkVenue'
 import { NetworkVenueScheduler } from './models/NetworkVenueScheduler'
+import { SchedulerTypeEnum }     from './models/SchedulerTypeEnum'
+import { Network }               from './types'
 
 interface ITimeZone {
   dstOffset: number
@@ -40,6 +45,7 @@ export const getCurrentTimeSlotIndex = (timeZone?: ITimeZone): ISlotIndex => {
   return { day, timeIndex }
 }
 
+// TODO: use mapbox/timespace instead of Google Maps Time Zone API
 export const fetchVenueTimeZone = async (lat: number, lng: number): Promise<ITimeZone> => {
   /** Timestamp is shifted to the beginning of the day to involve browser caching.
    *  Without this parameter every request has unique timestamp and considered as unique
@@ -65,6 +71,38 @@ export const fetchVenueTimeZone = async (lat: number, lng: number): Promise<ITim
     //   return null
     // })
 }
+
+type VenueSubset = {
+  deepVenue?: NetworkVenue,
+  id: string,
+  activated: Network['activated']
+  latitude?: string,
+  longitude?: string
+}
+
+export const useScheduleSlotIndexMap = (tableData: VenueSubset[]) => {
+  const [scheduleSlotIndexMap, setScheduleSlotIndexMap] = useState<Record<string,ISlotIndex>>({})
+
+  useEffect(()=>{
+    const updateVenueCurrentSlotIndexMap = async (id: string, venueLatitude?: string, venueLongitude?: string) => {
+      let timeZone
+      if (Number(venueLatitude) && Number(venueLongitude)) {
+        timeZone = await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
+      }
+      const slotIndex = getCurrentTimeSlotIndex(timeZone)
+      setScheduleSlotIndexMap(prevSlotIndexMap => ({ ...prevSlotIndexMap, ...{ [id]: slotIndex } }))
+    }
+
+    tableData.forEach(item => {
+      if ( item.activated.isActivated && item.deepVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
+        updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
+      }
+    })
+  }, [tableData])
+
+  return scheduleSlotIndexMap
+}
+
 
 const convertTimeFromScheduleIndex = (scheduleTimeIndex: number) => {
   const minute = (scheduleTimeIndex % 4) * 15
