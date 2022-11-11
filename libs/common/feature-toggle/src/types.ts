@@ -27,6 +27,13 @@ export enum TenantType {
   MSP = 'MSP'
 }
 
+export type JwtPayload = {
+  acx_account_tier?: string,
+  acx_account_vertical?: string,
+  tenantType?: string,
+  tenantId?: string
+}
+
 export const defaultConfig = {
   'feature-REC-Default': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS',
     'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY ESNTLS', 'API-CLOUD'],
@@ -35,5 +42,6 @@ export const defaultConfig = {
   'feature-MSP-Default': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS',
     'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY ESNTLS', 'PLCY-SGMNT', 'API-CLOUD'],
   'feature-MSP-Hospitality': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS',
-    'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY ESNTLS', 'PLCY-SGMNT', 'API-CLOUD']
+    'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY ESNTLS', 'PLCY-SGMNT', 'API-CLOUD'],
+  'betaList': [] as string[]
 }

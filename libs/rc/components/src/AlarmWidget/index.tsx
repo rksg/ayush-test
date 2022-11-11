@@ -106,11 +106,7 @@ export function AlarmWidget () {
 
   const { data } = overviewQuery
   // Usage of PLM FF example. Here `ADMN-ESNTLS` is a feature Id value
-  const splitConfig = useSplitTreatmentWithConfig('ADMN-ESNTLS')
-  // @ts-ignore
-  let enable = splitConfig?.['enable']
-  // eslint-disable-next-line no-console
-  console.log('PLM FF Config ---> ', enable)
+  const enable = useSplitTreatmentWithConfig('ADMN-ESNTLS')
   return (
     <Loader states={[overviewQuery, alarmQuery]}>
       <Card title={$t({ defaultMessage: 'Alarms' })}>

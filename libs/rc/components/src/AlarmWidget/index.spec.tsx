@@ -105,8 +105,7 @@ describe('Alarm widget', () => {
       rest.get(CommonUrlsInfo.getDashboardOverview.url,
         (req, res, ctx) => res(ctx.json(data)))
     )
-    // @ts-ignore
-    jest.mocked(useSplitTreatmentWithConfig).mockReturnValue({ enable: true, beta: false })
+    jest.mocked(useSplitTreatmentWithConfig).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -137,6 +136,7 @@ describe('Alarm widget', () => {
   })
 
   it('should render "No active alarms" when no alarms exist', async () => {
+    jest.mocked(useSplitTreatmentWithConfig).mockReturnValue(false )
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
@@ -149,7 +149,6 @@ describe('Alarm widget', () => {
       rest.get(CommonUrlsInfo.getDashboardOverview.url,
         (req, res, ctx) => res(ctx.json(noAlarms)))
     )
-    jest.mocked(useSplitTreatmentWithConfig).mockReturnValue({ enable: false, beta: false })
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
