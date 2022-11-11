@@ -275,4 +275,5 @@ export function emailRegExp (value: string) {
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.emailAddress))
   }
+  return Promise.resolve()
 }
