@@ -13,7 +13,7 @@ export function dateSort (dateA: string, dateB: string) {
   return Math.sign(moment(dateA).diff(moment(dateB)))
 }
 
-export function clientImpactSort (a?: unknown, b?: unknown) {
+export function clientImpactSort (a: unknown, b: unknown) {
   let c = (a === noDataSymbol) ? -1 : parseFloat(a as string)
   let d = (b === noDataSymbol) ? -1 : parseFloat(b as string)
   if (isNaN(c)) c = -2
@@ -23,7 +23,7 @@ export function clientImpactSort (a?: unknown, b?: unknown) {
   return 0
 }
 
-export function severitySort (a?: unknown, b?: unknown) {
+export function severitySort (a: unknown, b: unknown) {
   if (typeof a !== 'number' && typeof b !== 'number') return 0
   const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
   const c = a as number
@@ -34,12 +34,12 @@ export function severitySort (a?: unknown, b?: unknown) {
 }
 
 type SortResult = -1 | 0 | 1
-export function sortProp <RecordType> (
+export function sortProp<RecordType> (
   prop: string,
   sortFn:
     ((a: string | number, b: string | number) => SortResult) |
     ((a: string, b: string) => SortResult) |
-    ((a?: unknown, b?: unknown) => SortResult)
+    ((a: unknown, b: unknown) => SortResult)
 ) {
   return (a: RecordType, b: RecordType) => {
     const valueA = _.get(a, prop)

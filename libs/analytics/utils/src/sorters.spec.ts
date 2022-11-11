@@ -94,7 +94,7 @@ describe('clientImpactSort', () => {
   })
 
   it('should return 0 on undefined inputs', () => {
-    const noDefined = clientImpactSort()
+    const noDefined = clientImpactSort(undefined, undefined)
     expect(noDefined).toBe(0)
   })
 })
