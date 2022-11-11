@@ -12,6 +12,11 @@ export interface WifiCallingScope {
   serviceHealth?: React.ReactElement
 }
 
+export interface WifiCallingDetailContextType {
+  networkIds: string[],
+  setNetworkIds: (networkIds: string[]) => void
+}
+
 export interface WifiCallingFormContextType {
   serviceName: string
   tags: string[]

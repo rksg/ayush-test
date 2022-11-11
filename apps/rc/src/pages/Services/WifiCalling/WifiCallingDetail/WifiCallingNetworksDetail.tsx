@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                            from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery, useNetworkListQuery } from '@acx-ui/rc/services'
-import { useTableQuery, WifiCallingScope }                    from '@acx-ui/rc/utils'
+import { Card, Table, TableProps } from '@acx-ui/components'
+import { useNetworkListQuery }     from '@acx-ui/rc/services'
+import { Network, useTableQuery }  from '@acx-ui/rc/utils'
+
+import { WifiCallingDetailContext } from './WifiCallingDetailView'
 
 const defaultPayload = {
   searchString: '',
@@ -18,49 +19,50 @@ const defaultPayload = {
 }
 
 const WifiCallingNetworksDetail = () => {
-  const params = useParams()
   const { $t } = useIntl()
-  const basicColumns: TableProps<WifiCallingScope>['columns'] = [
+  const basicColumns: TableProps<Network>['columns'] = [
     {
       title: $t({ defaultMessage: 'Network Name' }),
-      dataIndex: 'networkName',
-      key: 'networkName'
+      dataIndex: 'name',
+      key: 'name'
     },
     {
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'type',
-      key: 'type'
+      dataIndex: 'nwSubType',
+      key: 'nwSubType'
     },
     {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venues',
-      key: 'venues'
+      key: 'venues',
+      renderText: (row) => row.count
     }
   ]
 
-  const { data } = useGetWifiCallingServiceQuery({ params: params })
+  const { networkIds } = useContext(WifiCallingDetailContext)
+
+  useEffect(() => {
+    if (networkIds && networkIds?.length) {
+      tableQuery.setPayload({
+        ...defaultPayload,
+        filters: {
+          id: networkIds
+        }
+      })
+    }
+  }, [networkIds])
 
   const tableQuery = useTableQuery({
     useQuery: useNetworkListQuery,
-    defaultPayload
+    defaultPayload: {
+      ...defaultPayload,
+      filters: {
+        id: networkIds?.length ? networkIds : ['none']
+      }
+    }
   })
 
   let basicData = tableQuery.data?.data
-    .map((network) => {
-      return {
-        id: network.id,
-        networkName: network.name,
-        type: network.nwSubType,
-        venues: network.venues.count
-      }
-    })
-
-  if (data && basicData) {
-    const filterNetworkIds = data.hasOwnProperty('networkIds') ? data.networkIds : []
-    basicData = basicData.filter((network) => {
-      return filterNetworkIds.includes(network.id)
-    })
-  }
 
   return (
     <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length})`}>
@@ -69,6 +71,7 @@ const WifiCallingNetworksDetail = () => {
           columns={basicColumns}
           dataSource={basicData}
           pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
           rowKey='id'
         />
       </div>
