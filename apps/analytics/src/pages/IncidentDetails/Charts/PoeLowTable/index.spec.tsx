@@ -24,7 +24,7 @@ describe('PoeLowTable', () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
       data: { incident: { impactedEntities: expectedResult } }
     })
-    const { asFragment } = render(
+    render(
       <Provider>
         <PoeLowTable incident={fakeIncidentPoeLow}/>
       </Provider>,
@@ -35,12 +35,9 @@ describe('PoeLowTable', () => {
         }
       }
     )
-    await screen.findAllByText('84:23:88:2F:ED:60')
-    await screen.findAllByText('RuckusAP')
-    await screen.findAllByText('Auto')
-    await screen.findAllByText('Configured PoE Mode')
-    await screen.findAllByText('Operating PoE Mode')
-    expect(asFragment()).toMatchSnapshot()
+    const rows = await screen.findAllByRole('row')
+    expect(rows[0].textContent).not.toMatch(/AP Group/)
+    expect(rows[1].textContent).toMatch(/AnotherAP/)
   })
   it('should show Ap Group column when sliceType is zone', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
@@ -61,6 +58,7 @@ describe('PoeLowTable', () => {
         }
       }
     )
-    await screen.findAllByText('AP Group')
+    const headerRow = (await screen.findAllByRole('row'))[0]
+    expect(headerRow.textContent).toMatch(/AP Group/)
   })
 })

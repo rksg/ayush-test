@@ -23,7 +23,7 @@ describe('WanthroughputTable', () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
       data: { incident: { impactedEntities: expectedResult } }
     })
-    const { asFragment } = render(
+    render(
       <Provider>
         <WanthroughputTable incident={fakeIncidentApInfraWanthroughput}/>
       </Provider>,
@@ -34,14 +34,10 @@ describe('WanthroughputTable', () => {
         }
       }
     )
-
-    await screen.findAllByText('100/1000/2500Mbps')
-    await screen.findAllByText('20:58:69:3B:CB:70')
-    await screen.findAllByText('Interface')
-    await screen.findAllByText('WAN Link Capability')
-    await screen.findAllByText('WAN Link')
-    expect(asFragment()).toMatchSnapshot()
+    const row1 = (await screen.findAllByRole('row'))[1]
+    expect(row1.textContent).toMatch(/Bugbash_R560_Backup/)
   })
+
   it('should render correctly without Ap Group', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
       data: { incident: { impactedEntities: expectedResult } }
@@ -50,7 +46,7 @@ describe('WanthroughputTable', () => {
       ...fakeIncidentApInfraWanthroughput,
       sliceType: 'ap'
     }
-    const { asFragment } = render(
+    render(
       <Provider>
         <WanthroughputTable incident={incidentWithZone as Incident}/>
       </Provider>,
@@ -61,6 +57,7 @@ describe('WanthroughputTable', () => {
         }
       }
     )
-    expect(asFragment()).toMatchSnapshot()
+    const headerRow = (await screen.findAllByRole('row'))[0]
+    expect(headerRow.textContent).not.toMatch(/AP Group/)
   })
 })

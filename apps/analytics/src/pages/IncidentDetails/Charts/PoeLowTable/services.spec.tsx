@@ -19,7 +19,7 @@ export const expectedResult = [
     }
   },
   {
-    name: 'RuckusAP2',
+    name: 'AnotherAP',
     mac: '84:23:88:2F:ED:61',
     poeMode: {
       configured: 'RKS_AP_PWR_MODE_BT8',

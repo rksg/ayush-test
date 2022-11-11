@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from 'react'
 
-import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
+import { defaultSort, dateSort, sortProp } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, Card } from '@acx-ui/components'
 import { TenantLink }                      from '@acx-ui/react-router-dom'
+import { formatter }                       from '@acx-ui/utils'
 
-import { ImpactedTableProps, sortedColumn } from '../utils'
+import { ImpactedTableProps } from '../types.d'
 
 import { ImpactedAP, useWanthroughputTableQuery } from './services'
 
@@ -47,63 +48,64 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
   )
 
   const columnHeaders: TableProps<WanthroughputTableFields>['columns'] = useMemo(() => [
-    sortedColumn('name', {
+    {
       title: $t(defineMessage({ defaultMessage: 'AP Name' })),
-      width: 200,
       dataIndex: 'name',
       key: 'name',
       render: (_, value: WanthroughputTableFields) =>
         <TenantLink to={'TDB'}>{value.name}</TenantLink>,
-      defaultSortOrder: 'descend',
       fixed: 'left',
+      sorter: { compare: sortProp('name', defaultSort) },
+      defaultSortOrder: 'ascend',
       searchable: true
-    }),
-    sortedColumn('mac', {
+    },
+    {
       title: $t(defineMessage({ defaultMessage: 'MAC Address' })),
-      width: 120,
       dataIndex: 'mac',
       key: 'mac',
+      sorter: { compare: sortProp('mac', defaultSort) },
       searchable: true
-    }),
+    },
     ...(props.incident.sliceType === 'zone'
-      ? [sortedColumn<WanthroughputTableFields>('apGroup', {
+      ? [{
         title: $t(defineMessage({ defaultMessage: 'AP Group' })),
-        width: 110,
         dataIndex: 'apGroup',
         key: 'apGroup',
+        sorter: { compare: sortProp('apGroup', defaultSort) },
         searchable: true
-      })]
+      }]
       : []),
-    sortedColumn('interface', {
+    {
       title: $t(defineMessage({ defaultMessage: 'Interface' })),
-      width: 100,
       dataIndex: 'interface',
       key: 'interface',
+      sorter: { compare: sortProp('interface', defaultSort) },
       filterable: true
-    }),
-    sortedColumn('capability', {
+    },
+    {
       title: $t(defineMessage({ defaultMessage: 'WAN Link Capability' })),
-      width: 200,
       dataIndex: 'capability',
       key: 'capability',
+      sorter: { compare: sortProp('capability', defaultSort) },
       filterable: true
-    }),
-    sortedColumn('link', {
+    },
+    {
       title: $t(defineMessage({ defaultMessage: 'WAN Link' })),
-      width: 200,
       dataIndex: 'link',
       key: 'link',
+      sorter: { compare: sortProp('link', defaultSort) },
       filterable: true
-    }),
-    sortedColumn('eventTime', {
+    },
+    {
       title: $t(defineMessage({ defaultMessage: 'Event Time' })),
-      width: 130,
       dataIndex: 'eventTime',
       key: 'eventTime',
       render: (_, value: WanthroughputTableFields) =>
-        moment(value.eventTime).format('MMMM DD YYYY HH:mm')
-    }) // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], []) // '$t' 'basePath' 'intl' 'sliceType' are not changing
+        formatter('dateTimeFormat')(value.eventTime),
+      sorter: { compare: sortProp('eventTime', dateSort) }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], []) // '$t' 'sliceType' are not changing
 
   return (
     <Loader states={[queryResults]}>

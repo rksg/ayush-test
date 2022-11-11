@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from 'react'
 
-import moment                     from 'moment'
 import { useIntl, defineMessage } from 'react-intl'
 
+import { defaultSort, dateSort, sortProp } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, Card } from '@acx-ui/components'
 import { TenantLink }                      from '@acx-ui/react-router-dom'
+import { formatter }                       from '@acx-ui/utils'
 
-import { ImpactedTableProps, sortedColumn } from '../utils'
+import { ImpactedTableProps } from '../types.d'
 
 import { ImpactedSwitch, usePoePdTableQuery } from './services'
 
@@ -41,38 +42,40 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
   )
 
   const columnHeaders: TableProps<PoePdTableFields>['columns'] = useMemo(() => [
-    sortedColumn('name', {
+    {
       title: $t(defineMessage({ defaultMessage: 'Switch Name' })),
-      width: 200,
       dataIndex: 'name',
       key: 'name',
       render: (_, value: PoePdTableFields) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
-      defaultSortOrder: 'descend',
       fixed: 'left',
+      sorter: { compare: sortProp('name', defaultSort) },
+      defaultSortOrder: 'ascend',
       searchable: true
-    }),
-    sortedColumn('mac', {
+    },
+    {
       title: $t(defineMessage({ defaultMessage: 'MAC Address' })),
-      width: 110,
       dataIndex: 'mac',
       key: 'mac',
+      sorter: { compare: sortProp('mac', defaultSort) },
       searchable: true
-    }),
-    sortedColumn('portNumber', {
+    },
+    {
       title: $t(defineMessage({ defaultMessage: 'Port Number' })),
-      width: 130,
       dataIndex: 'portNumber',
       key: 'portNumber',
+      sorter: { compare: sortProp('portNumber', defaultSort) },
       filterable: true
-    }),
-    sortedColumn('eventTime', {
+    },
+    {
       title: $t(defineMessage({ defaultMessage: 'Event Time' })),
-      width: 100,
       dataIndex: 'eventTime',
       key: 'eventTime',
-      render: (_, value: PoePdTableFields) => moment(value.eventTime).format('MMMM DD YYYY HH:mm')
-    }) // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], []) // '$t' 'basePath' 'intl' are not changing
+      render: (_, value: PoePdTableFields) =>
+        formatter('dateTimeFormat')(value.eventTime),
+      sorter: { compare: sortProp('eventTime', dateSort) }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], []) // '$t' is not changing
 
   return (
     <Loader states={[queryResults]}>

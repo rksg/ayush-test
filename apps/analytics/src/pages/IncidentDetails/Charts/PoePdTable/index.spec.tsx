@@ -23,7 +23,7 @@ describe('PoeLowTable', () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', {
       data: { incident: { impactedEntities: expectedResult } }
     })
-    const { asFragment } = render(
+    render(
       <Provider>
         <PoePdTable incident={fakeIncidentPoePd}/>
       </Provider>,
@@ -34,11 +34,7 @@ describe('PoeLowTable', () => {
         }
       }
     )
-
-    await screen.findAllByText('ICX7550-48ZP Router')
-    await screen.findAllByText('28:B3:71:29:8C:B6')
-    await screen.findAllByText('1/1/13')
-    await screen.findAllByText('Port Number')
-    expect(asFragment()).toMatchSnapshot()
+    const row1 = (await screen.findAllByRole('row'))[1]
+    expect(row1.textContent).toMatch(/ICX7550-48ZP Router/)
   })
 })
