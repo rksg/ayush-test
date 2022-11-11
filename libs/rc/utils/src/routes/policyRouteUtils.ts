@@ -7,12 +7,12 @@ export enum PolicyOperation {
   DETAIL
 }
 
-export interface PolicyRoutePathProps {
+interface PolicyRoutePathProps {
   type: PolicyType;
   oper: PolicyOperation;
 }
 
-export interface PolicyDetailsLinkProps extends PolicyRoutePathProps {
+interface PolicyDetailsLinkProps extends PolicyRoutePathProps {
   oper: Exclude<PolicyOperation, PolicyOperation.CREATE>;
   policyId: string;
 }

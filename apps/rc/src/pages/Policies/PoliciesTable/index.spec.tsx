@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
-import { Provider }                    from '@acx-ui/store'
+import { CommonUrlsInfo, RogueApUrls, getPolicyListRoutePath } from '@acx-ui/rc/utils'
+import { Provider }                                            from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -10,8 +10,6 @@ import {
   within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-
-import { getPolicyListRoutePath } from '../policyRouteUtils'
 
 import PoliciesTable from '.'
 
