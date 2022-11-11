@@ -148,7 +148,7 @@ describe('ApEdit', () => {
       mockServer.use(
         rest.put(WifiUrlsInfo.updateAp.url,
           (_, res, ctx) => {
-            return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-10000' }] }))
+            return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-xxxxx' }] }))
           })
       )
       render(<Provider><ApEdit /></Provider>, {
@@ -162,7 +162,7 @@ describe('ApEdit', () => {
 
       expect(screen.getByLabelText(/Venue/)).toBeDisabled()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-      await screen.findByText('An error occurred')
+      await screen.findByText('Error occurred while updating AP')
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
 
