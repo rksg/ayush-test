@@ -57,7 +57,643 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       transformResponse (result: ApDetailHeader) {
-        return transformApDetails(result)
+        const mockAp = {
+          "IP": "string",
+          "apGroupId": "string",
+          "apGroupName": "string",
+          "apMac": "string",
+          "apStatusData": {
+            "APRadio": [
+              {
+                "Rssi": 0,
+                "band": "string",
+                "channel": 0,
+                "operativeChannelBandwidth": "string",
+                "radioId": 0,
+                "txPower": "string"
+              }
+            ],
+            "APSystem": {
+              "uptime": 0
+            },
+            "cellularInfo": {
+              "cellular3G4GChannel": 0,
+              "cellularActiveSim": "string",
+              "cellularBand": "string",
+              "cellularCardRemovalCountSIM0": "string",
+              "cellularCardRemovalCountSIM1": "string",
+              "cellularConnectionStatus": "string",
+              "cellularCountry": "string",
+              "cellularDHCPTimeoutCountSIM0": "string",
+              "cellularDHCPTimeoutCountSIM1": "string",
+              "cellularDefaultGateway": "string",
+              "cellularDownlinkBandwidth": "string",
+              "cellularECIO": 0,
+              "cellularICCIDSIM0": "string",
+              "cellularICCIDSIM1": "string",
+              "cellularIMEI": "string",
+              "cellularIMSISIM0": "string",
+              "cellularIMSISIM1": "string",
+              "cellularIPaddress": "string",
+              "cellularIsSIM0Present": "YES",
+              "cellularIsSIM1Present": "YES",
+              "cellularLTEFirmware": "string",
+              "cellularNWLostCountSIM0": "string",
+              "cellularNWLostCountSIM1": "string",
+              "cellularOperator": "string",
+              "cellularRSCP": 0,
+              "cellularRSRP": 0,
+              "cellularRSRQ": 0,
+              "cellularRadioUptime": 0,
+              "cellularRoamingStatus": "string",
+              "cellularRxBytesSIM0": "string",
+              "cellularRxBytesSIM1": "string",
+              "cellularSINR": 0,
+              "cellularSignalStrength": "string",
+              "cellularSubnetMask": "string",
+              "cellularSwitchCountSIM0": "string",
+              "cellularSwitchCountSIM1": "string",
+              "cellularTxBytesSIM0": "string",
+              "cellularTxBytesSIM1": "string",
+              "cellularUplinkBandwidth": "string",
+              "cellularWanInterface": "string"
+            }
+          },
+          "clients": 0,
+          "configStatus": "string",
+          "connectionStatus": "string",
+          "crtTime": "string",
+          "description": "string",
+          "deviceGroupId": "string",
+          "deviceGroupName": "string",
+          "deviceModelType": "string",
+          "deviceStatus": "string",
+          "deviceStatusSeverity": "string",
+          "downlink": [
+            {
+              "IP": "string",
+              "apGroupId": "string",
+              "apGroupName": "string",
+              "apMac": "string",
+              "apStatusData": {
+                "APRadio": [
+                  {
+                    "Rssi": 0,
+                    "band": "string",
+                    "channel": 0,
+                    "operativeChannelBandwidth": "string",
+                    "radioId": 0,
+                    "txPower": "string"
+                  }
+                ],
+                "APSystem": {
+                  "uptime": 0
+                },
+                "cellularInfo": {
+                  "cellular3G4GChannel": 0,
+                  "cellularActiveSim": "string",
+                  "cellularBand": "string",
+                  "cellularCardRemovalCountSIM0": "string",
+                  "cellularCardRemovalCountSIM1": "string",
+                  "cellularConnectionStatus": "string",
+                  "cellularCountry": "string",
+                  "cellularDHCPTimeoutCountSIM0": "string",
+                  "cellularDHCPTimeoutCountSIM1": "string",
+                  "cellularDefaultGateway": "string",
+                  "cellularDownlinkBandwidth": "string",
+                  "cellularECIO": 0,
+                  "cellularICCIDSIM0": "string",
+                  "cellularICCIDSIM1": "string",
+                  "cellularIMEI": "string",
+                  "cellularIMSISIM0": "string",
+                  "cellularIMSISIM1": "string",
+                  "cellularIPaddress": "string",
+                  "cellularIsSIM0Present": "YES",
+                  "cellularIsSIM1Present": "YES",
+                  "cellularLTEFirmware": "string",
+                  "cellularNWLostCountSIM0": "string",
+                  "cellularNWLostCountSIM1": "string",
+                  "cellularOperator": "string",
+                  "cellularRSCP": 0,
+                  "cellularRSRP": 0,
+                  "cellularRSRQ": 0,
+                  "cellularRadioUptime": 0,
+                  "cellularRoamingStatus": "string",
+                  "cellularRxBytesSIM0": "string",
+                  "cellularRxBytesSIM1": "string",
+                  "cellularSINR": 0,
+                  "cellularSignalStrength": "string",
+                  "cellularSubnetMask": "string",
+                  "cellularSwitchCountSIM0": "string",
+                  "cellularSwitchCountSIM1": "string",
+                  "cellularTxBytesSIM0": "string",
+                  "cellularTxBytesSIM1": "string",
+                  "cellularUplinkBandwidth": "string",
+                  "cellularWanInterface": "string"
+                }
+              },
+              "clients": 0,
+              "configStatus": "string",
+              "connectionStatus": "string",
+              "crtTime": "string",
+              "description": "string",
+              "deviceGroupId": "string",
+              "deviceGroupName": "string",
+              "deviceModelType": "string",
+              "deviceStatus": "string",
+              "deviceStatusSeverity": "string",
+              "downMac": "string",
+              "downlink": [
+                {}
+              ],
+              "downlink.downMac": [
+                "string"
+              ],
+              "downlink.rssi": [
+                0
+              ],
+              "downlink.type": [
+                0
+              ],
+              "extIp": "string",
+              "externalPort": "string",
+              "floorplanId": "string",
+              "fwVersion": "string",
+              "hops": 0,
+              "isMeshEnable": true,
+              "lastSeenTime": "string",
+              "lastUpdTime": "string",
+              "latitude": "string",
+              "longitude": "string",
+              "meshRole": "string",
+              "model": "string",
+              "name": "string",
+              "rogueCategory": {
+                "property1": 0,
+                "property2": 0
+              },
+              "rssi": 0,
+              "rxBytes": "string",
+              "rxFrames": "string",
+              "serialNumber": "string",
+              "switchName": "string",
+              "switchSerialNumber": "string",
+              "tags": "string",
+              "txBytes": "string",
+              "txFrames": "string",
+              "type": 0,
+              "uplink": [
+                {
+                  "IP": "string",
+                  "apGroupId": "string",
+                  "apGroupName": "string",
+                  "apMac": "string",
+                  "apStatusData": {
+                    "APRadio": [
+                      {}
+                    ],
+                    "APSystem": {
+                      "uptime": 0
+                    },
+                    "cellularInfo": {
+                      "cellular3G4GChannel": 0,
+                      "cellularActiveSim": "string",
+                      "cellularBand": "string",
+                      "cellularCardRemovalCountSIM0": "string",
+                      "cellularCardRemovalCountSIM1": "string",
+                      "cellularConnectionStatus": "string",
+                      "cellularCountry": "string",
+                      "cellularDHCPTimeoutCountSIM0": "string",
+                      "cellularDHCPTimeoutCountSIM1": "string",
+                      "cellularDefaultGateway": "string",
+                      "cellularDownlinkBandwidth": "string",
+                      "cellularECIO": 0,
+                      "cellularICCIDSIM0": "string",
+                      "cellularICCIDSIM1": "string",
+                      "cellularIMEI": "string",
+                      "cellularIMSISIM0": "string",
+                      "cellularIMSISIM1": "string",
+                      "cellularIPaddress": "string",
+                      "cellularIsSIM0Present": "YES",
+                      "cellularIsSIM1Present": "YES",
+                      "cellularLTEFirmware": "string",
+                      "cellularNWLostCountSIM0": "string",
+                      "cellularNWLostCountSIM1": "string",
+                      "cellularOperator": "string",
+                      "cellularRSCP": 0,
+                      "cellularRSRP": 0,
+                      "cellularRSRQ": 0,
+                      "cellularRadioUptime": 0,
+                      "cellularRoamingStatus": "string",
+                      "cellularRxBytesSIM0": "string",
+                      "cellularRxBytesSIM1": "string",
+                      "cellularSINR": 0,
+                      "cellularSignalStrength": "string",
+                      "cellularSubnetMask": "string",
+                      "cellularSwitchCountSIM0": "string",
+                      "cellularSwitchCountSIM1": "string",
+                      "cellularTxBytesSIM0": "string",
+                      "cellularTxBytesSIM1": "string",
+                      "cellularUplinkBandwidth": "string",
+                      "cellularWanInterface": "string"
+                    }
+                  },
+                  "clients": 0,
+                  "configStatus": "string",
+                  "connectionStatus": "string",
+                  "crtTime": "string",
+                  "description": "string",
+                  "deviceGroupId": "string",
+                  "deviceGroupName": "string",
+                  "deviceModelType": "string",
+                  "deviceStatus": "string",
+                  "deviceStatusSeverity": "string",
+                  "downlink": [
+                    {}
+                  ],
+                  "downlink.downMac": [
+                    "string"
+                  ],
+                  "downlink.rssi": [
+                    0
+                  ],
+                  "downlink.type": [
+                    0
+                  ],
+                  "extIp": "string",
+                  "externalPort": "string",
+                  "floorplanId": "string",
+                  "fwVersion": "string",
+                  "hops": 0,
+                  "isMeshEnable": true,
+                  "lastSeenTime": "string",
+                  "lastUpdTime": "string",
+                  "latitude": "string",
+                  "longitude": "string",
+                  "meshRole": "string",
+                  "model": "string",
+                  "name": "string",
+                  "rogueCategory": {
+                    "property1": 0,
+                    "property2": 0
+                  },
+                  "rssi": 0,
+                  "rxBytes": "string",
+                  "rxFrames": "string",
+                  "serialNumber": "string",
+                  "switchName": "string",
+                  "switchSerialNumber": "string",
+                  "tags": "string",
+                  "txBytes": "string",
+                  "txFrames": "string",
+                  "type": 0,
+                  "upMac": "string",
+                  "uplink": [
+                    {}
+                  ],
+                  "uplink.rssi": 0,
+                  "uplink.upMac": "string",
+                  "venueId": "string",
+                  "venueName": "string",
+                  "wlanGroup24GId": "string",
+                  "wlanGroup5GId": "string",
+                  "wlanGroups": [
+                    {
+                      "radioId": 0,
+                      "wlanGroupId": "string",
+                      "wlanGroupName": "string"
+                    }
+                  ],
+                  "xPercent": 0,
+                  "yPercent": 0
+                }
+              ],
+              "uplink.rssi": 0,
+              "uplink.upMac": "string",
+              "venueId": "string",
+              "venueName": "string",
+              "wlanGroup24GId": "string",
+              "wlanGroup5GId": "string",
+              "wlanGroups": [
+                {
+                  "radioId": 0,
+                  "wlanGroupId": "string",
+                  "wlanGroupName": "string"
+                }
+              ],
+              "xPercent": 0,
+              "yPercent": 0
+            }
+          ],
+          "downlink.downMac": [
+            "string"
+          ],
+          "downlink.rssi": [
+            0
+          ],
+          "downlink.type": [
+            0
+          ],
+          "extIp": "string",
+          "externalPort": "string",
+          "floorplanId": "string",
+          "fwVersion": "string",
+          "hops": 0,
+          "isMeshEnable": true,
+          "lastSeenTime": "string",
+          "lastUpdTime": "string",
+          "latitude": "string",
+          "longitude": "string",
+          "meshRole": "string",
+          "model": "string",
+          "name": "string",
+          "rogueCategory": {
+            "property1": 0,
+            "property2": 0
+          },
+          "serialNumber": "string",
+          "switchName": "string",
+          "switchSerialNumber": "string",
+          "tags": "string",
+          "uplink": [
+            {
+              "IP": "string",
+              "apGroupId": "string",
+              "apGroupName": "string",
+              "apMac": "string",
+              "apStatusData": {
+                "APRadio": [
+                  {
+                    "Rssi": 0,
+                    "band": "string",
+                    "channel": 0,
+                    "operativeChannelBandwidth": "string",
+                    "radioId": 0,
+                    "txPower": "string"
+                  }
+                ],
+                "APSystem": {
+                  "uptime": 0
+                },
+                "cellularInfo": {
+                  "cellular3G4GChannel": 0,
+                  "cellularActiveSim": "string",
+                  "cellularBand": "string",
+                  "cellularCardRemovalCountSIM0": "string",
+                  "cellularCardRemovalCountSIM1": "string",
+                  "cellularConnectionStatus": "string",
+                  "cellularCountry": "string",
+                  "cellularDHCPTimeoutCountSIM0": "string",
+                  "cellularDHCPTimeoutCountSIM1": "string",
+                  "cellularDefaultGateway": "string",
+                  "cellularDownlinkBandwidth": "string",
+                  "cellularECIO": 0,
+                  "cellularICCIDSIM0": "string",
+                  "cellularICCIDSIM1": "string",
+                  "cellularIMEI": "string",
+                  "cellularIMSISIM0": "string",
+                  "cellularIMSISIM1": "string",
+                  "cellularIPaddress": "string",
+                  "cellularIsSIM0Present": "YES",
+                  "cellularIsSIM1Present": "YES",
+                  "cellularLTEFirmware": "string",
+                  "cellularNWLostCountSIM0": "string",
+                  "cellularNWLostCountSIM1": "string",
+                  "cellularOperator": "string",
+                  "cellularRSCP": 0,
+                  "cellularRSRP": 0,
+                  "cellularRSRQ": 0,
+                  "cellularRadioUptime": 0,
+                  "cellularRoamingStatus": "string",
+                  "cellularRxBytesSIM0": "string",
+                  "cellularRxBytesSIM1": "string",
+                  "cellularSINR": 0,
+                  "cellularSignalStrength": "string",
+                  "cellularSubnetMask": "string",
+                  "cellularSwitchCountSIM0": "string",
+                  "cellularSwitchCountSIM1": "string",
+                  "cellularTxBytesSIM0": "string",
+                  "cellularTxBytesSIM1": "string",
+                  "cellularUplinkBandwidth": "string",
+                  "cellularWanInterface": "string"
+                }
+              },
+              "clients": 0,
+              "configStatus": "string",
+              "connectionStatus": "string",
+              "crtTime": "string",
+              "description": "string",
+              "deviceGroupId": "string",
+              "deviceGroupName": "string",
+              "deviceModelType": "string",
+              "deviceStatus": "string",
+              "deviceStatusSeverity": "string",
+              "downlink": [
+                {
+                  "IP": "string",
+                  "apGroupId": "string",
+                  "apGroupName": "string",
+                  "apMac": "string",
+                  "apStatusData": {
+                    "APRadio": [
+                      {}
+                    ],
+                    "APSystem": {
+                      "uptime": 0
+                    },
+                    "cellularInfo": {
+                      "cellular3G4GChannel": 0,
+                      "cellularActiveSim": "string",
+                      "cellularBand": "string",
+                      "cellularCardRemovalCountSIM0": "string",
+                      "cellularCardRemovalCountSIM1": "string",
+                      "cellularConnectionStatus": "string",
+                      "cellularCountry": "string",
+                      "cellularDHCPTimeoutCountSIM0": "string",
+                      "cellularDHCPTimeoutCountSIM1": "string",
+                      "cellularDefaultGateway": "string",
+                      "cellularDownlinkBandwidth": "string",
+                      "cellularECIO": 0,
+                      "cellularICCIDSIM0": "string",
+                      "cellularICCIDSIM1": "string",
+                      "cellularIMEI": "string",
+                      "cellularIMSISIM0": "string",
+                      "cellularIMSISIM1": "string",
+                      "cellularIPaddress": "string",
+                      "cellularIsSIM0Present": "YES",
+                      "cellularIsSIM1Present": "YES",
+                      "cellularLTEFirmware": "string",
+                      "cellularNWLostCountSIM0": "string",
+                      "cellularNWLostCountSIM1": "string",
+                      "cellularOperator": "string",
+                      "cellularRSCP": 0,
+                      "cellularRSRP": 0,
+                      "cellularRSRQ": 0,
+                      "cellularRadioUptime": 0,
+                      "cellularRoamingStatus": "string",
+                      "cellularRxBytesSIM0": "string",
+                      "cellularRxBytesSIM1": "string",
+                      "cellularSINR": 0,
+                      "cellularSignalStrength": "string",
+                      "cellularSubnetMask": "string",
+                      "cellularSwitchCountSIM0": "string",
+                      "cellularSwitchCountSIM1": "string",
+                      "cellularTxBytesSIM0": "string",
+                      "cellularTxBytesSIM1": "string",
+                      "cellularUplinkBandwidth": "string",
+                      "cellularWanInterface": "string"
+                    }
+                  },
+                  "clients": 0,
+                  "configStatus": "string",
+                  "connectionStatus": "string",
+                  "crtTime": "string",
+                  "description": "string",
+                  "deviceGroupId": "string",
+                  "deviceGroupName": "string",
+                  "deviceModelType": "string",
+                  "deviceStatus": "string",
+                  "deviceStatusSeverity": "string",
+                  "downMac": "string",
+                  "downlink": [
+                    {}
+                  ],
+                  "downlink.downMac": [
+                    "string"
+                  ],
+                  "downlink.rssi": [
+                    0
+                  ],
+                  "downlink.type": [
+                    0
+                  ],
+                  "extIp": "string",
+                  "externalPort": "string",
+                  "floorplanId": "string",
+                  "fwVersion": "string",
+                  "hops": 0,
+                  "isMeshEnable": true,
+                  "lastSeenTime": "string",
+                  "lastUpdTime": "string",
+                  "latitude": "string",
+                  "longitude": "string",
+                  "meshRole": "string",
+                  "model": "string",
+                  "name": "string",
+                  "rogueCategory": {
+                    "property1": 0,
+                    "property2": 0
+                  },
+                  "rssi": 0,
+                  "rxBytes": "string",
+                  "rxFrames": "string",
+                  "serialNumber": "string",
+                  "switchName": "string",
+                  "switchSerialNumber": "string",
+                  "tags": "string",
+                  "txBytes": "string",
+                  "txFrames": "string",
+                  "type": 0,
+                  "uplink": [
+                    {}
+                  ],
+                  "uplink.rssi": 0,
+                  "uplink.upMac": "string",
+                  "venueId": "string",
+                  "venueName": "string",
+                  "wlanGroup24GId": "string",
+                  "wlanGroup5GId": "string",
+                  "wlanGroups": [
+                    {
+                      "radioId": 0,
+                      "wlanGroupId": "string",
+                      "wlanGroupName": "string"
+                    }
+                  ],
+                  "xPercent": 0,
+                  "yPercent": 0
+                }
+              ],
+              "downlink.downMac": [
+                "string"
+              ],
+              "downlink.rssi": [
+                0
+              ],
+              "downlink.type": [
+                0
+              ],
+              "extIp": "string",
+              "externalPort": "string",
+              "floorplanId": "string",
+              "fwVersion": "string",
+              "hops": 0,
+              "isMeshEnable": true,
+              "lastSeenTime": "string",
+              "lastUpdTime": "string",
+              "latitude": "string",
+              "longitude": "string",
+              "meshRole": "string",
+              "model": "string",
+              "name": "string",
+              "rogueCategory": {
+                "property1": 0,
+                "property2": 0
+              },
+              "rssi": 0,
+              "rxBytes": "string",
+              "rxFrames": "string",
+              "serialNumber": "string",
+              "switchName": "string",
+              "switchSerialNumber": "string",
+              "tags": "string",
+              "txBytes": "string",
+              "txFrames": "string",
+              "type": 0,
+              "upMac": "string",
+              "uplink": [
+                {}
+              ],
+              "uplink.rssi": 0,
+              "uplink.upMac": "string",
+              "venueId": "string",
+              "venueName": "string",
+              "wlanGroup24GId": "string",
+              "wlanGroup5GId": "string",
+              "wlanGroups": [
+                {
+                  "radioId": 0,
+                  "wlanGroupId": "string",
+                  "wlanGroupName": "string"
+                }
+              ],
+              "xPercent": 0,
+              "yPercent": 0
+            }
+          ],
+          "uplink.rssi": 0,
+          "uplink.upMac": "string",
+          "venueId": "string",
+          "venueName": "string",
+          "wlanGroup24GId": "string",
+          "wlanGroup5GId": "string",
+          "wlanGroups": [
+            {
+              "radioId": 0,
+              "wlanGroupId": "string",
+              "wlanGroupName": "string"
+            }
+          ],
+          "xPercent": 0,
+          "yPercent": 0
+        } as any
+        const tmp = transformApDetails(result)
+        const ap = {
+          ...tmp, 
+          apStatusData: mockAp.apStatusData,
+          password: 'admin!234'
+        }
+        return ap
       }
     }),
     apDetails: build.query<ApDetails, RequestPayload>({
