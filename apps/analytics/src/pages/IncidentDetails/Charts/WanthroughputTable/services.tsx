@@ -1,35 +1,40 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
+import { dataApi }  from '@acx-ui/analytics/services'
+import { Incident } from '@acx-ui/analytics/utils'
 
-interface ImpactedApPorts {
-  interface: string
-  capability: string
-  link: string
-  eventTime: number
-  apGroup: string
+export interface Response {
+  incident: {
+    impactedEntities: {
+      name: string
+      mac: string
+      ports: {
+        interface: string
+        capability: string
+        link: string
+        eventTime: number
+        apGroup: string
+      }[]
+    }[]
+  }
 }
 
 export interface ImpactedAP {
   name: string
   mac: string
-  ports: ImpactedApPorts[]
-}
-
-export interface RequestPayload {
-  id: string
-  search: string
-  n: number
-}
-
-interface Response <T> {
-  incident: T
+  interface: string
+  capability: string
+  link: string
+  eventTime: string
+  apGroup: string
+  key: string
 }
 
 export const impactedApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     wanthroughputTable: build.query<
-      ImpactedAP[], RequestPayload
+      ImpactedAP[],
+      { id: Incident['id'] }
     >({
       query: (payload) => ({
         document: gql`
@@ -51,8 +56,20 @@ export const impactedApi = dataApi.injectEndpoints({
         `,
         variables: payload
       }),
-      transformResponse: (response: Response<{ impactedEntities: ImpactedAP[] }>) =>
-        response.incident.impactedEntities
+      transformResponse: (response: Response) => {
+        return response.incident.impactedEntities.flatMap(datum =>
+          datum.ports.flatMap((result, index) => ({
+            name: datum.name,
+            mac: datum.mac,
+            interface: result.interface,
+            capability: result.capability,
+            link: result.link,
+            eventTime: (new Date(result.eventTime)).toISOString(),
+            apGroup: result.apGroup,
+            key: datum.name + index
+          }))
+        )
+      }
     })
   })
 })

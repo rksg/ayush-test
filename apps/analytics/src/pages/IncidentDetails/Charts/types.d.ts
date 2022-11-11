@@ -1,5 +1,5 @@
 import { Incident } from '@acx-ui/analytics/utils'
 
-export interface ImpactedTableProps {
+export interface ChartProps {
   incident: Incident
 }

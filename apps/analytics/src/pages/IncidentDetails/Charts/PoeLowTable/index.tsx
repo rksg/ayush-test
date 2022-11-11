@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 
 import { useIntl, defineMessage } from 'react-intl'
 
@@ -7,56 +7,21 @@ import { Loader, TableProps, Table, Card } from '@acx-ui/components'
 import { TenantLink }                      from '@acx-ui/react-router-dom'
 import { formatter }                       from '@acx-ui/utils'
 
-import { ImpactedTableProps } from '../types.d'
+import { usePoeLowTableQuery, ImpactedAP } from './services'
 
-import { poeApPwrModeEnumMap }             from './poeApPwrModeEnumMap'
-import { poeCurPwrSrcEnumMap }             from './poeCurPwrSrcEnumMap'
-import { ImpactedAP, usePoeLowTableQuery } from './services'
+import type { ChartProps } from '../types.d'
 
-export type PoeLowTableFields = {
-  name: string
-  mac: string
-  configured: string
-  operating: string
-  eventTime: number
-  apGroup: string
-  key: string
-}
-
-export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
+export const PoeLowTable: React.FC<ChartProps> = (props) => {
   const { $t } = useIntl()
-  const [ search ] = useState('')
 
-  const queryResults = usePoeLowTableQuery({
-    id: props.incident.id,
-    search,
-    n: 100
-  },{ selectFromResult: (states) => ({
-    ...states
-  }) })
+  const queryResults = usePoeLowTableQuery({ id: props.incident.id })
 
-  const convertData = (data?: ImpactedAP[]) => (
-    data!.map((datum, index) => {
-      const configured = datum.poeMode.configured
-      const operating = datum.poeMode.operating
-      return {
-        name: datum.name,
-        mac: datum.mac,
-        configured: $t(poeApPwrModeEnumMap[configured as keyof typeof poeApPwrModeEnumMap]),
-        operating: $t(poeCurPwrSrcEnumMap[operating as keyof typeof poeCurPwrSrcEnumMap]),
-        eventTime: datum.poeMode.eventTime,
-        apGroup: datum.poeMode.apGroup,
-        key: datum.name + index
-      }
-    })
-  )
-
-  const columnHeaders: TableProps<PoeLowTableFields>['columns'] = useMemo(() => [
+  const columnHeaders: TableProps<ImpactedAP>['columns'] = useMemo(() => [
     {
       title: $t(defineMessage({ defaultMessage: 'AP Name' })),
       dataIndex: 'name',
       key: 'name',
-      render: (_, value: PoeLowTableFields) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
+      render: (_, value) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
@@ -96,7 +61,7 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
       title: $t(defineMessage({ defaultMessage: 'Event Time' })),
       dataIndex: 'eventTime',
       key: 'eventTime',
-      render: (_, value: PoeLowTableFields) =>
+      render: (_, value) =>
         formatter('dateTimeFormat')(value.eventTime),
       sorter: { compare: sortProp('eventTime', dateSort) }
     }
@@ -105,15 +70,13 @@ export const PoeLowTable: React.FC<ImpactedTableProps> = (props) => {
 
   return (
     <Loader states={[queryResults]}>
-      {queryResults.data &&
-        <Card title={$t({ defaultMessage: 'Impacted APs' })} type='no-border'>
-          <Table
-            type='tall'
-            dataSource={convertData(queryResults.data)}
-            columns={columnHeaders}
-          />
-        </Card>
-      }
+      <Card title={$t({ defaultMessage: 'Impacted APs' })} type='no-border'>
+        <Table
+          type='tall'
+          dataSource={queryResults.data}
+          columns={columnHeaders}
+        />
+      </Card>
     </Loader>
   )
 }

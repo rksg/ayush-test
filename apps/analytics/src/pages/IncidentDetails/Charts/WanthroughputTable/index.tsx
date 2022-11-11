@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 
 import { useIntl, defineMessage } from 'react-intl'
 
@@ -7,52 +7,21 @@ import { Loader, TableProps, Table, Card } from '@acx-ui/components'
 import { TenantLink }                      from '@acx-ui/react-router-dom'
 import { formatter }                       from '@acx-ui/utils'
 
-import { ImpactedTableProps } from '../types.d'
+import { useWanthroughputTableQuery, ImpactedAP } from './services'
 
-import { ImpactedAP, useWanthroughputTableQuery } from './services'
+import type { ChartProps } from '../types.d'
 
-type WanthroughputTableFields = {
-  name: string
-  mac: string
-  interface: string
-  capability: string
-  link: string
-  eventTime: number
-  apGroup: string
-  key: string
-}
-
-export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
+export const WanthroughputTable: React.FC<ChartProps> = (props) => {
   const { $t } = useIntl()
-  const [ search ] = useState('')
 
-  const queryResults = useWanthroughputTableQuery({
-    id: props.incident.id,
-    search,
-    n: 100
-  },{ selectFromResult: (states) => ({
-    ...states
-  }) })
+  const queryResults = useWanthroughputTableQuery({ id: props.incident.id })
 
-  const convertData = (data: ImpactedAP[]) => data.flatMap(datum =>
-    datum.ports.flatMap((result, index) => ({
-      name: datum.name,
-      mac: datum.mac,
-      interface: result.interface,
-      capability: result.capability,
-      link: result.link,
-      eventTime: result.eventTime,
-      apGroup: result.apGroup,
-      key: datum.name + index
-    }))
-  )
-
-  const columnHeaders: TableProps<WanthroughputTableFields>['columns'] = useMemo(() => [
+  const columnHeaders: TableProps<ImpactedAP>['columns'] = useMemo(() => [
     {
       title: $t(defineMessage({ defaultMessage: 'AP Name' })),
       dataIndex: 'name',
       key: 'name',
-      render: (_, value: WanthroughputTableFields) =>
+      render: (_, value) =>
         <TenantLink to={'TDB'}>{value.name}</TenantLink>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
@@ -100,7 +69,7 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
       title: $t(defineMessage({ defaultMessage: 'Event Time' })),
       dataIndex: 'eventTime',
       key: 'eventTime',
-      render: (_, value: WanthroughputTableFields) =>
+      render: (_, value) =>
         formatter('dateTimeFormat')(value.eventTime),
       sorter: { compare: sortProp('eventTime', dateSort) }
     }
@@ -109,15 +78,13 @@ export const WanthroughputTable: React.FC<ImpactedTableProps> = (props) => {
 
   return (
     <Loader states={[queryResults]}>
-      {queryResults.data &&
-        <Card title={$t({ defaultMessage: 'Impacted APs' })} type='no-border'>
-          <Table
-            type='tall'
-            dataSource={convertData(queryResults.data!)}
-            columns={columnHeaders}
-          />
-        </Card>
-      }
+      <Card title={$t({ defaultMessage: 'Impacted APs' })} type='no-border'>
+        <Table
+          type='tall'
+          dataSource={queryResults.data}
+          columns={columnHeaders}
+        />
+      </Card>
     </Loader>
   )
 }

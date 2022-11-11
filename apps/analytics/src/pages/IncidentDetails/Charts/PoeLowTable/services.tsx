@@ -1,39 +1,48 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
+import { dataApi }  from '@acx-ui/analytics/services'
+import { Incident } from '@acx-ui/analytics/utils'
+import { getIntl }  from '@acx-ui/utils'
 
-interface ImpactedApPoeMode {
-  configured: string
-  operating: string
-  eventTime: number
-  apGroup: string
+import { poeApPwrModeEnumMap } from './poeApPwrModeEnumMap'
+import { poeCurPwrSrcEnumMap } from './poeCurPwrSrcEnumMap'
+
+export interface Response {
+  incident: {
+    impactedEntities: {
+      name: string
+      mac: string
+      poeMode: {
+        configured: string
+        operating: string
+        eventTime: number
+        apGroup: string
+      }
+    }[]
+  }
 }
+
 export interface ImpactedAP {
   name: string
   mac: string
-  poeMode: ImpactedApPoeMode
-}
-
-export interface RequestPayload {
-  id: string
-  search: string
-  n: number
-}
-
-interface Response <T> {
-  incident: T
+  configured: string
+  operating: string
+  eventTime: string
+  apGroup: string
+  key: string
 }
 
 export const impactedApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     poeLowTable: build.query<
-      ImpactedAP[], RequestPayload
+      ImpactedAP[],
+      { id: Incident['id'] }
     >({
       query: (payload) => ({
         document: gql`
-          query ImpactedEntities($id: String, $n: Int, $search: String) {
+          query ImpactedEntities($id: String) {
             incident(id: $id) {
-              impactedEntities: getImpactedAPs(n: $n, search: $search) {
+              impactedEntities: getImpactedAPs {
                 name
                 mac
                 poeMode {
@@ -48,8 +57,22 @@ export const impactedApi = dataApi.injectEndpoints({
         `,
         variables: payload
       }),
-      transformResponse: (response: Response<{ impactedEntities: ImpactedAP[] }>) =>
-        response.incident.impactedEntities
+      transformResponse: (response: Response) => {
+        const { $t } = getIntl()
+        return response.incident.impactedEntities.map((datum, index) => {
+          const configured = datum.poeMode.configured
+          const operating = datum.poeMode.operating
+          return {
+            name: datum.name,
+            mac: datum.mac,
+            configured: $t(poeApPwrModeEnumMap[configured as keyof typeof poeApPwrModeEnumMap]),
+            operating: $t(poeCurPwrSrcEnumMap[operating as keyof typeof poeCurPwrSrcEnumMap]),
+            eventTime: (new Date(datum.poeMode.eventTime)).toISOString(),
+            apGroup: datum.poeMode.apGroup,
+            key: datum.name + index
+          }
+        })
+      }
     })
   })
 })

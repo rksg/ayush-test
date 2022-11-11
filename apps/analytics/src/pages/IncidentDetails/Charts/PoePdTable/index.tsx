@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 
 import { useIntl, defineMessage } from 'react-intl'
 
@@ -7,46 +7,21 @@ import { Loader, TableProps, Table, Card } from '@acx-ui/components'
 import { TenantLink }                      from '@acx-ui/react-router-dom'
 import { formatter }                       from '@acx-ui/utils'
 
-import { ImpactedTableProps } from '../types.d'
+import { usePoePdTableQuery, ImpactedSwitch } from './services'
 
-import { ImpactedSwitch, usePoePdTableQuery } from './services'
+import type { ChartProps } from '../types.d'
 
-type PoePdTableFields = {
-  name: string
-  mac: string
-  portNumber: string
-  eventTime: number
-  key: string
-}
-
-export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
+export const PoePdTable: React.FC<ChartProps> = (props) => {
   const { $t } = useIntl()
-  const [ search ] = useState('')
 
-  const queryResults = usePoePdTableQuery({
-    id: props.incident.id,
-    search,
-    n: 100
-  }, { selectFromResult: (states) => ({
-    ...states
-  }) })
+  const queryResults = usePoePdTableQuery({ id: props.incident.id })
 
-  const convertData = (data: ImpactedSwitch[]) => data.flatMap(datum =>
-    datum.ports.flatMap((result, index) => ({
-      name: datum.name,
-      mac: datum.mac,
-      portNumber: result.portNumber,
-      eventTime: Number((result.metadata.match(/(\d+)/))?.[0]),
-      key: datum.name + index
-    }))
-  )
-
-  const columnHeaders: TableProps<PoePdTableFields>['columns'] = useMemo(() => [
+  const columnHeaders: TableProps<ImpactedSwitch>['columns'] = useMemo(() => [
     {
       title: $t(defineMessage({ defaultMessage: 'Switch Name' })),
       dataIndex: 'name',
       key: 'name',
-      render: (_, value: PoePdTableFields) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
+      render: (_, value) => <TenantLink to={'TDB'}>{value.name}</TenantLink>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
@@ -70,7 +45,7 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
       title: $t(defineMessage({ defaultMessage: 'Event Time' })),
       dataIndex: 'eventTime',
       key: 'eventTime',
-      render: (_, value: PoePdTableFields) =>
+      render: (_, value) =>
         formatter('dateTimeFormat')(value.eventTime),
       sorter: { compare: sortProp('eventTime', dateSort) }
     }
@@ -79,15 +54,13 @@ export const PoePdTable: React.FC<ImpactedTableProps> = (props) => {
 
   return (
     <Loader states={[queryResults]}>
-      {queryResults.data &&
-        <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
-          <Table
-            type='tall'
-            dataSource={convertData(queryResults.data!)}
-            columns={columnHeaders}
-          />
-        </Card>
-      }
+      <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
+        <Table
+          type='tall'
+          dataSource={queryResults.data}
+          columns={columnHeaders}
+        />
+      </Card>
     </Loader>
   )
 }

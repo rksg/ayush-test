@@ -1,32 +1,34 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
+import { dataApi }  from '@acx-ui/analytics/services'
+import { Incident } from '@acx-ui/analytics/utils'
 
-interface ImpactedSwitchPorts {
-  portNumber: string
-  metadata: string
+export interface Response {
+  incident: {
+    impactedEntities: {
+      name: string
+      mac: string
+      ports: {
+        portNumber: string
+        metadata: string
+      }[]
+    }[]
+  }
 }
 
 export interface ImpactedSwitch {
   name: string
   mac: string
-  ports: ImpactedSwitchPorts[]
-}
-
-export interface RequestPayload {
-  id: string
-  search: string
-  n: number
-}
-
-interface Response <T> {
-  incident: T
+  portNumber: string
+  eventTime: string
+  key: string
 }
 
 export const impactedApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     poePdTable: build.query<
-      ImpactedSwitch[], RequestPayload
+      ImpactedSwitch[],
+      { id: Incident['id'] }
     >({
       query: (payload) => ({
         document: gql`
@@ -45,8 +47,20 @@ export const impactedApi = dataApi.injectEndpoints({
         `,
         variables: payload
       }),
-      transformResponse: (response: Response<{ impactedEntities: ImpactedSwitch[] }>) =>
-        response.incident.impactedEntities
+      transformResponse: (response: Response) => {
+        return response.incident.impactedEntities.flatMap(datum =>
+          datum.ports.flatMap((result, index) => {
+            const timestamp: number = JSON.parse(result.metadata).timestamp
+            return {
+              name: datum.name,
+              mac: datum.mac,
+              portNumber: result.portNumber,
+              eventTime: (new Date(timestamp)).toISOString(),
+              key: datum.name + index
+            }
+          })
+        )
+      }
     })
   })
 })
