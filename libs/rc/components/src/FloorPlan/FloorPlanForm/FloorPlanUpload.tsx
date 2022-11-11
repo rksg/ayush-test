@@ -1,10 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
-import {
-  Upload,
-  Typography,
-  Space
-} from 'antd'
+import { Upload, Space } from 'antd'
 
 import { showToast }          from '@acx-ui/components'
 import { PlusCircleOutlined } from '@acx-ui/icons'
@@ -81,12 +77,8 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
   }
 
   return (
-    <>
-      <Space size={24} style={{ marginBottom: '12px' }} direction='vertical'>
-        <Typography.Text type='success' style={{ marginBottom: '8px' }}>
-          { fileValidation?.file.name }
-        </Typography.Text>
-      </Space>
+    <Space direction='vertical'>
+      { fileValidation?.file.name }
       <Upload
         name='floorplan'
         listType='picture-card'
@@ -112,7 +104,7 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
               { $t({ defaultMessage: 'Upload' }) }</div>
           </div>}
       </Upload>
-    </>
+    </Space>
   )
 
 }
