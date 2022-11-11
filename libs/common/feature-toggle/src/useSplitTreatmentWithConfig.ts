@@ -16,7 +16,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
     tenantType: jwtPayload?.tenantType,
     tenantId
   }
-  const splitName = 'ACX-PLM-FF2' // This value mostly will be onetime as defined by PLM (need to confirm)
+  const splitName = 'ACX-PLM-FF' // This value mostly will be onetime as defined by PLM (need to confirm)
   let userFFConfig: typeof defaultConfig
   const treatments = useTreatments([splitName], attributes)
   if (JSON.parse(String(treatments[splitName]?.treatment !== 'control')) ) {
