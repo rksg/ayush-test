@@ -260,9 +260,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
         const reqParams = { ...params }
-        if (params && !params.serviceId) {
-          reqParams.serviceId = 'none'
-        }
         const wifiCallingServiceReq = createHttpRequest(
           WifiCallingUrls.getWifiCalling, reqParams, RKS_NEW_UI
         )

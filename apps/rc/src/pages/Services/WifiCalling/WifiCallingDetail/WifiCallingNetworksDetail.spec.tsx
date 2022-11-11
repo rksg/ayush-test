@@ -68,7 +68,7 @@ describe('WifiCallingNetworksDetail', () => {
     ))
 
     render(
-      <WifiCallingNetworksDetail tenantId={'tenantId'}/>, {
+      <WifiCallingNetworksDetail />, {
         wrapper: wrapper,
         route: {
           params: { serviceId: 'wifiCallingServiceId1', tenantId: 'tenantId1' }
@@ -96,7 +96,7 @@ describe('WifiCallingNetworksDetail', () => {
     ))
 
     render(
-      <WifiCallingNetworksDetail tenantId={'tenantId'}/>, {
+      <WifiCallingNetworksDetail />, {
         wrapper: wrapper,
         route: {
           path: '/services/wifiCalling/:serviceId/detail',
