@@ -11,7 +11,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
       style="padding: 10px 8px 10px 8px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+        class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
         type="default"
       >
         <div
@@ -63,7 +63,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
       style="padding: 10px 8px 10px 8px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+        class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
         type="default"
       >
         <div

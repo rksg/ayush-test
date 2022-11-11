@@ -1,16 +1,9 @@
-import { dataApiURL }      from '@acx-ui/analytics/services'
-import { fakeIncidentRss } from '@acx-ui/analytics/utils'
-import { Provider, store } from '@acx-ui/store'
-import {
-  mockGraphqlQuery,
-  render,
-  screen
-} from '@acx-ui/test-utils'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { fakeIncidentRss }                  from '@acx-ui/analytics/utils'
+import { Provider, store }                  from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import {
-  rssDistributionChartApi,
-  RssDistributionChartResponse
-} from './services'
+import { rssDistributionChartApi, Response } from './services'
 
 import { RssDistributionChart } from '.'
 
@@ -37,7 +30,7 @@ const response = {
       ]
     }
   }
-} as RssDistributionChartResponse
+} as Response
 
 describe('RssQualityByClientsChart', () => {
   beforeEach(() => {
