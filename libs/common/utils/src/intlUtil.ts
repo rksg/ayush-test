@@ -1,5 +1,4 @@
 import { OnErrorFn, IntlErrorCode }                           from '@formatjs/intl'
-import _                                                      from 'lodash'
 import { createIntl, createIntlCache, IntlConfig, IntlShape } from 'react-intl'
 
 const globalIntlCache = createIntlCache()
