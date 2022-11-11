@@ -23,7 +23,7 @@ export const useDateFilter = () => {
     return {
       dateFilter,
       setDateFilter,
-      ...getDateRangeFilter(range, startDate, endDate)
+      ...getDateRangeFilter(range, true, startDate, endDate)
     } as const
   }, [search, setSearch])
 }
@@ -33,8 +33,8 @@ function readDateFilter (search: URLSearchParams, setSearch: CallableFunction) {
     Buffer.from(search.get('period') as string, 'base64').toString('ascii')
   )
   const dateFilter = period
-    ? getDateRangeFilter(period.range, period.startDate, period.endDate)
-    : getDateRangeFilter(DateRange.last24Hours)
+    ? getDateRangeFilter(period.range, false, period.startDate, period.endDate)
+    : getDateRangeFilter(DateRange.last24Hours, true)
 
   const setDateFilter = (date: DateFilter) => {
     search.set('period', Buffer.from(JSON.stringify({
