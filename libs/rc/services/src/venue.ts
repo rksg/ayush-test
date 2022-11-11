@@ -28,6 +28,7 @@ import {
   LocalUser,
   AAASetting,
   CommonResult,
+  NetworkVenue,
   VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile,
@@ -177,6 +178,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
+    }),
+    getNetworkApGroups: build.query<NetworkVenue[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (result: CommonResult) => {
+        return result.response as NetworkVenue[]
+      }
     }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
       query: ({ params }) => {
@@ -578,6 +591,7 @@ export const {
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
   useDeleteVenueMutation,
+  useGetNetworkApGroupsQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
   useAddFloorPlanMutation,
