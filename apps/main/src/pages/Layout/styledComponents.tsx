@@ -1,0 +1,69 @@
+import { Input as AntInput } from 'antd'
+import styled from 'styled-components/macro'
+import {
+  LayoutUI,
+  Button
+}                        from '@acx-ui/components'
+import {
+  SendMessageOutlined,
+}                          from '@acx-ui/icons'
+
+export const SearchBar = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px;
+  width: 400px;
+  height: 32px;
+  background: var(--acx-neutrals-70);
+  border-radius: 20px;
+`
+export const Input = styled(AntInput)`
+  height: 28px;
+  color: var(--acx-neutrals-50);
+  background: transparent;
+  border: none;
+  .ant-input::placeholder {
+    color: var(--acx-neutrals-50);
+    font-style: italic; /* consistent with other search inputs */
+  }
+`
+export const SendSearch = styled(SendMessageOutlined)`
+  cursor: pointer;
+  path {
+    stroke: var(--acx-neutrals-50);
+  }
+  :hover {
+    path {
+      stroke: var(--acx-primary-white);
+    }
+  }
+`
+export const SearchSolid = styled(Button)`
+  cursor: default;
+  > svg path {
+    stroke: var(--acx-primary-white);
+  }
+  background-color: var(--acx-accents-orange-55);
+  :hover, &:focus {
+    background-color: var(--acx-accents-orange-55);
+  }
+`
+
+export const Divider = styled(LayoutUI.Divider)`
+  border-right: 1px solid var(--acx-neutrals-60);
+`
+export const Close = styled(Button)`
+  > svg path {
+    stroke: var(--acx-neutrals-50);
+  }
+  border: none;
+  background: transparent;
+  :hover, &:focus {
+    background: transparent;
+    > svg path {
+      stroke: var(--acx-primary-white);
+    }
+  }
+`
