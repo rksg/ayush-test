@@ -33,12 +33,13 @@ export function severitySort (a?: unknown, b?: unknown) {
   return 0
 }
 
+type SortResult = -1 | 0 | 1
 export function sortProp <RecordType> (
   prop: string,
   sortFn:
-    ((a: string | number, b: string | number) => number) |
-    ((a: string, b: string) => number) |
-    ((a?: unknown, b?: unknown) => number)
+    ((a: string | number, b: string | number) => SortResult) |
+    ((a: string, b: string) => SortResult) |
+    ((a?: unknown, b?: unknown) => SortResult)
 ) {
   return (a: RecordType, b: RecordType) => {
     const valueA = _.get(a, prop)
