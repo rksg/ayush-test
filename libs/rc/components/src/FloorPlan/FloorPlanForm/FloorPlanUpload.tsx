@@ -66,7 +66,7 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
       setTempUrl(URL.createObjectURL(file))
       setImageUrl(reader.result as string)
     }
-    return validImage && isLt20M
+    return false
   }
 
   const openToastAndResetFile = function (validationAttributes: FileValidation, content: string) {
