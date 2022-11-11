@@ -301,7 +301,6 @@ export function ApForm () {
                 label={<>
                   {$t({ defaultMessage: 'Venue' })}
                   {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip
-                    data-testid='venue-tooltip'
                     title={
                       apMeshRoleDisabled
                         ? $t(WifiNetworkMessages.AP_VENUE_MESH_DISABLED_TOOLTIP)
@@ -310,7 +309,7 @@ export function ApForm () {
                           : ''
                         )
                     }
-                    // placement='bottom'
+                    placement='bottom'
                   >
                     <QuestionMarkCircleOutlined />
                   </Tooltip>}
