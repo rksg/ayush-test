@@ -17,7 +17,7 @@ const defaultPayload = {
   ]
 }
 
-const WifiCallingNetworksDetail = (props: { tenantId: string }) => {
+const WifiCallingNetworksDetail = () => {
   const params = useParams()
   const { $t } = useIntl()
   const basicColumns: TableProps<WifiCallingScope>['columns'] = [
@@ -38,9 +38,7 @@ const WifiCallingNetworksDetail = (props: { tenantId: string }) => {
     }
   ]
 
-  const { data } = useGetWifiCallingServiceQuery({
-    params: { ...params, tenantId: props.tenantId }
-  })
+  const { data } = useGetWifiCallingServiceQuery({ params: params })
 
   const tableQuery = useTableQuery({
     useQuery: useNetworkListQuery,

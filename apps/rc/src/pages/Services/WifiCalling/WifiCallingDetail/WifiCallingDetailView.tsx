@@ -45,10 +45,10 @@ const WifiCallingDetailView = () => {
 
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <WifiCallingDetailContent tenantId={params.tenantId as string}/>
+          <WifiCallingDetailContent />
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <WifiCallingNetworksDetail tenantId={params.tenantId as string} />
+          <WifiCallingNetworksDetail />
         </GridCol>
       </GridRow>
     </>
