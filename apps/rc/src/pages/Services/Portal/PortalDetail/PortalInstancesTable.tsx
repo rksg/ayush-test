@@ -73,13 +73,11 @@ export default function PortalInstancesTable (
 
   return (
     <Card title={$t({ defaultMessage: 'Instances ({count})' }, { count: dataSource?.length })}>
-      <div style={{ width: '100%' }}>
-        <Table
-          columns={columns}
-          dataSource={dataSource}
-          rowKey='id'
-        />
-      </div>
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        rowKey='id'
+      />
     </Card>
   )
 }
