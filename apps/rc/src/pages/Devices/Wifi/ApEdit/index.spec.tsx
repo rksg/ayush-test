@@ -14,7 +14,8 @@ import {
   screen,
   fireEvent,
   within,
-  waitFor
+  waitFor,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import {
@@ -89,6 +90,36 @@ describe('ApEdit', () => {
         current: jest.fn(() => null)
       }))
     }))
+
+    it('should handle data updated', async () => {
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+      })
+
+      await screen.findByText('test ap')
+      await waitFor(async () => {
+        expect(screen.getByLabelText(/AP Name/)).toHaveValue('test ap')
+      })
+
+      fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'test ap2' } })
+      fireEvent.blur(screen.getByLabelText(/AP Name/))
+
+      await fireEvent.click(await screen.findByRole('button', { name: 'Change' }))
+      const dialog = await screen.findByRole('dialog')
+      await within(dialog).findByText('GPS Coordinates')
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      await act(() => {
+        fireEvent.change(within(dialog).getByTestId('coordinates-input'),
+          { target: { value: '51.508506, -0.124915' } })
+      })
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
+      expect(await screen.findByText('Please confirm that...')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Drop It' }))
+
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    })
 
     it('should handle invalid changes', async () => {
       mockServer.use(
