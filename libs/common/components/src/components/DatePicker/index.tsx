@@ -3,8 +3,8 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { DatePicker as AntdDatePicker } from 'antd'
 import { useIntl }                      from 'react-intl'
 
-import { ClockOutlined }                                           from '@acx-ui/icons'
-import { dateTimeFormats, defaultRanges, DateRange, dateRangeMap } from '@acx-ui/utils'
+import { ClockOutlined }                                                        from '@acx-ui/icons'
+import { dateTimeFormats, defaultRanges, DateRange, dateRangeMap, resetRanges } from '@acx-ui/utils'
 
 import { DatePickerFooter } from './DatePickerFooter'
 import * as UI              from './styledComponents'
@@ -61,6 +61,7 @@ export const RangePicker = ({
   )
   useEffect(() => {
     const handleClickForDatePicker = (event: MouseEvent) => {
+      resetRanges()
       const target = event.target as HTMLInputElement
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
         setIscalenderOpen(false)
