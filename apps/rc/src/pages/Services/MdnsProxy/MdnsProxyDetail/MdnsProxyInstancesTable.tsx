@@ -1,11 +1,11 @@
 import { Divider } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps, GridRow, GridCol } from '@acx-ui/components'
-import { useApListQuery }                            from '@acx-ui/rc/services'
-import { AP, useTableQuery }                         from '@acx-ui/rc/utils'
-import { TenantLink }                                from '@acx-ui/react-router-dom'
-import { formatter }                                 from '@acx-ui/utils'
+import { Card, Table, TableProps } from '@acx-ui/components'
+import { useApListQuery }          from '@acx-ui/rc/services'
+import { AP, useTableQuery }       from '@acx-ui/rc/utils'
+import { TenantLink }              from '@acx-ui/react-router-dom'
+import { formatter }               from '@acx-ui/utils'
 
 export function MdnsProxyInstancesTable () {
   const { $t } = useIntl()
@@ -107,15 +107,11 @@ export function MdnsProxyInstancesTable () {
   return (
     // eslint-disable-next-line max-len
     <Card title={$t({ defaultMessage: 'Instances ({instanceCount})' }, { instanceCount: tableQuery.data?.data.length })}>
-      <GridRow gutter={[0, 16]} style={{ width: '100%' }}>
-        <GridCol col={{ span: 24 }}>
-          <Table<AP>
-            columns={columns}
-            dataSource={tableQuery.data?.data}
-            rowKey='serialNumber'
-          />
-        </GridCol>
-      </GridRow>
+      <Table<AP>
+        columns={columns}
+        dataSource={tableQuery.data?.data}
+        rowKey='serialNumber'
+      />
     </Card>
   )
 }

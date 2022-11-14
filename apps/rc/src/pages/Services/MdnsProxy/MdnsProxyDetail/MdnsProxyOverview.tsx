@@ -11,18 +11,14 @@ export interface MdnsProxyOverviewProps {
 export function MdnsProxyOverview (props: MdnsProxyOverviewProps) {
   const { $t } = useIntl()
   const { data } = props
+  const { Paragraph } = Typography
 
   return (
     <Card>
-      <GridRow gutter={[24, 8]} style={{ width: '100%' }}>
-        {/* TODO: Not supported in the current scope
+      <GridRow>
         <GridCol col={{ span: 6 }}>
-          <Typography.Title level={4}>{$t({ defaultMessage: 'Tags' })}</Typography.Title>
-          <Typography.Text>{data.tags}</Typography.Text>
-        </GridCol> */}
-        <GridCol col={{ span: 6 }}>
-          <Typography.Title level={4}>{$t({ defaultMessage: 'Forwardig Rules' })}</Typography.Title>
-          <Typography.Text>{data.forwardingRules?.length}</Typography.Text>
+          <Card.Title>{$t({ defaultMessage: 'Forwarding Rules' })}</Card.Title>
+          <Paragraph>{data.forwardingRules?.length}</Paragraph>
         </GridCol>
       </GridRow>
     </Card>

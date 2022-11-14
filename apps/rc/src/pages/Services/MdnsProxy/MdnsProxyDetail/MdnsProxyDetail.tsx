@@ -47,9 +47,6 @@ export default function MdnsProxyDetail () {
         <GridCol col={{ span: 24 }}>
           {data && <MdnsProxyOverview data={data} />}
         </GridCol>
-      </GridRow>
-
-      <GridRow style={{ marginTop: 25 }}>
         <GridCol col={{ span: 24 }}>
           <MdnsProxyInstancesTable />
         </GridCol>
