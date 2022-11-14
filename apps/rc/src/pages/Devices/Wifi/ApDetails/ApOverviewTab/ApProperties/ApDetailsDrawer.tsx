@@ -1,15 +1,12 @@
 import { useIntl } from 'react-intl'
-import { ContentSwitcher, ContentSwitcherProps, Drawer, Subtitle }                  from '@acx-ui/components'
-import { Divider, Form } from 'antd'
+import { ContentSwitcher, ContentSwitcherProps, Drawer }                  from '@acx-ui/components'
+import { Divider, Form, Input } from 'antd'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import * as UI from './styledComponents'
-import { AP, ApDetails, ApVenueStatusEnum, DeviceGps, GpsFieldStatus, gpsToFixed } from '@acx-ui/rc/utils'
-import { useGetVenueQuery } from '@acx-ui/rc/services'
-import { secondToTime } from '@acx-ui/utils'
+import { AP, ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, DeviceGps, gpsToFixed } from '@acx-ui/rc/utils'
+import { useApLanPortsQuery, useApRadioCustomizationQuery, useGetVenueQuery } from '@acx-ui/rc/services'
 import _ from 'lodash'
-import { useEffect, useState } from 'react'
-import { SimPresent } from './SimPresent'
 import { ApCellularProperties } from './ApCellularProperties'
+import { ApDetailsSettings } from './ApDetailsSettings'
 
 interface ApDetailsDrawerProps {
   visible: boolean
@@ -20,10 +17,12 @@ interface ApDetailsDrawerProps {
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
+  const { tenantId, serialNumber } = useParams()
   const { visible, setVisible, currentAP, apDetails } = props
   const currentCellularInfo = currentAP.apStatusData.cellularInfo
-  
+  const { data: lanPortsSetting } = useApLanPortsQuery({ params:{ tenantId, serialNumber} })
+  const { data: radioSetting } = useApRadioCustomizationQuery({ params:{ tenantId, serialNumber} })
+
   const onClose = () => {
     setVisible(false)
   }  
@@ -68,6 +67,17 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
           }
         />
         <Divider/>
+        {
+          currentAP.password && 
+          <Form.Item
+            label={$t({ defaultMessage: 'Admin Password' })}
+            children={<Input.Password
+              readOnly
+              bordered={false}
+              value={currentAP.password}
+            />}
+          />
+        }
         <Form.Item
           label={$t({ defaultMessage: 'S/N' })}
           children={
@@ -190,49 +200,6 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       }
    }
    
-   const SettingsTab = () => {
-    return (
-      <Form
-        labelCol={{ span: 10 }}
-        labelAlign='left'
-        style={{ marginTop: '25px' }}
-      >
-        <Form.Item
-          label={
-            <Subtitle level={4} style={{ margin: 0 }}>
-              {$t({ defaultMessage: 'Wireless Radio' })}
-            </Subtitle>
-          }
-          children={
-            'test'
-          }
-        />
-        <Divider/>
-        <Form.Item
-          label={
-            <Subtitle level={4} style={{ margin: 0 }}>
-              {$t({ defaultMessage: 'LAN Port' })}
-            </Subtitle>
-          }
-          children={
-            currentAP?.apDownRssi
-          }
-        />
-        <Divider/>
-        <Form.Item
-          label={
-            <Subtitle level={4} style={{ margin: 0 }}>
-              {$t({ defaultMessage: 'mDNS Proxy' })}
-            </Subtitle>
-          }
-          children={
-            currentAP?.apDownRssi
-          }
-        />
-      </Form>
-     )
-   }
-
    const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Properties' }),
@@ -242,7 +209,10 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     {
       label: $t({ defaultMessage: 'Settings' }),
       value: 'settings',
-      children: <SettingsTab />
+      children: <ApDetailsSettings 
+                  lanPortsSetting={lanPortsSetting as ApLanPort} 
+                  radioSetting={radioSetting as ApRadio}
+                />
     }
   ]
   const content = <ContentSwitcher tabDetails={tabDetails} size='large' space={5} />

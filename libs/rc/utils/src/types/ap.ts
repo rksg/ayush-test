@@ -178,3 +178,14 @@ export enum GpsFieldStatus {
   FROM_VENUE,
   MANUAL
 }
+
+export interface ApLanPort {
+  lanPorts: LanPort[]
+  useVenueSettings: boolean
+}
+
+export interface ApRadio {
+  enable24G: boolean
+  enable50G: boolean
+  useVenueSettings: boolean
+}

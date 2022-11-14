@@ -89,4 +89,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: `/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=false`,
   },
+  getApLanPorts: {
+    method: 'get',
+    url: `/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port`,
+  },
+  getApRadioCustomization: {
+    method: 'get',
+    url: `/api/tenant/:tenantId/wifi/ap/:serialNumber/radio`,
+  },
 }
