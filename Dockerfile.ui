@@ -45,7 +45,7 @@ RUN chmod +x tools/docker/tscValidator.sh
 # RUN --mount=type=cache,target=/app/node_modules/ npx nx run analytics:test --coverage --maxWorkers=50%
 # RUN --mount=type=cache,target=/app/node_modules/ npx nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 RUN tools/docker/tscValidator.sh
-RUN npx nx run rc:test --coverage --maxWorkers=2
+RUN npx nx run rc:test --coverage --verbose --runInBand
 RUN npx nx run analytics:test --coverage --maxWorkers=50%
 RUN npx nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
