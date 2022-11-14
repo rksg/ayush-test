@@ -58,8 +58,8 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse(result: any) {
-        return transformApDetails(result?.data[0]) 
+      transformResponse (result: any) {
+        return transformApDetails(result?.data[0])
       }
     }),
     apDetails: build.query<ApDetails, RequestPayload>({
@@ -85,7 +85,7 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
-    }),
+    })
   })
 })
 
@@ -153,7 +153,7 @@ const transformApList = (result: TableResult<AP, ApExtraParams>) => {
 }
 
 const transformApDetails = (result: any) => {
-  const ap = {...result}
+  const ap = { ...result }
   ap.lastSeenTime = ap.lastSeenTime ? getUserDateFormat(ap.lastSeenTime, undefined, true) : '--'
   // get uptime field.
   if (ap.apStatusData && ap.apStatusData.APSystem && ap.apStatusData.APSystem.uptime) {

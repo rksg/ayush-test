@@ -1,7 +1,7 @@
 export class DeviceGps {
-  latitude?: string;
+  latitude?: string
 
-  longitude?: string;
+  longitude?: string
 
-  constructor() {}
+  constructor () {}
 }

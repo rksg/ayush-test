@@ -1,10 +1,10 @@
-import { AnalyticsFilter, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                    from '@acx-ui/components'
-import { useApDetailsQuery, useApViewModelQuery }                   from '@acx-ui/rc/services'
-import { WifiEntityEnum }                      from '@acx-ui/rc/utils'
-import { useParams }                           from '@acx-ui/react-router-dom'
+import { AnalyticsFilter, useAnalyticsFilter }    from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }                       from '@acx-ui/components'
+import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
+import { WifiEntityEnum }                         from '@acx-ui/rc/utils'
+import { useParams }                              from '@acx-ui/react-router-dom'
 
-import { ApProperties } from './ApProperties/ApProperties'
+import { ApProperties } from './ApProperties'
 
 export function ApOverviewTab () {
   const { filters } = useAnalyticsFilter()
@@ -37,7 +37,7 @@ export function ApOverviewTab () {
        Floor Plan
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ background: '#F7F7F7' }}>
-        <ApProperties apViewModelQuery={apViewModelQuery} apDetailsQuery={apDetailsQuery} />  
+        <ApProperties apViewModelQuery={apViewModelQuery} apDetailsQuery={apDetailsQuery} />
       </GridCol>
       <ApWidgets filters={venueApFilter}/>
     </GridRow>

@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
@@ -6,12 +8,11 @@ import {
   Card,
   Subtitle
 } from '@acx-ui/components'
-import { AP, ApDetails, ApVenueStatusEnum } from '@acx-ui/rc/utils'
+import { ApVenueStatusEnum } from '@acx-ui/rc/utils'
 import { TenantLink }        from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
 import { ApDetailsDrawer } from './ApDetailsDrawer'
-import { useState } from 'react'
+import * as UI             from './styledComponents'
 
 export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any }) {
   // UseQueryResult<TableResult<AP, ApExtraParams>> TODO:
@@ -25,11 +26,11 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
   }
   return (
     <Loader states={[apViewModelQuery, apDetailsQuery]}>
-      <Card title={$t({ defaultMessage: 'AP Properties' })} 
-            action={{
-              actionName: $t({ defaultMessage: 'More' }),
-              onActionClick: onMoreAction
-            }}
+      <Card title={$t({ defaultMessage: 'AP Properties' })}
+        action={{
+          actionName: $t({ defaultMessage: 'More' }),
+          onActionClick: onMoreAction
+        }}
       >
         <UI.Container>
           <Form
@@ -52,27 +53,27 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
             <Divider style={{ margin: '20px 0' }}/>
             {
               currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ?
-              (
-                <>
-                  <Form.Item
-                    label={$t({ defaultMessage: 'Uptime' })}
-                    children={currentAP?.uptime}
-                  />
-                  <Form.Item
-                    label={$t({ defaultMessage: 'Last Seen' })}
-                    children={currentAP?.lastSeenTime}
-                  />
-                  <Form.Item
-                    label={$t({ defaultMessage: 'Wireless Radio' })}
-                  />
-                  <UI.TextHeader>
-                    <label></label>
-                    <label><span>RF</span><span>Channel</span></label>
-                    <label><span>RF</span><span>Bandwidth</span></label>
-                    <label><span>TX Power</span></label>
-                  </UI.TextHeader>
-                  {
-                    currentAP?.channel24 &&
+                (
+                  <>
+                    <Form.Item
+                      label={$t({ defaultMessage: 'Uptime' })}
+                      children={currentAP?.uptime}
+                    />
+                    <Form.Item
+                      label={$t({ defaultMessage: 'Last Seen' })}
+                      children={currentAP?.lastSeenTime}
+                    />
+                    <Form.Item
+                      label={$t({ defaultMessage: 'Wireless Radio' })}
+                    />
+                    <UI.TextHeader>
+                      <label></label>
+                      <label><span>RF</span><span>Channel</span></label>
+                      <label><span>RF</span><span>Bandwidth</span></label>
+                      <label><span>TX Power</span></label>
+                    </UI.TextHeader>
+                    {
+                      currentAP?.channel24 &&
                     (
                       <UI.TextNumber>
                         <label><Subtitle level={5}>{ '2.4 GHz' }</Subtitle></label>
@@ -81,9 +82,9 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
                         <span>{currentAP.channel24.txPower || '--'}</span>
                       </UI.TextNumber>
                     )
-                  }
-                  {
-                    currentAP?.channel50 &&
+                    }
+                    {
+                      currentAP?.channel50 &&
                     (
                       <UI.TextNumber>
                         <label><Subtitle level={5}>{ '5 GHz' }</Subtitle></label>
@@ -92,9 +93,9 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
                         <span>{currentAP.channel50.txPower || '--'}</span>
                       </UI.TextNumber>
                     )
-                  }
-                  {
-                    currentAP?.channelL50 &&
+                    }
+                    {
+                      currentAP?.channelL50 &&
                     (
                       <UI.TextNumber>
                         <label><Subtitle level={5}>{ 'LO 5 GHz' }</Subtitle></label>
@@ -103,9 +104,9 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
                         <span>{currentAP.channelL50.txPower || '--'}</span>
                       </UI.TextNumber>
                     )
-                  }
-                  {
-                    currentAP?.channelU50 &&
+                    }
+                    {
+                      currentAP?.channelU50 &&
                     (
                       <UI.TextNumber>
                         <label><Subtitle level={5}>{ 'HI 5 GHz' }</Subtitle></label>
@@ -114,9 +115,9 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
                         <span>{currentAP.channelU50.txPower || '--'}</span>
                       </UI.TextNumber>
                     )
-                  }
-                  {
-                    currentAP?.channel60 &&
+                    }
+                    {
+                      currentAP?.channel60 &&
                     (
                       <UI.TextNumber>
                         <label><Subtitle level={5}>{ '6 GHz' }</Subtitle></label>
@@ -125,11 +126,11 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any
                         <span>{currentAP.channel60.txPower || '--'}</span>
                       </UI.TextNumber>
                     )
-                  }
-                </>
-              ) : <UI.NoOnlineInfo>
-                    {$t({ defaultMessage: 'No Online information' })}
-                  </UI.NoOnlineInfo>
+                    }
+                  </>
+                ) : <UI.NoOnlineInfo>
+                  {$t({ defaultMessage: 'No Online information' })}
+                </UI.NoOnlineInfo>
             }
             {
               currentAP?.apStatusData?.cellularInfo &&

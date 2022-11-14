@@ -1,6 +1,7 @@
-import { useIntl } from 'react-intl'
-import { Subtitle }                  from '@acx-ui/components'
 import { Divider, Form } from 'antd'
+import { useIntl }       from 'react-intl'
+
+import { Subtitle }           from '@acx-ui/components'
 import { ApLanPort, ApRadio } from '@acx-ui/rc/utils'
 
 interface ApDetailsSettingsProps {
@@ -15,7 +16,7 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
   const displaySetting = (data: boolean) => {
     return data ? $t({ defaultMessage: 'Same as Venue' }) : $t({ defaultMessage: 'Custom' })
   }
-  
+
   const displayEnabled = (data: boolean) => {
     return data ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
   }
@@ -60,18 +61,18 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
         }
       />
       { lanPortsSetting?.lanPorts && lanPortsSetting.lanPorts.map(
-        item => 
+        item =>
           <Form.Item
-            label={$t({ defaultMessage: 'Port {id}' }, {id: item.portId})}
+            label={$t({ defaultMessage: 'Port {id}' }, { id: item.portId })}
             children={
               displayEnabled(!!item.enabled)
             }
           />
-        )
+      )
       }
       {/* TODO: Wait Service feature support
       <Divider/>
-      <Form.Item 
+      <Form.Item
         label={
           <Subtitle level={4} style={{ margin: 0 }}>
             {$t({ defaultMessage: 'mDNS Proxy' })}
@@ -82,7 +83,7 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
         label={$t({ defaultMessage: 'Service Name' })}
       /> */}
     </Form>
-   )
+  )
 }
 
- 
+

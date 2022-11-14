@@ -2,10 +2,11 @@ import React from 'react'
 
 import { Card as AntCard, Space } from 'antd'
 
+import { Button } from '../Button'
+
 import * as UI from './styledComponents'
 
 import type { CardProps as AntCardProps } from 'antd'
-import { Button } from '../Button'
 
 export type CardTypes = 'default' | 'no-border' | 'solid-bg'
 
@@ -56,7 +57,7 @@ function Card ({
               icon={<UI.MoreVerticalIcon />}
               onClick={props.onMoreClick}
             /> : null }
-            { props.action ? 
+            { props.action ?
               <Button type='link' onClick={props.action.onActionClick}>
                 {props.action.actionName}
               </Button> : null }

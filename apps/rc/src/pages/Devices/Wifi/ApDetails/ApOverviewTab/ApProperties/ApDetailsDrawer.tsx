@@ -1,12 +1,15 @@
-import { useIntl } from 'react-intl'
-import { ContentSwitcher, ContentSwitcherProps, Drawer }                  from '@acx-ui/components'
+/* eslint-disable max-len */
 import { Divider, Form, Input } from 'antd'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { AP, ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, DeviceGps, gpsToFixed } from '@acx-ui/rc/utils'
-import { useApLanPortsQuery, useApRadioCustomizationQuery, useGetVenueQuery } from '@acx-ui/rc/services'
-import _ from 'lodash'
+import { useIntl }              from 'react-intl'
+
+import { ContentSwitcher, ContentSwitcherProps, Drawer }                           from '@acx-ui/components'
+import { useApLanPortsQuery, useApRadioCustomizationQuery, useGetVenueQuery }      from '@acx-ui/rc/services'
+import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, DeviceGps, gpsToFixed } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                   from '@acx-ui/react-router-dom'
+
+
 import { ApCellularProperties } from './ApCellularProperties'
-import { ApDetailsSettings } from './ApDetailsSettings'
+import { ApDetailsSettings }    from './ApDetailsSettings'
 
 interface ApDetailsDrawerProps {
   visible: boolean
@@ -20,20 +23,20 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { tenantId, serialNumber } = useParams()
   const { visible, setVisible, currentAP, apDetails } = props
   const currentCellularInfo = currentAP.apStatusData.cellularInfo
-  const { data: lanPortsSetting } = useApLanPortsQuery({ params:{ tenantId, serialNumber} })
-  const { data: radioSetting } = useApRadioCustomizationQuery({ params:{ tenantId, serialNumber} })
+  const { data: lanPortsSetting } = useApLanPortsQuery({ params: { tenantId, serialNumber } })
+  const { data: radioSetting } = useApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
 
   const onClose = () => {
     setVisible(false)
-  }  
+  }
 
   const PropertiesTab = () => {
     return (
-     <Form
-       labelCol={{ span: 12 }}
-       labelAlign='left'
-       style={{ marginTop: '25px' }}
-     >
+      <Form
+        labelCol={{ span: 12 }}
+        labelAlign='left'
+        style={{ marginTop: '25px' }}
+      >
         <Form.Item
           label={$t({ defaultMessage: 'Venue' })}
           children={
@@ -54,7 +57,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
             apDetails?.description || $t({ defaultMessage: 'None' })
           }
         />
-        {/* <Form.Item  TODO: Wait tags feature support 
+        {/* <Form.Item  TODO: Wait tags feature support
           label={$t({ defaultMessage: 'Tags:' })}
           children={
             currentAP?.tags || '--'
@@ -68,7 +71,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         />
         <Divider/>
         {
-          currentAP.password && 
+          currentAP.password &&
           <Form.Item
             label={$t({ defaultMessage: 'Admin Password' })}
             children={<Input.Password
@@ -123,15 +126,15 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         {
           currentAP?.isMeshEnable && (
             <>
-             <Divider/>
+              <Divider/>
               <Form.Item
                 label={$t({ defaultMessage: 'Mesh Role' })}
                 children={
-                  currentAP?.meshRole ? 
-                  currentAP.meshRole + ' (' + currentAP.hops + ' hop)' : $t({ defaultMessage: 'AP' })
+                  currentAP?.meshRole ?
+                    currentAP.meshRole + ' (' + currentAP.hops + ' hop)' : $t({ defaultMessage: 'AP' })
                 }
               />
-              { currentAP?.rootAP?.name && 
+              { currentAP?.rootAP?.name &&
                 <Form.Item
                   label={$t({ defaultMessage: 'Root AP' })}
                   children={
@@ -142,7 +145,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 />
               }
               {
-                currentAP?.apDownRssi && 
+                currentAP?.apDownRssi &&
                 <Form.Item
                   label={$t({ defaultMessage: 'Signal to previous hop' })}
                   children={
@@ -151,7 +154,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 />
               }
               {
-                currentAP?.apUpRssi && 
+                currentAP?.apUpRssi &&
                 <Form.Item
                   label={$t({ defaultMessage: 'Signal from previous hop' })}
                   children={
@@ -177,42 +180,42 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
           </>
         }
         {
-           currentCellularInfo &&
+          currentCellularInfo &&
            <>
              <Divider/>
              <ApCellularProperties currentCellularInfo={currentCellularInfo} currentAP={currentAP} />
            </>
-         }
-     </Form>
+        }
+      </Form>
     )
-   }
+  }
 
-   const getGpsFieldStatus = (deviceGps: DeviceGps, venueId: string) => {
-      if (deviceGps?.latitude && deviceGps?.longitude) {
-        return deviceGps.latitude+ ', ' + deviceGps.longitude
-      } else if (venueId) {
-        const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
-        const latitude = gpsToFixed(data?.address.latitude)
-        const longitude = gpsToFixed(data?.address.longitude)
-        return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As venue)' }) }</>
-      } else {
-        return '--'
-      }
-   }
-   
-   const tabDetails: ContentSwitcherProps['tabDetails'] = [
+  const getGpsFieldStatus = (deviceGps: DeviceGps, venueId: string) => {
+    if (deviceGps?.latitude && deviceGps?.longitude) {
+      return deviceGps.latitude+ ', ' + deviceGps.longitude
+    } else if (venueId) {
+      const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
+      const latitude = gpsToFixed(data?.address.latitude)
+      const longitude = gpsToFixed(data?.address.longitude)
+      return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As venue)' }) }</>
+    } else {
+      return '--'
+    }
+  }
+
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Properties' }),
       value: 'properties',
-      children: <PropertiesTab /> 
+      children: <PropertiesTab />
     },
     {
       label: $t({ defaultMessage: 'Settings' }),
       value: 'settings',
-      children: <ApDetailsSettings 
-                  lanPortsSetting={lanPortsSetting as ApLanPort} 
-                  radioSetting={radioSetting as ApRadio}
-                />
+      children: <ApDetailsSettings
+        lanPortsSetting={lanPortsSetting as ApLanPort}
+        radioSetting={radioSetting as ApRadio}
+      />
     }
   ]
   const content = <ContentSwitcher tabDetails={tabDetails} size='large' space={5} />
@@ -228,4 +231,4 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   )
 }
 
- 
+

@@ -87,14 +87,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getAp: {
     method: 'get',
-    url: `/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=false`,
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=false'
   },
   getApLanPorts: {
     method: 'get',
-    url: `/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port`,
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
   },
   getApRadioCustomization: {
     method: 'get',
-    url: `/api/tenant/:tenantId/wifi/ap/:serialNumber/radio`,
-  },
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  }
 }
