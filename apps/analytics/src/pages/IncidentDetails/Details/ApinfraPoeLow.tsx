@@ -1,9 +1,10 @@
 import { unitOfTime } from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
-import { calculateSeverity, Incident, shortDescription }                  from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill, GridRow, GridCol, Card, NotAvailable } from '@acx-ui/components'
+import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
+import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
 
+import { PoeLowTable }                       from '../Charts/PoeLowTable'
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
 import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
@@ -77,10 +78,8 @@ export const ApinfraPoeLow = (incident: Incident) => {
             buffer={buffer}
           />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
-          <Card title={$t({ defaultMessage: 'Impacted APs' })} type='no-border'>
-            <NotAvailable/>
-          </Card>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '180px' }}>
+          <PoeLowTable incident={incident}/>
         </GridCol>
       </GridRow>
     </>

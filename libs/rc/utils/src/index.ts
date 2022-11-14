@@ -22,4 +22,4 @@ export * from './pipes/networkPipes'
 export * from './pipes/apPipes'
 export * from './pipes/commonPipes'
 
-export * from './routes'
+export * from './features'

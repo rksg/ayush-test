@@ -23,7 +23,7 @@ function VenueHealthWidget ({
   return(
     <Loader states={[queryResults]}>
       <Card>
-        <GridRow style={{ width: '100%' }}>
+        <GridRow style={{ flexGrow: '1' }}>
           <GridCol col={{ span: 3 }}>
             <UI.Wrapper>
               <UI.Title>
