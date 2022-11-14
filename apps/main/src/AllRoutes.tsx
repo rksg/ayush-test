@@ -40,6 +40,7 @@ function AllRoutes () {
           <Route path='*' element={<RcRoutes />} />
         </Route>
         <Route path='venues/*' element={<VenuesRoutes />} />
+        <Route path='search/:searchVal' element={<div>Search Result</div>} />        
       </Route>
       <Route path='v/:tenantId/*' element={<MspRoutes />} />
     </>
