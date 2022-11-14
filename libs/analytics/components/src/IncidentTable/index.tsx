@@ -4,6 +4,11 @@ import { Checkbox }                                 from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
+  defaultSort,
+  dateSort,
+  clientImpactSort,
+  severitySort,
+  sortProp,
   Incident,
   noDataSymbol,
   IncidentFilter,
@@ -23,12 +28,7 @@ import {
 import * as UI           from './styledComponents'
 import {
   GetIncidentBySeverity,
-  FormatDate,
-  clientImpactSort,
   ShortIncidentDescription,
-  severitySort,
-  dateSort,
-  defaultSort,
   filterMutedIncidents
 } from './utils'
 
@@ -105,9 +105,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       key: 'severity',
       render: (_, value) =>
         <GetIncidentBySeverity severityLabel={value.severityLabel} id={value.id}/>,
-      sorter: {
-        compare: (a, b) => severitySort(a.severity, b.severity)
-      },
+      sorter: { compare: sortProp('severity', severitySort) },
       defaultSortOrder: 'descend',
       fixed: 'left',
       filterable: true
@@ -120,12 +118,10 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       key: 'endTime',
       render: (_, value) => {
         return <Link to={{ ...basePath, pathname: `${basePath.pathname}/${value.id}` }}>
-          <FormatDate datetimestamp={value.endTime} />
+          {formatter('dateTimeFormat')(value.endTime)}
         </Link>
       },
-      sorter: {
-        compare: (a, b) => dateSort(a.endTime, b.endTime)
-      },
+      sorter: { compare: sortProp('endTime', dateSort) },
       fixed: 'left'
     },
     {
@@ -134,9 +130,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'duration',
       key: 'duration',
       render: (_, value) => formatter('durationFormat')(value.duration),
-      sorter: {
-        compare: (a, b) => defaultSort(a.duration, b.duration)
-      }
+      sorter: { compare: sortProp('duration', defaultSort) }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
@@ -149,9 +143,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
           incident={value}
         />
       ),
-      sorter: {
-        compare: (a, b) => defaultSort(a.description, b.description)
-      },
+      sorter: { compare: sortProp('description', defaultSort) },
       ellipsis: true,
       searchable: true
     },
@@ -160,9 +152,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       width: 100,
       dataIndex: 'category',
       key: 'category',
-      sorter: {
-        compare: (a, b) => defaultSort(a.category as string, b.category as string)
-      },
+      sorter: { compare: sortProp('category', defaultSort) },
       filterable: true
     },
     {
@@ -170,9 +160,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       width: 130,
       dataIndex: 'subCategory',
       key: 'subCategory',
-      sorter: {
-        compare: (a, b) => defaultSort(a.subCategory as string, b.subCategory as string)
-      },
+      sorter: { compare: sortProp('subCategory', defaultSort) },
       show: false
     },
     {
@@ -180,18 +168,14 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       width: 130,
       dataIndex: 'clientImpact',
       key: 'clientImpact',
-      sorter: {
-        compare: (a, b) => clientImpactSort(a.clientImpact, b.clientImpact)
-      }
+      sorter: { compare: sortProp('clientImpact', clientImpactSort) }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
       width: 160,
       dataIndex: 'impactedClients',
       key: 'impactedClients',
-      sorter: {
-        compare: (a, b) => clientImpactSort(a.impactedClients, b.impactedClients)
-      },
+      sorter: { compare: sortProp('impactedClients', clientImpactSort) },
       align: 'center'
     },
     {
@@ -204,9 +188,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
           {value.scope}
         </Tooltip>
       },
-      sorter: {
-        compare: (a, b) => defaultSort(a.scope, b.scope)
-      },
+      sorter: { compare: sortProp('scope', defaultSort) },
       searchable: true
     },
     {
@@ -214,9 +196,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       width: 90,
       dataIndex: 'type',
       key: 'type',
-      sorter: {
-        compare: (a, b) => defaultSort(a.type, b.type)
-      },
+      sorter: { compare: sortProp('type', defaultSort) },
       show: false,
       filterable: true
     }

@@ -36,7 +36,8 @@ import {
   VenueDefaultRegulatoryChannelsForm,
   TriBandSettings,
   AvailableLteBands,
-  VenueApModelCellular
+  VenueApModelCellular,
+  UploadUrlResponse
 } from '@acx-ui/rc/utils'
 
 
@@ -211,6 +212,41 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(CommonUrlsInfo.deleteFloorPlan, params)
         return {
           ...req
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
+    }),
+    addFloorPlan: build.mutation<FloorPlanDto, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.addFloorplan,
+          params)
+        return {
+          ...req,
+          headers: {
+            'accept': 'application/json, text/plain, */*',
+            'x-rks-tenantid': params?.tenantId,
+            'content-type': 'application/json; charset=UTF-8'
+          },
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
+    }),
+    getUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getUploadURL, params)
+        return {
+          ...floorPlansReq,
+          body: payload
+        }
+      }
+    }),
+    updateFloorPlan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateFloorplan, params)
+        return {
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
@@ -558,6 +594,9 @@ export const {
   useGetNetworkApGroupsQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
+  useAddFloorPlanMutation,
+  useGetUploadURLMutation,
+  useUpdateFloorPlanMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
