@@ -73,7 +73,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getServicesList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/serviceprofiles'
+    url: '/api/viewmodel/tenant/:tenantId/serviceProfiles'
   },
   getVenuesList: {
     method: 'post',
@@ -229,7 +229,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPoliciesList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/policies'
+    url: '/api/viewmodel/tenant/:tenantId/policyProfiles'
   },
   getUserProfile: {
     method: 'get',

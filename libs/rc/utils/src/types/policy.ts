@@ -1,7 +1,7 @@
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
   VLAN_POOL = 'VLAN Pool',
-  ROGUE_AP_DETECTION = 'Rouge AP detection',
+  ROGUE_AP_DETECTION = 'Rogue AP Detection',
   SYSLOG = 'Syslog',
   AAA = 'AAA',
   CLIENT_ISOLATION = 'Client Isolation'
