@@ -55,6 +55,16 @@ export const onAxisLabelClick = (
   })
 }
 
+export const onExpandClick = (
+  navigate: NavigateFunction,
+  basePath: Path
+) => () => {
+  navigate({
+    ...basePath,
+    pathname: basePath.pathname
+  })
+}
+
 export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -80,7 +90,8 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
   const noData = incidentsCount.every(value => !value)
 
   return <Loader states={[response]}>
-    <Card title={$t(defineMessage({ defaultMessage: 'Incidents' }))}>
+    <Card title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
+      onExpandClick={onExpandClick(navigate, basePath)}>
       <AutoSizer>
         {({ width, height }) => (
           noData
