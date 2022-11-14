@@ -1,7 +1,3 @@
-export const VLAN_PREFIX = {
-  VLAN: 'VLAN-',
-  POOL: 'VLAN Pool: '
-}
 
 export enum NetworkTypeEnum {
   PSK = 'psk',
@@ -102,6 +98,13 @@ export enum CloudpathDeploymentTypeEnum {
   Cloud = 'Cloud',
 }
 
+export enum QosPriorityEnum {
+  WIFICALLING_PRI_VOICE = 'WIFICALLING_PRI_VOICE',
+  WIFICALLING_PRI_VIDEO = 'WIFICALLING_PRI_VIDEO',
+  WIFICALLING_PRI_BE = 'WIFICALLING_PRI_BE',
+  WIFICALLING_PRI_BG = 'WIFICALLING_PRI_BG'
+}
+
 export enum ServiceType {
   PORTAL = 'PORTAL',
   DHCP = 'DHCP',
@@ -132,12 +135,6 @@ export enum RadiusErrorsType {
   AUTH_AND_ACC = 'AUTH_AND_ACC',
   AUTH = 'AUTH',
   ACCOUNTING = 'ACCOUNTING'
-}
-
-export enum ApLanPortTypeEnum {
-  ACCESS = 'ACCESS',
-  GENERAL = 'GENERAL',
-  TRUNK = 'TRUNK'
 }
 
 export enum ProfileTypeEnum {

@@ -7,6 +7,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol, Card, NotAvailable } from '@acx-ui/components'
 
+import { PoePdTable }                     from '../Charts/PoePdTable'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
@@ -50,10 +51,8 @@ export const SwitchPoePd = (incident: Incident) => {
             <NotAvailable/>
           </Card>
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
-          <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border' >
-            <NotAvailable/>
-          </Card>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '180px' }}>
+          <PoePdTable incident={incident}/>
         </GridCol>
       </GridRow>
     </>

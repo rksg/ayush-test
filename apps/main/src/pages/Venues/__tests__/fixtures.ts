@@ -2,6 +2,8 @@
 import {
   ExternalAntenna,
   GuestNetworkTypeEnum,
+  RadioEnum,
+  RadioTypeEnum,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
@@ -729,12 +731,15 @@ export const networkDeepList = {
       tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       name: 'test_1',
       id: 'd556bb683e4248b7a911fdb40c307aa5',
-      venues: [
-        {
-          venueId: '3b2ffa31093f41648ed38ed122510029',
-          id: '3b2ffa31093f41648ed38ed122510029'
-        }
-      ]
+      venues: [{
+        venueId: '3b2ffa31093f41648ed38ed122510029',
+        id: '3b2ffa31093f41648ed38ed122510029',
+        tripleBandEnabled: false,
+        networkId: 'd556bb683e4248b7a911fdb40c307aa5',
+        allApGroupsRadio: RadioEnum.Both,
+        isAllApGroups: true,
+        allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz]
+      }]
     }
   ]
 }
@@ -753,7 +758,7 @@ export const venueDosProtection = {
   checkPeriod: 30
 }
 
-export const venueRougeAp = {
+export const venueRogueAp = {
   enabled: true,
   reportThreshold: 0,
   roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'

@@ -33,14 +33,18 @@ exports[`Switch List Table should render table 1`] = `
             <div
               class="ant-space-item"
             >
-              <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <a
+                href="/t/tenant-id/devices/switches/add"
               >
-                <span>
-                  Add
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  type="button"
+                >
+                  <span>
+                    Add
+                  </span>
+                </button>
+              </a>
             </div>
           </div>
         </span>
