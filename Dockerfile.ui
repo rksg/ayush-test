@@ -4,9 +4,10 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/app/node_modules/ \
-  npm config set registry http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/ \
-  npm install
+# RUN --mount=type=cache,target=/app/node_modules/ \
+#   npm config set registry http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/ \
+#   npm install
+RUN npm install
 
 COPY .eslintignore \
   .eslintrc.json \
@@ -35,21 +36,28 @@ RUN export $(cat ${ENV_FILE}) \
 ###############################################################
 FROM build-base as acx-ui
 ENV NODE_OPTIONS=--max-old-space-size=8192
-RUN --mount=type=cache,target=/app/node_modules/ npx nx run-many --target=lint --all --verbose
+# RUN --mount=type=cache,target=/app/node_modules/ npx nx run-many --target=lint --all --verbose
+RUN npx nx run-many --target=lint --all --verbose
 COPY tools/docker/tscValidator.sh ./tools/docker/tscValidator.sh
 RUN chmod +x tools/docker/tscValidator.sh
-RUN --mount=type=cache,target=/app/node_modules/ tools/docker/tscValidator.sh
-RUN --mount=type=cache,target=/app/node_modules/ npx nx run rc:test --coverage --maxWorkers=25%
-RUN --mount=type=cache,target=/app/node_modules/ npx nx run analytics:test --coverage --maxWorkers=50%
-RUN --mount=type=cache,target=/app/node_modules/ npx nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
+# RUN --mount=type=cache,target=/app/node_modules/ tools/docker/tscValidator.sh
+# RUN --mount=type=cache,target=/app/node_modules/ npx nx run rc:test --coverage --maxWorkers=25%
+# RUN --mount=type=cache,target=/app/node_modules/ npx nx run analytics:test --coverage --maxWorkers=50%
+# RUN --mount=type=cache,target=/app/node_modules/ npx nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
+RUN tools/docker/tscValidator.sh
+RUN npx nx run rc:test --coverage --maxWorkers=2
+RUN npx nx run analytics:test --coverage --maxWorkers=50%
+RUN npx nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
 ###############################################################
 
 FROM acx-ui as build
 COPY tools/docker/locales ./tools/docker/locales
 RUN chmod +x tools/docker/locales/generate.sh
-RUN --mount=type=cache,target=/app/node_modules/ tools/docker/locales/generate.sh
-RUN --mount=type=cache,target=/app/node_modules/ npx nx run-many --target=build --all
+# RUN --mount=type=cache,target=/app/node_modules/ tools/docker/locales/generate.sh
+# RUN --mount=type=cache,target=/app/node_modules/ npx nx run-many --target=build --all
+RUN tools/docker/locales/generate.sh
+RUN npx nx run-many --target=build --all
 
 ###############################################################
 
