@@ -263,14 +263,6 @@ export function ApForm () {
     }
   }
 
-  const handleCanel = () => {
-    const path = !isEditMode ? 'aps' : `aps/${serialNumber}/details/overview`
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${path}`
-    })
-  }
-
   return <>
     {!isEditMode && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
@@ -282,7 +274,10 @@ export function ApForm () {
       formRef={formRef}
       onFinish={!isEditMode ? handleAddAp : handleUpdateAp}
       onFormChange={handleUpdateContext}
-      onCancel={handleCanel}
+      onCancel={() => navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/aps`
+      })}
       buttonLabel={{
         submit: !isEditMode
           ? $t({ defaultMessage: 'Add' })
