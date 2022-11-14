@@ -9,10 +9,10 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { PolicyType, RogueAPDetailContextType } from '@acx-ui/rc/utils'
-import { TenantLink }                           from '@acx-ui/react-router-dom'
+import { PolicyType, RogueAPDetailContextType }  from '@acx-ui/rc/utils'
+import { getPolicyDetailsLink, PolicyOperation } from '@acx-ui/rc/utils'
+import { TenantLink }                            from '@acx-ui/react-router-dom'
 
-import { getPolicyDetailsLink, PolicyOperation } from '../../policyRouteUtils'
 
 import RogueAPDetectionDetailContent from './RogueAPDetectionDetailContent'
 import RogueAPDetectionVenueDetail   from './RogueAPDetectionVenueDetail'
