@@ -2,11 +2,14 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { PolicyType }     from '@acx-ui/rc/utils'
+import {
+  PolicyType,
+  getPolicyRoutePath,
+  getSelectPolicyRoutePath,
+  PolicyOperation
+} from '@acx-ui/rc/utils'
 import { Path }           from '@acx-ui/react-router-dom'
 import { render, screen } from '@acx-ui/test-utils'
-
-import { getPolicyRoutePath, getSelectPolicyRoutePath, PolicyOperation } from '../policyRouteUtils'
 
 import SelectPolicyForm from '.'
 

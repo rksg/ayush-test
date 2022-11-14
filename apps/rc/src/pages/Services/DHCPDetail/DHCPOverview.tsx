@@ -9,9 +9,7 @@ export default function DHCPOverView (props: { poolNumber:number | undefined }) 
 
   return (
     <Card title={$t({ defaultMessage: 'Number of Pools' })}>
-      <div>
-        <Typography.Text>{props.poolNumber}</Typography.Text>
-      </div>
+      <Typography.Text>{props.poolNumber}</Typography.Text>
     </Card>
   )
 }

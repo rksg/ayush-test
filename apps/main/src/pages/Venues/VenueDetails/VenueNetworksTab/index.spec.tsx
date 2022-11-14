@@ -13,26 +13,35 @@ import {
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 
 import {
   venueNetworkList,
   networkDeepList,
-  venueNetworkApGroup
+  venueNetworkApGroup,
+  venueData
 } from '../../__tests__/fixtures'
 
 import { VenueNetworksTab } from './index'
 
+jest.mock(
+  'rc/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`dialog-${name}`} title={name} />,
+  { virtual: true })
+
+const params = {
+  tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+  venueId: '3b2ffa31093f41648ed38ed122510029'
+}
 
 describe('VenueNetworksTab', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })
-  })
 
-  it('should render correctly', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenueNetworkList.url,
@@ -45,14 +54,15 @@ describe('VenueNetworksTab', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueDetailsHeader.url,
+        (req, res, ctx) => res(ctx.json({ venue: venueData }))
       )
     )
+  })
 
-    const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      venueId: '3b2ffa31093f41648ed38ed122510029'
-    }
-
+  it('should render correctly', async () => {
     const { asFragment } = render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })
@@ -64,25 +74,6 @@ describe('VenueNetworksTab', () => {
 
   it('activate Network', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
-      ),
-      rest.post(
-        CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
-      )
-    )
-
-    const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      venueId: '3b2ffa31093f41648ed38ed122510029'
-    }
 
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
@@ -114,31 +105,13 @@ describe('VenueNetworksTab', () => {
   })
 
   it('deactivate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
-      ),
-      rest.post(
-        CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
-      )
-    )
-
-    const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      venueId: '3b2ffa31093f41648ed38ed122510029'
-    }
-
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const requestSpy = jest.fn()
 
     const newApGroup = JSON.parse(JSON.stringify(venueNetworkApGroup))
     newApGroup.response[0].apGroups[0].id = ''
@@ -149,7 +122,10 @@ describe('VenueNetworksTab', () => {
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.json({ requestId: '456' }))
+        }
       )
     )
 
@@ -161,5 +137,25 @@ describe('VenueNetworksTab', () => {
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
+
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('click VLAN, APs, Radios', async () => {
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /test_1/i })
+
+    fireEvent.click(within(row).getByText('VLAN-1 (Default)'))
+    fireEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
+    fireEvent.click(within(row).getByText('All APs'))
+
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+
+    expect(dialog).toBeVisible()
   })
 })

@@ -31,6 +31,8 @@ export * from './models/GuestWlan'
 export * from './models/DhcpServiceProfile'
 export * from './models/GuestWlanAdvancedCustomization'
 export * from './models/NetworkVenue'
+export * from './apGroupDialog.utils'
+
 export * from './models'
 
 export * from './types/user'
@@ -44,4 +46,4 @@ export * from './pipes/networkPipes'
 export * from './pipes/apPipes'
 export * from './pipes/commonPipes'
 
-export * from './urls'
+export * from './features'

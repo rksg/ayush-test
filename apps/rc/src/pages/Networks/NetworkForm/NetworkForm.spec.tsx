@@ -60,7 +60,9 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
     )
   })
 
