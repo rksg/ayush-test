@@ -61,6 +61,7 @@ export function getJwtTokenPayload () {
   const jwt = getCookie('JWT')
 
   if (jwt === null) {
+    // eslint-disable-next-line no-console
     console.error('No JWT token found!')
     return null
   }
