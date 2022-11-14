@@ -1,11 +1,10 @@
 import { useState, useRef } from 'react'
 
-import { Checkbox, Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
-import TextArea                                                                from 'antd/lib/input/TextArea'
-import _                                                                       from 'lodash'
-import { useIntl }                                                             from 'react-intl'
+import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
+import TextArea                                                      from 'antd/lib/input/TextArea'
+import _                                                             from 'lodash'
+import { useIntl }                                                   from 'react-intl'
 
-import { Button }                                            from '@acx-ui/components'
 import { Drawer }                                            from '@acx-ui/components'
 import { DHCPPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages }                       from '@acx-ui/utils'
@@ -51,7 +50,6 @@ export default function DHCPPoolTable ({
   const { $t } = useIntl()
   const [form] = Form.useForm<DHCPPool>()
   const valueMap = useRef<Record<string, DHCPPool>>(value ? _.keyBy(value, 'id') : {})
-  const [addOn, setAddOn] = useState(false)
   const [visible, setVisible] = useState(false)
 
   const values = () => Object.values(valueMap.current)
@@ -60,7 +58,6 @@ export default function DHCPPoolTable ({
 
   const onAddOrEdit = (item?: DHCPPool) => {
     setVisible(true)
-    setAddOn(false)
     if (item) form.setFieldsValue(item)
     else form.resetFields()
   }
@@ -77,12 +74,10 @@ export default function DHCPPoolTable ({
     if (id === initPoolData.id) { id = data.id = Date.now() }
     valueMap.current[id] = data
     handleChanged()
-    if (addOn) { return form.resetFields() }
-    else { return onClose() }
+    form.resetFields()
   }
 
   const onClose = () => {
-    form.resetFields()
     setVisible(false)
   }
 
@@ -217,29 +212,6 @@ export default function DHCPPoolTable ({
         />
       </Col>
     </Row>
-    <Row align='middle'>
-      <Col span={8}>
-        {!isEdit() && <Checkbox
-          checked={addOn}
-          onChange={()=>{setAddOn(!addOn)}}
-          children={$t({ defaultMessage: 'Add other pool' })}
-        />}
-      </Col>
-      <Col span={16}>
-        <Space style={{ flexDirection: 'row-reverse', display: 'flex' }}>
-          <Button key='add'
-            htmlType='submit'
-            type='secondary'
-            children={isEdit() ? $t({ defaultMessage: 'Update' }) : $t({ defaultMessage: 'Add' })}
-          />
-          <Button key='Cancel'
-            type='link'
-            onClick={onClose}
-            children={$t({ defaultMessage: 'Cancel' })}
-          />
-        </Space>
-      </Col>
-    </Row>
   </Form>
 
   return (
@@ -258,6 +230,27 @@ export default function DHCPPoolTable ({
         children={getContent}
         destroyOnClose={true}
         width={900}
+        footer={<Drawer.FormFooter
+          showAddAnother={!isEdit()}
+          buttonLabel={({
+            addAnother: $t({ defaultMessage: 'Add another pool' }),
+            save: isEdit() ? $t({ defaultMessage: 'Update' }) : $t({ defaultMessage: 'Add' })
+          })}
+          onCancel={onClose}
+          onSave={async (addAnotherPoolChecked: boolean) => {
+            try {
+              await form.validateFields()
+              form.submit()
+
+              if (!addAnotherPoolChecked) {
+                onClose()
+              }
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
+          }}
+        />
+        }
       />
     </>
   )

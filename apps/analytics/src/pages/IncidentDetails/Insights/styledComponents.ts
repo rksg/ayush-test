@@ -17,7 +17,6 @@ export const Subtitle = styled(Card.Title)`
 `
 
 export const Wrapper = styled.section`
-  width: 100%;
   ol {
     padding: 0;
     margin-bottom: 0;

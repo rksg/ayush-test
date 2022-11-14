@@ -1,21 +1,22 @@
-import { PolicyType, ServiceType }           from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { Provider }                          from '@acx-ui/store'
-
-import SwitchesTable  from './pages/Devices/Switch/SwitchesTable'
-import ApDetails      from './pages/Devices/Wifi/ApDetails'
-import { ApForm }     from './pages/Devices/Wifi/ApForm'
-import ApsTable       from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm    from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable  from './pages/Networks/NetworksTable'
-import PoliciesTable  from './pages/Policies/PoliciesTable'
 import {
+  PolicyType,
+  ServiceType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyOperation
-} from './pages/Policies/policyRouteUtils'
+}           from '@acx-ui/rc/utils'
+import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
+import { Provider }                          from '@acx-ui/store'
+
+import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
+import ApDetails                  from './pages/Devices/Wifi/ApDetails'
+import { ApForm }                 from './pages/Devices/Wifi/ApForm'
+import ApsTable                   from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable              from './pages/Networks/NetworksTable'
+import PoliciesTable              from './pages/Policies/PoliciesTable'
 import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'

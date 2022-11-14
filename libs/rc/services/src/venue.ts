@@ -28,6 +28,7 @@ import {
   LocalUser,
   AAASetting,
   CommonResult,
+  NetworkVenue,
   VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile,
@@ -35,7 +36,9 @@ import {
   VenueDefaultRegulatoryChannelsForm,
   TriBandSettings,
   AvailableLteBands,
-  VenueApModelCellular, RogueOldApResponseType
+  VenueApModelCellular,
+  UploadUrlResponse,
+  RogueOldApResponseType
 } from '@acx-ui/rc/utils'
 
 
@@ -177,6 +180,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
+    getNetworkApGroups: build.query<NetworkVenue[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (result: CommonResult) => {
+        return result.response as NetworkVenue[]
+      }
+    }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
       query: ({ params }) => {
         const floorPlansReq = createHttpRequest(CommonUrlsInfo.getVenueFloorplans, params)
@@ -198,6 +213,41 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(CommonUrlsInfo.deleteFloorPlan, params)
         return {
           ...req
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
+    }),
+    addFloorPlan: build.mutation<FloorPlanDto, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.addFloorplan,
+          params)
+        return {
+          ...req,
+          headers: {
+            'accept': 'application/json, text/plain, */*',
+            'x-rks-tenantid': params?.tenantId,
+            'content-type': 'application/json; charset=UTF-8'
+          },
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
+    }),
+    getUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getUploadURL, params)
+        return {
+          ...floorPlansReq,
+          body: payload
+        }
+      }
+    }),
+    updateFloorPlan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateFloorplan, params)
+        return {
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
@@ -551,8 +601,12 @@ export const {
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
   useDeleteVenueMutation,
+  useGetNetworkApGroupsQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
+  useAddFloorPlanMutation,
+  useGetUploadURLMutation,
+  useUpdateFloorPlanMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,

@@ -1,13 +1,17 @@
 import { Col, Form, Radio, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { PageHeader, StepsForm }            from '@acx-ui/components'
-import { PolicyType }                       from '@acx-ui/rc/utils'
+import { PageHeader, StepsForm } from '@acx-ui/components'
+import {
+  PolicyType,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  PolicyOperation
+} from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { RadioDescription }                                            from '../../Networks/NetworkForm/styledComponents'
-import { policyTypeDescMapping, policyTypeLabelMapping }               from '../contentsMap'
-import { getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation } from '../policyRouteUtils'
+import { RadioDescription }                              from '../../Networks/NetworkForm/styledComponents'
+import { policyTypeDescMapping, policyTypeLabelMapping } from '../contentsMap'
 
 
 

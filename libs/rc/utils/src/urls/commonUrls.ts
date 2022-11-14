@@ -73,7 +73,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getServicesList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/serviceprofiles'
+    url: '/api/viewmodel/tenant/:tenantId/serviceProfiles'
   },
   getVenuesList: {
     method: 'post',
@@ -127,9 +127,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
   },
+  addFloorplan: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
+  },
+  updateFloorplan: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+  },
   deleteFloorPlan: {
     method: 'delete',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+  },
+  getUploadURL: {
+    method: 'post',
+    url: '/api/file/tenant/:tenantId/upload-url'
   },
   getVenueCapabilities: {
     method: 'get',
@@ -221,7 +233,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPoliciesList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/policies'
+    url: '/api/viewmodel/tenant/:tenantId/policyProfiles'
   },
   getUserProfile: {
     method: 'get',
