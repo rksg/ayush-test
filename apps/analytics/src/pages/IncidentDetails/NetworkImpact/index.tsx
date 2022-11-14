@@ -61,26 +61,24 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
   const queryResults = useNetworkImpactChartsQuery({ charts, incident })
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'Network Impact' })} type='no-border'>
-      <Row style={{ flex: 1 }}>
+      <Row>
         {charts.map(({ chart })=>{
           const config = networkImpactChartConfigs[chart]
           const chartData = queryResults.data?.[chart]!
           return <Col key={chart} span={6} style={{ height: 200 }}>
-            <Card type='no-border'>
-              <AutoSizer>
-                {({ height, width }) => (
-                  <DonutChart
-                    showLegend={false}
-                    style={{ width, height }}
-                    title={$t(config.title)}
-                    subTitle={transformSummary(config, chartData, incident)}
-                    tooltipFormat={config.tooltipFormat}
-                    dataFormatter={formatter('countFormat')}
-                    data={transformData(config, chartData)}
-                  />
-                )}
-              </AutoSizer>
-            </Card>
+            <AutoSizer>
+              {({ height, width }) => (
+                <DonutChart
+                  showLegend={false}
+                  style={{ width, height }}
+                  title={$t(config.title)}
+                  subTitle={transformSummary(config, chartData, incident)}
+                  tooltipFormat={config.tooltipFormat}
+                  dataFormatter={formatter('countFormat')}
+                  data={transformData(config, chartData)}
+                />
+              )}
+            </AutoSizer>
           </Col>
         })}
       </Row>

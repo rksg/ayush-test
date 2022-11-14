@@ -236,7 +236,7 @@ exports[`Venues Form should render venues form 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <div
-                      class="ant-form-item styledComponents__AddressFormItem-sc-1jr0ig3-1 duvejm"
+                      class="ant-form-item styledComponents__FormItem-sc-ii13ud-1 bgoHmP"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -309,12 +309,8 @@ exports[`Venues Form should render venues form 1`] = `
                                 </span>
                               </span>
                               <div
-                                class="styledComponents__AddressMap-sc-1jr0ig3-2 kKTYqB"
-                              >
-                                <div
-                                  class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
-                                />
-                              </div>
+                                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                              />
                             </div>
                           </div>
                           <div

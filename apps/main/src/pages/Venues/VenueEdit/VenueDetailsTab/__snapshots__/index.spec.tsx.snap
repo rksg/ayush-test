@@ -236,7 +236,7 @@ exports[`VenueDetailsTab should render correctly 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <div
-                      class="ant-form-item styledComponents__AddressFormItem-sc-1jr0ig3-1 duvejm"
+                      class="ant-form-item styledComponents__FormItem-sc-ii13ud-1 bgoHmP"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -310,13 +310,21 @@ exports[`VenueDetailsTab should render correctly 1`] = `
                                 </span>
                               </span>
                               <div
-                                class="styledComponents__AddressMap-sc-1jr0ig3-2 kKTYqB"
+                                class="styledComponents__MapContainer-sc-ii13ud-0 fIoBmJ"
                               >
-                                <h3
-                                  class="ant-typography"
+                                <div
+                                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
                                 >
-                                  Map is not enabled
-                                </h3>
+                                  <div
+                                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                                  >
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      Map is not enabled
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>

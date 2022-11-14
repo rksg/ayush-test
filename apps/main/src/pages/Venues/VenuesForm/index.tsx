@@ -1,8 +1,8 @@
 import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
-import { Row, Col, Form, Input, Typography } from 'antd'
-import _                                     from 'lodash'
-import { useIntl }                           from 'react-intl'
+import { Row, Col, Form, Input } from 'antd'
+import _                         from 'lodash'
+import { useIntl }               from 'react-intl'
 
 import {
   GoogleMap,
@@ -27,8 +27,6 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-
-import * as UI from './styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -297,7 +295,7 @@ export function VenuesForm () {
           </Row>
           <Row gutter={20}>
             <Col span={10}>
-              <UI.AddressFormItem
+              <GoogleMap.FormItem
                 label={intl.$t({ defaultMessage: 'Address' })}
                 required
                 extra={intl.$t({
@@ -326,25 +324,21 @@ export function VenuesForm () {
                     value={address.addressLine}
                   />
                 </Form.Item>
-                <UI.AddressMap>
-                  {isMapEnabled ?
-                    <GoogleMap
-                      libraries={['places']}
-                      mapTypeControl={false}
-                      streetViewControl={false}
-                      fullscreenControl={false}
-                      zoom={zoom}
-                      center={center}
-                    >
-                      {marker && <GoogleMapMarker position={marker} />}
-                    </GoogleMap>
-                    :
-                    <Typography.Title level={3}>
-                      {intl.$t({ defaultMessage: 'Map is not enabled' })}
-                    </Typography.Title>
-                  }
-                </UI.AddressMap>
-              </UI.AddressFormItem>
+                {isMapEnabled ?
+                  <GoogleMap
+                    libraries={['places']}
+                    mapTypeControl={false}
+                    streetViewControl={false}
+                    fullscreenControl={false}
+                    zoom={zoom}
+                    center={center}
+                  >
+                    {marker && <GoogleMapMarker position={marker} />}
+                  </GoogleMap>
+                  :
+                  <GoogleMap.NotEnabled />
+                }
+              </GoogleMap.FormItem>
             </Col>
           </Row>
         </StepsForm.StepForm>

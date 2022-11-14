@@ -174,62 +174,11 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
+        style="min-height: 180px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
-          type="no-border"
-        >
-          <div
-            class="ant-card"
-          >
-            <div
-              class="ant-card-head"
-            >
-              <div
-                class="ant-card-head-wrapper"
-              >
-                <div
-                  class="ant-card-head-title"
-                >
-                  <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
-                  >
-                    Impacted APs
-                  </div>
-                </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
-              <div
-                style="height: 150px;"
-              >
-                <div
-                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      Not available in this Beta version
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          data-testid="poeLowTable"
+        />
       </div>
     </div>
   </div>
@@ -410,62 +359,11 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
+        style="min-height: 180px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
-          type="no-border"
-        >
-          <div
-            class="ant-card"
-          >
-            <div
-              class="ant-card-head"
-            >
-              <div
-                class="ant-card-head-wrapper"
-              >
-                <div
-                  class="ant-card-head-title"
-                >
-                  <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
-                  >
-                    Impacted APs
-                  </div>
-                </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
-              <div
-                style="height: 150px;"
-              >
-                <div
-                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      Not available in this Beta version
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          data-testid="wanthroughputTable"
+        />
       </div>
     </div>
   </div>
@@ -2306,7 +2204,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 hVWzqv"
           type="no-border"
         >
           <div
@@ -2340,19 +2238,15 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
               class="ant-card-body"
             >
               <div
-                style="height: 150px;"
+                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                    class="ant-space-item"
                   >
-                    <div
-                      class="ant-space-item"
-                    >
-                      Not available in this Beta version
-                    </div>
+                    Not available in this Beta version
                   </div>
                 </div>
               </div>
@@ -2370,7 +2264,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 hVWzqv"
           type="no-border"
         >
           <div
@@ -2404,19 +2298,15 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
               class="ant-card-body"
             >
               <div
-                style="height: 150px;"
+                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                    class="ant-space-item"
                   >
-                    <div
-                      class="ant-space-item"
-                    >
-                      Not available in this Beta version
-                    </div>
+                    Not available in this Beta version
                   </div>
                 </div>
               </div>
@@ -2565,7 +2455,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 hVWzqv"
           type="no-border"
         >
           <div
@@ -2599,19 +2489,15 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
               class="ant-card-body"
             >
               <div
-                style="height: 150px;"
+                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                    class="ant-space-item"
                   >
-                    <div
-                      class="ant-space-item"
-                    >
-                      Not available in this Beta version
-                    </div>
+                    Not available in this Beta version
                   </div>
                 </div>
               </div>
@@ -2626,62 +2512,11 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
+        style="min-height: 180px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
-          type="no-border"
-        >
-          <div
-            class="ant-card"
-          >
-            <div
-              class="ant-card-head"
-            >
-              <div
-                class="ant-card-head-wrapper"
-              >
-                <div
-                  class="ant-card-head-title"
-                >
-                  <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
-                  >
-                    Impacted Switches
-                  </div>
-                </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
-              <div
-                style="height: 150px;"
-              >
-                <div
-                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      Not available in this Beta version
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          data-testid="poePdTable"
+        />
       </div>
     </div>
   </div>
@@ -2824,7 +2659,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 hVWzqv"
           type="no-border"
         >
           <div
@@ -2858,19 +2693,15 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
               class="ant-card-body"
             >
               <div
-                style="height: 150px;"
+                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                    class="ant-space-item"
                   >
-                    <div
-                      class="ant-space-item"
-                    >
-                      Not available in this Beta version
-                    </div>
+                    Not available in this Beta version
                   </div>
                 </div>
               </div>
@@ -2888,7 +2719,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 fuLaan"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 hVWzqv"
           type="no-border"
         >
           <div
@@ -2922,19 +2753,15 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
               class="ant-card-body"
             >
               <div
-                style="height: 150px;"
+                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                    class="ant-space-item"
                   >
-                    <div
-                      class="ant-space-item"
-                    >
-                      Not available in this Beta version
-                    </div>
+                    Not available in this Beta version
                   </div>
                 </div>
               </div>

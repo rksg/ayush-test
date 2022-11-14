@@ -41,6 +41,5 @@ export * from './components/Tooltip'
 export type { TooltipProps } from './components/Tooltip'
 export * from './theme/helper'
 export * from './components/Modal'
-export * from './components/Drawer'
 export * from './components/SearchBar'
 
