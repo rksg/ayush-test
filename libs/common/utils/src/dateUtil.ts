@@ -11,15 +11,12 @@ export enum DateRange {
   custom = 'Custom',
 }
 
-const originalRange = defaultRanges()
-
 export function getDateRangeFilter (
   range: DateRange,
-  original?: boolean,
   start?: string,
   end?: string
 ) {
-  const ranges = (original) ? originalRange : defaultRanges()
+  const ranges = defaultRanges()
   const [startDate, endDate] =
     range === DateRange.custom && start && end
       ? [start, end]
