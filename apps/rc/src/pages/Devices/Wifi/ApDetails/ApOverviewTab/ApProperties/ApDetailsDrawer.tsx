@@ -23,6 +23,12 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { tenantId, serialNumber } = useParams()
   const { visible, setVisible, currentAP, apDetails } = props
   const currentCellularInfo = currentAP.apStatusData.cellularInfo
+  const { data: venueData } = useGetVenueQuery({
+    params: { tenantId, venueId: currentAP.venueId }
+  },
+  {
+    skip: !currentAP?.venueId
+  })
   const { data: lanPortsSetting } = useApLanPortsQuery({ params: { tenantId, serialNumber } })
   const { data: radioSetting } = useApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
 
@@ -194,9 +200,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     if (deviceGps?.latitude && deviceGps?.longitude) {
       return deviceGps.latitude+ ', ' + deviceGps.longitude
     } else if (venueId) {
-      const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
-      const latitude = gpsToFixed(data?.address.latitude)
-      const longitude = gpsToFixed(data?.address.longitude)
+      const latitude = gpsToFixed(venueData?.address.latitude)
+      const longitude = gpsToFixed(venueData?.address.longitude)
       return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As venue)' }) }</>
     } else {
       return '--'
