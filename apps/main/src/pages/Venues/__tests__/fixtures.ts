@@ -758,7 +758,7 @@ export const venueDosProtection = {
   checkPeriod: 30
 }
 
-export const venueRougeAp = {
+export const venueRogueAp = {
   enabled: true,
   reportThreshold: 0,
   roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
