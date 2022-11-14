@@ -1,6 +1,6 @@
-import { SchedulerTypeEnum } from './models/SchedulerTypeEnum'
+import { SchedulerTypeEnum } from '../../models/SchedulerTypeEnum'
 
-import { RadioEnum, RadioTypeEnum } from '.'
+import { RadioEnum, RadioTypeEnum } from '../../contents'
 
 export const generateDefaultNetworkVenue = (venueId: string, networkId:string) => {
   return {
