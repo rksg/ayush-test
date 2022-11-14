@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DnsProxyModal should render Dns Proxy Modal successfully 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <button
+      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+      style="margin-inline-start: 15px;"
+      type="button"
+    >
+      <span>
+        Manage
+      </span>
+    </button>
+  </form>
+</DocumentFragment>
+`;

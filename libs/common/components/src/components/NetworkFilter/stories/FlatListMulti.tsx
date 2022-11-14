@@ -1,6 +1,6 @@
 import { NetworkFilter, Option } from '..'
 
-import { onApply, onCancel } from './utils'
+import { onApply } from './utils'
 
 const options: Option[] = [
   {
@@ -37,7 +37,6 @@ export function FlatListMulti () {
       placeholder='Entire Organization'
       options={options}
       onApply={onApply}
-      onCancel={onCancel}
     />
   </div>
 }

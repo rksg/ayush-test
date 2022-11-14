@@ -3,18 +3,24 @@ import { storiesOf } from '@storybook/react'
 import { BasicTable }                 from './BasicTable'
 import { ColumnSortAndShowHideTable } from './ColumnSortAndShowHideTable'
 import { CompactTable }               from './CompactTable'
+import { CompactTableWithBorders }    from './CompactTableWithBorders'
 import { CustomTable }                from './CustomTable'
+import { FilteredTable }              from './FilteredTable'
+import { FormTable }                  from './FormTable'
 import { MultipleSorterTable }        from './MultipleSorterTable'
 import { MultiSelectTable }           from './MultiSelectTable'
 import { SingleSelectTable }          from './SingleSelectTable'
 
 storiesOf('Table', module)
   .add('Basic', BasicTable)
-  .add('With Custom Cell', CustomTable)
+  .add('Customizations', CustomTable)
+  .add('With Filters', FilteredTable)
   .add('Multiple Sorter', MultipleSorterTable)
   .add('Multi Select', MultiSelectTable)
   .add('Single Select', SingleSelectTable)
   .add('Column Sort & Show/Hide', ColumnSortAndShowHideTable)
   .add('Compact', CompactTable)
+  .add('Compact Table With Borders in Rows', CompactTableWithBorders)
+  .add('Form Table', FormTable)
 
 export {}

@@ -1,17 +1,32 @@
-import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
+import { capitalize } from 'lodash'
 
+import { formatter, intlFormats, getIntl, PathNode, NodeType } from '@acx-ui/utils'
+
+import { noDataSymbol }        from './constants'
+import { kpiConfig }           from './healthKPIConfig'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
 
+import type { IncidentInformation } from './incidentInformation'
 import type {
   IncidentSeverities,
   SeverityRange,
-  PathNode,
-  NodeType,
   Incident
 } from './types/incidents'
 
-export function calculateSeverity (severity: number): IncidentSeverities | void {
+
+/**
+ * Uses to transform incident record loaded from API and
+ * adds incident infomation into it
+ */
+export function transformIncidentQueryResult (
+  incident: Omit<Incident, keyof IncidentInformation>
+): Incident {
+  const info = incidentInformation[incident.code]
+  return { ...incident, ...info }
+}
+
+export function calculateSeverity (severity: number): IncidentSeverities {
   const severityMap = new Map(
     Object
       .keys(incidentSeverities)
@@ -23,11 +38,14 @@ export function calculateSeverity (severity: number): IncidentSeverities | void 
       }) as Iterable<readonly [string, SeverityRange]>
   ) as Map<string, SeverityRange>
 
+  let severityType: IncidentSeverities = 'P1'
   for (let [p, filter] of severityMap) {
     if (severity > filter.gt) {
-      return p as IncidentSeverities
+      severityType = p as IncidentSeverities
+      break
     }
   }
+  return severityType
 }
 
 type NormalizedNodeType = 'network'
@@ -50,35 +68,28 @@ export function normalizeNodeType (nodeType: NodeType): NormalizedNodeType {
   }
 }
 
-/**
- * Returns message descriptor to the matching `nodeType`
- */
-export function nodeTypes (nodeType: NodeType): MessageDescriptor {
+export function nodeTypes (nodeType: NodeType): string {
+  const { $t } = getIntl()
   switch (normalizeNodeType(nodeType)) {
-    case 'network': return defineMessage({ defaultMessage: 'Entire Organization' })
-    case 'apGroup': return defineMessage({ defaultMessage: 'AP Group' })
-    case 'zone': return defineMessage({ defaultMessage: 'Venue' })
-    case 'switchGroup': return defineMessage({ defaultMessage: 'Venue' })
-    case 'switch': return defineMessage({ defaultMessage: 'Switch' })
-    case 'AP': return defineMessage({ defaultMessage: 'Access Point' })
+    case 'network': return $t({ defaultMessage: 'Organization' })
+    case 'apGroup': return $t({ defaultMessage: 'AP Group' })
+    case 'zone': return $t({ defaultMessage: 'Venue' })
+    case 'switchGroup': return $t({ defaultMessage: 'Venue' })
+    case 'switch': return $t({ defaultMessage: 'Switch' })
+    case 'AP': return $t({ defaultMessage: 'Access Point' })
     default:
-      return defineMessage({ defaultMessage: 'Unknown' })
+      return $t({ defaultMessage: 'Unknown' })
   }
 }
 
-export function useFormattedNodeType (nodeType: NodeType) {
-  const { $t } = useIntl()
-  return $t(nodeTypes(nodeType))
-}
-
 function formattedNodeName (
-  intl: IntlShape,
   node: PathNode,
   sliceValue: string
 ): string | undefined {
+  const { $t } = getIntl()
   const type = node.type.toLocaleLowerCase()
   const isComplexName = ['ap', 'switch'].includes(type) && sliceValue !== node.name
-  return intl.$t({
+  return $t({
     defaultMessage: `{isComplexName, select,
       true {{name} ({nodeName})}
       other {{nodeName}}
@@ -88,41 +99,113 @@ function formattedNodeName (
   }, { isComplexName, name: sliceValue, nodeName: node.name })
 }
 
-export function useFormattedPath (path: PathNode[], sliceValue: string) {
-  const intl = useIntl()
+export function formattedPath (path: PathNode[], sliceValue: string) {
+  const { $t } = getIntl()
   return path
     .filter(node => node.type !== 'network')
     .map(node => ({
-      nodeName: formattedNodeName(intl, node, sliceValue),
-      nodeType: intl.$t(nodeTypes(node.type))
+      nodeName: formattedNodeName(node, sliceValue),
+      nodeType: nodeTypes(node.type)
     }))
-    .map(node => intl.$t({
+    .map(node => $t({
       defaultMessage: '{nodeName} ({nodeType})',
       description: 'FormattedPath: Uses to show path node name & type'
     }, node))
-    .reduce((nodeA, nodeB) => intl.$t({
-      defaultMessage: '{nodeA} > {nodeB}',
+    .reduce((nodeA, nodeB) => $t({
+      defaultMessage: '{nodeA}{newline}> {nodeB}',
       description: 'FormattedPath: Uses to join path nodes together in a chain'
-    }, { nodeA, nodeB }))
+    }, { nodeA, nodeB, newline: '\n' }))
 }
 
-export function useImpactedArea (path: PathNode[], sliceValue: string) {
-  const intl = useIntl()
+export function impactedArea (path: PathNode[], sliceValue: string) {
   const lastNode = path[path.length - 1]
   return lastNode
-    ? formattedNodeName(intl, lastNode, sliceValue)
+    ? formattedNodeName(lastNode, sliceValue)
     : sliceValue
 }
 
-export const useShortDescription = (incident: Incident) => {
-  const { $t } = useIntl()
-  const { shortDescription } = incidentInformation[incident.code]
+export function incidentScope (incident: Incident) {
+  const { $t } = getIntl()
   const scope = $t({
     defaultMessage: '{nodeType}: {nodeName}',
     description: 'Uses to generate incident impacted scope for various incident descriptions'
   }, {
-    nodeType: useFormattedNodeType(incident.sliceType),
-    nodeName: useImpactedArea(incident.path, incident.sliceValue)
+    nodeType: nodeTypes(incident.sliceType),
+    nodeName: impactedArea(incident.path, incident.sliceValue)
   })
-  return $t(shortDescription, { scope })
+  return scope
+}
+
+export const getThreshold = (incident: Incident) => {
+  const { code } = incident
+  if (code === 'ttc') {
+    return kpiConfig.timeToConnect.histogram.initialThreshold
+  } else {
+    return undefined
+  }
+}
+
+export const shortDescription = (incident: Incident) => {
+  const { $t } = getIntl()
+  const scope = incidentScope(incident)
+  const threshold = getThreshold(incident)
+    ? formatter('longDurationFormat')(getThreshold(incident))
+    : undefined
+  return $t(incident.shortDescription, { scope, threshold })
+}
+
+export const impactValues = <Type extends 'ap' | 'client'> (
+  type: Type,
+  incident: Incident
+): (
+  Record<`${Type}ImpactRatio`, '-' | number | null> &
+  Record<
+    `${Type}ImpactRatioFormatted` | `${Type}ImpactCountFormatted` | `${Type}ImpactDescription`,
+    string
+  >
+) => {
+  const { $t } = getIntl()
+  const total = incident[`${type}Count` as const]
+  const count = incident[
+    `impacted${capitalize(type)}Count` as `impacted${Capitalize<typeof type>}Count`
+  ]
+  if (total === null || count === null) {
+    return {
+      [`${type}ImpactRatio`]: null,
+      [`${type}ImpactRatioFormatted`]: '',
+      [`${type}ImpactCountFormatted`]: '',
+      [`${type}ImpactDescription`]: $t({ defaultMessage: 'Calculating...' })
+    } as ReturnType<typeof impactValues>
+  }
+
+  if ([total, count].some(value => [0, -1].includes(value!))) {
+    return {
+      [`${type}ImpactRatio`]: noDataSymbol,
+      [`${type}ImpactRatioFormatted`]: noDataSymbol,
+      [`${type}ImpactCountFormatted`]: noDataSymbol,
+      [`${type}ImpactDescription`]: noDataSymbol
+    } as ReturnType<typeof impactValues>
+  }
+
+  const ratio = count! / total!
+  const formattedRatio = $t(intlFormats.percentFormat, { value: ratio })
+  const formattedTotal = $t(intlFormats.countFormat, { value: total })
+  const formattedCount = $t(intlFormats.countFormat, { value: count })
+  const formattedType = $t({
+    defaultMessage: `{type, select,
+      ap {{value, plural, one {AP} other {APs}}}
+      client {{value, plural, one {client} other {clients}}}
+      other {Unknown}
+    }`
+  }, { type, value: total })
+
+  return {
+    [`${type}ImpactRatio`]: ratio,
+    [`${type}ImpactRatioFormatted`]: formattedRatio,
+    [`${type}ImpactCountFormatted`]: formattedCount,
+    [`${type}ImpactDescription`]: $t({
+      defaultMessage: '{formattedCount} of {formattedTotal} {formattedType} ({formattedRatio})',
+      description: 'E.g. 1 of 10 clients (10%)'
+    }, { formattedCount, formattedTotal, formattedType, formattedRatio })
+  } as ReturnType<typeof impactValues>
 }

@@ -1,25 +1,31 @@
-import {
-  Divider as AntDivider,
-  Space as AntSpace
-} from 'antd'
-import styled from 'styled-components/macro'
+import { Cascader as AntCascader } from 'antd'
+import styled                      from 'styled-components/macro'
 
-export const Space = styled(AntSpace)`
-  padding: 8;
+export const Cascader = styled(AntCascader)`
+  .ant-select-selector {
+    border-color: var(--acx-primary-black) !important;
+  }
+  .ant-select-selection-placeholder {
+    color: var(--acx-primary-black);
+  }
+  .ant-select-focused {
+    .ant-select-selection-placeholder {
+      color: var(--acx-neutrals-50);
+    }
+  }
 `
 
-export const Divider = styled(AntDivider)`
-  margin: 0;
-`
 export const ButtonDiv = styled.div`
+  margin-top: 4px;
+  margin-bottom: -4px;
   background-color: var(--acx-neutrals-10);
   text-align: right;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: flex-end;
-  padding: 8px 24px;
-  gap: 12px;
+  padding: var(--acx-modal-footer-small-padding);
+  gap: var(--acx-modal-footer-small-button-space);
 `
 
 export const Span = styled.span`

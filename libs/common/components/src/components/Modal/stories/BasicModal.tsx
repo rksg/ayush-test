@@ -29,10 +29,10 @@ export function BasicModal () {
     <Button key='forward' onClick={handleCancel}>
       Forward
     </Button>,
-    <Button key='save' type='primary' onClick={handleOk}>
+    <Button key='save' type='secondary' onClick={handleOk}>
       Save and Exit
     </Button>,
-    <Button key='submit' type='primary' onClick={handleOk}>
+    <Button key='submit' type='secondary' onClick={handleOk}>
       Submit
     </Button>
   ]

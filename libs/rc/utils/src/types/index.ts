@@ -8,18 +8,27 @@ import {
   WlanSecurityEnum,
   NetworkTypeEnum,
   PassphraseFormatEnum,
-  PassphraseExpirationEnum
+  PassphraseExpirationEnum,
+  QosPriorityEnum
 } from '../constants'
+import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
+import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
+import { NetworkVenue }                  from '../models/NetworkVenue'
+import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
+import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
+import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import {
-  NetworkVenue
-} from './network'
+import { EPDG } from './wifiCallingService'
+
 
 export * from './ap'
 export * from './venue'
 export * from './network'
 export * from './user'
-export * from './service'
+export * from './services'
+export * from './msp'
+export * from './policy'
+export * from './wifiCallingService'
 
 export interface CommonResult {
   requestId: string
@@ -37,14 +46,29 @@ export interface Network {
   clients: number
   venues: { count: number, names: string[] }
   captiveType: GuestNetworkTypeEnum
-  deepNetwork?: {
-    wlan: {
-      wlanSecurity: WlanSecurityEnum
-    }
-  }
+  deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
-  activated: { isActivated?: boolean, isDisabled?: boolean }
-  // cog ??
+  activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
+  allApDisabled?: boolean
+}
+
+export interface NetworkDetail {
+  type: NetworkTypeEnum
+  tenantId: string
+  name: string
+  venues: NetworkVenue[]
+  id: string,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum,
+    ssid?: string;
+    vlanId?: number;
+    enable?: boolean;
+    advancedCustomization?:
+      OpenWlanAdvancedCustomization |
+      AAAWlanAdvancedCustomization |
+      DpskWlanAdvancedCustomization |
+      PskWlanAdvancedCustomization;
+  },
 }
 export interface DPSK {
   id: string
@@ -93,27 +117,58 @@ export interface Venue {
   activated: { isActivated: boolean, isDisabled?: boolean }
   deepVenue?: NetworkVenue
   disabledActivation: boolean
+  networkId? : string
+  activatedApsId?: string[]
 }
 
 export interface AlarmBase {
-  startTime: string
+  startTime: number
   severity: string
   message: string
   id: string
   serialNumber: string
   entityType: string
   entityId: string
-  sourceType: string
+  sourceType: string,
+  switchMacAddress: string
 }
 
 export interface AlarmMeta {
   id: AlarmBase['id']
   venueName: string
   apName: string
-  switchName: string
+  switchName: string,
+  isSwitchExists: boolean
 }
 
 export type Alarm = AlarmBase & AlarmMeta
+
+export enum EventSeverityEnum {
+  CRITICAL = 'Critical',
+  MAJOR = 'Major',
+  MINOR = 'Minor',
+  WARNING = 'Warning',
+  INFORMATIONAL = 'Info'
+}
+
+export enum EventTypeEnum {
+  AP = 'AP',
+  CLIENT = 'CLIENT',
+  SWITCH = 'SWITCH',
+  NETWORK = 'NETWORK',
+  NOTIFICATION = 'Notification',
+  DP = 'DP'
+}
+
+export enum AlaramSeverity {
+  CRITICAL = 'critical',
+  MAJOR = 'major',
+  MINOR = 'minor',
+  WARNING = 'warning',
+  INDETERMINATE = 'indeterminate',
+  INFORMATIONAL = 'info',
+  CLEAR = 'clear'
+}
 
 export enum ApVenueStatusEnum {
   IN_SETUP_PHASE = '1_InSetupPhase',
@@ -141,11 +196,7 @@ export interface NetworkDetailHeader {
   activeVenueCount: number,
   aps: {
     summary?: {
-      [ApVenueStatusEnum.IN_SETUP_PHASE]?: number
-      [ApVenueStatusEnum.OFFLINE]?: number
-      [ApVenueStatusEnum.OPERATIONAL]?: number
-      [ApVenueStatusEnum.REQUIRES_ATTENTION]?: number
-      [ApVenueStatusEnum.TRANSIENT_ISSUE]?: number
+      [key in ApVenueStatusEnum]?: number
     },
     totalApCount: number
   },
@@ -174,13 +225,13 @@ export interface Dashboard {
     },
     aps?: {
       summary: {
-        [prop: string]: number;
+        [key in ApVenueStatusEnum]?: number
       },
       totalCount: number;
     },
     switches?: {
       summary: {
-        [prop: string]: string;
+        [key in SwitchStatusEnum]?: string
       },
       totalCount: number;
     },
@@ -197,7 +248,9 @@ export interface Dashboard {
       totalCount: number;
     }
     alarms?: {
-      summary?: { clear: number }
+      summary: {
+        [prop: string]: number;
+      },
       totalCount: number
     },
   };
@@ -253,7 +306,6 @@ export interface Dashboard {
   }>;
 }
 
-
 interface RadiusService {
   ip: string
   port: number
@@ -270,7 +322,7 @@ export interface CloudpathServer {
     id: string
     primary: RadiusService
   }
-  accountingRadiu?: {
+  accountingRadius?: {
     id: string
     primary: RadiusService
   }
@@ -286,4 +338,50 @@ export interface Service {
   scope: number
   health: string
   tags: string[]
+}
+
+export interface RadiusValidate {
+  data: {
+    errors: RadiusValidateErrors[],
+    requestId: string
+  },
+  status: number
+}
+export interface RadiusValidateErrors {
+  code: string,
+  message: string,
+  object: string,
+  value: {
+    id: string,
+    primary?: RadiusService,
+    secondary?: RadiusService,
+    tlsEnabled?: boolean,
+    cnSanIdentity?: string,
+    ocspUrl?: string,
+    trustedCAChain?: TrustedCAChain
+  }
+}
+export interface DnsProxyRule {
+  domainName?: string,
+  key?: string,
+  ipList?: string[] | undefined
+}
+
+export interface DnsProxyContextType {
+  dnsProxyList: DnsProxyRule[] | [],
+  setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+}
+
+export interface WifiCallingSetting {
+  id: string,
+  serviceName: string,
+  description: string | undefined,
+  qosPriority: QosPriorityEnum,
+  epdgs?: EPDG[],
+  networkIds?: string[]
+}
+
+export interface WifiCallingSettingContextType {
+  wifiCallingSettingList: WifiCallingSetting[],
+  setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
 }

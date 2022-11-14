@@ -1,10 +1,13 @@
 import { NavLink } from 'react-router-dom'
 
-import { useTenantLink  } from './useTenantLink'
+import { TenantType, useTenantLink  } from './useTenantLink'
 
 import type { NavLinkProps } from 'react-router-dom'
 
-export function TenantNavLink (props: NavLinkProps) {
-  const to = useTenantLink(props.to)
+export function TenantNavLink ({
+  tenantType,
+  ...props
+}: NavLinkProps & { tenantType?: TenantType }) {
+  const to = useTenantLink(props.to, tenantType)
   return <NavLink {...props} to={to} />
 }

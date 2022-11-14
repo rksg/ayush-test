@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`column.render should return correct sort order 1`] = `
+<span
+  title="mac1, mac2"
+>
+  mac1 (2)
+</span>
+`;

@@ -1,18 +1,72 @@
-import { ConfigProvider }    from '@acx-ui/components'
-import { rootRoutes, Route } from '@acx-ui/react-router-dom'
-import { Provider }          from '@acx-ui/store'
+import {
+  PolicyType,
+  ServiceType,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  getSelectPolicyRoutePath,
+  PolicyOperation
+}           from '@acx-ui/rc/utils'
+import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
+import { Provider }                          from '@acx-ui/store'
 
-import { NetworkDetails } from './pages/NetworkDetails/NetworkDetails'
-import { NetworkForm }    from './pages/NetworkForm/NetworkForm'
-import { NetworksTable }  from './pages/NetworksTable'
-import { DPSKForm } from './pages/services/DPSK/DPSKForm/DPSKForm'
-import { ServicesTable }  from './pages/services/ServicesTable'
+import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
+import ApDetails         from './pages/Devices/Wifi/ApDetails'
+import { ApForm }        from './pages/Devices/Wifi/ApForm'
+import ApsTable          from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable     from './pages/Networks/NetworksTable'
+import PoliciesTable     from './pages/Policies/PoliciesTable'
+import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
+import DHCPDetail        from './pages/Services/DHCPDetail'
+import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import SelectServiceForm from './pages/Services/SelectServiceForm'
+import {
+  getSelectServiceRoutePath,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation
+} from './pages/Services/serviceRouteUtils'
+import ServicesTable            from './pages/Services/ServicesTable'
+import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
+import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
+import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
+      <Route path='devices/*' element={<DeviceRoutes />} />
+      <Route path='networks/*' element={<NetworkRoutes />} />
+      <Route path='services/*' element={<ServiceRoutes />} />
+      <Route path='policies/*' element={<PolicyRoutes />} />
+    </Route>
+  )
+  return (
+    <Provider children={routes} />
+  )
+}
+
+function DeviceRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
+      <Route path='devices/aps' element={<ApsTable />} />
+      <Route path='devices/aps/:action' element={<ApForm />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab'
+        element={<ApDetails />}
+      />
+      <Route path='devices/switches' element={<SwitchesTable />} />
+    </Route>
+  )
+}
+
+function NetworkRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
       <Route path='networks' element={<NetworksTable />} />
-      <Route path='networks/create' element={<NetworkForm />} />
+      <Route path='networks/add' element={<NetworkForm />} />
       <Route
         path='networks/:networkId/network-details/:activeTab'
         element={<NetworkDetails />}
@@ -22,12 +76,77 @@ export default function RcRoutes () {
         element={<NetworkForm />}
       />
       <Route path='services' element={<ServicesTable />} />
-      <Route path='services/create' element={<DPSKForm />} />
     </Route>
   )
-  return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
+}
+
+function ServiceRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path={getServiceListRoutePath()} element={<ServicesTable />} />
+      <Route path={getSelectServiceRoutePath()} element={<SelectServiceForm />} />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
+        element={<MdnsProxyForm />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })}
+        element={<MdnsProxyForm editMode={true} />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}
+        element={<h1>mDNS Proxy details page</h1>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
+        element={<WifiCallingForm />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })}
+        element={<WifiCallingConfigureForm />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
+        element={<WifiCallingDetailView />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
+        element={<DHCPForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
+        element={<DHCPForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
+        element={<DHCPDetail/>}
+      />
+    </Route>
+  )
+}
+
+function PolicyRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path={getPolicyListRoutePath()} element={<PoliciesTable />} />
+      <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
+        element={<h1>Rogue AP detection create page</h1>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })}
+        element={<h1>Rogue AP detection edit page</h1>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
+        element={<h1>Rogue AP detection details page</h1>}
+      />
+    </Route>
   )
 }

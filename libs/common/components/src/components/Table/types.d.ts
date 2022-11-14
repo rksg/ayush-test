@@ -1,3 +1,4 @@
+import { DataIndex } from 'rc-table/lib/interface'
 
 import type {
   ProColumnType,
@@ -5,6 +6,10 @@ import type {
 } from '@ant-design/pro-table'
 
 type AdditionalColumnType = {
+  // mandatory column for mapping columns
+  key: string
+  // mandatory column to (1) render correct data (2) use ellipsis
+  dataIndex: DataIndex
   /**
    * Mark column as fixed
    */
@@ -21,6 +26,20 @@ type AdditionalColumnType = {
    * @default true
    */
   show?: boolean
+  // overwrite type of width to number for column resize
+  width?: number
+  /**
+   * Set the column to be searchable
+   * If one column has this to true the table will start showing search input
+   * @default false
+   */
+  searchable?: boolean
+  /**
+   * Set the column to be filterable
+   * the table will show a multi select dropdown to filter the column
+   * @default false
+   */
+  filterable?: boolean
 }
 
 type ProColumnTypeSubset <RecordType, ValueType> = Omit<
@@ -28,15 +47,15 @@ type ProColumnTypeSubset <RecordType, ValueType> = Omit<
   'fixed' | 'hideInTable' | 'hideInform' | 'hideInSetting' | 'hideInSearch'
 >
 
-type ColumnGroupType<RecordType, ValueType>
+export type ColumnGroupType<RecordType, ValueType>
   = ColumnType<RecordType, ValueType>
-  & { children: Columns<RecordType>[] }
+  & { children: TableColumn<RecordType>[] }
 
-type ColumnType <RecordType = unknown, ValueType = 'text'>
+export type ColumnType <RecordType = unknown, ValueType = 'text'>
   = ProColumnTypeSubset<RecordType, ValueType>
   & AdditionalColumnType
 
-export type Columns<RecordType = unknown, ValueType = 'text'>
+export type TableColumn<RecordType = unknown, ValueType = 'text'>
   = ColumnGroupType<RecordType, ValueType>
   | ColumnType<RecordType, ValueType>
 
@@ -52,3 +71,7 @@ export type ColumnStateOption = {
 }
 
 export type TableColumnState = Record<string, AntColumnsState>
+
+export type RecordWithChildren <RecordType> = RecordType & {
+  children?: RecordType[]
+}

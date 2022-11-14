@@ -24,7 +24,8 @@ module.exports = webpackConfigWithModuleFederation({
    */
   remotes: [
     ['rc', '/api/ui-beta/rc'],
-    ['analytics', '/api/ui-beta/analytics']
+    ['analytics', '/api/ui-beta/analytics'],
+    ['msp', '/api/ui-beta/msp']
   ]
 }, {
   devServer: {

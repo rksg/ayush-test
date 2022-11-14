@@ -1,3 +1,4 @@
+process.env.TZ = 'UTC'
 const nxPreset = require('@nrwl/jest/preset')
 
 module.exports = {
@@ -6,7 +7,8 @@ module.exports = {
     '^antd/es/(.*)$': `${__dirname}/node_modules/antd/lib/$1`
   },
   transform: {
-    '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`
+    '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`,
+    '\\.(png|jpg|jpeg|webp)$': `${__dirname}/tools/tests/imagerTransformer.js`
   },
   coverageReporters: [ 'lcov', 'text-summary' ],
   collectCoverageFrom: [

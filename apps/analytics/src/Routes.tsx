@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
+import { HealthPage, IncidentListPage }      from '@acx-ui/analytics/components'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
 import IncidentDetailsPage from './pages/IncidentDetails'
-import IncidentListPage    from './pages/Incidents'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
@@ -16,13 +16,13 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetailsPage />} />
       <Route path='analytics/recommendations'
         element={<div>{ $t({ defaultMessage: 'Recommendations' }) } </div>} />
-      <Route path='analytics/health'
-        element={<div>{$t({ defaultMessage: 'Health' }) }</div>} />
+      <Route path='analytics/health' element={<HealthPage />} />
+      <Route path='analytics/health/tab/:categoryTab' element={<HealthPage />} />
       <Route path='analytics/configChange'
         element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
     </Route>
   )
   return (
-    <Provider children={routes} />
+    <Provider>{routes}</Provider>
   )
 }

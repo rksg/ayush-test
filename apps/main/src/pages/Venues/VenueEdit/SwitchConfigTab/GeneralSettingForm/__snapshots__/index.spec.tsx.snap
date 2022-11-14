@@ -1,0 +1,338 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GeneralSettingForm should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <section
+      class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
+    >
+      <div
+        class="ant-pro-steps-form"
+      >
+        <div
+          class="ant-row"
+          style="margin-left: -12px; margin-right: -12px;"
+        >
+          <div
+            class="ant-col ant-col-24"
+            style="padding-left: 12px; padding-right: 12px;"
+          >
+            <div
+              class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+            >
+              <div
+                class="ant-steps ant-steps-vertical ant-steps-dot"
+              >
+                <div
+                  class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                >
+                  <div
+                    class="ant-steps-item-container"
+                  >
+                    <div
+                      class="ant-steps-item-tail"
+                    />
+                    <div
+                      class="ant-steps-item-icon"
+                    >
+                      <span
+                        class="ant-steps-icon"
+                      >
+                        <span
+                          class="ant-steps-icon-dot"
+                        />
+                      </span>
+                    </div>
+                    <div
+                      class="ant-steps-item-content"
+                    >
+                      <div
+                        class="ant-steps-item-title"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-row"
+          style="margin-left: -12px; margin-right: -12px;"
+        >
+          <div
+            class="ant-col ant-col-24"
+            style="padding-left: 12px; padding-right: 12px;"
+          >
+            <div
+              class="ant-pro-steps-form-container"
+            >
+              <div
+                class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+              >
+                <form
+                  autocomplete="off"
+                  class="ant-form ant-form-horizontal"
+                  id="0"
+                >
+                  <input
+                    style="display: none;"
+                    type="text"
+                  />
+                  <div
+                    class="ant-row styledComponents__RowStyle-sc-1xp6w7-0 ePAOjH"
+                    style="margin-left: -10px; margin-right: -10px;"
+                  >
+                    <div
+                      class="ant-col ant-col-12"
+                      style="padding-left: 10px; padding-right: 10px;"
+                    >
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-col-6 ant-form-item-label ant-form-item-label-left"
+                          >
+                            <label
+                              class=""
+                              title="Configuration Profile"
+                            >
+                              Configuration Profile
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-col-12 ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                  style="display: flex; justify-content: space-between;"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <span
+                                      style="font-size: 12px; display: flex;"
+                                    >
+                                      profile01 (Regular)
+                                    </span>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <div
+                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__ButtonWrapper-sc-1xp6w7-3 jYXYBQ"
+                                    >
+                                      <div
+                                        class="ant-space-item"
+                                        style="margin-right: 0px;"
+                                      >
+                                        <button
+                                          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                          type="button"
+                                        >
+                                          <span>
+                                            View Details
+                                          </span>
+                                        </button>
+                                      </div>
+                                      <span
+                                        class="ant-space-item-split"
+                                        style="margin-right: 0px;"
+                                      >
+                                        <div
+                                          class="ant-divider ant-divider-vertical"
+                                          role="separator"
+                                        />
+                                      </span>
+                                      <div
+                                        class="ant-space-item"
+                                      >
+                                        <button
+                                          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                          type="button"
+                                        >
+                                          <span>
+                                            Change
+                                          </span>
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-col-6 ant-form-item-label ant-form-item-label-left"
+                          >
+                            <label
+                              class=""
+                              title="DNS"
+                            >
+                              DNS
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-col-12 ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-space ant-space-vertical"
+                                  style="width: 100%;"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <button
+                                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                      style="float: right;"
+                                      type="button"
+                                    >
+                                      <span>
+                                        Add IP Address
+                                      </span>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-col-6 ant-form-item-label ant-form-item-label-left"
+                          >
+                            <label
+                              class=""
+                              for="0_syslogEnabled"
+                              title="Syslog Server"
+                            >
+                              Syslog Server
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-col-12 ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                  id="0_syslogEnabled"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <button
+                                      aria-checked="false"
+                                      class="ant-switch"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <button
+                                      class="ant-btn ant-btn-default ant-btn-icon-only ant-btn-background-ghost styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                      role="configBtn"
+                                      type="button"
+                                    >
+                                      <svg>
+                                        ConfigurationOutlined.svg
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 12px;"
+            >
+              <button
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                type="button"
+              >
+                <span>
+                  Save
+                </span>
+              </button>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                type="button"
+              >
+                <span>
+                  Cancel
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</DocumentFragment>
+`;

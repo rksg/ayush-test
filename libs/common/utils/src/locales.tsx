@@ -1,7 +1,9 @@
-import { createContext, ReactElement, useContext, useEffect, useState } from 'react'
+import { createContext, ReactElement, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Locale } from 'antd/lib/locale-provider'
 import { merge }  from 'lodash'
+
+import { setUpIntl } from './intlUtil'
 
 type Message = string | NestedMessages
 type NestedMessages = { [key: string]: Message }
@@ -48,16 +50,31 @@ async function loadDe (): Promise<Messages> {
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
-const localeLoaders = {
-  'en-US': loadEnUS,
-  'de-DE': loadDe
+async function loadJp (): Promise<Messages> {
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/ja_JP').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/ja_JP').then(result => result.default),
+    fetch(localePath('ja-JP')).then(res => res.json()) as Promise<NestedMessages>
+  ])
+
+  const combine = merge({}, base, proBase, translation)
+  return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
+export const localeLoaders = {
+  'en-US': loadEnUS,
+  'de-DE': loadDe,
+  'ja-JP': loadJp
+}
+
+const allowedLang = Object.keys(localeLoaders)
 type Key = keyof typeof localeLoaders
 const cache: Partial<Record<Key, Messages>> = {}
-export async function loadLocale (locale: Key) {
+export async function loadLocale (locale: Key, ignoreCache = false) {
+  // fallback when browser detected or url param provided lang not supported
+  locale = allowedLang.includes(locale) ? locale : 'en-US'
   const result = cache[locale]
-  if (result) { return result }
+  if (!ignoreCache && result) { return result }
 
   cache[locale] = await localeLoaders[locale]()
   return cache[locale]
@@ -87,13 +104,20 @@ function LocaleProviderWrap (props: LocaleProviderProps): ReactElement {
 }
 
 function LocaleProvider (props: LocaleProviderProps) {
-  const [lang, setLang] = useState(props.lang ?? 'en-US')
+  const [lang, setLang] = useState(props.lang ?? 'en-US') // fallback language by default en-US
   const [messages, setMessages] = useState<Messages>()
 
   useEffect(() => {
-    loadLocale(lang).then(setMessages)
+    loadLocale(lang).then((message) => {
+      setUpIntl({
+        locale: lang,
+        messages: message
+      })
+      setMessages(() => message)
+    })
   }, [lang])
 
-  const context = { lang, setLang, messages }
+  const context = useMemo(() =>
+    ({ lang, setLang, messages }), [lang, messages])
   return <LocaleContext.Provider value={context} children={props.children} />
 }

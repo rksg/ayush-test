@@ -1,4 +1,5 @@
 export * from './types'
-export * from './useSplitTreatment'
+export * from './useIsSplitOn'
 export * from './useSplitTreatmentWithConfig'
 export * from './SplitProvider'
+export * from './features'

@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Steps, Space, Row } from 'antd'
-import _                     from 'lodash'
-import toArray               from 'rc-util/lib/Children/toArray'
-import { useIntl }           from 'react-intl'
+import { Steps, Space } from 'antd'
+import _                from 'lodash'
+import toArray          from 'rc-util/lib/Children/toArray'
+import { useIntl }      from 'react-intl'
 
 import { Button }                       from '../Button'
 import { StepsForm as ProAntStepsForm } from '../StepsFormProAnt'
@@ -35,6 +35,13 @@ export type StepsFormProps <FormValue = any> =
      * Uses to cancel or reset current form action
      */
     onCancel?: () => void
+
+    buttonLabel?: {
+      next?: string
+      submit?: string
+      pre?: string
+      cancel?: string
+    }
   }
 
 export type StepFormProps <FormValue> = Omit<
@@ -42,13 +49,6 @@ export type StepFormProps <FormValue> = Omit<
   'requiredMark' |
   // omitted and replace with ReactNode as we don't support using RenderProps for now
   'children'> & { children?: React.ReactNode }
-
-type InternalStepFormProps <FormValue> = StepFormProps<FormValue> & {
-  /**
-   * State of current step
-   */
-  state: 'finish' | 'active' | 'wait'
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function StepsForm <FormValue = any> (
@@ -65,6 +65,16 @@ export function StepsForm <FormValue = any> (
   const { $t } = useIntl()
   const formRef = useRef()
   const [current, setStep] = useState(propCurrent ?? 0)
+
+  const buttonLabel = {
+    ...{
+      next: $t({ defaultMessage: 'Next' }),
+      submit: $t({ defaultMessage: 'Finish' }),
+      pre: $t({ defaultMessage: 'Back' }),
+      cancel: $t({ defaultMessage: 'Cancel' })
+    },
+    ...props.buttonLabel
+  }
 
   useImperativeHandle(propFormRef, () => formRef.current)
 
@@ -84,7 +94,8 @@ export function StepsForm <FormValue = any> (
     if (otherProps.onCurrentChange) otherProps.onCurrentChange(next)
   }
 
-  const stepsRender: ProAntStepsFormProps['stepsRender'] = () => (
+  const stepsRender: ProAntStepsFormProps['stepsRender'] = () => (<>
+    <UI.StepsContainerGlobalOverride />
     <UI.StepsContainer>
       <Steps current={current} progressDot direction='vertical'>
         {_children.map((child, index) => {
@@ -97,51 +108,65 @@ export function StepsForm <FormValue = any> (
         })}
       </Steps>
     </UI.StepsContainer>
-  )
+  </>)
 
   const stepsFormRender: ProAntStepsFormProps['stepsFormRender'] = (form, submitter) => (
     <>
-      <UI.Container>{form}</UI.Container>
+      {form}
+      <UI.ActionsContainerGlobalOverride />
       <UI.ActionsContainer>
         <Space align='center' size={12}>{submitter}</Space>
       </UI.ActionsContainer>
     </>
   )
 
-  const buttonLabel = {
-    next: $t({ defaultMessage: 'Next' }),
-    submit: $t({ defaultMessage: 'Finish' }),
-    cancel: $t({ defaultMessage: 'Cancel' })
-  }
-
-  const cancel = <Button
+  const cancelButton = <Button
     key='cancel'
     onClick={() => onCancel?.()}
     children={buttonLabel.cancel}
   />
 
-  const submitter: ProAntStepsFormProps<FormValue>['submitter'] = {
-    render (_, submitterDom) {
-      const button = Array.from(submitterDom).pop() as React.ReactElement<ButtonProps>
-      const key = button.key as 'next' | 'submit'
+  function submitter (
+    stepCount: number
+  ): ProAntStepsFormProps<FormValue>['submitter'] {
+    return {
+      render (props, dom) {
+        const domArray = Array.from(dom)
 
-      const submitButton = <Button
-        {...button.props}
-        key={key}
-        type='secondary'
-        children={buttonLabel[key]}
-      />
-      return [submitButton, cancel]
+        const submit = domArray.pop() as React.ReactElement<ButtonProps>
+        const submitKey = stepCount - 1 === props.step ? 'submit' : 'next'
+        const submitButton = <Button
+          {...submit.props}
+          key={submitKey}
+          type='secondary'
+          children={buttonLabel[submitKey]}
+        />
+
+        const back = domArray.pop() as React.ReactElement<ButtonProps>
+        const backButton = <Button
+          {...back?.props || {}}
+          key='pre'
+          children={buttonLabel.pre}
+          disabled={props.step === 0}
+        />
+
+        return stepCount > 1
+          ? [
+            cancelButton,
+            <Space align='center' size={12} key='back-submit'>{[backButton, submitButton]}</Space>
+          ]
+          : [submitButton, cancelButton]
+      }
     }
   }
 
   return (
-    <UI.Wrapper editMode={editMode}>
+    <UI.Wrapper singleStep={items.length === 1} editMode={editMode}>
       <ProAntStepsForm<FormValue>
         {...otherProps}
         {...{ current, onCurrentChange, stepsRender, stepsFormRender, formRef }}
         children={items}
-        submitter={submitter}
+        submitter={submitter(items.length)}
       />
     </UI.Wrapper>
   )
@@ -152,23 +177,18 @@ function StepForm <FormValue = any> (
   props: Omit<StepFormProps<FormValue>, 'requireMark' | 'validateTrigger'>
 ) {
   const keys = ['state']
-  const internalProps = _.pick(props, keys) as InternalStepFormProps<FormValue>
   const formProps = _.omit(props, keys)
 
   return <ProAntStepsForm.StepForm<FormValue>
     {...formProps}
     requiredMark={true}
     validateTrigger={'onBlur'}
-  >
-    <Row>
-      <UI.FormContainer
-        $state={internalProps.state}
-        span={24}
-        children={props.children}
-      />
-    </Row>
+  >{props.children}
   </ProAntStepsForm.StepForm>
 }
 
 StepsForm.StepForm = StepForm
 StepsForm.Title = UI.Title
+StepsForm.SectionTitle = UI.SectionTitle
+StepsForm.FieldLabel = UI.FieldLabel
+StepsForm.MultiSelect = UI.MultiSelect

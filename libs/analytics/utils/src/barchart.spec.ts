@@ -63,6 +63,80 @@ describe('getBarChartSeriesData', () => {
         ]
       })
   })
+  it('should return correct format for unique column', ()=>{
+    expect(getBarChartSeriesData(sample, seriesMapping, 'name'))
+      .toEqual({
+        dimensions: [
+          'mac',
+          'name',
+          'usage',
+          'usagePct'
+        ],
+        seriesEncode: [
+          {
+            x: 'name',
+            y: 'usage'
+          }
+        ],
+        source: [
+          [
+            'C0:C5:20:AA:32:31',
+            '   FEK3224R0AP-0801-1',
+            24578400,
+            0.12419354838709677
+          ],
+          [
+            'D4:C1:9E:84:59:4A',
+            '  FEK3233P0J4',
+            25209800,
+            0.12419354838709677
+          ],
+          [
+            'C0:C5:20:AA:33:1B',
+            ' FEK3224R09M',
+            31077200,
+            0.12419354838709677
+          ]
+        ]
+      })
+  })
+  it('should return correct format for unique column if it does not exists', ()=>{
+    expect(getBarChartSeriesData(sample, seriesMapping, 'anything'))
+      .toEqual({
+        dimensions: [
+          'mac',
+          'name',
+          'usage',
+          'usagePct'
+        ],
+        seriesEncode: [
+          {
+            x: 'name',
+            y: 'usage'
+          }
+        ],
+        source: [
+          [
+            'C0:C5:20:AA:32:31',
+            'FEK3224R0AP-0801-1',
+            24578400,
+            0.12419354838709677
+          ],
+          [
+            'D4:C1:9E:84:59:4A',
+            'FEK3233P0J4',
+            25209800,
+            0.12419354838709677
+          ],
+          [
+            'C0:C5:20:AA:33:1B',
+            'FEK3224R09M',
+            31077200,
+            0.12419354838709677
+          ]
+        ]
+      })
+  })
   it('should handle empty data', ()=>{
     expect(getBarChartSeriesData([], seriesMapping))
       .toEqual({

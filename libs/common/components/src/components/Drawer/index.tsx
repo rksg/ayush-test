@@ -1,6 +1,12 @@
-import { Drawer as AntdDrawer, DrawerProps as AntdDrawerProps } from 'antd'
+import { useState } from 'react'
+
+import { DrawerProps as AntDrawerProps } from 'antd'
+import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { useIntl }                       from 'react-intl'
 
 import { CloseSymbol, ArrowBack } from '@acx-ui/icons'
+
+import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 
@@ -12,7 +18,7 @@ interface DrawerHeaderProps {
 }
 
 export interface DrawerProps extends
-  Omit<AntdDrawerProps, 'title'|'placement'|'extra'|'footerStyle'>,
+  Omit<AntDrawerProps, 'title'|'placement'|'extra'|'footerStyle'>,
   DrawerHeaderProps {}
 
 const Header = (props: DrawerHeaderProps) => {
@@ -33,7 +39,7 @@ export const Drawer = (props: DrawerProps) => {
   const { title, icon, subTitle, onBackClick, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
   return (
-    <AntdDrawer
+    <UI.Drawer
       {...rest}
       title={<Header {...headerProps}/>}
       placement='right'
@@ -43,3 +49,56 @@ export const Drawer = (props: DrawerProps) => {
     />
   )
 }
+
+interface FormFooterProps {
+  showAddAnother?: boolean
+  onCancel: () => void
+  onSave: (checked: boolean) => Promise<void>
+  buttonLabel?: {
+    addAnother?: string
+    cancel?: string
+    save?: string
+  }
+}
+
+const FormFooter = (props: FormFooterProps) => {
+  const { $t } = useIntl()
+  const {
+    showAddAnother = false,
+    onCancel,
+    onSave
+  } = props
+  const buttonLabel = {
+    ...{
+      addAnother: $t({ defaultMessage: 'Add another' }),
+      cancel: $t({ defaultMessage: 'Cancel' }),
+      save: $t({ defaultMessage: 'Save' })
+    },
+    ...props.buttonLabel
+  }
+  const [checked, setChecked] = useState(false)
+  return (
+    <>
+      <div>
+        {showAddAnother && <Checkbox
+          onChange={(e: CheckboxChangeEvent) => setChecked(e.target.checked)}
+          checked={checked}
+          children={buttonLabel.addAnother}
+        />}
+      </div>
+      <div>
+        <Button onClick={onCancel}>
+          {buttonLabel.cancel}
+        </Button>
+        <Button
+          onClick={() => onSave(checked)}
+          type={'secondary'}
+        >
+          {buttonLabel.save}
+        </Button>
+      </div>
+    </>
+  )
+}
+
+Drawer.FormFooter = FormFooter

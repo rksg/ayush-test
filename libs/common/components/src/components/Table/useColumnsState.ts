@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
 
 import type {
-  Columns,
+  TableColumn,
   ColumnState,
   ColumnStateOption,
   TableColumnState
@@ -12,7 +12,7 @@ import type {
 export const settingsKey = 'acx-table-settings'
 
 export interface UseColumnsStateOptions <RecordType> {
-  columns: Columns<RecordType>[]
+  columns: TableColumn<RecordType>[]
   columnState?: ColumnStateOption
 }
 
@@ -24,9 +24,11 @@ export function useColumnsState <RecordType> (options: UseColumnsStateOptions<Re
   useEffect(() => setState(initialState), [setState, initialState])
 
   const onChange = useCallback((state: TableColumnState) => {
-    columnState?.onChange?.(stateToUserState(state))
-    setState(state)
-  }, [setState, columnState])
+    const newState = Object.entries(state).every(([,col]) => col.disable || !col.show)
+      ? initialState : state
+    columnState?.onChange?.(stateToUserState(newState))
+    setState(newState)
+  }, [setState, columnState, initialState])
 
   const resetState = useCallback(
     () => onChange(defaultState),
@@ -46,8 +48,7 @@ function useDefaultAndInitialState <RecordType> ({
 }: UseColumnsStateOptions<RecordType>) {
   return useMemo(() => {
     const defaultState = columns.reduce<TableColumnState>((state, column, order) => {
-      const key = (column.key ?? column.dataIndex ?? order).toString()
-      state[key] = {
+      state[column.key] = {
         order,
         fixed: column.fixed ?? undefined,
         show: column.fixed ? Boolean(column.fixed) : column.show ?? true,

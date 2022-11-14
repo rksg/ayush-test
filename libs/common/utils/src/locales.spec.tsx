@@ -13,7 +13,8 @@ import {
 import {
   loadLocale,
   LocaleProvider,
-  LocaleContext
+  LocaleContext,
+  localeLoaders
 } from './locales'
 
 const messages = {
@@ -26,6 +27,11 @@ const messages = {
     lang: 'Sprache',
     nested: { lang: 'Sprache' },
     stepsForm: { cancel: 'Absagen' }
+  },
+  'ja-JP': {
+    lang: '言語',
+    nested: { lang: '言語' },
+    stepsForm: { cancel: 'キャンセル' }
   }
 }
 
@@ -57,6 +63,16 @@ describe('loadLocale', () => {
       cancel: expect.any(String),
       next: expect.any(String)
     }))
+
+    const ja = await loadLocale('ja-JP')
+    expect(ja).toEqual(expect.objectContaining({
+      ..._.omit(messages['ja-JP'], 'stepsForm'),
+      'nested.lang': '言語'
+    }))
+    expect(ja!.stepsForm).toEqual(expect.objectContaining({
+      cancel: expect.any(String),
+      next: expect.any(String)
+    }))
   })
 
   it('loads from cache when available', async () => {
@@ -72,6 +88,32 @@ describe('loadLocale', () => {
     await loadLocale('en-US')
     // should throw if cache not being use
     await loadLocale('en-US')
+  })
+
+  it('locale provided is in allowed list of languages', async () => {
+    mockServer.use(
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res.once(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+    const locale = 'ja-JP'
+    const spy = jest.spyOn(localeLoaders, locale)
+    await loadLocale(locale, true)
+    expect(spy).toBeCalled()
+  })
+
+  it('locale provided is not in allowed list of languages', async () => {
+    const locale = 'ru-RU'
+    mockServer.use(
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+    const spy = jest.spyOn(localeLoaders, 'en-US')
+    await loadLocale(locale as keyof typeof localeLoaders, true)
+    expect(spy).toBeCalled()
   })
 })
 

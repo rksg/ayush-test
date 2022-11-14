@@ -1,41 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit'
-
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { mockGraphqlQuery }    from '@acx-ui/test-utils'
+import { dataApiURL }       from '@acx-ui/analytics/services'
+import { fakeIncident1 }    from '@acx-ui/analytics/utils'
+import { store }            from '@acx-ui/store'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { api } from './services'
 
 describe('incidentDetailsApi', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataApi.middleware])
-  })
-  const props = {
-    startDate: '2022-01-01T00:00:00+08:00',
-    endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }]
-  }
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
   it('should return correct data', async () => {
-    const expectedResult = {
-      incident: {
-        id: '1',
-        code: 'radius-failure'
-      }
-    }
-    mockGraphqlQuery(dataApiURL, 'IncidentDetails', {
-      data: expectedResult
-    })
+    mockGraphqlQuery(dataApiURL, 'IncidentDetails', { data: { incident: fakeIncident1 } })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.incidentDetails.initiate(props)
+      api.endpoints.incidentDetails.initiate({ id: fakeIncident1.id })
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.incident)
+    expect(data).toStrictEqual(fakeIncident1)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
@@ -43,7 +23,7 @@ describe('incidentDetailsApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.incidentDetails.initiate(props)
+      api.endpoints.incidentDetails.initiate({ id: 'xxx' })
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

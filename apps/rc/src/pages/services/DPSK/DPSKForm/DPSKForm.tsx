@@ -31,7 +31,7 @@ import {
 
 
 
-export function DPSKForm () {
+export default function DPSKForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToServices = useTenantLink('/services')

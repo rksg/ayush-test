@@ -1,14 +1,13 @@
 import '@testing-library/jest-dom'
 
-import { MissingDataError, MissingTranslationError } from '@formatjs/intl'
-import { default as AntConfigProvider }              from 'antd/lib/config-provider'
-import { rest }                                      from 'msw'
+import { default as AntConfigProvider } from 'antd/lib/config-provider'
+import { rest }                         from 'msw'
 
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { Loader, LoaderProps } from '../Loader'
 
-import { ConfigProvider, onError } from '.'
+import { ConfigProvider } from '.'
 
 type Props = { children: React.ReactNode }
 
@@ -71,41 +70,5 @@ describe('ConfigProvider', () => {
 
     const expectedProps = expect.objectContaining({ states: [{ isLoading: true }] })
     expect(Loader).toHaveBeenCalledWith(expectedProps, {})
-  })
-
-  describe('onError', () => {
-    const oldEnv = process.env
-
-    beforeEach(() => {
-      jest.spyOn(console, 'error')
-    })
-
-    afterEach(() => {
-      process.env = oldEnv
-      jest.restoreAllMocks()
-    })
-
-    const error = new Error('error')
-    const missingTranslationError = new MissingTranslationError({}, 'en-US')
-    const missingDataError = new MissingDataError('message', error)
-    /* eslint-disable no-console */
-    it('calls console error', () => {
-      const err = missingDataError
-      const logError = jest.mocked(console.error).mockImplementation(() => {})
-      onError(err)
-      expect(logError).toHaveBeenCalledWith(err)
-    })
-    it('silent MissingTranslationError', () => {
-      const err = missingTranslationError
-      onError(err)
-      expect(jest.mocked(console.error)).not.toHaveBeenCalledWith(err)
-    })
-    it('silent in production', () => {
-      process.env = { NODE_ENV: 'production' }
-      const err = missingDataError
-      onError(err)
-      expect(jest.mocked(console.error)).not.toHaveBeenCalledWith(err)
-    })
-    /* eslint-enable no-console */
   })
 })

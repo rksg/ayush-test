@@ -133,7 +133,7 @@ export const showActivityMessage = (tx: Transaction, useCase: string[], callback
 export const refetchByUsecase = (tx: Transaction, useCase: string[], callback: Function) => {
   if (proceedByUsecase(tx, useCase)) {
     callback()
-  }  
+  }
 }
 
 export const showTxToast = (tx: Transaction) => {

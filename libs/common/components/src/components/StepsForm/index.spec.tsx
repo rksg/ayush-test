@@ -1,9 +1,10 @@
 import React from 'react'
 
 import '@testing-library/jest-dom'
+import userEvent                                from '@testing-library/user-event'
 import { Form, Input, Radio, RadioChangeEvent } from 'antd'
 
-import { cleanup, fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
+import { cleanup, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { StepsForm, StepsFormInstance, StepsFormProps } from './index'
 
@@ -29,11 +30,16 @@ describe('StepsForm', () => {
     const onFinish = jest.fn()
     render(<CustomForm onFinish={onFinish} />)
 
+    expect(screen.getAllByRole('button').length).toEqual(3)
+    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
+
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Step 2 Title' })).toBeVisible()
-    fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+
+    expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
 
     await waitFor(() => expect(onFinish).toHaveBeenCalled())
   })
@@ -44,27 +50,27 @@ describe('StepsForm', () => {
 
     render(<CustomForm {...{ onCurrentChange, onCancel }} />)
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     await waitFor(() => expect(onCurrentChange).toHaveBeenCalled())
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(onCancel).toHaveBeenCalled())
 
     cleanup()
 
     render(<CustomForm />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
-    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
   it('handles navigate to past step', async () => {
     render(<CustomForm />)
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     expect(await screen.findByRole('heading', { name: 'Step 2 Title' })).toBeVisible()
 
-    fireEvent.click(await screen.findByText('Step 1'))
+    await userEvent.click(await screen.findByText('Step 1'))
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
   })
 
@@ -72,7 +78,7 @@ describe('StepsForm', () => {
     render(<CustomForm editMode />)
 
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
-    fireEvent.click(await screen.findByText('Step 2'))
+    await userEvent.click(await screen.findByText('Step 2'))
     expect(await screen.findByRole('heading', { name: 'Step 2 Title' })).toBeVisible()
 
     cleanup()
@@ -80,7 +86,7 @@ describe('StepsForm', () => {
     render(<CustomForm />)
 
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
-    fireEvent.click(await screen.findByText('Step 2'))
+    await userEvent.click(await screen.findByText('Step 2'))
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
   })
 
@@ -115,7 +121,7 @@ describe('StepsForm', () => {
     render(<Component />)
 
     expect(await screen.findByText('Step 2a')).toBeVisible()
-    fireEvent.click(screen.getByRole('radio', { name: 'Use Step 2b' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Use Step 2b' }))
 
     expect(await screen.findByText('Step 2b')).toBeVisible()
   })
@@ -149,11 +155,30 @@ describe('StepsForm', () => {
     /* eslint-disable testing-library/no-container, testing-library/no-node-access */
     expect(container.querySelectorAll('.ant-steps-item')).toHaveLength(2)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Toggle' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Toggle' }))
     expect(container.querySelectorAll('.ant-steps-item')).toHaveLength(4)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Toggle' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Toggle' }))
     expect(container.querySelectorAll('.ant-steps-item')).toHaveLength(2)
     /* eslint-enable testing-library/no-container, testing-library/no-node-access */
+  })
+
+  it('renders single step form', async () => {
+    const onFinish = jest.fn()
+    const Component: React.FC = () => (
+      <StepsForm onFinish={onFinish}>
+        <StepsForm.StepForm>
+          <Form.Item name='field1' label='Field 1'>
+            <Input />
+          </Form.Item>
+        </StepsForm.StepForm>
+      </StepsForm>
+    )
+    render(<Component />)
+
+    expect(screen.getAllByRole('button').length).toEqual(2)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await waitFor(() => expect(onFinish).toHaveBeenCalled())
   })
 })

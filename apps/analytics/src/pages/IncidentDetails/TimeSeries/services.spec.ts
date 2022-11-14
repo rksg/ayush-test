@@ -1,0 +1,136 @@
+import moment from 'moment-timezone'
+
+import { dataApiURL }       from '@acx-ui/analytics/services'
+import { fakeIncident1 }    from '@acx-ui/analytics/utils'
+import { store }            from '@acx-ui/store'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
+
+import { buffer6hr }             from './__tests__/fixtures'
+import { TimeSeriesChartTypes }  from './config'
+import {
+  Api,
+  getIncidentTimeSeriesPeriods
+} from './services'
+
+describe('chartQuery', () => {
+  afterEach(() =>
+    store.dispatch(Api.util.resetApiState())
+  )
+
+  const charts = [
+    TimeSeriesChartTypes.FailureChart,
+    TimeSeriesChartTypes.ClientCountChart,
+    TimeSeriesChartTypes.AttemptAndFailureChart
+  ]
+
+  const expectedQueryResults = {
+    network: {
+      hierarchyNode: {
+        failureChart: {
+          time: [
+            '2022-04-07T09:15:00.000Z',
+            '2022-04-08T09:30:00.000Z'
+          ],
+          eap: [1, 1]
+        },
+        clientCountChart: {
+          time: [
+            '2022-04-07T09:15:00.000Z',
+            '2022-04-07T09:30:00.000Z',
+            '2022-04-07T09:45:00.000Z',
+            '2022-04-07T10:00:00.000Z',
+            '2022-04-07T10:15:00.000Z'
+          ],
+          newClientCount: [1, 2, 3, 4, 5],
+          impactedClientCount: [6, 7, 8, 9, 10],
+          connectedClientCount: [11, 12, 13, 14, 15]
+        },
+        attemptAndFailureChart: {
+          time: [
+            '2022-04-07T09:15:00.000Z',
+            '2022-04-07T09:30:00.000Z'
+          ],
+          failureCount: [1, 2],
+          totalFailureCount: [1, 2],
+          attemptCount: [1, 2]
+        }
+      }
+    }
+  }
+
+  it('should return correct data when relatedIncidents is requested', async () => {
+    const expectedResult = {
+      network: {
+        hierarchyNode: {
+          ...expectedQueryResults,
+          relatedIncidents: {
+            id: '07965e24-84ba-48a5-8200-f310f8197f40',
+            severity: 0.5,
+            code: 'radius',
+            startTime: '2022-04-07T12:15:00.000Z',
+            endTime: '2022-04-07T13:15:00.000Z'
+          }
+        }
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
+      data: expectedResult
+    })
+    const { status, data, error } = await store.dispatch(
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts,
+        buffer: buffer6hr,
+        minGranularity: 'PT180S'
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
+    expect(error).toBe(undefined)
+  })
+  it('should return correct data when relatedIncidents is not requested', async () => {
+    const expectedResult = {
+      network: {
+        hierarchyNode: {
+          ...expectedQueryResults
+        }
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
+      data: expectedResult
+    })
+    const { status, data, error } = await store.dispatch(
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts,
+        buffer: buffer6hr,
+        minGranularity: 'PT180S'
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
+    expect(error).toBe(undefined)
+  })
+  it('should return error', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
+      error: new Error('something went wrong!')
+    })
+    const { status, data, error } = await store.dispatch(
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts,
+        minGranularity: 'PT180S',
+        buffer: buffer6hr
+      })
+    )
+    expect(status).toBe('rejected')
+    expect(data).toBe(undefined)
+    expect(error).not.toBe(undefined)
+  })
+  it('should getIncidentTimeSeriesPeriods', () => {
+    expect(getIncidentTimeSeriesPeriods(fakeIncident1, buffer6hr).start).toEqual(
+      moment(fakeIncident1.startTime).subtract(6, 'hours'))
+    expect(getIncidentTimeSeriesPeriods(fakeIncident1, buffer6hr).end).toEqual(
+      moment(fakeIncident1.endTime).add(6, 'hours'))
+  })
+})

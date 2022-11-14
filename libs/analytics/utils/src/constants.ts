@@ -1,4 +1,4 @@
-
+export const noDataSymbol = '-' as const
 // commented codes acc to prod rc config
 export const incidentCodes = [
   'ttc',
@@ -32,7 +32,7 @@ export const categoryNames = [
   { text: 'Performance', value: 'performance' },
   { text: 'Infrastructure', value: 'infrastructure' }
 ]
-  
+
 export const categoryCodeMap = {
   connection: {
     codes: [
@@ -42,14 +42,14 @@ export const categoryCodeMap = {
       'dhcp-failure',
       'auth-failure',
       'assoc-failure'
-    ]
+    ] as IncidentCode[]
   },
   performance: {
     codes: [
       'p-cov-clientrssi-low',
       'p-load-sz-cpu-load',
       'p-switch-memory-high'
-    ]
+    ] as IncidentCode[]
   },
   infrastructure: {
     codes: [
@@ -63,6 +63,7 @@ export const categoryCodeMap = {
       'i-switch-poe-pd',
       'i-apinfra-poe-low',
       'i-apinfra-wanthroughput-low'
-    ]
+    ] as IncidentCode[]
   }
 }
+

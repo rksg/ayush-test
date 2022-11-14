@@ -1,48 +1,94 @@
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
 import {
   calculateSeverity,
   Incident,
-  useShortDescription
+  shortDescription
 } from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill } from '@acx-ui/components'
+import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
+
+import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
+import { Insights }                          from '../Insights'
+import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
+import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
+import { TimeSeries }                        from '../TimeSeries'
+import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (props: Incident) => {
+export const FailureTemplate = (incident: Incident) => {
   const { $t } = useIntl()
+  const attributeList = [
+    Attributes.ClientImpactCount,
+    Attributes.IncidentCategory,
+    Attributes.IncidentSubCategory,
+    Attributes.Type,
+    Attributes.Scope,
+    Attributes.Duration,
+    Attributes.EventStartTime,
+    Attributes.EventEndTime
+  ]
+  const networkImpactCharts: NetworkImpactProps['charts'] = [{
+    chart: NetworkImpactChartTypes.WLAN,
+    type: 'client',
+    dimension: 'ssids'
+  }, {
+    chart: NetworkImpactChartTypes.Reason,
+    type: 'client',
+    dimension: 'reasonCodes'
+  }, {
+    chart: NetworkImpactChartTypes.ClientManufacturer,
+    type: 'client',
+    dimension: 'manufacturer'
+  }, {
+    chart: NetworkImpactChartTypes.Radio,
+    type: 'client',
+    dimension: 'radios'
+  }]
 
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.FailureChart,
+    TimeSeriesChartTypes.ClientCountChart,
+    TimeSeriesChartTypes.AttemptAndFailureChart
+  ]
+  const buffer = {
+    front: { value: 6, unit: 'hours' as unitOfTime.Base },
+    back: { value: 6, unit: 'hours' as unitOfTime.Base }
+  }
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Incident Details' })}
-        titleExtra={<SeverityPill severity={calculateSeverity(props.severity)!} />}
+        titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={<p>{useShortDescription(props)}</p>}
+        subTitle={shortDescription(incident)}
       />
-      <Row gutter={[20, 20]}>
-        <Col span={4}>
+      <GridRow>
+        <GridCol col={{ span: 4 }}>
           <UI.FixedAutoSizer>
-            {({ width }) => (
-              <div style={{ width }}>incident attributes</div>
-            )}
+            {({ width }) => (<div style={{ width }}>
+              <IncidentAttributes incident={incident} visibleFields={attributeList} />
+            </div>)}
           </UI.FixedAutoSizer>
-        </Col>
-        <Col span={20}>
-          <div>insights</div>
-        </Col>
-        <Col offset={4} span={20}>
-          <div>network impact</div>
-        </Col>
-        <Col offset={4} span={20}>
-          <div>charts</div>
-        </Col>
-      </Row>
+        </GridCol>
+        <GridCol col={{ span: 20 }}>
+          <Insights incident={incident} />
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '228px' }}>
+          <NetworkImpact incident={incident} charts={networkImpactCharts} />
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT180S'
+            buffer={buffer}
+          />
+        </GridCol>
+      </GridRow>
     </>
   )
 }
-
-export default IncidentDetailsTemplate

@@ -1,5 +1,7 @@
-import { Collapse as AntCollapse, Button } from 'antd'
-import styled                              from 'styled-components/macro'
+import { Collapse as AntCollapse } from 'antd'
+import styled                      from 'styled-components/macro'
+
+import { Button } from '../Button'
 
 export const Content = styled.div`
   min-height: 43px;

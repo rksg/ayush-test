@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent } from '@testing-library/react'
+
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { Modal } from '.'
 
@@ -23,28 +24,28 @@ describe('Modal', () => {
       CustomFooterConfirm
     </button>
   ]
-  it('should match snapshot', async () => {
+  it('should render custom footer', async () => {
     render(<Modal
       title='Basic Modal'
       closable={false}
       footer={footer}
-      content={content}
       visible={true}
+      children={content}
       data-testid={'basic-modal'}
     />)
     const modalComponent = screen.getByTestId('basic-modal')
     expect(modalComponent).toMatchSnapshot()
   })
 
-  it('should render modal correctly', async () => {
+  it('should render without custom footer', async () => {
     render(<Modal
       title='Long Modal Title'
       okText='Add'
       onCancel={handleCancel}
       onOk={handleConfirm}
       subTitle='Subtitle Description'
-      content={content}
       visible={true}
+      children={content}
     />)
     const closeButton = screen.getByRole('button', { name: /close/i })
     const cancelButton = screen.getByRole('button', { name: /cancel/i })

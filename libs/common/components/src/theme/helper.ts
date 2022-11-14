@@ -6,7 +6,7 @@ let cssPropsCache: ReturnType<typeof getComputedStyle>
  */
 export function cssStr (property: string): string {
   if (!cssPropsCache) cssPropsCache = getComputedStyle(document.documentElement)
-  return cssPropsCache.getPropertyValue(property)
+  return cssPropsCache.getPropertyValue(property).trim()
 }
 
 /**

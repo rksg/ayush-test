@@ -4,7 +4,7 @@ import { DefaultOptionType } from 'antd/es/cascader'
 
 import { NetworkFilter, Option } from '..'
 
-import { onApply, onCancel } from './utils'
+import { onApply } from './utils'
 
 
 const createNode: () => DefaultOptionType = () => {
@@ -54,7 +54,6 @@ export function LazyNestedSingle () {
       placeholder='Entire Organization'
       options={options as Option[]}
       onApply={onApply}
-      onCancel={onCancel}
       loadData={loadData}
       loading={loading}
       changeOnSelect

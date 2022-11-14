@@ -1,8 +1,9 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }   from '@acx-ui/analytics/services'
-import { Incident }  from '@acx-ui/analytics/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { dataApi }                      from '@acx-ui/analytics/services'
+import { transformIncidentQueryResult } from '@acx-ui/analytics/utils'
+import type { Incident }                from '@acx-ui/analytics/utils'
+import { useParams }                    from '@acx-ui/react-router-dom'
 
 const detailQueryProps = {
   incident: `
@@ -32,21 +33,19 @@ const detailQueryProps = {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentDetails: build.query({
-      query: (payload) => ({
+    incidentDetails: build.query<Incident, { id: string }>({
+      query: (variables) => ({
+        variables,
         document: gql`
-        query IncidentDetails ($id: String) {
-          incident(id: $id) {
-            ${detailQueryProps.incident}
+          query IncidentDetails ($id: String) {
+            incident(id: $id) {
+              ${detailQueryProps.incident}
+            }
           }
-        }
-      `,
-        variables: {
-          id: payload.id
-        }
+        `
       }),
       transformResponse: (response: { incident: Incident }) =>
-        response.incident
+        transformIncidentQueryResult(response.incident)
     })
   })
 })
@@ -54,6 +53,6 @@ export const api = dataApi.injectEndpoints({
 export const { useIncidentDetailsQuery } = api
 
 export function useIncident () {
-  const { incidentId: id } = useParams()
-  return useIncidentDetailsQuery({ id })
+  const { incidentId } = useParams<{ incidentId: string }>()
+  return useIncidentDetailsQuery({ id: String(incidentId) })
 }

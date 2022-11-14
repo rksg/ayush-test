@@ -1,14 +1,14 @@
 import React from 'react'
 
-import { useSplitTreatment }                                  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider }                                           from '@acx-ui/store'
-import { render, screen, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
-import { mockRestApiQuery }                                   from '@acx-ui/test-utils'
+import { useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
+import { render, screen, cleanup } from '@acx-ui/test-utils'
+import { mockRestApiQuery }        from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
-jest.mock('./App/Dashboard', () => () => {
+jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('analytics/Routes', () => () => {
@@ -17,16 +17,21 @@ jest.mock('analytics/Routes', () => () => {
 jest.mock('rc/Routes', () => () => {
   return (
     <>
+      <div data-testid='devices' />
       <div data-testid='networks' />
       <div data-testid='services' />
+      <div data-testid='policies' />
     </>
   )
 },{ virtual: true })
-jest.mock('./App/Venues/VenuesTable', () => ({
+jest.mock('./pages/Venues/VenuesTable', () => ({
   VenuesTable: () => {
     return <div data-testid='venues' />
   }
 }), { virtual: true })
+jest.mock('msp/Routes', () => () => {
+  return <div data-testid='msp' />
+}, { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -49,9 +54,19 @@ describe('AllRoutes', () => {
         wrapRoutes: false
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByTestId('analytics')
   })
+
+  test('should navigate to devices/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/devices/some-page',
+        wrapRoutes: false
+      }
+    })
+    await screen.findByTestId('devices')
+  })
+
   test('should navigate to networks/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -59,12 +74,11 @@ describe('AllRoutes', () => {
         wrapRoutes: false
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByTestId('networks')
   })
 
   test('should navigate to services/* if the feature flag is on', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -73,11 +87,11 @@ describe('AllRoutes', () => {
       }
     })
 
-    await screen.findByTestId('services')
+    expect(await screen.findByTestId('services')).toBeInTheDocument()
   })
 
   test('should not navigate to services/* if the feature flag is off', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -86,7 +100,33 @@ describe('AllRoutes', () => {
       }
     })
 
-    await screen.findByText('Services is not enabled')
+    expect(await screen.findByText('Services is not enabled')).toBeInTheDocument()
+  })
+
+  test('should navigate to policies/* if the feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/policies/some-page',
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByTestId('policies')).toBeInTheDocument()
+  })
+
+  test('should not navigate to policies/* if the feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/policies/some-page',
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('Policies is not enabled')).toBeInTheDocument()
   })
 
   test('should navigate to venues/*', async () => {
@@ -96,5 +136,14 @@ describe('AllRoutes', () => {
       }
     })
     await screen.findByTestId('venues')
+  })
+
+  test('should navigate to msp pages', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/v/tenantId/dashboard'
+      }
+    })
+    expect(await screen.findByTestId('msp')).toBeVisible()
   })
 })

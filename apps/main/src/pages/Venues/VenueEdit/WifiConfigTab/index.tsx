@@ -1,0 +1,78 @@
+import { useContext } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import { Tabs }                                  from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { VenueEditContext, EditContext } from '../index'
+
+import { AdvancedSettingForm } from './AdvancedTab/AdvancedSettingForm'
+import { NetworkingTab }       from './NetworkingTab'
+import { RadioTab }            from './RadioTab/RadioTab'
+import { SecurityTab }         from './SecurityTab'
+
+export function WifiConfigTab () {
+  const { $t } = useIntl()
+  const params = useParams()
+  const navigate = useNavigate()
+  const basePath = useTenantLink(`/venues/${params.venueId}/edit/wifi/`)
+  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+
+  const onTabChange = (tab: string) => {
+    const activeSubTab = params?.activeSubTab as keyof EditContext['tempData']
+    setEditContextData({
+      ...editContextData,
+      tabKey: activeSubTab,
+      newData: undefined,
+      oldData: undefined,
+      tempData: {
+        ...editContextData.tempData,
+        [activeSubTab]: editContextData.newData
+      }
+    })
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+  }
+
+  const tabTitleMap = (tabkey: string) => {
+    const tabTitle = {
+      radio: $t({ defaultMessage: 'Radio' }),
+      networking: $t({ defaultMessage: 'Networking' }),
+      security: $t({ defaultMessage: 'Security' }),
+      servers: $t({ defaultMessage: 'External Servers' }),
+      settings: $t({ defaultMessage: 'Advanced Settings' })
+    }
+
+    const title = tabTitle[tabkey as keyof typeof tabTitle]
+    return editContextData.isDirty && params?.activeSubTab === tabkey
+      ? `${title} *` : title
+  }
+
+  return (
+    <Tabs
+      onChange={onTabChange}
+      defaultActiveKey='radio'
+      activeKey={params.activeSubTab}
+      type='card'
+    >
+      <Tabs.TabPane tab={tabTitleMap('radio')} key='radio'>
+        <RadioTab />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={tabTitleMap('networking')} key='networking'>
+        <NetworkingTab />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={tabTitleMap('security')} key='security'>
+        <SecurityTab />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={tabTitleMap('servers')} key='servers'>
+        {$t({ defaultMessage: 'External Servers' })}
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={tabTitleMap('settings')} key='settings'>
+        <AdvancedSettingForm />
+      </Tabs.TabPane>
+    </Tabs>
+  )
+}

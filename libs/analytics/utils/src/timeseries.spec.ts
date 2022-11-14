@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { getSeriesData } from './index'
+import { getSeriesData, checkNoData } from './index'
 
 const seriesMapping = [
   { key: 'newClientCount', name: 'New Clients' },
@@ -21,37 +21,79 @@ const sample = {
   connectedClientCount: [11, 12, 13, 14, 15]
 }
 
+const sampleNoData = {
+  time: [
+    '2022-04-07T09:15:00.000Z',
+    '2022-04-07T09:30:00.000Z',
+    '2022-04-07T09:45:00.000Z',
+    '2022-04-07T10:00:00.000Z',
+    '2022-04-07T10:15:00.000Z'
+  ] as TimeStamp[],
+  newClientCount: [null],
+  impactedClientCount: [null],
+  connectedClientCount: [null]
+}
+
 describe('getSeriesData', () => {
   it('should return correct format', ()=>{
     expect(getSeriesData(sample, seriesMapping))
       .toEqual([
         {
+          key: 'newClientCount',
           name: 'New Clients',
           data: sample.time.map((t,index)=>[t, 1+index])
         },
         {
+          key: 'impactedClientCount',
           name: 'Impacted Clients',
           data: sample.time.map((t,index)=>[t, 6+index])
         },
         {
+          key: 'connectedClientCount',
           name: 'Connected Clients',
           data: sample.time.map((t,index)=>[t, 11+index])
         }
       ])
   })
-  it('should return - if data point is null', () => {
+  it('handles null values', () => {
+    const expected = [1, 2, null, 4, 5]
     const nullDataPointSample = {
       ...sample,
-      newClientCount: [1, 2, null, 4, 5]
+      newClientCount: expected
     }
-    expect(
-      getSeriesData(nullDataPointSample, seriesMapping)
-        .find(d => d.name === 'New Clients')!
-        .data[2][1]
-    ).toEqual('-')
+    const result = getSeriesData(nullDataPointSample, seriesMapping)
+      .find(d => d.name === 'New Clients')!
+      .data
+      .map(v => v[1])
+    expect(result).toEqual(expected)
   })
   it('should return empty array if no data', ()=>{
     expect(getSeriesData(null, seriesMapping))
       .toEqual([])
+  })
+  it('should return empty array if all data point is null', () => {
+    expect(
+      getSeriesData(sampleNoData, seriesMapping)).toEqual([])
+  })
+})
+
+describe('checkNoData', () => {
+  it('should return false if data is present', ()=>{
+    expect(checkNoData(sample))
+      .toEqual(false)
+    expect(checkNoData({
+      ...sample,
+      newClientCount: [1, 2, null, 4, 5],
+      impactedClientCount: [null, null, 8, null, null],
+      connectedClientCount: [null]
+    })).toEqual(false)
+  })
+  it('should return true if no data', ()=>{
+    expect(checkNoData(null))
+      .toEqual(true)
+  })
+  it('should return true if all data point is null', () => {
+    expect(
+      checkNoData(sampleNoData)).toEqual(true)
   })
 })

@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Progress as AntProgress } from 'antd'
+import styled, { css }             from 'styled-components/macro'
 
 import { incidentSeverities } from '@acx-ui/analytics/utils'
 
@@ -12,14 +13,46 @@ const pillColor = ({ type }: { type: TrendType | IncidentSeverities }) => {
     default: return incidentSeverities[type].color
   }
 }
+
+const textStyle = css`
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+`
+
 export const Pill = styled.span`
   display: inline-block;
   border-radius: 10px;
   padding: 3px 8px;
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-6-font-weight-bold);
-  font-size: var(--acx-subtitle-6-font-size);
-  line-height: var(--acx-subtitle-6-line-height);
-  color: var(--acx-primary-white);
   background-color: var(${pillColor});
+  line-height: var(--acx-subtitle-6-line-height);
+  ${textStyle}
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+`
+
+export const Progress = styled(AntProgress)`
+  height: 20px;
+  flex-direction: column;
+  display: flex;
+  flex-grow: 1;
+
+  .ant-progress-outer {
+    padding: 0;
+
+    .ant-progress-inner {
+      border-radius: 25px !important;
+    }
+  }
+
+  .ant-progress-text {
+    margin: 0px;
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+    position: relative;
+    top: -20px;
+    line-height: 20px;
+    ${textStyle}
+    font-weight: var(--acx-body-font-weight-bold);
+  }
 `

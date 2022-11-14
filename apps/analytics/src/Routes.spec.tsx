@@ -3,38 +3,41 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import AnalyticsRoutes from './Routes'
 
+jest.mock('@acx-ui/analytics/components', () => ({
+  HealthPage: () => <div data-testid='healthPage' />,
+  IncidentListPage: () => <div data-testid='incidentsListPage' />
+}))
+
 jest.mock('./pages/IncidentDetails', () => () => {
   return <div data-testid='incidentDetails' />
 })
-jest.mock('./pages/Incidents', () => () => {
-  return <div data-testid='incidentsListPage' />
-})
+
 test('should redirect analytics to analytics/incidents', async () => {
-  render(<AnalyticsRoutes />, {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics',
       wrapRoutes: false
     }
   })
-  await screen.findByTestId('incidentsListPage')
+  expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
 test('should navigate to analytics/incidents', async () => {
-  render(<AnalyticsRoutes />, {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics/incidents',
       wrapRoutes: false
     }
   })
-  await screen.findByTestId('incidentsListPage')
+  expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
 test('should navigate to analytics/recommendations', () => {
-  render(<AnalyticsRoutes />, {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics/recommendations',
       wrapRoutes: false
     }
   })
-  screen.getByText('Recommendations')
+  expect(screen.getByText('Recommendations')).toBeVisible()
 })
 test('should navigate to analytics/health', () => {
   render(<AnalyticsRoutes />, {
@@ -43,16 +46,25 @@ test('should navigate to analytics/health', () => {
       wrapRoutes: false
     }
   })
-  screen.getByText('Health')
+  expect(screen.getByTestId('healthPage')).toBeVisible()
+})
+test('should navigate to analytics/health/tab/overview', async () => {
+  render(< Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/analytics/health/tab/overview',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('healthPage')).toBeVisible()
 })
 test('should navigate to analytics/configChange', () => {
-  render(<AnalyticsRoutes />, {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics/configChange',
       wrapRoutes: false
     }
   })
-  screen.getByText('Config Change')
+  expect(screen.getByText('Config Change')).toBeVisible()
 })
 test('should navigate to analytics/incidentDetails', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
@@ -61,14 +73,14 @@ test('should navigate to analytics/incidentDetails', async () => {
       wrapRoutes: false
     }
   })
-  await screen.findByTestId('incidentDetails')
+  expect(await screen.findByTestId('incidentDetails')).toBeVisible()
 })
-test('should navigate to analytics/incidents/tab/overview', async () => {  
+test('should navigate to analytics/incidents/tab/overview', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics/incidents/tab/overview',
       wrapRoutes: false
     }
   })
-  await screen.findByTestId('incidentsListPage')
+  expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
