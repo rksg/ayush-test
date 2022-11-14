@@ -2,10 +2,10 @@
 import { Divider, Form, Input } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Drawer }                           from '@acx-ui/components'
-import { useApLanPortsQuery, useApRadioCustomizationQuery, useGetVenueQuery }      from '@acx-ui/rc/services'
-import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, DeviceGps, gpsToFixed } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                   from '@acx-ui/react-router-dom'
+import { ContentSwitcher, ContentSwitcherProps, Drawer }                      from '@acx-ui/components'
+import { useApLanPortsQuery, useApRadioCustomizationQuery, useGetVenueQuery } from '@acx-ui/rc/services'
+import { AP, ApLanPort, ApRadio, ApVenueStatusEnum, DeviceGps, gpsToFixed }   from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                              from '@acx-ui/react-router-dom'
 
 
 import { ApCellularProperties } from './ApCellularProperties'
@@ -15,7 +15,7 @@ interface ApDetailsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   currentAP: any,
-  apDetails: ApDetails
+  apDetails: AP
 }
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
@@ -72,6 +72,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'GPS Coordinates' })}
           children={
+            apDetails.deviceGps &&
             getGpsFieldStatus(apDetails.deviceGps, currentAP.venueId)
           }
         />

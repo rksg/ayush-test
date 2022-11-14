@@ -1,4 +1,7 @@
 import { APMeshRole } from '../constants'
+import { DeviceGps }  from '../models/DeviceGps'
+
+import { ApVenueStatusEnum } from '.'
 
 export interface APRadio {
   channel?: number,
@@ -11,29 +14,60 @@ export interface AP {
   IP?: string
   apMac?: string
   apStatusData?: {
-    APRadio?: Array<APRadio>
-    // APSystem?: {
-    //   uptime?: number
-    // },
+    APRadio?: Array<RadioProperties>
+    cellularInfo: CelluarInfo
+    APSystem?: {
+      uptime?: number
+    }
   },
-  clients?: number,
-  deviceGroupId: string,
-  deviceGroupName?: string,
-  deviceStatus: string,
-  meshRole: string,
-  model: string,
-  name?: string,
-  serialNumber: string,
-  tags: string,
-  venueId: string,
-  venueName: string,
-  // lastSeenTime: string,
-  // uptime?: string,
-  // channel24?: RadioProperties,
-  // channel50?: RadioProperties,
-  // channelL50?: RadioProperties,
-  // channelU50?: RadioProperties,
-  // channel60?: RadioProperties
+  clients?: number
+  deviceGroupId: string
+  deviceGroupName?: string
+  deviceStatus: string
+  meshRole: string
+  model: string
+  name?: string
+  serialNumber: string
+  tags: string
+  venueId: string
+  venueName: string
+  description?: string
+  deviceGps?: DeviceGps
+  deviceStatusSeverity?: ApVenueStatusEnum,
+  lastSeenTime?: string
+  uptime?: string
+}
+
+export interface ApViewModel extends AP {
+  channel24?: RadioProperties
+  channel50?: RadioProperties
+  channelL50?: RadioProperties
+  channelU50?: RadioProperties
+  channel60?: RadioProperties
+}
+
+export interface CelluarInfo {
+  cellularIsSIM0Present: string
+  cellularIMSISIM0: string
+  cellularICCIDSIM0: string
+  cellularTxBytesSIM0: string
+  cellularRxBytesSIM0: string
+  cellularSwitchCountSIM0: string
+  cellularNWLostCountSIM0: string
+  cellularCardRemovalCountSIM0: string
+  cellularDHCPTimeoutCountSIM0: string
+  cellularIsSIM1Present: string
+  cellularIMSISIM1: string
+  cellularICCIDSIM1: string
+  cellularTxBytesSIM1: string
+  cellularRxBytesSIM1: string
+  cellularSwitchCountSIM1: string
+  cellularNWLostCountSIM1: string
+  cellularCardRemovalCountSIM1: string
+  cellularDHCPTimeoutCountSIM: string
+  cellularActiveSim: string
+  cellularConnectionStatus: string
+  cellularSignalStrength: string
 }
 
 export interface ApDetails {
@@ -171,6 +205,8 @@ export interface RadioProperties {
   txPower: string;
   channel: string;
   band?: string;
+  radioId?: number
+  operativeChannelBandwidth?: string
 }
 
 export enum GpsFieldStatus {

@@ -14,8 +14,8 @@ import { TenantLink }        from '@acx-ui/react-router-dom'
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
 
-export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery:any }) {
-  // UseQueryResult<TableResult<AP, ApExtraParams>> TODO:
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery: any }) {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const { apViewModelQuery, apDetailsQuery } = props

@@ -15,7 +15,8 @@ import {
   RadioProperties,
   WifiUrlsInfo,
   ApLanPort,
-  ApRadio
+  ApRadio,
+  ApViewModel
 } from '@acx-ui/rc/utils'
 import { getShortDurationFormat, getUserDateFormat } from '@acx-ui/utils'
 
@@ -50,7 +51,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     }),
-    apViewModel: build.query<ApDetailHeader, RequestPayload>({
+    apViewModel: build.query<TableResult<ApViewModel, ApExtraParams>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getApsList, params)
         return {
@@ -58,8 +59,8 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: any) {
-        return transformApDetails(result?.data[0])
+      transformResponse (result: TableResult<ApViewModel, ApExtraParams>) {
+        return transformApViewModel(result?.data[0])
       }
     }),
     apDetails: build.query<ApDetails, RequestPayload>({
@@ -114,15 +115,15 @@ const transformApList = (result: TableResult<AP, ApExtraParams>) => {
       const apRadioArray = item.apStatusData.APRadio
 
       const apRadioObject = {
-        apRadio24: apRadioArray.find((item: APRadio) =>
+        apRadio24: apRadioArray.find((item: RadioProperties) =>
           item.band === ApRadioBands.band24),
-        apRadio50: apRadioArray.find((item: APRadio) =>
+        apRadio50: apRadioArray.find((item: RadioProperties) =>
           item.band === ApRadioBands.band50 && item.radioId === 1),
-        apRadioL50: apRadioArray.find((item: APRadio) =>
+        apRadioL50: apRadioArray.find((item: RadioProperties) =>
           item.band === ApRadioBands.band50 && item.radioId === 1),
-        apRadioU50: apRadioArray.find((item: APRadio) =>
+        apRadioU50: apRadioArray.find((item: RadioProperties) =>
           item.band === ApRadioBands.band50 && item.radioId === 2),
-        apRadio60: apRadioArray.find((item: APRadio) =>
+        apRadio60: apRadioArray.find((item: RadioProperties) =>
           item.radioId === 2)
       }
 
@@ -152,8 +153,8 @@ const transformApList = (result: TableResult<AP, ApExtraParams>) => {
 
 }
 
-const transformApDetails = (result: any) => {
-  const ap = { ...result }
+const transformApViewModel = (result: ApViewModel) => {
+  const ap = JSON.parse(JSON.stringify(result))
   ap.lastSeenTime = ap.lastSeenTime ? getUserDateFormat(ap.lastSeenTime, undefined, true) : '--'
   // get uptime field.
   if (ap.apStatusData && ap.apStatusData.APSystem && ap.apStatusData.APSystem.uptime) {
