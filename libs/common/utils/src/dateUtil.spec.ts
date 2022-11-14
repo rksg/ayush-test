@@ -1,7 +1,8 @@
 import {
   DateRange,
   dateRangeForLast,
-  getDateRangeFilter
+  getDateRangeFilter,
+  resetRanges
 } from './dateUtil'
 
 
@@ -10,6 +11,8 @@ jest.spyOn(global.Date, 'now').mockImplementation(
 )
 
 describe('dateUtil', () => {
+  beforeAll(() => resetRanges())
+
   describe('dateRangeForLast', () => {
     it('Should return date range for the given input', () => {
       expect(dateRangeForLast(3, 'months').toString()).toEqual(
@@ -17,7 +20,6 @@ describe('dateUtil', () => {
       )
     })
   })
-
 
   describe('getDateRangeFilter', () => {
     it('should return correct range input', () => {

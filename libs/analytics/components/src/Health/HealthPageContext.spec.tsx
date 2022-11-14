@@ -5,6 +5,7 @@ import moment from 'moment'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { act, renderHook }         from '@acx-ui/test-utils'
 import { TimeStampRange }          from '@acx-ui/types'
+import { resetRanges }             from '@acx-ui/utils'
 
 import {
   HealthPageContext,
@@ -16,6 +17,7 @@ const original = Date.now
 describe('HealthPageContextProvider', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetRanges()
   })
 
   afterAll(() => Date.now = original)
