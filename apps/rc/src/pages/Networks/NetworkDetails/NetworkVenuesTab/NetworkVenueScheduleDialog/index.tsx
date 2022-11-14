@@ -143,7 +143,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         arrCheckedList[index] = selectedList
         setCheckedList(arrCheckedList)
 
-        arrCheckAll[index] = true
+        arrCheckAll[index] = selectedList.length === 96
         setCheckAll(arrCheckAll)
 
         arrIndeterminate[index] = !!selectedList.length && selectedList.length < list.length
@@ -345,9 +345,9 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         {...props}
         title={$t({ defaultMessage: 'Schedule for Network "{NetworkName}" in Venue "{VenueName}"' }, { NetworkName: network?.name, VenueName: venue?.name })}
         okText={$t({ defaultMessage: 'Apply' })}
-        maskClosable={false}
+        maskClosable={true}
         keyboard={false}
-        closable={false}
+        closable={true}
         width={1280}
         onOk={onOk}
         okButtonProps={{ disabled: loading }}

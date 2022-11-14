@@ -16,6 +16,19 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
   <div
     class="ant-modal-content"
   >
+    <button
+      aria-label="Close"
+      class="ant-modal-close"
+      type="button"
+    >
+      <span
+        class="ant-modal-close-x"
+      >
+        <svg>
+          CloseSymbol.svg
+        </svg>
+      </span>
+    </button>
     <div
       class="ant-modal-header"
     >
@@ -13220,14 +13233,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                         style="padding-left: 12px; padding-right: 12px;"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled"
                           style="margin-top: 5px; padding-right: 5px;"
                         >
                           <span
-                            class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                            class="ant-checkbox ant-checkbox-disabled"
                           >
                             <input
-                              checked=""
                               class="ant-checkbox-input"
                               data-testid="checkbox_sat"
                               disabled=""
