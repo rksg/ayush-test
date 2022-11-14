@@ -1,47 +1,46 @@
 import { getJwtTokenPayload } from './jwtToken'
 
 describe('jwtToken', () => {
-  beforeEach(() => {
-    // const payload = {
-    //   swuId: '0032h00000LUqkEAAT',
-    //   tenantType: 'REC',
-    //   sub: 'e3d0c24e808d42b1832d47db4c2a7914',
-    //   lastName: 'LastName 1960',
-    //   companyName: 'Dog Company 1960',
-    //   pver: 'acx-hybrid',
-    //   iss: 'auth-service',
-    //   acx_account_activation_flag: true,
-    //   userIdmTenantId: '0012h00000NrlmFAAR',
-    //   mlisaUserRole: 'alto-report-only',
-    //   acx_account_activation_date: '2022-11-07',
-    //   acx_account_type: "REC",
-    //   scope: 'login',
-    //   isMobileAppUser: false,
-    //   exp: 1667863445,
-    //   iat: 1667859845,
-    //   email:'dog1960@email.com',
-    //   isVar: false,
-    //   acx_account_vertical: 'Default',
-    //   isAuthOnlyUser: false,
-    //   isRuckusUser: false,
-    //   userName: 'dog1960@email.com',
-    //   varIdmTenantId: '0012h00000NrlmFAAR',
-    //   firstName: 'FisrtName 1960',
-    //   varAltoTenantId: 'e3d0c24e808d42b1832d47db4c2a7914',
-    //   flexera_alm_account_id: '',
-    //   tenantId: 'e3d0c24e808d42b1832d47db4c2a7914',
-    //   roleName: ['PRIME_ADMIN'],
-    //   isRuckusSupport: false,
-    //   originalRequestedURL: 'https://devalto.ruckuswireless.com/',
-    //   renew: 1667863085,
-    //   region: '[NA]',
-    //   acx_account_regions: ['EU', 'AS', 'NA'],
-    //   acx_account_tier: 'Gold',
-    //   acx_trial_in_progress: true
-    // }
+  const oldCookie = document.cookie
+  afterEach(() => {
+    document.cookie = oldCookie
+    jest.restoreAllMocks()
   })
-  it('Should return JWT token', () => {
-    const jwtPayload = getJwtTokenPayload()
-    expect(jwtPayload).not.toBeNull()
+
+  it('return null when JWT not available', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    document.cookie = ''
+    expect(getJwtTokenPayload()).toBeNull()
+    expect(spy).toBeCalledWith('No JWT token found!')
+  })
+
+  it('return token when available', () => {
+    const token = {
+      acx_account_regions: ['EU', 'AS', 'NA'],
+      acx_account_tier: 'Gold',
+      acx_account_type: 'REC',
+      acx_account_vertical: 'Default'
+    }
+    document.cookie = `JWT=xxx.${window.btoa(JSON.stringify(token))}.xxx;`
+    expect(getJwtTokenPayload()).toEqual(token)
+  })
+
+  it('handle cache', () => {
+    const token = {
+      acx_account_regions: ['EU', 'AS', 'NA'],
+      acx_account_tier: 'Gold',
+      acx_account_type: 'REC',
+      acx_account_vertical: 'Default'
+    }
+    document.cookie = `JWT=xxx.${window.btoa(JSON.stringify(token))}.xxx;`
+    expect(getJwtTokenPayload()).toEqual(token)
+    const spy = jest.spyOn(JSON, 'parse')
+    expect(getJwtTokenPayload()).toEqual(token)
+    expect(spy).not.toBeCalled()
+  })
+
+  it('throw on malformed cookie', () => {
+    document.cookie = 'JWT=sdfsdf.sdfdsfsd.sdfsdf;'
+    expect(() => getJwtTokenPayload()).toThrow('Unable to parse JWT Token')
   })
 })
