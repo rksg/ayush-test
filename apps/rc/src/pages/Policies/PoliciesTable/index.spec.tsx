@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
-import { Provider }                    from '@acx-ui/store'
+import { CommonUrlsInfo, RogueApUrls, getPolicyListRoutePath } from '@acx-ui/rc/utils'
+import { Provider }                                            from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -10,8 +10,6 @@ import {
   within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-
-import { getPolicyListRoutePath } from '../policyRouteUtils'
 
 import PoliciesTable from '.'
 
@@ -44,7 +42,7 @@ const mockTableResult = {
     {
       id: 'aa080e33-26a7-4d34-870f-b7f312fcfccc',
       name: 'Policy 3',
-      type: 'Rouge AP detection',
+      type: 'Rogue AP Detection',
       technology: 'WI-FI',
       scope: '8',
       tags: [

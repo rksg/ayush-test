@@ -1,9 +1,10 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }  from '@acx-ui/analytics/services'
-import { Incident } from '@acx-ui/analytics/utils'
+import { dataApi }                from '@acx-ui/analytics/services'
+import { BarChartData, Incident } from '@acx-ui/analytics/utils'
+import { getIntl }                from '@acx-ui/utils'
 
-export interface RssDistributionChartResponse {
+export interface Response {
   network: {
     hierarchyNode: {
       rssDistribution: { rss: number, count: number }[]
@@ -14,7 +15,7 @@ export interface RssDistributionChartResponse {
 export const rssDistributionChartApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     rssDistributionChart: build.query<
-      RssDistributionChartResponse['network']['hierarchyNode']['rssDistribution'],
+      BarChartData,
       Incident
     >({
       query: (incident: Incident) => ({
@@ -40,8 +41,17 @@ export const rssDistributionChartApi = dataApi.injectEndpoints({
           end: incident.endTime
         }
       }),
-      transformResponse: (response: RssDistributionChartResponse) =>
-        response.network.hierarchyNode.rssDistribution.reverse()
+      transformResponse: (response: Response) => {
+        const { $t } = getIntl()
+        const xValue = $t({ defaultMessage: 'RSS Distribution' })
+        const yValue = $t({ defaultMessage: 'Samples' })
+        const distribution = response.network.hierarchyNode.rssDistribution.reverse()
+        return {
+          dimensions: [xValue, yValue],
+          source: distribution.map(({ rss, count }) => [rss, count]),
+          seriesEncode: [{ x: xValue, y: yValue }]
+        } as BarChartData
+      }
     })
   })
 })

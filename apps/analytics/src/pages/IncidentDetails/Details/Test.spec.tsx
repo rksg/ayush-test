@@ -42,6 +42,15 @@ jest.mock('../IncidentDetails/TimeSeries')
 jest.mock('../Charts/RssDistributionChart', () => ({
   RssDistributionChart: () => <div data-testid='rssDistributionChart' />
 }))
+jest.mock('../Charts/PoeLowTable', () => ({
+  PoeLowTable: () => <div data-testid='poeLowTable' />
+}))
+jest.mock('../Charts/PoePdTable', () => ({
+  PoePdTable: () => <div data-testid='poePdTable' />
+}))
+jest.mock('../Charts/WanthroughputTable', () => ({
+  WanthroughputTable: () => <div data-testid='wanthroughputTable' />
+}))
 
 describe('Test', () => {
   fixtures.mockTimeSeries()
@@ -54,14 +63,14 @@ describe('Test', () => {
         fakeIncident: fakeIncidentPoeLow,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: ['poeLowTable']
       },
       {
         component: ApinfraWanthroughputLow,
         fakeIncident: fakeIncidentApInfraWanthroughput,
         hasNetworkImpact: true,
         hasTimeSeries: true,
-        charts: []
+        charts: ['wanthroughputTable']
       },
       {
         component: ApservContinuousReboots,
@@ -138,7 +147,7 @@ describe('Test', () => {
         fakeIncident: fakeIncidentPoePd,
         hasNetworkImpact: false,
         hasTimeSeries: false,
-        charts: []
+        charts: ['poePdTable']
       },
       {
         component: SwitchVlanMismatch,
