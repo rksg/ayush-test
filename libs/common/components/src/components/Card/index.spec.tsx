@@ -3,7 +3,7 @@ import { render, screen, act } from '@testing-library/react'
 import { Card } from '.'
 
 jest.mock('@acx-ui/icons', () => ({
-  ArrowsOut: () => <svg></svg>,
+  ArrowChevronRight: () => <svg></svg>,
   MoreVertical: () => <svg></svg>
 }))
 describe('Card component', () => {

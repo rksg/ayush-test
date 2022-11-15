@@ -41,7 +41,7 @@ function Card ({
             { props.onExpandClick ? <UI.Button
               key={'expand-btn'}
               title={'Expand'}
-              icon={<UI.ArrowOutIcon />}
+              icon={<UI.ArrowChevronRightIcon />}
               onClick={props.onExpandClick}
             /> : null }
             { props.onMoreClick ? <UI.Button

@@ -1,7 +1,7 @@
 import { Button as AntButton } from 'antd'
 import styled                  from 'styled-components/macro'
 
-import { ArrowsOut, MoreVertical } from '@acx-ui/icons'
+import { ArrowChevronRight, MoreVertical } from '@acx-ui/icons'
 
 import type { CardTypes } from '.'
 
@@ -10,7 +10,7 @@ type WrapperProps = {
   hasTitle: boolean
 }
 
-export const ArrowOutIcon = styled(ArrowsOut)``
+export const ArrowChevronRightIcon = styled(ArrowChevronRight)``
 export const MoreVerticalIcon = styled(MoreVertical)``
 
 export const Button = styled(AntButton)`

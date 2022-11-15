@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 import ReactECharts          from 'echarts-for-react'
 import _                     from 'lodash'
@@ -13,9 +13,10 @@ import {
   barChartAxisLabelOptions,
   barChartSeriesLabelOptions
 } from '../Chart/helper'
+import { useOnAxisLabelClick } from '../Chart/useOnAxisLabelClick'
 
-import type { ECharts, EChartsOption, RegisteredSeriesOption } from 'echarts'
-import type { EChartsReactProps }                              from 'echarts-for-react'
+import type { EChartsOption, RegisteredSeriesOption } from 'echarts'
+import type { EChartsReactProps }                     from 'echarts-for-react'
 
 type ChartData = {
   category: string
@@ -47,11 +48,6 @@ const defaultProps: StackedBarOptionalProps = {
   showTotal: true,
   showTooltip: true,
   barWidth: 10
-}
-
-type AxisEventData = {
-  targetType: string,
-  value: string
 }
 
 StackedBarChart.defaultProps = { ...defaultProps }
@@ -138,22 +134,6 @@ const massageData = (
         data: dataWithColor
       }
     })
-}
-
-export function useOnAxisLabelClick (
-  eChartsRef: RefObject<ReactECharts>,
-  onAxisLabelClick?: (name: string) => void
-) {
-  useEffect(() => {
-    if (!eChartsRef || !eChartsRef.current) return
-    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
-    echartInstance.on('click', function (params: unknown) {
-      const { targetType, value } = params as unknown as AxisEventData
-      if (targetType === 'axisLabel') {
-        onAxisLabelClick && onAxisLabelClick(value)
-      }
-    })
-  })
 }
 
 export function StackedBarChart <TChartData extends ChartData = ChartData> ({

@@ -48,7 +48,7 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Score' }),
       dataIndex: 'clientExperience',
       key: 'clientExperience',
-      width: 40,
+      // width: 40,
       align: 'center' as const,
       render: (value: unknown)=>{
         return <ProgressBar percent={(value as number) * 100}/>
@@ -58,14 +58,14 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Connection Success' }),
       dataIndex: 'connectionSuccessPercent',
       key: 'connectionSuccessPercent',
-      width: 40,
+      // width: 40,
       align: 'center' as const
     },
     {
       title: $t({ defaultMessage: 'Time To Connect' }),
       dataIndex: 'timeToConnectPercent',
       key: 'timeToConnectPercent',
-      width: 80,
+      // width: 80,
       align: 'center' as const,
       render: (value: unknown, row)=>{
         const threshold = row.timeToConnectThreshold ??
@@ -85,7 +85,7 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Client Throughput' }),
       dataIndex: 'clientThroughputPercent',
       key: 'clientThroughputPercent',
-      width: 90,
+      // width: 90,
       align: 'center' as const,
       render: (value: unknown, row)=>{
         const threshold = row.clientThroughputThreshold ??
@@ -105,8 +105,8 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Online APs' }),
       dataIndex: 'onlineApsPercent',
       key: 'onlineApsPercent',
-      align: 'center' as const,
-      width: 40
+      align: 'center' as const
+      // width: 40
     }
   ]
   const calcPercent = ([val, sum]:(number | null)[]) => {

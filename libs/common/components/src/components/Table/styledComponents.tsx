@@ -320,6 +320,10 @@ const formStyle = css`
 const compactBorderedStyle = css`
   .ant-pro-table {
     .ant-table {
+      table {
+        width: 100% !important;
+      }
+
       &-thead > tr:first-child > th,
       &-thead > tr:last-child > th {
         font-size: var(--acx-body-5-font-size);
