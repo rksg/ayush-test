@@ -44,6 +44,7 @@ function DeviceRoutes () {
         element={<ApDetails />}
       />
       <Route path='devices/switches' element={<SwitchesTable />} />
+      <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )
 }
@@ -108,14 +109,6 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<h1>DHCP details page</h1>}
       />
-    </Route>
-  )
-}
-
-function DeviceRoutes () {
-  return rootRoutes(
-    <Route path='t/:tenantId'>
-      <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )
 }
