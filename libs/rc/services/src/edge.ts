@@ -13,8 +13,8 @@ export const baseEdgeApi = createApi({
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
     getEdgeList: build.query<TableResult<EdgeViewModel>, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getEdgeList)
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
         return {
           ...req,
           body: payload

@@ -3,7 +3,7 @@ import { ApiInfo } from '../apiService'
 export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   getEdgeList: {
     method: 'post',
-    url: '/edges'
+    url: '/api/viewmodel/tenant/:tenantId/edges'
   },
   deleteEdge: {
     method: 'delete',
