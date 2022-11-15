@@ -16,7 +16,6 @@ export interface CardProps extends Pick<AntCardProps, 'children'> {
   subTitle?: string
   onExpandClick?: () => void
   onMoreClick?: () => void
-  actionText?: string
   action?: {
     actionName: string
     onActionClick: () => void
