@@ -47,7 +47,8 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'AddAps'
+            'AddAps',
+            'AddApGroupLegacy'
           ]
           showActivityMessage(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
