@@ -94,7 +94,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     }),
-    apViewModel: build.query<TableResult<ApViewModel, ApExtraParams>, RequestPayload>({
+    apViewModel: build.query<ApViewModel, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getApsList, params)
         return {
@@ -244,7 +244,7 @@ const transformApList = (result: TableResult<AP, ApExtraParams>) => {
     }
   })
   result.extra = channelColumnStatus
-
+  console.log(result)
   return result
 
 }

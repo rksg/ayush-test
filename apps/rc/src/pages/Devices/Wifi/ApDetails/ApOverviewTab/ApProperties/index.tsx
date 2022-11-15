@@ -8,17 +8,28 @@ import {
   Card,
   Subtitle
 } from '@acx-ui/components'
-import { ApVenueStatusEnum } from '@acx-ui/rc/utils'
-import { TenantLink }        from '@acx-ui/react-router-dom'
+import { ApDetails, ApVenueStatusEnum, ApViewModel, WifiEntityEnum } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
+import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery: any }) {
+export function ApProperties () {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const { apViewModelQuery, apDetailsQuery } = props
+  const params = useParams()
+  const apViewModelPayload = {
+    entityType: WifiEntityEnum.apsTree,
+    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
+      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
+      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
+      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
+      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
+    filters: { serialNumber: [params.serialNumber] }
+  }
+  const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
+  const apDetailsQuery = useApDetailsQuery({ params })
   const currentAP = apViewModelQuery.data
   const apDetails = apDetailsQuery.data
   const onMoreAction = () => {
@@ -170,8 +181,8 @@ export function ApProperties (props: { apViewModelQuery: any, apDetailsQuery: an
       <ApDetailsDrawer
         visible={visible}
         setVisible={setVisible}
-        currentAP={currentAP}
-        apDetails={apDetails}
+        currentAP={currentAP as ApViewModel}
+        apDetails={apDetails as ApDetails}
       />
     </Loader>
   )

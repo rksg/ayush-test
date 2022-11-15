@@ -1,25 +1,11 @@
 import { AnalyticsFilter, useAnalyticsFilter }    from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                       from '@acx-ui/components'
-import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
-import { WifiEntityEnum }                         from '@acx-ui/rc/utils'
-import { useParams }                              from '@acx-ui/react-router-dom'
 
 import { ApProperties } from './ApProperties'
 
 export function ApOverviewTab () {
   const { filters } = useAnalyticsFilter()
-  const params = useParams()
-  const apViewModelPayload = {
-    entityType: WifiEntityEnum.apsTree,
-    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
-    filters: { serialNumber: [params.serialNumber] }
-  }
-  const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const apDetailsQuery = useApDetailsQuery({ params })
+
   const venueApFilter = {
     ...filters
     // path: [{ type: 'zone', name: data?.venue.name }]
@@ -37,7 +23,7 @@ export function ApOverviewTab () {
        Floor Plan
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ background: '#F7F7F7' }}>
-        <ApProperties apViewModelQuery={apViewModelQuery} apDetailsQuery={apDetailsQuery} />
+        <ApProperties />
       </GridCol>
       <ApWidgets filters={venueApFilter}/>
     </GridRow>
