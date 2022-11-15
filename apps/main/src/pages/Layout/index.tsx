@@ -42,7 +42,7 @@ function Layout () {
             <GridRow>
               <GridCol col={{ span: 19 }}>
                 <Input disabled
-                  placeholder={useIntl().$t(({ defaultMessage: 'Search here...' }))}
+                  placeholder={useIntl().$t(({ defaultMessage: 'What are you looking for?' }))}
                   style={{
                     color: cssStr('--acx-primary-white')
                   }}

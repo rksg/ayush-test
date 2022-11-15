@@ -1,24 +1,20 @@
 import { forwardRef } from 'react'
 
-import { Badge }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Badge, Popover } from 'antd'
 
-import { LayoutUI, Tooltip }         from '@acx-ui/components'
+import { LayoutUI }                  from '@acx-ui/components'
 import { NotificationSolid }         from '@acx-ui/icons'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import { useParams }                 from '@acx-ui/react-router-dom'
-import { notAvailableMsg }           from '@acx-ui/utils'
+
+import { AlarmsTable } from '../AlarmsTable'
 
 const NotificationCounterWithRef = forwardRef<HTMLElement, { count: number }>((props, ref) => {
   return <Badge
     {...props}
     overflowCount={9}
     offset={[-3, 0]}
-    children={
-      <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-        <LayoutUI.ButtonSolid disabled ref={ref} icon={<NotificationSolid />} />
-      </Tooltip>
-    }
+    children={<LayoutUI.ButtonSolid ref={ref} icon={<NotificationSolid />} />}
   />
 })
 
@@ -35,14 +31,16 @@ export function AlarmsHeaderButton () {
     }
   }
 
+  const content = (
+    <AlarmsTable />
+  )
+
   const AlarmsHeaderButton = () => {
-    // TODO: uncomment after content matches mockup
-    // return <Popover arrowPointAtCenter
-    //   content={<AlarmsTable />}
-    //   trigger='click'>
-    //   <NotificationCounterWithRef count={getCount()} />
-    // </Popover>
-    return <NotificationCounterWithRef count={getCount()} />
+    return <Popover arrowPointAtCenter
+      content={content}
+      trigger='click'>
+      <NotificationCounterWithRef count={getCount()} />
+    </Popover>
   }
 
   return <AlarmsHeaderButton />

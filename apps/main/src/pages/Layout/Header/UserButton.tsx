@@ -4,10 +4,8 @@ import {  QuestionMarkCircleSolid } from '@acx-ui/icons'
 import { LogoutOutlined, SettingOutlined } from '@ant-design/icons'
 import { Avatar, Menu, Dropdown, Button }                        from 'antd'
 import { useIntl } from 'react-intl'
-import {
-  LayoutUI
-}                        from '@acx-ui/components'
-import { UserNameButton } from './styledComponents'
+import { LayoutUI } from '@acx-ui/components'
+import { UserNameButton }                  from './styledComponents'
 
 const UserButton = () => {
   const { $t } = useIntl()
@@ -32,7 +30,7 @@ const UserButton = () => {
   )
 
   return (
-    <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft'>
+    <Dropdown overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
       <UserNameButton>JS</UserNameButton>
     </Dropdown>
   )
