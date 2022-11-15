@@ -68,17 +68,12 @@ export default function DHCPInstancesTable (
   ]
 
   return (
-    <Card
-      title={$t({ defaultMessage: 'Instances ({count})' }, { count: dataSource?.length })}>
-      <div style={{ width: '100%' }}>
-        <div >
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            rowKey='id'
-          />
-        </div>
-      </div>
+    <Card title={$t({ defaultMessage: 'Instances ({count})' }, { count: dataSource?.length })}>
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        rowKey='id'
+      />
     </Card>
   )
 }

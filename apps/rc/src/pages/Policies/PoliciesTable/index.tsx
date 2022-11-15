@@ -6,12 +6,14 @@ import {
   useTableQuery,
   Policy,
   PolicyType,
-  PolicyTechnology
+  PolicyTechnology,
+  getPolicyDetailsLink,
+  getSelectPolicyRoutePath,
+  PolicyOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { policyTypeLabelMapping, policyTechnologyLabelMapping }            from '../contentsMap'
-import { getPolicyDetailsLink, getSelectPolicyRoutePath, PolicyOperation } from '../policyRouteUtils'
+import { policyTypeLabelMapping, policyTechnologyLabelMapping } from '../contentsMap'
 
 
 function useColumns () {
@@ -59,13 +61,6 @@ function useColumns () {
       key: 'scope',
       title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'scope',
-      sorter: true,
-      align: 'center'
-    },
-    {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
       sorter: true
     }
   ]

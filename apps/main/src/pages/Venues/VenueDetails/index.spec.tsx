@@ -43,7 +43,9 @@ jest.mock('@acx-ui/analytics/components', () => ({
   TopSwitchesByPoEUsage: () => <div data-testid={'analytics-TopSwitchesByPoEUsage'} title='TopSwitchesByPoEUsage' />,
   TopSwitchesByTraffic: () => <div data-testid={'analytics-TopSwitchesByTraffic'} title='TopSwitchesByTraffic' />,
   TrafficByVolume: () => <div data-testid={'analytics-TrafficByVolume'} title='TrafficByVolume' />,
-  VenueHealth: () => <div data-testid={'analytics-VenueHealth'} title='VenueHealth' />
+  VenueHealth: () => <div data-testid={'analytics-VenueHealth'} title='VenueHealth' />,
+  IncidentTabContent: () => <div data-testid={'analytics-IncidentTabContent'} title='IncidentTabContent' />,
+  HealthPage: () => <div data-testid={'analytics-HealthPage'} title='HealthPage' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   TopologyFloorPlanWidget: () => <div data-testid={'rc-TopologyFloorPlanWidget'} title='TopologyFloorPlanWidget' />,

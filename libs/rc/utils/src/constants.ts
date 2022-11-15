@@ -1,7 +1,3 @@
-export const VLAN_PREFIX = {
-  VLAN: 'VLAN-',
-  POOL: 'VLAN Pool: '
-}
 
 export enum NetworkTypeEnum {
   PSK = 'psk',
