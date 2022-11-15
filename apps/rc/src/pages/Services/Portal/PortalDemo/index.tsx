@@ -98,7 +98,7 @@ export default function PortalDemo ({
               />
             </UI.FieldExtraTooltip>
           </div>
-          <div style={{ flex: '0 0 190px', marginTop: -5 }}>
+          <div style={{ flex: '0 0 190px' }}>
             <UI.DesktopOutlined $marked={marked.desk}
               title='deskicon'
               onClick={()=>{

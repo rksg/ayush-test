@@ -383,22 +383,22 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    style="flex: 0 0 190px; margin-top: -5px;"
+                                    style="flex: 0 0 190px;"
                                   >
                                     <svg
-                                      class="styledComponents__DesktopOutlined-sc-cby53p-52 ersnHH"
+                                      class="styledComponents__DesktopOutlined-sc-cby53p-52 jdArsH"
                                       title="deskicon"
                                     >
                                       DesktopOutlined.svg
                                     </svg>
                                     <svg
-                                      class="styledComponents__TabletOutlined-sc-cby53p-51 jEXSwM"
+                                      class="styledComponents__TabletOutlined-sc-cby53p-51 harqqd"
                                       title="tableticon"
                                     >
                                       TabletOutlined.svg
                                     </svg>
                                     <svg
-                                      class="styledComponents__MobileOutlined-sc-cby53p-53 heHno"
+                                      class="styledComponents__MobileOutlined-sc-cby53p-53 bCsSrR"
                                       title="mobileicon"
                                     >
                                       MobilePhoneOutlined.svg
@@ -408,7 +408,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     style="flex-basis: auto; text-align: right; padding-right: 5px;"
                                   >
                                     <button
-                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 esgMPk styledComponents__Popover-sc-cby53p-41"
+                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 bVCjfP styledComponents__Popover-sc-cby53p-41"
                                       type="button"
                                     >
                                       <span>
@@ -416,7 +416,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                       </span>
                                     </button>
                                     <button
-                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 esgMPk styledComponents__Popover-sc-cby53p-41"
+                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 bVCjfP styledComponents__Popover-sc-cby53p-41"
                                       type="button"
                                     >
                                       <span>
@@ -424,7 +424,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                       </span>
                                     </button>
                                     <button
-                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 esgMPk"
+                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 bVCjfP"
                                       type="button"
                                     >
                                       <span>

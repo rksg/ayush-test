@@ -62,7 +62,7 @@ const buttonStyle= css`
 `
 export const Button = styled(UIButton)`
   ${buttonStyle}
-  margin-right:20px;
+  margin-right:10px;
 `
 export const PopoverButton = styled(UIButton)`
   ${buttonStyle}
@@ -403,10 +403,11 @@ export const SelectedDiv = styled.div`
 `
 const iconsEditStyle = css`
   &:hover{
-    background-color:var(--acx-neutrals-50);
+    background-color:var(--acx-neutrals-25);
   }
-  padding-left:5px;
-  padding-right:5px;
+  margin-left:5px;
+  margin-right:5px;
+  width: 16px;
 `
 export const PlusOutlined = styled(UIPlus)<{ $showPlus: boolean | null }>`
   ${iconsEditStyle}
@@ -448,17 +449,17 @@ export const EyeSlashSolid = styled(UIEyeSlashSolid)`
 const deviceIcons = css`
   &:hover{
     background-color:var(--acx-accents-orange-10);
+    border-radius:4px;
   }
-  padding-left:5px;
-  padding-right:5px;
-  margin-left:8px;
-  height:40px;
-  width:40px;
+  margin-left:5px;
+  margin-right:5px;
+  height:32px;
+  width:32px;
   color:var(--acx-primary-black);
 `
 const deviceSelectedIcons = css`
   border:1px solid;
-  border-radius:5px;
+  border-radius:4px;
   color:var(--acx-accents-orange-50);
   background-color:var(--acx-accents-orange-20);
   path,circle,rect{
