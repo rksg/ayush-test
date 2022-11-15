@@ -8,8 +8,12 @@ RUN apk add curl
 # dump git information
 ARG ENV_FILE
 COPY ${ENV_FILE} .
-RUN export $(cat ${ENV_FILE})
-# RUN cat ~/.npmrc
+RUN export $(cat ${ENV_FILE}) \
+  && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" > ~/.npmrc \
+  && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/"
+RUN cat ~/.npmrc
+RUN echo $ARTI_USER
+RUN echo $ARTI_PASSWORD
 
 # Install dependencies
 COPY package.json package-lock.json ./
