@@ -1,8 +1,8 @@
 import { APMeshRole } from '../constants'
+import { ApDeep }     from '../models/ApDeep'
 import { DeviceGps }  from '../models/DeviceGps'
 
 import { ApVenueStatusEnum } from '.'
-import { ApDeep }     from '../models/ApDeep'
 
 export interface AP {
   IP?: string
