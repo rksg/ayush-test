@@ -29,8 +29,8 @@ export const Wrapper = styled.div<WrapperProps>`
   width: 100%;
   .ant-card {
     height: 100%;
-    display:flex;
-    flex-direction:column;
+    display: flex;
+    flex-direction: column;
     border-radius: 8px;
     ${(props) => (props.type === 'default' ? `
       padding: 12px 16px;
@@ -43,7 +43,7 @@ export const Wrapper = styled.div<WrapperProps>`
     ` : '')}
   }
   .ant-card-head {
-    ${(props) => (props.hasTitle ? '' : 'display:none;')}
+    ${(props) => (props.hasTitle ? '' : 'display: none;')}
     padding: 0;
     border-bottom: none;
     min-height: 0;
@@ -60,6 +60,7 @@ export const Wrapper = styled.div<WrapperProps>`
   }
   .ant-card-body {
     display: flex;
+    flex-direction: column;
     flex-grow: 1;
     padding: 0;
     font-size: var(--acx-body-4-font-size);

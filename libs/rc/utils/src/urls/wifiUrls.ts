@@ -96,5 +96,37 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getApRadioCustomization: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  getWifiCapabilities: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/capabilities'
+  },
+  addAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap'
+  },
+  getDhcpAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/dhcp-ap'
+  },
+  deleteAp: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber'
+  },
+  deleteAps: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap'
+  },
+  downloadApLog: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/download-log'
+  },
+  rebootAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/reboot'
+  },
+  factoryResetAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
   }
 }

@@ -1,4 +1,5 @@
 import { gql }               from 'graphql-request'
+import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
 import { dataApi }    from '@acx-ui/analytics/services'
@@ -16,7 +17,7 @@ import {
 import type { RecordWithChildren } from '@acx-ui/components'
 import { getIntl }                 from '@acx-ui/utils'
 
-import { durationValue } from './utils'
+const durationValue = (start: string, end: string) => moment(end).diff(moment(start))
 
 const listQueryProps = {
   incident: `

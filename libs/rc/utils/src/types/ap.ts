@@ -2,6 +2,7 @@ import { APMeshRole } from '../constants'
 import { DeviceGps }  from '../models/DeviceGps'
 
 import { ApVenueStatusEnum } from '.'
+import { ApDeep }     from '../models/ApDeep'
 
 export interface AP {
   IP?: string
@@ -127,6 +128,13 @@ export interface ApDetails {
   deviceGps?: DeviceGps
 }
 
+export interface ApGroup {
+  aps?: ApDeep[],
+  id: string,
+  isDefault: boolean,
+  name: string,
+  venueId: string
+}
 export interface ApDetailHeader {
   title: string,
   headers: {
