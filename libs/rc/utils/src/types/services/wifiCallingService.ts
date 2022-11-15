@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { QosPriorityEnum } from '../constants'
+import { QosPriorityEnum } from '../../constants'
 
 export interface WifiCallingScope {
   id: string,
