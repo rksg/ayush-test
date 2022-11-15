@@ -39,8 +39,10 @@ export default function PortalWelcomeContent (props: {
         value={$t({ defaultMessage: '{welcomeValue}' }, { welcomeValue: demoValue.welcomeText } )}
         placeholder='welcometext'
         style={{ cursor: cursor, outline: outline, height: 25 * (demoValue.welcomeSize
-          /PortalDemoDefaultSize.welcomeSize) ,
-        width: 280*((demoValue.welcomeSize)
+          /PortalDemoDefaultSize.welcomeSize), fontWeight: 600,
+        lineHeight: 20*((demoValue.welcomeSize)
+        /PortalDemoDefaultSize.welcomeSize),
+        width: 310*((demoValue.welcomeSize)
         /PortalDemoDefaultSize.welcomeSize), maxWidth: 425, color: demoValue.welcomeColor,
         fontSize: (demoValue.welcomeSize) }}
         onChange={(e) => updateWelcome({ text: e.target.value, show: true })}

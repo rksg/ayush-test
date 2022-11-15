@@ -94,7 +94,7 @@ export default function PortalDemo ({
                 title={<FormattedMessage
                   {...capativeTypesDescription[type]}
                 />}
-                children={<QuestionMarkCircleOutlined/>}
+                children={<QuestionMarkCircleOutlined width={16}/>}
               />
             </UI.FieldExtraTooltip>
           </div>
@@ -129,7 +129,7 @@ export default function PortalDemo ({
               placement='bottomLeft'
               visible={showLanguage}
               onVisibleChange={(data)=>setShowLanguage(data)}
-            ><UI.Button type='link'>
+            ><UI.Button type='default' size='small'>
                 {$t({ defaultMessage: 'Language Settings' })}</UI.Button></UI.Popover>
             <UI.Popover
               overlayClassName='uipopover'
@@ -140,8 +140,10 @@ export default function PortalDemo ({
               placement='bottomLeft'
               visible={showComponent}
               onVisibleChange={(data)=>setShowComponent(data)}
-            ><UI.Button type='link'>{$t({ defaultMessage: 'Components' })}</UI.Button></UI.Popover>
-            <UI.Button type='link'
+            ><UI.Button type='default' size='small'>{$t({ defaultMessage: 'Components' })}
+              </UI.Button></UI.Popover>
+            <UI.Button type='default'
+              size='small'
               onClick={()=>{
                 resetDemo?.()
               }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>

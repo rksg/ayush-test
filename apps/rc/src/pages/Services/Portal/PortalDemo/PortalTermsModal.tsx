@@ -3,7 +3,7 @@ import { useState } from 'react'
 import TextArea    from 'antd/lib/input/TextArea'
 import { useIntl } from 'react-intl'
 
-import { Button, Modal } from '@acx-ui/components'
+import { Modal } from '@acx-ui/components'
 
 import * as UI from '../styledComponents'
 
@@ -15,24 +15,7 @@ export default function PortalTermsModal (props:{
   const { updateTermsConditions, terms } = props
   const [visible, setVisible]=useState(false)
   const [newTerms, setNewTerms]=useState(terms)
-  const footer = [
-    <Button
-      key='back'
-      type='link'
-      onClick={()=>{
-        setNewTerms(terms)
-        setVisible(false)}}
-      children={$t({ defaultMessage: 'Cancel' })}
-    />,
-    <Button
-      key='forward'
-      type='secondary'
-      onClick={()=>{
-        updateTermsConditions(newTerms as string)
-        setVisible(false)}}
-      children={$t({ defaultMessage: 'OK' })}
-    />
-  ]
+
   const getContent = <div>
     <TextArea placeholder={$t({ defaultMessage: 'Paste the text here...' })}
       value={newTerms}
@@ -51,7 +34,15 @@ export default function PortalTermsModal (props:{
         title={$t({ defaultMessage: 'Terms & Conditions' })}
         visible={visible}
         width={400}
-        footer={footer}
+        okText='OK'
+        onCancel={()=>{
+          setNewTerms(terms)
+          setVisible(false)
+        }}
+        onOk={()=>{
+          updateTermsConditions(newTerms as string)
+          setVisible(false)
+        }}
         closable={false}
         maskClosable={false}
       >

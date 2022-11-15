@@ -86,7 +86,7 @@ exports[`SummaryForm should render portal summary successfully 1`] = `
                 <div
                   class="ant-form-item-control-input-content"
                 >
-                  en
+                  English
                 </div>
               </div>
             </div>

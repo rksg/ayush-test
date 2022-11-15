@@ -1,9 +1,9 @@
-import { useState } from 'react'
+
 
 import { useIntl } from 'react-intl'
 
-import { Modal } from '@acx-ui/components'
-import { Demo }  from '@acx-ui/rc/utils'
+import { showActionModal } from '@acx-ui/components'
+import { Demo }            from '@acx-ui/rc/utils'
 
 import PortalDemo from '../PortalDemo'
 import * as UI    from '../styledComponents'
@@ -13,28 +13,21 @@ export default function PortalPreviewModal (props:{
 }) {
   const { $t } = useIntl()
   const { demoValue } = props
-  const [visible, setVisible]=useState(false)
   const getContent = <PortalDemo value={demoValue} isPreview={true}/>
-
+  const openModal= ()=>{
+    showActionModal({
+      type: 'confirm',
+      content: getContent,
+      okCancel: false,
+      title: $t({ defaultMessage: 'Preview' }),
+      width: '1000px',
+      bodyStyle: { marginLeft: 25, paddingRight: 50 }
+    })
+  }
   return (
-    <>
-      <UI.FieldTextLink onClick={()=>setVisible(true)}>
-        {$t({ defaultMessage: 'Preview' })}
-      </UI.FieldTextLink>
-      <Modal
-        title={$t({ defaultMessage: 'Preview' })}
-        visible={visible}
-        onCancel={()=>setVisible(false)}
-        width={1000}
-        style={{ paddingLeft: 50 }}
-        footer={[]}
-        closable={true}
-        maskClosable={false}
-      >
-        {getContent}
-      </Modal>
-    </>
-
+    <UI.FieldTextLink onClick={()=>openModal()}>
+      {$t({ defaultMessage: 'Preview' })}
+    </UI.FieldTextLink>
   )
 }
 

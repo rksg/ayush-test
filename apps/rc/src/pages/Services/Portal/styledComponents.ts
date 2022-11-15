@@ -57,7 +57,7 @@ const buttonStyle= css`
   border: 0;
   padding-top:5px;
   color: var(--acx-accents-blue-60);
-  background-color: var(--acx-neutrals-20);
+  background-color: var(--acx-primary-white);
   cursor: pointer;
 `
 export const Button = styled(UIButton)`
@@ -120,7 +120,7 @@ export const Select = styled(AntSelect)`
   padding-left: 10px;
 `
 export const LayoutHeader = styled.div`
-  background-color: var(--acx-neutrals-20);
+  background-color: var(--acx-primary-white);
   width: 95%;
   height: 50px;
   padding: 10px 0 0 10px;
@@ -154,7 +154,8 @@ export const Input=styled.input`
 `
 export const FieldText = styled.div`
   margin-top:10px;
-  line-height: 24px;
+  line-height: 26px;
+  font-size:10px;
   text-align:center;
 `
 export const FieldLabel = styled.div`
@@ -188,13 +189,15 @@ export const FieldInputSmall = styled.input`
 export const PortalButton = styled.button`
   margin-top:20px;
   margin-bottom:10px;
-  width:280px;
-  height:50px;
+  width:223px;
+  height:32px;
   background-color:var(--acx-accents-orange-50);
   color:var(--acx-primary-white);
-  border-radius:5px;
+  border-radius:4px;
   border:0;
   cursor:pointer;
+  font-size:12px;
+  line-height:16px;
 `
 const linkStyle = css`
   color:var(--acx-accents-blue-50);
@@ -230,7 +233,7 @@ export const ViewSectionLink = styled.div`
   text-align: right;
   padding-right:65px;
   padding-top: 5px;
-  font-size: 11px;
+  font-size: 10px;
   color:var(--acx-accents-blue-50);
   cursor:pointer;
 `
@@ -450,9 +453,6 @@ const deviceIcons = css`
   padding-right:5px;
   margin-left:8px;
   height:40px;
-  rect {
-    fill:none;
-  }
   width:40px;
   color:var(--acx-primary-black);
 `
@@ -461,22 +461,43 @@ const deviceSelectedIcons = css`
   border-radius:5px;
   color:var(--acx-accents-orange-50);
   background-color:var(--acx-accents-orange-20);
-  path,rect,circle{
+  path,circle,rect{
     stroke:var(--acx-accents-orange-50);
+    fill:var(--acx-accents-orange-50);
+  }
+  rect{
+    fill:var(--acx-primary-white);
   }
 `
 export const TabletOutlined = styled(UITabletOutlined)<{ $marked: boolean | null }>`
   ${deviceIcons}
+  rect,path {
+    fill:none;
+  }
+  path{
+    fill:var(--acx-primary-black);
+  }
   ${props => props.$marked ? deviceSelectedIcons:''}
 `
 export const DesktopOutlined = styled(UIDesktopOutlined)<{ $marked: boolean | null }>`
   ${deviceIcons}
+  rect,path {
+    fill:none;
+  }
+  path{
+    fill:var(--acx-primary-black);
+  }
   ${props => props.$marked ? deviceSelectedIcons:''}
   margin-left: 50px;
 `
 export const MobileOutlined = styled(UIMobilePhoneOutlined)<{ $marked: boolean | null }>`
   ${deviceIcons}
   ${props => props.$marked ? deviceSelectedIcons:''}
+  ${props => props.$marked ? css`
+    path{
+      fill:var(--acx-primary-white);
+    }
+  `:''}
 `
 export const PictureOutlined = styled(UIPictureSolid)<{ $isDesk: boolean | null }>`
   position: absolute;

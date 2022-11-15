@@ -79,7 +79,7 @@ export function PortalSummaryForm (props: {
         <Col span={5}>
           <Form.Item
             label={$t({ defaultMessage: 'Language:' })}
-            children={PortalLanguageEnum[summaryData?.demo?.displayLang as keyof typeof PortalLanguageEnum]}
+            children={getLanguage(summaryData?.demo?.displayLang as keyof typeof PortalLanguageEnum)}
           />
         </Col>
         <Col span={10}>

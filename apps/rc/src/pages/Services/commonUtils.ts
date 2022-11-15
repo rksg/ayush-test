@@ -9,10 +9,10 @@ export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   reader.readAsDataURL(img)
 }
 export const PortalDemoDefaultSize={
-  welcomeSize: 14,
+  welcomeSize: 16,
   photoSize: 170,
   logoSize: 105,
-  secondarySize: 14,
+  secondarySize: 12,
   poweredSize: 14,
   poweredImgSize: 50
 }

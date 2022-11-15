@@ -2,8 +2,8 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { Card } from '@acx-ui/components'
-import { Demo } from '@acx-ui/rc/utils'
+import { Card, GridCol, GridRow } from '@acx-ui/components'
+import { Demo }                   from '@acx-ui/rc/utils'
 
 import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -16,24 +16,24 @@ export default function PortalOverview (props: { demoValue: Demo }) {
     logo: demoValue.logo || Logo, photo: demoValue.photo || Photo }
   return (
     <Card>
-      <div style={{ display: 'flex' }}>
-        <div style={{ marginRight: 40 }}>
-          <Typography.Title level={4}>
+      <GridRow>
+        <GridCol col={{ span: 8 }}>
+          <Card.Title>
             {$t({ defaultMessage: 'Language' })}
-          </Typography.Title>
+          </Card.Title>
           <Typography.Text>{newDemo?.displayLang}</Typography.Text>
-        </div>
-        <div style={{ marginRight: 40 }}>
-          <Typography.Title level={4}>
+        </GridCol>
+        <GridCol col={{ span: 12 }}>
+          <Card.Title>
             {$t({ defaultMessage: 'WiFi4EU Snippet' })}
-          </Typography.Title>
+          </Card.Title>
           <Typography.Text>{newDemo?.componentDisplay?.WiFi4EU?
             $t({ defaultMessage: 'ON' }):$t({ defaultMessage: 'OFF' })}</Typography.Text>
-        </div>
-        <div>
-          <Typography.Title level={4}><PortalPreviewModal demoValue={newDemo}/></Typography.Title>
-        </div>
-      </div>
+        </GridCol>
+        <GridCol col={{ span: 4 }}>
+          <Card.Title><PortalPreviewModal demoValue={newDemo}/></Card.Title>
+        </GridCol>
+      </GridRow>
 
     </Card>
   )

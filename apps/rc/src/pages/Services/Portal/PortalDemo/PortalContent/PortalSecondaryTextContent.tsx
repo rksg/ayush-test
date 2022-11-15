@@ -38,7 +38,7 @@ export default function PortalSecondaryTextContent (props: {
     ><UI.FieldText
         placeholder='sectexthere'
         style={{ cursor: cursor, outline: outline,
-          lineHeight: 24 * ((demoValue.secondarySize||
+          lineHeight: 16 * ((demoValue.secondarySize||
             PortalDemoDefaultSize.secondarySize)/PortalDemoDefaultSize.secondarySize)+'px' ,
           maxWidth: 425, color: demoValue.secondaryColor,
           fontSize: (demoValue.secondarySize||PortalDemoDefaultSize.secondarySize) }}

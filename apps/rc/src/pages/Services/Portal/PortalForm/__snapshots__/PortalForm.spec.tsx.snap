@@ -294,7 +294,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="styledComponents__LayoutHeader-sc-cby53p-13 cyFoqN"
+                                class="styledComponents__LayoutHeader-sc-cby53p-13 jjWsfK"
                               >
                                 <div
                                   style="display: flex;"
@@ -375,7 +375,9 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     <div
                                       class="styledComponents__FieldExtraTooltip-sc-cby53p-14 eLVmeY"
                                     >
-                                      <svg>
+                                      <svg
+                                        width="16"
+                                      >
                                         QuestionMarkCircleOutlined.svg
                                       </svg>
                                     </div>
@@ -384,19 +386,19 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     style="flex: 0 0 190px; margin-top: -5px;"
                                   >
                                     <svg
-                                      class="styledComponents__DesktopOutlined-sc-cby53p-52 klQhAU"
+                                      class="styledComponents__DesktopOutlined-sc-cby53p-52 ersnHH"
                                       title="deskicon"
                                     >
                                       DesktopOutlined.svg
                                     </svg>
                                     <svg
-                                      class="styledComponents__TabletOutlined-sc-cby53p-51 bwRmA-D"
+                                      class="styledComponents__TabletOutlined-sc-cby53p-51 jEXSwM"
                                       title="tableticon"
                                     >
                                       TabletOutlined.svg
                                     </svg>
                                     <svg
-                                      class="styledComponents__MobileOutlined-sc-cby53p-53 gPrasf"
+                                      class="styledComponents__MobileOutlined-sc-cby53p-53 heHno"
                                       title="mobileicon"
                                     >
                                       MobilePhoneOutlined.svg
@@ -406,7 +408,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     style="flex-basis: auto; text-align: right; padding-right: 5px;"
                                   >
                                     <button
-                                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 gyUsDn styledComponents__Popover-sc-cby53p-41"
+                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 esgMPk styledComponents__Popover-sc-cby53p-41"
                                       type="button"
                                     >
                                       <span>
@@ -414,7 +416,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                       </span>
                                     </button>
                                     <button
-                                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 gyUsDn styledComponents__Popover-sc-cby53p-41"
+                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 esgMPk styledComponents__Popover-sc-cby53p-41"
                                       type="button"
                                     >
                                       <span>
@@ -422,7 +424,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                       </span>
                                     </button>
                                     <button
-                                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 gyUsDn"
+                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 esgMPk"
                                       type="button"
                                     >
                                       <span>
@@ -463,7 +465,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                     <input
                                       class="styledComponents__Input-sc-cby53p-17 iOBBMw styledComponents__Popover-sc-cby53p-41"
                                       placeholder="welcometext"
-                                      style="cursor: none; outline: none; height: 25px; width: 280px; max-width: 425px; font-size: 14px;"
+                                      style="cursor: none; outline: none; height: 25px; font-weight: 600; line-height: 20; width: 310px; max-width: 425px; font-size: 16px;"
                                       type="text"
                                       value="Welcome to the Guest Access login page"
                                     />
@@ -474,14 +476,14 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                       style="cursor: none; outline: none; height: 170px; max-width: 425px;"
                                     />
                                     <div
-                                      class="styledComponents__FieldText-sc-cby53p-18 bEcVAa styledComponents__Popover-sc-cby53p-41"
+                                      class="styledComponents__FieldText-sc-cby53p-18 cCAmOP styledComponents__Popover-sc-cby53p-41"
                                       placeholder="sectexthere"
-                                      style="cursor: none; outline: none; line-height: 24px; max-width: 425px; font-size: 14px;"
+                                      style="cursor: none; outline: none; line-height: 16px; max-width: 425px; font-size: 12px;"
                                     >
                                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
                                     </div>
                                     <button
-                                      class="styledComponents__PortalButton-sc-cby53p-22 fOVEUu styledComponents__Popover-sc-cby53p-41"
+                                      class="styledComponents__PortalButton-sc-cby53p-22 bKdacB styledComponents__Popover-sc-cby53p-41"
                                       placeholder="buttonsetting"
                                       style="cursor: none; outline: none;"
                                     >
@@ -497,7 +499,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                                         style="outline: none; cursor: none;"
                                       >
                                         <div
-                                          class="styledComponents__FieldText-sc-cby53p-18 bEcVAa styledComponents__Popover-sc-cby53p-41"
+                                          class="styledComponents__FieldText-sc-cby53p-18 cCAmOP styledComponents__Popover-sc-cby53p-41"
                                           placeholder="poweredtext"
                                           style="font-size: 14px; width: 152px; line-height: 24px; max-width: 425px; text-align: left; cursor: none; outline: none;"
                                         >
@@ -701,7 +703,7 @@ exports[`PortalForm should create Portal successfully 1`] = `
                             <div
                               class="ant-form-item-control-input-content"
                             >
-                              en
+                              English
                             </div>
                           </div>
                         </div>

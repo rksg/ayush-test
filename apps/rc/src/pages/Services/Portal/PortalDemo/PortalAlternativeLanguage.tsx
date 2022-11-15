@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
@@ -10,6 +12,7 @@ export default function PortalAlternativeLanguage (props:{
   const { demoValue } = props
   const alternativeLang = demoValue.alternativeLang
   const displayLang = demoValue.displayLang
+  const [contentLang, setContentLang]=useState(displayLang)
   const intl = useIntl()
   let langs = [] as string[]
   const langKeys = Object.keys(alternativeLang || {}) as Array<keyof typeof PortalLanguageEnum>
@@ -19,6 +22,9 @@ export default function PortalAlternativeLanguage (props:{
   }
   )
   const { Option } = UI.Select
+  useEffect(()=>{
+    setContentLang(displayLang)
+  },[displayLang, alternativeLang])
   //just for display, no logic here
   if(langs.length <= 4)
     return (
@@ -27,8 +33,8 @@ export default function PortalAlternativeLanguage (props:{
       </UI.FieldTextLink>
     )
   else return (
-    <UI.Select defaultValue={displayLang}>
-      <Option value={displayLang} key={displayLang}>{displayLang}</Option>
+    <UI.Select value={contentLang} onChange={(val)=>setContentLang(val as string)}>
+      <Option value={displayLang} key={displayLang} selected>{displayLang}</Option>
       {langs.map(
         (key => <Option key={key} value={key}>{key}</Option>
         ))}

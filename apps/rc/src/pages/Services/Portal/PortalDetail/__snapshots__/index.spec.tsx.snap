@@ -154,46 +154,64 @@ exports[`Portal Detail Page should render detail page 1`] = `
                 class="ant-card-body"
               >
                 <div
-                  style="display: flex;"
+                  class="ant-row Grid__GridRow-sc-5irhjd-2"
+                  style="margin: -10px -10px -10px -10px;"
                 >
                   <div
-                    style="margin-right: 40px;"
+                    class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
                   >
-                    <h4
-                      class="ant-typography"
-                    >
-                      Language
-                    </h4>
-                    <span
-                      class="ant-typography"
-                    >
-                      English
-                    </span>
-                  </div>
-                  <div
-                    style="margin-right: 40px;"
-                  >
-                    <h4
-                      class="ant-typography"
-                    >
-                      WiFi4EU Snippet
-                    </h4>
-                    <span
-                      class="ant-typography"
-                    >
-                      OFF
-                    </span>
-                  </div>
-                  <div>
-                    <h4
-                      class="ant-typography"
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
                     >
                       <div
-                        class="styledComponents__FieldTextLink-sc-cby53p-23 eNBZnc"
+                        class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
                       >
-                        Preview
+                        Language
                       </div>
-                    </h4>
+                      <span
+                        class="ant-typography"
+                      >
+                        English
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                      >
+                        WiFi4EU Snippet
+                      </div>
+                      <span
+                        class="ant-typography"
+                      >
+                        OFF
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                      >
+                        <div
+                          class="styledComponents__FieldTextLink-sc-cby53p-23 eNBZnc"
+                        >
+                          Preview
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -125,6 +125,5 @@ describe('SummaryForm', () => {
 
     expect(asFragment()).toMatchSnapshot()
     await userEvent.click(screen.getByText('Preview'))
-    await userEvent.click(screen.getByRole('button',{ name: 'Close' }))
   })
 })

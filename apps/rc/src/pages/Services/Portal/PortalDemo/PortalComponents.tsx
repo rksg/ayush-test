@@ -1,5 +1,5 @@
-import { Switch }  from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Switch } from 'antd'
+import { useIntl }      from 'react-intl'
 
 import { Demo, PortalComponentsEnum } from '@acx-ui/rc/utils'
 
@@ -17,29 +17,33 @@ export default function PortalComponents (props:{
   const { $t } = useIntl()
   const { updateViewContent, demoValue } = props
   return (
-    <div>
-      <UI.CommonLabel>{$t({ defaultMessage: 'Manage Components' })}</UI.CommonLabel>
-
-      {valueKeys.map((key => <UI.CommonLabel key={key+'label'}>
-        <UI.ComponentLabel key={key}>
-          {$t(portalComponentsValue[key])}
-        </UI.ComponentLabel>
-        <Switch
-          key={key+'switch'}
-          checked={demoValue?.componentDisplay?.[key]}
-          onClick={(value)=>{
-            updateViewContent({ ...demoValue, componentDisplay:
-               { ...demoValue.componentDisplay, [key]: value } })
-          }}
-        />
-        {key === 'TermsConditions'&&<PortalTermsModal
-          terms={demoValue?.termsCondition}
-          updateTermsConditions={(value)=>
-            updateViewContent({ ...demoValue, termsCondition: value })}/>}
-        {key === 'WiFi4EU'&&<PortalWifi4euModal wifi4eu={demoValue?.wifi4EU}
-          updateWiFi4EU={(value)=> updateViewContent({ ...demoValue, wifi4EU: value })}/>}
-      </UI.CommonLabel>
-      ))}
-    </div>
+    <Form layout='vertical'>
+      <Form.Item
+        name='manageComponents'
+        label={$t({ defaultMessage: 'Manage Components' })}
+        children={<div>
+          {valueKeys.map((key => <UI.CommonLabel key={key+'label'}>
+            <UI.ComponentLabel key={key}>
+              {$t(portalComponentsValue[key])}
+            </UI.ComponentLabel>
+            <Switch
+              key={key+'switch'}
+              checked={demoValue?.componentDisplay?.[key]}
+              onClick={(value)=>{
+                updateViewContent({ ...demoValue, componentDisplay:
+                  { ...demoValue.componentDisplay, [key]: value } })
+              }}
+            />
+            {key === 'TermsConditions'&&<PortalTermsModal
+              terms={demoValue?.termsCondition}
+              updateTermsConditions={(value)=>
+                updateViewContent({ ...demoValue, termsCondition: value })}/>}
+            {key === 'WiFi4EU'&&<PortalWifi4euModal wifi4eu={demoValue?.wifi4EU}
+              updateWiFi4EU={(value)=> updateViewContent({ ...demoValue, wifi4EU: value })}/>}
+          </UI.CommonLabel>
+          ))}
+        </div>}
+      />
+    </Form>
   )
 }
