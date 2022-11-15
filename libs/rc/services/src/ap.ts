@@ -5,7 +5,6 @@ import {
   ApExtraParams,
   AP,
   ApDetails,
-  APRadio,
   ApRadioBands,
   CommonUrlsInfo,
   createHttpRequest,

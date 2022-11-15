@@ -3,13 +3,6 @@ import { DeviceGps }  from '../models/DeviceGps'
 
 import { ApVenueStatusEnum } from '.'
 
-export interface APRadio {
-  channel?: number,
-  band: string,
-  radioId: number,
-  txPower?: string,
-  Rssi: string
-}
 export interface AP {
   IP?: string
   apMac?: string
@@ -36,6 +29,18 @@ export interface AP {
   deviceStatusSeverity?: ApVenueStatusEnum,
   lastSeenTime?: string
   uptime?: string
+  password?: string
+  extIp?: string
+  deviceModelType?: string
+  fwVersion?: string
+  isMeshEnable?: boolean
+  rootAP?: {
+    name: string
+    serialNumber: string
+  }
+  hops?: number
+  apDownRssi?: number
+  apUpRssi: number
 }
 
 export interface ApViewModel extends AP {
@@ -56,6 +61,7 @@ export interface CelluarInfo {
   cellularNWLostCountSIM0: string
   cellularCardRemovalCountSIM0: string
   cellularDHCPTimeoutCountSIM0: string
+  cellularDHCPTimeoutCountSIM1: string
   cellularIsSIM1Present: string
   cellularIMSISIM1: string
   cellularICCIDSIM1: string
@@ -68,30 +74,57 @@ export interface CelluarInfo {
   cellularActiveSim: string
   cellularConnectionStatus: string
   cellularSignalStrength: string
+  cellularWanInterface: string
+  cellular3G4GChannel: number
+  cellularRoamingStatus: string
+  cellularBand: string
+  cellularIMEI: string
+  cellularLTEFirmware: string
+  cellularOperator: string
+  cellularCountry: string
+  cellularIPaddress: string
+  cellularSubnetMask: string
+  cellularDefaultGateway: string
+  cellularRadioUptime: number
+  cellularUplinkBandwidth: string
+  cellularDownlinkBandwidth: string
+  cellularRSRP: number
+  cellularRSRQ: number
+  cellularSINR: number
+  cellularECIO: number
+  cellularRSCP: number
+}
+
+export interface CellularSim {
+  sim0Present: boolean
+  sim0PresentData: SimPresentData
+  sim1Present: boolean
+  sim1PresentData: SimPresentData,
+  simPresent: string
+}
+
+export interface SimPresentData {
+  cellularIMSI: string
+  cellularICCID: string
+  cellularTxBytes: string
+  cellularRxBytes: string
+  cellularSwitchCount: string
+  cellularNWLostCount: string
+  cellularCardRemovalCount: string
+  cellularDHCPTimeoutCount: string
 }
 
 export interface ApDetails {
-  IP?: string
-  apMac?: string
-  apStatusData?: {
-    APRadio?: Array<APRadio>
-  },
-  clients?: number,
-  deviceGroupId: string,
-  deviceGroupName?: string,
-  deviceStatus: string,
-  meshRole: string,
-  model: string,
-  name?: string,
-  serialNumber: string,
-  tags: string,
-  venueId: string,
-  venueName: string,
-  description:string
-  deviceGps: {
-    latitude: string,
-    longitude:string
-  }
+  serialNumber: string
+  apGroupId: string
+  venueId: string
+  lanPorts: ApLanPort
+  name: string
+  description: string
+  softDeleted: string
+  model: string
+  updatedDate: string
+  deviceGps?: DeviceGps
 }
 
 export interface ApDetailHeader {
@@ -120,7 +153,7 @@ export interface APMesh {
   IP?: string
   apMac?: string
   apStatusData?: {
-    APRadio?: Array<APRadio>
+    APRadio?: Array<RadioProperties>
   },
   clients?: { count: number, names: string[] },
   deviceGroupId?: string,

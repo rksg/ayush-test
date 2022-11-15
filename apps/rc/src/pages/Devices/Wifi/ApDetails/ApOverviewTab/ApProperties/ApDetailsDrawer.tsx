@@ -2,10 +2,10 @@
 import { Divider, Form, Input } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Drawer }                      from '@acx-ui/components'
-import { useApLanPortsQuery, useApRadioCustomizationQuery, useGetVenueQuery } from '@acx-ui/rc/services'
-import { AP, ApLanPort, ApRadio, ApVenueStatusEnum, DeviceGps, gpsToFixed }   from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                              from '@acx-ui/react-router-dom'
+import { ContentSwitcher, ContentSwitcherProps, Drawer }                                        from '@acx-ui/components'
+import { useApLanPortsQuery, useApRadioCustomizationQuery, useGetVenueQuery }                   from '@acx-ui/rc/services'
+import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                from '@acx-ui/react-router-dom'
 
 
 import { ApCellularProperties } from './ApCellularProperties'
@@ -14,15 +14,15 @@ import { ApDetailsSettings }    from './ApDetailsSettings'
 interface ApDetailsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  currentAP: any,
-  apDetails: AP
+  currentAP: ApViewModel,
+  apDetails: ApDetails
 }
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const { visible, setVisible, currentAP, apDetails } = props
-  const currentCellularInfo = currentAP.apStatusData.cellularInfo
+  const currentCellularInfo = currentAP?.apStatusData?.cellularInfo
   const { data: venueData } = useGetVenueQuery({
     params: { tenantId, venueId: currentAP.venueId }
   },
@@ -72,8 +72,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'GPS Coordinates' })}
           children={
-            apDetails.deviceGps &&
-            getGpsFieldStatus(apDetails.deviceGps, currentAP.venueId)
+            getGpsFieldStatus(apDetails.deviceGps as DeviceGps, currentAP.venueId)
           }
         />
         <Divider/>

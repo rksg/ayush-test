@@ -3,26 +3,27 @@ import { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { secondToTime } from '@acx-ui/utils'
+import { ApViewModel, CelluarInfo, CellularSim, SimPresentData } from '@acx-ui/rc/utils'
+import { secondToTime }                                          from '@acx-ui/utils'
 
 import { SimPresent } from './SimPresent'
 
 interface ApCellularPropertiesProps {
-  currentCellularInfo: any,
-  currentAP: any,
+  currentCellularInfo: CelluarInfo,
+  currentAP: ApViewModel,
 }
 
 const defaultCellularSim = {
   sim0Present: false,
-  sim0PresentData: {},
+  sim0PresentData: {} as SimPresentData,
   sim1Present: false,
-  sim1PresentData: {},
+  sim1PresentData: {} as SimPresentData,
   simPresent: ''
 }
 
 export const ApCellularProperties = (props: ApCellularPropertiesProps) => {
   const { $t } = useIntl()
-  const [cellularSim, setCellularSim] = useState<any>(defaultCellularSim)
+  const [cellularSim, setCellularSim] = useState<CellularSim>(defaultCellularSim)
   const { currentCellularInfo, currentAP } = props
 
   const getSimPresent = () => {
@@ -59,9 +60,7 @@ export const ApCellularProperties = (props: ApCellularPropertiesProps) => {
       tmpSimPresent.push($t({ defaultMessage: 'SIM 1' }))
     }
     result.simPresent = tmpSimPresent.join(', ')
-
     setCellularSim(result)
-    // return _.get(result, type)
   }
 
   useEffect(() => {

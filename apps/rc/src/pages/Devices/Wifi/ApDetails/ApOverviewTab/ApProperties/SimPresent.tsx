@@ -3,11 +3,12 @@ import React from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Fieldset } from '@acx-ui/components'
+import { Fieldset }       from '@acx-ui/components'
+import { SimPresentData } from '@acx-ui/rc/utils'
 
 interface SimPresentProps {
   title: string
-  currentCellularInfo: any
+  currentCellularInfo: SimPresentData
   style?: React.CSSProperties
 }
 
