@@ -1,20 +1,24 @@
-import { useIntl } from 'react-intl'
 import { useState } from 'react'
+
+import { useIntl } from 'react-intl'
+
 import {
   LayoutUI
 }                        from '@acx-ui/components'
-import { Tooltip } from '@acx-ui/components'
-import { notAvailableMsg }    from '@acx-ui/utils'
+import { Tooltip }                from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   SearchOutlined,
   Close
 }                          from '@acx-ui/icons'
 import { useNavigate, useParams, useTenantLink , useLocation } from '@acx-ui/react-router-dom'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { notAvailableMsg }                                     from '@acx-ui/utils'
+
 import * as UI from './styledComponents'
 
-function SearchBar() {
+function SearchBar () {
   const enableSearch = useIsSplitOn(Features.GLOBAL_SEARCH)
+  const notAvailableTitle = useIntl().$t(notAvailableMsg)
   const params = useParams()
   const { pathname } = useLocation()
   const searchFromUrl = decodeURIComponent(params.searchVal || '')
@@ -30,35 +34,47 @@ function SearchBar() {
       pathname: `${basePath.pathname}/search/${encodeURIComponent(searchText)}`
     }, { replace: pathname.includes('/search/') ? true : false })
   }
-  const cancelSearch = () => {
+  const closeSearch = () => {
     setSearchText('')
     setShowSearchBar(false)
     if (pathname.includes('/search/')) navigate(-1)
   }
+  const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && setSearchUrl()
+
   return <>
     { enableSearch
-    ? showSearchBar
-      ? <UI.SearchBar>
+      ? showSearchBar
+        ? <UI.SearchBar>
           <UI.SearchSolid shape='circle' icon={<SearchOutlined />} />
           <UI.Input
             autoFocus
             value={searchText}
             onChange={({ target: { value } }) => setSearchText(value)}
+            onKeyDown={onKeyDown}
+            data-testid='search-input'
           />
-          <UI.SendSearch onClick={setSearchUrl}/>
+          <UI.SendSearch onClick={setSearchUrl} data-testid='search-send'/>
           <UI.Divider />
           <UI.Close
             shape='circle'
             icon={<Close />}
-            onClick={cancelSearch} />
+            onClick={closeSearch}
+            data-testid='search-close'
+          />
         </UI.SearchBar>
-      : <LayoutUI.ButtonOutlined
+        : <LayoutUI.ButtonOutlined
           shape='circle'
           icon={<SearchOutlined />}
           onClick={() => setShowSearchBar(true)}
+          data-testid='search-button'
         />
-    : <Tooltip title={useIntl().$t(notAvailableMsg)}>
-        <LayoutUI.ButtonOutlined disabled shape='circle' icon={<SearchOutlined />} />
+      : <Tooltip title={notAvailableTitle}>
+        <LayoutUI.ButtonOutlined
+          disabled
+          shape='circle'
+          icon={<SearchOutlined />}
+          data-testid='search-button'
+        />
       </Tooltip>
     }
   </>

@@ -1,11 +1,12 @@
 import { Input as AntInput } from 'antd'
-import styled from 'styled-components/macro'
+import styled                from 'styled-components/macro'
+
 import {
   LayoutUI,
   Button
 }                        from '@acx-ui/components'
 import {
-  SendMessageOutlined,
+  SendMessageOutlined
 }                          from '@acx-ui/icons'
 
 export const SearchBar = styled.div`

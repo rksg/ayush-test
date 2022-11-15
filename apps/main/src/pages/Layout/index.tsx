@@ -5,7 +5,7 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 }                        from '@acx-ui/components'
-import { SplitProvider } from '@acx-ui/feature-toggle'
+import { SplitProvider }    from '@acx-ui/feature-toggle'
 import {
   AccountCircleSolid,
   QuestionMarkCircleSolid
@@ -15,7 +15,7 @@ import { Outlet }             from '@acx-ui/react-router-dom'
 import { notAvailableMsg }    from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
-import SearchBar from './SearchBar'
+import SearchBar         from './SearchBar'
 
 function Layout () {
   return (
