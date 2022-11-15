@@ -11,8 +11,7 @@ export function transferDetailToSave (data: CreateDPSKFormFields) {
     tags: data.tags ?? '',
     passphraseLength: data.passphraseLength ?? 16,
     passphraseFormat: data.passphraseFormat ?? PassphraseFormatEnum.MOST_SECURED,
-    expiration: data.expiration ?? PassphraseExpirationEnum.UNLIMITED,
-    network: data.network
+    expiration: data.expiration ?? PassphraseExpirationEnum.UNLIMITED
   }
 }
 

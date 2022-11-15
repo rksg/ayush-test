@@ -1,33 +1,17 @@
 
-import { Col, Divider, Form, Row } from 'antd'
-import { useIntl }                 from 'react-intl'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
 
 import { StepsForm, Subtitle }                                                       from '@acx-ui/components'
 import { DpskNetworkType, DPSKSaveData, transformDisplayText, transformDpskNetwork } from '@acx-ui/rc/utils'
 
 
-export function SummaryForm (props: {
+export function DPSKSummary (props: {
   summaryData: DPSKSaveData
 }) {
   const intl = useIntl()
   const $t = intl.$t
   const { summaryData } = props
-  const getNetworks = function () {
-    const networks = summaryData.network
-    const rows = []
-    if (networks && networks.length > 0) {
-      for (const network of networks) {
-        rows.push(
-          <li key={network.networkId} style={{ margin: '10px 0px' }}>
-            {network.name}
-          </li>
-        )
-      }
-      return rows
-    } else {
-      return transformDisplayText()
-    }
-  }
 
   return (
     <>
@@ -62,14 +46,6 @@ export function SummaryForm (props: {
               DpskNetworkType.EXPIRATION,
               summaryData.expiration
             )} />
-        </Col>
-        <Divider type='vertical' style={{ height: '300px' }}/>
-        <Col flex={1}>
-          <Subtitle level={4}>
-            { $t({ defaultMessage: 'Wireless Networks ({count})' },
-              { count: summaryData.network?.length || 0 }) }
-          </Subtitle>
-          <Form.Item children={getNetworks()} />
         </Col>
       </Row>
     </>

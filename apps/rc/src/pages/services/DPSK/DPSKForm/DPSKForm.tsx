@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -22,12 +21,11 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { DPSKDetailForm } from './DPSKDetail/DPSKDetailForm'
-import { SummaryForm }    from './DPSKSummary/SummaryForm'
-import { Networks }       from './Networks/Networks'
-import {
-  transferDetailToSave
-} from './parser'
+import { getServiceListRoutePath } from '../../serviceRouteUtils'
+import { DPSKSummary }             from '../DPSKSummary/DPSKSummary'
+
+import DPSKSettingsForm         from './DPSKSettingsForm'
+import { transferDetailToSave } from './parser'
 
 
 
@@ -43,7 +41,6 @@ export default function DPSKForm () {
   const [saveState, updateSaveState] = useState<DPSKSaveData>({
     name: '',
     tags: '',
-    network: [],
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
     passphraseLength: 18,
     expiration: PassphraseExpirationEnum.UNLIMITED
@@ -70,7 +67,7 @@ export default function DPSKForm () {
       <PageHeader
         title={$t({ defaultMessage: 'Add DPSK service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />
       <StepsForm<CreateDPSKFormFields>
@@ -87,26 +84,11 @@ export default function DPSKForm () {
             return true
           }}
         >
-          <DPSKDetailForm />
-        </StepsForm.StepForm>
-
-        <StepsForm.StepForm
-          name='scope'
-          title={$t( { defaultMessage: 'Scope' })}
-          onFinish={async (data) => {
-            data = {
-              ...data
-            }
-            const settingSaveData = transferDetailToSave(_.merge(saveState, data))
-            updateSaveData(settingSaveData)
-            return true
-          }}
-        >
-          <Networks formRef={formRef}/>
+          <DPSKSettingsForm />
         </StepsForm.StepForm>
 
         <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
-          <SummaryForm summaryData={saveState} />
+          <DPSKSummary summaryData={saveState} />
         </StepsForm.StepForm>
       </StepsForm>
     </>

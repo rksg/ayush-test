@@ -80,13 +80,6 @@ export interface DPSK {
   networks: { count: number, names: string[] }
 
 }
-export interface NetworkDetail {
-  type: NetworkTypeEnum
-  tenantId: string
-  name: string
-  venues: NetworkVenue[]
-  id: string
-}
 
 export interface Venue {
   id: string

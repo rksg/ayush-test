@@ -317,7 +317,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...createDPSKReq,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     })
   })
 })
