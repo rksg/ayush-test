@@ -61,12 +61,12 @@ export const RangePicker = ({
   )
   useEffect(() => {
     const handleClickForDatePicker = (event: MouseEvent) => {
-      resetRanges()
       const target = event.target as HTMLInputElement
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
         setIscalenderOpen(false)
       }
       if (Object.values(DateRange).includes(target.innerText as DateRange)) {
+        resetRanges()
         onDateApply({
           range: target.innerText as DateRange
         })
