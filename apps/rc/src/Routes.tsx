@@ -16,6 +16,7 @@ import ApsTable          from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable     from './pages/Networks/NetworksTable'
+import AccessControlForm from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import PoliciesTable     from './pages/Policies/PoliciesTable'
 import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
 import DHCPDetail        from './pages/Services/DHCPDetail'
@@ -145,6 +146,11 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<h1>Rogue AP detection details page</h1>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
+        element={<AccessControlForm edit={false}/>}
       />
     </Route>
   )
