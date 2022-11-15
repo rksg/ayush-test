@@ -2,11 +2,17 @@ import { Select, Form } from 'antd'
 import styled           from 'styled-components/macro'
 
 
-export const RowWrapper = styled.div`
-    padding: 20px;
-    background: #ececec;
-    border-radius: 6px;
+export const Wrapper = styled.section`
+  ol {
+    padding: 0;
+    margin-bottom: 0;
+  }
+  li {
+    list-style-position: inside;
+    margin-block-end: 1em;
+  }
 `
+
 export const AntSelect = styled(Select)`
     width: 250px !important;
 `

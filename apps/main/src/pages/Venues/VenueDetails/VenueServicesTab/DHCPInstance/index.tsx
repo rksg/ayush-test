@@ -5,6 +5,7 @@ import { Radio, RadioChangeEvent } from 'antd'
 import { useIntl }                 from 'react-intl'
 import { useParams }               from 'react-router-dom'
 
+import { GridRow }                                                                    from '@acx-ui/components'
 import { useVenuesLeasesListQuery, useGetDHCPProfileQuery, useVenueDHCPProfileQuery } from '@acx-ui/rc/services'
 
 import BasicInfo  from './BasicInfo'
@@ -35,20 +36,26 @@ const DHCPInstance = () => {
   })
 
   return <>
-    <BasicInfo/>
-    <Radio.Group style={{ margin: '10px 0px 10px 0px' }}
-      value={tabPosition}
-      onChange={changeTabPosition}>
-      <Radio.Button value='pools'>
-        {$t({ defaultMessage: 'Pools' })+` (${dhcpProfile?.dhcpPools.length || 0})`}
-      </Radio.Button>
-      <Radio.Button value='lease'>
-        {$t({ defaultMessage: 'Lease Table' }) +
-        ` (${leasesList?.length || 0} ` + $t({ defaultMessage: 'Online' }) + ')' }
-      </Radio.Button>
-    </Radio.Group>
-    { tabPosition === 'pools' && <PoolTable />}
-    { tabPosition === 'lease' && <LeaseTable />}
+    <GridRow>
+      <BasicInfo/>
+    </GridRow>
+    <GridRow>
+      <Radio.Group style={{ margin: '10px 0px 10px 0px' }}
+        value={tabPosition}
+        onChange={changeTabPosition}>
+        <Radio.Button value='pools'>
+          {$t({ defaultMessage: 'Pools' })+` (${dhcpProfile?.dhcpPools.length || 0})`}
+        </Radio.Button>
+        <Radio.Button value='lease'>
+          {$t({ defaultMessage: 'Lease Table' }) +
+          ` (${leasesList?.length || 0} ` + $t({ defaultMessage: 'Online' }) + ')' }
+        </Radio.Button>
+      </Radio.Group>
+    </GridRow>
+    <GridRow>
+      { tabPosition === 'pools' && <PoolTable />}
+      { tabPosition === 'lease' && <LeaseTable />}
+    </GridRow>
   </>
 }
 
