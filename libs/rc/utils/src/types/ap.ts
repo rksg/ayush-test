@@ -1,6 +1,8 @@
-import { APMeshRole } from '../constants'
-import { ApDeep }     from '../models/ApDeep'
-import { DhcpApInfo } from '../models/DhcpApInfo'
+import { APMeshRole }      from '../constants'
+import { ApDeep }          from '../models/ApDeep'
+import { DhcpApInfo }      from '../models/DhcpApInfo'
+import { ExternalAntenna } from '../models/ExternalAntenna'
+import { VenueLanPort }    from '../models/VenueLanPort'
 
 export interface APRadio {
   channel?: number,
@@ -144,4 +146,17 @@ export interface ApModel {
 export interface DhcpAp {
   requestId: string,
   response?: DhcpApInfo[]
+}
+
+export class ModelLanPort extends VenueLanPort {
+  header?: string
+  // portId?: string;
+}
+export interface WifiApSetting {
+  useVenueSettings: boolean;
+  externalAntenna?: ExternalAntenna;
+  poeOut?: boolean;
+  poeMode?: string;
+  lanPorts?: LanPort[];
+  lan?: LanPort[];
 }

@@ -166,6 +166,19 @@ export const venueCaps = {
     supportDual5gMode: false,
     supportTriRadio: false,
     wanConnection: 'ETH_WITH_CELLULAR_FAILOVER'
+  }, {
+    model: 'R650'
+  }],
+  version: '6.0.0.x.xxx'
+}
+
+export const apCaps = {
+  apModels: [{
+    model: 'E510'
+  }, {
+    model: 'H320'
+  }, {
+    model: 'R650'
   }],
   version: '6.0.0.x.xxx'
 }
@@ -202,6 +215,7 @@ export const apDetailsList = [{
   lastUpdated: '2022-07-05T08:29:15.484Z',
   mac: '456789876554',
   meshRole: 'DISABLED',
+  model: 'R650',
   name: 'test ap',
   position: { xPercent: 0, yPercent: 0 },
   radio: {
@@ -294,4 +308,307 @@ export const dhcpAp = [{
     venueDhcpMode: 'EnableOnMultipleAPs',
     venueId: '16b11938ee934928a796534e2ee47661'
   }]
+}]
+
+export const apLanPorts = [{
+  lanPorts: [{
+    type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true
+  }, {
+    type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '2', enabled: true
+  }],
+  useVenueSettings: true
+}]
+
+export const venueSetting = {
+  tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
+  wifiFirmwareVersion: '6.2.0.103.486',
+  countryCode: 'US',
+  mesh: {
+    enabled: true
+  },
+  bandBalancing: {
+    enabled: false,
+    clientPercent24: 25
+  },
+  radioCustomization: {
+    radioParams6G: {
+      method: 'CHANNELFLY',
+      scanInterval: 20,
+      allowedChannels:
+        // eslint-disable-next-line max-len
+        [
+          '1',
+          '5',
+          '9',
+          '13',
+          '17',
+          '21',
+          '25',
+          '29',
+          '33',
+          '37',
+          '41',
+          '45',
+          '49',
+          '53',
+          '57',
+          '61',
+          '65',
+          '69',
+          '73',
+          '77',
+          '81',
+          '85',
+          '89',
+          '93',
+          '97',
+          '101',
+          '105',
+          '109',
+          '113',
+          '117',
+          '121',
+          '125',
+          '129',
+          '133',
+          '137',
+          '141',
+          '145',
+          '149',
+          '153',
+          '157',
+          '161',
+          '165',
+          '169',
+          '173',
+          '177',
+          '181',
+          '185',
+          '189',
+          '193',
+          '197',
+          '201',
+          '205',
+          '209',
+          '213',
+          '217',
+          '221'
+        ],
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      changeInterval: 33,
+      txPower: 'MAX'
+    },
+    radioParamsDual5G: {
+      inheritParamsLower5G: true,
+      radioParamsLower5G: {
+        allowedIndoorChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
+        allowedOutdoorChannels: [
+          '36',
+          '40',
+          '44',
+          '48',
+          '52',
+          '56',
+          '60',
+          '64'
+        ],
+        channelBandwidth: 'AUTO',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33,
+        scanInterval: 20,
+        txPower: 'MAX'
+      },
+      inheritParamsUpper5G: true,
+      radioParamsUpper5G: {
+        // eslint-disable-next-line max-len
+        allowedIndoorChannels: [
+          '100',
+          '104',
+          '108',
+          '112',
+          '116',
+          '120',
+          '124',
+          '128',
+          '132',
+          '136',
+          '149',
+          '153',
+          '157',
+          '161'
+        ],
+        // eslint-disable-next-line max-len
+        allowedOutdoorChannels: [
+          '100',
+          '104',
+          '108',
+          '112',
+          '116',
+          '120',
+          '124',
+          '128',
+          '132',
+          '136',
+          '149',
+          '153',
+          '157',
+          '161'
+        ],
+        channelBandwidth: 'AUTO',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33,
+        scanInterval: 20,
+        txPower: 'MAX'
+      }
+    },
+    radioParams24G: {
+      allowedChannels: [
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11'
+      ],
+      channelBandwidth: 'AUTO',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20,
+      txPower: 'MAX'
+    },
+    radioParams50G: {
+      combineChannels: false,
+      // eslint-disable-next-line max-len
+      allowedIndoorChannels: [
+        '36',
+        '40',
+        '44',
+        '48',
+        '52',
+        '56',
+        '60',
+        '64',
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      // eslint-disable-next-line max-len
+      allowedOutdoorChannels: [
+        '36',
+        '40',
+        '44',
+        '48',
+        '52',
+        '56',
+        '60',
+        '64',
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      channelBandwidth: 'AUTO',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20,
+      txPower: 'MAX'
+    }
+  },
+  denialOfServiceProtection: {
+    enabled: false,
+    blockingPeriod: 60,
+    failThreshold: 5,
+    checkPeriod: 30
+  },
+  syslog: {
+    enabled: false,
+    port: 514,
+    facility: 'KEEP_ORIGINAL',
+    priority: 'INFO',
+    protocol: 'UDP',
+    flowLevel: 'CLIENT_FLOW',
+    secondaryPort: 514,
+    secondaryProtocol: 'TCP'
+  },
+  dhcpServiceSetting: {
+    enabled: false,
+    mode: 'EnableOnEachAPs',
+    wanPortSelectionMode: 'Dynamic'
+  },
+  rogueAp: {
+    enabled: false,
+    reportThreshold: 0
+  },
+  enableClientIsolationAllowlist: false,
+  id: 'f892848466d047798430de7ac234e940'
+}
+
+export const venueLanPorts = [{
+  lanPorts: [{ type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true }],
+  model: 'E510'
+}, {
+  lanPorts: [
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '1', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '2', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+  ],
+  model: 'H320'
+}, {
+  lanPorts: [{
+    defaultType: 'TRUNK',
+    id: '1',
+    isPoeOutPort: false,
+    isPoePort: false,
+    supportDisable: true,
+    trunkPortOnly: false,
+    untagId: 1,
+    vlanMembers: '1-4094'
+  }, {
+    defaultType: 'TRUNK',
+    id: '2',
+    isPoeOutPort: false,
+    isPoePort: true,
+    supportDisable: false,
+    trunkPortOnly: false,
+    untagId: 1,
+    vlanMembers: '1-4094'
+  }],
+  model: 'R650'
+}, {
+  lanPorts: [
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '2', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+  ],
+  model: 'T750',
+  poeMode: 'Auto',
+  poeOut: false
 }]

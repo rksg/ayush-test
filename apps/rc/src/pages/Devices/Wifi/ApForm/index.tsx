@@ -648,7 +648,7 @@ function checkFormIsDirty (form: StepsFormInstance, originalData: ApDeep, device
   const checkFields = Object.keys(form?.getFieldsValue() ?? {}).concat(['deviceGps'])
   const oldData = pick(originalData, checkFields)
   const newData = omitBy({ ...omit(formData, 'deviceGps'), deviceGps: deviceGps }, v => !v)
-  return !isEqual(oldData, newData)
+  return Object.keys(formData).length > 0 && !isEqual(oldData, newData)
 }
 
 function checkFormIsInvalid (form: StepsFormInstance) {

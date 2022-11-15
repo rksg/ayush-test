@@ -1,30 +1,35 @@
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Tooltip }                    from '@acx-ui/components'
+import { StepsFormInstance, Tooltip } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   ApLanPortTypeEnum,
   ApModel,
+  CapabilitiesApModel,
   checkVlanMember,
   LanPort,
   VenueLanPorts,
+  WifiApSetting,
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
 
 export function LanPortSettings (props: {
+  formRef?: StepsFormInstance,
+  data: LanPort | undefined,
   index: number,
   selectedPortCaps: LanPort,
   setSelectedPortCaps: (data: LanPort) => void,
-  selectedModel: VenueLanPorts,
-  selectedModelCaps: ApModel,
+  selectedModel: VenueLanPorts | WifiApSetting,
+  selectedModelCaps: ApModel | CapabilitiesApModel,
   isDhcpEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean
 }) {
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
   const {
+    formRef,
+    data,
     index,
     selectedPortCaps,
     selectedModel,
@@ -34,8 +39,8 @@ export function LanPortSettings (props: {
     readOnly,
     useVenueSettings
   } = props
-
-  const lan = form?.getFieldValue('lan')[index]
+  const form = formRef || Form.useFormInstance() ///
+  const lan = data || form?.getFieldValue('lan')?.[index] ///
   const handlePortTypeChange = (value: string, index:number) => {
     const lanPorts = selectedModel?.lanPorts?.map((lan: LanPort, idx: number) =>
       index === idx ? {
@@ -44,11 +49,16 @@ export function LanPortSettings (props: {
         untagId: value === ApLanPortTypeEnum.TRUNK ? 1 : lan.untagId,
         vlanMembers: value === ApLanPortTypeEnum.TRUNK
           ? '1-4094'
-          : (value === ApLanPortTypeEnum.ACCESS ? lan?.untagId.toString() : lan?.vlanMembers)
+          : (value === ApLanPortTypeEnum.ACCESS
+            ? lan?.untagId.toString()
+            : lan?.vlanMembers.toString()
+          )
       } : lan
     )
+    // setLan(lanPorts[index])
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[index] as LanPort)
     form?.setFieldValue('lan', lanPorts)
+    // formRef?.current?.setFieldValue('lan', lanPorts)
   }
 
   return (<>
@@ -61,18 +71,17 @@ export function LanPortSettings (props: {
         disabled={readOnly}
       />}
     />}
-    {isDhcpEnabled && !useVenueSettings && <FormattedMessage
+    {isDhcpEnabled && !useVenueSettings && <FormattedMessage ///
       defaultMessage={`<section>
         <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
         <p>You cannot edit LAN Port setting on this device because it has assigned
           to the venue which already has enabled DHCP service.</p>
       </section>`}
       values={{
-        section: (contents) => <Space direction='vertical'>{contents}</Space>,
+        section: (contents) => <Space direction='vertical' size={0}>{contents}</Space>,
         p: (contents) => <p>{contents}</p>
       }}
     />}
-
     <Form.Item
       name={['lan', index, 'enabled']}
       label={$t({ defaultMessage: 'Enable port' })}
@@ -124,6 +133,10 @@ export function LanPortSettings (props: {
         </Tooltip>
       </>}
       initialValue={lan?.untagId}
+      rules={[{
+        required: true,
+        message: $t({ defaultMessage: 'This field is invalid' })
+      }]}
       children={<InputNumber min={1}
         max={4094}
         style={{ width: '100%' }}
@@ -138,10 +151,11 @@ export function LanPortSettings (props: {
               index === idx ? {
                 ...lan,
                 untagId: value,
-                vlanMembers: value
+                vlanMembers: value.toString()
               } : lan
             )
             form?.setFieldValue('lan', lanPorts)
+            // formRef?.current?.setFieldValue('lan', lanPorts)
           }
         }}
       />}
@@ -162,7 +176,7 @@ export function LanPortSettings (props: {
         { validator: (_, value) => checkVlanMember(value) }
       ]}
       children={<Input
-        value={lan?.type === ApLanPortTypeEnum.ACCESS ? lan?.untagId : null}
+        value={lan?.type === ApLanPortTypeEnum.ACCESS ? lan?.untagId : ''}
         disabled={readOnly
           || isDhcpEnabled
           || !lan?.enabled
