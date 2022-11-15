@@ -2241,7 +2241,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                 class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
                 >
                   <div
                     class="ant-space-item"
@@ -2301,7 +2301,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                 class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
                 >
                   <div
                     class="ant-space-item"
@@ -2492,7 +2492,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
                 class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
                 >
                   <div
                     class="ant-space-item"
@@ -2696,7 +2696,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                 class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
                 >
                   <div
                     class="ant-space-item"
@@ -2756,7 +2756,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                 class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
                 >
                   <div
                     class="ant-space-item"

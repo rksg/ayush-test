@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom'
+import { BrowserRouter } from 'react-router-dom'
+
 import { dataApiURL }         from '@acx-ui/analytics/services'
 import { IncidentFilter }     from '@acx-ui/analytics/utils'
+import { Path }               from '@acx-ui/react-router-dom'
 import { Provider, store }    from '@acx-ui/store'
 import {
   cleanup,
@@ -14,7 +17,12 @@ import { DateRange } from '@acx-ui/utils'
 import { expectedIncidentDashboardData } from './__tests__/fixtures'
 import { api }                           from './services'
 
-import { IncidentsDashboard } from '.'
+import { IncidentsDashboard, onExpandClick, onAxisLabelClick } from '.'
+
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  ArrowChevronRight: () => <div data-testid='arrow-chevron-right'/>
+}))
 
 const filters : IncidentFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -34,14 +42,43 @@ describe('IncidentDashboard', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
       data: { network: { hierarchyNode: expectedIncidentDashboardData } }
     })
-    const { asFragment } = render(<Provider>
-      <IncidentsDashboard filters={filters} />
-    </Provider>)
+    const { asFragment } = render(
+      <BrowserRouter>
+        <Provider>
+          <IncidentsDashboard filters={filters} />
+        </Provider>
+      </BrowserRouter>)
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('2 clients impacted')
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
     expect(fragment).toMatchSnapshot()
+  })
+})
+
+describe('onExpandClick', () => {
+  it('should navigate to incidents page when clicked', async () => {
+    const navigate = jest.fn()
+    const basePath = { pathname: '/analytics/incidents/' }
+    onExpandClick(navigate, basePath as Path)()
+    expect(navigate).toBeCalledTimes(1)
+    expect(navigate).toBeCalledWith({
+      ...basePath,
+      pathname: basePath.pathname
+    })
+  })
+})
+
+describe('onAxisLabelClick', () => {
+  it('should navigate to respective tab of incidents page when clicked', async () => {
+    const navigate = jest.fn()
+    const basePath = { pathname: '/analytics/incidents/' }
+    onAxisLabelClick(navigate, basePath as Path)('SomeLabel')
+    expect(navigate).toBeCalledTimes(1)
+    expect(navigate).toBeCalledWith({
+      ...basePath,
+      pathname: `${basePath.pathname}/tab/somelabel`
+    })
   })
 })
