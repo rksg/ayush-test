@@ -7,6 +7,7 @@ import Dashboard        from './pages/Dashboard'
 import DevicesBase      from './pages/Devices'
 import Layout           from './pages/Layout'
 import NetworksBase     from './pages/Networks'
+import PoliciesBase     from './pages/Policies'
 import ServicesBase     from './pages/Services'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
@@ -35,7 +36,7 @@ function AllRoutes () {
         <Route path='services/*' element={<ServicesBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
-        <Route path='devices/*' element={<DevicesBase />}>
+        <Route path='policies/*' element={<PoliciesBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
         <Route path='venues/*' element={<VenuesRoutes />} />
@@ -51,6 +52,10 @@ function VenuesRoutes () {
       <Route index element={<VenuesTable />} />
       <Route path='add' element={<VenuesForm />} />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
+      <Route
+        path=':venueId/venue-details/:activeTab/:activeSubTab/:categoryTab'
+        element={<VenueDetails />}
+      />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
     </Route>

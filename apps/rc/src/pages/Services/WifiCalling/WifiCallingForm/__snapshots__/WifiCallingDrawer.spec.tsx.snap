@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WifiCallingDrawer should cancel the drawer successfully 1`] = `<DocumentFragment />`;
+
+exports[`WifiCallingDrawer should render drawer successfully (add) 1`] = `<DocumentFragment />`;

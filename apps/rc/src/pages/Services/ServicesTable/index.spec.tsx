@@ -89,7 +89,7 @@ describe('Services Table', () => {
   })
 
   it('should delete selected row', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <ServicesTable />
       </Provider>, {
@@ -97,7 +97,6 @@ describe('Services Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const selectedServiceName = mockTableResult.data[0].name
     const nameReg = new RegExp(selectedServiceName)
