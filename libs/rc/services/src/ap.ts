@@ -17,7 +17,8 @@ import {
   VenueCapabilities,
   WifiUrlsInfo,
   VenueDefaultApGroup,
-  AddApGroup
+  AddApGroup,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -114,6 +115,50 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
+    }),
+    deleteAp: build.mutation<AP, RequestPayload>({
+      query: ({ params, payload }) => {
+        const api = !!payload ? WifiUrlsInfo.deleteAps : WifiUrlsInfo.deleteAp
+        const req = createHttpRequest(api, params)
+        return {
+          ...req,
+          ...(!!payload && { body: payload })
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    getDhcpAp: build.query<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    downloadApLog: build.mutation<{ fileURL: string }, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.downloadApLog, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    rebootAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    factoryResetAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.factoryResetAp, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -130,7 +175,12 @@ export const {
   useWifiCapabilitiesQuery,
   useApDetailHeaderQuery,
   useVenueDefaultApGroupQuery,
-  useLazyVenueDefaultApGroupQuery
+  useLazyVenueDefaultApGroupQuery,
+  useDeleteApMutation,
+  useDownloadApLogMutation,
+  useRebootApMutation,
+  useFactoryResetApMutation,
+  useLazyGetDhcpApQuery
 } = apApi
 
 

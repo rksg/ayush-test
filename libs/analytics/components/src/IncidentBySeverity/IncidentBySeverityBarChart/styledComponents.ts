@@ -12,7 +12,6 @@ export const IncidentCount = styled(Typography.Title).attrs({ level: 1 })`
   margin-bottom: 0 !important;
 `
 export const Container = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
 `
