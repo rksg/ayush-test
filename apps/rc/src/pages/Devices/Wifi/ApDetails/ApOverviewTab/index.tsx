@@ -9,7 +9,7 @@ import { ApProperties } from './ApProperties'
 export function ApOverviewTab () {
   const { filters } = useAnalyticsFilter()
   const params = useParams()
-  const viewModelPayload = {
+  const apViewModelPayload = {
     entityType: WifiEntityEnum.apsTree,
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
@@ -18,7 +18,7 @@ export function ApOverviewTab () {
       'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
     filters: { serialNumber: [params.serialNumber] }
   }
-  const apViewModelQuery = useApViewModelQuery({ params, payload: viewModelPayload })
+  const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
   const apDetailsQuery = useApDetailsQuery({ params })
   const venueApFilter = {
     ...filters

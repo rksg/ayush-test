@@ -88,7 +88,7 @@ export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
 }
 
 export const getUserDateFormat = (
-  // userProfile: UserProfile,  TODO:
+  // TODO: userProfile: UserProfile
   dateStr: string,
   recivedDateFormat = 'YYYY-MM-DD HH:mm:ss',
   localTime = false) => {
