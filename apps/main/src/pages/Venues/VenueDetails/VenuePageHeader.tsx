@@ -1,16 +1,40 @@
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { Button, DisabledButton, PageHeader } from '@acx-ui/components'
-import { ClockOutlined }                      from '@acx-ui/icons'
-import { useVenueDetailsHeaderQuery }         from '@acx-ui/rc/services'
-import { VenueDetailHeader }                  from '@acx-ui/rc/utils'
+import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { ClockOutlined }                                   from '@acx-ui/icons'
+import { useVenueDetailsHeaderQuery }                      from '@acx-ui/rc/services'
+import { VenueDetailHeader }                               from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
+import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
 
 import VenueTabs from './VenueTabs'
+
+
+function DatePicker () {
+  const { $t } = useIntl()
+  const enableVenueAnalytics = useIsSplitOn(Features.VENUE_ANALYTICS)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+
+  return (enableVenueAnalytics)
+    ? <RangePicker
+      key='date-filter'
+      selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+      enableDates={dateRangeForLast(3,'months')}
+      onDateApply={setDateFilter as CallableFunction}
+      showTimePicker
+      selectionType={range}
+    />
+    : <DisabledButton key='date-filter' icon={<ClockOutlined />}>
+      {$t({ defaultMessage: 'Last 24 Hours' })}
+    </DisabledButton>
+}
+
 
 function VenuePageHeader () {
   const { $t } = useIntl()
@@ -27,9 +51,7 @@ function VenuePageHeader () {
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
       extra={[
-        <DisabledButton key='date-filter' icon={<ClockOutlined />}>
-          {$t({ defaultMessage: 'Last 24 Hours' })}
-        </DisabledButton>,
+        <DatePicker />,
         <Button
           key='configure'
           type='primary'
