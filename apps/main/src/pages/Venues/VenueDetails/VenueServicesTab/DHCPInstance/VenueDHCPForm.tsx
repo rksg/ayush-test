@@ -17,8 +17,8 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import useDHCPInfo                                                         from './hooks/useDHCPInfo'
-import { AntSelect, AntLabel, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
+import useDHCPInfo                                               from './hooks/useDHCPInfo'
+import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
 
 
 
@@ -178,11 +178,9 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
         )}
       </AntSelect>
     </StyledForm.Item>
-
-    <AntLabel>
-      {$t({ defaultMessage: 'Gateway' })}
-    </AntLabel>
-    {gatewaysList}
+    <StyledForm.Item label={$t({ defaultMessage: 'Gateway' })}>
+      {gatewaysList}
+    </StyledForm.Item>
   </StyledForm>
 })
 

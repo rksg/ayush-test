@@ -19,9 +19,6 @@ export const AntSelect = styled(Select)`
 export const AddBtnContainer = styled.div`
     width: 250px;
 `
-export const AntLabel = styled.label`
-  color: var(--acx-neutrals-60);
-`
 const gatewayBottom = '10px'
 export const IconContainer = styled.div`
     display: flex;

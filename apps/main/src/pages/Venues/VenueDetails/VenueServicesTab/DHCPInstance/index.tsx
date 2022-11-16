@@ -47,11 +47,12 @@ const DHCPInstance = () => {
           defaultValue={'pools'}
           onChange={changeTabPosition}
           options={[{
-            label: $t({ defaultMessage: 'Pools' })+` (${dhcpProfile?.dhcpPools.length || 0})`,
+            label: $t({ defaultMessage: 'Pools ({count})' },
+              { count: dhcpProfile?.dhcpPools.length || 0 }),
             value: 'pools'
           }, {
-            label: $t({ defaultMessage: 'Lease Table' }) +
-            ` (${leasesList?.length || 0} ` + $t({ defaultMessage: 'Online' }) + ')',
+            label: $t({ defaultMessage: 'Lease Table ({count} Online)' },
+              { count: leasesList?.length || 0 }),
             value: 'lease'
           }]}
         />

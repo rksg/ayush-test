@@ -105,7 +105,7 @@ export default function VenuePoolTable (){
       title: $t({ defaultMessage: 'DNS IP' }),
       dataIndex: 'primaryDnsIp',
       render: (data, rowData)=>
-        FormattedList({ type: 'unit', value: [rowData.primaryDnsIp, rowData.secondaryDnsIp] })
+        <FormattedList type='unit' value={[rowData.primaryDnsIp, rowData.secondaryDnsIp]} />
     },
     {
       key: 'id',
