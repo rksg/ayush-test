@@ -5,7 +5,6 @@ import { Buffer } from 'buffer'
 import { useSearchParams } from 'react-router-dom'
 
 import { DateFilter, useDateFilter } from './dateFilter'
-import {  getDateRangeFilter }       from './dateUtil'
 import { generateVenueFilter }       from './filters'
 import { NetworkPath, pathFilter }   from './types/networkFilter'
 
@@ -22,11 +21,10 @@ export function useDashboardFilter () {
         Buffer.from(search.get('dashboardVenueFilter') as string, 'base64').toString('ascii')
       )
       : { nodes: [] }
-    const { range, startDate, endDate } = dateFilter
     return {
       filters: {
         path: defaultNetworkPath,
-        ...getDateRangeFilter(range, startDate, endDate),
+        ...dateFilter,
         filter: nodes.length
           ? generateVenueFilter(nodes.map(([name]:string[]) => name))
           : {}
