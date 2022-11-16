@@ -32,7 +32,6 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
     return JSON.parse(String(treatment?.config))
   }, [treatment])
 
-  // eslint-disable-next-line max-len
   const featureKey = [
     'feature',
     jwtPayload?.tenantType,
