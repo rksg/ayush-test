@@ -23,7 +23,7 @@ export const SearchBar = styled.div`
 export const Input = styled(AntInput)`
   height: 28px;
   font-size: 12px;
-  color: var(--acx-neutrals-50);
+  color: ${props => props.value === '' ? 'var(--acx-neutrals-50)' : 'var(--acx-primary-white)'};
   background: transparent;
   border: none;
   .ant-input::placeholder {
