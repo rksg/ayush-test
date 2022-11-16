@@ -3,8 +3,8 @@ import {
   dateRangeForLast,
   getDateRangeFilter,
   resetRanges,
-  getShortDurationFormat, 
-  getUserDateFormat, 
+  getShortDurationFormat,
+  getUserDateFormat,
   secondToTime
 } from './dateUtil'
 
