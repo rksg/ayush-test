@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule dialog with ALWAYS_ON successfully 1`] = `
+exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedule NULL successfully 1`] = `
 <div
   aria-labelledby="test-id"
   aria-modal="true"
@@ -13233,13 +13233,14 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                         style="padding-left: 12px; padding-right: 12px;"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled"
                           style="margin-top: 5px; padding-right: 5px;"
                         >
                           <span
-                            class="ant-checkbox ant-checkbox-disabled"
+                            class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                           >
                             <input
+                              checked=""
                               class="ant-checkbox-input"
                               data-testid="checkbox_sat"
                               disabled=""
@@ -13281,12 +13282,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                     id="networkVenueScheduleForm_scheduler_sat"
                                   >
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13306,12 +13308,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13331,12 +13334,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13356,12 +13360,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13381,12 +13386,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13406,12 +13412,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13431,12 +13438,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13456,12 +13464,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13481,12 +13490,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13506,12 +13516,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13531,12 +13542,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13556,12 +13568,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13581,12 +13594,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13606,12 +13620,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13631,12 +13646,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13656,12 +13672,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13681,12 +13698,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13706,12 +13724,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13731,12 +13750,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13756,12 +13776,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13781,12 +13802,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13806,12 +13828,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13831,12 +13854,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13856,12 +13880,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13881,12 +13906,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13906,12 +13932,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13931,12 +13958,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13956,12 +13984,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -13981,12 +14010,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14006,12 +14036,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14031,12 +14062,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14056,12 +14088,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14081,12 +14114,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14106,12 +14140,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14131,12 +14166,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14156,12 +14192,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14181,12 +14218,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14206,12 +14244,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14231,12 +14270,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14256,12 +14296,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14281,12 +14322,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14306,12 +14348,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14331,12 +14374,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14356,12 +14400,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14381,12 +14426,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14406,12 +14452,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14431,12 +14478,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14456,12 +14504,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14481,12 +14530,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14506,12 +14556,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14531,12 +14582,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14556,12 +14608,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14581,12 +14634,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14606,12 +14660,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14631,12 +14686,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14656,12 +14712,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14681,12 +14738,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14706,12 +14764,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14731,12 +14790,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14756,12 +14816,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14781,12 +14842,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14806,12 +14868,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14831,12 +14894,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14856,12 +14920,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14881,12 +14946,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14906,12 +14972,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14931,12 +14998,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14956,12 +15024,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -14981,12 +15050,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15006,12 +15076,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15031,12 +15102,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15056,12 +15128,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15081,12 +15154,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15106,12 +15180,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15131,12 +15206,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15156,12 +15232,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15181,12 +15258,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15206,12 +15284,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15231,12 +15310,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15256,12 +15336,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15281,12 +15362,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15306,12 +15388,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15331,12 +15414,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15356,12 +15440,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15381,12 +15466,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15406,12 +15492,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15431,12 +15518,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15456,12 +15544,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15481,12 +15570,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15506,12 +15596,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15531,12 +15622,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15556,12 +15648,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15581,12 +15674,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15606,12 +15700,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15631,12 +15726,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"
@@ -15656,12 +15752,13 @@ exports[`NetworkVenueTabScheduleDialog should render network venue tab schedule 
                                       </span>
                                     </label>
                                     <label
-                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                     >
                                       <span
-                                        class="ant-checkbox ant-checkbox-disabled"
+                                        class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                       >
                                         <input
+                                          checked=""
                                           class="ant-checkbox-input"
                                           disabled=""
                                           type="checkbox"

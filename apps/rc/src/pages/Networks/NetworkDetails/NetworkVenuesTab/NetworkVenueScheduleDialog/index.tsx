@@ -172,9 +172,16 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
 
     if(networkVenue?.scheduler){
       form.setFieldValue(['scheduler', 'type'], networkVenue?.scheduler.type)
-      setDisabled(networkVenue?.scheduler.type === 'ALWAYS_ON')
 
       initialValues(networkVenue?.scheduler)
+    }
+
+    if(networkVenue?.scheduler === undefined){
+      for (let daykey in dayIndex) {
+        form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
+        arrCheckAll[dayIndex[daykey]] = true
+        setCheckAll(arrCheckAll)
+      }
     }
   }, [form, networkVenue, networkVenue?.scheduler])
 

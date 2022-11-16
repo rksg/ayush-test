@@ -16,7 +16,9 @@ import {
   venueResponse,
   timezoneResult,
   networkResponse,
-  networkVenueResponse
+  networkVenueResponse,
+  networkResponseWithNoSchedule,
+  networkVenueResponseWithNoSchedule
 } from '../../__test__/fixtures'
 
 import { NetworkVenueScheduleDialog } from './index'
@@ -80,6 +82,30 @@ describe('NetworkVenueTabScheduleDialog', () => {
       venue: venueResponse as Venue,
       network: networkResponse as NetworkSaveData,
       networkVenue: networkVenueResponse as NetworkVenue
+    }
+
+    const { rerender } = render(
+      <NetworkVenueScheduleDialog
+        {...props}
+        visible={true} />
+    )
+
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'See tips' }))
+    const tipsDialog = await screen.findAllByRole('dialog')
+    fireEvent.click(within(tipsDialog[1]).getByRole('button', { name: 'OK' }))
+
+    // update the props "visible"
+    rerender(<NetworkVenueScheduleDialog {...props} visible={false}/>)
+    expect(dialog).not.toBeVisible()
+  })
+  it('should render schedule dialog with schedule NULL successfully', async () => {
+    const props = {
+      formName: 'networkVenueScheduleForm',
+      venue: venueResponse as Venue,
+      network: networkResponseWithNoSchedule as NetworkSaveData,
+      networkVenue: networkVenueResponseWithNoSchedule as NetworkVenue
     }
 
     const { rerender } = render(
