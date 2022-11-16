@@ -11,6 +11,7 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   DhcpAp,
+  ApRadioChannelsForm,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
@@ -150,6 +151,25 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getApRadio: build.query<ApRadioChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApRadio, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    updateApRadio: build.mutation<ApRadioChannelsForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApRadio, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     })
   })
 })
@@ -168,7 +188,9 @@ export const {
   useDownloadApLogMutation,
   useRebootApMutation,
   useFactoryResetApMutation,
-  useLazyGetDhcpApQuery
+  useLazyGetDhcpApQuery,
+  useGetApRadioQuery,
+  useUpdateApRadioMutation
 } = apApi
 
 
