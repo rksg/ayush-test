@@ -10,10 +10,10 @@ type TierKey = `feature-${AccountType}-${AccountVertical}` | 'betaList'
 
 /* eslint-disable max-len, key-spacing */
 const defaultConfig: Partial<Record<TierKey, string[]>> = {
-  'feature-REC-Default':     ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY ESNTLS', 'API-CLOUD'],
-  'feature-REC-Education':   ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY ESNTLS', 'API-CLOUD'],
-  'feature-MSP-Default':     ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY ESNTLS', 'PLCY-SGMNT', 'API-CLOUD'],
-  'feature-MSP-Hospitality': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY ESNTLS', 'PLCY-SGMNT', 'API-CLOUD'],
+  'feature-REC-Default':     ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY-ESNTLS', 'API-CLOUD'],
+  'feature-REC-Education':   ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'PLCY-ESNTLS', 'API-CLOUD'],
+  'feature-MSP-Default':     ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY-ESNTLS', 'PLCY-SGMNT', 'API-CLOUD'],
+  'feature-MSP-Hospitality': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT', 'ANLT-ADV', 'ANLT-STUDIO', 'PLCY-ESNTLS', 'PLCY-SGMNT', 'API-CLOUD'],
   'betaList':                []
 }
 /* eslint-enable */
