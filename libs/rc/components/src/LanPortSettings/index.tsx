@@ -1,7 +1,7 @@
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { StepsFormInstance, Tooltip } from '@acx-ui/components'
+import { cssStr, Tooltip }            from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   ApLanPortTypeEnum,
@@ -15,8 +15,6 @@ import {
 } from '@acx-ui/rc/utils'
 
 export function LanPortSettings (props: {
-  formRef?: StepsFormInstance,
-  data: LanPort | undefined,
   index: number,
   selectedPortCaps: LanPort,
   setSelectedPortCaps: (data: LanPort) => void,
@@ -28,8 +26,6 @@ export function LanPortSettings (props: {
 }) {
   const { $t } = useIntl()
   const {
-    formRef,
-    data,
     index,
     selectedPortCaps,
     selectedModel,
@@ -39,8 +35,9 @@ export function LanPortSettings (props: {
     readOnly,
     useVenueSettings
   } = props
-  const form = formRef || Form.useFormInstance() ///
-  const lan = data || form?.getFieldValue('lan')?.[index] ///
+
+  const form = Form.useFormInstance()
+  const lan = form?.getFieldValue('lan')?.[index]
   const handlePortTypeChange = (value: string, index:number) => {
     const lanPorts = selectedModel?.lanPorts?.map((lan: LanPort, idx: number) =>
       index === idx ? {
@@ -55,37 +52,39 @@ export function LanPortSettings (props: {
           )
       } : lan
     )
-    // setLan(lanPorts[index])
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[index] as LanPort)
     form?.setFieldValue('lan', lanPorts)
-    // formRef?.current?.setFieldValue('lan', lanPorts)
   }
 
   return (<>
     {selectedPortCaps?.isPoeOutPort && <Form.Item
       name={['poeOut', index]}
       label={$t({ defaultMessage: 'Enable PoE Out' })}
-      initialValue={selectedModel.poeOut}
       valuePropName='checked'
       children={<Switch
         disabled={readOnly}
       />}
     />}
-    {isDhcpEnabled && !useVenueSettings && <FormattedMessage ///
+    {isDhcpEnabled && !useVenueSettings && <FormattedMessage
       defaultMessage={`<section>
         <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
         <p>You cannot edit LAN Port setting on this device because it has assigned
           to the venue which already has enabled DHCP service.</p>
       </section>`}
       values={{
-        section: (contents) => <Space direction='vertical' size={0}>{contents}</Space>,
+        section: (contents) => <Space
+          direction='vertical'
+          size={0}
+          style={{ fontSize: '12px', color: cssStr('--acx-semantics-red-50') }}
+        >
+          {contents}
+        </Space>,
         p: (contents) => <p>{contents}</p>
       }}
     />}
     <Form.Item
       name={['lan', index, 'enabled']}
       label={$t({ defaultMessage: 'Enable port' })}
-      initialValue={lan?.enabled}
       valuePropName='checked'
       children={<Switch
         disabled={readOnly
@@ -96,7 +95,6 @@ export function LanPortSettings (props: {
     <Form.Item
       hidden={true}
       name={['lan', index, 'portId']}
-      initialValue={lan?.portId}
       children={<Input />}
     />
     <Form.Item
@@ -110,7 +108,6 @@ export function LanPortSettings (props: {
           <QuestionMarkCircleOutlined />
         </Tooltip>
       </>}
-      initialValue={lan?.type}
       children={<Select
         disabled={readOnly
           || isDhcpEnabled
@@ -132,7 +129,6 @@ export function LanPortSettings (props: {
           <QuestionMarkCircleOutlined />
         </Tooltip>
       </>}
-      initialValue={lan?.untagId}
       rules={[{
         required: true,
         message: $t({ defaultMessage: 'This field is invalid' })
@@ -151,11 +147,10 @@ export function LanPortSettings (props: {
               index === idx ? {
                 ...lan,
                 untagId: value,
-                vlanMembers: value.toString()
+                vlanMembers: value?.toString()
               } : lan
             )
             form?.setFieldValue('lan', lanPorts)
-            // formRef?.current?.setFieldValue('lan', lanPorts)
           }
         }}
       />}
@@ -171,7 +166,6 @@ export function LanPortSettings (props: {
           <QuestionMarkCircleOutlined />
         </Tooltip>
       </>}
-      initialValue={lan?.vlanMembers}
       rules={[
         { validator: (_, value) => checkVlanMember(value) }
       ]}

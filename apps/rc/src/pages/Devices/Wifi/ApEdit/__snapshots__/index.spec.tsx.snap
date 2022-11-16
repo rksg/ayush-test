@@ -333,85 +333,85 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           role="tabpanel"
           tabindex="0"
         >
-          <section
-            class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
           >
-            <div
-              class="ant-pro-steps-form"
+            <section
+              class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
             >
               <div
-                class="ant-row"
-                style="margin-left: -12px; margin-right: -12px;"
+                class="ant-pro-steps-form"
               >
                 <div
-                  class="ant-col ant-col-24"
-                  style="padding-left: 12px; padding-right: 12px;"
+                  class="ant-row"
+                  style="margin-left: -12px; margin-right: -12px;"
                 >
                   <div
-                    class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+                    class="ant-col ant-col-24"
+                    style="padding-left: 12px; padding-right: 12px;"
                   >
                     <div
-                      class="ant-steps ant-steps-vertical ant-steps-dot"
+                      class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
                     >
                       <div
-                        class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                        class="ant-steps ant-steps-vertical ant-steps-dot"
                       >
                         <div
-                          class="ant-steps-item-container"
+                          class="ant-steps-item ant-steps-item-process ant-steps-item-active"
                         >
                           <div
-                            class="ant-steps-item-tail"
-                          />
-                          <div
-                            class="ant-steps-item-icon"
-                          >
-                            <span
-                              class="ant-steps-icon"
-                            >
-                              <span
-                                class="ant-steps-icon-dot"
-                              />
-                            </span>
-                          </div>
-                          <div
-                            class="ant-steps-item-content"
+                            class="ant-steps-item-container"
                           >
                             <div
-                              class="ant-steps-item-title"
+                              class="ant-steps-item-tail"
                             />
+                            <div
+                              class="ant-steps-item-icon"
+                            >
+                              <span
+                                class="ant-steps-icon"
+                              >
+                                <span
+                                  class="ant-steps-icon-dot"
+                                />
+                              </span>
+                            </div>
+                            <div
+                              class="ant-steps-item-content"
+                            >
+                              <div
+                                class="ant-steps-item-title"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="ant-row"
-                style="margin-left: -12px; margin-right: -12px;"
-              >
                 <div
-                  class="ant-col ant-col-24"
-                  style="padding-left: 12px; padding-right: 12px;"
+                  class="ant-row"
+                  style="margin-left: -12px; margin-right: -12px;"
                 >
                   <div
-                    class="ant-pro-steps-form-container"
+                    class="ant-col ant-col-24"
+                    style="padding-left: 12px; padding-right: 12px;"
                   >
                     <div
-                      class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+                      class="ant-pro-steps-form-container"
                     >
-                      <form
-                        autocomplete="off"
-                        class="ant-form ant-form-vertical"
-                        id="0"
+                      <div
+                        class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
                       >
-                        <input
-                          style="display: none;"
-                          type="text"
-                        />
-                        <div
-                          class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        <form
+                          autocomplete="off"
+                          class="ant-form ant-form-vertical"
+                          id="0"
                         >
+                          <input
+                            style="display: none;"
+                            type="text"
+                          />
                           <div
                             class="ant-row"
                             style="margin-left: -12px; margin-right: -12px;"
@@ -422,13 +422,23 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                             >
                               <div
                                 class="ant-space ant-space-horizontal ant-space-align-center"
-                                style="display: flex; justify-content: space-between;"
+                                style="display: flex; justify-content: space-between; font-size: 12px;"
                               >
                                 <div
                                   class="ant-space-item"
                                   style="margin-right: 8px;"
                                 >
-                                  Currently using radio settings of the venue (My-Venue)
+                                  Currently using LAN port settings of the venue (
+                                  <button
+                                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                    style="vertical-align: middle;"
+                                    type="button"
+                                  >
+                                    <span>
+                                      My-Venue
+                                    </span>
+                                  </button>
+                                  )
                                 </div>
                                 <div
                                   class="ant-space-item"
@@ -607,8 +617,8 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                     class="ant-form-item-control-input-content"
                                                   >
                                                     <button
-                                                      aria-checked="true"
-                                                      class="ant-switch ant-switch-checked ant-switch-disabled"
+                                                      aria-checked="false"
+                                                      class="ant-switch ant-switch-disabled"
                                                       disabled=""
                                                       id="0_lan_0_enabled"
                                                       role="switch"
@@ -645,7 +655,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                       class="ant-input"
                                                       id="0_lan_0_portId"
                                                       type="text"
-                                                      value="1"
+                                                      value=""
                                                     />
                                                   </div>
                                                 </div>
@@ -710,11 +720,8 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                           />
                                                         </span>
                                                         <span
-                                                          class="ant-select-selection-item"
-                                                          title="TRUNK"
-                                                        >
-                                                          TRUNK
-                                                        </span>
+                                                          class="ant-select-selection-placeholder"
+                                                        />
                                                       </div>
                                                       <span
                                                         aria-hidden="true"
@@ -945,8 +952,8 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                     class="ant-form-item-control-input-content"
                                                   >
                                                     <button
-                                                      aria-checked="true"
-                                                      class="ant-switch ant-switch-checked ant-switch-disabled"
+                                                      aria-checked="false"
+                                                      class="ant-switch ant-switch-disabled"
                                                       disabled=""
                                                       id="0_lan_1_enabled"
                                                       role="switch"
@@ -983,7 +990,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                       class="ant-input"
                                                       id="0_lan_1_portId"
                                                       type="text"
-                                                      value="2"
+                                                      value=""
                                                     />
                                                   </div>
                                                 </div>
@@ -1048,11 +1055,8 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                           />
                                                         </span>
                                                         <span
-                                                          class="ant-select-selection-item"
-                                                          title="TRUNK"
-                                                        >
-                                                          TRUNK
-                                                        </span>
+                                                          class="ant-select-selection-placeholder"
+                                                        />
                                                       </div>
                                                       <span
                                                         aria-hidden="true"
@@ -1275,47 +1279,47 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </form>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  >
+                    <div
+                      class="ant-space-item"
+                      style="margin-right: 12px;"
+                    >
+                      <button
+                        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                        type="button"
+                      >
+                        <span>
+                          Save
+                        </span>
+                      </button>
+                    </div>
+                    <div
+                      class="ant-space-item"
+                    >
+                      <button
+                        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        type="button"
+                      >
+                        <span>
+                          Cancel
+                        </span>
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-              <div
-                class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                >
-                  <div
-                    class="ant-space-item"
-                    style="margin-right: 12px;"
-                  >
-                    <button
-                      class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
-                      type="button"
-                    >
-                      <span>
-                        Save
-                      </span>
-                    </button>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <button
-                      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                      type="button"
-                    >
-                      <span>
-                        Cancel
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
         <div
           aria-hidden="true"

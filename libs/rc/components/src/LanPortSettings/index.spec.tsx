@@ -17,6 +17,23 @@ jest.mock('@acx-ui/icons', () => ({
   QuestionMarkCircleOutlined: () => <div data-testid='QuestionMarkCircleOutlined' />
 }))
 
+const selectedModelCaps = {
+  canSupportPoeMode: true,
+  canSupportPoeOut: false,
+  model: 'R650'
+}
+
+const selectedPortCaps = {
+  defaultType: 'TRUNK',
+  id: '1',
+  isPoeOutPort: false,
+  isPoePort: false,
+  supportDisable: true,
+  trunkPortOnly: false,
+  untagId: 1,
+  vlanMembers: '1-4094'
+}
+
 const selectedModel = {
   lanPorts: [{
     type: 'TRUNK',
@@ -36,41 +53,23 @@ const selectedModel = {
   useVenueSettings: false
 }
 
-const selectedModelCaps = {
-  canSupportPoeMode: true,
-  canSupportPoeOut: false,
-  model: 'R650'
-}
-
-const selectedPortCaps = {
-  defaultType: 'TRUNK',
-  id: '1',
-  isPoeOutPort: false,
-  isPoePort: false,
-  supportDisable: true,
-  trunkPortOnly: false,
-  untagId: 1,
-  vlanMembers: '1-4094'
-}
-
 const params = {
   tenantId: 'tenant-id'
 }
 
-const lanData = {
+const lanData = [{
   type: 'TRUNK',
   untagId: 1,
   vlanMembers: '1-4094',
   portId: '2',
   enabled: true
-}
+}]
 
 describe('LanPortSettings', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider>
-      <Form>
+      <Form initialValues={{ lan: lanData }}>
         <LanPortSettings
-          data={lanData}
           index={0}
           readOnly={false}
           selectedPortCaps={selectedPortCaps}
@@ -88,23 +87,21 @@ describe('LanPortSettings', () => {
     await screen.findByText('Enable port')
     expect(asFragment()).toMatchSnapshot()
 
-    fireEvent.mouseDown(screen.getByLabelText(/Port type/))
-    await userEvent.click(screen.getAllByText('GENERAL')[1])
-
-    fireEvent.change(screen.getByLabelText(/VLAN untag ID/), { target: { value: 2 } })
-    fireEvent.change(screen.getByLabelText(/VLAN member/), { target: { value: '1-10' } })
-
-    fireEvent.mouseDown(screen.getByLabelText(/Port type/))
-    await userEvent.click(screen.getAllByText('TRUNK')[1])
+    expect(screen.getByLabelText(/VLAN untag ID/)).toHaveValue('1')
+    expect(screen.getByLabelText(/VLAN member/)).toHaveValue('1-4094')
     expect(screen.getByLabelText(/VLAN untag ID/)).toBeDisabled()
     expect(screen.getByLabelText(/VLAN member/)).toBeDisabled()
+
+    fireEvent.mouseDown(screen.getByLabelText(/Port type/))
+    await userEvent.click(screen.getAllByText('GENERAL')[1])
+    fireEvent.change(screen.getByLabelText(/VLAN untag ID/), { target: { value: 2 } })
+    fireEvent.change(screen.getByLabelText(/VLAN member/), { target: { value: '1-10' } })
   })
 
   it('should render read-only mode correctly', async () => {
     render(<Provider>
-      <Form>
+      <Form initialValues={{ lan: lanData }}>
         <LanPortSettings
-          data={lanData}
           index={0}
           readOnly={true}
           selectedPortCaps={selectedPortCaps}

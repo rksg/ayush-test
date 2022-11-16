@@ -213,7 +213,6 @@ export function LanPorts () {
               <Row>
                 <Col span={8}>
                   <LanPortSettings
-                    data={selectedModel?.lanPorts?.[index]} ///
                     selectedPortCaps={selectedPortCaps}
                     selectedModel={selectedModel}
                     setSelectedPortCaps={setSelectedPortCaps}

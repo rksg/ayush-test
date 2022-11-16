@@ -2,6 +2,7 @@ import { useContext, useRef, useState, useEffect } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
 import { isEqual }                              from 'lodash'
+import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext' //'antd/lib/form/context'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
 import {
@@ -42,14 +43,14 @@ export function LanPorts () {
   const { tenantId, serialNumber } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
-  const venueBasePath = useTenantLink('')
 
   const { editContextData, setEditContextData } = useContext(ApEditContext)
 
   const formRef = useRef<StepsFormInstance<WifiApSetting>>()
   const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
-  const { data: apLanPorts } = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
   const { data: apCaps } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
+  const { data: apLanPorts, isLoading: isApLanPortsLoading }
+    = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
@@ -66,39 +67,47 @@ export function LanPorts () {
   const [selectedModel, setSelectedModel] = useState({} as WifiApSetting)
   const [useVenueSettings, setUseVenueSettings] = useState(true)
   const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)
+  const [formInitializing, setFormInitializing] = useState(true)
+  const [lanData, setLanData] = useState([] as LanPort[])
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = true // this.rbacService.isRoleAllowed('ResetWifiApSetting');
 
   useEffect(() => {
-    if (apDetails && apLanPorts && apCaps) {
+    if (apDetails && apCaps && !isApLanPortsLoading) {
       const setData = async () => {
         const venue = (await getVenue({
-          params: { tenantId, venueId: apDetails.venueId } }, true).unwrap())
+          params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap())
         const venueLanPorts = (await getVenueLanPorts({
-          params: { tenantId, venueId: apDetails.venueId }
-        }, true).unwrap()).filter(item => item.model === apDetails.model)?.[0]
+          params: { tenantId, venueId: apDetails?.venueId }
+        }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
         const venueSettings = (await getVenueSettings({
-          params: { tenantId, venueId: apDetails.venueId } }, true).unwrap())
+          params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap())
         const modelCaps = apCaps.apModels?.filter(item => item.model === apDetails?.model)?.[0]
 
+        const lanPorts = (apLanPorts?.useVenueSettings
+          ? venueLanPorts : apLanPorts) as WifiApSetting
         setVenue(venue)
         setVenueLanPorts(venueLanPorts)
-        setSelectedModel((apLanPorts?.useVenueSettings
-          ? venueLanPorts : apLanPorts) as WifiApSetting)
+        setSelectedModel(lanPorts)
         setSelectedModelCaps(modelCaps as CapabilitiesApModel)
         setSelectedPortCaps(modelCaps?.lanPorts?.[0] as LanPort)
-        setUseVenueSettings(apLanPorts?.useVenueSettings)
+        setUseVenueSettings(apLanPorts?.useVenueSettings ?? true)
         setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
-
-        formRef?.current?.setFieldsValue({
-          ...apLanPorts,
-          lan: apLanPorts?.lanPorts
-        })
+        setLanData(lanPorts?.lanPorts as LanPort[])
+        setFormInitializing(false)
       }
       setData()
     }
   }, [apDetails, apLanPorts, apCaps])
+
+  useEffect(() => {
+    setSelectedModel({
+      ...selectedModel,
+      lanPorts: formRef?.current?.getFieldsValue()?.lan as LanPort[]
+    })
+    updateEditContext(formRef?.current as StepsFormInstance, useVenueSettings)
+  }, [lanData])
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
@@ -106,7 +115,6 @@ export function LanPorts () {
   }
 
   const handleCustomize = async (useVenueSettings: boolean) => {
-    // console.log('useVenueSettings: ', useVenueSettings)
     const lanPorts = (useVenueSettings ? venueLanPorts : apLanPorts) as WifiApSetting
     setUseVenueSettings(useVenueSettings)
     setSelectedModel(lanPorts)
@@ -116,14 +124,7 @@ export function LanPorts () {
       lan: lanPorts?.lanPorts,
       useVenueSettings: useVenueSettings
     })
-    setEditContextData && setEditContextData({
-      ...editContextData,
-      tabTitle: $t({ defaultMessage: 'LAN Port' }),
-      isDirty: checkFormIsDirty(formRef?.current as StepsFormInstance, useVenueSettings),
-      hasError: checkFormIsInvalid(formRef?.current as StepsFormInstance),
-      updateChanges: () => handleFinish(formRef?.current?.getFieldsValue() as WifiApSetting),
-      discardChanges: () => handleDiscard()
-    })
+    updateEditContext(formRef?.current as StepsFormInstance, useVenueSettings)
   }
 
   const handleFinish = async (values: WifiApSetting) => {
@@ -133,7 +134,8 @@ export function LanPorts () {
         isDirty: false,
         hasError: false
       })
-      setUseVenueSettings(values?.useVenueSettings) ////
+      setUseVenueSettings(values?.useVenueSettings)
+
       if (values?.useVenueSettings) {
         await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
       } else {
@@ -153,24 +155,32 @@ export function LanPorts () {
 
   const handleDiscard = async () => {
     setUseVenueSettings(apLanPorts?.useVenueSettings ?? false)
+    setSelectedModel((apLanPorts?.useVenueSettings
+      ? venueLanPorts : apLanPorts) as WifiApSetting)
+
     formRef?.current?.setFieldsValue({
       lan: apLanPorts?.lanPorts,
       useVenueSettings: apLanPorts?.useVenueSettings
     })
   }
 
-  const handleFormChange = async () => {
-    setSelectedModel({
-      ...selectedModel,
-      lanPorts: formRef?.current?.getFieldsValue()?.lan as LanPort[]
-    })
+  const handleFormChange = async (formName: string, info: FormChangeInfo) => {
+    const indxe = Number(info?.changedFields?.[0].name.toString().split(',')[1])
+    const newLanData = (lanData?.map((item, idx) => {
+      return idx == indxe
+        ? formRef?.current?.getFieldsValue()?.lan?.[idx]
+        : lanData?.[idx]})) as LanPort[]
 
+    setLanData(newLanData)
+  }
+
+  const updateEditContext = (form: StepsFormInstance, useVenueSettings: boolean) => {
     setEditContextData && setEditContextData({
       ...editContextData,
       tabTitle: $t({ defaultMessage: 'LAN Port' }),
-      isDirty: checkFormIsDirty(formRef?.current as StepsFormInstance, useVenueSettings),
-      hasError: checkFormIsInvalid(formRef?.current as StepsFormInstance),
-      updateChanges: () => handleFinish(formRef?.current?.getFieldsValue() as WifiApSetting),
+      isDirty: checkFormIsDirty(form as StepsFormInstance, useVenueSettings),
+      hasError: checkFormIsInvalid(form as StepsFormInstance),
+      updateChanges: () => handleFinish(form?.getFieldsValue() as WifiApSetting),
       discardChanges: () => handleDiscard()
     })
   }
@@ -184,106 +194,118 @@ export function LanPorts () {
       lanPorts: form?.getFieldsValue()?.lan,
       useVenueSettings: useVenueSettings
     }
-    return !isEqual(apLanPorts, newData)
+    return !!apLanPorts && !isEqual(apLanPorts, newData)
   }
 
-  const redirectToVenue = (venueId: string | undefined) => {
-    navigate({
-      // ...venueBasePath,
-      // pathname: `${venueId}/venue-details/overview`
-    }, { replace: true })
+  const navigateToVenue = (venueId: string | undefined) => {
+    navigate(`../venues/${venueId}/venue-details/overview`)
   }
 
-  return <StepsForm
-    formRef={formRef}
-    onFinish={handleFinish}
-    onFormChange={handleFormChange}
-    onCancel={() => navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/aps/${serialNumber}/details/overview`
-    })
-    }
-    buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
-  >
-    <StepsForm.StepForm>
-      <Loader states={[{
-        isLoading: !selectedModel?.lanPorts?.length,
-        isFetching: isApLanPortsUpdating || isApLanPortsResetting
-      }]}>
-        <Row gutter={24}>
-          <Col span={10}>
-            {<Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-              {useVenueSettings
-                ? <FormattedMessage
-                  defaultMessage={'Currently using LAN port settings of the venue ({venue})'}
-                  values={{
-                    venue: <Button type='link' size='small' onClick={() => redirectToVenue(venue?.id)}>{venue?.name}</Button>
-                  }}/>
-                : $t({ defaultMessage: 'Custom settings' })
-              }
-              <Button type='link'
-                size='small'
-                disabled={useVenueSettings ? !isAllowUpdate : !isAllowReset}
-                onClick={() => handleCustomize(!useVenueSettings)}
-              > {useVenueSettings
-                  ? $t({ defaultMessage: 'Customize' })
-                  : $t({ defaultMessage: 'Use Venue Settings' })
-                }</Button>
-            </Space>}
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              hidden={true}
-              name='useVenueSettings'
-              initialValue={useVenueSettings}
-              children={<Switch checked={useVenueSettings} />}
-            />
-            <Tabs
-              type='third'
-              onChange={onTabChange}
-              animated={true}
-            >
-              {selectedModel?.lanPorts?.map((lan: LanPort, index: number) =>
-                <Tabs.TabPane
-                  tab={$t({ defaultMessage: 'LAN {index}' }, { index: index + 1 })}
-                  key={`lan-${index + 1}`}
-                  forceRender={true}
-                >
-                  <Row>
-                    <Col span={8}>
-                      <LanPortSettings
-                        // form={formRef.current}
-                        data={selectedModel?.lanPorts?.[index]} //
-                        readOnly={useVenueSettings}
-                        selectedPortCaps={selectedPortCaps}
-                        selectedModel={selectedModel}
-                        setSelectedPortCaps={setSelectedPortCaps}
-                        selectedModelCaps={selectedModelCaps}
-                        isDhcpEnabled={isDhcpEnabled}
-                        index={index}
-                        useVenueSettings={useVenueSettings}
-                      />
-                    </Col>
-                  </Row>
-                </Tabs.TabPane>
-              )}
-            </Tabs>
-          </Col>
-          <Col span={24}>
-            <Col span={8}>
-              <Space style={{ padding: '16px 0' }}>
-                <Image
-                  alt={$t({ defaultMessage: 'AP LAN port image - {apModel}' }, {
-                    apModel: selectedModelCaps?.model
-                  })}
-                  preview={false}
-                  src={selectedModelCaps?.lanPortPictureDownloadUrl}
-                />
-              </Space>
+  return <Loader states={[{
+    isLoading: formInitializing,
+    isFetching: isApLanPortsUpdating || isApLanPortsResetting
+  }]}>
+    {selectedModel?.lanPorts
+      ? <StepsForm
+        formRef={formRef}
+        onFinish={handleFinish}
+        onFormChange={handleFormChange}
+        onCancel={() => navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/aps/${serialNumber}/details/overview`
+        })
+        }
+        buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      >
+        <StepsForm.StepForm
+          initialValues={{ lan: selectedModel?.lanPorts }}
+        >
+          <Row gutter={24}>
+            <Col span={10}>
+              <SettingMessage showButton={!!selectedModel?.lanPorts} />
             </Col>
-          </Col>
-        </Row>
-      </Loader>
-    </StepsForm.StepForm>
-  </StepsForm>
+            <Col span={24}>
+              <Form.Item
+                hidden={true}
+                name='useVenueSettings'
+                initialValue={useVenueSettings}
+                children={<Switch checked={useVenueSettings} />}
+              />
+              <Tabs
+                type='third'
+                onChange={onTabChange}
+                animated={true}
+              >
+                {selectedModel?.lanPorts?.map((lan: LanPort, index: number) =>
+                  <Tabs.TabPane
+                    tab={$t({ defaultMessage: 'LAN {index}' }, { index: index + 1 })}
+                    key={`lan-${index + 1}`}
+                    forceRender={true}
+                  >
+                    <Row>
+                      <Col span={8}>
+                        <LanPortSettings
+                          readOnly={useVenueSettings}
+                          selectedPortCaps={selectedPortCaps}
+                          selectedModel={selectedModel}
+                          setSelectedPortCaps={setSelectedPortCaps}
+                          selectedModelCaps={selectedModelCaps}
+                          isDhcpEnabled={isDhcpEnabled}
+                          index={index}
+                          useVenueSettings={useVenueSettings}
+                        />
+                      </Col>
+                    </Row>
+                  </Tabs.TabPane>
+                )}
+              </Tabs>
+            </Col>
+            {selectedModel?.lanPorts && <Col span={24}>
+              <Col span={8}>
+                <Space style={{ padding: '16px 0' }}>
+                  <Image
+                    alt={$t({ defaultMessage: 'AP LAN port image - {apModel}' }, {
+                      apModel: selectedModelCaps?.model
+                    })}
+                    preview={false}
+                    src={selectedModelCaps?.lanPortPictureDownloadUrl}
+                  />
+                </Space>
+              </Col>
+            </Col>}
+          </Row>
+        </StepsForm.StepForm>
+      </StepsForm>
+      : <SettingMessage showButton={!!selectedModel?.lanPorts} />
+    }
+  </Loader>
+
+  function SettingMessage ({ showButton }: { showButton: boolean }) {
+    return <Space
+      style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}
+    >
+      {useVenueSettings
+        ? <FormattedMessage
+          defaultMessage={'Currently using LAN port settings of the venue ({venue})'}
+          values={{
+            venue: <Button type='link'
+              size='small'
+              style={{ verticalAlign: 'middle' }}
+              onClick={() => navigateToVenue(venue?.id)}
+            >
+              {venue?.name}
+            </Button>
+          }} />
+        : $t({ defaultMessage: 'Custom settings' })
+      }
+      {showButton && <Button type='link'
+        size='small'
+        disabled={useVenueSettings ? !isAllowUpdate : !isAllowReset}
+        onClick={() => handleCustomize(!useVenueSettings)}
+      > {useVenueSettings
+          ? $t({ defaultMessage: 'Customize' })
+          : $t({ defaultMessage: 'Use Venue Settings' })
+        }</Button>}
+    </Space>
+  }
 }

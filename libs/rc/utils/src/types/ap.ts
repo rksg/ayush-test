@@ -150,8 +150,8 @@ export interface DhcpAp {
 
 export class ModelLanPort extends VenueLanPort {
   header?: string
-  // portId?: string;
 }
+
 export interface WifiApSetting {
   useVenueSettings: boolean;
   externalAntenna?: ExternalAntenna;
