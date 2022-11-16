@@ -21,7 +21,7 @@ function SearchBar () {
   const notAvailableTitle = useIntl().$t(notAvailableMsg)
   const placeholder = useIntl().$t({ defaultMessage: 'What are you looking for?' })
   const params = useParams()
-  const { pathname } = useLocation()
+  const { pathname, key } = useLocation()
   const searchFromUrl = decodeURIComponent(params.searchVal || '')
   const [ showSearchBar, setShowSearchBar ] = useState(searchFromUrl !== '')
   const [ searchText, setSearchText ] = useState(searchFromUrl)
@@ -38,7 +38,16 @@ function SearchBar () {
   const closeSearch = () => {
     setSearchText('')
     setShowSearchBar(false)
-    if (pathname.includes('/search/')) navigate(-1)
+    if (pathname.includes('/search/')) {
+      if (key === 'default') { // user came directly to search page, no history
+        navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/dashboard`
+        }, { replace: true })
+      } else {
+        navigate(-1)
+      }
+    }
   }
   const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && setSearchUrl()
 
