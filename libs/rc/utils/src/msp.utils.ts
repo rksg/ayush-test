@@ -103,7 +103,7 @@ export class EntitlementUtil {
 }
 
 function isExpired () {
-  getIntl().$t({ defaultMessage: 'Expired' })
+  return getIntl().$t({ defaultMessage: 'Expired' })
 }
 
 function displayDays (timeLeft: number) {
