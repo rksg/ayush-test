@@ -27,7 +27,6 @@ export const Input = styled(AntInput)`
   border: none;
   .ant-input::placeholder {
     color: var(--acx-neutrals-50);
-    font-style: italic; /* consistent with other search inputs */
   }
 `
 export const SendSearch = styled(SendMessageOutlined)`

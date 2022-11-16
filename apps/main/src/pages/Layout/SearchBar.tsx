@@ -19,6 +19,7 @@ import * as UI from './styledComponents'
 function SearchBar () {
   const enableSearch = useIsSplitOn(Features.GLOBAL_SEARCH)
   const notAvailableTitle = useIntl().$t(notAvailableMsg)
+  const placeholder = useIntl().$t({ defaultMessage: 'What are you looking for?' })
   const params = useParams()
   const { pathname } = useLocation()
   const searchFromUrl = decodeURIComponent(params.searchVal || '')
@@ -52,6 +53,7 @@ function SearchBar () {
             onChange={({ target: { value } }) => setSearchText(value)}
             onKeyDown={onKeyDown}
             data-testid='search-input'
+            placeholder={placeholder}
           />
           <UI.SendSearch onClick={setSearchUrl} data-testid='search-send'/>
           <UI.Divider />
