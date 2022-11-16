@@ -8,5 +8,8 @@ storiesOf('NetworkFilter', module)
   .add('With Nested List - single', NestedListSingle)
   .add('With Simple List - multi', FlatListMulti)
   .add('With Lazy Loading', LazyNestedSingle)
+  .add('With Bands', () => {
+    return LazyNestedSingle({ showBand: true, defaultBand: ['5 GHz'] })
+  })
 
 export {}

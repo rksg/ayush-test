@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {
+  Checkbox,
   CascaderProps as AntCascaderProps
 } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
@@ -10,6 +11,10 @@ import { useIntl }           from 'react-intl'
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
+
+import type { CheckboxValueType } from 'antd/es/checkbox/Group'
+
+export type Band = '6 GHz' | '5 GHz' | '2.4 GHz'
 
 // taken from antd Cascader API: https://ant.design/components/cascader/#Option
 export interface Option {
@@ -25,22 +30,30 @@ export interface Option {
 export type CascaderProps = AntCascaderProps<Option> & {
   // based on antd, the multiple flag determines the type of DefaultOptionType
   onApply: (
-    cascaderSelected: SingleValueType | SingleValueType[] | undefined
+    cascaderSelected: SingleValueType | SingleValueType[] | undefined,
+    bandsSelected?: CheckboxValueType[]
   ) => void
+  showBand?: boolean,
+  defaultBand?: Band[]
 }
 
 
 export function NetworkFilter (props: CascaderProps) {
-  const { onApply, ...antProps } = props
+  const { onApply, showBand, defaultValue, defaultBand, ...antProps } = props
   const { $t } = useIntl()
-  const initialValues = props.defaultValue || []
+  const initialValues = defaultValue || []
+  const initialBands = defaultBand || []
   const [
     currentValues,
     setCurrentValues
   ] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
   const [savedValues, setSavedValues] = React.useState(initialValues)
   const [open, setOpen] = React.useState(false)
-  if (props.multiple) {
+  const [selectedBands, setSelectedBands] = React.useState<CheckboxValueType[]>(initialBands)
+  const onBandChange = (checkedValues: CheckboxValueType[]) => {
+    setSelectedBands(checkedValues)
+  }
+  if (props.multiple || showBand) {
     const onCancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
       setOpen(false)
@@ -50,11 +63,22 @@ export function NetworkFilter (props: CascaderProps) {
       event.preventDefault()
       setOpen(false)
       setSavedValues(currentValues)
-      onApply(currentValues)
+      if(showBand)
+        onApply(currentValues, selectedBands)
+      else
+        onApply(currentValues)
     }
 
     const withFooter = (menus: JSX.Element) => <>
       {menus}
+      {showBand && (
+        <div style={{ padding: '10px', width: '350px' }}>
+          <span style={{ marginRight: '10px' }}>Radio:</span>
+          <Checkbox.Group
+            options={['6 GHz','5 GHz', '2.4 GHz']}
+            defaultValue={initialBands}
+            onChange={onBandChange}/>
+        </div>)}
       <UI.ButtonDiv>
         <Button size='small' onClick={onCancel}>
           {$t({ defaultMessage: 'Cancel' })}

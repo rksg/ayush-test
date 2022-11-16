@@ -2,7 +2,7 @@ import React from 'react'
 
 import { DefaultOptionType } from 'antd/es/cascader'
 
-import { NetworkFilter, Option } from '..'
+import { Band, NetworkFilter, Option } from '..'
 
 import { onApply } from './utils'
 
@@ -27,7 +27,8 @@ const mockData = () => {
 }
 
 // storybook is non-deterministic when creating children with mockData
-export function LazyNestedSingle () {
+export function LazyNestedSingle ({ multiple=false,showBand=false, defaultBand=[] }:
+  { multiple?:boolean,showBand?:boolean, defaultBand?:Band[] }) {
   const [options, setOptions] = React.useState<DefaultOptionType[]>([])
   const [loading, setLoading] = React.useState(false)
 
@@ -51,6 +52,9 @@ export function LazyNestedSingle () {
 
   return <div style={{ width: 200 }}>
     <NetworkFilter
+      multiple={multiple}
+      showBand={showBand}
+      defaultBand={defaultBand}
       placeholder='Entire Organization'
       options={options as Option[]}
       onApply={onApply}
