@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
-import FileSaver from 'file-saver'
 import { rest }  from 'msw'
 
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -31,7 +30,7 @@ const list = {
       serialNumber: '000000000001',
       name: 'mock-ap-1',
       model: 'R510',
-      fwVersion: '6.2.0.103.261',
+      fwVersion: '6.2.0.103.486', // valid Ap Fw version for reset
       venueId: '01d74a2c947346a1a963a310ee8c9f6f',
       venueName: 'Mock-Venue',
       deviceStatus: '2_00_Operational',
@@ -242,7 +241,6 @@ describe('Aps', () => {
     })
 
     const fakeDownloadUrl = '/api/abc'
-    const downloadSpy = jest.spyOn(FileSaver, 'saveAs')
     const rebootSpy = jest.fn()
     rebootSpy.mockReturnValueOnce(true)
 
@@ -271,8 +269,6 @@ describe('Aps', () => {
     expect(toast).toBeVisible()
 
     expect(await screen.findByText('Log is ready.', { exact: false })).toBeVisible()
-
-    expect(downloadSpy).toHaveBeenCalled()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Reboot' }))
     const rebootDialog = await waitFor(async () => screen.findByRole('dialog'))
@@ -327,7 +323,7 @@ describe('Aps', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
 
     const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByRole('button', { name: 'Delete AP' })).toBeDisabled()
+    expect(within(dialog).getByRole('button', { name: 'Delete' })).toBeDisabled()
     await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
 
     await waitFor(async () => expect(dialog).not.toBeVisible())
@@ -345,9 +341,9 @@ describe('Aps', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     const dialog2 = await screen.findByRole('dialog')
-    expect(within(dialog2).getByRole('button', { name: 'Delete AP' })).not.toBeDisabled()
+    expect(within(dialog2).getByRole('button', { name: 'Delete' })).not.toBeDisabled()
 
-    await userEvent.click(within(dialog2).getByRole('button', { name: 'Delete AP' }))
+    await userEvent.click(within(dialog2).getByRole('button', { name: 'Delete' }))
 
     expect(deleteSpy).toHaveBeenCalled()
 
