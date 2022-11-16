@@ -148,9 +148,6 @@ export const Input=styled.input`
   width:280px;
   text-align:center;
   height:25px;
-  &:focus,&:hover{
-    outline:1px dashed var(--acx-neutrals-50);
-  }
 `
 export const FieldText = styled.div`
   margin-top:10px;

@@ -1,5 +1,3 @@
-import { useIntl } from 'react-intl'
-
 import { Demo } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
@@ -11,19 +9,18 @@ export default function PortalViewGuestConnect (props:{
   updateBtn?: (value: { url?: string, size?: number, show?: boolean,
     color?:string, text?:string }) => void
 }) {
-  const { $t } = useIntl()
   const { demoValue, updateBtn, isPreview } = props
   return (
     <UI.ViewSection>
-      <UI.FieldText>{$t({ defaultMessage: 'Enter your password to connect' })}</UI.FieldText>
+      <UI.FieldText>{'Enter your password to connect'}</UI.FieldText>
       <UI.FieldInput></UI.FieldInput>
       <UI.ViewSectionLink>
-        {$t({ defaultMessage: 'Forgot your password?' })}</UI.ViewSectionLink>
+        {'Forgot your password?'}</UI.ViewSectionLink>
       <PortalButtonContent
         demoValue={demoValue}
         isPreview={isPreview}
         updateButton={(data)=>updateBtn?.(data)}
-      >{$t({ defaultMessage: 'Connect To Wi-Fi' })}</PortalButtonContent>
+      >{'Connect To Wi-Fi'}</PortalButtonContent>
     </UI.ViewSection>
 
   )

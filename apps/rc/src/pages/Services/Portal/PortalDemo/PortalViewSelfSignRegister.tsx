@@ -1,5 +1,3 @@
-import { useIntl } from 'react-intl'
-
 import { Demo } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
@@ -11,7 +9,6 @@ export default function PortalViewSelfSignRegister (props:{
   updateBtn?: (value: { url?: string, size?: number, show?: boolean,
     color?:string, text?:string }) => void
 }) {
-  const { $t } = useIntl()
   const { demoValue, updateBtn, isPreview } = props
   return (
     <UI.ViewSectionNoBorder>
@@ -20,45 +17,45 @@ export default function PortalViewSelfSignRegister (props:{
         type='card'
         size={'middle'}
       >
-        <UI.ViewSectionTabsBig.TabPane tab={$t({ defaultMessage: 'Register' })} key='register'>
+        <UI.ViewSectionTabsBig.TabPane tab={'Register'} key='register'>
           <UI.FieldText style={{ marginLeft: 5 }}>
-            {$t({ defaultMessage: 'Enter your details to receive your password' })}
+            {'Enter your details to receive your password'}
           </UI.FieldText>
           <UI.ViewSectionSpan>*</UI.ViewSectionSpan><UI.ViewSectionUserOutlined/><UI.FieldInputSmall
-            placeholder={$t({ defaultMessage: 'Your Name' })}></UI.FieldInputSmall><br/>
+            placeholder={'Your Name'}></UI.FieldInputSmall><br/>
           <UI.ViewSectionSpan>*</UI.ViewSectionSpan>
           <UI.ViewSectionMobileOutlined/><UI.FieldInputSmall
-            placeholder={$t({ defaultMessage: 'Mobile Phone Number' })}></UI.FieldInputSmall>
+            placeholder={'Mobile Phone Number'}></UI.FieldInputSmall>
           <UI.ViewSectionText style={{ marginLeft: -56 }}>
-            {$t({ defaultMessage: 'Your password will be sent to this number' })}
+            {'Your password will be sent to this number'}
           </UI.ViewSectionText>
           <UI.ViewSectionMailOutlined/><UI.FieldInputSmall
-            placeholder={$t({ defaultMessage: 'Your Email' })}></UI.FieldInputSmall>
+            placeholder={'Your Email'}></UI.FieldInputSmall>
           <PortalButtonContent
             isPreview={isPreview}
             demoValue={demoValue}
             updateButton={(data)=>updateBtn?.(data)}
-          >{$t({ defaultMessage: 'Register' })}</PortalButtonContent>
-          <UI.ViewSectionText style={{ marginLeft: 68, display: 'flex' }}>{$t({
-            defaultMessage: 'By registering, you are accepting the'
-          })}&nbsp;&nbsp;
+          >{'Register'}</PortalButtonContent>
+          <UI.ViewSectionText style={{ marginLeft: 68, display: 'flex' }}>{
+            'By registering, you are accepting the'
+          }&nbsp;&nbsp;
           <UI.FieldTextLink>
-            {$t({ defaultMessage: 'terms & conditions' })}
+            {'terms & conditions'}
           </UI.FieldTextLink></UI.ViewSectionText>
         </UI.ViewSectionTabsBig.TabPane>
-        <UI.ViewSectionTabsBig.TabPane tab={$t({ defaultMessage: 'Login' })} key='login'>
-          <UI.FieldText>{$t({ defaultMessage: 'Enter your password to connect' })}</UI.FieldText>
+        <UI.ViewSectionTabsBig.TabPane tab={'Login'} key='login'>
+          <UI.FieldText>{'Enter your password to connect'}</UI.FieldText>
           <UI.FieldInput></UI.FieldInput>
           <UI.ViewSectionLink>
-            {$t({ defaultMessage: 'Forgot your password?' })}</UI.ViewSectionLink>
+            {'Forgot your password?'}</UI.ViewSectionLink>
           <PortalButtonContent
             demoValue={demoValue}
             isPreview={isPreview}
             updateButton={(data)=>updateBtn?.(data)}
-          >{$t({ defaultMessage: 'Connect To Wi-Fi' })}</PortalButtonContent>
+          >{'Connect To Wi-Fi'}</PortalButtonContent>
         </UI.ViewSectionTabsBig.TabPane>
       </UI.ViewSectionTabsBig>
-      <UI.FieldTextLink>{$t({ defaultMessage: 'Back' })}</UI.FieldTextLink>
+      <UI.FieldTextLink>{'Back'}</UI.FieldTextLink>
     </UI.ViewSectionNoBorder>
 
   )

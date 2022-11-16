@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
-
 import { Demo } from '@acx-ui/rc/utils'
 
 
@@ -15,7 +13,6 @@ export default function PortalPoweredByContent (props: {
   updatePoweredBy:(value: { url?:string,size?:number,show?:boolean,text?:string,
     textsize?:number,bgcolor?:string,color?:string }) => void
 }) {
-  const { $t } = useIntl()
   const { demoValue, updatePoweredBy } = props
   const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
   const [cursorTwo, setCursorTwo] = useState('none')
@@ -128,13 +125,13 @@ export default function PortalPoweredByContent (props: {
             setOutlineTwoText(dashedOutline)
           }}
           >
-            {$t({ defaultMessage: 'Powered By' })}</UI.FieldText></PortalPopover>}
+            {'Powered By'}</UI.FieldText></PortalPopover>}
           {demoValue.componentDisplay?.PoweredBy && <PortalPopover
             content={poweredImgTools}
             visible={poweredImgClicked}
             onVisibleChange={(value) => setPoweredImgClicked(value)}>
             <UI.Img src={demoValue.poweredImg}
-              alt={$t({ defaultMessage: 'poweredimage' })}
+              alt={'poweredimage'}
               style={{
                 marginLeft: 50,
                 cursor: cursorTwoImg, outline: outlineTwoImg,

@@ -1,8 +1,6 @@
 
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
-
 import { Demo, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import Wifi4eu                   from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
@@ -31,7 +29,6 @@ export default function PortalViewContent (props:{
 }) {
   const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
   const { view, demoValue, updateViewContent } = props
-  const { $t } = useIntl()
   const [cursor, setCursor]=useState('none')
   const [outline, setOutline]=useState('none')
   const componentDisplay = demoValue.componentDisplay
@@ -51,7 +48,7 @@ export default function PortalViewContent (props:{
   return (
     <UI.LayoutViewContent isbg={isbg}>
       {componentDisplay.WiFi4EU && <UI.Img src={Wifi4eu}
-        alt={$t({ defaultMessage: 'Wifi4eu' })}
+        alt={'Wifi4eu'}
         height={120} />}
       <PortalAlternativeLanguage demoValue={demoValue}/>
       {componentDisplay.Logo &&<PortalPopover
@@ -60,7 +57,7 @@ export default function PortalViewContent (props:{
         onVisibleChange={(value)=>setClicked(value)}
       >
         <UI.Img src={demoValue.logo}
-          alt={$t({ defaultMessage: 'Logo' })}
+          alt={'Logo'}
           style={{ height: (demoValue.logoSize||PortalDemoDefaultSize.logoSize),
             cursor: cursor, outline: outline,maxWidth: 425 }}
           onMouseOver={()=>{setCursor('pointer')
@@ -130,11 +127,11 @@ export default function PortalViewContent (props:{
       <PortalViewTerms demoValue={demoValue}
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}/>}
-      {componentDisplay.TermsConditions &&<UI.FieldText>{$t({
-        defaultMessage: 'By clicking the connect button, you are accepting the'
-      })}&nbsp;&nbsp;
+      {componentDisplay.TermsConditions &&<UI.FieldText>{
+        'By clicking the connect button, you are accepting the'
+      }&nbsp;&nbsp;
       <UI.FieldTextLink>
-        {$t({ defaultMessage: 'terms & conditions' })}
+        {'terms & conditions'}
       </UI.FieldTextLink></UI.FieldText>}
       {componentDisplay.PoweredBy &&<PortalPoweredByContent
         demoValue={demoValue}
