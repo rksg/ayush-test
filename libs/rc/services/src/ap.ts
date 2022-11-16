@@ -244,9 +244,7 @@ const transformApList = (result: TableResult<AP, ApExtraParams>) => {
     }
   })
   result.extra = channelColumnStatus
-  console.log(result)
   return result
-
 }
 
 const transformApViewModel = (result: ApViewModel) => {

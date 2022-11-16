@@ -1,21 +1,22 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { apApi }                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider, store  }                      from '@acx-ui/store'
+import { apApi }                                                            from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
+import { Provider, store  }                                                 from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { ApProperties } from '.'
 import { apDetails, apLanPorts, apRadio, apViewModel } from '../../__tests__/fixtures'
 
-const params = { 
-  venueId: 'venue-id', 
+import { ApProperties } from '.'
+
+const params = {
+  venueId: 'venue-id',
   tenantId: 'tenant-id',
-  serialNumber: 'serial-number',
+  serialNumber: 'serial-number'
 }
 
-describe('ApOverviewTab', () => {
+describe('ApProperties', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     mockServer.use(
@@ -26,7 +27,7 @@ describe('ApOverviewTab', () => {
     )
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getAp.url,
+        WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (req, res, ctx) => res(ctx.json(apDetails))
       )
     )
@@ -34,9 +35,9 @@ describe('ApOverviewTab', () => {
       rest.get(
         CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json({
-          address:{
-            latitude:37.4112751,
-            longitude:-122.0191908
+          address: {
+            latitude: 37.4112751,
+            longitude: -122.0191908
           }
         }))
       )
@@ -55,14 +56,13 @@ describe('ApOverviewTab', () => {
     )
   })
 
-  it('renders correctly: AP Properties', async () => {
+  it('should render correctly', async () => {
     render(<Provider><ApProperties /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByText('AP Properties')).toBeVisible()
     fireEvent.click(screen.getByText('More'))
     expect(await screen.findByText('Properties')).toBeVisible()
     fireEvent.click(screen.getByText('Settings'))
-    expect(await screen.queryAllByText('Wireless Radio')).toHaveLength(2)
     const button = screen.getByRole('button', { name: /close/i })
     fireEvent.click(button)
   })

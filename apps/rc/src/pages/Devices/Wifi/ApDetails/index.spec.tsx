@@ -51,7 +51,7 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'overview'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
 

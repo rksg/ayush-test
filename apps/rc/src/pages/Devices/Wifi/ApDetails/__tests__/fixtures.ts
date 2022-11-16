@@ -1,4 +1,4 @@
-import { ApDetailHeader, ApRadioBands } from '@acx-ui/rc/utils';
+import { ApDetailHeader, ApRadioBands } from '@acx-ui/rc/utils'
 
 export const apDetailData: ApDetailHeader = {
   title: 'test-ap',
@@ -6,128 +6,126 @@ export const apDetailData: ApDetailHeader = {
     overview: '2_00_Operational',
     clients: 1,
     networks: 2,
-    services: 3,
-  },
-};
+    services: 3
+  }
+}
 
 export const apViewModel = {
   totalCount: 1,
   page: 1,
   data: [
     {
-      serialNumber: '422039000034',
+      serialNumber: '',
       lastUpdTime: '2022-11-14T07:37:21.976Z',
       lastSeenTime: '2022-11-14T09:55:55.495Z',
       name: 'UI team ONLY',
-      model: 'R650',
-      fwVersion: '6.2.0.103.508',
+      model: '',
+      fwVersion: '',
       venueId: '16b11938ee934928a796534e2ee47661',
       venueName: 'venue-dhcp-ui',
       deviceStatus: '2_00_Operational',
       deviceStatusSeverity: '2_Operational',
-      IP: '10.206.1.16',
-      extIp: '210.58.90.254',
-      apMac: '28:B3:71:28:6C:10',
+      IP: '',
+      extIp: '',
+      apMac: '',
+      rootAP: {
+        name: 'test'
+      },
+      apDownRssi: 1,
+      apUpRssi: 1,
       apStatusData: {
         APRadio: [
           {
-            txPower: '0 dB',
             channel: 0,
             band: '2.4G',
             Rssi: null,
-            operativeChannelBandwidth: '20',
-            radioId: 0,
+            radioId: 0
           },
           {
-            txPower: '0 dB',
             channel: 0,
             band: '5G',
             Rssi: null,
-            operativeChannelBandwidth: '80',
-            radioId: 1,
+            radioId: 1
           },
           {
-            txPower: '0 dB',
             channel: 0,
             band: ApRadioBands.band50,
             Rssi: null,
-            operativeChannelBandwidth: '80',
-            radioId: 2,
+            radioId: 2
           },
           {
-            txPower: '0 dB',
             channel: 0,
             band: ApRadioBands.band50,
             Rssi: null,
-            operativeChannelBandwidth: '80',
-            radioId: 1,
-          },
+            radioId: 1
+          }
         ],
         APSystem: {
-          uptime: 93308,
+          uptime: 93308
         },
         cellularInfo: {
           cellular3G4GChannel: 0,
-          cellularActiveSim: 'string',
+          cellularActiveSim: '',
           cellularBand: 'string',
-          cellularCardRemovalCountSIM0: 'string',
-          cellularCardRemovalCountSIM1: 'string',
-          cellularConnectionStatus: 'string',
+          cellularCardRemovalCountSIM0: '',
+          cellularCardRemovalCountSIM1: '',
+          cellularConnectionStatus: '',
           cellularCountry: 'string',
-          cellularDHCPTimeoutCountSIM0: 'string',
-          cellularDHCPTimeoutCountSIM1: 'string',
+          cellularDHCPTimeoutCountSIM0: '',
+          cellularDHCPTimeoutCountSIM1: '',
           cellularDefaultGateway: 'string',
           cellularDownlinkBandwidth: 'string',
           cellularECIO: 0,
-          cellularICCIDSIM0: 'string',
-          cellularICCIDSIM1: 'string',
-          cellularIMEI: 'string',
-          cellularIMSISIM0: 'string',
-          cellularIMSISIM1: 'string',
-          cellularIPaddress: 'string',
+          cellularICCIDSIM0: '',
+          cellularICCIDSIM1: '',
+          cellularIMEI: '',
+          cellularIMSISIM0: '',
+          cellularIMSISIM1: '',
+          cellularIPaddress: '',
           cellularIsSIM0Present: 'YES',
           cellularIsSIM1Present: 'YES',
           cellularLTEFirmware: 'string',
-          cellularNWLostCountSIM0: 'string',
-          cellularNWLostCountSIM1: 'string',
+          cellularNWLostCountSIM0: '',
+          cellularNWLostCountSIM1: '',
           cellularOperator: 'string',
           cellularRSCP: 0,
           cellularRSRP: 0,
           cellularRSRQ: 0,
           cellularRadioUptime: 0,
           cellularRoamingStatus: 'string',
-          cellularRxBytesSIM0: 'string',
-          cellularRxBytesSIM1: 'string',
+          cellularRxBytesSIM0: '',
+          cellularRxBytesSIM1: '',
           cellularSINR: 0,
-          cellularSignalStrength: 'string',
+          cellularSignalStrength: '',
           cellularSubnetMask: 'string',
-          cellularSwitchCountSIM0: 'string',
-          cellularSwitchCountSIM1: 'string',
-          cellularTxBytesSIM0: 'string',
-          cellularTxBytesSIM1: 'string',
+          cellularSwitchCountSIM0: '',
+          cellularSwitchCountSIM1: '',
+          cellularTxBytesSIM0: '',
+          cellularTxBytesSIM1: '',
           cellularUplinkBandwidth: 'string',
-          cellularWanInterface: 'string',
+          cellularWanInterface: 'string'
         },
         lanPortStatus: [
           {
             port: '0',
-            phyLink: 'Down  ',
+            phyLink: 'Down  '
           },
           {
             port: '1',
-            phyLink: 'Up 1000Mbps full',
-          },
-        ],
+            phyLink: 'Up 1000Mbps full'
+          }
+        ]
       },
       meshRole: 'DISABLED',
       deviceGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
       tags: '',
       deviceGroupName: '',
-      deviceModelType: 'Indoor',
+      deviceModelType: '',
       password: 'admin!234',
-    },
-  ],
-};
+      isMeshEnable: true
+    }
+  ]
+}
 
 export const apDetails = {
   serialNumber: '422039000034',
@@ -136,8 +134,8 @@ export const apDetails = {
   bonjourGateway: {
     rules: [
       { enabled: true, service: 'AIRTUNES', fromVlan: 33, toVlan: 22 },
-      { enabled: true, service: 'AIRDISK', fromVlan: 1, toVlan: 3 },
-    ],
+      { enabled: true, service: 'AIRDISK', fromVlan: 1, toVlan: 3 }
+    ]
   },
   radio: {
     apRadioParams24G: {
@@ -153,12 +151,12 @@ export const apDetails = {
         '8',
         '9',
         '10',
-        '11',
+        '11'
       ],
       channelBandwidth: 'AUTO',
       txPower: 'Auto',
       method: 'BACKGROUND_SCANNING',
-      changeInterval: 33,
+      changeInterval: 33
     },
     apRadioParams50G: {
       allowedChannels: [
@@ -185,13 +183,13 @@ export const apDetails = {
         '149',
         '153',
         '157',
-        '161',
+        '161'
       ],
       channelBandwidth: 'AUTO',
       manualChannel: 0,
       txPower: 'Auto',
       method: 'BACKGROUND_SCANNING',
-      changeInterval: 33,
+      changeInterval: 33
     },
     apRadioParamsDual5G: {
       enabled: true,
@@ -200,15 +198,15 @@ export const apDetails = {
         manualChannel: 0,
         txPower: 'MAX',
         method: 'BACKGROUND_SCANNING',
-        changeInterval: 33,
+        changeInterval: 33
       },
       radioParamsUpper5G: {
         channelBandwidth: 'AUTO',
         manualChannel: 0,
         txPower: 'MAX',
         method: 'BACKGROUND_SCANNING',
-        changeInterval: 33,
-      },
+        changeInterval: 33
+      }
     },
     apRadioParams6G: {
       manualChannel: 0,
@@ -217,19 +215,19 @@ export const apDetails = {
       bssMinRate6G: 'HE_MCS_0',
       mgmtTxRate6G: '6',
       txPower: 'MAX',
-      changeInterval: 33,
+      changeInterval: 33
     },
     enable6G: false,
     useVenueSettings: true,
     enable24G: true,
-    enable50G: true,
+    enable50G: true
   },
   name: 'UI team ONLY',
-  description: 'test',
+  description: '',
   softDeleted: false,
   model: 'R650',
-  updatedDate: '2022-11-15T08:37:42.987+0000',
-};
+  updatedDate: '2022-11-15T08:37:42.987+0000'
+}
 
 export const apLanPorts = {
   lanPorts: [
@@ -238,18 +236,18 @@ export const apLanPorts = {
       untagId: 1,
       vlanMembers: '1-4094',
       portId: '1',
-      enabled: true,
+      enabled: true
     },
     {
       type: 'TRUNK',
       untagId: 1,
       vlanMembers: '1-4094',
       portId: '2',
-      enabled: true,
-    },
+      enabled: true
+    }
   ],
-  useVenueSettings: true,
-};
+  useVenueSettings: true
+}
 
 export const apRadio = {
   apRadioParams24G: {
@@ -258,7 +256,7 @@ export const apRadio = {
     channelBandwidth: 'AUTO',
     txPower: 'MAX',
     method: 'BACKGROUND_SCANNING',
-    changeInterval: 33,
+    changeInterval: 33
   },
   apRadioParams50G: {
     allowedChannels: [
@@ -285,13 +283,13 @@ export const apRadio = {
       '149',
       '153',
       '157',
-      '161',
+      '161'
     ],
     channelBandwidth: 'AUTO',
     manualChannel: 0,
     txPower: 'MAX',
     method: 'BACKGROUND_SCANNING',
-    changeInterval: 33,
+    changeInterval: 33
   },
   apRadioParamsDual5G: {
     enabled: false,
@@ -303,7 +301,7 @@ export const apRadio = {
       manualChannel: 0,
       txPower: 'MAX',
       method: 'BACKGROUND_SCANNING',
-      changeInterval: 33,
+      changeInterval: 33
     },
     radioParamsUpper5G: {
       allowedChannels: [
@@ -322,14 +320,14 @@ export const apRadio = {
         '149',
         '153',
         '157',
-        '161',
+        '161'
       ],
       channelBandwidth: 'AUTO',
       manualChannel: 0,
       txPower: 'MAX',
       method: 'BACKGROUND_SCANNING',
-      changeInterval: 33,
-    },
+      changeInterval: 33
+    }
   },
   apRadioParams6G: {
     manualChannel: 0,
@@ -390,16 +388,16 @@ export const apRadio = {
       '209',
       '213',
       '217',
-      '221',
+      '221'
     ],
     channelBandwidth: 'AUTO',
     bssMinRate6G: 'HE_MCS_0',
     mgmtTxRate6G: '6',
     txPower: 'MAX',
-    changeInterval: 33,
+    changeInterval: 33
   },
   enable6G: false,
   useVenueSettings: true,
   enable24G: true,
-  enable50G: true,
-};
+  enable50G: true
+}

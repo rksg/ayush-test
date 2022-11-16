@@ -28,7 +28,7 @@ describe('Card component', () => {
   })
   it('should render card with action link', () => {
     const onActionClick = jest.fn()
-    render(<Card  action={{
+    render(<Card action={{
       actionName: 'Details',
       onActionClick: onActionClick
     }}/>)

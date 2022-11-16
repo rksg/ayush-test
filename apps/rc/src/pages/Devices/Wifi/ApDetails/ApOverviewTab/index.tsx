@@ -1,5 +1,5 @@
-import { AnalyticsFilter, useAnalyticsFilter }    from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                       from '@acx-ui/components'
+import { AnalyticsFilter, useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }                    from '@acx-ui/components'
 
 import { ApProperties } from './ApProperties'
 

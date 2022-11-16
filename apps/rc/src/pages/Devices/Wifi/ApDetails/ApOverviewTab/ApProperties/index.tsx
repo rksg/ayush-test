@@ -8,12 +8,12 @@ import {
   Card,
   Subtitle
 } from '@acx-ui/components'
+import { useApDetailsQuery, useApViewModelQuery }                    from '@acx-ui/rc/services'
 import { ApDetails, ApVenueStatusEnum, ApViewModel, WifiEntityEnum } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }                                     from '@acx-ui/react-router-dom'
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
-import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
 
 export function ApProperties () {
   const { $t } = useIntl()
