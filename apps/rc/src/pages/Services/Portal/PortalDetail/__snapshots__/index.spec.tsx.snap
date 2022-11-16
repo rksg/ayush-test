@@ -122,7 +122,7 @@ exports[`Portal Detail Page should render detail page 1`] = `
           class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-3 gtmGMB"
+            class="styledComponents__Wrapper-sc-13w5wfx-3 bEgENV"
             type="default"
           >
             <div
@@ -231,7 +231,7 @@ exports[`Portal Detail Page should render detail page 1`] = `
           class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+            class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
             type="default"
           >
             <div
