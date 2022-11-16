@@ -30,7 +30,7 @@ export default function BasicInfo () {
 
   return <>
     <Card type='solid-bg'>
-      <GridRow justify='space-between' style={{ width: '100%' }}>
+      <GridRow justify='space-between'>
         <GridCol col={{ span: SPAN_NUM }}>
           <Card.Title>
             <Text strong>{$t({ defaultMessage: 'Service Name' })}</Text>

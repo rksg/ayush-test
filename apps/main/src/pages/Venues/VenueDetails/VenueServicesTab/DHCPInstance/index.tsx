@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 
 
-import { Radio, RadioChangeEvent } from 'antd'
-import { useIntl }                 from 'react-intl'
-import { useParams }               from 'react-router-dom'
+import { RadioChangeEvent } from 'antd'
+import { useIntl }          from 'react-intl'
+import { useParams }        from 'react-router-dom'
 
 import { GridRow, GridCol, SelectionControl }                                         from '@acx-ui/components'
 import { useVenuesLeasesListQuery, useGetDHCPProfileQuery, useVenueDHCPProfileQuery } from '@acx-ui/rc/services'
