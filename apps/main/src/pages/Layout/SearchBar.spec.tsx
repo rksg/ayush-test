@@ -1,14 +1,13 @@
 import '@testing-library/jest-dom'
 
 import { useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { useLocation }               from '@acx-ui/react-router-dom'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
-import { useLocation } from '@acx-ui/react-router-dom'
 
 import SearchBar from './SearchBar'
 
 const mockedUsedNavigate = jest.fn()
-const mockedUseLocation = jest.fn()
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
