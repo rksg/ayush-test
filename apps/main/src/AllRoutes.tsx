@@ -34,7 +34,7 @@ function AllRoutes () {
         <Route path='networks/*' element={<NetworksBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
-        <Route path='search/:searchString' element={<SearchResults />} />
+        <Route path='search/:searchVal' element={<SearchResults />} />
         <Route path='services/*' element={<ServicesBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>

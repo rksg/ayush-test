@@ -1,5 +1,3 @@
-import { Buffer } from 'buffer'
-
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 import { useParams }  from 'react-router-dom'
@@ -16,15 +14,15 @@ export default function SearchResults () {
 }
 
 function SearchHeader () {
-  const { searchString } = useParams()
-  const searchParam = Buffer.from(searchString as string, 'base64').toString('ascii')
+  const { searchVal } = useParams()
+  const decodedSearchVal = decodeURIComponent(searchVal as string)
   const { $t } = useIntl()
   const count = 1
   return (
     <PageHeader
       title={$t(
-        { defaultMessage: 'Search Results for "{searchParam}" ({count})' },
-        { searchParam, count }
+        { defaultMessage: 'Search Results for "{decodedSearchVal}" ({count})' },
+        { decodedSearchVal, count }
       )}
     />
   )

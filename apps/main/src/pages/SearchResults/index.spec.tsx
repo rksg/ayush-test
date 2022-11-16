@@ -5,7 +5,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import SearchResults from '.'
 
-const params = { searchString: 'dGVzdA==' }
+const params = { searchVal: 'test%3F' }
 
 describe('Search Results', () => {
   it('should render correctly', async () => {
@@ -25,6 +25,6 @@ describe('Search Results', () => {
       </Provider>,
       { route: { params } }
     )
-    expect(screen.getByText('Search Results for "test" (1)')).toBeVisible()
+    expect(screen.getByText('Search Results for "test?" (1)')).toBeVisible()
   })
 })
