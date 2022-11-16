@@ -1,9 +1,8 @@
 import { omit } from 'lodash'
 import { rest } from 'msw'
 
-import { useSplitTreatmentWithConfig } from '@acx-ui/feature-toggle'
-import { Dashboard, CommonUrlsInfo }   from '@acx-ui/rc/utils'
-import { Provider  }                   from '@acx-ui/store'
+import { Dashboard, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                 from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
@@ -105,7 +104,7 @@ describe('Alarm widget', () => {
       rest.get(CommonUrlsInfo.getDashboardOverview.url,
         (req, res, ctx) => res(ctx.json(data)))
     )
-    jest.mocked(useSplitTreatmentWithConfig).mockReturnValue(true)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -136,7 +135,6 @@ describe('Alarm widget', () => {
   })
 
   it('should render "No active alarms" when no alarms exist', async () => {
-    jest.mocked(useSplitTreatmentWithConfig).mockReturnValue(false )
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
