@@ -26,9 +26,9 @@ function VenueHealthWidget ({
         <GridRow style={{ flexGrow: '1' }}>
           <GridCol col={{ span: 3 }}>
             <UI.Wrapper>
-              <UI.Title>
+              <Card.Title>
                 {$t({ defaultMessage: 'Client Experience' })}
-              </UI.Title>
+              </Card.Title>
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>

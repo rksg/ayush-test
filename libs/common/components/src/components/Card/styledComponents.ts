@@ -74,7 +74,6 @@ export const Title = styled.div`
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
-  height: var(--acx-headline-4-line-height);
 `
 
 export const SubTitle = styled.div`
@@ -83,5 +82,4 @@ export const SubTitle = styled.div`
   line-height: var(--acx-body-5-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-body-font-weight);
-  height: var(--acx-body-5-line-height);
 `

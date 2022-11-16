@@ -13,8 +13,6 @@ import VenueDHCPForm from './VenueDHCPForm'
 
 
 export default function BasicInfo () {
-  const { Text, Paragraph } = Typography
-
   type LocationState = {
     showConfig?: boolean
   }
@@ -33,7 +31,7 @@ export default function BasicInfo () {
       <GridRow justify='space-between'>
         <GridCol col={{ span: SPAN_NUM }}>
           <Card.Title>
-            <Text strong>{$t({ defaultMessage: 'Service Name' })}</Text>
+            {$t({ defaultMessage: 'Service Name' })}
           </Card.Title>
           <TenantLink
             to={`/services/dhcp/${dhcpInfo?.id}/detail`}>{dhcpInfo.name}
@@ -41,49 +39,42 @@ export default function BasicInfo () {
         </GridCol>
         <GridCol col={{ span: SPAN_NUM }}>
           <Card.Title>
-            <Text strong>{$t({ defaultMessage: 'Service Status' })}</Text>
+            {$t({ defaultMessage: 'Service Status' })}
           </Card.Title>
-          <Paragraph>
-            {dhcpInfo.status? $t({ defaultMessage: 'ON' }): $t({ defaultMessage: 'OFF' }) }
-          </Paragraph>
+          {dhcpInfo.status? $t({ defaultMessage: 'ON' }): $t({ defaultMessage: 'OFF' }) }
         </GridCol>
 
         <GridCol col={{ span: SPAN_NUM }}>
           <Card.Title>
-            <Text strong>{$t({ defaultMessage: 'DHCP Configuration' })}</Text>
+            {$t({ defaultMessage: 'DHCP Configuration' })}
           </Card.Title>
-          <Paragraph>
-            {dhcpInfo.configurationType ? $t(dhcpInfo.configurationType) : ''}
-          </Paragraph>
+          {dhcpInfo.configurationType ? $t(dhcpInfo.configurationType) : ''}
         </GridCol>
 
         <GridCol col={{ span: SPAN_NUM }}>
           <Card.Title>
-            <Text strong>{$t({ defaultMessage: 'DHCP Pools' })}</Text>
+            {$t({ defaultMessage: 'DHCP Pools' })}
           </Card.Title>
-          <Paragraph>{dhcpInfo.poolsNum}</Paragraph>
+          {dhcpInfo.poolsNum}
         </GridCol>
 
         <GridCol col={{ span: SPAN_NUM }}>
           <Card.Title>
-            <Text strong>{$t({ defaultMessage: 'Primary DHCP Server' })}</Text>
+            {$t({ defaultMessage: 'Primary DHCP Server' })}
           </Card.Title>
-          <Paragraph>{dhcpInfo.primaryDHCP.name}</Paragraph>
+          {dhcpInfo.primaryDHCP.name}
         </GridCol>
         <GridCol col={{ span: SPAN_NUM }}>
           <Card.Title>
-            <Text strong>{$t({ defaultMessage: 'Secondary DHCP Server' })}</Text>
+            {$t({ defaultMessage: 'Secondary DHCP Server' })}
           </Card.Title>
-          <Paragraph>{dhcpInfo.secondaryDHCP.name}</Paragraph>
+          {dhcpInfo.secondaryDHCP.name}
         </GridCol>
         <GridCol col={{ span: SPAN_NUM }}>
           <Card.Title>
-            <Text strong>{$t({ defaultMessage: 'Gateway' })}</Text>
+            {$t({ defaultMessage: 'Gateway' })}
           </Card.Title>
-          {natGateway.map((data)=>{
-            return <Paragraph key={data.serialNumber}
-              style={{ marginBottom: 5 }}>{ data.name }</Paragraph>
-          })}
+          {natGateway.map((data) => (<>{ data.name }<br /></>))}
           { dhcpInfo.gateway.length>DISPLAY_GATEWAY_MAX_NUM && '...' }
         </GridCol>
         <GridCol col={{ span: SPAN_NUM }}>

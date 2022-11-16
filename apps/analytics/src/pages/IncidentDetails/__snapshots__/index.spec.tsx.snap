@@ -176,7 +176,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                      class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
                     />
                   </div>
                   <div
@@ -229,7 +229,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                         class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 lgTSMV looZqI"
+                          class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 bHAubW looZqI"
                         >
                           Root Cause Analysis
                         </div>
@@ -246,7 +246,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                         class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 lgTSMV looZqI"
+                          class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 bHAubW looZqI"
                         >
                           Recommended Action
                         </div>

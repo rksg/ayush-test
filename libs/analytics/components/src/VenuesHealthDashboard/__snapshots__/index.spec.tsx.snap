@@ -22,12 +22,12 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
               >
                 Client Experience
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-5 iLbQUI"
+                class="styledComponents__SubTitle-sc-13w5wfx-5 WCnhY"
               >
                 Top 5 Venues/Services with poor experience
               </div>
@@ -163,12 +163,12 @@ exports[`HealthWidget should render widget with proper data 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
               >
                 Client Experience
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-5 iLbQUI"
+                class="styledComponents__SubTitle-sc-13w5wfx-5 WCnhY"
               >
                 Top 5 Venues/Services with poor experience
               </div>

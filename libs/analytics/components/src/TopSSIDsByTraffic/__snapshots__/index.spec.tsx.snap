@@ -22,7 +22,7 @@ exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
               >
                 Top 5 SSIDs by Traffic
               </div>

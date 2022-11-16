@@ -22,7 +22,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
               >
                 Incidents
               </div>

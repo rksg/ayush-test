@@ -2220,7 +2220,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                    class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
                   >
                     Details
                   </div>
@@ -2280,7 +2280,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                    class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
                   >
                     Memory Utilization
                   </div>
@@ -2471,7 +2471,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                    class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
                   >
                     Details
                   </div>
@@ -2675,7 +2675,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                    class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
                   >
                     Details
                   </div>
@@ -2735,7 +2735,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                    class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
                   >
                     Impacted Switches
                   </div>
