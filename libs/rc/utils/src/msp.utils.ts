@@ -103,7 +103,7 @@ export class EntitlementUtil {
 }
 
 function isExpired () {
-  return 'Expired'
+  getIntl().$t({ defaultMessage: 'Expired' })
 }
 
 function displayDays (timeLeft: number) {
@@ -116,15 +116,17 @@ function displayMonths (timeLeft: number) {
   if (monthsValue === 12) {
     monthsValue = 11
   }
-  return `More than ${monthsValue} Months`
+  return getIntl().$t({ defaultMessage: 'More than {months} Months' }, { months: monthsValue })
 }
 
 function displayYears (timeLeft: number) {
   const yearsValue = timeLeft / 365
   const yearsValueFloored = Math.floor(yearsValue)
   if (yearsValue === yearsValueFloored) {
-    return `${yearsValueFloored} ${(yearsValueFloored > 1 ? 'Years' : 'Year')}`
+    return getIntl().$t({ defaultMessage:
+      '{years} {years, plural, one {Year} other {Years}}' }, { years: yearsValueFloored })
   } else {
-    return `More than ${yearsValueFloored} ${(yearsValueFloored > 1 ? 'Years' : 'Year')}`
+    return getIntl().$t({ defaultMessage:
+      'More than {years} {years, plural, one {Year} other {Years}}' }, { years: yearsValueFloored })
   }
 }
