@@ -155,10 +155,14 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                     >
                       Gateway
                     </div>
-                    Keda-00003
-                    <br />
-                    Keda-00004
-                    <br />
+                    <span>
+                      Keda-00003
+                      <br />
+                    </span>
+                    <span>
+                      Keda-00004
+                      <br />
+                    </span>
                     ...
                   </div>
                 </div>
@@ -186,72 +190,57 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="ant-row Grid__GridRow-sc-5irhjd-2"
-    style="margin: -10px -10px -10px -10px; padding-top: 20px; padding-bottom: 10px;"
-  >
     <div
-      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-      style="padding: 10px 10px 10px 10px;"
+      style="text-align: center; padding: 15px 0px;"
     >
       <div
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
       >
         <div
-          class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+          class="ant-radio-group ant-radio-group-outline ant-radio-group-large"
         >
-          <div
-            class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+          <label
+            class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
           >
-            <label
-              class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+            <span
+              class="ant-radio-button ant-radio-button-checked"
             >
+              <input
+                checked=""
+                class="ant-radio-button-input"
+                type="radio"
+                value="pools"
+              />
               <span
-                class="ant-radio-button ant-radio-button-checked"
-              >
-                <input
-                  checked=""
-                  class="ant-radio-button-input"
-                  type="radio"
-                  value="pools"
-                />
-                <span
-                  class="ant-radio-button-inner"
-                />
-              </span>
-              <span>
-                Pools (2)
-              </span>
-            </label>
-            <label
-              class="ant-radio-button-wrapper"
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              Pools (2)
+            </span>
+          </label>
+          <label
+            class="ant-radio-button-wrapper"
+          >
+            <span
+              class="ant-radio-button"
             >
+              <input
+                class="ant-radio-button-input"
+                type="radio"
+                value="lease"
+              />
               <span
-                class="ant-radio-button"
-              >
-                <input
-                  class="ant-radio-button-input"
-                  type="radio"
-                  value="lease"
-                />
-                <span
-                  class="ant-radio-button-inner"
-                />
-              </span>
-              <span>
-                Lease Table (1 Online)
-              </span>
-            </label>
-          </div>
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              Lease Table (1 Online)
+            </span>
+          </label>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="ant-row Grid__GridRow-sc-5irhjd-2"
-    style="margin: -10px -10px -10px -10px;"
-  >
     <div
       class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"

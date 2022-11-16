@@ -1,16 +1,15 @@
 import React, { useState, useRef } from 'react'
 
-import { Typography, Button, FormInstance } from 'antd'
-import _                                    from 'lodash'
-import { useIntl }                          from 'react-intl'
-import { useLocation }                      from 'react-router-dom'
+import { Button, FormInstance } from 'antd'
+import _                        from 'lodash'
+import { useIntl }              from 'react-intl'
+import { useLocation }          from 'react-router-dom'
 
 import { Modal, GridRow, GridCol, Card } from '@acx-ui/components'
 import { TenantLink }                    from '@acx-ui/react-router-dom'
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
-
 
 export default function BasicInfo () {
   type LocationState = {
@@ -74,7 +73,7 @@ export default function BasicInfo () {
           <Card.Title>
             {$t({ defaultMessage: 'Gateway' })}
           </Card.Title>
-          {natGateway.map((data) => (<>{ data.name }<br /></>))}
+          {natGateway.map((data, i) => (<span key={i}>{ data.name }<br /></span>))}
           { dhcpInfo.gateway.length>DISPLAY_GATEWAY_MAX_NUM && '...' }
         </GridCol>
         <GridCol col={{ span: SPAN_NUM }}>

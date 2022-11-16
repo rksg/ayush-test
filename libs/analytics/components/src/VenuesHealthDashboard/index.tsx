@@ -188,7 +188,7 @@ export function VenuesHealthDashboard ({
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              <ContentSwitcher tabDetails={tabDetails} size='small' space={8} />
+              <ContentSwitcher tabDetails={tabDetails} size='small' />
             </div>)}
         </AutoSizer>
       </Card>

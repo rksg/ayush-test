@@ -34,11 +34,11 @@ describe('Venue DHCP Instance', () => {
     const button = screen.getAllByRole('switch')
     await userEvent.click(button[1])
     let activeButton = await screen.findByText('Confirm')
-    await fireEvent.click(activeButton)
+    fireEvent.click(activeButton)
 
     await userEvent.click(button[0])
     activeButton = await screen.findByText('Confirm')
-    await fireEvent.click(activeButton)
+    fireEvent.click(activeButton)
 
     await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (1 Online)' }))
     jest.setTimeout(100)
