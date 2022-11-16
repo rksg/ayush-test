@@ -1,10 +1,10 @@
 
 import { useState, useEffect } from 'react'
 
-import { Switch }                    from 'antd'
-import _                             from 'lodash'
-import { useIntl, FormattedMessage } from 'react-intl'
-import { useParams }                 from 'react-router-dom'
+import { Switch }                                   from 'antd'
+import _                                            from 'lodash'
+import { useIntl, FormattedMessage, FormattedList } from 'react-intl'
+import { useParams }                                from 'react-router-dom'
 
 import { Table, TableProps, showActionModal } from '@acx-ui/components'
 import {
@@ -108,10 +108,8 @@ export default function VenuePoolTable (){
       key: 'primaryDnsIp',
       title: $t({ defaultMessage: 'DNS IP' }),
       dataIndex: 'primaryDnsIp',
-      render: (data, rowData)=>{
-        return <FormattedMessage defaultMessage='{primaryDnsIp}, {secondaryDnsIp}'
-          values={{ primaryDnsIp: rowData.primaryDnsIp, secondaryDnsIp: rowData.secondaryDnsIp }} />
-      }
+      render: (data, rowData)=>
+        FormattedList({ type: 'unit', value: [rowData.primaryDnsIp, rowData.secondaryDnsIp] })
     },
     {
       key: 'id',
