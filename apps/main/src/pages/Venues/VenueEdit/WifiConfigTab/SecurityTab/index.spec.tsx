@@ -8,7 +8,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   venueData,
-  venueRougeAp,
+  venueRogueAp,
   venueDosProtection,
   venueRoguePolicy
 } from '../../../__tests__/fixtures'
@@ -39,7 +39,7 @@ describe('SecurityTab', () => {
         (_, res, ctx) => res(ctx.json(venueDosProtection))),
       rest.get(
         CommonUrlsInfo.getVenueRogueAp.url,
-        (_, res, ctx) => res(ctx.json(venueRougeAp))),
+        (_, res, ctx) => res(ctx.json(venueRogueAp))),
       rest.put(
         CommonUrlsInfo.getDenialOfServiceProtection.url,
         (_, res, ctx) => res(ctx.json({}))),

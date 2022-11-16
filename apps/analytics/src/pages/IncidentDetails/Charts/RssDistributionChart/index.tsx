@@ -2,7 +2,6 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import {
-  BarChartData,
   incidentSeverities,
   calculateSeverity,
   Incident
@@ -16,6 +15,8 @@ import {
 
 import { useRssDistributionChartQuery } from './services'
 
+import type { ChartProps } from '../types.d'
+
 const rssThreshold = -80
 const barColors = (severity: Incident['severity'], rssBuckets: number[]) => {
   const normalColor = cssStr('--acx-viz-diverging-central')
@@ -23,39 +24,26 @@ const barColors = (severity: Incident['severity'], rssBuckets: number[]) => {
   return rssBuckets.map(rss => rss <= rssThreshold ? severityColor : normalColor)
 }
 
-export const RssDistributionChart = ({ incident }: { incident: Incident }) => {
+export const RssDistributionChart: React.FC<ChartProps> = (props) => {
   const { $t } = useIntl()
-  const xValue = $t({ defaultMessage: 'RSS Distribution' })
-  const yValue = $t({ defaultMessage: 'Samples' })
 
-  const queryResults = useRssDistributionChartQuery(incident, {
-    selectFromResult: ({ data, ...rest }) => ({
-      ...rest,
-      data: data && {
-        dimensions: [xValue, yValue],
-        source: data!.map(({ rss, count }) => [rss, count]),
-        seriesEncode: [{ x: xValue, y: yValue }]
-      } as BarChartData
-    })
-  })
+  const queryResults = useRssDistributionChartQuery(props.incident)
 
   return <Loader states={[queryResults]}>
-    <div style={{ height: '250px' }}>
-      <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
-        <AutoSizer>
-          {({ height, width }) => (
-            <VerticalBarChart
-              data={queryResults.data!}
-              style={{ height, width }}
-              xAxisName={$t({ defaultMessage: '(dBm)' })}
-              barColors={barColors(
-                incident.severity,
-                queryResults.data!.source.map(([rss]) => rss as number)
-              )}
-            />
-          )}
-        </AutoSizer>
-      </Card>
-    </div>
+    <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
+      <AutoSizer>
+        {({ height, width }) => (
+          <VerticalBarChart
+            data={queryResults.data!}
+            style={{ height, width }}
+            xAxisName={$t({ defaultMessage: '(dBm)' })}
+            barColors={barColors(
+              props.incident.severity,
+              queryResults.data!.source.map(([rss]) => rss as number)
+            )}
+          />
+        )}
+      </AutoSizer>
+    </Card>
   </Loader>
 }
