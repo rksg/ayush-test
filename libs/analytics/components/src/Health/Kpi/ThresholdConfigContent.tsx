@@ -1,3 +1,5 @@
+import { MouseEventHandler } from 'react'
+
 import { useIntl,  defineMessage, MessageDescriptor } from 'react-intl'
 
 import { Button, DisabledButton } from '@acx-ui/components'
@@ -41,7 +43,10 @@ function ThresholdConfig ({
   const isDisabled = !Boolean(canSave)
   const disabledMsg = $t(getDisabledToolTip(isNetwork))
   const resetCallback = () => onReset()
-  const applyCallback = () => onApply()
+  const applyCallback: MouseEventHandler<HTMLElement> = (e) => {
+    e.preventDefault()
+    onApply()
+  }
   return (
     <UI.HistogramConfig>
       <UI.HistogramSpanContent>
@@ -79,7 +84,7 @@ function ThresholdConfig ({
             style={{ width: 70 }}
             size='small'
             type='secondary'
-            onClick={applyCallback}
+            onMouseDown={applyCallback}
           >
             {$t(thresholdDescText.applyBtn)}
           </Button>
