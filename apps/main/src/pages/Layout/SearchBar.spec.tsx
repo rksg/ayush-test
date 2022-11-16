@@ -3,22 +3,33 @@ import '@testing-library/jest-dom'
 import { useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { useLocation } from '@acx-ui/react-router-dom'
 
 import SearchBar from './SearchBar'
 
 const mockedUsedNavigate = jest.fn()
+const mockedUseLocation = jest.fn()
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: jest.fn()
 }))
 
 describe('Search Bar (feature enabled)', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
+  const location = {
+    pathname: '/t/t1/dashboard',
+    key: '123',
+    state: {},
+    search: '',
+    hash: ''
+  }
   beforeEach(() => {
     mockedUsedNavigate.mockClear()
   })
   it('should trigger search on send click', async () => {
+    jest.mocked(useLocation).mockReturnValue(location)
     render(<Provider>
       <SearchBar />
     </Provider>, {
@@ -33,14 +44,18 @@ describe('Search Bar (feature enabled)', () => {
     fireEvent.change(searchInput, { target: { value: '' } })
     fireEvent.keyDown(searchInput, { key: 'Enter' })
     expect(mockedUsedNavigate).not.toHaveBeenCalled()
-    fireEvent.change(searchInput, { target: { value: 'abc' } })
+    fireEvent.change(searchInput, { target: { value: 'abc!' } })
     fireEvent.click(screen.getByTestId('search-send'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t/t1/search/abc'
+      '/t/t1/search/abc%21'
     )
     expect(mockedUsedNavigate.mock.calls[0][1].replace).toBeFalsy()
   })
   it('should trigger search on keyboard enter', async () => {
+    jest.mocked(useLocation).mockReturnValue({
+      ...location,
+      pathname: '/t/t1/search/abc'
+    })
     render(<Provider>
       <SearchBar />
     </Provider>, {
@@ -59,6 +74,10 @@ describe('Search Bar (feature enabled)', () => {
     expect(mockedUsedNavigate).toHaveBeenCalledTimes(1)
   })
   it('should navigate to previous route on close click', async () => {
+    jest.mocked(useLocation).mockReturnValue({
+      ...location,
+      pathname: '/t/t1/search/abc'
+    })
     render(<Provider>
       <SearchBar />
     </Provider>, {
@@ -72,6 +91,9 @@ describe('Search Bar (feature enabled)', () => {
     expect(mockedUsedNavigate).toHaveBeenCalledWith(-1)
   })
   it('should not navigate to previous route on close click', async () => {
+    jest.mocked(useLocation).mockReturnValue({
+      ...location
+    })
     render(<Provider>
       <SearchBar />
     </Provider>, {
@@ -85,6 +107,26 @@ describe('Search Bar (feature enabled)', () => {
     const closeIcon = screen.getByTestId('search-close')
     fireEvent.click(closeIcon)
     expect(mockedUsedNavigate).not.toHaveBeenCalled()
+  })
+  it('should navigate to /dashboard route on close click', async () => {
+    jest.mocked(useLocation).mockReturnValue({
+      ...location,
+      pathname: '/t/t1/search/abc',
+      key: 'default'
+    })
+    render(<Provider>
+      <SearchBar />
+    </Provider>, {
+      route: {
+        path: '/t/:tenantId/search/:searchVal',
+        params: { tenantId: 't1', searchVal: 'abc' }
+      }
+    })
+    const closeIcon = await screen.findByTestId('search-close')
+    fireEvent.click(closeIcon)
+    expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
+      '/t/t1/dashboard'
+    )
   })
 })
 describe('Search Bar (feature disabled)', () => {
