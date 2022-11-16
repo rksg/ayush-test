@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   ApExtraParams,
   AP,
+  PingAp,
   ApDeep,
   ApDetailHeader,
   ApGroup,
@@ -127,11 +128,20 @@ export const apApi = baseApApi.injectEndpoints({
     factoryResetAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.factoryResetAp, params)
-        return{
+        return {
           ...req
         }
       }
-    })
+    }),
+    pingAp: build.mutation<PingAp, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.pingAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
   })
 })
 
@@ -140,6 +150,7 @@ export const {
   useLazyApListQuery,
   useApDetailHeaderQuery,
   useAddApMutation,
+  usePingApMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
   useWifiCapabilitiesQuery,

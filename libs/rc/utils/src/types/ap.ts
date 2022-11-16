@@ -139,3 +139,7 @@ export interface ApModel {
 	supportDual5gMode: boolean,
 	supportTriRadio: boolean
 }
+
+export interface PingAp {
+  targetHost: string
+}

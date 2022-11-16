@@ -116,5 +116,13 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   factoryResetAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
+  },
+  pingAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'
+  },
+  traceRouteAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
   }
 }

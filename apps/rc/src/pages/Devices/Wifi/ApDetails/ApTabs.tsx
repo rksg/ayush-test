@@ -2,7 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { ApDetailHeader }                        from '@acx-ui/rc/utils'
+import { ApDetailHeader, ApDeviceStatusEnum }    from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
@@ -18,12 +18,15 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
     })
   }
   const { apDetail } = props
+  const currentApOperational = true//(apDetail?.headers?.overview === ApDeviceStatusEnum.OPERATIONAL)
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'AI Analytics' })} key='analytics' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })} key='troubleshooting' />
+      {currentApOperational &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
+          key='troubleshooting' />}
       <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })} key='reports' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount: apDetail?.headers?.networks })}
