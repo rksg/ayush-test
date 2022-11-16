@@ -47,7 +47,7 @@ interface JwtToken {
   sub: string,
   swuId: string
   tenantId: string
-  tenantType: 'MSP' | 'REC'
+  tenantType: AccountType
   userIdmTenantId: string
   userName: string
   varAltoTenantId: string
