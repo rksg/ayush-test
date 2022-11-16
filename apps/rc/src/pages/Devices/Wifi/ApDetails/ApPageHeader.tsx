@@ -1,15 +1,16 @@
-import { Dropdown, Menu, Space } from 'antd'
-import { useIntl }               from 'react-intl'
+import { Dropdown, Menu, MenuProps, Space } from 'antd'
+import { useIntl }                          from 'react-intl'
 
 import { Button, PageHeader }         from '@acx-ui/components'
 import { ClockOutlined, ArrowExpand } from '@acx-ui/icons'
+import { useApActions }               from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }     from '@acx-ui/rc/services'
 import { ApDetailHeader }             from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
-}                  from '@acx-ui/react-router-dom'
+} from '@acx-ui/react-router-dom'
 
 import ApTabs from './ApTabs'
 
@@ -17,36 +18,46 @@ function ApPageHeader () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
+  const apAction = useApActions()
 
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/aps/${serialNumber}`)
 
-  // const handleMenuClick: MenuProps['onClick'] = (e) => { TODO:
-  //   // console.log('click', e)
-  // }
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    if (!serialNumber) return
+
+    const actionMap = {
+      reboot: apAction.showRebootAp,
+      downloadLog: apAction.showDownloadApLog,
+      blinkLed: apAction.showBlinkLedAp,
+      delete: apAction.showDeleteAp
+    }
+
+    actionMap[e.key as keyof typeof actionMap](serialNumber, tenantId)
+  }
 
   const menu = (
     <Menu
-      // onClick={handleMenuClick}
+      onClick={handleMenuClick}
       items={[
         {
           label: $t({ defaultMessage: 'Reboot' }),
-          key: '1'
+          key: 'reboot'
         },
         {
           label: $t({ defaultMessage: 'Download Log' }),
-          key: '2'
+          key: 'downloadLog'
         },
         {
           label: $t({ defaultMessage: 'Blink LEDs' }),
-          key: '3'
+          key: 'blinkLed'
         },
         {
           type: 'divider'
         },
         {
           label: $t({ defaultMessage: 'Delete AP' }),
-          key: '4'
+          key: 'delete'
         }
       ]}
     />
@@ -61,7 +72,7 @@ function ApPageHeader () {
         <Button key='date-filter' icon={<ClockOutlined />}>
           {$t({ defaultMessage: 'Last 24 Hours' })}
         </Button>,
-        <Dropdown overlay={menu}>
+        <Dropdown overlay={menu} key='actionMenu'>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
@@ -75,7 +86,7 @@ function ApPageHeader () {
           onClick={() =>
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/edit`
+              pathname: `${basePath.pathname}/edit/details`
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>

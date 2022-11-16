@@ -1,10 +1,10 @@
 import {
   Loading3QuartersOutlined
 } from '@ant-design/icons'
-import { Form, Input, Modal, Radio, Typography } from 'antd'
-import saveAs                                    from 'file-saver'
-import moment                                    from 'moment'
-import { RawIntlProvider, useIntl }              from 'react-intl'
+import { Form, Input, Modal, Radio } from 'antd'
+import saveAs                        from 'file-saver'
+import moment                        from 'moment'
+import { RawIntlProvider, useIntl }  from 'react-intl'
 
 import { cssStr, showActionModal, showToast } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
@@ -13,6 +13,7 @@ import {
   useDeleteApMutation,
   useDeleteSoloApMutation,
   useDownloadApLogMutation,
+  useLazyApListQuery,
   useLazyGetDhcpApQuery,
   useRebootApMutation
 } from '@acx-ui/rc/services'
@@ -24,11 +25,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
+import { RadioDescription } from '../NetworkApGroupDialog/styledComponents'
 
-export const useApActions = () => {
+
+export function useApActions () {
   const { $t } = useIntl()
   const [ downloadApLog ] = useDownloadApLogMutation()
   const [ getDhcpAp ] = useLazyGetDhcpApQuery()
+  const [ getApList ] = useLazyApListQuery()
   const [ rebootAp ] = useRebootApMutation()
   const [ deleteAp ] = useDeleteApMutation()
   const [ deleteSoloAp ] = useDeleteSoloApMutation()
@@ -36,7 +40,7 @@ export const useApActions = () => {
 
   const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
 
-  const showRebootAp = (serialNumber: string, tenantId: string, callBack?: ()=>void ) => {
+  const showRebootAp = (serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
 
     showActionModal({
       type: 'confirm',
@@ -64,7 +68,7 @@ export const useApActions = () => {
   }
 
 
-  const showDownloadApLog = ( serialNumber: string, tenantId: string, callBack?: ()=>void ) => {
+  const showDownloadApLog = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
     const toastKey = showToast({
       type: 'info',
       closable: false,
@@ -97,8 +101,22 @@ export const useApActions = () => {
       })
   }
 
+  const showDeleteAp = async ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
+    const payload = {
+      entityType: 'apsList',
+      fields: ['serialNumber', 'name', 'deviceStatus', 'fwVersion'],
+      filters: {
+        serialNumber: [serialNumber]
+      },
+      pageSize: 1
+    }
+    const apList = await getApList({
+      params: { tenantId }, payload
+    }, true).unwrap()
+    showDeleteAps(apList.data, tenantId, callBack)
+  }
 
-  const showDeleteDialog = async ( rows: AP[], tenantId: string, callBack?: ()=>void ) => {
+  const showDeleteAps = async ( rows: AP[], tenantId?: string, callBack?: ()=>void ) => {
     const dhcpAps = await getDhcpAp({
       params: { tenantId: tenantId },
       payload: rows.map(row => row.serialNumber)
@@ -124,8 +142,8 @@ export const useApActions = () => {
     })
   }
 
-  const showBlinkLedAp = ( serialNumber: string, tenantId: string, callBack?: ()=>void ) => {
-    blinkLedAp({ params: { tenantId: tenantId, serialNumber } })
+  const showBlinkLedAp = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
+    blinkLedAp({ params: { tenantId, serialNumber } })
     showToast({
       type: 'info',
       closable: false,
@@ -140,7 +158,8 @@ export const useApActions = () => {
   }
 
   return {
-    showDeleteDialog,
+    showDeleteAp,
+    showDeleteAps,
     showDownloadApLog,
     showRebootAp,
     showBlinkLedAp
@@ -220,17 +239,15 @@ const genDeleteModal = (
       their configuration will be factory reset and they will be removed from Ruckus Cloud.`
     })}</Form.Item >}
 
-    {!showResetFirmwareOption && !invalidAp && !hideConfirmation && <Form.Item>{$t({
+    {!showResetFirmwareOption && !hideConfirmation && <Form.Item>{$t({
       defaultMessage: `Once deleted, the AP will factory reset to Cloud ready.
       The existing configuration will be wiped, AP firmware will remain Cloud-only firmware.
       AP will be ready to re-connect to the Cloud.`
     })}</Form.Item >}
 
     {invalidAp && <Form.Item>{$t({
-      defaultMessage: `Once deleted, the AP will factory reset to Cloud ready.
-      The existing configuration will be wiped, AP firmware will remain Cloud-only firmware.
-      AP will be ready to re-connect to the Cloud.
-      These APs’ firmware does not support resetting them to standalone AP.`
+      defaultMessage: `
+      The AP's firmware does not support resetting them to standalone AP.`
     })}</Form.Item >}
 
     {showResetFirmwareOption && <Form.Item
@@ -248,21 +265,21 @@ const genDeleteModal = (
       <Radio.Group defaultValue={'cloud'} onChange={(e) => {resetType = e.target.value}}>
         <Radio value='cloud'>
           {$t({ defaultMessage: 'Factory reset to Cloud ready' })}
-          <Typography.Paragraph>{$t({ defaultMessage: `
+          <RadioDescription>{$t({ defaultMessage: `
           Existing configuration will be wiped,
           AP firmware will remain Cloud-only firmware.
           AP will be ready to re-connect to the Cloud.` })}
-          </Typography.Paragraph>
+          </RadioDescription>
         </Radio>
         <Radio value='solo'>
           {$t({ defaultMessage: 'Factory reset to standalone firmware' })}
-          <Typography.Paragraph>{$t({ defaultMessage: `
+          <RadioDescription>{$t({ defaultMessage: `
           Existing configuration will be wiped,
           AP firmware will be modified to standalone image.
           AP will be ready to connect to any controller or operate standalone.
           Please note that this option will download and update your AP firmware,
           which will take longer.` })}
-          </Typography.Paragraph>
+          </RadioDescription>
         </Radio>
       </Radio.Group>
     </Form.Item>}

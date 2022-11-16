@@ -107,11 +107,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteSoloAp: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber?resetFirmware={isResetFirmware}'
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber?resetFirmware=true'
   },
   deleteSoloAps: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/ap/?resetFirmware={isResetFirmware}'
+    url: '/api/tenant/:tenantId/wifi/ap/?resetFirmware=true'
   },
   downloadApLog: {
     method: 'get',

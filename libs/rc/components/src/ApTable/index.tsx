@@ -84,7 +84,7 @@ const APStatus = function ({ status }: { status: ApDeviceStatusEnum }) {
   )
 }
 
-export interface ApTableProps
+interface ApTableProps
   extends Omit<TableProps<AP>, 'columns'> {
 }
 
@@ -272,19 +272,19 @@ export function ApTable (props?: ApTableProps) {
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: async (rows, clearSelection) => {
-      apAction.showDeleteDialog(rows, params.tenantId || '', clearSelection)
+      apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
   }, {
     label: $t({ defaultMessage: 'Reboot' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
     onClick: (rows, clearSelection) => {
-      apAction.showRebootAp(rows[0].serialNumber, params.tenantId || '', clearSelection)
+      apAction.showRebootAp(rows[0].serialNumber, params.tenantId, clearSelection)
     }
   }, {
     label: $t({ defaultMessage: 'Download Log' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
     onClick: (rows) => {
-      apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId || '')
+      apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
   }]
 
