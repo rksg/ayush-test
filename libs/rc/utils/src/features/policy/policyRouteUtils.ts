@@ -1,5 +1,6 @@
-import { PolicyType }   from '@acx-ui/rc/utils'
 import { generatePath } from '@acx-ui/react-router-dom'
+
+import { PolicyType } from '../../types'
 
 export enum PolicyOperation {
   CREATE,
@@ -7,12 +8,12 @@ export enum PolicyOperation {
   DETAIL
 }
 
-export interface PolicyRoutePathProps {
+interface PolicyRoutePathProps {
   type: PolicyType;
   oper: PolicyOperation;
 }
 
-export interface PolicyDetailsLinkProps extends PolicyRoutePathProps {
+interface PolicyDetailsLinkProps extends PolicyRoutePathProps {
   oper: Exclude<PolicyOperation, PolicyOperation.CREATE>;
   policyId: string;
 }
@@ -27,7 +28,7 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.AAA]: 'aaa',
   [PolicyType.ACCESS_CONTROL]: 'accessControl',
   [PolicyType.CLIENT_ISOLATION]: 'clientIsolation',
-  [PolicyType.ROGUE_AP_DETECTION]: 'rougeAp',
+  [PolicyType.ROGUE_AP_DETECTION]: 'rogueAp',
   [PolicyType.SYSLOG]: 'syslog',
   [PolicyType.VLAN_POOL]: 'vlanPool'
 }

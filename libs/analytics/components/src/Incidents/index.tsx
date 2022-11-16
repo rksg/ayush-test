@@ -53,7 +53,7 @@ export const IncidentTabContent = (props: { tabSelection?: IncidentListTabs,
           type='no-border'
         />
       </GridCol>
-      <GridCol col={{ span: 24 }} style={{ minHeight: '248px' }}>
+      <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
         <IncidentTable filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }} />
       </GridCol>
     </GridRow>

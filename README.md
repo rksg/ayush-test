@@ -131,7 +131,7 @@ npx nx affected:test --coverage --verbose
 
 Remove `--coverage` if updating the coverage folder is not needed.
 
-Use command below if you intent to run test for selected packages
+Use command below if you intend to run test for selected packages
 
 ```sh
 npx nx run-many --target=test --projects=rc,rc-utils --coverage --runInBand --verbose
