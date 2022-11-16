@@ -30,16 +30,14 @@ const DHCPInstance = () => {
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
-      label: $t({ defaultMessage: 'Pools ({count})' }, {
-        count: dhcpProfile?.dhcpPools.length || 0
-      }),
+      label: $t({ defaultMessage: 'Pools ({count})' },
+        { count: dhcpProfile?.dhcpPools.length || 0 }),
       value: 'pools',
       children: <GridCol col={{ span: 24 }}><PoolTable /></GridCol>
     },
     {
-      label: $t({ defaultMessage: 'Lease Table ({count} Online)' }, {
-        count: leasesList?.length || 0
-      }),
+      label: $t({ defaultMessage: 'Lease Table ({count} Online)' },
+        { count: leasesList?.length || 0 }),
       value: 'lease',
       children: <GridCol col={{ span: 24 }}><LeaseTable /></GridCol>
     }
