@@ -22,6 +22,7 @@ export const SearchBar = styled.div`
 `
 export const Input = styled(AntInput)`
   height: 28px;
+  font-size: 12px;
   color: var(--acx-neutrals-50);
   background: transparent;
   border: none;
@@ -31,6 +32,7 @@ export const Input = styled(AntInput)`
 `
 export const SendSearch = styled(SendMessageOutlined)`
   cursor: pointer;
+  margin-right: 5px;
   path {
     stroke: var(--acx-neutrals-50);
   }
@@ -41,6 +43,7 @@ export const SendSearch = styled(SendMessageOutlined)`
   }
 `
 export const SearchSolid = styled(Button)`
+  border: none;
   cursor: default;
   > svg path {
     stroke: var(--acx-primary-white);
@@ -55,6 +58,7 @@ export const Divider = styled(LayoutUI.Divider)`
   border-right: 1px solid var(--acx-neutrals-60);
 `
 export const Close = styled(Button)`
+  margin-left: -5px;
   > svg path {
     stroke: var(--acx-neutrals-50);
   }
