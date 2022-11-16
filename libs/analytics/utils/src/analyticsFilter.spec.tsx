@@ -3,22 +3,24 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
-import { useAnalyticsFilter, AnalyticsFilterProvider } from './analyticsFilter'
+import { resetRanges } from '@acx-ui/utils'
 
+import { useAnalyticsFilter } from './analyticsFilter'
+
+const original = Date.now
 describe('useAnalyticsFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetRanges()
   })
+
+  afterAll(() => Date.now = original)
+
   it('should return correct value', () => {
     const { result } = renderHook(useAnalyticsFilter, {
       wrapper: ({ children }) => <MemoryRouter>{children}</MemoryRouter>
     })
-    let isCallableFn = false
-    if (typeof result.current.setNetworkPath === 'function') {
-      result.current.setNetworkPath()
-      isCallableFn = true
-    }
-    expect(isCallableFn).toBeTruthy()
+    expect(result.current.setNetworkPath).toBeDefined()
     expect(result.current.filters).toEqual({
       path: [{ name: 'Network', type: 'network' }],
       startDate: '2021-12-31T00:00:00+00:00',
@@ -26,9 +28,7 @@ describe('useAnalyticsFilter', () => {
       range: 'Last 24 Hours'
     })
   })
-})
 
-describe('AnalyticsFilterProvider', () => {
   const filter = {
     path: [
       { type: 'network', name: 'Network' },
@@ -47,9 +47,7 @@ describe('AnalyticsFilterProvider', () => {
       pathname: '/analytics/incidents',
       search: ''
     }]}>
-      <AnalyticsFilterProvider>
-        <Component />
-      </AnalyticsFilterProvider>
+      <Component />
     </MemoryRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -58,16 +56,15 @@ describe('AnalyticsFilterProvider', () => {
       const { filters, raw, setNetworkPath } = useAnalyticsFilter()
       useEffect(() => {
         setNetworkPath(filters.path, raw)
-      })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [])
       return <div>{JSON.stringify(filters)}</div>
     }
     const { asFragment } = render(<MemoryRouter initialEntries={[{
       pathname: '/analytics/incidents',
       search: ''
     }]}>
-      <AnalyticsFilterProvider>
-        <Component />
-      </AnalyticsFilterProvider>
+      <Component />
     </MemoryRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -81,9 +78,7 @@ describe('AnalyticsFilterProvider', () => {
         pathname: '/analytics/incidents',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
-        <AnalyticsFilterProvider>
-          <Component />
-        </AnalyticsFilterProvider>
+        <Component />
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()
@@ -107,9 +102,7 @@ describe('AnalyticsFilterProvider', () => {
         pathname: '/analytics/incidents',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
-        <AnalyticsFilterProvider>
-          <Component />
-        </AnalyticsFilterProvider>
+        <Component />
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()
@@ -132,9 +125,7 @@ describe('AnalyticsFilterProvider', () => {
         pathname: '/analytics/incidents',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
-        <AnalyticsFilterProvider>
-          <Component />
-        </AnalyticsFilterProvider>
+        <Component />
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()
@@ -159,9 +150,7 @@ describe('AnalyticsFilterProvider', () => {
         pathname: '/analytics/incidents',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
-        <AnalyticsFilterProvider>
-          <Component />
-        </AnalyticsFilterProvider>
+        <Component />
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()
@@ -184,9 +173,7 @@ describe('AnalyticsFilterProvider', () => {
         pathname: '/analytics/health',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
-        <AnalyticsFilterProvider>
-          <Component />
-        </AnalyticsFilterProvider>
+        <Component />
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()
@@ -209,9 +196,7 @@ describe('AnalyticsFilterProvider', () => {
         pathname: '/analytics/health',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
-        <AnalyticsFilterProvider>
-          <Component />
-        </AnalyticsFilterProvider>
+        <Component />
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()

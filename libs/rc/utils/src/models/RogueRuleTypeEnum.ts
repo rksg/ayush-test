@@ -1,0 +1,15 @@
+export enum RogueRuleTypeEnum {
+  AdhocRule = 'AdhocRule',
+  SsidSpoofingRule = 'SsidSpoofingRule',
+  MacSpoofingRule = 'MacSpoofingRule',
+  SameNetworkRule = 'SameNetworkRule',
+  CTSAbuseRule = 'CTSAbuseRule',
+  RTSAbuseRule = 'RTSAbuseRule',
+  DeauthFloodRule = 'DeauthFloodRule',
+  DisassocFloodRule = 'DisassocFloodRule',
+  ExcessivePowerRule = 'ExcessivePowerRule',
+  NullSSIDRule = 'NullSSIDRule',
+  CustomSsidRule = 'CustomSsidRule',
+  CustomSnrRule = 'CustomSnrRule',
+  CustomMacOuiRule = 'CustomMacOuiRule',
+}

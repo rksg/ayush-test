@@ -3,16 +3,13 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import AnalyticsRoutes from './Routes'
 
-jest.mock('./pages/Incidents', () => () => {
-  return <div data-testid='incidentsListPage' />
-})
+jest.mock('@acx-ui/analytics/components', () => ({
+  HealthPage: () => <div data-testid='healthPage' />,
+  IncidentListPage: () => <div data-testid='incidentsListPage' />
+}))
 
 jest.mock('./pages/IncidentDetails', () => () => {
   return <div data-testid='incidentDetails' />
-})
-
-jest.mock('./pages/Health', () => () => {
-  return <div data-testid='healthPage' />
 })
 
 test('should redirect analytics to analytics/incidents', async () => {

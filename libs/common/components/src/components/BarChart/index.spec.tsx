@@ -7,7 +7,7 @@ import { data, barColors } from './stories'
 import { BarChart, handleOnClick } from '.'
 
 describe('BarChart',()=>{
-  it('should renderer correctly for single series',async () => {
+  it('should render correctly for single series',async () => {
     const { asFragment } = render(<BarChart
       data={data()}
       barColors={barColors}
@@ -18,7 +18,7 @@ describe('BarChart',()=>{
     expect(screen.getAllByText('Switch', { exact: false })).toHaveLength(5)
 
   })
-  it('should renderer correctly for multi series', () => {
+  it('should render correctly for multi series', () => {
     const onClick = jest.fn()
     const { asFragment } = render(<BarChart
       data={data(true)}

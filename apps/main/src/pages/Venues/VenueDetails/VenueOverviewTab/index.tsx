@@ -1,11 +1,23 @@
-import React from 'react'
-
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import {
+  ConnectedClientsOverTime,
+  IncidentBySeverity,
+  NetworkHistory,
+  SwitchesTrafficByVolume,
+  TopSwitchModels,
+  TopApplicationsByTraffic,
+  TopSSIDsByClient,
+  TopSSIDsByTraffic,
+  TopSwitchesByError,
+  TopSwitchesByPoEUsage,
+  TopSwitchesByTraffic,
+  TrafficByVolume,
+  VenueHealth
+} from '@acx-ui/analytics/components'
+import {
   AnalyticsFilter,
-  AnalyticsFilterProvider,
   useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   GridRow,
@@ -13,45 +25,34 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
-import { useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
-
-const WifiWidgets = React.lazy(() => import('rc/Widgets'))
-const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
+import {
+  TopologyFloorPlanWidget,
+  VenueAlarmWidget,
+  VenueDevicesWidget
+} from '@acx-ui/rc/components'
+import { generateVenueFilter } from '@acx-ui/utils'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
-  const params = useParams()
-  const { data } = useVenueDetailsHeaderQuery({ params })
-
-  const venueApFilter = {
-    ...filters,
-    path: [{ type: 'zone', name: data?.venue.name }]
-  } as AnalyticsFilter
-
-  const venueSwitchFilter = {
-    ...filters,
-    path: [{ type: 'switchGroup', name: data?.venue.name }]
-  } as AnalyticsFilter
-
+  const { venueId } = useParams()
+  const venueFilter = { ...filters, filter: generateVenueFilter([venueId as string]) }
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
       value: 'ap',
-      children: <ApWidgets filters={venueApFilter}/>
+      children: <ApWidgets filters={venueFilter}/>
     },
     {
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
-      children: <SwitchWidgets filters={venueSwitchFilter}/>
+      children: <SwitchWidgets filters={venueFilter}/>
     }
   ]
-  return (
-    <AnalyticsFilterProvider>
-      <CommonDashboardWidgets filters={venueApFilter}/>
-      <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
-    </AnalyticsFilterProvider>
-  )
+  return (<>
+    <CommonDashboardWidgets filters={venueFilter}/>
+    <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
+  </>)
 }
 
 function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
@@ -59,21 +60,21 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
   return (
     <GridRow>
       <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
-        <WifiWidgets name='venueAlarmDonut' />
+        <VenueAlarmWidget />
       </GridCol>
       <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
-        <AnalyticsWidgets name='venueIncidentsDonut' filters={filters}/>
+        <IncidentBySeverity type='donut' filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
-        <WifiWidgets name='venueDevices'/>
+        <VenueDevicesWidget />
       </GridCol>
 
       <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
-        <WifiWidgets name='venueHealth' />
+        <VenueHealth filters={filters}/>
       </GridCol>
 
       <GridCol col={{ span: 24 }} style={{ height: '520px' }}>
-        <WifiWidgets name='floorPlans' />
+        <TopologyFloorPlanWidget />
       </GridCol>
     </GridRow>
   )
@@ -84,22 +85,22 @@ function ApWidgets (props: { filters: AnalyticsFilter }) {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='trafficByVolume' filters={filters}/>
+        <TrafficByVolume filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='networkHistory' filters={filters}/>
+        <NetworkHistory filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
+        <ConnectedClientsOverTime filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topApplicationsByTraffic' filters={filters}/>
+        <TopApplicationsByTraffic filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSSIDsByTraffic' filters={filters}/>
+        <TopSSIDsByTraffic filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSSIDsByClient' filters={filters}/>
+        <TopSSIDsByClient filters={filters} />
       </GridCol>
     </GridRow>
   )
@@ -110,19 +111,19 @@ function SwitchWidgets (props: { filters: AnalyticsFilter }) {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
+        <SwitchesTrafficByVolume filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/>
+        <TopSwitchesByPoEUsage filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
+        <TopSwitchesByTraffic filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByErrors'filters={filters} />
+        <TopSwitchesByError filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
+        <TopSwitchModels filters={filters} />
       </GridCol>
     </GridRow>
   )

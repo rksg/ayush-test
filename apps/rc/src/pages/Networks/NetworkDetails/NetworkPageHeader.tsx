@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                       from '@acx-ui/components'
-import { ArrowExpand, ClockOutlined, BulbOutlined } from '@acx-ui/icons'
-import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
+import { Button, DisabledButton, PageHeader } from '@acx-ui/components'
+import { ArrowExpand, ClockOutlined }         from '@acx-ui/icons'
+import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
 
 import NetworkTabs       from './NetworkTabs'
 import { useGetNetwork } from './services'
@@ -18,14 +18,13 @@ function NetworkPageHeader () {
         { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
       ]}
       extra={[
-        <Button key='date-filter' icon={<ClockOutlined />}>
-          {$t({ defaultMessage: 'Last 24 Hours' })}</Button>,
-        <Button key='hierarchy-filter'>
-          {$t({ defaultMessage: 'Entire Organization' })}<ArrowExpand /></Button>,
+        <DisabledButton key='hierarchy-filter'>
+          {$t({ defaultMessage: 'All Active Venues' })}<ArrowExpand /></DisabledButton>,
+        <DisabledButton key='date-filter' icon={<ClockOutlined />}>
+          {$t({ defaultMessage: 'Last 24 Hours' })}</DisabledButton>,
         <TenantLink to={`/networks/${networkId}/edit`} key='edit'>
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
-        </TenantLink>,
-        <Button key='insight' icon={<BulbOutlined />} />
+        </TenantLink>
       ]}
       footer={<NetworkTabs />}
     />

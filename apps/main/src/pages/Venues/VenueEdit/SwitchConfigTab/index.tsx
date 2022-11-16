@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 
-import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'

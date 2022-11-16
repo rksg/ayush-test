@@ -1,6 +1,5 @@
+import { ApTable }   from '@acx-ui/rc/components'
 import { useParams } from '@acx-ui/react-router-dom'
-
-import { ApTable } from '../../../components/ApTable'
 
 import { NetworkEventsTab }    from './NetworkEventsTab'
 import { NetworkIncidentsTab } from './NetworkIncidentsTab'
@@ -18,7 +17,7 @@ const tabs = {
   incidents: NetworkIncidentsTab
 }
 
-export function NetworkDetails () {
+export default function NetworkDetails () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   return <>

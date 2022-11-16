@@ -15,7 +15,7 @@ import * as UI from './styledComponents'
 export interface PageHeaderProps
   extends Omit<AntPageHeaderProps, 'title' | 'breadcrumb' | 'children'>
 {
-  title: string,
+  title: React.ReactNode,
   titleExtra?: React.ReactNode,
   breadcrumb?: { text: string, link: string }[]
 }

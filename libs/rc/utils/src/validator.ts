@@ -211,3 +211,58 @@ export function subnetMaskIpRegExp (value: string) {
   }
   return Promise.resolve()
 }
+
+export function checkVlanMember (value: string) {
+  const { $t } = getIntl()
+  const items = value.toString().split(',')
+  const isValid = items.map((item: string) => {
+    const num = item.includes('-') ? item : Number(item)
+    if (item.includes('-')) {
+      const nums = item.split('-').map((x: string) => Number(x))
+      return nums[1] > nums[0] && nums[1] < 4095 && nums[0] > 0
+    }
+    return num > 0 && num < 4095
+  }).filter((x:boolean) => !x).length === 0
+
+  if (isValid) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t(validationMessages.invalid))
+}
+
+export function checkValuesNotEqual (value: string, checkValue: string) {
+  const { $t } = getIntl()
+  if (value && isEqual(value, checkValue)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
+export function apNameRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('(?=^((?!`|\\$\\()[ -_a-~]){2,32}$)^(\\S.*\\S)$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
+export function gpsRegExp (lat: string, lng: string) {
+  const { $t } = getIntl()
+  const latitudeRe = new RegExp('^$|^(-?(?:90(?:\\.0{1,6})?|(?:[1-8]?\\d(?:\\.\\d{1,6})?)))$')
+  const longitudeRe = new RegExp('^$|^(-?(?:180(?:\\.0{1,6})?|(?:[1-9]?\\d(?:\\.\\d{1,6})?)|(?:1[0-7]?\\d(?:\\.\\d{1,6})?)))$')
+
+  if (!lat || !lng || !latitudeRe.test(lat) || !longitudeRe.test(lng)) {
+    return Promise.reject($t(validationMessages.gpsCoordinates))
+  }
+  return Promise.resolve()
+}
+
+export function serialNumberRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^[1-9][0-9]{11}$')
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}

@@ -10,8 +10,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { serviceTypeLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
-import { getServiceDetailsLink, ServiceOperation }                from '../serviceRouteUtils'
+import { serviceTypeLabelMapping, serviceTechnologyLabelMapping }             from '../contentsMap'
+import { getSelectServiceRoutePath, getServiceDetailsLink, ServiceOperation } from '../serviceRouteUtils'
 
 
 function useColumns () {
@@ -116,59 +116,74 @@ const defaultPayload = {
   ]
 }
 
-export function ServicesTable () {
+export default function ServicesTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
-  const ServicesTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useServiceListQuery,
-      defaultPayload
-    })
-    const deleteServiceFnMapping = {
-      [ServiceType.DHCP]: [], // TODO: API not ready
-      [ServiceType.DPSK]: [], // TODO: API not ready
-      [ServiceType.MDNS_PROXY]: [], // TODO: API not ready
-      [ServiceType.PORTAL]: [], // TODO: API not ready
-      [ServiceType.WIFI_CALLING]: useDeleteWifiCallingServiceMutation()
-    }
+  const tableQuery = useTableQuery({
+    useQuery: useServiceListQuery,
+    defaultPayload
+  })
+  const deleteServiceFnMapping = {
+    [ServiceType.DHCP]: [], // TODO: API not ready
+    [ServiceType.DPSK]: [], // TODO: API not ready
+    [ServiceType.MDNS_PROXY]: [], // TODO: API not ready
+    [ServiceType.PORTAL]: [], // TODO: API not ready
+    [ServiceType.WIFI_CALLING]: useDeleteWifiCallingServiceMutation()
+  }
 
-    const rowActions: TableProps<Service>['rowActions'] = [
-      {
-        label: $t({ defaultMessage: 'Delete' }),
-        onClick: ([{ id, name, type }], clearSelection) => {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Service' }),
-              entityValue: name
-            },
-            onOk: () => {
-              const [ deleteFn ] = deleteServiceFnMapping[type]
-              deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
-            }
-          })
-        }
-      },
-      {
-        label: $t({ defaultMessage: 'Edit' }),
-        onClick: ([{ type, id }]) => {
-          navigate({
-            ...tenantBasePath,
-            pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
-              type: type as ServiceType,
-              oper: ServiceOperation.EDIT,
-              serviceId: id
-            })
-          })
-        }
+  const rowActions: TableProps<Service>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([{ id, name, type }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Service' }),
+            entityValue: name
+          },
+          onOk: () => {
+            const [ deleteFn ] = deleteServiceFnMapping[type]
+            deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
+          }
+        })
       }
-    ]
+    },
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: ([{ type, id }]) => {
+        navigate({
+          ...tenantBasePath,
+          pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
+            type: type as ServiceType,
+            oper: ServiceOperation.EDIT,
+            serviceId: id
+          })
+        })
+      }
+    }
+  ]
 
-    return (
+  return (
+    <>
+      <PageHeader
+        title={
+          $t({
+            defaultMessage: 'Services ({serviceCount})'
+          },
+          {
+            serviceCount: tableQuery.data?.totalCount
+          })
+        }
+        extra={[
+          <TenantLink to={getSelectServiceRoutePath(true)} key='add'>
+            <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
+          </TenantLink>
+        ]}
+      />
       <Loader states={[tableQuery]}>
         <Table
           columns={useColumns()}
@@ -180,20 +195,6 @@ export function ServicesTable () {
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
-    )
-  }
-
-  return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Services' })}
-        extra={[
-          <TenantLink to='/services/select' key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
-          </TenantLink>
-        ]}
-      />
-      <ServicesTable />
     </>
   )
 }

@@ -9,7 +9,8 @@ const tabDetails: ContentSwitcherProps['tabDetails'] = [
     label: 'Chart',
     value: 'chart',
     icon: <BarChartOutlined />,
-    children: <h1>Chart content</h1>
+    children: <h1>Chart content</h1>,
+    disabled: true
   },
   {
     label: 'Table',

@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Floor Plan Modal handles click on add floorplan 1`] = `
+<DocumentFragment>
+  <button
+    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+    data-testid="AddEditLinks"
+    type="button"
+  >
+    <span>
+      + Add Floor Plan
+    </span>
+  </button>
+  <div
+    class="ant-modal-root"
+  >
+    <div
+      class="ant-modal-wrap"
+      style="display: none;"
+      tabindex="-1"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Floor Plan Modal should render correctly 1`] = `
+<DocumentFragment>
+  <button
+    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+    data-testid="AddEditLinks"
+    type="button"
+  >
+    <span>
+      + Add Floor Plan
+    </span>
+  </button>
+  <div
+    class="ant-modal-root"
+  >
+    <div
+      class="ant-modal-wrap"
+      style="display: none;"
+      tabindex="-1"
+    />
+  </div>
+</DocumentFragment>
+`;

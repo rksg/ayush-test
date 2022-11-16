@@ -19,7 +19,7 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function CloudpathServerForm () {
-  const { data } = useContext(NetworkFormContext)
+  const { data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
 
   const selectedId = useWatch('cloudpathServerId')
@@ -32,6 +32,9 @@ export function CloudpathServerForm () {
     }
   })
 
+  const onSelect = (selectedId: string) => {
+    setData && setData({ ...data, cloudpathServerId: selectedId })
+  }
   return (
     <>
       <Form.Item
@@ -40,6 +43,7 @@ export function CloudpathServerForm () {
         initialValue={data?.cloudpathServerId}
         rules={[{ required: true }]}>
         <Select placeholder={$t({ defaultMessage: 'Select...' })}
+          onSelect={onSelect}
           children={selectOptions} />
       </Form.Item>
 
