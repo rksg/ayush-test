@@ -8,6 +8,7 @@ import DevicesBase      from './pages/Devices'
 import Layout           from './pages/Layout'
 import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
+import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
@@ -33,6 +34,7 @@ function AllRoutes () {
         <Route path='networks/*' element={<NetworksBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
+        <Route path='search/:searchVal' element={<SearchResults />} />
         <Route path='services/*' element={<ServicesBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
