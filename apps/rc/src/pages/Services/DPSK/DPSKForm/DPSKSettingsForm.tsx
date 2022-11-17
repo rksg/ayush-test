@@ -7,15 +7,16 @@ import {
   Row,
   Select,
   InputNumber,
-  Tooltip,
-  Radio,
-  Space,
-  DatePicker
+  Tooltip
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, Subtitle }        from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import {
+  ExpirationDateEntity,
+  ExpirationDateSelector
+} from '@acx-ui/rc/components'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -23,24 +24,19 @@ import {
 } from '@acx-ui/rc/utils'
 
 import {
-  ListExpirationType,
-  passphraseFormatDescription,
-  listExpirationLabel
+  passphraseFormatDescription
 } from '../contentsMap'
-
-import * as UI from './styledComponents'
-
-import type { RadioChangeEvent } from 'antd'
 
 export default function DPSKSettingsForm () {
   const intl = useIntl()
   const [state, updateState] = useState({
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
-    passphraseLength: 18,
-    listExpiration: ListExpirationType.NEVER
+    passphraseLength: 18
   })
-
   const { Option } = Select
+  const [ expirationDateEntity, setExpirationDateEntity ] = useState(new ExpirationDateEntity())
+  const form = Form.useFormInstance()
+
   const nameValidator = async (value: string) => {
     return Promise.resolve(value)
   }
@@ -52,13 +48,13 @@ export default function DPSKSettingsForm () {
     updateData({ passphraseFormat })
   }
 
-  const onListExpirationChange = (e: RadioChangeEvent) => {
-    updateData({ listExpiration: e.target.value })
-  }
-
   const passphraseOptions = Object.keys(PassphraseFormatEnum).map((key =>
     <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.FORMAT, key)}</Option>
   ))
+
+  const onExpirationDateChange = (data: ExpirationDateEntity) => {
+    setExpirationDateEntity(data)
+  }
 
   return (
     <Row>
@@ -131,9 +127,10 @@ export default function DPSKSettingsForm () {
           name='listExpiration'
           label={intl.$t({ defaultMessage: 'List Passphrase' })}
           rules={[{ required: true }]}
-          initialValue={state.listExpiration}
+          // initialValue={state.listExpiration}
         >
-          <Radio.Group onChange={onListExpirationChange}>
+          <ExpirationDateSelector data={expirationDateEntity} setData={onExpirationDateChange} />
+          {/* <Radio.Group onChange={onListExpirationChange}>
             <Space direction='vertical' size='middle'>
               <Radio key={ListExpirationType.NEVER} value={ListExpirationType.NEVER}>
                 {intl.$t(listExpirationLabel[ListExpirationType.NEVER])}
@@ -170,7 +167,7 @@ export default function DPSKSettingsForm () {
                 </UI.FieldLabel>
               </Radio>
             </Space>
-          </Radio.Group>
+          </Radio.Group> */}
         </Form.Item>
       </Col>
     </Row>

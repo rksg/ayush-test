@@ -12,5 +12,6 @@ export { TopologyFloorPlanWidget } from './TopologyFloorPlanWidget'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget } from './VenuesDashboardWidget'
+export * from './ExpirationDateSelector'
 
 export * from './pipes/apGroupPipes'
