@@ -17,7 +17,7 @@ import {
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip } from '@acx-ui/components'
-import { useTenantLink, Link }                 from '@acx-ui/react-router-dom'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
 import { formatter }                           from '@acx-ui/utils'
 
 import {
@@ -62,11 +62,16 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   )
 }
 
+const DateLink = ({ value }: { value: IncidentTableRow }) => {
+  return <TenantLink to={`/analytics/incidents/${value.id}`}>
+    {formatter('dateTimeFormat')(value.endTime)}
+  </TenantLink>
+}
+
 export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
   const intl = useIntl()
   const { $t } = intl
   const queryResults = useIncidentsListQuery(filters)
-  const basePath = useTenantLink('/analytics/incidents/')
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
@@ -117,9 +122,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       valueType: 'dateTime',
       key: 'endTime',
       render: (_, value) => {
-        return <Link to={{ ...basePath, pathname: `${basePath.pathname}/${value.id}` }}>
-          {formatter('dateTimeFormat')(value.endTime)}
-        </Link>
+        return <DateLink value={value}/>
       },
       sorter: { compare: sortProp('endTime', dateSort) },
       fixed: 'left'
