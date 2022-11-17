@@ -149,6 +149,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
+    apNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApNetworkList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'LIST' }]
+    }),
     networkVenueList: build.query<TableResult<Venue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const networkVenuesListInfo = {
@@ -350,6 +360,7 @@ export const {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
+  useApNetworkListQuery,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
   useValidateRadiusQuery,
