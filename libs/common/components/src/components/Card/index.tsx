@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Card as AntCard, Space } from 'antd'
 
+import { Button } from '../Button'
+
 import * as UI from './styledComponents'
 
 import type { CardProps as AntCardProps } from 'antd'
@@ -14,6 +16,10 @@ export interface CardProps extends Pick<AntCardProps, 'children'> {
   subTitle?: string
   onExpandClick?: () => void
   onMoreClick?: () => void
+  action?: {
+    actionName: string
+    onActionClick: () => void
+  }
 }
 
 function Card ({
@@ -50,6 +56,10 @@ function Card ({
               icon={<UI.MoreVerticalIcon />}
               onClick={props.onMoreClick}
             /> : null }
+            { props.action ?
+              <Button type='link' onClick={props.action.onActionClick}>
+                {props.action.actionName}
+              </Button> : null }
           </Space>
         }
       >
