@@ -107,7 +107,8 @@ function isExpired () {
 }
 
 function displayDays (timeLeft: number) {
-  return `${timeLeft} ${(timeLeft === 1 ? 'day' : 'days')}`
+  return getIntl().$t({ defaultMessage:
+    '{days} {days, plural, one {day} other {days}}' }, { days: timeLeft })
 }
 
 function displayMonths (timeLeft: number) {
