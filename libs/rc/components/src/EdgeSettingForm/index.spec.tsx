@@ -9,6 +9,12 @@ import { mockVenueData } from './__tests__/fixtures'
 
 import { EdgeSettingForm } from './index'
 
+jest.mock('@acx-ui/icons', ()=> {
+  const icons = jest.requireActual('@acx-ui/icons')
+  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(keys)
+})
+
 describe('EdgeSettingForm', () => {
   let params: { tenantId: string }
   beforeEach(() => {
