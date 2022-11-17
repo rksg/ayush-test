@@ -44,7 +44,6 @@ function ThresholdConfig ({
   const disabledMsg = $t(getDisabledToolTip(isNetwork))
   const resetCallback = () => onReset()
   const applyCallback: MouseEventHandler<HTMLElement> = (e) => {
-    e.preventDefault()
     onApply()
     e.currentTarget.blur()
   }
