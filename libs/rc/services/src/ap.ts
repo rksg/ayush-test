@@ -39,7 +39,6 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Ap', id: 'LIST' }],
       transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
       },
@@ -92,16 +91,6 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
-    deleteAp: build.mutation<AP, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteAps, params)
-        return {
-          ...req,
-          ...(!!payload && { body: payload })
-        }
-      },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
-    }),
     wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
@@ -109,6 +98,17 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    deleteAp: build.mutation<AP, RequestPayload>({
+      query: ({ params, payload }) => {
+        const api = !!payload ? WifiUrlsInfo.deleteAps : WifiUrlsInfo.deleteAp
+        const req = createHttpRequest(api, params)
+        return {
+          ...req,
+          ...(!!payload && { body: payload })
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
     getDhcpAp: build.query<DhcpAp, RequestPayload>({
       query: ({ params, payload }) => {

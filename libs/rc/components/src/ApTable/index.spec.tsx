@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
+
+import userEvent from '@testing-library/user-event'
 import FileSaver from 'file-saver'
 import { rest }  from 'msw'
 
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
@@ -18,6 +19,7 @@ import { ApTable } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
   ...jest.requireActual('@acx-ui/icons'),
+  CancelCircle: () => <div data-testid='cancel-circle' />,
   SettingsOutlined: () => <div data-testid='SettingsOutlined'/>
 }))
 
@@ -239,16 +241,15 @@ describe('Aps', () => {
       route: { params, path: '/:tenantId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const fakeDownloadUrl = '/api/abc'
     const downloadSpy = jest.spyOn(FileSaver, 'saveAs')
     const rebootSpy = jest.fn()
+    rebootSpy.mockReturnValueOnce(true)
 
     mockServer.use(
       rest.post(
         WifiUrlsInfo.rebootAp.url,
-        (req, res, ctx) => rebootSpy() || res(ctx.json({ requestId: '456' }))
+        (req, res, ctx) => rebootSpy() && res(ctx.json({ requestId: '456' }))
       ),
       rest.get(
         WifiUrlsInfo.downloadApLog.url,
@@ -260,23 +261,23 @@ describe('Aps', () => {
     expect(row1).toHaveTextContent('mock-ap-1')
     expect(within(row1).getByRole('checkbox')).not.toBeChecked()
 
-    fireEvent.click(await within(row1).findByText('10.00.000.101'))
+    await userEvent.click(await within(row1).findByText('10.00.000.101'))
     expect(within(row1).getByRole('checkbox')).toBeChecked()
 
-    const downloadButton = screen.getByRole('button', { name: 'Download Log' })
-    fireEvent.click(downloadButton)
+    const downloadButton = await screen.findByRole('button', { name: 'Download Log' })
+    await userEvent.click(downloadButton)
 
     const toast = await screen.findByText('Preparing log', { exact: false })
     expect(toast).toBeVisible()
 
-    await waitFor(async () => screen.findByText('Log is ready.', { exact: false }))
+    expect(await screen.findByText('Log is ready.', { exact: false })).toBeVisible()
 
-    await waitFor(() => expect(downloadSpy).toHaveBeenCalled())
+    expect(downloadSpy).toHaveBeenCalled()
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Reboot' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Reboot' }))
     const rebootDialog = await waitFor(async () => screen.findByRole('dialog'))
-    fireEvent.click(within(rebootDialog).getByRole('button', { name: 'Reboot' }))
-    await waitFor(() => expect(rebootSpy).toHaveBeenCalled())
+    await userEvent.click(within(rebootDialog).getByRole('button', { name: 'Reboot' }))
+    expect(rebootSpy).toHaveBeenCalled()
 
     jest.restoreAllMocks()
   })
@@ -300,9 +301,8 @@ describe('Aps', () => {
       route: { params, path: '/:tenantId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const deleteSpy = jest.fn()
+    deleteSpy.mockReturnValueOnce(true)
 
     mockServer.use(
       rest.post(
@@ -313,47 +313,49 @@ describe('Aps', () => {
       ),
       rest.delete(
         WifiUrlsInfo.deleteAp.url,
-        (req, res, ctx) => deleteSpy() || res(ctx.json({ requestId: '456' }))
+        (req, res, ctx) => deleteSpy() && res(ctx.json({ requestId: '456' }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteAps.url,
-        (req, res, ctx) => deleteSpy() || res(ctx.json({ requestId: '456' }))
+        (req, res, ctx) => deleteSpy() && res(ctx.json({ requestId: '456' }))
       )
     )
 
     const row1 = await screen.findByRole('row', { name: /mock-ap-1/i }) // select ap 1: operational
-    fireEvent.click(row1)
+    await userEvent.click(row1)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
 
-    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+    const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByRole('button', { name: 'Delete AP' })).toBeDisabled()
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
 
     await waitFor(async () => expect(dialog).not.toBeVisible())
 
-    fireEvent.click(row1) // unselect ap 1
+    await userEvent.click(row1) // unselect ap 1
     expect(within(row1).getByRole('checkbox')).not.toBeChecked()
 
     const row2 = await screen.findByRole('row', { name: /mock-ap-2/i })
-    fireEvent.click(row2) // select ap 2: DisconnectedFromCloud
+    await userEvent.click(row2) // select ap 2: DisconnectedFromCloud
 
     const tbody = (await screen.findAllByRole('rowgroup'))
       .find(element => element.classList.contains('ant-table-tbody'))!
     const rows = await within(tbody).findAllByRole('checkbox', { checked: true })
     expect(rows).toHaveLength(1)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
-    const dialog2 = await waitFor(async () => screen.findByRole('dialog'))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    const dialog2 = await screen.findByRole('dialog')
     expect(within(dialog2).getByRole('button', { name: 'Delete AP' })).not.toBeDisabled()
 
-    fireEvent.click(within(dialog2).getByRole('button', { name: 'Delete AP' }))
+    await userEvent.click(within(dialog2).getByRole('button', { name: 'Delete AP' }))
 
-    await waitFor(() => expect(deleteSpy).toHaveBeenCalled())
+    expect(deleteSpy).toHaveBeenCalled()
 
-    await waitFor(async () => expect(within(row2).getByRole('checkbox')).not.toBeChecked())
+    await within(row2).findByRole('checkbox', { checked: false })
 
-    fireEvent.click(await screen.findByRole('row', { name: /mock-ap-1/i }))
-    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
-  }, 35000)
+    await userEvent.click(await within(tbody).findByRole('row', { name: /mock-ap-1/i }))
+
+    const toolbar = await screen.findByRole('alert')
+    await userEvent.click(within(toolbar).getByRole('button', { name: 'Edit' }))
+  })
 })

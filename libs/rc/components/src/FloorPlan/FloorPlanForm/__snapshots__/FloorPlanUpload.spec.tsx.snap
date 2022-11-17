@@ -1,0 +1,127 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Floor Plan Upload should pass file validation 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-vertical"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <span
+        class="ant-upload-picture-card-wrapper avatar-uploader"
+      >
+        <div
+          class="ant-upload ant-upload-select ant-upload-select-picture-card"
+        >
+          <span
+            class="ant-upload"
+            role="button"
+            tabindex="0"
+          >
+            <input
+              accept="image/*"
+              style="display: none;"
+              type="file"
+            />
+            <div>
+              <div
+                data-testid="PlusCircleOutlined"
+              />
+              <div
+                class="ant-upload-text"
+              >
+                Upload
+              </div>
+            </div>
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Floor Plan Upload should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-vertical"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <span
+        class="ant-upload-picture-card-wrapper avatar-uploader"
+      >
+        <div
+          class="ant-upload ant-upload-select ant-upload-select-picture-card"
+        >
+          <span
+            class="ant-upload"
+            role="button"
+            tabindex="0"
+          >
+            <input
+              accept="image/*"
+              style="display: none;"
+              type="file"
+            />
+            <div>
+              <div
+                data-testid="PlusCircleOutlined"
+              />
+              <div
+                class="ant-upload-text"
+              >
+                Upload
+              </div>
+            </div>
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Floor Plan Upload should show error correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-vertical"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <span
+        class="ant-upload-picture-card-wrapper avatar-uploader"
+      >
+        <div
+          class="ant-upload ant-upload-select ant-upload-select-picture-card"
+        >
+          <span
+            class="ant-upload"
+            role="button"
+            tabindex="0"
+          >
+            <input
+              accept="image/*"
+              style="display: none;"
+              type="file"
+            />
+            <div>
+              <div
+                data-testid="PlusCircleOutlined"
+              />
+              <div
+                class="ant-upload-text"
+              >
+                Upload
+              </div>
+            </div>
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;

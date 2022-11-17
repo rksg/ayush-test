@@ -1,3 +1,7 @@
+import {
+  Loading3QuartersOutlined
+} from '@ant-design/icons'
+
 import { showToast } from '..'
 
 export function BasicToast () {
@@ -7,6 +11,7 @@ export function BasicToast () {
       <button onClick={infoToast}>Info</button>
       <button onClick={successToast}>Success</button>
       <button onClick={errorToast}>Error</button>
+      <button onClick={loadingToast}>Loading</button>
     </>
   )
 }
@@ -36,5 +41,18 @@ const errorToast = () => {
       text: 'Details',
       onClick: () => {alert('Error detail')}
     }
+  })
+}
+
+const loadingToast = () => {
+  showToast({
+    type: 'info',
+    duration: 10,
+    closable: false,
+    extraContent: <div style={{ width: '60px' }}>
+      <Loading3QuartersOutlined spin
+        style={{ margin: 0, fontSize: '18px' }}/>
+    </div>,
+    content: 'Preparing log...'
   })
 }
