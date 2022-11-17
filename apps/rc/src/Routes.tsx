@@ -20,6 +20,7 @@ import PoliciesTable     from './pages/Policies/PoliciesTable'
 import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
 import DHCPDetail        from './pages/Services/DHCPDetail'
 import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyDetail   from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import SelectServiceForm from './pages/Services/SelectServiceForm'
 import {
@@ -97,7 +98,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}
-        element={<h1>mDNS Proxy details page</h1>}
+        element={<MdnsProxyDetail />}
       />
       <Route
         // eslint-disable-next-line max-len
