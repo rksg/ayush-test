@@ -7,7 +7,8 @@ import { LayoutUI, GridRow, GridCol, Button }      from '@acx-ui/components'
 import { QuestionMarkCircleSolid, SearchOutlined } from '@acx-ui/icons'
 import { useParams }                               from '@acx-ui/react-router-dom'
 
-import About from './About'
+import About    from './About'
+import Firewall from './Firewall'
 import {
   RowWrapper,
   StyledPopover,
@@ -26,7 +27,9 @@ export default function HelpHeaderButton () {
   const params = useParams()
   const { $t } = useIntl()
 
-  const [aboutModalState, setIsModalOpen] = useState(false)
+  const [aboutModalState, setAboutModalOpen] = useState(false)
+  const [firewallModalState, setFirewallModalOpen] = useState(false)
+
 
   const content = (<div style={{ width: 500, paddingBottom: 20 }}>
     <GridRow style={{ padding: 25 }}>
@@ -145,9 +148,20 @@ export default function HelpHeaderButton () {
     </LinkItem>
     <LinkItem>
       <LinkCol>
-        <Button type='link' onClick={() => { setIsModalOpen(true) }}>
+        <Button type='link' onClick={() => { setAboutModalOpen(true) }}>
           <MenuIcon/>
           <MenuLink>{$t({ defaultMessage: 'About RUCKUS One' })}</MenuLink>
+        </Button>
+      </LinkCol>
+    </LinkItem>
+    <LinkItem>
+      <LinkCol>
+        <Button type='link'
+          onClick={() => {
+            setFirewallModalOpen(true)
+          }}>
+          <MenuIcon/>
+          <MenuLink>{$t({ defaultMessage: 'Firewall ACL Inputs' })}</MenuLink>
         </Button>
       </LinkCol>
     </LinkItem>
@@ -159,7 +173,8 @@ export default function HelpHeaderButton () {
       <StyledPopover placement='topRight' content={content} trigger='click'>
         <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
       </StyledPopover>
-      <About modalState={aboutModalState} setIsModalOpen={setIsModalOpen}/>
+      <About modalState={aboutModalState} setIsModalOpen={setAboutModalOpen}/>
+      <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/>
     </>
   }
 

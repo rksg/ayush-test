@@ -1,10 +1,13 @@
 import { ExportOutlined }                      from '@ant-design/icons'
 import { Popover as AntPopover, PopoverProps, Modal } from 'antd'
 import styled                                  from 'styled-components/macro'
-
+import { Typography } from 'antd'
 
 import { LayoutUI, GridRow, GridCol } from '@acx-ui/components'
 
+type CopyableTextProps = {
+  color?: string
+}
 
 export const UserNameButton = styled(LayoutUI.ButtonSolid)`
     width: 32px;
@@ -108,4 +111,10 @@ export const AboutModal = styled(Modal)`
     height: 200px;
     border-radius: 8px;
   }
+`
+
+export const CopyableText = styled(Typography.Paragraph)
+  .attrs({ copyable: true })<CopyableTextProps>`
+  margin-bottom: 3px !important;
+  color: ${(props) => (props.color ? props.color : 'var(--acx-accents-blue-50)')};
 `
