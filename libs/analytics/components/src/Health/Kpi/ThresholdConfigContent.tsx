@@ -46,6 +46,7 @@ function ThresholdConfig ({
   const applyCallback: MouseEventHandler<HTMLElement> = (e) => {
     e.preventDefault()
     onApply()
+    e.currentTarget.blur()
   }
   return (
     <UI.HistogramConfig>
@@ -84,7 +85,7 @@ function ThresholdConfig ({
             style={{ width: 70 }}
             size='small'
             type='secondary'
-            onMouseDown={applyCallback}
+            onClick={applyCallback}
           >
             {$t(thresholdDescText.applyBtn)}
           </Button>
