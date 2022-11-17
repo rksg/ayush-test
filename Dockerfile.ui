@@ -17,7 +17,7 @@ RUN echo $ARTI_PASSWORD
 
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN yarn install
+RUN --mount=type=cache,target=/app/node_modules/ npm install
 
 COPY .eslintignore \
   .eslintrc.json \
