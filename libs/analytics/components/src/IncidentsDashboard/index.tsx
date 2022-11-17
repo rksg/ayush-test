@@ -1,10 +1,10 @@
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { IncidentFilter }                                     from '@acx-ui/analytics/utils'
-import { Card, Loader, StackedBarChart, NoActiveData }        from '@acx-ui/components'
-import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { intlFormats }                                        from '@acx-ui/utils'
+import { IncidentFilter }                                                        from '@acx-ui/analytics/utils'
+import { Card, Loader, StackedBarChart, NoActiveData }                           from '@acx-ui/components'
+import { NavigateFunction, Path, useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
+import { intlFormats }                                                           from '@acx-ui/utils'
 
 import {
   IncidentsBySeverityDataKey,
@@ -55,20 +55,11 @@ export const onAxisLabelClick = (
   })
 }
 
-export const onExpandClick = (
-  navigate: NavigateFunction,
-  basePath: Path
-) => () => {
-  navigate({
-    ...basePath,
-    pathname: basePath.pathname
-  })
-}
-
 export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
+  const onExpandClick = useNavigateToPath('/analytics/incidents/')
 
   const response = useIncidentsBySeverityDashboardQuery(filters)
   const { data: severities } = response
@@ -91,7 +82,7 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
 
   return <Loader states={[response]}>
     <Card title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
-      onExpandClick={onExpandClick(navigate, basePath)}>
+      onExpandClick={onExpandClick}>
       <AutoSizer>
         {({ width, height }) => (
           noData

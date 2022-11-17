@@ -6,6 +6,11 @@ import { render,
 
 import { VenuesDashboardWidget, getVenuesDonutChartData } from '.'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  ArrowChevronRight: () => <div data-testid='arrow-chevron-right'/>
+}))
+
 const data: Dashboard = {
   summary: {
     venues: {

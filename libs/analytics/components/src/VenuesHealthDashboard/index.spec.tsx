@@ -10,6 +10,11 @@ import { api }                 from './services'
 
 import { VenuesHealthDashboard } from './index'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  ArrowChevronRight: () => <div data-testid='arrow-chevron-right'/>
+}))
+
 describe('HealthWidget', () => {
   let params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   const filters:AnalyticsFilter = {

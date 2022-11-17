@@ -14,8 +14,8 @@ import {
   ContentSwitcherProps,
   NoData
 } from '@acx-ui/components'
-import { TenantLink }                 from '@acx-ui/react-router-dom'
-import { formatter, notAvailableMsg } from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import { formatter, notAvailableMsg }    from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
@@ -48,7 +48,6 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Score' }),
       dataIndex: 'clientExperience',
       key: 'clientExperience',
-      // width: 40,
       align: 'center' as const,
       render: (value: unknown)=>{
         return <ProgressBar percent={(value as number) * 100}/>
@@ -58,14 +57,12 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Connection Success' }),
       dataIndex: 'connectionSuccessPercent',
       key: 'connectionSuccessPercent',
-      // width: 40,
       align: 'center' as const
     },
     {
       title: $t({ defaultMessage: 'Time To Connect' }),
       dataIndex: 'timeToConnectPercent',
       key: 'timeToConnectPercent',
-      // width: 80,
       align: 'center' as const,
       render: (value: unknown, row)=>{
         const threshold = row.timeToConnectThreshold ??
@@ -85,7 +82,6 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Client Throughput' }),
       dataIndex: 'clientThroughputPercent',
       key: 'clientThroughputPercent',
-      // width: 90,
       align: 'center' as const,
       render: (value: unknown, row)=>{
         const threshold = row.clientThroughputThreshold ??
@@ -106,7 +102,6 @@ export function VenuesHealthDashboard ({
       dataIndex: 'onlineApsPercent',
       key: 'onlineApsPercent',
       align: 'center' as const
-      // width: 40
     }
   ]
   const calcPercent = ([val, sum]:(number | null)[]) => {
@@ -179,11 +174,14 @@ export function VenuesHealthDashboard ({
       disabled: true
     }
   ]
+
+  const onExpandClick = useNavigateToPath('/analytics/health/')
   return (
     <Loader states={[queryResults]}>
       <Card
         title={$t({ defaultMessage: 'Client Experience' })}
         subTitle={$t({ defaultMessage: 'Top 5 Venues/Services with poor experience' })}
+        onExpandClick={onExpandClick}
       >
         <AutoSizer>
           {({ height, width }) => (

@@ -5,6 +5,11 @@ import { render,
 
 import { DevicesWidget } from '.'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  ArrowChevronRight: () => <div data-testid='arrow-chevron-right'/>
+}))
+
 describe('Devices widget', () => {
 
   it('should render loader and then chart', async () => {

@@ -7,6 +7,11 @@ import { render,
 
 import { VenueDevicesWidget } from '.'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  ArrowChevronRight: () => <div data-testid='arrow-chevron-right'/>
+}))
+
 const params = {
   tenantId: 'tenant-id',
   venueId: 'venue-id'

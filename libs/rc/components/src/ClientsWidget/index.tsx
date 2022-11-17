@@ -2,11 +2,11 @@ import { countBy, isEmpty }   from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card , DonutChart }     from '@acx-ui/components'
-import type { DonutChartData }                   from '@acx-ui/components'
-import { useDashboardOverviewQuery }             from '@acx-ui/rc/services'
-import { Dashboard }                             from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { cssStr, Loader, Card , DonutChart } from '@acx-ui/components'
+import type { DonutChartData }               from '@acx-ui/components'
+import { useDashboardOverviewQuery }         from '@acx-ui/rc/services'
+import { Dashboard }                         from '@acx-ui/rc/utils'
+import { useNavigateToPath, useParams }      from '@acx-ui/react-router-dom'
 
 export const getAPClientChartData = (
   overviewData: Dashboard | undefined,
@@ -53,17 +53,7 @@ export const getSwitchClientChartData = (
 }
 
 export function ClientsWidget () {
-  const basePath = useTenantLink('/users/')
-  const navigate = useNavigate()
-  const { $t } = useIntl()
-  const onClick = (param: string) => {
-    navigate({
-      ...basePath,
-      // TODO Actual path to be updated later
-      pathname: `${basePath.pathname}/${param}`
-    })
-  }
-
+  const onExpandClick = useNavigateToPath('/users/')
   const intl = useIntl()
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
@@ -76,9 +66,11 @@ export function ClientsWidget () {
       }
     })
   })
+
+  const { $t } = intl
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Clients' })}>
+      <Card title={$t({ defaultMessage: 'Clients' })} onExpandClick={onExpandClick}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'inline-flex' }}>
@@ -86,14 +78,12 @@ export function ClientsWidget () {
                 style={{ width: width/2 , height }}
                 title={$t({ defaultMessage: 'Wi-Fi' })}
                 showLegend={false}
-                data={queryResults.data.apData}
-                onClick={() => onClick('TODO')}/>
+                data={queryResults.data.apData}/>
               <DonutChart
                 style={{ width: width/2, height }}
                 title={$t({ defaultMessage: 'Switch' })}
                 showLegend={false}
-                data={queryResults.data.switchData}
-                onClick={() => onClick('TODO')}/>
+                data={queryResults.data.switchData}/>
             </div>
           )}
         </AutoSizer>

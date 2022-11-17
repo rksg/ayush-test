@@ -9,8 +9,12 @@ import { render,
   renderHook
 } from '@acx-ui/test-utils'
 
-
 import { ClientsWidget, getAPClientChartData, getSwitchClientChartData } from '.'
+
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  ArrowChevronRight: () => <div data-testid='arrow-chevron-right'/>
+}))
 
 describe('Clients widget', () => {
 
