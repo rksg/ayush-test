@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent   from '@testing-library/user-event'
+import { Modal }   from 'antd'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
@@ -16,7 +17,7 @@ import {
   venueListResponse
 } from '../__tests__/fixtures'
 import { radiusErrorMessage, multipleConflictMessage } from '../contentsMap'
-import { NetworkForm }                                 from '../NetworkForm'
+import NetworkForm                                     from '../NetworkForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -129,7 +130,9 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
     )
   })
 
@@ -210,7 +213,7 @@ describe('NetworkForm', () => {
     expect(authBtn).toBeVisible()
     expect(authBtn).toBeDisabled()
     expect(accBtn).toBeVisible()
-    expect(diagram[1].src).toContain('aaa-proxy.png')
+    expect(diagram[1].src).toContain('aaa.png')
 
     await userEvent.click(accBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
@@ -220,7 +223,7 @@ describe('NetworkForm', () => {
 
     await userEvent.click(authBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
-    expect(diagram[1].src).toContain('aaa-proxy.png')
+    expect(diagram[1].src).toContain('aaa.png')
   })
 
   it('IP address and Port combinations must be unique', async () => {
@@ -264,8 +267,6 @@ describe('NetworkForm', () => {
 
 
 describe('Server Configuration Conflict', () => {
-  let dialog
-
   beforeEach(() => {
     networkDeepResponse.name = 'AAA network test'
     mockServer.use(
@@ -284,11 +285,13 @@ describe('Server Configuration Conflict', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
     )
   })
 
-  afterEach(async () => dialog?.remove())
+  afterEach(() => Modal.destroyAll())
 
   const { $t } = useIntl()
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -359,7 +362,7 @@ describe('Server Configuration Conflict', () => {
     await fillInBeforeSettings('AAA network test')
     await fillInAuthIpSettings()
 
-    dialog = await screen.findByRole('dialog')
+    await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText('Occured Some Error')
   })
@@ -376,7 +379,7 @@ describe('Server Configuration Conflict', () => {
     await fillInBeforeSettings('AAA network test')
     await fillInAuthIpSettings()
 
-    dialog = await screen.findByRole('dialog')
+    await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText($t(radiusErrorMessage['AUTH']))
 
@@ -400,7 +403,7 @@ describe('Server Configuration Conflict', () => {
     await fillInBeforeSettings('AAA network test')
     await fillInAuthAndAccIpSettings()
 
-    dialog = await screen.findByRole('dialog')
+    await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText($t(radiusErrorMessage['ACCOUNTING']))
 
@@ -424,7 +427,7 @@ describe('Server Configuration Conflict', () => {
     await fillInBeforeSettings('AAA network test')
     await fillInAuthAndAccIpSettings()
 
-    dialog = await screen.findByRole('dialog')
+    await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText($t(radiusErrorMessage['AUTH_AND_ACC']))
 
@@ -444,7 +447,7 @@ describe('Server Configuration Conflict', () => {
     await fillInBeforeSettings('AAA network test')
     await fillInAuthAndAccIpSettings()
 
-    dialog = await screen.findByRole('dialog')
+    await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText($t(multipleConflictMessage['ACCOUNTING']))
   })
@@ -461,7 +464,7 @@ describe('Server Configuration Conflict', () => {
     await fillInBeforeSettings('AAA network test')
     await fillInAuthIpSettings()
 
-    dialog = await screen.findByRole('dialog')
+    await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText($t(multipleConflictMessage['AUTH']))
   })
@@ -478,7 +481,7 @@ describe('Server Configuration Conflict', () => {
     await fillInBeforeSettings('AAA network test')
     await fillInAuthAndAccIpSettings()
 
-    dialog = await screen.findByRole('dialog')
+    await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText($t(multipleConflictMessage['AUTH_AND_ACC']))
   })
@@ -495,7 +498,7 @@ describe('Server Configuration Conflict', () => {
     await fillInBeforeSettings('AAA network test')
     await fillInAuthIpSettings()
 
-    dialog = await screen.findByRole('dialog')
+    await screen.findByRole('dialog')
     await screen.findByText('Occured Error')
     await screen.findByText('Occured Some Error')
   })

@@ -6,6 +6,7 @@ import { useIntl }  from 'react-intl'
 import {
   PageHeader, showToast, StepsForm, StepsFormInstance
 } from '@acx-ui/components'
+import { EdgeSettingForm }                        from '@acx-ui/rc/components'
 import { useGetEdgeQuery, useUpdateEdgeMutation } from '@acx-ui/rc/services'
 import { EdgeSaveData }                           from '@acx-ui/rc/utils'
 import {
@@ -14,7 +15,6 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import EdgeSettingForm from '../../../../components/Edge/Form/EdgeSettingForm'
 
 
 const EditEdge = () => {

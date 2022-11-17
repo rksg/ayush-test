@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`apDisconnectionCountChartQuery should call corresponding api 1`] = `
+"
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              
+              $code: String
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  
+  relatedIncidents: incidents(filter: {code: [$code]}) {
+    id severity code startTime endTime
+  }
+  apDisconnectionCountChart: timeSeries(granularity: \\"PT3M\\") {
+    time
+    apDisconnectionCount
+  }
+  
+                }
+              }
+            }
+          "
+`;
+
+exports[`apDisconnectionCountChartQuery should call corresponding api 2`] = `
+Object {
+  "code": "i-apserv-downtime-high",
+  "codeMap": Array [
+    "i-apserv-downtime-high",
+  ],
+  "end": "2022-10-05T08:57:00.000Z",
+  "granularity": "PT180S",
+  "path": Array [
+    Object {
+      "name": "Default Zone",
+      "type": "zone",
+    },
+  ],
+  "start": "2022-10-03T18:42:00.000Z",
+}
+`;

@@ -76,6 +76,24 @@ export const WifiNetworkMessages = {
         allowing devices that support 802.11w to use the 802.11w features.</li>
         <li>Required will prevent clients that do not support 802.11w from associating.</li>
       </ul>`
+  }),
+  LAN_PORTS_PORT_TOOLTIP: defineMessage({
+    defaultMessage: 'Configures VLAN tag usage for the port'
+  }),
+  LAN_PORTS_VLAN_UNTAG_TOOLTIP: defineMessage({
+    defaultMessage: 'Enter the native VLAN ID (no VLAN tag in its Ethernet frames)'
+  }),
+  LAN_PORTS_VLAN_MEMBERS_TOOLTIP: defineMessage({
+    defaultMessage: 'Can be a single VLAN ID, a VLAN ID range or a combination of both, separated with commas e.g. 1,3,5-7'
+  }),
+  AP_VENUE_DHCP_DISABLED_TOOLTIP: defineMessage({
+    defaultMessage: 'Not allow to change Venue on DHCP AP.'
+  }),
+  AP_VENUE_MESH_DISABLED_TOOLTIP: defineMessage({
+    defaultMessage: 'Mesh AP cannot be moved to a different venue'
+  }),
+  AP_NAME_TOOLTIP: defineMessage({
+    defaultMessage: 'Name must be between 2 and 32 alpha-numeric characters. Backtick "`" and the "$(" combination are not allowed.'
   })
 }
 

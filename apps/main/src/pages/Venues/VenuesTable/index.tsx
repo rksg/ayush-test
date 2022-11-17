@@ -77,7 +77,7 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
-      align: 'center',
+      align: 'left',
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
       render: function (data, row) {

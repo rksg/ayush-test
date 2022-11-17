@@ -17,7 +17,7 @@ import { SummaryForm } from './DHCPSummary/SummaryForm'
 import { Venues }      from './DHCPVenues/Venues'
 
 
-export function DHCPForm () {
+export default function DHCPForm () {
   const { $t } = useIntl()
 
   const params = useParams()
@@ -66,7 +66,7 @@ export function DHCPForm () {
             $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' }) :
             $t({ defaultMessage: 'Add DHCP for Switch Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Service' }), link: '/services' }
+          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
 

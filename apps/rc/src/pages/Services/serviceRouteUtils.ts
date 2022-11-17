@@ -38,3 +38,11 @@ export function getServiceRoutePath ({ type, oper }: ServiceRoutePathProps): str
 export function getServiceDetailsLink ({ type, oper, serviceId }: ServiceDetailsLinkProps): string {
   return generatePath(getServiceRoutePath({ type, oper }), { serviceId })
 }
+
+export function getServiceListRoutePath (prefixSlash = false): string {
+  return (prefixSlash ? '/' : '') + 'services'
+}
+
+export function getSelectServiceRoutePath (prefixSlash = false): string {
+  return (prefixSlash ? '/' : '') + 'services/select'
+}

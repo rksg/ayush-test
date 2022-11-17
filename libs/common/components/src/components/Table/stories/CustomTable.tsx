@@ -31,6 +31,7 @@ const customColumns = [
   {
     title: 'Children',
     key: 'children',
+    dataIndex: 'children',
     children: [
       { title: 'Child 1', key: 'child1', dataIndex: 'child1', width: 100 },
       { title: 'Child 2', key: 'child2', dataIndex: 'child2', width: 100 }

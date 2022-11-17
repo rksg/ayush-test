@@ -9,9 +9,18 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockVenueData } from '../../../../components/Edge/Form/EdgeSettingForm/__tests__/fixtures'
-
 import AddEdge from './index'
+
+const mockVenueData = {
+  fields: ['name', 'id'],
+  totalCount: 3,
+  page: 1,
+  data: [
+    { id: 'mock_venue_1', name: 'Mock Venue 1' },
+    { id: 'mock_venue_2', name: 'Mock Venue 2' },
+    { id: 'mock_venue_3', name: 'Mock Venue 3' }
+  ]
+}
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({

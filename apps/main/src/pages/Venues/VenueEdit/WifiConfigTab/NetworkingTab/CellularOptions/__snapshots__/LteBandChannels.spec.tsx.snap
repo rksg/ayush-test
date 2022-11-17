@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LteBandChannels should render LTE Band channel successfully 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  />
+</DocumentFragment>
+`;

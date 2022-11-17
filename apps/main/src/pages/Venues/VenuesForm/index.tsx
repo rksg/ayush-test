@@ -1,7 +1,8 @@
 import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
-import { Row, Col, Form, Input, Typography } from 'antd'
-import { useIntl }                           from 'react-intl'
+import { Row, Col, Form, Input } from 'antd'
+import _                         from 'lodash'
+import { useIntl }               from 'react-intl'
 
 import {
   GoogleMap,
@@ -11,9 +12,9 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { get }               from '@acx-ui/config'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
-import { SearchOutlined }    from '@acx-ui/icons'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
@@ -26,8 +27,6 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-
-import * as UI from './styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -120,7 +119,7 @@ const defaultAddress: Address = {
 
 export function VenuesForm () {
   const intl = useIntl()
-  const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<VenueExtended>>()
   const params = useParams()
@@ -140,7 +139,7 @@ export function VenuesForm () {
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
 
   useEffect(() => {
-    if(data){
+    if (data) {
       formRef.current?.setFieldsValue({
         name: data?.name,
         description: data?.description,
@@ -148,7 +147,7 @@ export function VenuesForm () {
       })
       updateAddress(data?.address as Address)
 
-      if(isMapEnabled){
+      if (isMapEnabled && window.google) {
         const latlng = new google.maps.LatLng({
           lat: Number(data?.address?.latitude),
           lng: Number(data?.address?.longitude)
@@ -158,7 +157,12 @@ export function VenuesForm () {
         setZoom(16)
       }
     }
-  }, [data])
+
+    if ( action !== 'edit') { // Add mode
+      const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
+      formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
+    }
+  }, [data, isMapEnabled, window.google])
 
   const venuesListPayload = {
     searchString: '',
@@ -168,33 +172,47 @@ export function VenuesForm () {
     pageSize: 10000
   }
   const [venuesList] = useLazyVenuesListQuery()
+  const [sameCountry, setSameCountry] = useState(true)
   const nameValidator = async (value: string) => {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
+  const addressValidator = async (value: string) => {
+    const isEdit = action === 'edit'
+    const isSameValue = value ===
+      formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
 
-  const addressValidator = async () => {
-    if(Object.keys(address).length === 0){
+    if (isEdit && !_.isEmpty(value) && isSameValue && !sameCountry) {
       return Promise.reject(
-        intl.$t({ defaultMessage: 'Please select address from suggested list' })
+        `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`
       )
     }
     return Promise.resolve()
   }
+
 
   const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     updateAddress({})
     const autocomplete = new google.maps.places.Autocomplete(event.target)
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
-
-      formRef.current?.setFieldsValue({
-        address: { addressLine: place.formatted_address }
-      })
-
       const { latlng, address } = await addressParser(place)
+      const isSameCountry = data && (data?.address.country === address.country) || false
+      setSameCountry(isSameCountry)
+      let errorList = []
+
+      if (action === 'edit' && !isSameCountry) {
+        errorList.push(
+          `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`)
+      }
+
+      formRef.current?.setFields([{
+        name: ['address', 'addressLine'],
+        value: place.formatted_address,
+        errors: errorList
+      }])
 
       setMarker(latlng)
       setCenter(latlng.toJSON())
@@ -233,14 +251,12 @@ export function VenuesForm () {
 
   return (
     <>
-      <PageHeader
-        title={action === 'edit' ?
-          intl.$t({ defaultMessage: 'Edit New Venue' }):
-          intl.$t({ defaultMessage: 'Add New Venue' })}
+      {action !== 'edit' && <PageHeader
+        title={intl.$t({ defaultMessage: 'Add New Venue' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
-      />
+      />}
       <StepsForm
         formRef={formRef}
         onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
@@ -279,7 +295,7 @@ export function VenuesForm () {
           </Row>
           <Row gutter={20}>
             <Col span={10}>
-              <UI.AddressFormItem
+              <GoogleMap.FormItem
                 label={intl.$t({ defaultMessage: 'Address' })}
                 required
                 extra={intl.$t({
@@ -292,14 +308,15 @@ export function VenuesForm () {
                   name={['address', 'addressLine']}
                   rules={[{
                     required: isMapEnabled ? true : false
-                  },{
-                    validator: () => addressValidator(),
-                    validateTrigger: 'onChange'
-                  }]}
-                  initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
+                  }, {
+                    validator: (_, value) => addressValidator(value),
+                    validateTrigger: 'onBlur'
+                  }
+                  ]}
                 >
                   <Input
                     allowClear
+                    placeholder={intl.$t({ defaultMessage: 'Set address here' })}
                     prefix={<SearchOutlined />}
                     onChange={addressOnChange}
                     data-testid='address-input'
@@ -307,25 +324,21 @@ export function VenuesForm () {
                     value={address.addressLine}
                   />
                 </Form.Item>
-                <UI.AddressMap>
-                  {isMapEnabled ?
-                    <GoogleMap
-                      libraries={['places']}
-                      mapTypeControl={false}
-                      streetViewControl={false}
-                      fullscreenControl={false}
-                      zoom={zoom}
-                      center={center}
-                    >
-                      {marker && <GoogleMapMarker position={marker} />}
-                    </GoogleMap>
-                    :
-                    <Typography.Title level={3}>
-                      {intl.$t({ defaultMessage: 'Map is not enabled' })}
-                    </Typography.Title>
-                  }
-                </UI.AddressMap>
-              </UI.AddressFormItem>
+                {isMapEnabled ?
+                  <GoogleMap
+                    libraries={['places']}
+                    mapTypeControl={false}
+                    streetViewControl={false}
+                    fullscreenControl={false}
+                    zoom={zoom}
+                    center={center}
+                  >
+                    {marker && <GoogleMapMarker position={marker} />}
+                  </GoogleMap>
+                  :
+                  <GoogleMap.NotEnabled />
+                }
+              </GoogleMap.FormItem>
             </Col>
           </Row>
         </StepsForm.StepForm>

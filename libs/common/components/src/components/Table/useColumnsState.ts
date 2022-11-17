@@ -24,9 +24,11 @@ export function useColumnsState <RecordType> (options: UseColumnsStateOptions<Re
   useEffect(() => setState(initialState), [setState, initialState])
 
   const onChange = useCallback((state: TableColumnState) => {
-    columnState?.onChange?.(stateToUserState(state))
-    setState(state)
-  }, [setState, columnState])
+    const newState = Object.entries(state).every(([,col]) => col.disable || !col.show)
+      ? initialState : state
+    columnState?.onChange?.(stateToUserState(newState))
+    setState(newState)
+  }, [setState, columnState, initialState])
 
   const resetState = useCallback(
     () => onChange(defaultState),

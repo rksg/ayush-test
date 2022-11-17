@@ -4,20 +4,18 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import {
-  PageHeader, StepsForm, StepsFormInstance
+  PageHeader, showToast, StepsForm,
+  StepsFormInstance
 } from '@acx-ui/components'
 import {
-  showToast
-} from '@acx-ui/components'
+  EdgeSettingForm
+} from '@acx-ui/rc/components'
 import { useAddEdgeMutation } from '@acx-ui/rc/services'
 import { EdgeSaveData }       from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-
-import EdgeSettingForm from '../../../../components/Edge/Form/EdgeSettingForm'
-
 
 const AddEdge = () => {
 
@@ -29,7 +27,12 @@ const AddEdge = () => {
 
   const handleAddEdge = async (data: EdgeSaveData) => {
     try {
-      await addEdge({ payload: { ...data } }).unwrap()
+      // TODO when Tags component ready remove this
+      const payload = { ...data, tags: [] as string[] }
+      if(data.tags) {
+        payload.tags = data.tags.split(',').map(item => item.trim())
+      }
+      await addEdge({ payload: payload }).unwrap()
       navigate(linkToEdgeList, { replace: true })
     } catch {
       showToast({

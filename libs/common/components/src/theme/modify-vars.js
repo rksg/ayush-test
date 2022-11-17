@@ -69,7 +69,7 @@ module.exports = {
 
   '@line-height-base': '1.33',
 
-  '@link-active-color': 'var(--acx-accents-blue-80)',
+  '@link-active-color': 'var(--acx-accents-blue-70)',
   '@link-color': 'var(--acx-accents-blue-50)',
   '@link-hover-color': 'var(--acx-accents-orange-50)',
 
