@@ -7,7 +7,8 @@ import {
   mockServer
 } from '@acx-ui/test-utils'
 
-import { SchedulerTypeEnum } from './models/SchedulerTypeEnum'
+import { SchedulerTypeEnum } from '../../models/SchedulerTypeEnum'
+
 import {
   getSchedulingCustomTooltip,
   fetchVenueTimeZone,

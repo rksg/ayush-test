@@ -10,7 +10,7 @@ import {
   RadioTypeEnum,
   VlanPool,
   VlanType
-} from './index'
+} from '../../'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
