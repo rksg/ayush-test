@@ -32,6 +32,8 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import UserDetails              from './pages/Users/UserDetails'
+import UserList                 from './pages/Users/UserList'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -40,6 +42,7 @@ export default function RcRoutes () {
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
       <Route path='policies/*' element={<PolicyRoutes />} />
+      <Route path='users/*' element={<UserRoutes />} />
     </Route>
   )
   return (
@@ -146,6 +149,17 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<h1>Rogue AP detection details page</h1>}
       />
+    </Route>
+  )
+}
+
+function UserRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='users' element={<TenantNavigate replace to='/users/clients' />} />
+      <Route path='users/:activeTab' element={<UserList />} />
+      <Route path='users/:userId/details/' element={<UserDetails />} />
+      <Route path='users/:userId/details/:activeTab' element={<UserDetails />} />
     </Route>
   )
 }
