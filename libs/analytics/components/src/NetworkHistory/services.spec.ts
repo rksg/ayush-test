@@ -40,7 +40,7 @@ describe('networkHistoryWidgetApi', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkHistory.initiate(props)
+      api.endpoints.networkHistory.initiate({ ...props, hideIncidents: false })
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.timeSeries)
@@ -51,7 +51,7 @@ describe('networkHistoryWidgetApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkHistory.initiate(props)
+      api.endpoints.networkHistory.initiate({ ...props, hideIncidents: true })
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

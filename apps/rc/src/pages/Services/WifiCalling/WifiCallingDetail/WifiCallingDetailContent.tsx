@@ -19,7 +19,7 @@ const WifiCallingDetailContent = (props: { tenantId: string }) => {
 
   if (data) {
     return <Card>
-      <GridRow style={{ width: '100%' }}>
+      <GridRow>
         {/*TODO: Temporarily hidden this component until Health api is ready*/}
         {/*<GridCol col={{ span: 4 }}>*/}
         {/*  <Typography.Title level='3'>*/}
@@ -69,7 +69,7 @@ const WifiCallingDetailContent = (props: { tenantId: string }) => {
     </Card>
   } else {
     return <Card>
-      <Row gutter={24} justify='space-evenly' style={{ width: '100%' }}>
+      <Row gutter={24} justify='space-evenly'>
         <div data-testid='target'>Detail Error</div>
       </Row>
     </Card>
