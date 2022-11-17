@@ -33,15 +33,20 @@ const EditEdge = () => {
       edgeGroupId: edgeInfoData?.edgeGroupId || '',
       name: edgeInfoData?.name || '',
       serialNumber: edgeInfoData?.serialNumber || '',
-      description: edgeInfoData?.description || ''
+      description: edgeInfoData?.description || '',
+      tags: edgeInfoData?.tags || ''
     })
   }, [edgeInfoData])
 
   const handleUpdateEdge = async (data: EdgeSaveData) => {
     try {
-      const formData = { ...data }
-      delete formData.serialNumber // serial number can not be sent in update API's payload
-      await upadteEdge({ params: params, payload: formData }).unwrap()
+      // TODO when Tags component ready remove this
+      const payload = { ...data, tags: [] as string[] }
+      if(data.tags) {
+        payload.tags = data.tags.split(',').map(item => item.trim())
+      }
+      delete payload.serialNumber // serial number can not be sent in update API's payload
+      await upadteEdge({ params: params, payload: payload }).unwrap()
       navigate(linkToEdgeList, { replace: true })
     } catch {
       showToast({
