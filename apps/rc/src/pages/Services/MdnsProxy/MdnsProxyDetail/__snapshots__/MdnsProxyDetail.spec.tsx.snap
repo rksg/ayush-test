@@ -388,7 +388,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             <span
                                               class="ant-table-column-title"
                                             >
-                                              Rx packets/bytes
+                                              Rx Packets/Bytes
                                             </span>
                                             <span
                                               class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -454,7 +454,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             <span
                                               class="ant-table-column-title"
                                             >
-                                              Tx packets/bytes
+                                              Tx Packets/Bytes
                                             </span>
                                             <span
                                               class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -520,7 +520,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             <span
                                               class="ant-table-column-title"
                                             >
-                                              Client queries
+                                              Client Queries
                                             </span>
                                             <span
                                               class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -586,7 +586,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             <span
                                               class="ant-table-column-title"
                                             >
-                                              Server responses
+                                              Server Responses
                                             </span>
                                             <span
                                               class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -652,7 +652,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                             <span
                                               class="ant-table-column-title"
                                             >
-                                              Types of mDNS services
+                                              Types of mDNS Services
                                             </span>
                                             <span
                                               class="ant-table-column-sorter ant-table-column-sorter-full"

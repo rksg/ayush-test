@@ -41,7 +41,7 @@ export function MdnsProxyInstancesTable () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Rx packets/bytes' }),
+      title: $t({ defaultMessage: 'Rx Packets/Bytes' }),
       dataIndex: 'rx',
       key: 'rx',
       sorter: true,
@@ -57,7 +57,7 @@ export function MdnsProxyInstancesTable () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Tx packets/bytes' }),
+      title: $t({ defaultMessage: 'Tx Packets/Bytes' }),
       dataIndex: 'tx',
       key: 'tx',
       sorter: true,
@@ -73,7 +73,7 @@ export function MdnsProxyInstancesTable () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Client queries' }),
+      title: $t({ defaultMessage: 'Client Queries' }),
       dataIndex: 'clientQueries',
       key: 'clientQueries',
       sorter: true,
@@ -83,7 +83,7 @@ export function MdnsProxyInstancesTable () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Server responses' }),
+      title: $t({ defaultMessage: 'Server Responses' }),
       dataIndex: 'serverResponses',
       key: 'serverResponses',
       sorter: true,
@@ -93,7 +93,7 @@ export function MdnsProxyInstancesTable () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Types of mDNS services' }),
+      title: $t({ defaultMessage: 'Types of mDNS Services' }),
       dataIndex: 'typesCount',
       key: 'typesCount',
       sorter: true,
