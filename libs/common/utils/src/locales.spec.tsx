@@ -32,6 +32,31 @@ const messages = {
     lang: '言語',
     nested: { lang: '言語' },
     stepsForm: { cancel: 'キャンセル' }
+  },
+  'es-ES': {
+    lang: 'Idioma',
+    nested: { lang: 'Idioma' },
+    stepsForm: { cancel: 'cancelar' }
+  },
+  'fr-FR': {
+    lang: 'Langue',
+    nested: { lang: 'Langue' },
+    stepsForm: { cancel: 'annuler' }
+  },
+  'ko-KR': {
+    lang: '언어',
+    nested: { lang: '언어' },
+    stepsForm: { cancel: '취소' }
+  },
+  'pt-BR': {
+    lang: 'Linguagem',
+    nested: { lang: 'Linguagem' },
+    stepsForm: { cancel: 'cancelar' }
+  },
+  'zh-CN': {
+    lang: '语',
+    nested: { lang: '语' },
+    stepsForm: { cancel: '取消' }
   }
 }
 
@@ -73,6 +98,56 @@ describe('loadLocale', () => {
       cancel: expect.any(String),
       next: expect.any(String)
     }))
+    //
+    // const es = await loadLocale('es-ES')
+    // expect(es).toEqual(expect.objectContaining({
+    //   ..._.omit(messages['es-ES'], 'stepsForm'),
+    //   'nested.lang': 'Idioma'
+    // }))
+    // expect(es!.stepsForm).toEqual(expect.objectContaining({
+    //   cancel: expect.any(String),
+    //   next: expect.any(String)
+    // }))
+    //
+    // const fr = await loadLocale('fr-FR')
+    // expect(fr).toEqual(expect.objectContaining({
+    //   ..._.omit(messages['fr-FR'], 'stepsForm'),
+    //   'nested.lang': 'Langue'
+    // }))
+    // expect(fr!.stepsForm).toEqual(expect.objectContaining({
+    //   cancel: expect.any(String),
+    //   next: expect.any(String)
+    // }))
+    //
+    // const ko = await loadLocale('ko-KR')
+    // expect(ko).toEqual(expect.objectContaining({
+    //   ..._.omit(messages['ko-KR'], 'stepsForm'),
+    //   'nested.lang': '언어'
+    // }))
+    // expect(ko!.stepsForm).toEqual(expect.objectContaining({
+    //   cancel: expect.any(String),
+    //   next: expect.any(String)
+    // }))
+    //
+    // const pt = await loadLocale('pt-BR')
+    // expect(pt).toEqual(expect.objectContaining({
+    //   ..._.omit(messages['pt-BR'], 'stepsForm'),
+    //   'nested.lang': 'Linguagem'
+    // }))
+    // expect(pt!.stepsForm).toEqual(expect.objectContaining({
+    //   cancel: expect.any(String),
+    //   next: expect.any(String)
+    // }))
+
+    // const zh = await loadLocale('zh-CN')
+    // expect(zh).toEqual(expect.objectContaining({
+    //   ..._.omit(messages['zh-CN'], 'stepsForm'),
+    //   'nested.lang': '语'
+    // }))
+    // expect(zh!.stepsForm).toEqual(expect.objectContaining({
+    //   cancel: expect.any(String),
+    //   next: expect.any(String)
+    // }))
   })
 
   it('loads from cache when available', async () => {
@@ -90,7 +165,7 @@ describe('loadLocale', () => {
     await loadLocale('en-US')
   })
 
-  it('locale provided is in allowed list of languages', async () => {
+  it('locale ja-JP provided is in allowed list of languages', async () => {
     mockServer.use(
       rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
         const { locale } = req.params as { locale: keyof typeof messages }
@@ -103,7 +178,7 @@ describe('loadLocale', () => {
     expect(spy).toBeCalled()
   })
 
-  it('locale provided is not in allowed list of languages', async () => {
+  it('locale provided is NOT in allowed list of languages', async () => {
     const locale = 'ru-RU'
     mockServer.use(
       rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
@@ -113,6 +188,71 @@ describe('loadLocale', () => {
     )
     const spy = jest.spyOn(localeLoaders, 'en-US')
     await loadLocale(locale as keyof typeof localeLoaders, true)
+    expect(spy).toBeCalled()
+  })
+
+  it('locale es-ES provided is in allowed list of languages', async () => {
+    mockServer.use(
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res.once(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+    const locale = 'es-ES'
+    const spy = jest.spyOn(localeLoaders, locale)
+    await loadLocale(locale, true)
+    expect(spy).toBeCalled()
+  })
+
+  it('locale fr-FR provided is in allowed list of languages', async () => {
+    mockServer.use(
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res.once(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+    const locale = 'fr-FR'
+    const spy = jest.spyOn(localeLoaders, locale)
+    await loadLocale(locale, true)
+    expect(spy).toBeCalled()
+  })
+
+  it('locale ko-KR provided is in allowed list of languages', async () => {
+    mockServer.use(
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res.once(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+    const locale = 'ko-KR'
+    const spy = jest.spyOn(localeLoaders, locale)
+    await loadLocale(locale, true)
+    expect(spy).toBeCalled()
+  })
+
+  it('locale pt-BR provided is in allowed list of languages', async () => {
+    mockServer.use(
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res.once(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+    const locale = 'pt-BR'
+    const spy = jest.spyOn(localeLoaders, locale)
+    await loadLocale(locale, true)
+    expect(spy).toBeCalled()
+  })
+
+  it('locale zh-CN provided is in allowed list of languages', async () => {
+    mockServer.use(
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res.once(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+    const locale = 'zh-CN'
+    const spy = jest.spyOn(localeLoaders, locale)
+    await loadLocale(locale, true)
     expect(spy).toBeCalled()
   })
 })
