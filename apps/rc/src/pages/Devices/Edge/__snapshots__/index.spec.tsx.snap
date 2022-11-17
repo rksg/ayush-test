@@ -3,7 +3,7 @@
 exports[`EdgeList should create EdgeList successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -55,7 +55,7 @@ exports[`EdgeList should create EdgeList successfully 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 ieJhdZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
     >
       <div
         class="styledComponents__Header-sc-1abm7iv-11 lWiiO"
@@ -1176,7 +1176,7 @@ exports[`EdgeList should create EdgeList successfully 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="StatusLight__Dot-m7u72h-0 eFPiPB"
+                                  class="sc-idiyUo cbjsfU"
                                   color="--acx-semantics-green-50"
                                 >
                                   Operational
@@ -1263,7 +1263,7 @@ exports[`EdgeList should create EdgeList successfully 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="StatusLight__Dot-m7u72h-0 eFPiPB"
+                                  class="sc-idiyUo cbjsfU"
                                   color="--acx-semantics-green-50"
                                 >
                                   Operational
@@ -1350,7 +1350,7 @@ exports[`EdgeList should create EdgeList successfully 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="StatusLight__Dot-m7u72h-0 eFPiPB"
+                                  class="sc-idiyUo cbjsfU"
                                   color="--acx-semantics-green-50"
                                 >
                                   Operational
@@ -1437,7 +1437,7 @@ exports[`EdgeList should create EdgeList successfully 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="StatusLight__Dot-m7u72h-0 eFPiPB"
+                                  class="sc-idiyUo cbjsfU"
                                   color="--acx-semantics-green-50"
                                 >
                                   Operational
@@ -1524,7 +1524,7 @@ exports[`EdgeList should create EdgeList successfully 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="StatusLight__Dot-m7u72h-0 eFPiPB"
+                                  class="sc-idiyUo cbjsfU"
                                   color="--acx-semantics-green-50"
                                 >
                                   Operational

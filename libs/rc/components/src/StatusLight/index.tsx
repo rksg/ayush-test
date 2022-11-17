@@ -30,12 +30,10 @@ const Dot = styled.div.attrs((props: DotProps) => props)`
   }
 `
 
-const StatusLight = (props: StatusLightProps) => {
+export function StatusLight (props: StatusLightProps) {
   return (
     <Dot color={props.config[props.data]?.color}>
       {props.config[props.data]?.text}
     </Dot>
   )
 }
-
-export default StatusLight

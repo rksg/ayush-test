@@ -1,6 +1,6 @@
+import { StatusLight }    from '@acx-ui/rc/components'
 import { EdgeStatusEnum } from '@acx-ui/rc/utils'
 
-import StatusLight from '../../../components/StatusLight'
 
 type EdgeStatusLightProps = {
   data: string
