@@ -22,7 +22,7 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import { getServiceListRoutePath } from '../../serviceRouteUtils'
-import { DPSKSummary }             from '../DPSKSummary/DPSKSummary'
+import DPSKSummary                 from '../DPSKSummary/DPSKSummary'
 
 import DPSKSettingsForm         from './DPSKSettingsForm'
 import { transferDetailToSave } from './parser'

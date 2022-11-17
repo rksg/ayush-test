@@ -12,9 +12,9 @@ export interface CreateDPSKFormFields {
 
 }
 export interface DPSKSaveData {
-  name?: string;
+  name: string;
   tags?: string;
-  passphraseLength?: number;
-  passphraseFormat?: PassphraseFormatEnum;
-  expiration?: PassphraseExpirationEnum;
+  passphraseLength: number;
+  passphraseFormat: PassphraseFormatEnum;
+  expiration: PassphraseExpirationEnum;
 }

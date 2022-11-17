@@ -2,11 +2,11 @@
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { StepsForm, Subtitle }                                                       from '@acx-ui/components'
-import { DpskNetworkType, DPSKSaveData, transformDisplayText, transformDpskNetwork } from '@acx-ui/rc/utils'
+import { StepsForm, Subtitle }                                 from '@acx-ui/components'
+import { DpskNetworkType, DPSKSaveData, transformDpskNetwork } from '@acx-ui/rc/utils'
 
 
-export function DPSKSummary (props: {
+export default function DPSKSummary (props: {
   summaryData: DPSKSaveData
 }) {
   const intl = useIntl()
@@ -16,31 +16,31 @@ export function DPSKSummary (props: {
   return (
     <>
       <StepsForm.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsForm.Title>
-      <Row gutter={20}>
-        <Col flex={1}>
-          <Subtitle level={4}>
-            { $t({ defaultMessage: 'Settings' }) }
-          </Subtitle>
+      <Row>
+        <Col span={24}>
+          <Subtitle level={4}>{ $t({ defaultMessage: 'Settings' }) }</Subtitle>
+        </Col>
+        <Col span={4}>
           <Form.Item label={$t({ defaultMessage: 'Service Name:' })} children={summaryData.name} />
-          <Form.Item
-            label={$t({ defaultMessage: 'Tags:' })}
-            children={transformDisplayText(summaryData.tags)}
-          />
-          <Form.Item label={$t({ defaultMessage: 'Security Protocol:' })}
-            children={'WPA2'} />
+        </Col>
+        <Col span={4}>
           <Form.Item label={$t({ defaultMessage: 'Passphrase Format:' })}
             children={transformDpskNetwork(
               intl,
               DpskNetworkType.FORMAT,
               summaryData.passphraseFormat
             )} />
+        </Col>
+        <Col span={4}>
           <Form.Item label={$t({ defaultMessage: 'Passphrase Length:' })}
             children={transformDpskNetwork(
               intl,
               DpskNetworkType.LENGTH,
               summaryData.passphraseLength
             )} />
-          <Form.Item label={$t({ defaultMessage: 'Passphrase Expiration:' })}
+        </Col>
+        <Col span={24}>
+          <Form.Item label={$t({ defaultMessage: 'List Expiration:' })}
             children={transformDpskNetwork(
               intl,
               DpskNetworkType.EXPIRATION,

@@ -10,7 +10,7 @@ import {
   Tooltip,
   Radio,
   Space,
-  RadioChangeEvent
+  DatePicker
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -18,38 +18,33 @@ import { StepsForm, Subtitle }        from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   PassphraseFormatEnum,
-  PassphraseExpirationEnum,
   transformDpskNetwork,
   DpskNetworkType
 } from '@acx-ui/rc/utils'
 
-enum ListExpirationType {
-  NEVER,
-  BY_DATE,
-  AFTER_DATE
-}
+import {
+  ListExpirationType,
+  passphraseFormatDescription,
+  listExpirationLabel
+} from '../contentsMap'
+
+import * as UI from './styledComponents'
+
+import type { RadioChangeEvent } from 'antd'
 
 export default function DPSKSettingsForm () {
-  const { $t } = useIntl()
   const intl = useIntl()
   const [state, updateState] = useState({
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
     passphraseLength: 18,
-    expiration: PassphraseExpirationEnum.UNLIMITED
+    listExpiration: ListExpirationType.NEVER
   })
-  const [ listExpirationType, setListExpirationType ] = useState<ListExpirationType>()
 
   const { Option } = Select
   const nameValidator = async (value: string) => {
     return Promise.resolve(value)
   }
-  const passphraseFormatDescription = {
-    [PassphraseFormatEnum.MOST_SECURED]:
-      $t({ defaultMessage: 'Letters, numbers and symbols can be used' }),
-    [PassphraseFormatEnum.KEYBOARD_FRIENDLY]:
-      $t({ defaultMessage: 'Only letters and numbers can be used' }),
-    [PassphraseFormatEnum.NUMBERS_ONLY]: $t({ defaultMessage: 'Only numbers can be used' })
-  }
+
   const updateData = (newData: Partial<typeof state>) => {
     updateState({ ...state, ...newData })
   }
@@ -57,27 +52,21 @@ export default function DPSKSettingsForm () {
     updateData({ passphraseFormat })
   }
 
-  // const onExpirationChange = function (expiration: PassphraseExpirationEnum) {
-  //   updateData({ expiration })
-  // }
-  const onExpirationChange = function (e: RadioChangeEvent) {
-    setListExpirationType(e.target.value)
+  const onListExpirationChange = (e: RadioChangeEvent) => {
+    updateData({ listExpiration: e.target.value })
   }
 
   const passphraseOptions = Object.keys(PassphraseFormatEnum).map((key =>
     <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.FORMAT, key)}</Option>
   ))
 
-  // const expirationOptions = Object.keys(PassphraseExpirationEnum).map((key =>
-  //   <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.EXPIRATION, key)}</Option>
-  // ))
   return (
     <Row>
-      <Col span={6}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+      <Col span={8}>
+        <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
           name='name'
-          label={$t({ defaultMessage: 'Service Name' })}
+          label={intl.$t({ defaultMessage: 'Service Name' })}
           rules={[
             { required: true },
             { min: 2 },
@@ -88,13 +77,14 @@ export default function DPSKSettingsForm () {
           hasFeedback
           children={<Input />}
         />
-        <Subtitle level={3}>{ $t({ defaultMessage: 'Passphrase Generation Parameters' }) }
+        <Subtitle level={3}>
+          { intl.$t({ defaultMessage: 'Passphrase Generation Parameters' }) }
         </Subtitle>
         <Form.Item
           name='passphraseFormat'
           label={
             <>
-              { $t({ defaultMessage: 'Passphrase format' }) }
+              { intl.$t({ defaultMessage: 'Passphrase format' }) }
               <Tooltip
                 placement='bottom'
                 title={<FormattedMessage
@@ -112,7 +102,7 @@ export default function DPSKSettingsForm () {
           }
           rules={[{ required: true }]}
           initialValue={state.passphraseFormat}
-          extra={passphraseFormatDescription[state.passphraseFormat]}
+          extra={intl.$t(passphraseFormatDescription[state.passphraseFormat])}
         >
           <Select onChange={onFormatChange}>
             {passphraseOptions}
@@ -123,10 +113,10 @@ export default function DPSKSettingsForm () {
           rules={[{ required: true }]}
           label={
             <>
-              { $t({ defaultMessage: 'Passphrase length' }) }
+              { intl.$t({ defaultMessage: 'Passphrase length' }) }
               <Tooltip
                 // eslint-disable-next-line max-len
-                title={$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
+                title={intl.$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
                 placement='bottom'
               >
                 <QuestionMarkCircleOutlined />
@@ -138,24 +128,46 @@ export default function DPSKSettingsForm () {
           <InputNumber min={8} max={63}/>
         </Form.Item>
         <Form.Item
-          name='expiration'
-          label={$t({ defaultMessage: 'List Expiration' })}
+          name='listExpiration'
+          label={intl.$t({ defaultMessage: 'List Passphrase' })}
           rules={[{ required: true }]}
-          initialValue={state.expiration}
+          initialValue={state.listExpiration}
         >
-          {/* <Select onChange={onExpirationChange}>
-            {expirationOptions}
-          </Select> */}
-          <Radio.Group onChange={onExpirationChange} value={listExpirationType}>
-            <Space direction='vertical'>
+          <Radio.Group onChange={onListExpirationChange}>
+            <Space direction='vertical' size='middle'>
               <Radio key={ListExpirationType.NEVER} value={ListExpirationType.NEVER}>
-                {ListExpirationType.NEVER}
+                {intl.$t(listExpirationLabel[ListExpirationType.NEVER])}
               </Radio>
               <Radio key={ListExpirationType.BY_DATE} value={ListExpirationType.BY_DATE}>
-                {ListExpirationType.BY_DATE}
+                <UI.FieldLabel columns={'120px 1fr'}>
+                  {intl.$t(listExpirationLabel[ListExpirationType.BY_DATE])}
+                  {state.listExpiration === ListExpirationType.BY_DATE &&
+                    <Form.Item name={['listExpirationByDate', 'date']}>
+                      <DatePicker />
+                    </Form.Item>
+                  }
+                </UI.FieldLabel>
               </Radio>
               <Radio key={ListExpirationType.AFTER_DATE} value={ListExpirationType.AFTER_DATE}>
-                {ListExpirationType.AFTER_DATE}
+                <UI.FieldLabel columns={'120px auto 120px'}>
+                  {intl.$t(listExpirationLabel[ListExpirationType.AFTER_DATE])}
+                  {state.listExpiration === ListExpirationType.AFTER_DATE &&
+                    <>
+                      <Form.Item name={['listExpirationAfterDate', 'quantity']}>
+                        <InputNumber min={1} max={64}/>
+                      </Form.Item>
+                      <Form.Item name={['listExpirationAfterDate', 'unit']}>
+                        <Select style={{ width: 120 }}>
+                          <Option key={'hours'}>{intl.$t({ defaultMessage: 'Hours' })}</Option>
+                          <Option key={'days'}>{intl.$t({ defaultMessage: 'Days' })}</Option>
+                          <Option key={'weeks'}>{intl.$t({ defaultMessage: 'Weeks' })}</Option>
+                          <Option key={'months'}>{intl.$t({ defaultMessage: 'Months' })}</Option>
+                          <Option key={'years'}>{intl.$t({ defaultMessage: 'Years' })}</Option>
+                        </Select>
+                      </Form.Item>
+                    </>
+                  }
+                </UI.FieldLabel>
               </Radio>
             </Space>
           </Radio.Group>
