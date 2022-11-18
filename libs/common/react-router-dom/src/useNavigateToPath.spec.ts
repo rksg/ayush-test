@@ -2,7 +2,6 @@ import { useNavigateToPath } from './useNavigateToPath'
 
 const mockNavigate = jest.fn()
 jest.mock('react-router-dom', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
   useNavigate: () => mockNavigate
 }))
 
