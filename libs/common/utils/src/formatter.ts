@@ -67,6 +67,12 @@ const longDurationMapping = {
   seconds: defineMessage({ defaultMessage: '{seconds} {seconds, plural, one {second} other {seconds}}' }), // eslint-disable-line max-len
   milliseconds: defineMessage({ defaultMessage: '{milliseconds} {milliseconds, plural, one {millisecond} other {milliseconds}}' }) // eslint-disable-line max-len
 }
+export const longDurationDisplay = {
+  days: defineMessage({ defaultMessage: '{days} {days, plural, one {Day} other {Days}}' }),
+  hours: defineMessage({ defaultMessage: '{hours} {hours, plural, one {Hour} other {Hours}}' }),
+  minutes: defineMessage({ defaultMessage: '{minutes} {minutes, plural, one {Minute} other {Minutes}}' }), // eslint-disable-line max-len
+  seconds: defineMessage({ defaultMessage: '{seconds} {seconds, plural, one {Second} other {Seconds}}' }) // eslint-disable-line max-len
+}
 const combineDuration = defineMessage({
   defaultMessage: '{duration1} {duration2}',
   description: 'e.g. duration1 = 3 mo, duration2 = 2 d, result = 3 mo 2 d'

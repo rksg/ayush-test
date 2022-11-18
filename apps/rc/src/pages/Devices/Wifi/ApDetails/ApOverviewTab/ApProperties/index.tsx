@@ -8,9 +8,9 @@ import {
   Card,
   Subtitle
 } from '@acx-ui/components'
-import { useApDetailsQuery, useApViewModelQuery }                    from '@acx-ui/rc/services'
-import { ApDetails, ApVenueStatusEnum, ApViewModel, WifiEntityEnum } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                     from '@acx-ui/react-router-dom'
+import { useApDetailsQuery, useApViewModelQuery }    from '@acx-ui/rc/services'
+import { ApDetails, ApVenueStatusEnum, ApViewModel } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                     from '@acx-ui/react-router-dom'
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
@@ -20,7 +20,6 @@ export function ApProperties () {
   const [visible, setVisible] = useState(false)
   const params = useParams()
   const apViewModelPayload = {
-    entityType: WifiEntityEnum.apsTree,
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
       'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
@@ -79,9 +78,17 @@ export function ApProperties () {
                     />
                     <UI.TextHeader>
                       <label></label>
-                      <label><span>RF</span><span>Channel</span></label>
-                      <label><span>RF</span><span>Bandwidth</span></label>
-                      <label><span>TX Power</span></label>
+                      <label>
+                        <span>{$t({ defaultMessage: 'RF' })}</span>
+                        <span>{$t({ defaultMessage: 'Channel' })}</span>
+                      </label>
+                      <label>
+                        <span>{$t({ defaultMessage: 'RF' })}</span>
+                        <span>{$t({ defaultMessage: 'Bandwidth' })}</span>
+                      </label>
+                      <label>
+                        <span>{$t({ defaultMessage: 'TX Power' })}</span>
+                      </label>
                     </UI.TextHeader>
                     {
                       currentAP?.channel24 &&
