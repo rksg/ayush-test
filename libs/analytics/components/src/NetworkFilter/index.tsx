@@ -183,7 +183,9 @@ export const onApply = (
   value: SingleValueType | SingleValueType[] | undefined,
   setNetworkPath: CallableFunction
 ) => {
-  const path = !value ? defaultNetworkPath : JSON.parse(value?.slice(-1)[0] as string)
+  const path = !value || value.length === 0
+    ? defaultNetworkPath
+    : JSON.parse(value?.slice(-1)[0] as string)
   setNetworkPath(path, value || [])
 }
 
