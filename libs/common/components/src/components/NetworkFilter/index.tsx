@@ -40,6 +40,14 @@ export function NetworkFilter (props: CascaderProps) {
   ] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
   const [savedValues, setSavedValues] = React.useState(initialValues)
   const [open, setOpen] = React.useState(false)
+
+  const onClear = () => {
+    props.onClear && props.onClear()
+    setCurrentValues(initialValues)
+    setSavedValues(initialValues)
+    setOpen(false)
+  }
+
   if (props.multiple) {
     const onCancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
@@ -51,6 +59,10 @@ export function NetworkFilter (props: CascaderProps) {
       setOpen(false)
       setSavedValues(currentValues)
       onApply(currentValues)
+    }
+    const onClearMultiple = () => {
+      onClear()
+      onApply([])
     }
 
     const withFooter = (menus: JSX.Element) => <>
@@ -64,6 +76,7 @@ export function NetworkFilter (props: CascaderProps) {
         </Button>
       </UI.ButtonDiv>
     </>
+
     return <UI.Cascader
       {...antProps}
       value={currentValues}
@@ -74,8 +87,10 @@ export function NetworkFilter (props: CascaderProps) {
       maxTagCount='responsive'
       showSearch
       onDropdownVisibleChange={setOpen}
-      open={currentValues !== savedValues || open}
+      open={open}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      onClear={antProps.allowClear ? onClearMultiple : undefined}
+      removeIcon={open ? undefined : null}
     />
   } else {
     return <UI.Cascader
@@ -87,12 +102,14 @@ export function NetworkFilter (props: CascaderProps) {
       ) => {
         const selectedNode = selectedOptions?.slice(-1)[0] as Option
         if (selectedNode?.ignoreSelection) return
-        onApply(value)
+        onApply(value ?? [])
       }}
       expandTrigger='hover'
       showSearch={antProps.showSearch || true}
       onDropdownVisibleChange={setOpen}
+      open={open}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      onClear={antProps.allowClear ? onClear : undefined}
     />
   }
 }

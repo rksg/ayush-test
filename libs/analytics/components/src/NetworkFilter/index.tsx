@@ -176,6 +176,7 @@ const search = (input: string, path: DefaultOptionType[]): boolean => {
     ? false
     : (item?.displayLabel as string)?.toLowerCase().includes(input.toLowerCase())
 }
+// eslint-disable-next-line no-empty-pattern
 export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
   selectedOptions?.map((option) => option?.displayLabel || option?.label).join(' / ')
 export const onApply = (
@@ -227,6 +228,7 @@ function ConnectedNetworkFilter (
           placement='bottomRight'
           displayRender={displayRender}
           showSearch={{ filter: search }}
+          allowClear
         />
       </Loader>
     </UI.Container>
