@@ -62,7 +62,7 @@ export function NetworkFilter (props: CascaderProps) {
     }
     const onClearMultiple = () => {
       onClear()
-      onApply([])
+      onApply(initialValues)
     }
 
     const withFooter = (menus: JSX.Element) => <>
@@ -102,7 +102,7 @@ export function NetworkFilter (props: CascaderProps) {
       ) => {
         const selectedNode = selectedOptions?.slice(-1)[0] as Option
         if (selectedNode?.ignoreSelection) return
-        onApply(value ?? [])
+        onApply(value ?? initialValues)
       }}
       expandTrigger='hover'
       showSearch={antProps.showSearch || true}
