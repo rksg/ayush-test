@@ -22,7 +22,8 @@ import {
   ApDeviceStatusEnum,
   ApDhcpRoleEnum,
   CommonResult,
-  CountdownNode
+  CountdownNode,
+  DhcpApInfo
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -184,11 +185,6 @@ const hasInvaildAp = (selectedRows: AP[]) => {
   )
 }
 
-type DhcpApInfo = {
-  serialNumber: string,
-  dhcpApRole: ApDhcpRoleEnum,
-  venueDhcpEnabled?: boolean
-}
 const hasDhcpAps = (dhcpAps: CommonResult) => {
   if (dhcpAps && dhcpAps.response) {
     const res: DhcpApInfo[] = Array.isArray(dhcpAps.response)? dhcpAps.response : []

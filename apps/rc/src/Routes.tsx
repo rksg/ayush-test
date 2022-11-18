@@ -11,7 +11,9 @@ import { Provider }                          from '@acx-ui/store'
 
 import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
 import ApDetails         from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }        from './pages/Devices/Wifi/ApEdit'
 import { ApForm }        from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }   from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable          from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
@@ -20,6 +22,7 @@ import PoliciesTable     from './pages/Policies/PoliciesTable'
 import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
 import DHCPDetail        from './pages/Services/DHCPDetail'
 import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyDetail   from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import SelectServiceForm from './pages/Services/SelectServiceForm'
 import {
@@ -53,6 +56,12 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
       <Route path='devices/aps' element={<ApsTable />} />
       <Route path='devices/aps/:action' element={<ApForm />} />
+      <Route path='devices/aps/:serialNumber/:action/:activeTab' element={<ApEdit />} />
+      <Route
+        path='devices/aps/:serialNumber/:action/:activeTab/:activeSubTab'
+        element={<ApEdit />}
+      />
+      <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route
         path='devices/aps/:serialNumber/details/:activeTab'
         element={<ApDetails />}
@@ -94,7 +103,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}
-        element={<h1>mDNS Proxy details page</h1>}
+        element={<MdnsProxyDetail />}
       />
       <Route
         // eslint-disable-next-line max-len
