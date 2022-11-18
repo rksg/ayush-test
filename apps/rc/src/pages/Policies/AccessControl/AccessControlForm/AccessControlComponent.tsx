@@ -1,8 +1,11 @@
 import * as UI from '../../../Networks/NetworkForm/NetworkMoreSettings/styledComponents';
 import { Form, Switch } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import Layer2Drawer from './Layer2Drawer';
+import { Button, StepsFormInstance } from '@acx-ui/components';
+import { AccessControlProfile } from '@acx-ui/rc/utils';
+import Layer3Drawer from './Layer3Drawer';
 const { useWatch } = Form
 
 const AccessControlComponent = () => {
@@ -24,6 +27,8 @@ const AccessControlComponent = () => {
     useWatch<boolean>('enableClientRateLimit')
   ]
 
+  console.log(form.getFieldValue('enableLayer2'))
+  console.log(form.getFieldValue('accessControlComponent'))
 
   return (
     <>
@@ -38,10 +43,7 @@ const AccessControlComponent = () => {
             children={<Switch />}
           />
 
-          {enableLayer2 && <>
-            {$t({ defaultMessage: 'Change' })}
-            <Layer2Drawer />
-          </>}
+          {enableLayer2 && <Layer2Drawer />}
         </div>
       </UI.FieldLabel>
 
@@ -56,9 +58,7 @@ const AccessControlComponent = () => {
             children={<Switch />}
           />
 
-          {enableLayer3 && <>
-            {$t({ defaultMessage: 'Change' })}
-          </>}
+          {enableLayer3 && <Layer3Drawer />}
         </div>
       </UI.FieldLabel>
 

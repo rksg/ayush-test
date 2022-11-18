@@ -71,7 +71,7 @@ const AccessControlForm = (props: AccessControlFormProps) => {
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <AccessControlSettingForm edit={edit} formRef={formRef}/>
+          <AccessControlSettingForm />
         </StepsForm.StepForm>
 
         <StepsForm.StepForm

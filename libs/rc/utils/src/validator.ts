@@ -12,6 +12,15 @@ export function networkWifiIpRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function macAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.macAddress))
+  }
+  return Promise.resolve()
+}
+
 export function serverIpAddressRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)

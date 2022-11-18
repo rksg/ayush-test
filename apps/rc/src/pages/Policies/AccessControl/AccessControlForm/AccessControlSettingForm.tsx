@@ -1,24 +1,14 @@
-import { MutableRefObject } from 'react'
 
-import { ProFormInstance } from '@ant-design/pro-form'
-import { Form, Input }     from 'antd'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow }     from '@acx-ui/components'
-import { StepsForm }            from '@acx-ui/components'
-import { AccessControlProfile } from '@acx-ui/rc/utils'
-import AccessControlComponent from './AccessControlComponent';
+import { GridCol, GridRow } from '@acx-ui/components'
+import { StepsForm }        from '@acx-ui/components'
 
-type AccessControlSettingFormProps = {
-  edit: boolean,
-  formRef?: MutableRefObject<ProFormInstance<AccessControlProfile> | undefined>
-}
+import AccessControlComponent from './AccessControlComponent'
 
-const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
+const AccessControlSettingForm = () => {
   const { $t } = useIntl()
-  const { edit, formRef } = props
-  const params = useParams()
 
   return (
     <GridRow>
@@ -38,15 +28,28 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
           children={<Input />}
         />
         <Form.Item
-          name='tags'
-          label={$t({ defaultMessage: 'Tags' })}
+          name='description'
+          label={$t({ defaultMessage: 'Description' })}
           initialValue={''}
           children={<Input />}
         />
         <Form.Item
           name='accessControlComponent'
           label={$t({ defaultMessage: 'Access control components' })}
-          initialValue={''}
+          rules={[
+            { required: true }
+          ]}
+          initialValue={{
+            layer2: {
+              macAddressList: [],
+              access: ''
+            },
+            layer3: {
+              ruleList: [],
+              defaultAccess: '',
+              access: ''
+            }
+          }}
           children={<AccessControlComponent />}
         />
       </GridCol>
