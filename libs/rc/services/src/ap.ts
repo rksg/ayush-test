@@ -16,6 +16,8 @@ import {
   TableResult,
   VenueCapabilities,
   WifiUrlsInfo,
+  VenueDefaultApGroup,
+  AddApGroup,
   CommonResult
 } from '@acx-ui/rc/utils'
 
@@ -45,7 +47,8 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'AddAps'
+            'AddAps',
+            'AddApGroupLegacy'
           ]
           showActivityMessage(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
@@ -61,6 +64,15 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    apGroupsList: build.query<TableResult<ApGroup>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+        return {
+          ...venueListReq,
+          body: payload
+        }
+      }
+    }),
     addAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.addAp, params)
@@ -71,9 +83,26 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    addApGroup: build.mutation<AddApGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    venueDefaultApGroup: build.query<VenueDefaultApGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)
         return{
           ...req
         }
@@ -138,11 +167,16 @@ export const apApi = baseApApi.injectEndpoints({
 export const {
   useApListQuery,
   useLazyApListQuery,
-  useApDetailHeaderQuery,
   useAddApMutation,
+  useAddApGroupMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
+  useApGroupsListQuery,
+  useLazyApGroupsListQuery,
   useWifiCapabilitiesQuery,
+  useApDetailHeaderQuery,
+  useVenueDefaultApGroupQuery,
+  useLazyVenueDefaultApGroupQuery,
   useDeleteApMutation,
   useDownloadApLogMutation,
   useRebootApMutation,
