@@ -2,9 +2,11 @@ import { render } from '@acx-ui/test-utils'
 
 import { NoActiveData, NoData, NotAvailable } from '.'
 
-jest.mock('@acx-ui/icons', ()=>({
-  CheckMarkCircleSolid: () => <div data-testid='CheckMarkCircleSolid'/>
-}), { virtual: true })
+jest.mock('@acx-ui/icons', ()=> {
+  const icons = jest.requireActual('@acx-ui/icons')
+  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(keys)
+})
 
 describe('NoData', () => {
   it('should render correctly', () => {

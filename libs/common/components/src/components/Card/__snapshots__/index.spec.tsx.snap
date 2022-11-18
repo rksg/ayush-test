@@ -83,7 +83,9 @@ exports[`Card component should render card with historical icon 1`] = `
               <div
                 class="ant-space-item"
               >
-                <svg />
+                <div
+                  data-testid="HistoricalOutlined"
+                />
               </div>
             </div>
             <div
