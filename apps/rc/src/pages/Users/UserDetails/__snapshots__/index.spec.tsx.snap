@@ -6,8 +6,42 @@ exports[`UserDetails should navigate to reports tab correctly 1`] = `
     class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
-      class="ant-page-header has-footer ant-page-header-ghost"
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
     >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/tenant-id/users"
+              >
+                WiFi Users
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
       <div
         class="ant-page-header-heading"
       >
@@ -20,7 +54,7 @@ exports[`UserDetails should navigate to reports tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              User-1 (xxxxxx)
+              User-1
             </h1>
           </span>
         </div>
@@ -255,8 +289,42 @@ exports[`UserDetails should navigate to timeline tab correctly 1`] = `
     class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
-      class="ant-page-header has-footer ant-page-header-ghost"
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
     >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/tenant-id/users"
+              >
+                WiFi Users
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
       <div
         class="ant-page-header-heading"
       >
@@ -269,7 +337,7 @@ exports[`UserDetails should navigate to timeline tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              User-1 (xxxxxx)
+              User-1
             </h1>
           </span>
         </div>
@@ -504,8 +572,42 @@ exports[`UserDetails should navigate to troubleshooting tab correctly 1`] = `
     class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
-      class="ant-page-header has-footer ant-page-header-ghost"
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
     >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/tenant-id/users"
+              >
+                WiFi Users
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
       <div
         class="ant-page-header-heading"
       >
@@ -518,7 +620,7 @@ exports[`UserDetails should navigate to troubleshooting tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              User-1 (xxxxxx)
+              User-1
             </h1>
           </span>
         </div>
@@ -753,8 +855,42 @@ exports[`UserDetails should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
-      class="ant-page-header has-footer ant-page-header-ghost"
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
     >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/tenant-id/users"
+              >
+                WiFi Users
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
       <div
         class="ant-page-header-heading"
       >
@@ -767,7 +903,7 @@ exports[`UserDetails should render correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              User-1 (xxxxxx)
+              User-1
             </h1>
           </span>
         </div>

@@ -25,7 +25,11 @@ function UserDetailsPageHeader () {
 
   return (
     <PageHeader
-      title={$t({ defaultMessage: 'User-1 (xxxxxx)' })}
+      title={$t({ defaultMessage: 'User-1' })}
+      // TODO: navigate to /users/{userType}
+      breadcrumb={[
+        { text: $t({ defaultMessage: 'WiFi Users' }), link: '/users' }
+      ]}
       extra={[
         <DisabledButton key='date-filter' icon={<ClockOutlined />}>
           {$t({ defaultMessage: 'Last 24 Hours' })}
