@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
