@@ -29,16 +29,16 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   {
     skip: !currentAP?.venueId
   })
-  
-  const { data: lanPortsSetting } = useApLanPortsQuery({ 
+
+  const { data: lanPortsSetting } = useApLanPortsQuery({
     params: { tenantId, serialNumber }
   },
   {
     skip: currentAP?.deviceStatusSeverity !== ApVenueStatusEnum.OPERATIONAL
   })
 
-  const { data: radioSetting } = useApRadioCustomizationQuery({ 
-    params: { tenantId, serialNumber } 
+  const { data: radioSetting } = useApRadioCustomizationQuery({
+    params: { tenantId, serialNumber }
   },
   {
     skip: currentAP?.deviceStatusSeverity !== ApVenueStatusEnum.OPERATIONAL
@@ -236,9 +236,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       />
     }
   ]
-  const content = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ? 
-  <ContentSwitcher tabDetails={tabDetails} size='large' space={5} /> :
-  <PropertiesTab />
+  const content = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ?
+    <ContentSwitcher tabDetails={tabDetails} size='large' space={5} /> :
+    <PropertiesTab />
 
   return (
     <Drawer
