@@ -98,6 +98,10 @@ export const validationMessages = {
   gpsCoordinates: defineMessage({
     defaultMessage: 'Please enter valid GPS coordinates',
     description: 'Validation - GPS coordinates checks'
+  }),
+  targetHost: defineMessage({
+    defaultMessage: 'Please enter valid target host or IP address',
+    description: 'Validation - target host checks'
   })
 }
 

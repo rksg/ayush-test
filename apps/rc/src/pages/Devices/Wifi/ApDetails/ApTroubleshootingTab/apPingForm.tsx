@@ -11,7 +11,7 @@ import { useParams }                     from 'react-router-dom'
 import { Loader, showToast, Tooltip }  from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }  from '@acx-ui/icons'
 import { usePingApMutation }           from '@acx-ui/rc/services'
-import { WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
+import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
 export function ApPingForm () {
   const { $t } = useIntl()
@@ -68,7 +68,8 @@ export function ApPingForm () {
             </Tooltip>
           </>}
           rules={[
-            { required: true }
+            { required: true },
+            { validator: (_, value) => targetHostRegExp(value) }
           ]}
           validateFirst
           // hasFeedback
@@ -84,18 +85,21 @@ export function ApPingForm () {
         </Form.Item>
       </Col>
     </Row>
-    <Loader states={[{
-      isLoading: isPingingAp
-    }]}>
-      <Form.Item
-        name='result'>
+
+    <Form.Item
+      name='result'>
+      <Loader states={[{
+        isLoading: false,
+        isFetching: isPingingAp
+      }]}>
         <TextArea
           style={{ resize: 'none', height: '300px' }}
           autoSize={false}
           readOnly={true}
         />
-      </Form.Item>
-    </Loader>
+      </Loader>
+    </Form.Item>
+
 
   </Form>
 
