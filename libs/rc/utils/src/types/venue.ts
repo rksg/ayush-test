@@ -165,7 +165,8 @@ export interface VenueExtended {
   disableByMaxReached?: boolean
   mesh: MeshOptions
   dhcp: DhcpOptions
-  id?: string
+	id?: string,
+	country: string
 }
 
 export interface VenueSettings {
