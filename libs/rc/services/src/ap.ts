@@ -112,42 +112,6 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
-    apViewModel: build.query<ApViewModel, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getApsList, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      transformResponse (result: TableResult<ApViewModel, ApExtraParams>) {
-        return transformApViewModel(result?.data[0])
-      }
-    }),
-    apDetails: build.query<ApDetails, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getAp, params)
-        return {
-          ...req
-        }
-      }
-    }),
-    apLanPorts: build.query<ApLanPort, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
-        return {
-          ...req
-        }
-      }
-    }),
-    apRadioCustomization: build.query<ApRadio, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
-        return {
-          ...req
-        }
-      }
-    }),
     deleteAp: build.mutation<AP, RequestPayload>({
       query: ({ params, payload }) => {
         const api = !!payload ? WifiUrlsInfo.deleteAps : WifiUrlsInfo.deleteAp
@@ -209,6 +173,42 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
+    }),
+    apViewModel: build.query<ApViewModel, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApsList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<ApViewModel, ApExtraParams>) {
+        return transformApViewModel(result?.data[0])
+      }
+    }),
+    apDetails: build.query<ApDetails, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getAp, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    apLanPorts: build.query<ApLanPort, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    apRadioCustomization: build.query<ApRadio, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
+        return {
+          ...req
+        }
+      }
     }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
