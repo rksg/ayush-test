@@ -64,7 +64,7 @@ export const NetworkHistory = forwardRef<
   const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
-      <Card title={title} type={type}>
+      <Card title={title} type={type} historical>
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?

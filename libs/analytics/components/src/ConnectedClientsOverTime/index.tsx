@@ -29,7 +29,7 @@ export function ConnectedClientsOverTime ({ filters }: { filters : AnalyticsFilt
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Connected Clients Over Time' })} >
+      <Card title={$t({ defaultMessage: 'Connected Clients Over Time' })} historical>
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?

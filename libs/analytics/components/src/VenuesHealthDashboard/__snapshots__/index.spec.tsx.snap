@@ -6,7 +6,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+      class="styledComponents__Wrapper-sc-13w5wfx-5 dMkHtG"
       type="default"
     >
       <div
@@ -22,12 +22,28 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
               >
-                Client Experience
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 8px;"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                  >
+                    Client Experience
+                  </div>
+                </div>
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    data-testid="HistoricalOutlined"
+                  />
+                </div>
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-5 iLbQUI"
+                class="styledComponents__SubTitle-sc-13w5wfx-7 dxFSqy"
               >
                 Top 5 Venues/Services with poor experience
               </div>
@@ -42,12 +58,12 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-2 jvroxl"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-4 jXCZKr"
                     title="Expand"
                     type="button"
                   >
                     <div
-                      data-testid="arrow-chevron-right"
+                      data-testid="ArrowChevronRight"
                     />
                   </button>
                 </div>
@@ -161,7 +177,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+      class="styledComponents__Wrapper-sc-13w5wfx-5 dMkHtG"
       type="default"
     >
       <div
@@ -177,12 +193,28 @@ exports[`HealthWidget should render widget with proper data 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
               >
-                Client Experience
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 8px;"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                  >
+                    Client Experience
+                  </div>
+                </div>
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    data-testid="HistoricalOutlined"
+                  />
+                </div>
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-5 iLbQUI"
+                class="styledComponents__SubTitle-sc-13w5wfx-7 dxFSqy"
               >
                 Top 5 Venues/Services with poor experience
               </div>
@@ -197,12 +229,12 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-2 jvroxl"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-4 jXCZKr"
                     title="Expand"
                     type="button"
                   >
                     <div
-                      data-testid="arrow-chevron-right"
+                      data-testid="ArrowChevronRight"
                     />
                   </button>
                 </div>
@@ -425,7 +457,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/f0997ab93fa24670a961c98446d47ae6/venue-details/overview"
@@ -515,7 +547,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/96bf314d575341cf95942caa2b072106/venue-details/overview"
@@ -605,7 +637,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/e5d28cb30cb44be9bea1c8e7135da928/venue-details/overview"
@@ -695,7 +727,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/1c0683276dce48679013dea12bf6abe0/venue-details/overview"
@@ -780,7 +812,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/555548721e264115bda45a75043f65d7/venue-details/overview"

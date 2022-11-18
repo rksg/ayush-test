@@ -12,6 +12,7 @@ export interface CardProps extends Pick<AntCardProps, 'children'> {
   type?: CardTypes
   title?: string
   subTitle?: string
+  historical?: boolean
   onExpandClick?: () => void
   onMoreClick?: () => void
 }
@@ -20,6 +21,7 @@ function Card ({
   type = 'default',
   title,
   subTitle,
+  historical,
   ...props
 }: CardProps) {
   const wrapperProps = {
@@ -31,7 +33,10 @@ function Card ({
       <AntCard
         bordered={false}
         title={<>
-          <UI.Title children={title} />
+          <UI.TitleWrapper>
+            <UI.Title children={title} />
+            { historical && <UI.HistoricalOutlinedIcon />}
+          </UI.TitleWrapper>
           {subTitle ? (
             <UI.SubTitle children={subTitle} />
           ) : null}

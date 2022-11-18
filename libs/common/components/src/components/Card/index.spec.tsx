@@ -4,7 +4,8 @@ import { Card } from '.'
 
 jest.mock('@acx-ui/icons', () => ({
   ArrowChevronRight: () => <svg></svg>,
-  MoreVertical: () => <svg></svg>
+  MoreVertical: () => <svg></svg>,
+  HistoricalOutlined: () => <svg></svg>
 }))
 describe('Card component', () => {
   it('should render card with title', () => {
@@ -32,6 +33,10 @@ describe('Card component', () => {
   })
   it('should render card with grey background', () => {
     const { asFragment } = render(<Card type='solid-bg'>test</Card>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render card with historical icon', () => {
+    const { asFragment } = render(<Card title='title' subTitle='sub title' historical />)
     expect(asFragment()).toMatchSnapshot()
   })
 })

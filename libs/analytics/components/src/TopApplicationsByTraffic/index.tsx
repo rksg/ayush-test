@@ -99,7 +99,7 @@ export function TopApplicationsByTraffic ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}>
+      <Card title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })} historical>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>

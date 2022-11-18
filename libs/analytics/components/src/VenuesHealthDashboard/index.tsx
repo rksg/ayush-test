@@ -179,6 +179,7 @@ export function VenuesHealthDashboard ({
   return (
     <Loader states={[queryResults]}>
       <Card
+        historical
         title={$t({ defaultMessage: 'Client Experience' })}
         subTitle={$t({ defaultMessage: 'Top 5 Venues/Services with poor experience' })}
         onExpandClick={onExpandClick}

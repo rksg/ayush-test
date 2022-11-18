@@ -39,7 +39,7 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 Switch Models' })} >
+      <Card title={$t({ defaultMessage: 'Top 5 Switch Models' })} historical>
         <AutoSizer>
           {({ height, width }) => (
             isDataAvailable ?

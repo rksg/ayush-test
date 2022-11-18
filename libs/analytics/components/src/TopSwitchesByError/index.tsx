@@ -85,7 +85,7 @@ function TopSwitchesByErrorWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 Switches by Error' })}>
+      <Card title={$t({ defaultMessage: 'Top 5 Switches by Error' })} historical>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>

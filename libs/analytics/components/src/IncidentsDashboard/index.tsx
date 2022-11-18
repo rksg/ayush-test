@@ -82,7 +82,8 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
 
   return <Loader states={[response]}>
     <Card title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
-      onExpandClick={onExpandClick}>
+      onExpandClick={onExpandClick}
+      historical>
       <AutoSizer>
         {({ width, height }) => (
           noData

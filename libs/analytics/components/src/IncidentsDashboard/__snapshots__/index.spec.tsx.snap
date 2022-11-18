@@ -6,7 +6,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+      class="styledComponents__Wrapper-sc-13w5wfx-5 dMkHtG"
       type="default"
     >
       <div
@@ -22,9 +22,25 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
               >
-                Incidents
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 8px;"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                  >
+                    Incidents
+                  </div>
+                </div>
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    data-testid="HistoricalOutlined"
+                  />
+                </div>
               </div>
             </div>
             <div
@@ -37,12 +53,12 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-2 jvroxl"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-4 jXCZKr"
                     title="Expand"
                     type="button"
                   >
                     <div
-                      data-testid="arrow-chevron-right"
+                      data-testid="ArrowChevronRight"
                     />
                   </button>
                 </div>

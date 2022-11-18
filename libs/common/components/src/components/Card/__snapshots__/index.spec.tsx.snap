@@ -3,7 +3,7 @@
 exports[`Card component should render card with grey background 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 AUisK"
+    class="styledComponents__Wrapper-sc-13w5wfx-5 jsGWak"
     type="solid-bg"
   >
     <div
@@ -19,8 +19,16 @@ exports[`Card component should render card with grey background 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
-            />
+              class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                />
+              </div>
+            </div>
           </div>
           <div
             class="ant-card-extra"
@@ -41,10 +49,70 @@ exports[`Card component should render card with grey background 1`] = `
 </DocumentFragment>
 `;
 
+exports[`Card component should render card with historical icon 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-5 dMkHtG"
+    type="default"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-right: 8px;"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                >
+                  title
+                </div>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <svg />
+              </div>
+            </div>
+            <div
+              class="styledComponents__SubTitle-sc-13w5wfx-7 dxFSqy"
+            >
+              sub title
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`Card component should render card with no border 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 diWKXG"
+    class="styledComponents__Wrapper-sc-13w5wfx-5 fLaqHE"
     type="no-border"
   >
     <div
@@ -60,8 +128,16 @@ exports[`Card component should render card with no border 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
-            />
+              class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                />
+              </div>
+            </div>
           </div>
           <div
             class="ant-card-extra"

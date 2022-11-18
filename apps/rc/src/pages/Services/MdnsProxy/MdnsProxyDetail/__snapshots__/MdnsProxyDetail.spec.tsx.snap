@@ -125,7 +125,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+          class="styledComponents__Wrapper-sc-13w5wfx-5 dMkHtG"
           type="default"
         >
           <div
@@ -141,9 +141,17 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
                   >
-                    Instances ()
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                      >
+                        Instances ()
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div

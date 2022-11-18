@@ -94,7 +94,7 @@ function TopSSIDsByClientWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Clients' })}>
+      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Clients' })} historical>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width, paddingTop: '20px' }}>

@@ -3,7 +3,7 @@
 exports[`Insights Component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 AUisK"
+    class="styledComponents__Wrapper-sc-13w5wfx-5 jsGWak"
     type="solid-bg"
   >
     <div
@@ -19,8 +19,16 @@ exports[`Insights Component should render correctly 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
-            />
+              class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                />
+              </div>
+            </div>
           </div>
           <div
             class="ant-card-extra"
@@ -72,7 +80,7 @@ exports[`Insights Component should render correctly 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 lgTSMV looZqI"
+                  class="styledComponents__Title-sc-13w5wfx-6 styledComponents__Subtitle-sc-117mefi-2 lpcKwT looZqI"
                 >
                   Root Cause Analysis
                 </div>
@@ -105,7 +113,7 @@ exports[`Insights Component should render correctly 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 lgTSMV looZqI"
+                  class="styledComponents__Title-sc-13w5wfx-6 styledComponents__Subtitle-sc-117mefi-2 lpcKwT looZqI"
                 >
                   Recommended Action
                 </div>

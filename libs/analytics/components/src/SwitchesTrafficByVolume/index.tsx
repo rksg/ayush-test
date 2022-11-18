@@ -28,7 +28,7 @@ export function SwitchesTrafficByVolume ({ filters }: { filters : AnalyticsFilte
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Traffic by Volume' })} >
+      <Card title={$t({ defaultMessage: 'Traffic by Volume' })} historical>
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?

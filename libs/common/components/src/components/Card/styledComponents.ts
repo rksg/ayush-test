@@ -1,7 +1,7 @@
-import { Button as AntButton } from 'antd'
-import styled                  from 'styled-components/macro'
+import { Button as AntButton, Space } from 'antd'
+import styled                         from 'styled-components/macro'
 
-import { ArrowChevronRight, MoreVertical } from '@acx-ui/icons'
+import { ArrowChevronRight, MoreVertical, HistoricalOutlined } from '@acx-ui/icons'
 
 import type { CardTypes } from '.'
 
@@ -12,6 +12,22 @@ type WrapperProps = {
 
 export const ArrowChevronRightIcon = styled(ArrowChevronRight)``
 export const MoreVerticalIcon = styled(MoreVertical)``
+
+export const HistoricalOutlinedIcon = styled(HistoricalOutlined)`
+  margin-bottom: -2px;
+  width: 16px;
+  height: 16px;
+  path {
+    stroke: var(--acx-neutrals-50);
+  }
+  circle {
+    fill: var(--acx-neutrals-50);
+  }
+`
+
+export const TitleWrapper = styled(Space)`
+  gap: 4px !important;
+`
 
 export const Button = styled(AntButton)`
   border: none;
