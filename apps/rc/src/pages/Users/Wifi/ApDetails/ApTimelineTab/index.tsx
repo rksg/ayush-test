@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-export function UserReportsTab () {
+export function ApTimelineTab () {
   const { $t } = useIntl()
   return <>
-    { $t({ defaultMessage: 'UserReportsTab' })}
+    { $t({ defaultMessage: 'ApTimelineTab' })}
   </>
 }

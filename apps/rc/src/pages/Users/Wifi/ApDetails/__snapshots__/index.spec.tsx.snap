@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UserDetails should navigate to reports tab correctly 1`] = `
+exports[`ApDetails should navigate to reports tab correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
@@ -279,11 +279,11 @@ exports[`UserDetails should navigate to reports tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  UserReportsTab
+  ApReportsTab
 </DocumentFragment>
 `;
 
-exports[`UserDetails should navigate to timeline tab correctly 1`] = `
+exports[`ApDetails should navigate to timeline tab correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
@@ -562,11 +562,11 @@ exports[`UserDetails should navigate to timeline tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  UserTimelineTab
+  ApTimelineTab
 </DocumentFragment>
 `;
 
-exports[`UserDetails should navigate to troubleshooting tab correctly 1`] = `
+exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
@@ -845,11 +845,11 @@ exports[`UserDetails should navigate to troubleshooting tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  UserTroubleshootingTab
+  ApTroubleshootingTab
 </DocumentFragment>
 `;
 
-exports[`UserDetails should render correctly 1`] = `
+exports[`ApDetails should render correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
@@ -1128,6 +1128,6 @@ exports[`UserDetails should render correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  UserOverviewTab
+  ApOverviewTab
 </DocumentFragment>
 `;

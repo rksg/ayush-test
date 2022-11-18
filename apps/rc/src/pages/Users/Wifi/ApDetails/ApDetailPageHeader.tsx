@@ -4,9 +4,9 @@ import { useIntl }               from 'react-intl'
 import { Button, DisabledButton, PageHeader } from '@acx-ui/components'
 import { ArrowExpand, ClockOutlined }         from '@acx-ui/icons'
 
-import UserDetailTabs from './UserDetailTabs'
+import ApDetailTabs from './ApDetailTabs'
 
-function UserDetailsPageHeader () {
+function ApDetailPageHeader () {
   const { $t } = useIntl()
   const menu = (
     <Menu
@@ -26,7 +26,7 @@ function UserDetailsPageHeader () {
   return (
     <PageHeader
       title={$t({ defaultMessage: 'User-1' })}
-      // TODO: navigate to /users/{userType}
+      // TODO: navigate to /users/aps/{userType}
       breadcrumb={[
         { text: $t({ defaultMessage: 'WiFi Users' }), link: '/users' }
       ]}
@@ -43,9 +43,9 @@ function UserDetailsPageHeader () {
           </Button>
         </Dropdown>
       ]}
-      footer={<UserDetailTabs />}
+      footer={<ApDetailTabs />}
     />
   )
 }
 
-export default UserDetailsPageHeader
+export default ApDetailPageHeader

@@ -60,12 +60,12 @@ jest.mock('./pages/Services/DHCPDetail', () => () => {
   return <div data-testid='DHCPDetail' />
 })
 
-jest.mock('./pages/Users/UserList', () => () => {
-  return <div data-testid='UserList' />
+jest.mock('./pages/Users/Wifi/ApList', () => () => {
+  return <div data-testid='UserApList' />
 })
 
-jest.mock('./pages/Users/UserDetails', () => () => {
-  return <div data-testid='UserDetails' />
+jest.mock('./pages/Users/Wifi/ApDetails', () => () => {
+  return <div data-testid='UserApDetails' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -285,7 +285,7 @@ describe('RcRoutes: User', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserList')).toBeVisible()
+    expect(screen.getByTestId('UserApList')).toBeVisible()
   })
   test('should redirect user/aps to user/aps/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -294,7 +294,7 @@ describe('RcRoutes: User', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserList')).toBeVisible()
+    expect(screen.getByTestId('UserApList')).toBeVisible()
   })
   test('should redirect to user/aps/clients correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -303,7 +303,7 @@ describe('RcRoutes: User', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserList')).toBeVisible()
+    expect(screen.getByTestId('UserApList')).toBeVisible()
   })
   test('should redirect details to details/overview', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -312,7 +312,7 @@ describe('RcRoutes: User', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserDetails')).toBeVisible()
+    expect(screen.getByTestId('UserApDetails')).toBeVisible()
   })
   test('should redirect to details/overview correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -321,6 +321,6 @@ describe('RcRoutes: User', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserDetails')).toBeVisible()
+    expect(screen.getByTestId('UserApDetails')).toBeVisible()
   })
 })

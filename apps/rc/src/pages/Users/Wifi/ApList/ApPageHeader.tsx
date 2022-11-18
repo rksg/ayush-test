@@ -2,16 +2,16 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader } from '@acx-ui/components'
 
-import UsersTabs from './UsersTabs'
+import ApTabs from './ApTabs'
 
-function UsersPageHeader () {
+function ApPageHeader () {
   const { $t } = useIntl()
   return (
     <PageHeader
       title={$t({ defaultMessage: 'WiFi' })}
-      footer={<UsersTabs />}
+      footer={<ApTabs />}
     />
   )
 }
 
-export default UsersPageHeader
+export default ApPageHeader

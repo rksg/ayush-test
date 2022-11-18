@@ -1,17 +1,17 @@
 import { Provider }                  from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import UserDetails from '.'
+import ApDetails from '.'
 
-describe('UserDetails', () => {
+describe('ApDetails', () => {
   it('should render correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       userId: 'user-id',
       activeTab: 'overview'
     }
-    const { asFragment } = render(<Provider><UserDetails /></Provider>, {
-      route: { params, path: '/:tenantId/users/:userId/details/:activeTab' }
+    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/users/aps/:userId/details/:activeTab' }
     })
     expect(screen.getAllByRole('tab')).toHaveLength(4)
     expect(asFragment()).toMatchSnapshot()
@@ -24,8 +24,8 @@ describe('UserDetails', () => {
       userId: 'user-id',
       activeTab: 'troubleshooting'
     }
-    const { asFragment } = render(<Provider><UserDetails /></Provider>, {
-      route: { params, path: '/:tenantId/users/:userId/details/:activeTab' }
+    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/users/aps/:userId/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -36,8 +36,8 @@ describe('UserDetails', () => {
       userId: 'user-id',
       activeTab: 'reports'
     }
-    const { asFragment } = render(<Provider><UserDetails /></Provider>, {
-      route: { params, path: '/:tenantId/users/:userId/details/:activeTab' }
+    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/users/aps/:userId/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -48,8 +48,8 @@ describe('UserDetails', () => {
       userId: 'user-id',
       activeTab: 'timeline'
     }
-    const { asFragment } = render(<Provider><UserDetails /></Provider>, {
-      route: { params, path: '/:tenantId/users/:userId/details/:activeTab' }
+    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/users/aps/:userId/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -60,8 +60,8 @@ describe('UserDetails', () => {
       userId: 'user-id',
       activeTab: 'not-exist'
     }
-    render(<Provider><UserDetails /></Provider>, {
-      route: { params, path: '/:tenantId/users/:userId/details/:activeTab' }
+    render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/users/aps/:userId/details/:activeTab' }
     })
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)

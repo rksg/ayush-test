@@ -35,8 +35,8 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
-import UserDetails              from './pages/Users/UserDetails'
-import UserList                 from './pages/Users/UserList'
+import UserApDetails            from './pages/Users/Wifi/ApDetails'
+import UserApList               from './pages/Users/Wifi/ApList'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -167,9 +167,9 @@ function UserRoutes () {
     <Route path='t/:tenantId'>
       <Route path='users' element={<TenantNavigate replace to='/users/aps/clients' />} />
       <Route path='users/aps' element={<TenantNavigate replace to='/users/aps/clients' />} />
-      <Route path='users/aps/:activeTab' element={<UserList />} />
-      <Route path='users/aps/:userId/details/' element={<UserDetails />} />
-      <Route path='users/aps/:userId/details/:activeTab' element={<UserDetails />} />
+      <Route path='users/aps/:activeTab' element={<UserApList />} />
+      <Route path='users/aps/:userId/details/' element={<UserApDetails />} />
+      <Route path='users/aps/:userId/details/:activeTab' element={<UserApDetails />} />
     </Route>
   )
 }

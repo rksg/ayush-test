@@ -3,10 +3,10 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-function UserDetailTabs () {
+function ApTabs () {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink(`/users/aps/${params.userId}/details/`)
+  const basePath = useTenantLink('/users/aps/')
   const navigate = useNavigate()
   const onTabChange = (tab: string) =>
     navigate({
@@ -17,23 +17,14 @@ function UserDetailTabs () {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Overview' })}
-        key='overview'
+        tab={$t({ defaultMessage: 'Clients ({count})' }, { count: 0 })}
+        key='clients'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Troubleshooting' })}
-        key='troubleshooting'
-      />
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Reports' })}
-        key='reports'
-      />
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Timeline' })}
-        key='timeline'
-      />
+        tab={$t({ defaultMessage: 'Guest Pass Credentials' })}
+        key='guests' />
     </Tabs>
   )
 }
 
-export default UserDetailTabs
+export default ApTabs
