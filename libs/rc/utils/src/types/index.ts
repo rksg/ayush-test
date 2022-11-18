@@ -378,3 +378,16 @@ export interface WifiCallingSettingContextType {
   wifiCallingSettingList: WifiCallingSetting[],
   setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
 }
+
+export interface catchErrorDetails {
+  code: string,
+  message: string
+}
+
+export interface catchErrorResponse {
+  data: {
+    errors: catchErrorDetails[],
+    requestId: string
+  },
+  status: number
+}

@@ -108,6 +108,27 @@ export const VenueMessages = {
     </ul>`
   })
 }
+
+export const ApErrorHandlingMessages = {
+  SERIAL_NUMBER_ALREADY_REGISTERED: defineMessage({
+    defaultMessage: 'Serial number is already registered'
+  }),
+  SERVICE_IS_NOT_SUPPORTED: defineMessage({
+    defaultMessage: 'The service is currently not supported in the country which you entered.<br></br>Please make sure that you entered the correct address.'
+  }),
+  UPGRADE_YOUR_LICENSE: defineMessage({
+    defaultMessage: 'Upgrade your license to add new APs to the system'
+  }),
+  REQUEST_LOCKING: defineMessage({
+    defaultMessage: 'A configuration request is currently being executed and additional requests cannot be performed at this time.<br></br>Try again once the request has completed.'
+  }),
+  CELLULAR_AP_CANNOT_BE_MOVED: defineMessage({
+    defaultMessage: 'The cellular AP cannot be moved to the venue which doesn\'t enable DHCP service'
+  }),
+  ERROR_OCCURRED: defineMessage({
+    defaultMessage: 'Error occurred while {action} AP'
+  })
+}
 /* eslint-enable */
 
 export enum IsolatePacketsTypeEnum {
