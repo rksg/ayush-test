@@ -11,6 +11,7 @@ import { Provider }                          from '@acx-ui/store'
 
 import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
 import ApDetails         from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }        from './pages/Devices/Wifi/ApEdit'
 import { ApForm }        from './pages/Devices/Wifi/ApForm'
 import { ApGroupForm }   from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable          from './pages/Devices/Wifi/ApsTable'
@@ -55,6 +56,11 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
       <Route path='devices/aps' element={<ApsTable />} />
       <Route path='devices/aps/:action' element={<ApForm />} />
+      <Route path='devices/aps/:serialNumber/:action/:activeTab' element={<ApEdit />} />
+      <Route
+        path='devices/aps/:serialNumber/:action/:activeTab/:activeSubTab'
+        element={<ApEdit />}
+      />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route
         path='devices/aps/:serialNumber/details/:activeTab'

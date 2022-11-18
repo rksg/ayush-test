@@ -29,13 +29,16 @@ export const Collapse = styled(AntCollapse)`
       padding: 0;
       margin-top: 16px;
     }
-    .ant-collapse-header {
-      font-size: 12px;
+    > .ant-collapse-header {
+      display: inline-flex;
+      font-size: 12px !important;
+      font-weight: var(--acx-body-font-weight) !important;
       line-height: 16px;
       color: var(--acx-accents-blue-50);
-      padding: 7px 0;
+      padding: 7px 0 !important;
       flex-direction: row-reverse;
       justify-content: flex-end;
+      border: 0 !important;
       .ant-collapse-arrow {
         position: unset;
         transform: none;

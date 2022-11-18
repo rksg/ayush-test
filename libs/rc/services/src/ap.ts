@@ -10,6 +10,7 @@ import {
   ApRadioBands,
   CommonUrlsInfo,
   createHttpRequest,
+  DhcpAp,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
@@ -48,6 +49,9 @@ export const apApi = baseApApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'AddAps',
+            'UpdateAp',
+            'DeleteAp',
+            'DeleteAps',
             'AddApGroupLegacy'
           ]
           showActivityMessage(msg, activities, () => {
@@ -83,39 +87,24 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
-    addApGroup: build.mutation<AddApGroup, RequestPayload>({
+    getAp: build.query<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addApGroup, params)
+        const req = createHttpRequest(WifiUrlsInfo.getAp, params)
         return {
           ...req,
           body: payload
         }
       }
     }),
-    wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
-        return{
-          ...req
-        }
-      }
-    }),
-    venueDefaultApGroup: build.query<VenueDefaultApGroup, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)
-        return{
-          ...req
-        }
-      }
-    }),
-    apDetailHeader: build.query<ApDetailHeader, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getApDetailHeader, params)
+    updateAp: build.mutation<ApDeep, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateAp, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
-      providesTags: [{ type: 'Ap', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
     deleteAp: build.mutation<AP, RequestPayload>({
       query: ({ params, payload }) => {
@@ -128,7 +117,32 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
-    getDhcpAp: build.query<CommonResult, RequestPayload>({
+    addApGroup: build.mutation<AddApGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    venueDefaultApGroup: build.query<VenueDefaultApGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getDhcpAp: build.query<DhcpAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
         return{
@@ -144,6 +158,15 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    apDetailHeader: build.query<ApDetailHeader, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApDetailHeader, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -168,6 +191,8 @@ export const {
   useApListQuery,
   useLazyApListQuery,
   useAddApMutation,
+  useGetApQuery,
+  useUpdateApMutation,
   useAddApGroupMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
