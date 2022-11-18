@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { dataApiURL }            from '@acx-ui/analytics/services'
 import {
   fakeIncident,
+  IncidentCode,
   transformIncidentQueryResult
 } from '@acx-ui/analytics/utils'
 import { store }            from '@acx-ui/store'

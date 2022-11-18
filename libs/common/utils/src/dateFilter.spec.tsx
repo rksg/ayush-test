@@ -5,13 +5,14 @@ import { renderHook, render } from '@testing-library/react'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 
-import { useDateFilter }                                from './dateFilter'
-import { defaultRanges, DateRange, getDateRangeFilter } from './dateUtil'
+import { useDateFilter }                                             from './dateFilter'
+import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'
 
 const original = Date.now
 describe('useDateFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetRanges()
   })
 
   afterAll(() => Date.now = original)

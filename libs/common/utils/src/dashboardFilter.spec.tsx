@@ -6,11 +6,13 @@ import { MemoryRouter }       from 'react-router-dom'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 import { useDashboardFilter } from './dashboardFilter'
+import { resetRanges }        from './dateUtil'
 
 const original = Date.now
 describe('useDashboardFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetRanges()
   })
 
   afterAll(() => Date.now = original)
