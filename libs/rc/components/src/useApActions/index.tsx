@@ -21,12 +21,14 @@ import {
   AP,
   ApDeviceStatusEnum,
   ApDhcpRoleEnum,
-  CommonResult
+  CommonResult,
+  CountdownNode
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 import { RadioDescription } from '../NetworkApGroupDialog/styledComponents'
 
+const blinkLedCount = 30
 
 export function useApActions () {
   const { $t } = useIntl()
@@ -143,17 +145,16 @@ export function useApActions () {
   }
 
   const showBlinkLedAp = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-    blinkLedAp({ params: { tenantId, serialNumber } })
-    showToast({
-      type: 'info',
-      closable: false,
-      duration: 30,
-      extraContent: <div style={{ width: '60px' }}>
-        <Loading3QuartersOutlined spin
-          style={{ margin: 0, fontSize: '18px', color: cssStr('--acx-primary-white') }}/>
-      </div>,
-      content: $t({ defaultMessage: 'AP LEDs Blink ...' }),
-      onClose: () => callBack && callBack()
+    blinkLedAp({ params: { tenantId, serialNumber } }).unwrap().then(() => {
+      let count = blinkLedCount
+      const interval = setInterval(() => {
+        if (count <= 0) {
+          clearInterval(interval)
+          callBack && callBack()
+        } else {
+          genBlinkLedToast(count--, interval)
+        }
+      }, 1000)
     })
   }
 
@@ -300,4 +301,19 @@ const genDeleteModal = (
   })
 
   return modal
+}
+
+const genBlinkLedToast = (countdown: number, interval: ReturnType<typeof setInterval>) => {
+  const { $t } = getIntl()
+
+  showToast({
+    key: 'BlinkLedApKey',
+    type: 'info',
+    duration: blinkLedCount,
+    extraContent: <CountdownNode n={countdown} />,
+    content: $t({ defaultMessage: 'AP LEDs Blink ...' }),
+    onClose: () => {
+      clearInterval(interval)
+    }
+  })
 }

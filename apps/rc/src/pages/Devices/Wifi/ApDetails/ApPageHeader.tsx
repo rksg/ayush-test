@@ -5,7 +5,10 @@ import { Button, PageHeader }         from '@acx-ui/components'
 import { ClockOutlined, ArrowExpand } from '@acx-ui/icons'
 import { useApActions }               from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }     from '@acx-ui/rc/services'
-import { ApDetailHeader }             from '@acx-ui/rc/utils'
+import {
+  ApDetailHeader,
+  ApDeviceStatusEnum
+} from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -23,6 +26,8 @@ function ApPageHeader () {
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/aps/${serialNumber}`)
 
+  const currentApOperational = data?.headers.overview === ApDeviceStatusEnum.OPERATIONAL
+
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (!serialNumber) return
 
@@ -39,27 +44,24 @@ function ApPageHeader () {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={[
-        {
-          label: $t({ defaultMessage: 'Reboot' }),
-          key: 'reboot'
-        },
-        {
-          label: $t({ defaultMessage: 'Download Log' }),
-          key: 'downloadLog'
-        },
-        {
-          label: $t({ defaultMessage: 'Blink LEDs' }),
-          key: 'blinkLed'
-        },
-        {
-          type: 'divider'
-        },
-        {
-          label: $t({ defaultMessage: 'Delete AP' }),
-          key: 'delete'
-        }
-      ]}
+      items={currentApOperational ? [{
+        label: $t({ defaultMessage: 'Reboot' }),
+        key: 'reboot'
+      }, {
+        label: $t({ defaultMessage: 'Download Log' }),
+        key: 'downloadLog'
+      }, {
+        label: $t({ defaultMessage: 'Blink LEDs' }),
+        key: 'blinkLed'
+      }, {
+        type: 'divider'
+      }, {
+        label: $t({ defaultMessage: 'Delete AP' }),
+        key: 'delete'
+      }] : [{
+        label: $t({ defaultMessage: 'Delete AP' }),
+        key: 'delete'
+      }]}
     />
   )
   return (
