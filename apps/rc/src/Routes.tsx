@@ -157,10 +157,11 @@ function PolicyRoutes () {
 function UserRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path='users' element={<TenantNavigate replace to='/users/clients' />} />
-      <Route path='users/:activeTab' element={<UserList />} />
-      <Route path='users/:userId/details/' element={<UserDetails />} />
-      <Route path='users/:userId/details/:activeTab' element={<UserDetails />} />
+      <Route path='users' element={<TenantNavigate replace to='/users/aps/clients' />} />
+      <Route path='users/aps' element={<TenantNavigate replace to='/users/aps/clients' />} />
+      <Route path='users/aps/:activeTab' element={<UserList />} />
+      <Route path='users/aps/:userId/details/' element={<UserDetails />} />
+      <Route path='users/aps/:userId/details/:activeTab' element={<UserDetails />} />
     </Route>
   )
 }

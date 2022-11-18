@@ -6,7 +6,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 function UserTabs () {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink('/users/')
+  const basePath = useTenantLink('/users/aps/')
   const navigate = useNavigate()
   const onTabChange = (tab: string) =>
     navigate({

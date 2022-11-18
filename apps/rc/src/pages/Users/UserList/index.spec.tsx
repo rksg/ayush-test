@@ -11,7 +11,7 @@ describe('UserList', () => {
       <Provider>
         <UserList />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/clients' }
+        route: { params, path: '/:tenantId/users/aps/clients' }
       })
 
     expect(asFragment()).toMatchSnapshot()

@@ -278,7 +278,7 @@ describe('RcRoutes: Services', () => {
 })
 
 describe('RcRoutes: User', () => {
-  test('should redirect user to user/clients', async () => {
+  test('should redirect user to user/aps/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/users/',
@@ -287,10 +287,19 @@ describe('RcRoutes: User', () => {
     })
     expect(screen.getByTestId('UserList')).toBeVisible()
   })
-  test('should redirect to user/clients correctly', async () => {
+  test('should redirect user/aps to user/aps/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/clients',
+        path: '/t/tenantId/users/aps',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserList')).toBeVisible()
+  })
+  test('should redirect to user/aps/clients correctly', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/aps/clients',
         wrapRoutes: false
       }
     })
@@ -299,7 +308,7 @@ describe('RcRoutes: User', () => {
   test('should redirect details to details/overview', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/userId/details/',
+        path: '/t/tenantId/users/aps/userId/details/',
         wrapRoutes: false
       }
     })
@@ -308,7 +317,7 @@ describe('RcRoutes: User', () => {
   test('should redirect to details/overview correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/userId/details/overview',
+        path: '/t/tenantId/users/aps/userId/details/overview',
         wrapRoutes: false
       }
     })
