@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -70,7 +71,7 @@ const EpdgTable = (props: { edit?: boolean }) => {
     }
   },{
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: ([{ domain }]: EPDG[]) => {
+    onClick: ([{ domain }]: EPDG[], clearSelection: () => void) => {
       showActionModal({
         type: 'confirm',
         customContent: {
@@ -85,6 +86,7 @@ const EpdgTable = (props: { edit?: boolean }) => {
               id: state.ePDG.findIndex(value => value.domain === domain)
             }
           })
+          clearSelection()
         }
       })
     }

@@ -119,11 +119,25 @@ describe('WifiCallingForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /service name/i }),
       { target: { value: 'serviceNameTest' } })
 
-    fireEvent.change(screen.getByRole('textbox', { name: /tags/i }),
-      { target: { value: 'a,b,c' } })
-
     fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
       { target: { value: 'descriptionTest' } })
+
+    const addButton = screen.getByRole('button', { name: 'Add' })
+    fireEvent.click(addButton)
+    expect(screen.getByText('Add ePDG')).toBeInTheDocument()
+
+    const domainInput = screen.getByPlaceholderText('Please enter the domain name')
+    const ipInput = screen.getByPlaceholderText('Please enter the ip address')
+    fireEvent.change(domainInput,
+      { target: { value: 'aaa.bbb.com' } })
+    fireEvent.change(ipInput,
+      { target: { value: '10.10.10.10' } })
+    expect(domainInput).toHaveValue('aaa.bbb.com')
+    expect(ipInput).toHaveValue('10.10.10.10')
+
+    const saveButton = screen.getByRole('button', { name: 'Save' })
+    expect(saveButton).toBeInTheDocument()
+    fireEvent.click(saveButton)
 
     await screen.findByTestId('selectQosPriorityId')
 

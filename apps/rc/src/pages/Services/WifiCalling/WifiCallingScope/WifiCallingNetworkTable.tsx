@@ -77,47 +77,70 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       networkName: network.name,
       type: network.nwSubType,
       venues: network.venues.count,
-      activate: <Switch checked={state.networkIds.includes(network.id)}/>
+      activate: <Switch
+        checked={state.networkIds.includes(network.id)}
+        onClick={() => {
+          const selectRow = {
+            id: network.id,
+            networkName: network.name,
+            type: network.nwSubType,
+            venues: network.venues.count
+          }
+          state.networkIds.includes(network.id)
+            ? deactivateNetwork([selectRow])
+            : activateNetwork([selectRow])
+        }
+        }
+      />
     }
   })
+
+  const activateNetwork = (selectRows: WifiCallingScope[]) => {
+    dispatch({
+      type: WifiCallingActionTypes.ADD_NETWORK_ID,
+      payload: {
+        networkIds: selectRows.map(row => row.id),
+        networksName: selectRows.map(row => row.networkName)
+      }
+    } as WifiCallingActionPayload)
+
+    showToast({
+      type: 'info',
+      content: $t(
+        { defaultMessage: 'Activate {count} network(s)' },
+        { count: selectRows.length }
+      )
+    })
+  }
+
+  const deactivateNetwork = (selectRows: WifiCallingScope[]) => {
+    dispatch({
+      type: WifiCallingActionTypes.DELETE_NETWORK_ID,
+      payload: {
+        networkIds: selectRows.map(row => row.id)
+      }
+    } as WifiCallingActionPayload)
+
+    showToast({
+      type: 'info',
+      content: $t(
+        { defaultMessage: 'Deactivate {count} network(s)' },
+        { count: selectRows.length }
+      )
+    })
+  }
+
 
   const rowActions: TableProps<WifiCallingScope>['actions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
     onClick: (selectRows: WifiCallingScope[], clearSelection: () => void) => {
-      dispatch({
-        type: WifiCallingActionTypes.ADD_NETWORK_ID,
-        payload: {
-          networkIds: selectRows.map(row => row.id),
-          networksName: selectRows.map(row => row.networkName)
-        }
-      } as WifiCallingActionPayload)
-
-      showToast({
-        type: 'info',
-        content: $t(
-          { defaultMessage: 'Activate {count} network(s)' },
-          { count: selectRows.length }
-        )
-      })
+      activateNetwork(selectRows)
       clearSelection()
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
     onClick: (selectRows: WifiCallingScope[], clearSelection: () => void) => {
-      dispatch({
-        type: WifiCallingActionTypes.DELETE_NETWORK_ID,
-        payload: {
-          networkIds: selectRows.map(row => row.id)
-        }
-      } as WifiCallingActionPayload)
-
-      showToast({
-        type: 'info',
-        content: $t(
-          { defaultMessage: 'Deactivate {count} network(s)' },
-          { count: selectRows.length }
-        )
-      })
+      deactivateNetwork(selectRows)
       clearSelection()
     }
   }] as { label: string, onClick: () => void }[]

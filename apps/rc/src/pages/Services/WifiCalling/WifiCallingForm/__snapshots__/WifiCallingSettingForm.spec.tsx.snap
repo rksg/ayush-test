@@ -94,43 +94,6 @@ exports[`WifiCallingSettingForm should render WifiCallingSettingForm successfull
           >
             <label
               class=""
-              for="tags"
-              title="Tags"
-            >
-              Tags
-            </label>
-          </div>
-          <div
-            class="ant-col ant-form-item-control"
-          >
-            <div
-              class="ant-form-item-control-input"
-            >
-              <div
-                class="ant-form-item-control-input-content"
-              >
-                <input
-                  class="ant-input ant-input-status-success"
-                  id="tags"
-                  type="text"
-                  value="tag1,tag2,tag3"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="ant-form-item ant-form-item-has-success"
-      >
-        <div
-          class="ant-row ant-form-item-row"
-        >
-          <div
-            class="ant-col ant-form-item-label"
-          >
-            <label
-              class=""
               for="description"
               title="Description"
             >
@@ -225,7 +188,7 @@ exports[`WifiCallingSettingForm should render WifiCallingSettingForm successfull
             class="ant-col ant-form-item-label"
           >
             <label
-              class=""
+              class="ant-form-item-required"
               for="dataGateway"
               title="Evolved Packet Data Gateway (ePDG)"
             >

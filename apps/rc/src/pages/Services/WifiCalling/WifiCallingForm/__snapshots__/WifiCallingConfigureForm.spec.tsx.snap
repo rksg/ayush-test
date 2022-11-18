@@ -254,43 +254,6 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                       </div>
                     </div>
                     <div
-                      class="ant-form-item"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-label"
-                        >
-                          <label
-                            class=""
-                            for="settings_tags"
-                            title="Tags"
-                          >
-                            Tags
-                          </label>
-                        </div>
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <input
-                                class="ant-input"
-                                id="settings_tags"
-                                type="text"
-                                value=""
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
                       class="ant-form-item ant-form-item-has-success"
                     >
                       <div
@@ -320,9 +283,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                 class="ant-input ant-input-status-success"
                                 id="settings_description"
                                 rows="4"
-                              >
-                                descriptionTest
-                              </textarea>
+                              />
                             </div>
                           </div>
                         </div>
@@ -395,7 +356,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                           class="ant-col ant-form-item-label"
                         >
                           <label
-                            class=""
+                            class="ant-form-item-required"
                             for="settings_dataGateway"
                             title="Evolved Packet Data Gateway (ePDG)"
                           >

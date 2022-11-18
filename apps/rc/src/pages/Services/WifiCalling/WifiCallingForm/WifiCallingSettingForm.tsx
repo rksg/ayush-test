@@ -48,15 +48,6 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
     })
   }
 
-  const handleTags = (tags: string[]) => {
-    dispatch({
-      type: WifiCallingActionTypes.TAGS,
-      payload: {
-        tags: tags
-      }
-    })
-  }
-
   const handleQosPriority = (qosPriority:QosPriorityEnum) => {
     dispatch({
       type: WifiCallingActionTypes.QOSPRIORITY,
@@ -103,12 +94,10 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
     }
     if (data && formRef) {
       formRef.current?.setFieldValue('serviceName', data.serviceName)
-      formRef.current?.setFieldValue('tags', data.tags?.join(','))
       formRef.current?.setFieldValue('description', data.description)
       formRef.current?.setFieldValue('qosPriority', data.qosPriority)
     }
-  }, [data])
-
+  }, [data, state.ePDG.length])
 
   return (
     <Row gutter={20}>
@@ -141,13 +130,6 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
             onChange={(event => {handleServiceName(event.target.value)})}/>}
         />
         <Form.Item
-          name='tags'
-          label={$t({ defaultMessage: 'Tags' })}
-          initialValue={state.tags?.join(',')}
-          children={<Input
-            onChange={(event => handleTags(event.target.value.split(',')))}/>}
-        />
-        <Form.Item
           name='description'
           label={$t({ defaultMessage: 'Description' })}
           initialValue={state.description}
@@ -166,6 +148,14 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
         <Form.Item
           name='dataGateway'
           label={$t({ defaultMessage: 'Evolved Packet Data Gateway (ePDG)' })}
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: () => {
+              if (state.ePDG.length) return Promise.resolve()
+              return Promise.reject($t({ defaultMessage: 'ePDG must contain at least one rule' }))
+            } }
+          ]}
         >
           <EpdgTable edit={edit} />
         </Form.Item>

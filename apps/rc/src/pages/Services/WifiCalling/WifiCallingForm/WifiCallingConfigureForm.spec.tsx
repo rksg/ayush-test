@@ -135,6 +135,8 @@ describe('WifiCallingConfigureForm', () => {
 
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
+    await screen.findByText('abc.com')
+
     fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
       { target: { value: 'descriptionTest' } })
 
