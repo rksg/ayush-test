@@ -7,6 +7,7 @@ import {
   Table,
   TableProps,
   showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { useDeleteEdgeMutation, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeViewModel, useTableQuery }               from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
@@ -189,6 +190,11 @@ const EdgesTable = () => {
 const Edges = () => {
 
   const { $t } = useIntl()
+  const isEdgesEnable = useIsSplitOn(Features.EDGES)
+
+  if (!isEdgesEnable) {
+    return <span>{ $t({ defaultMessage: 'Edges is not enabled' }) }</span>
+  }
 
   return (
     <>
