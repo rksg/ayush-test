@@ -1,40 +1,100 @@
-import { useIntl }                from 'react-intl'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useRef, useState } from 'react'
+import React                from 'react'
 
-import { Tabs }          from '@acx-ui/components'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+import { Row, Col, Form, Input, Button } from 'antd'
+import TextArea                          from 'antd/lib/input/TextArea'
+import _                                 from 'lodash'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
 
-const { TabPane } = Tabs
+import { Loader, showToast, Tooltip }  from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }  from '@acx-ui/icons'
+import { useTraceRouteApMutation }           from '@acx-ui/rc/services'
+import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
-export function ApTroubleshootingTab () {
+export function ApTraceRouteForm () {
   const { $t } = useIntl()
-  const params = useParams()
-  const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/aps/${params.serialNumber}/details/troubleshooting/`)
-
-  const onTabChange = (tab: string) => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
-    })
+  const { tenantId, serialNumber } = useParams()
+  const [form] = Form.useForm()
+  const [isValid, setIsValid] = useState(false)
+  const [traceRouteAp, { isLoading: isTraceRouteAp }] = useTraceRouteApMutation()
+  const handlePingAp = async () => {
+    try {
+      const payload = {
+        targetHost: form.getFieldValue('name')
+      }
+      const traceRouteApResult = await traceRouteAp({ params: { tenantId, serialNumber }, payload }).unwrap()
+      if (traceRouteApResult) {
+        form.setFieldValue('traceRoute', _.get(traceRouteApResult, 'response.response'))
+      }
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
-  return (
-    <Tabs
-      onChange={onTabChange}
-      defaultActiveKey='ping'
-      activeKey={params.activeSubTab}
-      type='card'
-    >
-      <TabPane tab={$t({ defaultMessage: 'Ping' })} key='ping'>
-        {$t({ defaultMessage: 'Ping' })}
-      </TabPane>
-      <TabPane tab={$t({ defaultMessage: 'Traceroute' })} key='traceroute'>
-        {$t({ defaultMessage: 'Configuration History' })}
-      </TabPane>
-      <TabPane tab={$t({ defaultMessage: 'Packet Capture' })} key='packetCapture'>
-        {$t({ defaultMessage: 'Routed Interfaces' })}
-      </TabPane>
-    </Tabs>
-  )
+  const onChangeForm = function () {
+    form.validateFields()
+      .then(() => {
+        setIsValid(true)
+      })
+      .catch(() => {
+        setIsValid(false)
+      })
+  }
+
+  return <Form
+    form={form}
+    layout='vertical'
+    onChange={onChangeForm}>
+    <Row gutter={20}>
+      <Col span={8}>
+        <Form.Item
+          name='name'
+          label={<>
+            {$t({ defaultMessage: 'Target host or IP address' })}
+            <Tooltip
+              title={$t(WifiTroubleshootingMessages.Target_Host_IP_TOOLTIP)}
+              placement='bottom'>
+              <QuestionMarkCircleOutlined />
+            </Tooltip>
+          </>}
+          rules={[
+            { required: true },
+            { validator: (_, value) => targetHostRegExp(value) }
+          ]}
+          validateFirst
+          // hasFeedback
+          children={<Input />}
+        />
+        <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
+          <Button type='primary'
+            htmlType='submit'
+            disabled={!isValid || isTraceRouteAp}
+            onClick={handlePingAp}>
+            Run
+          </Button>
+        </Form.Item>
+      </Col>
+    </Row>
+
+    <Loader states={[{
+      isLoading: false,
+      isFetching: isTraceRouteAp
+    }]}>
+      <Form.Item
+        name='traceRoute'>
+
+        <TextArea
+          style={{ resize: 'none', height: '300px' }}
+          autoSize={false}
+          readOnly={true}
+        />
+
+      </Form.Item>
+    </Loader>
+  </Form>
 }
+

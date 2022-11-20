@@ -142,6 +142,15 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    traceRouteAp: build.mutation<PingAp, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.traceRouteAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
   })
 })
 
@@ -151,6 +160,7 @@ export const {
   useApDetailHeaderQuery,
   useAddApMutation,
   usePingApMutation,
+  useTraceRouteApMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
   useWifiCapabilitiesQuery,

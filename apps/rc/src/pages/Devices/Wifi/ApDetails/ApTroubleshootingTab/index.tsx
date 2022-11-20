@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Tabs }          from '@acx-ui/components'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { ApPingForm } from './apPingForm'
+import { ApTraceRouteForm } from './apTraceRouteForm'
 
 const { TabPane } = Tabs
 
@@ -31,7 +32,7 @@ export function ApTroubleshootingTab () {
         <ApPingForm/>
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Traceroute' })} key='traceroute'>
-        {$t({ defaultMessage: 'Configuration History' })}
+        <ApTraceRouteForm/>
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Packet Capture' })} key='packetCapture'>
         {$t({ defaultMessage: 'Routed Interfaces' })}

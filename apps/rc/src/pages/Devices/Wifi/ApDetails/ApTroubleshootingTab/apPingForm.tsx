@@ -16,19 +16,18 @@ import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 export function ApPingForm () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
-  const [form] = Form.useForm()
+  const [pingForm] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
   const [pingAp, { isLoading: isPingingAp }] = usePingApMutation()
   const handlePingAp = async () => {
     try {
       const payload = {
-        targetHost: form.getFieldValue('name')
+        targetHost: pingForm.getFieldValue('name')
       }
-
       const pingApResult = await pingAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       if (pingApResult) {
 
-        form.setFieldValue('result', _.get(pingApResult, 'response.response'))
+        pingForm.setFieldValue('result', _.get(pingApResult, 'response.response'))
       }
     } catch {
       showToast({
@@ -39,18 +38,17 @@ export function ApPingForm () {
   }
 
   const onChangeForm = function () {
-    form.validateFields()
+    pingForm.validateFields()
       .then(() => {
         setIsValid(true)
       })
       .catch(() => {
-
         setIsValid(false)
       })
   }
 
   return <Form
-    form={form}
+    form={pingForm}
     layout='vertical'
     onChange={onChangeForm}
   >
@@ -78,31 +76,26 @@ export function ApPingForm () {
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
           <Button type='primary'
             htmlType='submit'
-            disabled={!isValid}
+            disabled={!isValid || isPingingAp}
             onClick={handlePingAp}>
             Run
           </Button>
         </Form.Item>
       </Col>
     </Row>
-
-    <Form.Item
-      name='result'>
-      <Loader states={[{
-        isLoading: false,
-        isFetching: isPingingAp
-      }]}>
+    <Loader states={[{
+      isLoading: false,
+      isFetching: isPingingAp
+    }]}>
+      <Form.Item
+        name='result'>
         <TextArea
           style={{ resize: 'none', height: '300px' }}
           autoSize={false}
           readOnly={true}
         />
-      </Loader>
-    </Form.Item>
-
-
+      </Form.Item>
+    </Loader>
   </Form>
-
-
 }
 
