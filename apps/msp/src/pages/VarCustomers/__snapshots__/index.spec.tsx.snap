@@ -55,20 +55,6 @@ exports[`VarCustomers should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      style="display: flex; direction: ltr; width: 400px; float: left;"
-    >
-      <button
-        class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-        style="position: absolute; right: 0px;"
-        type="button"
-      >
-        <svg>
-          DownloadOutlined.svg
-        </svg>
-      </button>
-    </div>
-    <hr />
-    <div
       class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
     >
       <div
