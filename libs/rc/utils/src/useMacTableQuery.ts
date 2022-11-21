@@ -1,0 +1,145 @@
+import { useEffect, useState } from 'react'
+
+
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { TableProps }        from '@acx-ui/components'
+import { useParams, Params } from '@acx-ui/react-router-dom'
+import { UseQuery }          from '@acx-ui/types'
+
+import { PAGINATION, RequestPayload, SORTER } from './useTableQuery'
+
+
+export interface MacTableResult <ResultItemType, ResultExtra = unknown> {
+  content: ResultItemType[]
+  number: number
+  totalElements: number
+  extra?: ResultExtra
+  size: number
+}
+
+export interface MAC_TABLE_QUERY <
+  ResultType = Record<string, unknown>,
+  Payload extends RequestPayload = RequestPayload,
+  ResultExtra = unknown
+> {
+  defaultPayload: Partial<Payload>
+  useQuery: UseQuery<
+    MacTableResult<ResultType, ResultExtra>,
+    { params: Params<string>, payload: Payload }
+  >
+  apiParams?: Record<string, string>
+  pagination?: Partial<PAGINATION>
+  sorter?: SORTER
+  rowKey?: string
+}
+
+interface PARAMS {
+  page: string,
+  size: string
+}
+
+const DEFAULT_PARAMS: PARAMS = {
+  page: '0',
+  size: '10'
+}
+
+const DEFAULT_PAGINATION = {
+  current: 1,
+  pageSize: 10,
+  total: 0
+}
+
+const SORTER_ABBR = {
+  descend: 'DESC',
+  ascend: 'ASC'
+}
+
+const DEFAULT_SORTER = {
+  sortField: 'name',
+  sortOrder: SORTER_ABBR.ascend
+}
+
+const transferSorter = (order:string) => {
+  return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
+}
+
+export function useMacTableQuery <
+  ResultType,
+  Payload,
+  ResultExtra
+> (option: MAC_TABLE_QUERY<ResultType, Payload, ResultExtra>) {
+  const [apiParams, setApiParams] = useState({
+    ...DEFAULT_PARAMS,
+    ...option.apiParams || {}
+  })
+
+  const [pagination, setPagination] = useState({
+    ...DEFAULT_PAGINATION,
+    ...(option?.pagination || {})
+  })
+  const [sorter, setSorter] = useState({
+    ...DEFAULT_SORTER,
+    ...(option?.sorter || {})
+  })
+  const [payload, setPayload] = useState({
+    ...option.defaultPayload,
+    ...(pagination as unknown as Partial<Payload>),
+    ...(sorter as unknown as Partial<Payload>)
+  })
+
+  // RTKQuery
+  const api = option.useQuery( {
+    params: { ...useParams(), ...apiParams },
+    payload: payload as Payload
+  })
+
+  useEffect(() => {
+    const handlePagination = (data?: MacTableResult<ResultType>) => {
+      if (data) {
+        setPagination({
+          ...DEFAULT_PAGINATION,
+          current: data.number+1,
+          total: data.totalElements,
+          pageSize: data.size
+        })
+      }
+    }
+    handlePagination(api.data)
+  }, [api.data])
+
+  const handleTableChange: TableProps<ResultType>['onChange'] = (
+    pagination,
+    filters,
+    sorters
+  ) => {
+    const currentPage = pagination?.current ? pagination.current - 1 : 0
+    setApiParams({
+      page: `${currentPage}`,
+      size: `${pagination.pageSize}`
+    })
+    // Implementation expect there will only be 1 sortable column
+    const sorter = Array.isArray(sorters)
+      ? sorters[0]
+      : sorters
+
+    const sorterKey = Array.isArray(sorter.field) ? sorter.columnKey : sorter.field
+
+    const tableProps = {
+      sortField: sorterKey || DEFAULT_SORTER.sortField,
+      sortOrder: sorter.order ? transferSorter(sorter.order) : DEFAULT_SORTER.sortOrder,
+      page: pagination.current,
+      pageSize: pagination.pageSize
+    }
+    setPayload({ ...payload, ...tableProps })
+  }
+
+  return {
+    pagination,
+    sorter,
+    setSorter,
+    handleTableChange,
+    payload,
+    setPayload,
+    ...api
+  }
+}

@@ -26,6 +26,7 @@ export * from './services'
 export * from './msp'
 export * from './policy'
 export * from './wifiCallingService'
+export * from './macRegistrarionList'
 
 export interface CommonResult {
   requestId: string

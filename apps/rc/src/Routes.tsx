@@ -37,6 +37,9 @@ import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingFo
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
 import UserApDetails            from './pages/Users/Wifi/ApDetails'
 import UserApList               from './pages/Users/Wifi/ApList'
+import MacRegistrationListsTable from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
+import MacRegistrationListDetails from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
+import MacRegistrationListForm from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -157,6 +160,15 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<h1>Rogue AP detection details page</h1>}
+      />
+      <Route path='policies/mac-registration-lists' element={<MacRegistrationListsTable />} />
+      <Route
+        path='policies/mac-registration-lists/:macRegistrationListId/mac-registration-lists-details/:activeTab'
+        element={<MacRegistrationListDetails />} />
+      <Route path='policies/mac-registration-lists/add' element={<MacRegistrationListForm />} />
+      <Route
+        path='policies/mac-registration-lists/:macRegistrationListId/:action'
+        element={<MacRegistrationListForm />}
       />
     </Route>
   )
