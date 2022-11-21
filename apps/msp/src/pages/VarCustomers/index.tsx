@@ -10,9 +10,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import {
-  DownloadOutlined
-} from '@acx-ui/icons'
-import {
   useVarCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -175,11 +172,6 @@ export function VarCustomers () {
 
     return (
       <Loader states={[tableQuery]}>
-        <div style={{ display: 'flex', direction: 'ltr', width: '400px', float: 'left' }}>
-          <Button style={{ position: 'absolute', right: 0 }}
-            key='download'
-            icon={<DownloadOutlined />} />
-        </div><hr/>
         <Table
           columns={customerColumns}
           dataSource={tableQuery.data?.data}

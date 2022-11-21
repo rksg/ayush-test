@@ -117,7 +117,8 @@ function displayMonths (timeLeft: number) {
   if (monthsValue === 12) {
     monthsValue = 11
   }
-  return getIntl().$t({ defaultMessage: 'More than {months} Months' }, { months: monthsValue })
+  return getIntl().$t({ defaultMessage:
+    'More than {months} {months, plural, one {Month} other {Months}}' }, { months: monthsValue })
 }
 
 function displayYears (timeLeft: number) {

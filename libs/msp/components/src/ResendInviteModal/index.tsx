@@ -74,8 +74,8 @@ export const ResendInviteModal = (props: ResendInviteModalProps) =>{
 
   return (
     <Modal
-      title=' '
-      width={350}
+      title={$t({ defaultMessage: 'Resend Invitation' })}
+      width={400}
       visible={visible}
       okText={$t({ defaultMessage: 'Resend Invitation' })}
       onCancel={handleCancel}
