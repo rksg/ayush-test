@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { EdgeUrlsInfo }                       from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import {
@@ -18,6 +19,7 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('EdgeList', () => {
   let params: { tenantId: string }
