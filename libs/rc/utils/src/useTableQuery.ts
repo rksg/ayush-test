@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { TableProps }        from '@acx-ui/components'
-import { useParams, Params } from '@acx-ui/react-router-dom'
-import { UseQuery }          from '@acx-ui/types'
+import { TableProps }               from '@acx-ui/components'
+import { useParams, Params }        from '@acx-ui/react-router-dom'
+import { UseQuery, UseQueryResult } from '@acx-ui/types'
 
 export interface RequestPayload <Payload = unknown> {
   params?: Params<string>
@@ -62,6 +62,26 @@ const DEFAULT_SORTER = {
 
 const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
+}
+
+export interface TableQuery<ResultType, Payload, ResultExtra>
+  extends UseQueryResult<TableResult<ResultType, ResultExtra>> {
+  pagination: {
+    current: number;
+    pageSize: number;
+    total: number;
+  },
+  sorter: {
+    sortField: string;
+    sortOrder: string;
+  },
+  setSorter: React.Dispatch<React.SetStateAction<{
+    sortField: string;
+    sortOrder: string;
+  }>>,
+  handleTableChange: TableProps<ResultType>['onChange'],
+  payload: Partial<Payload>,
+  setPayload: React.Dispatch<React.SetStateAction<Partial<Payload>>>,
 }
 
 export function useTableQuery <
@@ -131,5 +151,5 @@ export function useTableQuery <
     payload,
     setPayload,
     ...api
-  }
+  } as TableQuery<ResultType, Payload, ResultExtra>
 }
