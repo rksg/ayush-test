@@ -13,7 +13,12 @@ export enum AccountRegion {
 
 export enum AccountType {
   REC = 'REC',
-  MSP = 'MSP'
+  MSP = 'MSP',
+  VAR = 'VAR',
+  MSP_EC = 'MSP_EC',
+  MSP_NON_VAR = 'MSP_NON_VAR',
+  MSP_INTEGRATOR = 'MSP_INTEGRATOR',
+  MSP_INSTALLER = ' MSP_INSTALLER'
 }
 
 interface JwtToken {

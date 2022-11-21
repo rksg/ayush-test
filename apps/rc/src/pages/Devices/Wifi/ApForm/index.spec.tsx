@@ -163,23 +163,6 @@ describe('AP Form - Add', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     })
 
-    it('should handle error occurred', async () => {
-      mockServer.use(
-        rest.post(WifiUrlsInfo.addAp.url,
-          (_, res, ctx) => {
-            return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-10000' }] }))
-          })
-      )
-      render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/aps/:action' }
-      })
-      await changeVenue()
-      await fillInForm()
-
-      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      await screen.findByText('An error occurred')
-    })
-
     it('should handle discard coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/devices/aps/:action' }
@@ -220,6 +203,41 @@ describe('AP Form - Add', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Change' }))
       await userEvent.click(await within(dialogs[0]).findByRole('button', { name: 'Cancel' }))
       expect(await screen.findByText('40.769141, -73.9429713 (As venue)')).toBeVisible()
+    })
+  })
+
+  describe('handle error occurred', () => {
+    it('should handle error occurred', async () => {
+      mockServer.use(
+        rest.post(WifiUrlsInfo.addAp.url,
+          (_, res, ctx) => {
+            return res(ctx.status(400), ctx.json({ errors: [{ code: 'WIFI-xxxx' }] }))
+          })
+      )
+      render(<Provider><ApForm /></Provider>, {
+        route: { params, path: '/:tenantId/devices/aps/:action' }
+      })
+      await changeVenue()
+      await fillInForm()
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+      await screen.findByText('Error occurred while creating AP')
+    })
+    it('should handle request locking error', async () => {
+      mockServer.use(
+        rest.post(WifiUrlsInfo.addAp.url,
+          (_, res, ctx) => {
+            return res(ctx.status(423), ctx.json({ errors: [{ code: 'WIFI-xxxx' }] }))
+          })
+      )
+      render(<Provider><ApForm /></Provider>, {
+        route: { params, path: '/:tenantId/devices/aps/:action' }
+      })
+      await changeVenue()
+      await fillInForm()
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+      await screen.findByText(/A configuration request is currently being executed/)
     })
   })
 })
