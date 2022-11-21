@@ -14,7 +14,7 @@ export const venuelist = {
       id: '908c47ee1cd445838c3bf71d4addccdf',
       latitude: '37.4112751',
       longitude: '-122.0191908',
-      name: 'DEMO_VENUE test 5'
+      name: 'Test-Venue'
     },
     {
       country: 'United States',
@@ -30,15 +30,20 @@ export const venuelist = {
       id: 'a4f9622e9c7547ba934fbb5ee55646c2',
       latitude: '4.854995099999999',
       longitude: '100.751032',
-      name: 'My-Venue-dhcp'
-    },
-    {
+      name: 'Venue-DHCP'
+    }, {
       country: 'United States',
       dhcp: { enabled: true, mode: 'DHCPMODE_MULTIPLE_AP' },
       id: '16b11938ee934928a796534e2ee47661',
       latitude: '37.4112751',
       longitude: '-122.0191908',
-      name: 'venue-dhcp-ui'
+      name: 'Venue-DHCP 2'
+    }, {
+      country: 'Canada',
+      id: 'b6cd663931b34a8b8fc97a81bfaa0929',
+      latitude: '51.12090129999999',
+      longitude: '-114.0044601',
+      name: 'Venue-MESH'
     }
   ]
 }
@@ -56,6 +61,79 @@ export const venueDetail = {
     longitude: -122.0191908,
     timezone: 'America/Los_Angeles'
   }
+}
+
+export const apGroupsList = {
+  fields: ['name', 'id'],
+  totalCount: 0,
+  page: 1,
+  data: [{
+    id: '484eb4220e4b424da1f54b207cc678b9',
+    name: 'test'
+  }]
+}
+
+export const venueDefaultApGroup = {
+  venueId: '74f058ee8ea141a0b09a89c022a04a10',
+  aps: [
+    {
+      serialNumber: '233356777755',
+      apGroupId: 'a43c7e10c6404b7684f8694e7d074cf2',
+      venueId: '74f058ee8ea141a0b09a89c022a04a10',
+      radio: {
+        apRadioParams24G: {
+          manualChannel: 0,
+          channelBandwidth: 'AUTO',
+          txPower: 'MAX',
+          method: 'BACKGROUND_SCANNING',
+          changeInterval: 33
+        },
+        apRadioParams50G: {
+          channelBandwidth: 'AUTO',
+          manualChannel: 0,
+          txPower: 'MAX',
+          method: 'BACKGROUND_SCANNING',
+          changeInterval: 33
+        },
+        apRadioParamsDual5G: {
+          enabled: true,
+          radioParamsLower5G: {
+            channelBandwidth: 'AUTO',
+            manualChannel: 0,
+            txPower: 'MAX',
+            method: 'BACKGROUND_SCANNING',
+            changeInterval: 33
+          },
+          radioParamsUpper5G: {
+            channelBandwidth: 'AUTO',
+            manualChannel: 0,
+            txPower: 'MAX',
+            method: 'BACKGROUND_SCANNING',
+            changeInterval: 33
+          }
+        },
+        apRadioParams6G: {
+          manualChannel: 0,
+          method: 'CHANNELFLY',
+          channelBandwidth: 'AUTO',
+          bssMinRate6G: 'HE_MCS_0',
+          mgmtTxRate6G: '6',
+          txPower: 'MAX',
+          changeInterval: 33
+        },
+        useVenueSettings: true
+      },
+      name: 'for ap group 2',
+      softDeleted: false,
+      position: {
+        xPercent: 0,
+        yPercent: 0
+      },
+      updatedDate: '2022-11-08T06:31:00.064+0000'
+    }
+  ],
+  isDefault: true,
+  id: 'a43c7e10c6404b7684f8694e7d074cf2'
 }
 
 export const venueCaps = {
@@ -310,19 +388,6 @@ export const apDetailsList = [
     venueId: '16b11938ee934928a796534e2ee47661'
   }
 ]
-
-export const dhcpAp = {
-  requestId: '3be06d50-5ae9-4d7f-92b6-146b5b7d77b4',
-  response: [
-    {
-      dhcpApRole: 'PrimaryServer',
-      serialNumber: '422039000034',
-      venueDhcpEnabled: true,
-      venueDhcpMode: 'EnableOnMultipleAPs',
-      venueId: '16b11938ee934928a796534e2ee47661'
-    }
-  ]
-}
 
 export const apDetail = {
   serialNumber: '422039000034',
@@ -1786,3 +1851,22 @@ export const radioCustomization = {
     scanInterval: 20
   }
 }
+export const dhcpAp = [{
+  requestId: '3be06d50-5ae9-4d7f-92b6-146b5b7d77b4',
+  response: [{
+    dhcpApRole: 'PrimaryServer',
+    serialNumber: '422039000034',
+    venueDhcpEnabled: true,
+    venueDhcpMode: 'EnableOnMultipleAPs',
+    venueId: 'a4f9622e9c7547ba934fbb5ee55646c2'
+  }]
+}, {
+  requestId: '3be06d50-5ae9-4d7f-92b6-146b5b7d77b4',
+  response: [{
+    dhcpApRole: 'BackupServer',
+    serialNumber: '422039000034',
+    venueDhcpEnabled: true,
+    venueDhcpMode: 'EnableOnMultipleAPs',
+    venueId: '16b11938ee934928a796534e2ee47661'
+  }]
+}]

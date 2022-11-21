@@ -31,7 +31,7 @@ export const validationMessages = {
       {entityName} with that {key, select,
         name {name}
         other {value}
-      } already exists
+      } already exists{ extra }
     `,
     description: 'Validation - duplication checks'
   }),

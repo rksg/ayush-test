@@ -84,11 +84,12 @@ export function checkObjectNotExists <ItemType> (
   list: ItemType[],
   value: ItemType,
   entityName: string,
-  key = 'name'
+  key = 'name',
+  extra?: string
 ) {
   const { $t } = getIntl()
   if (list.filter(item => isEqual(item, value)).length !== 0) {
-    return Promise.reject($t(validationMessages.duplication, { entityName, key }))
+    return Promise.reject($t(validationMessages.duplication, { entityName, key, extra }))
   }
   return Promise.resolve()
 }

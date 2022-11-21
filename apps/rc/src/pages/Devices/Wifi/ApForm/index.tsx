@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Col, Form, Input, Row, Select, Space, Tooltip } from 'antd'
 import { DefaultOptionType }                             from 'antd/lib/select'
 import { isEqual, omit, omitBy, pick }                   from 'lodash'
-import { useIntl }                                       from 'react-intl'
+import { FormattedMessage, useIntl }                     from 'react-intl'
 
 import {
   Button,
@@ -32,8 +32,10 @@ import {
 import {
   ApDeep,
   ApDhcpRoleEnum,
+  ApErrorHandlingMessages,
   APMeshRole,
   apNameRegExp,
+  catchErrorResponse,
   checkObjectNotExists,
   checkValues,
   DeviceGps,
@@ -144,26 +146,25 @@ export function ApForm () {
   }, [deviceGps])
 
   const handleAddAp = async (values: ApDeep) => {
+    const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
       const payload = [{
         ...omit(values, 'deviceGps'),
-        ...(deviceGps && { deviceGps: deviceGps })
+        ...(deviceGps && !sameAsVenue && { deviceGps: deviceGps })
       }]
       await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
       navigate(`${basePath.pathname}/aps`, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (err) {
+      handleError(err as catchErrorResponse)
     }
   }
 
   const handleUpdateAp = async (values: ApDeep) => {
+    const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
       const payload = {
-        ...values,
-        deviceGps: transformLatLng(values?.deviceGps as string)
+        ...omit(values, 'deviceGps'),
+        ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string) })
       }
       await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       setEditContextData && setEditContextData({
@@ -171,12 +172,40 @@ export function ApForm () {
         isDirty: false,
         hasError: false
       })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (err) {
+      handleError(err as catchErrorResponse)
     }
+  }
+
+  const handleError = async (error: catchErrorResponse) => {
+    const errorType = (error?.status === 423
+      ? 'REQUEST_LOCKING'
+      : error?.data?.errors?.[0]?.code) as keyof typeof errorTypeMap
+
+    const errorTypeMap = {
+      'WIFI-10130': 'SERIAL_NUMBER_ALREADY_REGISTERED',
+      'WIFI-10114': 'SERVICE_IS_NOT_SUPPORTED',
+      'WIFI-10126': 'UPGRADE_YOUR_LICENSE',
+      'WIFI-10140': 'CELLULAR_AP_CANNOT_BE_MOVED',
+      'REQUEST_LOCKING': 'REQUEST_LOCKING'
+    }
+
+    const errorMsg = ApErrorHandlingMessages[
+          errorTypeMap[errorType] as keyof typeof ApErrorHandlingMessages
+    ] ?? ApErrorHandlingMessages.ERROR_OCCURRED
+
+    showToast({
+      type: 'error',
+      content: (<FormattedMessage
+        {...errorMsg}
+        values={{
+          br: () => <br />,
+          action: isEditMode
+            ? $t({ defaultMessage: 'updating' })
+            : $t({ defaultMessage: 'creating' })
+        }}
+      />)
+    })
   }
 
   const getApGroupOptions = async (venueId: string) => {
@@ -203,6 +232,9 @@ export function ApForm () {
     setApGroupOption(options as DefaultOptionType[])
     setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
     formRef?.current?.setFieldValue('apGroupId', options?.[0]?.value ?? (value ? null : ''))
+    if (formRef?.current?.getFieldValue('name')) {
+      formRef?.current?.validateFields(['name'])
+    }
   }
 
   const onSaveCoordinates = (latLng: DeviceGps | null) => {
@@ -240,11 +272,7 @@ export function ApForm () {
     />}
     <StepsForm
       formRef={formRef}
-      onFinish={
-        !isEditMode
-          ? handleAddAp
-          : handleUpdateAp
-      }
+      onFinish={!isEditMode ? handleAddAp : handleUpdateAp}
       onFormChange={handleUpdateContext}
       onCancel={() => navigate({
         ...basePath,
@@ -346,11 +374,15 @@ export function ApForm () {
                   { validator: (_, value) => apNameRegExp(value) },
                   {
                     validator: (_, value) => {
-                      const nameList = apList?.data?.filter(
-                        item => item.serialNumber !== apDetails?.serialNumber
-                      ).map(item => item.name) ?? []
+                      const venueId = formRef?.current?.getFieldValue('venueId')
+                      const nameList = apList?.data?.filter(item => (
+                        item.serialNumber !== apDetails?.serialNumber
+                        && (selectedVenue ? item.venueId === venueId : false)
+                      )).map(item => item.name) ?? []
                       return checkObjectNotExists(nameList, value,
-                        $t({ defaultMessage: 'AP Name' }), 'value')
+                        $t({ defaultMessage: 'AP Name' }), 'value',
+                        $t({ defaultMessage: 'in this Venue' })
+                      )
                     }
                   }
                 ]}
@@ -569,7 +601,7 @@ function CoordinatesModal (props: {
     onCancel={() => setGpsModalVisible(false)}
   >
     <GoogleMap.FormItem>
-      {<Form.Item
+      <Form.Item
         noStyle
         label={false}
         name={fieldName}
@@ -594,7 +626,7 @@ function CoordinatesModal (props: {
         data-testid='coordinates-input'
         onChange={onChangeCoordinates}
         />
-      </Form.Item>}
+      </Form.Item>
       {isMapEnabled ?
         <GoogleMap
           libraries={['places']}
@@ -646,7 +678,7 @@ function checkFormIsDirty (form: StepsFormInstance, originalData: ApDeep, device
   const checkFields = Object.keys(form?.getFieldsValue() ?? {}).concat(['deviceGps'])
   const oldData = pick(originalData, checkFields)
   const newData = omitBy({ ...omit(formData, 'deviceGps'), deviceGps: deviceGps }, v => !v)
-  return !isEqual(oldData, newData)
+  return !!Object.values(formData).length && !isEqual(oldData, newData)
 }
 
 function checkFormIsInvalid (form: StepsFormInstance) {
