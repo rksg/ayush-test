@@ -14,6 +14,8 @@ export default function About (props: {
 }) {
   const { $t } = useIntl()
 
+  const logoURL = 'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png'
+
   return <AboutModal
     visible={props.modalState}
     width={320}
@@ -25,9 +27,14 @@ export default function About (props: {
     closeIcon={<Close />}
     footer={null}
     title={''} >
-    <GridRow>
+    <GridRow style={{ rowGap: 13 }}>
       <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
-        <Logo/>
+        <img style={{
+          width: 140
+        }}
+        src={logoURL}
+        alt={$t({ defaultMessage: 'Logo' })}
+        />
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
         <div style={{ fontWeight: 600,

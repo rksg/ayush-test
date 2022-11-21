@@ -1,9 +1,12 @@
-import { ExportOutlined }                      from '@ant-design/icons'
-import { Popover as AntPopover, PopoverProps, Modal } from 'antd'
+import { ExportOutlined, CheckCircleFilled }                      from '@ant-design/icons'
+import { Popover as AntPopover, PopoverProps, Modal, List } from 'antd'
 import styled                                  from 'styled-components/macro'
 import { Typography } from 'antd'
 
+import { WarningCircleSolid } from '@acx-ui/icons'
 import { LayoutUI, GridRow, GridCol } from '@acx-ui/components'
+
+
 
 type CopyableTextProps = {
   color?: string
@@ -117,4 +120,19 @@ export const CopyableText = styled(Typography.Paragraph)
   .attrs({ copyable: true })<CopyableTextProps>`
   margin-bottom: 3px !important;
   color: ${(props) => (props.color ? props.color : 'var(--acx-accents-blue-50)')};
+`
+
+export const WarningCircle = styled(WarningCircleSolid)`
+  path:nth-child(2) {
+    fill: var(--acx-semantics-red-50);
+    stroke: var(--acx-semantics-red-50);
+  }
+`
+export const ListItem = styled(List.Item)`
+    .ant-list-item-action {
+      margin-left: 10px;
+    }
+`
+export const AcknowledgeCircle = styled(CheckCircleFilled)`
+  color: var(--acx-neutrals-30);
 `
