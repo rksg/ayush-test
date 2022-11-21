@@ -1,6 +1,8 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
+
 
 import {
   PageHeader,
@@ -8,11 +10,10 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateDPSKMutation } from '@acx-ui/rc/services'
+import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@acx-ui/rc/services'
 import {
-  CreateDPSKFormFields,
-  DPSKSaveData,
-  PassphraseExpirationEnum,
+  CreateDpskFormFields,
+  DpskSaveData,
   PassphraseFormatEnum
 } from '@acx-ui/rc/utils'
 import {
@@ -22,38 +23,49 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import { getServiceListRoutePath } from '../../serviceRouteUtils'
-import DPSKSummary                 from '../DPSKSummary/DPSKSummary'
 
-import DPSKSettingsForm         from './DPSKSettingsForm'
-import { transferDetailToSave } from './parser'
+import DpskSettingsForm                 from './DpskSettingsForm'
+import { transferFormFieldsToSaveData } from './parser'
 
+interface DpskFormProps {
+  editMode?: boolean
+}
 
-
-export default function DPSKForm () {
+export default function DpskForm (props: DpskFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const params = useParams()
+  const { editMode = false } = props
 
-  const [createDPSK] = useCreateDPSKMutation()
-  const formRef = useRef<StepsFormInstance<CreateDPSKFormFields>>()
+  const [ createDpsk ] = useCreateDpskMutation()
+  const [ updateDpsk ] = useUpdateDpskMutation()
+  const { data: dataFromServer } = useGetDpskQuery({ params }, { skip: !editMode })
+  const formRef = useRef<StepsFormInstance<CreateDpskFormFields>>()
 
-  const [saveState, updateSaveState] = useState<DPSKSaveData>({
+  const [data, setData] = useState<DpskSaveData>({
     name: '',
-    tags: '',
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
     passphraseLength: 18,
-    expiration: PassphraseExpirationEnum.UNLIMITED
+    expirationType: null
   })
 
-  const updateSaveData = (saveData: Partial<DPSKSaveData>) => {
-    const newSavedata = { ...saveState, ...saveData }
-    updateSaveState({ ...saveState, ...newSavedata })
-  }
+  useEffect(() => {
+    if (dataFromServer && editMode) {
+      setData(dataFromServer)
+    }
+  }, [dataFromServer, editMode])
 
-  const handleAddDPSK = async () => {
+  const saveData = async (data: CreateDpskFormFields) => {
+    const dpskSaveData = transferFormFieldsToSaveData(data)
+
     try {
-      await createDPSK({ params, payload: saveState }).unwrap()
+      if (editMode) {
+        await updateDpsk({ params, payload: _.omit(dpskSaveData, 'id') }).unwrap()
+      } else {
+        await createDpsk({ params, payload: dpskSaveData }).unwrap()
+      }
+
       navigate(linkToServices, { replace: true })
     } catch {
       showToast({
@@ -62,6 +74,7 @@ export default function DPSKForm () {
       })
     }
   }
+
   return (
     <>
       <PageHeader
@@ -70,25 +83,16 @@ export default function DPSKForm () {
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />
-      <StepsForm<CreateDPSKFormFields>
+      <StepsForm<CreateDpskFormFields>
         formRef={formRef}
         onCancel={() => navigate(linkToServices)}
-        onFinish={handleAddDPSK}
+        onFinish={saveData}
       >
-        <StepsForm.StepForm<CreateDPSKFormFields>
+        <StepsForm.StepForm<CreateDpskFormFields>
           name='details'
           title={$t({ defaultMessage: 'Settings' })}
-          onFinish={async (data) => {
-            const detailsSaveData = transferDetailToSave(data)
-            updateSaveData(detailsSaveData)
-            return true
-          }}
         >
-          <DPSKSettingsForm />
-        </StepsForm.StepForm>
-
-        <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
-          <DPSKSummary summaryData={saveState} />
+          <DpskSettingsForm data={data} />
         </StepsForm.StepForm>
       </StepsForm>
     </>

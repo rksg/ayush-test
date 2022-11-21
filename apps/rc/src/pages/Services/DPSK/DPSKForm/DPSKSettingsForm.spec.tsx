@@ -2,11 +2,11 @@ import { Form } from 'antd'
 
 import { render } from '@acx-ui/test-utils'
 
-import DPSKSettingsForm from './DPSKSettingsForm'
+import DpskSettingsForm from './DpskSettingsForm'
 
-describe('DPSKSettingsForm', () => {
+describe('DpskSettingsForm', () => {
   it('should render the form', async ()=> {
-    const { asFragment } = render(<Form><DPSKSettingsForm /></Form>)
+    const { asFragment } = render(<Form><DpskSettingsForm /></Form>)
 
     expect(asFragment()).toMatchSnapshot()
   })

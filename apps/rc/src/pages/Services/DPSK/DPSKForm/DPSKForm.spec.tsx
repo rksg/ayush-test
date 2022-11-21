@@ -4,10 +4,10 @@ import { render }      from '@acx-ui/test-utils'
 
 import { getServiceRoutePath, ServiceOperation } from '../../serviceRouteUtils'
 
-import DPSKForm from './DPSKForm'
+import DpskForm from './DpskForm'
 
 
-describe('DPSKForm', () => {
+describe('DpskForm', () => {
   const params = {
     tenantId: '__Tenant_ID__'
   }
@@ -18,7 +18,7 @@ describe('DPSKForm', () => {
   it('should create a DPSK service profile', async () => {
     render(
       <Provider>
-        <DPSKForm />
+        <DpskForm />
       </Provider>, {
         route: { params, path: createPath }
       }

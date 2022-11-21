@@ -23,7 +23,8 @@ import {
   MdnsProxyForwardingRule,
   WifiCallingFormContextType,
   WifiCallingSetting,
-  DPSK
+  DpskSaveData,
+  DpskUrls
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -310,15 +311,35 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    createDPSK: build.mutation<DPSK, RequestPayload>({
+    createDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
       query: ({ params, payload }) => {
-        const createDPSKReq = createHttpRequest(CommonUrlsInfo.addDPSK, params)
+        const createDpskReq = createHttpRequest(DpskUrls.addDpsk, params)
         return {
-          ...createDPSKReq,
+          ...createDpskReq,
           body: payload
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updateDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
+      query: ({ params, payload }) => {
+        const updateDpskReq = createHttpRequest(DpskUrls.updateDpsk, params)
+        return {
+          ...updateDpskReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getDpsk: build.query<DpskSaveData, RequestPayload>({
+      query: ({ params, payload }) => {
+        const getDpskReq = createHttpRequest(DpskUrls.getDpsk, params)
+        return {
+          ...getDpskReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
     })
   })
 })
@@ -347,5 +368,7 @@ export const {
   useGetWifiCallingServiceListQuery,
   useCreateWifiCallingServiceMutation,
   useUpdateWifiCallingServiceMutation,
-  useCreateDPSKMutation
+  useCreateDpskMutation,
+  useUpdateDpskMutation,
+  useGetDpskQuery
 } = serviceApi

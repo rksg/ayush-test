@@ -1,19 +1,18 @@
+import { ExpirationDateEntity, ExpirationType } from '../..'
 import {
-  PassphraseExpirationEnum,
   PassphraseFormatEnum
 } from '../../constants'
 
-export interface CreateDPSKFormFields {
+export interface CreateDpskFormFields {
   name: string;
-  tags?: string;
   passphraseLength: number;
   passphraseFormat: PassphraseFormatEnum;
-  expiration: PassphraseExpirationEnum;
+  expiration: ExpirationDateEntity;
 
 }
-export interface DPSKSaveData {
+export interface DpskSaveData {
+  id?: string;
   name: string;
-  tags?: string;
   passphraseLength: number;
   passphraseFormat: PassphraseFormatEnum;
   expirationType: ExpirationType | null; // null means Never expires
