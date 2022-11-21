@@ -1,11 +1,18 @@
 import { useMemo } from 'react'
 
-import { Buffer } from 'buffer'
-
 import { useSearchParams } from 'react-router-dom'
 
-import { useLocation }                                                                       from '@acx-ui/react-router-dom'
-import { generateVenueFilter, DateFilter, pathFilter, NetworkPath, NodeType, useDateFilter } from '@acx-ui/utils'
+import { useLocation } from '@acx-ui/react-router-dom'
+import {
+  generateVenueFilter,
+  DateFilter,
+  pathFilter,
+  NetworkPath,
+  NodeType,
+  useDateFilter,
+  encodeURIComponentAndCovertToBase64,
+  decodeBase64String
+} from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
@@ -21,7 +28,7 @@ export function useAnalyticsFilter () {
     const getNetworkFilter = () => {
       let networkFilter = search.has('analyticsNetworkFilter')
         ? JSON.parse(
-          Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
+          decodeBase64String(search.get('analyticsNetworkFilter') as string)
         )
         : { path: defaultNetworkPath, raw: [] }
       const { path: currentPath, raw: rawVal } = networkFilter
@@ -49,7 +56,7 @@ export function useAnalyticsFilter () {
     const setNetworkPath = (path: NetworkPath, raw: object) => {
       search.set(
         'analyticsNetworkFilter',
-        Buffer.from(JSON.stringify({ path, raw })).toString('base64')
+        encodeURIComponentAndCovertToBase64(JSON.stringify({ path, raw }))
       )
       setSearch(search, { replace: true })
     }

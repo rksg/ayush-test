@@ -7,6 +7,7 @@ import { useSearchParams } from 'react-router-dom'
 import { DateFilter, useDateFilter } from './dateFilter'
 import { generateVenueFilter }       from './filters'
 import { NetworkPath, pathFilter }   from './types/networkFilter'
+import { encodeURIComponentAndCovertToBase64, decodeBase64String } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
@@ -18,7 +19,7 @@ export function useDashboardFilter () {
   return useMemo(() => {
     const { nodes } = search.has('dashboardVenueFilter')
       ? JSON.parse(
-        Buffer.from(search.get('dashboardVenueFilter') as string, 'base64').toString('ascii')
+        decodeBase64String(search.get('dashboardVenueFilter') as string)
       )
       : { nodes: [] }
     return {
@@ -32,7 +33,7 @@ export function useDashboardFilter () {
       setNodeFilter: (nodes: string[][]) => {
         search.set(
           'dashboardVenueFilter',
-          Buffer.from(JSON.stringify({ nodes: nodes.length ? nodes : [] })).toString('base64'))
+          encodeURIComponentAndCovertToBase64(JSON.stringify({ nodes: nodes.length ? nodes : [] })))
         setSearch(search, { replace: true })
       }
     }

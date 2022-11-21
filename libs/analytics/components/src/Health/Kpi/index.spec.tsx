@@ -10,8 +10,9 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange } from '@acx-ui/types'
-import { DateRange }      from '@acx-ui/utils'
+import { TimeStampRange }                      from '@acx-ui/types'
+import { DateRange }                           from '@acx-ui/utils'
+import { encodeURIComponentAndCovertToBase64 } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -165,11 +166,11 @@ describe('Kpi Section', () => {
     })
 
     const path = [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }]
-    const period = Buffer.from(JSON.stringify(filters)).toString('base64')
-    const analyticsNetworkFilter = Buffer.from(JSON.stringify({
+    const period = encodeURIComponentAndCovertToBase64(JSON.stringify(filters))
+    const analyticsNetworkFilter = encodeURIComponentAndCovertToBase64(JSON.stringify({
       path,
       raw: []
-    })).toString('base64')
+    }))
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>

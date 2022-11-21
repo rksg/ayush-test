@@ -11,23 +11,10 @@ import {
   SearchOutlined,
   Close
 }                          from '@acx-ui/icons'
-import { useNavigate, useParams, useTenantLink , useLocation } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                                     from '@acx-ui/utils'
+import { useNavigate, useParams, useTenantLink , useLocation }               from '@acx-ui/react-router-dom'
+import { notAvailableMsg, fixedEncodeURIComponent, decodeFixedURIComponent } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
-/*
-taken from
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
-to address special characters
-*/
-function fixedEncodeURIComponent (str: string) {
-  return encodeURIComponent(str).replace(
-    /[~!'()*_%]/g,
-    (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
-  )
-}
-
 
 function SearchBar () {
   const enableSearch = useIsSplitOn(Features.GLOBAL_SEARCH)
@@ -35,7 +22,7 @@ function SearchBar () {
   const placeholder = useIntl().$t({ defaultMessage: 'What are you looking for?' })
   const params = useParams()
   const { pathname, key } = useLocation()
-  const searchFromUrl = decodeURIComponent(params.searchVal || '')
+  const searchFromUrl = decodeFixedURIComponent(params.searchVal || '')
   const [ showSearchBar, setShowSearchBar ] = useState(searchFromUrl !== '')
   const [ searchText, setSearchText ] = useState(searchFromUrl)
   const navigate = useNavigate()
