@@ -37,8 +37,8 @@ export function NetworkFilter (props: CascaderProps) {
   const [
     currentValues,
     setCurrentValues
-  ] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
-  const [savedValues, setSavedValues] = React.useState(initialValues)
+  ] = React.useState<SingleValueType | SingleValueType[]>(() => initialValues)
+  const [savedValues, setSavedValues] = React.useState(() => initialValues)
   const [open, setOpen] = React.useState(false)
 
   const onClear = () => {
@@ -62,7 +62,7 @@ export function NetworkFilter (props: CascaderProps) {
     }
     const onClearMultiple = () => {
       onClear()
-      onApply(initialValues)
+      onApply([])
     }
 
     const withFooter = (menus: JSX.Element) => <>
@@ -102,7 +102,11 @@ export function NetworkFilter (props: CascaderProps) {
       ) => {
         const selectedNode = selectedOptions?.slice(-1)[0] as Option
         if (selectedNode?.ignoreSelection) return
-        onApply(value ?? initialValues)
+        if (!value) {
+          setCurrentValues([])
+          setSavedValues([])
+        }
+        onApply(value ?? [])
       }}
       expandTrigger='hover'
       showSearch={antProps.showSearch || true}

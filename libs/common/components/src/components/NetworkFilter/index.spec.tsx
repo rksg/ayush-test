@@ -171,19 +171,16 @@ describe('NetworkFilter', () => {
 
     const onApplyMock = jest.fn()
     const onClearMock = jest.fn()
-    const placeholder = 'test cascader'
     render(
       <CustomCascader
+        defaultValue={['n1']}
         options={options}
         onApply={onApplyMock}
-        placeholder={placeholder}
         multiple={false}
         allowClear={true}
         onClear={onClearMock}
       />
     )
-
-    expect(await screen.findByText(placeholder)).toBeVisible()
 
     fireEvent.mouseDown(await screen.findByRole('combobox'))
     const allOptions = screen.getAllByRole('menuitemcheckbox')
@@ -227,19 +224,17 @@ describe('NetworkFilter', () => {
 
     const onApplyMock = jest.fn()
     const onClearMock = jest.fn()
-    const placeholder = 'test cascader'
     render(
       <CustomCascader
+        defaultValue={[['n1']]}
         options={options}
         onApply={onApplyMock}
-        placeholder={placeholder}
         multiple={true}
         allowClear={true}
         onClear={onClearMock}
       />
     )
 
-    expect(await screen.findByText(placeholder)).toBeVisible()
 
     fireEvent.mouseDown(await screen.findByRole('combobox'))
     const allOptions1 = screen.getAllByRole('menuitemcheckbox')
@@ -248,7 +243,7 @@ describe('NetworkFilter', () => {
     fireEvent.click(allOptions1[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     expect(onApplyMock).toBeCalledTimes(1)
-    expect(onApplyMock).toHaveBeenCalledWith([['n1']])
+    expect(onApplyMock).toHaveBeenCalledWith([])
 
 
     fireEvent.mouseDown(await screen.findByRole('combobox'))
@@ -256,7 +251,7 @@ describe('NetworkFilter', () => {
     fireEvent.click(allOptions2[1])
     fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     expect(onApplyMock).toBeCalledTimes(2)
-    expect(onApplyMock).toHaveBeenNthCalledWith(2, [['n1'], ['n2']])
+    expect(onApplyMock).toHaveBeenNthCalledWith(2, [['n2']])
 
     fireEvent.mouseEnter(await screen.findByRole('combobox'))
     const clearIcon = await screen.findByLabelText('close-circle')
