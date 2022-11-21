@@ -15,7 +15,7 @@ describe('fixedEncodeURIComponent', () => {
 describe('decodeFixedURIComponent', () => {
   it('Should return decoded string', () => {
     expect(decodeFixedURIComponent('test~%21%2540%2523%2524%2525%255E%2526%2A%28%29')).toEqual(
-      'test~!@#$%^&*()'
+      'test~!%40%23%24%25%5E%26*()'
     )
   })
 })
