@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
+  DisabledButton,
   Loader,
   PageHeader,
   showActionModal,
@@ -305,7 +306,7 @@ export function MspCustomers () {
           <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>,
-          <Button key='download' disabled icon={<DownloadOutlined />} />
+          <DisabledButton key='download' icon={<DownloadOutlined />} />
         ]}
       />
       <MspEcTable />

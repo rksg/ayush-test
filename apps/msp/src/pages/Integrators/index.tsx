@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 
 import {
   Button,
+  DisabledButton,
   PageHeader,
   showActionModal,
   showToast,
@@ -192,7 +193,7 @@ export function Integrators () {
           <MspTenantLink to='/integrators/create' key='add'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
           </MspTenantLink>,
-          <Button key='download' disabled icon={<DownloadOutlined />} />
+          <DisabledButton key='download' icon={<DownloadOutlined />} />
         ]}
       />
       <IntegratorssTable />

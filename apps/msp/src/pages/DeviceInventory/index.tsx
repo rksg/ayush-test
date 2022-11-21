@@ -3,6 +3,7 @@ import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
+  DisabledButton,
   Loader,
   PageHeader,
   Table,
@@ -184,7 +185,7 @@ export function DeviceInventory () {
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <Button key='download' disabled icon={<DownloadOutlined />}></Button>
+          <DisabledButton key='download' icon={<DownloadOutlined />}></DisabledButton>
         ]}
       />
       <DeviceTable />
