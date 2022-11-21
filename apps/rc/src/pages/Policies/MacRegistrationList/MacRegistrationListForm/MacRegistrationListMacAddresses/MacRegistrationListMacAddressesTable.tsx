@@ -51,7 +51,7 @@ function useColumns () {
       dataIndex: 'email',
       title: $t({ defaultMessage: 'E-mail' }),
       render: function (data, row) {
-        return ''
+        return `${row.email}`
       }
     },
     {
@@ -101,8 +101,7 @@ export default function MacRegistrationListMacAddressesFormTable (props: MacAddr
 
     const { tenantId } = useParams()
     const [
-      deleteMacRegList,
-      { isLoading: isDeleteMacRegListUpdating }
+      deleteMacRegList
     ] = useDeleteMacRegListMutation()
 
     const rowActions: TableProps<MacRegistration>['rowActions'] = [{

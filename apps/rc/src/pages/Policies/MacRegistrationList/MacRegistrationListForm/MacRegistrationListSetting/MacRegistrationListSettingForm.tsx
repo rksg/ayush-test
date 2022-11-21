@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 
 import { Form, Input, Col, Radio, Row, Space, Select, DatePicker, InputNumber } from 'antd'
-import { useIntl }                                                                      from 'react-intl'
+import { useIntl }                                                              from 'react-intl'
 
 import { Button } from '@acx-ui/components'
 
@@ -12,7 +12,7 @@ export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const isExpired = Form.useWatch('listExpiration', form)
-  const { data: saveData, setData: updateSaveData } = useContext(MacRegistrationListFormContext)
+  const { data: saveData } = useContext(MacRegistrationListFormContext)
 
   return (
     <Row>

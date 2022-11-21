@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 
 import { Col, DatePicker, Form, Input, InputNumber, Row, Select, Space } from 'antd'
 import { Radio }                                                         from 'antd'
-import moment                                                            from 'moment-timezone'
 import { useIntl }                                                       from 'react-intl'
 
 import { Drawer, showToast }                                               from '@acx-ui/components'
@@ -80,47 +79,6 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       })
     }
   }
-
-  const expireFormFieldToPayload = (data: MacRegistrationFormFields) => {
-    if(data.listExpiration === 1) {
-      return {
-        expirationEnabled: false
-      }
-    } else if(data.listExpiration === 2) {
-      return {
-        expirationType: 'SPECIFIED_DATE',
-        expirationDate: moment(data.expireDate).toISOString(),
-        expirationEnabled: true
-      }
-    } else {
-      return {
-        expirationType: data.expireTimeUnit,
-        expirationOffset: data.expireAfter,
-        expirationEnabled: true
-      }
-    }
-  }
-
-  // const expirePayloadToFormFields = (data: MacRegistration) => {
-  //   if(!data.expirationEnabled) {
-  //     return {
-  //       listExpiration: 1
-  //     }
-  //   } else {
-  //     if(data.expirationType === 'SPECIFIED_DATE'){
-  //       return {
-  //         listExpiration: 2,
-  //         expireDate: moment(data.expirationDate)
-  //       }
-  //     }else {
-  //       return {
-  //         listExpiration: 3,
-  //         expireAfter: data.expirationOffset,
-  //         expireTimeUnit: data.expirationType
-  //       }
-  //     }
-  //   }
-  // }
 
   const addManuallyContent = <Row>
     <Col span={16}>

@@ -37,16 +37,16 @@ function useColumns () {
       align: 'center',
       render: function (data, row) {
         return row.macAddresses }
-    },
-    {
-      key: 'scope',
-      dataIndex: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      align: 'center',
-      render: function (data, row) {
-        return ''
-      }
     }
+    // {
+    //   key: 'scope',
+    //   dataIndex: 'scope',
+    //   title: $t({ defaultMessage: 'Scope' }),
+    //   align: 'center',
+    //   render: function (data, row) {
+    //     return ''
+    //   }
+    // }
   ]
   return columns
 }

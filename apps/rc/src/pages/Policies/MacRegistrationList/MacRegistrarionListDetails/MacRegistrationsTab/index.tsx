@@ -124,7 +124,7 @@ export function MacRegistrationsTab () {
       key: 'registration_date',
       dataIndex: 'registration_date',
       render: function (data, row) {
-        return ''
+        return `${row.expirationDate ? row.expirationDate : ''}`
       }
     },
     {

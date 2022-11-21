@@ -1,5 +1,5 @@
 import { Radio, Switch } from 'antd'
-import styled                          from 'styled-components/macro'
+import styled            from 'styled-components/macro'
 
 export const CleanExpiredSwitch = styled(Switch)`
   &.ant-switch {
