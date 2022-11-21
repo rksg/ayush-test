@@ -9,22 +9,24 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
-import ApDetails         from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }        from './pages/Devices/Wifi/ApEdit'
-import { ApForm }        from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }   from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable          from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable     from './pages/Networks/NetworksTable'
-import PoliciesTable     from './pages/Policies/PoliciesTable'
-import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
-import DHCPDetail        from './pages/Services/DHCPDetail'
-import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
-import MdnsProxyDetail   from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
-import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import SelectServiceForm from './pages/Services/SelectServiceForm'
+import SwitchesTable             from './pages/Devices/Switch/SwitchesTable'
+import ApDetails                 from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }           from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                  from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails            from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm               from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable             from './pages/Networks/NetworksTable'
+import MacRegistrationListsTable from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
+import MacRegistrationListForm   from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
+import PoliciesTable             from './pages/Policies/PoliciesTable'
+import SelectPolicyForm          from './pages/Policies/SelectPolicyForm'
+import DHCPDetail                from './pages/Services/DHCPDetail'
+import DHCPForm                  from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyDetail           from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
+import MdnsProxyForm             from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import SelectServiceForm         from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,
@@ -37,9 +39,6 @@ import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingFo
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
 import UserApDetails            from './pages/Users/Wifi/ApDetails'
 import UserApList               from './pages/Users/Wifi/ApList'
-import MacRegistrationListsTable from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
-import MacRegistrationListDetails from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
-import MacRegistrationListForm from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -162,9 +161,6 @@ function PolicyRoutes () {
         element={<h1>Rogue AP detection details page</h1>}
       />
       <Route path='policies/mac-registration-lists' element={<MacRegistrationListsTable />} />
-      <Route
-        path='policies/mac-registration-lists/:macRegistrationListId/mac-registration-lists-details/:activeTab'
-        element={<MacRegistrationListDetails />} />
       <Route path='policies/mac-registration-lists/add' element={<MacRegistrationListForm />} />
       <Route
         path='policies/mac-registration-lists/:macRegistrationListId/:action'
