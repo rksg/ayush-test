@@ -11,6 +11,7 @@ import {
   ApRadioBands,
   CommonUrlsInfo,
   createHttpRequest,
+  DhcpAp,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
@@ -21,6 +22,8 @@ import {
   ApRadio,
   ApViewModel,
   VenueCapabilities,
+  VenueDefaultApGroup,
+  AddApGroup,
   CommonResult
 } from '@acx-ui/rc/utils'
 import { getShortDurationFormat, getUserDateFormat } from '@acx-ui/utils'
@@ -51,7 +54,11 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'AddAps'
+            'AddAps',
+            'UpdateAp',
+            'DeleteAp',
+            'DeleteAps',
+            'AddApGroupLegacy'
           ]
           showActivityMessage(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
@@ -67,6 +74,15 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    apGroupsList: build.query<TableResult<ApGroup>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+        return {
+          ...venueListReq,
+          body: payload
+        }
+      }
+    }),
     addAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.addAp, params)
@@ -77,9 +93,73 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    getAp: build.query<ApDeep, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateAp: build.mutation<ApDeep, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    deleteAp: build.mutation<AP, RequestPayload>({
+      query: ({ params, payload }) => {
+        const api = !!payload ? WifiUrlsInfo.deleteAps : WifiUrlsInfo.deleteAp
+        const req = createHttpRequest(api, params)
+        return {
+          ...req,
+          ...(!!payload && { body: payload })
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    addApGroup: build.mutation<AddApGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    venueDefaultApGroup: build.query<VenueDefaultApGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)
+        return{
+          ...req
+        }
+      }
+    }),
     wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getDhcpAp: build.query<DhcpAp, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    downloadApLog: build.mutation<{ fileURL: string }, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.downloadApLog, params)
         return{
           ...req
         }
@@ -130,34 +210,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    deleteAp: build.mutation<AP, RequestPayload>({
-      query: ({ params, payload }) => {
-        const api = !!payload ? WifiUrlsInfo.deleteAps : WifiUrlsInfo.deleteAp
-        const req = createHttpRequest(api, params)
-        return {
-          ...req,
-          ...(!!payload && { body: payload })
-        }
-      },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
-    }),
-    getDhcpAp: build.query<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
-        return{
-          ...req,
-          body: payload
-        }
-      }
-    }),
-    downloadApLog: build.mutation<{ fileURL: string }, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.downloadApLog, params)
-        return{
-          ...req
-        }
-      }
-    }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
@@ -186,9 +238,16 @@ export const {
   useApLanPortsQuery,
   useApRadioCustomizationQuery,
   useAddApMutation,
+  useGetApQuery,
+  useUpdateApMutation,
+  useAddApGroupMutation,
   useApGroupListQuery,
   useLazyApGroupListQuery,
+  useApGroupsListQuery,
+  useLazyApGroupsListQuery,
   useWifiCapabilitiesQuery,
+  useVenueDefaultApGroupQuery,
+  useLazyVenueDefaultApGroupQuery,
   useDeleteApMutation,
   useDownloadApLogMutation,
   useRebootApMutation,

@@ -29,8 +29,20 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   {
     skip: !currentAP?.venueId
   })
-  const { data: lanPortsSetting } = useApLanPortsQuery({ params: { tenantId, serialNumber } })
-  const { data: radioSetting } = useApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
+
+  const { data: lanPortsSetting } = useApLanPortsQuery({
+    params: { tenantId, serialNumber }
+  },
+  {
+    skip: currentAP?.deviceStatusSeverity !== ApVenueStatusEnum.OPERATIONAL
+  })
+
+  const { data: radioSetting } = useApRadioCustomizationQuery({
+    params: { tenantId, serialNumber }
+  },
+  {
+    skip: currentAP?.deviceStatusSeverity !== ApVenueStatusEnum.OPERATIONAL
+  })
 
   const onClose = () => {
     setVisible(false)
@@ -41,7 +53,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       <Form
         labelCol={{ span: 12 }}
         labelAlign='left'
-        style={{ marginTop: '25px' }}
+        style={{ marginTop: currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ? '25px' : 0 }}
       >
         <Form.Item
           label={$t({ defaultMessage: 'Venue' })}
@@ -137,7 +149,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 label={$t({ defaultMessage: 'Mesh Role' })}
                 children={
                   currentAP?.meshRole ?
-                    currentAP.meshRole + ' (' + currentAP.hops + ' hop)' : $t({ defaultMessage: 'AP' })
+                    currentAP.meshRole + $t({ defaultMessage: ' ({hops} hop)' }, { hops: currentAP.hops }) :
+                    $t({ defaultMessage: 'AP' })
                 }
               />
               { currentAP?.rootAP?.name &&
@@ -223,7 +236,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       />
     }
   ]
-  const content = <ContentSwitcher tabDetails={tabDetails} size='large' space={5} />
+  const content = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ?
+    <ContentSwitcher tabDetails={tabDetails} size='large' space={5} /> :
+    <PropertiesTab />
 
   return (
     <Drawer

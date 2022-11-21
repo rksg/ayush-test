@@ -5,7 +5,8 @@ import {
   resetRanges,
   getShortDurationFormat,
   getUserDateFormat,
-  secondToTime
+  secondToTime,
+  millisToProperDuration
 } from './dateUtil'
 
 
@@ -90,6 +91,21 @@ describe('dateUtil', () => {
   it('Should return duration format: d&h <= 1', () => {
     expect(secondToTime(86400).toString()).toEqual(
       '1d 0h'
+    )
+  })
+  it('Should return duration long format: days > 0', () => {
+    expect(millisToProperDuration(336000000).toString()).toEqual(
+      '3 Days 21 Hours'
+    )
+  })
+  it('Should return duration long format: hours > 0', () => {
+    expect(millisToProperDuration(6000000).toString()).toEqual(
+      '1 Hour 40 Minutes'
+    )
+  })
+  it('Should return duration long format: hours < 1', () => {
+    expect(millisToProperDuration(86400).toString()).toEqual(
+      '1 Minute 26 Seconds'
     )
   })
 })

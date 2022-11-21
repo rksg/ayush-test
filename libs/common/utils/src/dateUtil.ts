@@ -3,6 +3,9 @@ import { pick }                             from 'lodash'
 import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { longDurationDisplay } from './formatter'
+import { getIntl }             from './intlUtil'
+
 export enum DateRange {
   today = 'Today',
   last1Hour = 'Last 1 Hour',
@@ -108,6 +111,7 @@ export const getUserDateFormat = (
 }
 
 export const getShortDurationFormat = (value: number | string) => {
+  const { $t } = getIntl()
   const d = moment.duration(value)
 
   const duration: { [index: string]: number } = {
@@ -129,13 +133,14 @@ export const getShortDurationFormat = (value: number | string) => {
   }
 
   if (result.length < 1) {
-    result.push('1 minute')
+    result.push($t({ defaultMessage: '1 minute' }))
   }
 
   return result.join(', ')
 }
 
-export const millisToProperDuration = (ms:number) => {
+export const millisToProperDuration = (ms:number, retureType?:string ) => {
+  const { $t } = getIntl()
   const days = Math.floor(ms / (24 * 60 * 60 * 1000))
   const daysms = ms % (24 * 60 * 60 * 1000)
   const hours = Math.floor((daysms) / (60 * 60 * 1000))
@@ -144,12 +149,21 @@ export const millisToProperDuration = (ms:number) => {
   const minutesms = ms % (60 * 1000)
   const seconds = Math.floor((minutesms) / (1000))
   if (days > 0) {
-    return days + ' ' + (days === 1 ? 'Day' : 'Days') + ' ' + hours + ' ' + (hours <= 1 ? 'Hour' : 'Hours')
+    if (retureType === 'short') {
+      return days + 'd ' + hours + 'h'
+    }
+    return $t(longDurationDisplay['days'], { days }) + ' ' + $t(longDurationDisplay['hours'], { hours })
   }
   if (hours > 0) {
-    return hours + ' ' + (hours === 1 ? 'Hour' : 'Hours') + ' ' + minutes + ' ' + (minutes <= 1 ? 'Minute' : 'Minutes')
+    if (retureType === 'short') {
+      return hours + 'h ' + minutes + 'm'
+    }
+    return $t(longDurationDisplay['hours'], { hours }) + ' ' + $t(longDurationDisplay['minutes'], { minutes })
   } else {
-    return minutes + ' ' + (minutes <= 1 ? 'Minute' : 'Minutes') + ' ' + seconds + ' ' + (seconds <= 1 ? 'Second' : 'Seconds')
+    if (retureType === 'short') {
+      return minutes + 'm ' + seconds + 's'
+    }
+    return $t(longDurationDisplay['minutes'], { minutes }) + ' ' + $t(longDurationDisplay['seconds'], { seconds })
   }
 }
 
@@ -157,10 +171,5 @@ export const secondToTime = (value:number) => {
   if (!value) {
     return ''
   }
-
-  return millisToProperDuration(value * 1000)
-    .replace(/\sDay[s]?/, 'd')
-    .replace(/\sHour[s]?/, 'h')
-    .replace(/\sMinute[s]?/, 'm')
-    .replace(/\sSecond[s]?/, 's')
+  return millisToProperDuration(value * 1000, 'short')
 }

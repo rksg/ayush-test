@@ -1,6 +1,7 @@
 import { APMeshRole } from '../constants'
 import { ApDeep }     from '../models/ApDeep'
 import { DeviceGps }  from '../models/DeviceGps'
+import { DhcpApInfo } from '../models/DhcpApInfo'
 
 import { ApVenueStatusEnum } from '.'
 
@@ -135,6 +136,21 @@ export interface ApGroup {
   name: string,
   venueId: string
 }
+
+export interface AddApGroup {
+  venueId: string,
+  apSerialNumbers?: unknown[],
+  name: string,
+  id?: string
+}
+
+export interface VenueDefaultApGroup {
+  id: string
+  isDefault: boolean
+  venueId: string,
+  aps?: ApDeep[]
+}
+
 export interface ApDetailHeader {
   title: string,
   headers: {
@@ -265,4 +281,8 @@ export interface ApRadio {
   enable24G: boolean
   enable50G: boolean
   useVenueSettings: boolean
+}
+export interface DhcpAp {
+  requestId: string,
+  response?: DhcpApInfo[]
 }

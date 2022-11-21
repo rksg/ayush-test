@@ -61,7 +61,7 @@ function ApPageHeader () {
         <Button key='date-filter' icon={<ClockOutlined />}>
           {$t({ defaultMessage: 'Last 24 Hours' })}
         </Button>,
-        <Dropdown key='ap-dropdown' overlay={menu}>
+        <Dropdown overlay={menu} key='actionMenu'>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
@@ -75,7 +75,7 @@ function ApPageHeader () {
           onClick={() =>
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/edit`
+              pathname: `${basePath.pathname}/edit/details`
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>

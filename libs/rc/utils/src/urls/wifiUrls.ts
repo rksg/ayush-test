@@ -105,6 +105,22 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap'
   },
+  updateAp: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber'
+  },
+  getVenueDefaultApGroup: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group'
+  },
+  getApGroupsList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/ap-groups'
+  },
+  addApGroup: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap-group'
+  },
   getDhcpAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/dhcp-ap'
