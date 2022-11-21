@@ -46,6 +46,7 @@ exports[`Layout should render correctly 1`] = `
                 tabindex="0"
               >
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -118,6 +119,7 @@ exports[`Layout should render correctly 1`] = `
                   </div>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -151,6 +153,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -184,6 +187,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -210,6 +214,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -243,6 +248,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -276,6 +282,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -309,6 +316,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -342,6 +350,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -410,6 +419,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -436,6 +446,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   role="menuitem"
                   style="padding-left: 16px;"
@@ -624,6 +635,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 tabindex="0"
               >
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/v/undefined/dashboard"
                   role="menuitem"
@@ -804,6 +816,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 tabindex="0"
               >
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-selected ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/dashboard"
                   role="menuitem"
@@ -880,6 +893,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </div>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/timeline"
                   role="menuitem"
@@ -914,6 +928,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/reports"
                   role="menuitem"
@@ -948,6 +963,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/1/placeholder"
                   role="menuitem"
@@ -975,6 +991,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/venues"
                   role="menuitem"
@@ -1009,6 +1026,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/devices"
                   role="menuitem"
@@ -1043,6 +1061,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/networks"
                   role="menuitem"
@@ -1077,6 +1096,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/services"
                   role="menuitem"
@@ -1111,6 +1131,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/policies"
                   role="menuitem"
@@ -1183,6 +1204,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/2/placeholder"
                   role="menuitem"
@@ -1210,6 +1232,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   </span>
                 </li>
                 <li
+                  aria-disabled="false"
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test-/t/t-id/administration"
                   role="menuitem"
