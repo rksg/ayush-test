@@ -84,11 +84,12 @@ export function checkObjectNotExists <ItemType> (
   list: ItemType[],
   value: ItemType,
   entityName: string,
-  key = 'name'
+  key = 'name',
+  extra?: string
 ) {
   const { $t } = getIntl()
   if (list.filter(item => isEqual(item, value)).length !== 0) {
-    return Promise.reject($t(validationMessages.duplication, { entityName, key }))
+    return Promise.reject($t(validationMessages.duplication, { entityName, key, extra }))
   }
   return Promise.resolve()
 }
@@ -230,9 +231,10 @@ export function checkVlanMember (value: string) {
   return Promise.reject($t(validationMessages.invalid))
 }
 
-export function checkValuesNotEqual (value: string, checkValue: string) {
+export function checkValues (value: string, checkValue: string, checkEqual?: boolean) {
   const { $t } = getIntl()
-  if (value && isEqual(value, checkValue)) {
+  const valid = checkEqual ? isEqual(value, checkValue) : !isEqual(value, checkValue)
+  if (value && !valid) {
     return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()

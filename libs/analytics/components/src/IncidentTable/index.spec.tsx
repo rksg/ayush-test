@@ -223,27 +223,6 @@ describe('IncidentTable', () => {
     }
   })
 
-  it('should render column header sorting', async () => {
-    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
-      data: { network: { hierarchyNode: { incidents: incidentTests } } }
-    })
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/t/tenantId/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
-    for (let i = 0; i < columnHeaders.length; i++) {
-      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1)!)
-      await screen.findAllByRole('img', { hidden: false, name: 'caret-up' })
-      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1)!)
-      await screen.findAllByRole('img', { hidden: false, name: 'caret-down' })
-    }
-  })
-
   it('should allow for muting', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
