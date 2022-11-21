@@ -192,7 +192,7 @@ export function Integrators () {
           <MspTenantLink to='/integrators/create' key='add'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
           </MspTenantLink>,
-          <Button key='download' icon={<DownloadOutlined />} />
+          <Button key='download' disabled icon={<DownloadOutlined />} />
         ]}
       />
       <IntegratorssTable />

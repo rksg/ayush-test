@@ -305,7 +305,7 @@ export function MspCustomers () {
           <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>,
-          <Button key='download' icon={<DownloadOutlined />} />
+          <Button key='download' disabled icon={<DownloadOutlined />} />
         ]}
       />
       <MspEcTable />

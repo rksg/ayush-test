@@ -184,7 +184,7 @@ export function DeviceInventory () {
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <Button key='download' icon={<DownloadOutlined />}></Button>
+          <Button key='download' disabled icon={<DownloadOutlined />}></Button>
         ]}
       />
       <DeviceTable />
