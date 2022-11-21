@@ -1,5 +1,6 @@
 import { APMeshRole } from '../constants'
 import { ApDeep }     from '../models/ApDeep'
+import { DhcpApInfo } from '../models/DhcpApInfo'
 
 export interface APRadio {
   channel?: number,
@@ -34,6 +35,21 @@ export interface ApGroup {
   name: string,
   venueId: string
 }
+
+export interface AddApGroup {
+  venueId: string,
+  apSerialNumbers?: unknown[],
+  name: string,
+  id?: string
+}
+
+export interface VenueDefaultApGroup {
+  id: string
+  isDefault: boolean
+  venueId: string,
+  aps?: ApDeep[]
+}
+
 export interface ApDetailHeader {
   title: string,
   headers: {
@@ -138,4 +154,9 @@ export interface ApModel {
 	supportChannel144: boolean,
 	supportDual5gMode: boolean,
 	supportTriRadio: boolean
+}
+
+export interface DhcpAp {
+  requestId: string,
+  response?: DhcpApInfo[]
 }
