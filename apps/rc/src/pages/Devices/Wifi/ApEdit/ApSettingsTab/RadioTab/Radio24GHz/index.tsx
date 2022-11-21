@@ -4,6 +4,7 @@ import { Col, Form, Row, Select, Slider, Switch } from 'antd'
 import _                                          from 'lodash'
 import { useIntl }                                from 'react-intl'
 
+import { RadioSettingsChannels }           from '@acx-ui/rc/components'
 import {
   useGetApRadioQuery,
   useGetVenueRadioCustomizationQuery,
@@ -11,12 +12,12 @@ import {
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { ApEditContext }     from '../../..'
 import {
   channelSelectionMethodsOptions,
   txPowerAdjustmentOptions
 } from '../contents'
-import { RadioSettingsChannels } from '../RadioSettingsChannels'
-import { DisabledDiv }           from '../styledComponents'
+import { DisabledDiv } from '../styledComponents'
 
 const { useWatch } = Form
 
@@ -225,6 +226,7 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
           displayBarSettings={[]}
           channelBars={channelBars}
           disabled={useVenueSettings}
+          editContext={ApEditContext}
         />
           }
         </Col>

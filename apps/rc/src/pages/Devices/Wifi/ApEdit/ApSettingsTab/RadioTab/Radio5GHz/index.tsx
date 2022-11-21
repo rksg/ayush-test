@@ -4,6 +4,7 @@ import { Col, Form, Row, Select, Slider, Switch } from 'antd'
 import _                                          from 'lodash'
 import { useIntl }                                from 'react-intl'
 
+import { RadioSettingsChannels }           from '@acx-ui/rc/components'
 import {
   useGetApRadioQuery,
   useGetVenueRadioCustomizationQuery,
@@ -11,12 +12,12 @@ import {
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { ApEditContext }     from '../../..'
 import {
   channelSelectionMethodsOptions,
   txPowerAdjustmentOptions
 } from '../contents'
 import { ChannelBars, split5GChannels } from '../contents'
-import { RadioSettingsChannels }        from '../RadioSettingsChannels'
 import { DisabledDiv }                  from '../styledComponents'
 
 const { useWatch } = Form
@@ -82,8 +83,7 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
       )
     }
 
-    if (defaultChannelsData && venueData?.channelBandwidth
-      && _.get(defaultChannelsData, '5GChannels.indoor.' + channelType) ){
+    if (defaultChannelsData && venueData?.channelBandwidth){
       setChannelType(venueData?.channelBandwidth === 'AUTO' ?
         venueData?.channelBandwidth.toLowerCase() : venueData?.channelBandwidth)
 
@@ -120,10 +120,10 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
       })
     }
 
-    if(allowedChannels){
+    if(allowedChannels.length > 0){
       form.setFieldValue(['radioParams50G', 'allowedChannels'], allowedChannels)
     }else if(allowedVenueChannels){
-      form.setFieldValue(['radioParams50G', 'allowedChannels'], allowedVenueChannels)
+      form.setFieldValue(['radioParams50G', 'allowedIndoorChannels'], allowedVenueChannels)
     }
 
     if(venueData){
@@ -148,7 +148,7 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
       }
     }
   }, [defaultChannelsData, channelBandwidth,
-    groupSize, channelType, allowedChannels, allowedVenueChannels, venueData])
+    allowedChannels, allowedVenueChannels, venueData])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
@@ -262,6 +262,7 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
             displayBarSettings={['5G', 'DFS']}
             channelBars={indoorChannelBars}
             disabled={useVenueSettings}
+            editContext={ApEditContext}
           />
             }
           </div>
