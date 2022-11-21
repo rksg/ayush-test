@@ -165,11 +165,12 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
         <Col span={8}>
           <Form.Item
             name={['enable50G']}
-            label='Enable 5.0 GHz band:'
+            label={$t({ defaultMessage: 'Enable 5.0 GHz band:' })}
             valuePropName='checked'
             style={{ marginTop: '16px' }}
             initialValue={true}
-            children={useVenueSettings ? <span>{enable50G ? 'On':'Off'}</span>
+            children={useVenueSettings ? <span>{enable50G ?
+              $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })}</span>
               :<Switch onChange={(checked)=>onChange(checked, 'enable50G')} />}
           />
           {enable50G && <>
