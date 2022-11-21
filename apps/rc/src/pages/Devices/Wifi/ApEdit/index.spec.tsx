@@ -248,6 +248,7 @@ describe('ApEdit', () => {
       await screen.findByText('test ap')
       await screen.findByText(/Currently using LAN port settings of the venue/)
       expect(asFragment()).toMatchSnapshot()
+      await fireEvent.click(await screen.findByRole('button', { name: 'My-Venue' }))
     })
 
     it('should handle customized setting updated', async () => {
@@ -297,26 +298,34 @@ describe('ApEdit', () => {
       await showUnsavedChangesModal('LAN Port', false)
     })
 
-    // TODO:
-    // it('should open invalid changes modal', async () => {
-    //   render(<Provider><ApEdit /></Provider>, {
-    //     route: { params },
-    //     path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
-    //   })
-    //   await screen.findByText('test ap')
-    //   await screen.findByText(/Currently using LAN port settings of the venue/)
-    //   await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+    it('should open invalid changes modal', async () => {
+      mockServer.use(
+        rest.get(WifiUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json({
+            ...apLanPorts[0],
+            useVenueSettings: false
+          })))
+      )
 
-    //   const tabPanel = screen.getAllByRole('tabpanel', { hidden: false })[2]
-    //   fireEvent.mouseDown(within(tabPanel).getByLabelText(/Port type/))
-    //   await userEvent.click(await screen.getAllByText('GENERAL')[1])
-    //   expect(within(tabPanel).getByLabelText(/VLAN member/)).not.toBeDisabled()
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await screen.findByText('test ap')
+      await screen.findByText(/Custom settings/)
+      await screen.findByText(/Use Venue Settings/)
 
-    //   fireEvent.change(within(tabPanel).getByLabelText(/VLAN untag ID/), { target: { value: '' } })
-    //   fireEvent.change(within(tabPanel).getByLabelText(/VLAN member/), { target: { value: '' } })
-    //   fireEvent.blur(within(tabPanel).getByLabelText(/VLAN member/))
-    //   await userEvent.click(await screen.findByText('Back to device details'))
-    //   await showInvalidChangesModal('LAN Port', true)
-    // })
+      const tabPanel = screen.getAllByRole('tabpanel', { hidden: false })[2]
+      fireEvent.mouseDown(within(tabPanel).getByLabelText(/Port type/))
+      await userEvent.click(await screen.getAllByText('GENERAL')[1])
+      expect(within(tabPanel).getByLabelText(/VLAN untag ID/)).not.toBeDisabled()
+      expect(within(tabPanel).getByLabelText(/VLAN member/)).not.toBeDisabled()
+
+      fireEvent.change(within(tabPanel).getByLabelText(/VLAN untag ID/), { target: { value: '' } })
+      fireEvent.change(within(tabPanel).getByLabelText(/VLAN member/), { target: { value: '' } })
+      fireEvent.blur(within(tabPanel).getByLabelText(/VLAN member/))
+      await userEvent.click(await screen.findByText('Back to device details'))
+      await showInvalidChangesModal('LAN Port', true)
+    })
   })
 })
