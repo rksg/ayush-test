@@ -318,6 +318,7 @@ describe('CalenderRangePicker', () => {
   })
   it('should disable future time selection when startdate and end date are same', async () => {
     const onDateChange = jest.fn()
+    const apply = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
@@ -327,7 +328,7 @@ describe('CalenderRangePicker', () => {
             endDate: moment('03/01/2022').hours(12)
           }}
           onDateChange={onDateChange}
-          onDateApply={() => {}}
+          onDateApply={apply}
           showTimePicker
         />
       </IntlProvider>
@@ -340,5 +341,8 @@ describe('CalenderRangePicker', () => {
     const hourSelect = await screen.findAllByText('11')
     await user.click(hourSelect[hourSelect.length - 1])
     expect(screen.getByRole('display-date-range')).not.toHaveTextContent('11:')
+    const applyButton = await screen.findByText('Apply')
+    await user.click(applyButton)
+    expect(apply).toBeCalledTimes(0)
   })
 })
