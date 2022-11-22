@@ -107,6 +107,10 @@ export const validationMessages = {
     defaultMessage: `The cellular AP cannot 
       be moved to the venue which doesn\'t enable DHCP service`,
     description: 'Validation - Cellular AP Dhcp checks'
+  }),
+  emailAddress: defineMessage({
+    defaultMessage: 'Please enter a valid email address',
+    description: 'Validation - email address checks'
   })
 }
 
