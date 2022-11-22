@@ -10,9 +10,8 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange }                      from '@acx-ui/types'
-import { DateRange }                           from '@acx-ui/utils'
-import { encodeURIComponentAndCovertToBase64 } from '@acx-ui/utils'
+import { TimeStampRange }                                              from '@acx-ui/types'
+import { DateRange, NetworkPath, encodeURIComponentAndCovertToBase64 } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -128,12 +127,12 @@ describe('Kpi Section', () => {
         }
       }
     })
-    const path = [{ type: 'network', name: 'Network' }]
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     render(<Router><Provider>
       <HealthPageContext.Provider
         value={{ ...healthContext, path }}
       >
-        <KpiSection tab={'overview'} filters={{ path }} />
+        <KpiSection tab={'overview'} filters={{ path } as unknown as AnalyticsFilter} />
       </HealthPageContext.Provider>
     </Provider></Router>)
     // eslint-disable-next-line max-len
@@ -174,7 +173,7 @@ describe('Kpi Section', () => {
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={{ path }} />
+        <KpiSection tab={'overview'} filters={{ path } as unknown as AnalyticsFilter} />
       </HealthPageContext.Provider>
     </Provider>, {
       route: {

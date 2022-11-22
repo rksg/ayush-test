@@ -31,7 +31,7 @@ export const validationMessages = {
       {entityName} with that {key, select,
         name {name}
         other {value}
-      } already exists
+      } already exists{ extra }
     `,
     description: 'Validation - duplication checks'
   }),
@@ -98,6 +98,19 @@ export const validationMessages = {
   gpsCoordinates: defineMessage({
     defaultMessage: 'Please enter valid GPS coordinates',
     description: 'Validation - GPS coordinates checks'
+  }),
+  diffVenueCountry: defineMessage({
+    defaultMessage: 'Cannot move AP to another venue in different country',
+    description: 'Validation - Venue Country checks'
+  }),
+  cellularApDhcpLimitation: defineMessage({
+    defaultMessage: `The cellular AP cannot 
+      be moved to the venue which doesn\'t enable DHCP service`,
+    description: 'Validation - Cellular AP Dhcp checks'
+  }),
+  emailAddress: defineMessage({
+    defaultMessage: 'Please enter a valid email address',
+    description: 'Validation - email address checks'
   })
 }
 
