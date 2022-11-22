@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Empty, Space }   from 'antd'
-import { clone, isEmpty } from 'lodash'
-import { useIntl }        from 'react-intl'
-import { useParams }      from 'react-router-dom'
+import { Empty, Space }        from 'antd'
+import { clone, get, isEmpty } from 'lodash'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
-import { DisabledButton, Loader, showActionModal }                                                                from '@acx-ui/components'
-import { BulbOutlined }                                                                                           from '@acx-ui/icons'
-import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useUpdateFloorPlanMutation } from '@acx-ui/rc/services'
-import { FloorPlanDto, FloorPlanFormDto }                                                                         from '@acx-ui/rc/utils'
+import { DisabledButton, Loader, showActionModal }                                                                                               from '@acx-ui/components'
+import { BulbOutlined }                                                                                                                          from '@acx-ui/icons'
+import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useUpdateFloorPlanMutation }         from '@acx-ui/rc/services'
+import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -31,9 +31,35 @@ export function FloorPlan () {
   const { $t } = useIntl()
   const [showGalleryView, setShowGalleryView] = useState(false)
 
-  const [floorPlans, setFloorPlans] = useState<FloorPlanDto[]>()
+  const [floorPlans, setFloorPlans] = useState<FloorPlanDto[]>([] as FloorPlanDto[])
   const [selectedFloorPlan, setSelectedFloorPlan] = useState({} as FloorPlanDto)
   const [updatedFloorPlanName, setUpdatedFloorPlanName] = useState<string>()
+  const [devicesByFlooplanId, setDevicesByFlooplanId] = useState<{
+    [key: string]: TypeWiseNetworkDevices
+}>({} as {
+  [key: string]: TypeWiseNetworkDevices
+})
+
+  const defaultDevices = {
+    ap: [],
+    switches: [],
+    LTEAP: [],
+    RogueAP: [],
+    cloudpath: [],
+    DP: []
+  } as TypeWiseNetworkDevices
+
+  const networkDevicePayload: NetworkDevicePayload = {
+    // eslint-disable-next-line max-len
+    fields: ['id', 'name', 'switchName', 'deviceStatus', 'serialNumber', 'rogueCategory', 'floorplanId', 'xPercent', 'yPercent'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+
+  const [networkDevicesVisibility, setNetworkDevicesVisibility] = useState<NetworkDeviceType[]>([])
+
+  const getNetworkDevices = useGetAllDevicesQuery({ params, payload: networkDevicePayload })
 
   useEffect(() => {
     setFloorPlans([])
@@ -50,6 +76,23 @@ export function FloorPlan () {
       }, 200)
     }
   }, [floorPlanQuery?.data])
+
+  useEffect(() => {
+    if (floorPlans.length) {
+      const _networkDevicesVisibility: NetworkDeviceType[] = [...networkDevicesVisibility]
+      for (let deviceType in NetworkDeviceType) {
+        if (deviceType === NetworkDeviceType.rogue_ap) {
+          continue // rouge ap is not controlled(placed) by user
+        }
+        const _deviceType = deviceType as keyof typeof NetworkDeviceType
+        const networkDevicetype = NetworkDeviceType[_deviceType] as NetworkDeviceType
+        _networkDevicesVisibility.push(networkDevicetype)
+      }
+      setNetworkDevicesVisibility(_networkDevicesVisibility)
+      loadNetworkDevices()
+    }
+  }, [selectedFloorPlan, getNetworkDevices?.data])
+
 
   const [
     deleteFloorPlan,
@@ -73,6 +116,100 @@ export function FloorPlan () {
   const onFloorPlanClick = (selectedFloorPlan: FloorPlanDto) => {
     setSelectedFloorPlan(selectedFloorPlan)
     setShowGalleryView(false)
+  }
+
+  const loadNetworkDevices = async () => {
+
+    if (getNetworkDevices?.data) {
+      const _devices = getNetworkDevices?.data?.data[0]
+
+      let devices = { ..._devices }
+      const networkDeviceTypeArray = Object.values(NetworkDeviceType)
+      let typeWisePlacedNetworkDevices: TypeWiseNetworkDevices = { ...defaultDevices }
+      let typeWiseUnplacedNetworkDevices: TypeWiseNetworkDevices = { ...defaultDevices }
+      let floorplansDevices: { [key: string]: TypeWiseNetworkDevices } = {}
+      for (const type of networkDeviceTypeArray) {
+        if (type === NetworkDeviceType.lte_ap) {
+          continue
+        }
+        if (devices && !devices[type]) {
+          devices[type] = [] as NetworkDevice[]
+        }
+
+        devices[type] = devices[type].map((device: NetworkDevice) => ({
+          ...device,
+          networkDeviceType: type
+        }))
+
+        extractPlacedDevices(type, devices[type],
+          typeWisePlacedNetworkDevices, typeWiseUnplacedNetworkDevices)
+
+        // TODO:
+        await preparePlacedDevicePosition(type, typeWisePlacedNetworkDevices)
+        if (!isEmpty(typeWisePlacedNetworkDevices[type]))
+          await prepareFloorplansDevicesObject(type, typeWisePlacedNetworkDevices,
+            floorplansDevices)
+
+      }
+
+      // console.log(devicesByFlooplanId)
+      setDevicesByFlooplanId(floorplansDevices)
+
+    }
+  }
+
+  const extractPlacedDevices = (deviceType: NetworkDeviceType,
+    devices: NetworkDevice[],
+    typeWisePlacedNetworkDevices: TypeWiseNetworkDevices,
+    typeWiseUnplacedNetworkDevices: TypeWiseNetworkDevices) => {
+    const _placedDevices: NetworkDevice[] = []
+    const _unplacedDevices: NetworkDevice[] = []
+
+    devices.forEach((device) => {
+      if (!isEmpty(device.floorplanId)) {
+        _placedDevices.push(device)
+      } else {
+        _unplacedDevices.push(device)
+      }
+    })
+
+    typeWisePlacedNetworkDevices[deviceType] = _placedDevices
+    typeWiseUnplacedNetworkDevices[deviceType] = _unplacedDevices
+
+  }
+
+  const preparePlacedDevicePosition = async (deviceType: NetworkDeviceType,
+    typeWisePlacedNetworkDevices: TypeWiseNetworkDevices) => {
+    const _typeWisePlacedNetworkDevices: NetworkDevice[] =
+    typeWisePlacedNetworkDevices[deviceType].map(device => { return ({
+      ...device,
+      position: {
+        floorplanId: device.floorplanId,
+        xPercent: device.xPercent,
+        yPercent: device.yPercent
+      } as NetworkDevicePosition
+    })})
+
+    typeWisePlacedNetworkDevices[deviceType] = _typeWisePlacedNetworkDevices
+
+  }
+
+  const prepareFloorplansDevicesObject = async (deviceType: NetworkDeviceType,
+    typeWisePlacedNetworkDevices: TypeWiseNetworkDevices,
+    floorplansDevices: { [key: string]: TypeWiseNetworkDevices }) => {
+
+    floorPlans.forEach(async (floorplan: FloorPlanDto) => {
+
+      const targetDevices = typeWisePlacedNetworkDevices[deviceType]
+        .filter((device: NetworkDevice) =>
+          get(device, 'position.floorplanId') === floorplan.id)
+
+      if (!isEmpty(targetDevices)) {
+        floorplansDevices[floorplan.id] = { ...defaultDevices, ...floorplansDevices[floorplan.id] }
+        floorplansDevices[floorplan.id][deviceType] = targetDevices
+      }
+
+    })
   }
 
   const onDeleteFloorPlan = (floorPlanId: string, floorPlanName: string) => {
@@ -105,13 +242,19 @@ export function FloorPlan () {
       {floorPlans?.length ?
         <UI.FloorPlanContainer>
           { showGalleryView ?
-            <GalleryView floorPlans={floorPlans ?? []} onFloorPlanClick={onFloorPlanClick}/>
+            <GalleryView
+              floorPlans={floorPlans ?? []}
+              onFloorPlanClick={onFloorPlanClick}
+              networkDevices={devicesByFlooplanId}
+              networkDevicesVisibility={networkDevicesVisibility}/>
             : <PlainView
               floorPlans={floorPlans ?? []}
               toggleGalleryView={galleryViewHandler}
               defaultFloorPlan={!isEmpty(selectedFloorPlan) ? selectedFloorPlan : floorPlans[0]}
               deleteFloorPlan={onDeleteFloorPlan}
-              onAddEditFloorPlan={onAddEditFloorPlan}/>
+              onAddEditFloorPlan={onAddEditFloorPlan}
+              networkDevices={devicesByFlooplanId}
+              networkDevicesVisibility={networkDevicesVisibility}/>
           }
           <UI.StyledSpace size={24}>
             <AddEditFloorplanModal

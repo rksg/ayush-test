@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Floor Plans Floor Plans should render correctly 1`] = `
+<DocumentFragment>
+  <div>
+    <div
+      class="sc-jSMfEi jna-dNS device-container context-Ap"
+    >
+      <div
+        class="marker ap-status-severity-attention"
+        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+      >
+        <div
+          data-testid="NetworkCoverage"
+        />
+         
+      </div>
+    </div>
+    <div
+      class="sc-jSMfEi jna-dNS device-container context-Ap"
+    >
+      <div
+        class="marker switch-status-never-contacted-cloud"
+        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+      >
+        <div
+          data-testid="SwitchDevice"
+        />
+         
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

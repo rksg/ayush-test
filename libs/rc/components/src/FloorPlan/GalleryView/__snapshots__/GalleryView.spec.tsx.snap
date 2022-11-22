@@ -45,8 +45,9 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
             class="ant-card-body"
           >
             <div
-              class="sc-jSMfEi fCVTqh"
+              class="sc-gKXOVf LHzlb"
             >
+              <div />
               <img
                 alt="img"
                 data-testid="fpImage"
@@ -97,8 +98,9 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
             class="ant-card-body"
           >
             <div
-              class="sc-jSMfEi fCVTqh"
+              class="sc-gKXOVf LHzlb"
             >
+              <div />
               <img
                 alt="img"
                 data-testid="fpImage"
