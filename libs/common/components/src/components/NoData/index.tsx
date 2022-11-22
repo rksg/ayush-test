@@ -29,6 +29,17 @@ export function NoActiveData ({ text }: NoDataWrapperProps) {
   )
 }
 
+export function NoActiveContent ({ text }: NoDataWrapperProps) {
+  const { $t } = useIntl()
+  text = text ? text : $t({ defaultMessage: 'No active data' })
+  return (
+    <>
+      <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
+      <UI.NoActiveTextWrapper>{text}</UI.NoActiveTextWrapper>
+    </>
+  )
+}
+
 export function NotAvailable () {
   const { $t } = useIntl()
   return (

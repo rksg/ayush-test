@@ -35,6 +35,10 @@ export const LargePercent = styled.span`
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-1-font-size);
   font-weight: var(--acx-headline-2-font-weight-bold);
+  line-height: var(--acx-headline-1-line-height);
+  display: flex;
+  margin-top: 10px;
+  align-items: baseline;
 `
 
 export const KpiTitle = styled.span`

@@ -1,13 +1,13 @@
 import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card, DonutChart, NoActiveData, GridRow, GridCol } from '@acx-ui/components'
-import type { DonutChartData }                            from '@acx-ui/components'
 import {
   IncidentBySeverityDonutChart, KpiWidget
 } from '@acx-ui/analytics/components'
-import { healthApi }                      from '@acx-ui/analytics/services'
-import {  useAlarmsListQuery }                            from '@acx-ui/rc/services'
+import { healthApi }                                                           from '@acx-ui/analytics/services'
+import { AnalyticsFilter, kpiConfig }                                          from '@acx-ui/analytics/utils'
+import { cssStr, Loader, Card, DonutChart, GridRow, GridCol, NoActiveContent } from '@acx-ui/components'
+import type { DonutChartData }                                                 from '@acx-ui/components'
+import {  useAlarmsListQuery }                                                 from '@acx-ui/rc/services'
 import {
   Alarm,
   ApViewModel,
@@ -16,7 +16,6 @@ import {
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import * as UI from './styledComponents'
-import { AnalyticsFilter, kpiConfig }     from '@acx-ui/analytics/utils'
 
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
@@ -73,7 +72,7 @@ export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
 export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: AnalyticsFilter }) {
   const params = useParams()
   const { $t } = useIntl()
-  const { currentAP, filters } = props 
+  const { currentAP, filters } = props
 
   // Alarms list query
   const alarmQuery = useTableQuery({
@@ -97,61 +96,57 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
 
   const alarmData = getChartData(alarmQuery.data?.data!)
 
-  const {data: healthData}= healthApi.useGetKpiThresholdsQuery({ ...filters,
+  const { data: healthData }= healthApi.useGetKpiThresholdsQuery({ ...filters,
     kpis: ['timeToConnect','clientThroughput'] })
 
   return (
     <Card title={currentAP?.model} type='solid-bg'>
-        <GridRow style={{ flexGrow: '1' }}>
-          <GridCol col={{ span: 2 }} />
-          <GridCol col={{ span: 4 }}>
-            <UI.Wrapper>
+      <GridRow style={{ flexGrow: '1' }}>
+        <GridCol col={{ span: 2 }} />
+        <GridCol col={{ span: 4 }}>
+          <UI.Wrapper>
             <Loader states={[alarmQuery]}>
-              <AutoSizer>
-                {({ height, width }) => (
-                   alarmData && alarmData.length > 0
-                    ? <DonutChart
-                      style={{ width, height }}
-                      legend={'name-value'}
-                      data={alarmData}/>
-                 : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })} />
-                )}
-              </AutoSizer>
+              { alarmData && alarmData.length > 0
+                ? <DonutChart
+                  style={{ width: 100, height: 100 }}
+                  legend={'name-value'}
+                  data={alarmData}/>
+                : <NoActiveContent text={$t({ defaultMessage: 'No active alarms' })} />
+              }
             </Loader>
-            </UI.Wrapper>
-          </GridCol>
-          <GridCol col={{ span: 4 }}>
-            <UI.Wrapper>
-              2
-            {/* <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/> */}
-            </UI.Wrapper>
-          </GridCol>
-          <GridCol col={{ span: 4 }}>
-            <UI.Wrapper>
-              <KpiWidget filters={filters} name='connectionSuccess' type='no-chart-style'/>
-            </UI.Wrapper>
-          </GridCol>
-          <GridCol col={{ span: 4 }}>
-            <UI.Wrapper>
-              <KpiWidget filters={filters}
-                type='no-chart-style'
-                name='timeToConnect'
-                threshold={healthData?.timeToConnectThreshold?.value ??
+          </UI.Wrapper>
+        </GridCol>
+        <GridCol col={{ span: 4 }}>
+          <UI.Wrapper>
+            <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
+          </UI.Wrapper>
+        </GridCol>
+        <GridCol col={{ span: 5 }}>
+          <UI.Wrapper>
+            <KpiWidget filters={filters} name='connectionSuccess' type='no-chart-style'/>
+          </UI.Wrapper>
+        </GridCol>
+        <GridCol col={{ span: 5 }}>
+          <UI.Wrapper>
+            <KpiWidget filters={filters}
+              type='no-chart-style'
+              name='timeToConnect'
+              threshold={healthData?.timeToConnectThreshold?.value ??
                   kpiConfig.timeToConnect.histogram.initialThreshold}
-              />
-            </UI.Wrapper>
-          </GridCol>
-          <GridCol col={{ span: 4 }}>
-            <UI.Wrapper>
-              <KpiWidget filters={filters}
-                type='no-chart-style'
-                name='clientThroughput'
-                threshold={healthData?.clientThroughputThreshold?.value ??
+            />
+          </UI.Wrapper>
+        </GridCol>
+        <GridCol col={{ span: 4 }}>
+          <UI.Wrapper>
+            <KpiWidget filters={filters}
+              type='no-chart-style'
+              name='clientThroughput'
+              threshold={healthData?.clientThroughputThreshold?.value ??
                 kpiConfig.clientThroughput.histogram.initialThreshold}
-              />
-            </UI.Wrapper>
-          </GridCol>
-        </GridRow>
+            />
+          </UI.Wrapper>
+        </GridCol>
+      </GridRow>
     </Card>
   )
 }

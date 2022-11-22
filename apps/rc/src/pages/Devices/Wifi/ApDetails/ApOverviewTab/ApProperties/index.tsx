@@ -8,23 +8,23 @@ import {
   Card,
   Subtitle
 } from '@acx-ui/components'
-import { useApDetailsQuery, useApViewModelQuery }    from '@acx-ui/rc/services'
 import { ApDetails, ApVenueStatusEnum, ApViewModel } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                     from '@acx-ui/react-router-dom'
+import { TenantLink }                                from '@acx-ui/react-router-dom'
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
 
-export function ApProperties (apViewModelQuery: any, apDetailsQuery: any) {
+export function ApProperties (props:{
+  currentAP: ApViewModel, apDetails: ApDetails, isLoading: boolean
+}) {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const currentAP = apViewModelQuery.data
-  const apDetails = apDetailsQuery.data
+  const { currentAP, apDetails, isLoading } = props
   const onMoreAction = () => {
     setVisible(true)
   }
   return (
-    <Loader states={[apViewModelQuery, apDetailsQuery]}>
+    <Loader states={[{ isLoading }]}>
       <Card title={$t({ defaultMessage: 'AP Properties' })}
         action={{
           actionName: $t({ defaultMessage: 'More' }),
