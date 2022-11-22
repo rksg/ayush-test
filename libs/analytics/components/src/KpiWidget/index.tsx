@@ -67,11 +67,13 @@ export const getKpiInfoText = (numerator:number,
 export function KpiWidget ({
   name,
   threshold,
-  filters
+  filters,
+  type
 }: {
   name: KpiNames;
   threshold?: number | null;
   filters: AnalyticsFilter;
+  type?: string;
 }){
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const queryResults= useKpiTimeseriesQuery({
@@ -108,6 +110,24 @@ export function KpiWidget ({
 
   return(
     <Loader states={[queryResults]}>
+      {type === 'no-chart-style' ? 
+      <GridRow>
+        <GridCol col={{ span: 24 }} >
+          <UI.Wrapper>
+            <UI.KpiTitle>
+              {kpiInfoText[name].title}
+            </UI.KpiTitle>
+          </UI.Wrapper>
+          <Tooltip title={kpiInfoText[name].tooltip}>
+            <UI.Wrapper>
+              <UI.LargePercent>
+                {intl.$t(intlFormats.percentFormatRound, { value: percent })}
+              </UI.LargePercent>
+            </UI.Wrapper>
+          </Tooltip>
+        </GridCol>
+      </GridRow>
+      :
       <GridRow>
         <GridCol col={{ span: 7 }}>
           <UI.Wrapper>
@@ -135,6 +155,7 @@ export function KpiWidget ({
             isTrendLine={true} />}
         </GridCol>
       </GridRow>
+      }
     </Loader>
   )
 }

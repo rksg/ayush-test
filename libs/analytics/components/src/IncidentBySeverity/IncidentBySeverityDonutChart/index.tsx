@@ -12,7 +12,7 @@ import {
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../services'
 
-export function IncidentBySeverityDonutChart ({ filters }: { filters: IncidentFilter }) {
+export function IncidentBySeverityDonutChart ({ filters, type }: { filters: IncidentFilter, type?:string }) {
   const { $t } = useIntl()
   const queryResult = useIncidentsBySeverityQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
@@ -38,8 +38,7 @@ export function IncidentBySeverityDonutChart ({ filters }: { filters: IncidentFi
 
   const data = getChartData(queryResult.data)
 
-  return <Loader states={[queryResult]}>
-    <Card title={$t({ defaultMessage: 'Incidents' })}>
+  const content = <Loader states={[queryResult]}>
       <AutoSizer>
         {({ width, height }) => (
           data && data.length > 0
@@ -50,6 +49,12 @@ export function IncidentBySeverityDonutChart ({ filters }: { filters: IncidentFi
             : <NoActiveData text={$t({ defaultMessage: 'No active incidents' })} />
         )}
       </AutoSizer>
-    </Card>
   </Loader>
+
+  const test = <NoActiveData text={$t({ defaultMessage: 'No active incidents' })} />
+
+  return type === 'no-card-style' ? content :
+    <Card title={$t({ defaultMessage: 'Incidents' })}>
+      {content}
+    </Card>
 }

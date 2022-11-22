@@ -15,20 +15,9 @@ import { TenantLink, useParams }                     from '@acx-ui/react-router-
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
 
-export function ApProperties () {
+export function ApProperties (apViewModelQuery: any, apDetailsQuery: any) {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const params = useParams()
-  const apViewModelPayload = {
-    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
-    filters: { serialNumber: [params.serialNumber] }
-  }
-  const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const apDetailsQuery = useApDetailsQuery({ params })
   const currentAP = apViewModelQuery.data
   const apDetails = apDetailsQuery.data
   const onMoreAction = () => {

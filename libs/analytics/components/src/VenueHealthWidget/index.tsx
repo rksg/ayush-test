@@ -33,7 +33,7 @@ function VenueHealthWidget ({
           </GridCol>
           <GridCol col={{ span: 7 }}>
             <UI.Wrapper>
-              <KpiWidget filters={filters} name='connectionSuccess'/>
+              <KpiWidget filters={filters} name='connectionSuccess' />
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>
