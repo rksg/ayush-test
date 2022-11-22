@@ -20,7 +20,7 @@ export function ApAnalyticsTab () {
   const filter = {
     path: [{ type: 'zone', name: venueName }, { type: 'AP', name: apMac }]
   } as AnalyticsFilter
-  return <Loader states={[tableQuery]}>
+  return <Loader states={[{ ...tableQuery, isFetching: false }]}>
     <AnalyticsTabs
       incidentFilter={filter}
       healthFilter={filter}
