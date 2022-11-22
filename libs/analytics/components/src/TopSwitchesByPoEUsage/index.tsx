@@ -10,7 +10,7 @@ import {
 import {
   BarChart,
   EventParams,
-  Card,
+  HistoricalCard,
   cssNumber,
   cssStr,
   Loader,
@@ -82,7 +82,7 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={intl.$t({ defaultMessage: 'Top 5 Switches by PoE Usage' })} historical>
+      <HistoricalCard title={intl.$t({ defaultMessage: 'Top 5 Switches by PoE Usage' })}>
         <AutoSizer>
           {({ height, width }) => (
             data && data.source?.length > 0
@@ -99,7 +99,7 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
               <NoData/>
           )}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }

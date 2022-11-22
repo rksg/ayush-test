@@ -6,7 +6,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-5 dMkHtG"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
       type="default"
     >
       <div
@@ -22,14 +22,14 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
                 <div
                   class="ant-space-item"
-                  style="margin-right: 8px;"
+                  style="margin-right: 4px;"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                   >
                     Client Experience
                   </div>
@@ -43,7 +43,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-7 dxFSqy"
+                class="styledComponents__SubTitle-sc-13w5wfx-6 kxgqWz"
               >
                 Top 5 Venues/Services with poor experience
               </div>
@@ -58,7 +58,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-4 jXCZKr"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
                     title="Expand"
                     type="button"
                   >
@@ -177,7 +177,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-5 dMkHtG"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
       type="default"
     >
       <div
@@ -193,14 +193,14 @@ exports[`HealthWidget should render widget with proper data 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
                 <div
                   class="ant-space-item"
-                  style="margin-right: 8px;"
+                  style="margin-right: 4px;"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                   >
                     Client Experience
                   </div>
@@ -214,7 +214,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-7 dxFSqy"
+                class="styledComponents__SubTitle-sc-13w5wfx-6 kxgqWz"
               >
                 Top 5 Venues/Services with poor experience
               </div>
@@ -229,7 +229,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-4 jXCZKr"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
                     title="Expand"
                     type="button"
                   >

@@ -1,5 +1,5 @@
-import { Button as AntButton, Space } from 'antd'
-import styled                         from 'styled-components/macro'
+import { Button as AntButton } from 'antd'
+import styled                  from 'styled-components/macro'
 
 import { ArrowChevronRight, MoreVertical, HistoricalOutlined } from '@acx-ui/icons'
 
@@ -23,10 +23,6 @@ export const HistoricalOutlinedIcon = styled(HistoricalOutlined)`
   circle {
     fill: var(--acx-neutrals-50);
   }
-`
-
-export const TitleWrapper = styled(Space)`
-  gap: 4px !important;
 `
 
 export const Button = styled(AntButton)`

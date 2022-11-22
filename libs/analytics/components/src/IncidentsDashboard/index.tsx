@@ -2,7 +2,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { IncidentFilter }                                                        from '@acx-ui/analytics/utils'
-import { Card, Loader, StackedBarChart, NoActiveData }                           from '@acx-ui/components'
+import { HistoricalCard, Loader, StackedBarChart, NoActiveData }                 from '@acx-ui/components'
 import { NavigateFunction, Path, useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
 import { intlFormats }                                                           from '@acx-ui/utils'
 
@@ -81,9 +81,8 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
   const noData = incidentsCount.every(value => !value)
 
   return <Loader states={[response]}>
-    <Card title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
-      onExpandClick={onExpandClick}
-      historical>
+    <HistoricalCard title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
+      onExpandClick={onExpandClick}>
       <AutoSizer>
         {({ width, height }) => (
           noData
@@ -100,6 +99,6 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
             </UI.Container>
         )}
       </AutoSizer>
-    </Card>
+    </HistoricalCard>
   </Loader>
 }

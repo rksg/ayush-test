@@ -2204,7 +2204,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-5 hZdUTF"
+          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
           type="no-border"
         >
           <div
@@ -2220,13 +2220,13 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+                    class="ant-space ant-space-horizontal ant-space-align-center"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                       >
                         Details
                       </div>
@@ -2272,7 +2272,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-5 hZdUTF"
+          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
           type="no-border"
         >
           <div
@@ -2288,13 +2288,13 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+                    class="ant-space ant-space-horizontal ant-space-align-center"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                       >
                         Memory Utilization
                       </div>
@@ -2471,7 +2471,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-5 hZdUTF"
+          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
           type="no-border"
         >
           <div
@@ -2487,13 +2487,13 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+                    class="ant-space ant-space-horizontal ant-space-align-center"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                       >
                         Details
                       </div>
@@ -2683,7 +2683,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-5 hZdUTF"
+          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
           type="no-border"
         >
           <div
@@ -2699,13 +2699,13 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+                    class="ant-space ant-space-horizontal ant-space-align-center"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                       >
                         Details
                       </div>
@@ -2751,7 +2751,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-5 hZdUTF"
+          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
           type="no-border"
         >
           <div
@@ -2767,13 +2767,13 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+                    class="ant-space ant-space-horizontal ant-space-align-center"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                       >
                         Impacted Switches
                       </div>

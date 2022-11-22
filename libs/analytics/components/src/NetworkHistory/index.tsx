@@ -6,7 +6,7 @@ import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { getSeriesData, IncidentFilter } from '@acx-ui/analytics/utils'
 import {
-  Card,
+  HistoricalCard,
   CardTypes,
   Loader,
   MultiLineTimeSeriesChart,
@@ -64,7 +64,7 @@ export const NetworkHistory = forwardRef<
   const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
-      <Card title={title} type={type} historical>
+      <HistoricalCard title={title} type={type}>
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
@@ -78,7 +78,7 @@ export const NetworkHistory = forwardRef<
               : <NoData/>
           )}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 })

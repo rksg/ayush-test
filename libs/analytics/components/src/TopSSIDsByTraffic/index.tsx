@@ -4,7 +4,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
-  Card,
+  HistoricalCard,
   Loader,
   Table,
   NoData,
@@ -94,7 +94,7 @@ function TopSSIDsByTrafficWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Traffic' })} historical>
+      <HistoricalCard title={$t({ defaultMessage: 'Top 5 SSIDs by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width, paddingTop: '20px' }}>
@@ -102,7 +102,7 @@ function TopSSIDsByTrafficWidget ({
             </div>
           )}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }

@@ -7,7 +7,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-5 jrEkpr"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
       type="default"
     >
       <div
@@ -23,13 +23,13 @@ exports[`Health Widget should render KPI widgets 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
                 <div
                   class="ant-space-item"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                   />
                 </div>
               </div>
@@ -64,7 +64,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="styledComponents__Title-sc-13w5wfx-6 styledComponents__Title-sc-1chsnnf-0 lpcKwT gSXMOS"
+                      class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Title-sc-1chsnnf-0 eyxVFQ gSXMOS"
                     >
                       Client Experience
                     </div>
@@ -158,7 +158,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-5 jrEkpr"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
       type="default"
     >
       <div
@@ -174,13 +174,13 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
               class="ant-card-head-title"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TitleWrapper-sc-13w5wfx-3 eCPHRf"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
                 <div
                   class="ant-space-item"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-6 lpcKwT"
+                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                   />
                 </div>
               </div>
@@ -215,7 +215,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                     class="ant-space-item"
                   >
                     <div
-                      class="styledComponents__Title-sc-13w5wfx-6 styledComponents__Title-sc-1chsnnf-0 lpcKwT gSXMOS"
+                      class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Title-sc-1chsnnf-0 eyxVFQ gSXMOS"
                     >
                       Client Experience
                     </div>

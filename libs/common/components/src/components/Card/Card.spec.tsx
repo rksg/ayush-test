@@ -8,7 +8,7 @@ jest.mock('@acx-ui/icons', ()=> {
   return Object.fromEntries(keys)
 })
 
-describe('Card component', () => {
+describe('Card', () => {
   it('should render card with title', () => {
     render(<Card title='title'/>)
     expect(screen.getByText('title')).toBeVisible()
@@ -34,10 +34,6 @@ describe('Card component', () => {
   })
   it('should render card with grey background', () => {
     const { asFragment } = render(<Card type='solid-bg'>test</Card>)
-    expect(asFragment()).toMatchSnapshot()
-  })
-  it('should render card with historical icon', () => {
-    const { asFragment } = render(<Card title='title' subTitle='sub title' historical />)
     expect(asFragment()).toMatchSnapshot()
   })
 })

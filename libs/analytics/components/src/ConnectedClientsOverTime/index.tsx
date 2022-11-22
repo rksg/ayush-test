@@ -3,9 +3,9 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, getSeriesData }                 from '@acx-ui/analytics/utils'
-import { Card, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                      from '@acx-ui/utils'
+import { AnalyticsFilter, getSeriesData }                           from '@acx-ui/analytics/utils'
+import { HistoricalCard, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { formatter }                                                from '@acx-ui/utils'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 
@@ -29,7 +29,7 @@ export function ConnectedClientsOverTime ({ filters }: { filters : AnalyticsFilt
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Connected Clients Over Time' })} historical>
+      <HistoricalCard title={$t({ defaultMessage: 'Connected Clients Over Time' })}>
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
@@ -40,7 +40,7 @@ export function ConnectedClientsOverTime ({ filters }: { filters : AnalyticsFilt
               : <NoData/>
           )}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }

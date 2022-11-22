@@ -5,7 +5,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { Tooltip }                    from '@acx-ui/components'
 import {
-  Card,
+  HistoricalCard,
   Loader,
   Table,
   TableProps,
@@ -178,8 +178,7 @@ export function VenuesHealthDashboard ({
   const onExpandClick = useNavigateToPath('/analytics/health/')
   return (
     <Loader states={[queryResults]}>
-      <Card
-        historical
+      <HistoricalCard
         title={$t({ defaultMessage: 'Client Experience' })}
         subTitle={$t({ defaultMessage: 'Top 5 Venues/Services with poor experience' })}
         onExpandClick={onExpandClick}
@@ -190,7 +189,7 @@ export function VenuesHealthDashboard ({
               <ContentSwitcher tabDetails={tabDetails} size='small' space={8} />
             </div>)}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }
