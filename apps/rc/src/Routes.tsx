@@ -10,7 +10,7 @@ import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
 import AddEdge           from './pages/Devices/Edge/AddEdge'
-import EditEdge          from './pages/Devices/Edge/EditEdge'
+import EditEdge          from './pages/Devices/Edge/EdgeDetails/EditEdge'
 import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
 import ApDetails         from './pages/Devices/Wifi/ApDetails'
 import { ApForm }        from './pages/Devices/Wifi/ApForm'
@@ -60,7 +60,13 @@ function DeviceRoutes () {
         element={<ApDetails />}
       />
       <Route path='devices/edge/add' element={<AddEdge />} />
-      <Route path='devices/edge/:serialNumber/edit' element={<EditEdge />} />
+      {/* <Route path='devices/edge/:serialNumber/edit' element={<EditEdge />} /> */}
+      <Route
+        path='devices/edge/:serialNumber/edit/:activeTab'
+        element={<EditEdge />} />
+      <Route
+        path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        element={<EditEdge />} />
       <Route path='devices/switches' element={<SwitchesTable />} />
     </Route>
   )

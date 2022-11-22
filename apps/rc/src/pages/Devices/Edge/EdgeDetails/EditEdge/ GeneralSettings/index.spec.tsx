@@ -9,9 +9,9 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockVenueData } from '../EditEdge/__tests__/fixtures'
+import { mockVenueData, mockEdgeData } from '../../../__tests__/fixtures'
 
-import AddEdge from './index'
+import GeneralSettings from './index'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -19,17 +19,22 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('AddEdge', () => {
-  let params: { tenantId: string }
+describe('EditEdge general settings', () => {
+  let params: { tenantId: string, serialNumber: string }
   beforeEach(() => {
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      serialNumber: '000000000000'
     }
 
     mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.addEdge.url,
+      rest.put(
+        EdgeUrlsInfo.updateEdge.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdge.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeData))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -38,12 +43,12 @@ describe('AddEdge', () => {
     )
   })
 
-  it('should create AddEdge successfully', async () => {
+  it('should create GeneralSettings successfully', async () => {
     const { asFragment } = render(
       <Provider>
-        <AddEdge />
+        <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/add' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -52,23 +57,23 @@ describe('AddEdge', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddEdge />
+        <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/add' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
-    user.click(screen.getByRole('button', { name: 'Add' }))
-    await screen.findByText('Please enter Venue')
+    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
+    fireEvent.change(edgeNameInput, { target: { value: '' } })
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
     await screen.findByText('Please enter SmartEdge Name')
-    await screen.findByText('Please enter Serial Number')
   })
 
-  it('should add edge successfully', async () => {
+  it('should update edge general settings successfully', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddEdge />
+        <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/add' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
     const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
@@ -78,23 +83,23 @@ describe('AddEdge', () => {
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
-    await user.click(screen.getByRole('button', { name: 'Add' }))
-    // AddEdge success should back to /devices/edge/list, use UI to test this case is normal
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+    // AddEdge success should back to /devices, use UI to test this case is normal
     // but use jest always fail
     // expect(mockedUsedNavigate).toHaveBeenCalledWith({
-    //   pathname: `/t/${params.tenantId}/devices/edge/list`,
+    //   pathname: `/t/${params.tenantId}/devices`,
     //   hash: '',
     //   search: ''
     // })
   })
 
-  it('cancel and go back to device list', async () => {
+  it('cancel and go back to edge list', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddEdge />
+        <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/add' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -105,17 +110,22 @@ describe('AddEdge', () => {
   })
 })
 
-describe('AddEdge api fail', () => {
-  let params: { tenantId: string }
+describe('EditEdge general settings api fail', () => {
+  let params: { tenantId: string, serialNumber: string }
   beforeEach(() => {
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      serialNumber: '000000000000'
     }
 
     mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.addEdge.url,
+      rest.put(
+        EdgeUrlsInfo.updateEdge.url,
         (req, res, ctx) => res(ctx.status(500), ctx.json(null))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdge.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeData))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -124,13 +134,13 @@ describe('AddEdge api fail', () => {
     )
   })
 
-  it('addEdge api fail handle', async () => {
+  it('General settings api fail handle', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddEdge />
+        <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/add' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
     const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
@@ -140,7 +150,7 @@ describe('AddEdge api fail', () => {
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
-    await user.click(screen.getByRole('button', { name: 'Add' }))
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
     await screen.findByText('An error occurred')
   })
 })

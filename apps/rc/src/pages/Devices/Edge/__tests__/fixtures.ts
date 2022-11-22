@@ -8,3 +8,12 @@ export const mockVenueData = {
     { id: 'mock_venue_3', name: 'Mock Venue 3' }
   ]
 }
+
+export const mockEdgeData = {
+  serialNumber: '000000000000',
+  venueId: '66e6694ca3334997998c42def9326797',
+  edgeGroupId: '',
+  description: 'This is description rr',
+  edgeName: 'edgeName',
+  tags: ['tag1', 'tag2']
+}

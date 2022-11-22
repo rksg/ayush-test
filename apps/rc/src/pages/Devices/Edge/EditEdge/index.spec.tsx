@@ -9,7 +9,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockVenueData, mockEdgeData } from '../../../../components/Edge/Form/EdgeSettingForm/__tests__/fixtures'
+import { mockVenueData, mockEdgeData } from './__tests__/fixtures'
 
 import EditEdge from './index'
 
