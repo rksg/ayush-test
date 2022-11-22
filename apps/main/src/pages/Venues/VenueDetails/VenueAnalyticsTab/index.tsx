@@ -13,23 +13,27 @@ export function VenueAnalyticsTab () {
   const navigate = useNavigate()
   const { activeSubTab, venueId } = useParams()
   const { filters } = useAnalyticsFilter()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const healthFilter = {
     ...filters,
     path: [{ type: 'zone', name: venueId }]
   } as AnalyticsFilter
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const incidentFilter = {
     ...filters,
     filter: generateVenueFilter([venueId as string]),
     path: defaultNetworkPath
   } as AnalyticsFilter
+
   const onTabChange = (tab: string) => {
     navigate({
       ...location,
-      pathname: location.pathname.replace(activeSubTab as string, tab)
+      pathname: activeSubTab
+        ? location.pathname.replace(activeSubTab as string, tab)
+        : `${location.pathname}/${tab}/overview`
     })
   }
+
   return <Tabs
     onChange={onTabChange}
     activeKey={activeSubTab}
