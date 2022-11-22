@@ -45,9 +45,18 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
           : { error: metaListQuery.error as FetchBaseQueryError }
       }
     }),
-    cleanAlarm: build.mutation<CommonResult, RequestPayload>({
+    clearAlarm: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.cleanAlarm, params)
+        const req = createHttpRequest(CommonUrlsInfo.clearAlarm, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Alarms' }]
+    }),
+    clearAllAlarm: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.clearAlarm, params)
         return {
           ...req
         }
@@ -58,7 +67,8 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
 })
 export const {
   useAlarmsListQuery,
-  useCleanAlarmMutation
+  useClearAlarmMutation,
+  useClearAllAlarmMutation
 } = eventAlarmApi
 
 

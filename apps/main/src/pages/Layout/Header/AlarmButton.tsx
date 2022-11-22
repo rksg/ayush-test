@@ -6,10 +6,13 @@ import { useIntl }                     from 'react-intl'
 import { LayoutUI, GridRow, GridCol, Drawer, Loader } from '@acx-ui/components'
 import { NotificationSolid }                          from '@acx-ui/icons'
 import { useDashboardOverviewQuery }                  from '@acx-ui/rc/services'
-import { useAlarmsListQuery, useCleanAlarmMutation }  from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, useTableQuery }       from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                      from '@acx-ui/react-router-dom'
-import { formatter }                                  from '@acx-ui/utils'
+import {
+  useAlarmsListQuery,
+  useClearAlarmMutation,
+  useClearAllAlarmMutation }  from '@acx-ui/rc/services'
+import { Alarm, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                from '@acx-ui/react-router-dom'
+import { formatter }                            from '@acx-ui/utils'
 
 import { ListItem, AcknowledgeCircle, WarningCircle } from './styledComponents'
 
@@ -55,9 +58,15 @@ export default function AlarmsHeaderButton () {
 
   const [
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    cleanAlarm,
+    clearAlarm,
     { isLoading: isAlarmCleaning }
-  ] = useCleanAlarmMutation()
+  ] = useClearAlarmMutation()
+
+  const [
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    clearAllAlarm,
+    { isLoading: isAllAlarmCleaning }
+  ] = useClearAllAlarmMutation()
 
   let tableQuery = useTableQuery({
     useQuery: useAlarmsListQuery,
@@ -102,13 +111,16 @@ export default function AlarmsHeaderButton () {
       <GridCol col={{ span: 9, offset: 7 }} >
         <Button type='link'
           disabled={tableQuery.data?.totalCount===0}
-          style={{ height: 20, fontWeight: 700 }}>
+          style={{ height: 20, fontWeight: 700 }}
+          onClick={()=>{
+            // clearAllAlarm({ params: { ...params } })
+          }}>
           {$t({ defaultMessage: 'Clear all alarms' })}
         </Button>
       </GridCol>
     </GridRow>
     <Loader states={[
-      tableQuery,{ isLoading: false, isFetching: isAlarmCleaning }
+      tableQuery,{ isLoading: false, isFetching: isAlarmCleaning||isAllAlarmCleaning }
     ]}>
       <List
         itemLayout='horizontal'
@@ -120,7 +132,7 @@ export default function AlarmsHeaderButton () {
             ghost={true}
             icon={<AcknowledgeCircle/>}
             onClick={()=>{
-              // cleanAlarm({ params: { ...params, alarmId: item.id } })
+              clearAlarm({ params: { ...params, alarmId: item.id } })
             }}
           />]}>
             <List.Item.Meta
