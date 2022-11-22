@@ -82,27 +82,4 @@ describe('ApAnalyticsTab', () => {
       '/t/t1/devices/aps/000000000001/details/analytics/health/overview'
     )
   })
-  it('should handle tab changes', async () => {
-    jest.spyOn(router, 'useParams').mockImplementation(
-      () => ({ tenantId: 't1', serialNumber: '000000000001', activeSubTab: 'incidents' })
-    )
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(list))
-      )
-    )
-    render(<Provider>
-      <ApAnalyticsTab />
-    </Provider>, {
-      route: {
-        params: { tenantId: 't1', serialNumber: '000000000001', activeSubTab: 'incidents' },
-        path: '/t/:tenantId/devices/aps/:serialNumber/details/analytics/incidents/overview'
-      }
-    })
-    fireEvent.click(await screen.findByText('Health'))
-    expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t/t1/devices/aps/000000000001/details/analytics/health/overview'
-    )
-  })
 })
