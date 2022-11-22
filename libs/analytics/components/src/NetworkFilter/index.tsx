@@ -189,7 +189,6 @@ export const onApply = (
   setNetworkPath: CallableFunction
 ) => {
   const path = !value ? defaultNetworkPath : JSON.parse(value?.slice(-1)[0] as string)
-  console.log({ path })
 
   setNetworkPath(path, value || [])
 }
@@ -264,7 +263,6 @@ function ConnectedNetworkFilter (
           options={queryResults.data}
           onApply={(value,bands) => {
             if(showBand){
-              console.log({ value,bands })
               onApplyWithBand(value,bands as Band[])
             }else{
               onApply(value, setNetworkPath)
