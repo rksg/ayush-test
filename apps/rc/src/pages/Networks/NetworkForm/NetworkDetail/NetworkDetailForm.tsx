@@ -24,6 +24,14 @@ import type { RadioChangeEvent } from 'antd'
 
 const { useWatch } = Form
 
+export const types = [
+  { type: NetworkTypeEnum.PSK, disabled: false },
+  { type: NetworkTypeEnum.DPSK, disabled: true },
+  { type: NetworkTypeEnum.AAA, disabled: false },
+  { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: false },
+  { type: NetworkTypeEnum.OPEN, disabled: false }
+]
+
 export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
@@ -54,14 +62,6 @@ export function NetworkDetailForm () {
 
     return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
   }
-
-  const types = [
-    { type: NetworkTypeEnum.PSK, disabled: false },
-    { type: NetworkTypeEnum.DPSK, disabled: true },
-    { type: NetworkTypeEnum.AAA, disabled: false },
-    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
-    { type: NetworkTypeEnum.OPEN, disabled: false }
-  ]
 
   return (
     <Row gutter={20}>
