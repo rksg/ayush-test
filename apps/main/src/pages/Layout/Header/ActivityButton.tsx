@@ -1,8 +1,8 @@
 
-import { Badge, Popover } from 'antd'
+import { ClockCircleFilled } from '@ant-design/icons'
+import { Badge, Popover }    from 'antd'
 
 import { LayoutUI }                  from '@acx-ui/components'
-import { ClockCircleFilled } from '@ant-design/icons';
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import { useParams }                 from '@acx-ui/react-router-dom'
 

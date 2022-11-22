@@ -1,10 +1,10 @@
-import { ExportOutlined, CheckCircleFilled }                      from '@ant-design/icons'
+import { ExportOutlined, CheckCircleFilled }                from '@ant-design/icons'
 import { Popover as AntPopover, PopoverProps, Modal, List } from 'antd'
-import styled                                  from 'styled-components/macro'
-import { Typography } from 'antd'
+import { Typography }                                       from 'antd'
+import styled                                               from 'styled-components/macro'
 
-import { WarningCircleSolid } from '@acx-ui/icons'
 import { LayoutUI, GridRow, GridCol } from '@acx-ui/components'
+import { WarningCircleSolid }         from '@acx-ui/icons'
 
 
 

@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import { ExportOutlined }             from '@ant-design/icons'
+
 import { Typography, Input, Divider } from 'antd'
 import { useIntl }                    from 'react-intl'
 
 import { LayoutUI, GridRow, GridCol, Button }      from '@acx-ui/components'
 import { QuestionMarkCircleSolid, SearchOutlined } from '@acx-ui/icons'
-import { useParams }                               from '@acx-ui/react-router-dom'
 
 import About    from './About'
 import Firewall from './Firewall'
@@ -24,7 +23,6 @@ import {
 
 
 export default function HelpHeaderButton () {
-  const params = useParams()
   const { $t } = useIntl()
 
   const [aboutModalState, setAboutModalOpen] = useState(false)

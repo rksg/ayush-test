@@ -1,5 +1,5 @@
-import { Input, Dropdown, Menu, Button, Avatar } from 'antd'
-import { useIntl }         from 'react-intl'
+import { Input }   from 'antd'
+import { useIntl } from 'react-intl'
 
 
 import { Tooltip, GridRow, GridCol, cssStr } from '@acx-ui/components'
@@ -9,12 +9,10 @@ import {
 }                        from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
-  QuestionMarkCircleSolid,
   SearchOutlined
 }                          from '@acx-ui/icons'
-import { AlarmsHeaderButton } from '@acx-ui/main/components'
-import { Outlet }             from '@acx-ui/react-router-dom'
-import { notAvailableMsg }    from '@acx-ui/utils'
+import { Outlet }          from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 import ActivityButton    from './Header/ActivityButton'
 import AlarmButton       from './Header/AlarmButton'

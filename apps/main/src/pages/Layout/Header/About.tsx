@@ -1,9 +1,7 @@
-import { useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { GridRow, GridCol, cssStr } from '@acx-ui/components'
-import { Logo, Close }              from '@acx-ui/icons'
+import { Close }                    from '@acx-ui/icons'
 
 import { AboutModal } from './styledComponents'
 
@@ -14,6 +12,7 @@ export default function About (props: {
 }) {
   const { $t } = useIntl()
 
+  // eslint-disable-next-line max-len
   const logoURL = 'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png'
 
   return <AboutModal

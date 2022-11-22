@@ -1,11 +1,10 @@
 import React from 'react'
 
-import {  QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { LogoutOutlined, SettingOutlined } from '@ant-design/icons'
-import { Avatar, Menu, Dropdown, Button }                        from 'antd'
-import { useIntl } from 'react-intl'
-import { LayoutUI } from '@acx-ui/components'
-import { UserNameButton }                  from './styledComponents'
+import { LogoutOutlined } from '@ant-design/icons'
+import { Menu, Dropdown } from 'antd'
+import { useIntl }        from 'react-intl'
+
+import { UserNameButton } from './styledComponents'
 
 const UserButton = () => {
   const { $t } = useIntl()

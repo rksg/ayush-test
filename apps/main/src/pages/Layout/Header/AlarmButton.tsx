@@ -54,6 +54,7 @@ export default function AlarmsHeaderButton () {
   const [severity, setSeverity] = useState('all')
 
   const [
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     cleanAlarm,
     { isLoading: isAlarmCleaning }
   ] = useCleanAlarmMutation()
