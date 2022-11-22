@@ -8,7 +8,7 @@ import MdnsProxyInstances from './MdnsProxyInstances'
 export function VenueServicesTab () {
   const { $t } = useIntl()
   return (
-    <Tabs activeKey={ServiceType.MDNS_PROXY}>
+    <Tabs type='card' activeKey={ServiceType.MDNS_PROXY}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>
         <MdnsProxyInstances />
       </Tabs.TabPane>

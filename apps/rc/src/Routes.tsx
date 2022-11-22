@@ -4,33 +4,31 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
-  PolicyOperation
+  PolicyOperation,
+  getServiceListRoutePath,
+  getSelectServiceRoutePath,
+  getServiceRoutePath,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
-import ApDetails         from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }        from './pages/Devices/Wifi/ApEdit'
-import { ApForm }        from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }   from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable          from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable     from './pages/Networks/NetworksTable'
-import PoliciesTable     from './pages/Policies/PoliciesTable'
-import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
-import DHCPDetail        from './pages/Services/DHCPDetail'
-import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
-import MdnsProxyDetail   from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
-import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import SelectServiceForm from './pages/Services/SelectServiceForm'
-import {
-  getSelectServiceRoutePath,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation
-} from './pages/Services/serviceRouteUtils'
+import SwitchesTable            from './pages/Devices/Switch/SwitchesTable'
+import ApDetails                from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }               from './pages/Devices/Wifi/ApEdit'
+import { ApForm }               from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }          from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                 from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails           from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm              from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable            from './pages/Networks/NetworksTable'
+import PoliciesTable            from './pages/Policies/PoliciesTable'
+import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
+import DHCPDetail               from './pages/Services/DHCPDetail'
+import DHCPForm                 from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
+import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import SelectServiceForm        from './pages/Services/SelectServiceForm'
 import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
