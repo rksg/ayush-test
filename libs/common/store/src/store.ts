@@ -10,6 +10,7 @@ import {
   apApi,
   baseUserApi as userApi,
   baseMspApi as mspApi,
+  baseEdgeApi as edgeApi,
   basePolicyApi as policyApi
 } from '@acx-ui/rc/services'
 
@@ -24,6 +25,7 @@ export const store = configureStore({
     [dataApi.reducerPath]: dataApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
     [mspApi.reducerPath]: mspApi.reducer,
+    [edgeApi.reducerPath]: edgeApi.reducer,
     [policyApi.reducerPath]: policyApi.reducer
   },
 
@@ -42,6 +44,7 @@ export const store = configureStore({
       dataApi.middleware,
       serviceApi.middleware,
       mspApi.middleware,
+      edgeApi.middleware,
       policyApi.middleware
     ])
   },

@@ -24,6 +24,7 @@ export * from './network'
 export * from './user'
 export * from './services'
 export * from './msp'
+export * from './edge'
 export * from './policy'
 export * from './wifiCallingService'
 

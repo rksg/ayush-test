@@ -122,7 +122,11 @@ export const DatePickerFooter = ({
             type={'secondary'}
             size={'small'}
             onClick={() => onButtonClick('apply')}
-            disabled={range.startDate === null || range.endDate === null}
+            disabled={
+              range.startDate === null ||
+              range.endDate === null ||
+              range.startDate.isSame(range.endDate)
+            }
           >
             Apply
           </Button>
