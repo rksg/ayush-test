@@ -9,7 +9,8 @@ import {
   createHttpRequest,
   CommonUrlsInfo,
   TableResult,
-  RequestPayload
+  RequestPayload,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 export const baseEventAlarmApi = createApi({
@@ -43,11 +44,21 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: metaListQuery.error as FetchBaseQueryError }
       }
+    }),
+    cleanAlarm: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.cleanAlarm, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Alarms' }]
     })
   })
 })
 export const {
-  useAlarmsListQuery
+  useAlarmsListQuery,
+  useCleanAlarmMutation
 } = eventAlarmApi
 
 

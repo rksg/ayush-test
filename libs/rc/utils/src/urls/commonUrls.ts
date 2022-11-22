@@ -31,6 +31,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  cleanAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
+  },
   getApsList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps'

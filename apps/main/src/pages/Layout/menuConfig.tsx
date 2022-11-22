@@ -118,7 +118,7 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Services' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
-      disabled: false
+      disabled: true
     },
     {
       path: '/policies',
