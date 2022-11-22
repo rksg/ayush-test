@@ -210,14 +210,11 @@ export const {
   useApListQuery,
   useLazyApListQuery,
   useAddApMutation,
-<<<<<<< HEAD
   usePingApMutation,
   useTraceRouteApMutation,
-=======
   useGetApQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
->>>>>>> fa3a594361cd92c8a8a2ad60693d7d9ae2458cd7
   useApGroupListQuery,
   useLazyApGroupListQuery,
   useApGroupsListQuery,
