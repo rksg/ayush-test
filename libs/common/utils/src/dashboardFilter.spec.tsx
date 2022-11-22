@@ -5,9 +5,9 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDashboardFilter } from './dashboardFilter'
-import { resetRanges }        from './dateUtil'
-import { encodeURIComponentAndCovertToBase64 } from '@acx-ui/utils'
+import { useDashboardFilter }                  from './dashboardFilter'
+import { resetRanges }                         from './dateUtil'
+import { encodeURIComponentAndCovertToBase64 } from './encodeDecodeUtil'
 
 const original = Date.now
 describe('useDashboardFilter', () => {

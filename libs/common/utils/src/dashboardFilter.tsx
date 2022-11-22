@@ -1,13 +1,11 @@
 import { useMemo } from 'react'
 
-import { Buffer } from 'buffer'
-
 import { useSearchParams } from 'react-router-dom'
 
-import { DateFilter, useDateFilter } from './dateFilter'
-import { generateVenueFilter }       from './filters'
-import { NetworkPath, pathFilter }   from './types/networkFilter'
-import { encodeURIComponentAndCovertToBase64, decodeBase64String } from '@acx-ui/utils'
+import { DateFilter, useDateFilter }                               from './dateFilter'
+import { encodeURIComponentAndCovertToBase64, decodeBase64String } from './encodeDecodeUtil'
+import { generateVenueFilter }                                     from './filters'
+import { NetworkPath, pathFilter }                                 from './types/networkFilter'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
