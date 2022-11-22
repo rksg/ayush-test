@@ -6,7 +6,7 @@ import {
   checkItemNotIncluded,
   hasGraveAccentAndDollarSign,
   checkVlanMember,
-  checkValuesNotEqual,
+  checkValues,
   apNameRegExp,
   gpsRegExp,
   serialNumberRegExp
@@ -108,14 +108,18 @@ describe('validator', () => {
     })
   })
 
-  describe('checkValuesNotEqual', () => {
+  describe('checkValues', () => {
     it('Should not display error if values are not equal', async () => {
-      const result = checkValuesNotEqual('name', 'test')
+      const result = checkValues('name', 'test')
       await expect(result).resolves.toEqual(undefined)
     })
     it('Should return false when values are equal', async () => {
-      const result1 = checkValuesNotEqual('test', 'test')
-      await expect(result1).rejects.toEqual('This field is invalid')
+      const result = checkValues('test', 'test')
+      await expect(result).rejects.toEqual('This field is invalid')
+    })
+    it('Should not display error when values are equal', async () => {
+      const result = checkValues('test', 'test', true)
+      await expect(result).resolves.toEqual(undefined)
     })
   })
 
