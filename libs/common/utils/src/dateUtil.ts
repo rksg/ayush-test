@@ -1,10 +1,6 @@
-/* eslint-disable max-len */
 import { pick }                             from 'lodash'
 import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
-
-import { longDurationDisplay } from './formatter'
-import { getIntl }             from './intlUtil'
 
 export enum DateRange {
   today = 'Today',
@@ -92,84 +88,4 @@ export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
   [DateRange.custom]: defineMessage({
     defaultMessage: 'Custom'
   })
-}
-
-export const getUserDateFormat = (
-  // TODO: userProfile: UserProfile
-  dateStr: string,
-  recivedDateFormat = 'YYYY-MM-DD HH:mm:ss',
-  localTime = false) => {
-  const dateFormat = 'mm/dd/yyyy' //userProfile.dateFormat;
-
-  let date: moment.Moment
-  if (localTime) {
-    date = moment.utc(dateStr).local()
-  } else {
-    date = moment(dateStr, recivedDateFormat)
-  }
-  return date.format(dateFormat.toUpperCase() + ' HH:mm:ss')
-}
-
-export const getShortDurationFormat = (value: number | string) => {
-  const { $t } = getIntl()
-  const d = moment.duration(value)
-
-  const duration: { [index: string]: number } = {
-    years: d.years(),
-    months: d.months(),
-    days: d.days(),
-    hours: d.hours(),
-    minutes: d.minutes()
-  }
-
-  const result: Array<String> = []
-  for (const unit of Object.keys(duration)) {
-    if (duration[unit]) {
-      result.push(duration[unit] + ' ' + (duration[unit] > 1 ? unit : unit.substr(0, unit.length - 1)))
-    }
-    if (result.length > 1) {
-      break
-    }
-  }
-
-  if (result.length < 1) {
-    result.push($t({ defaultMessage: '1 minute' }))
-  }
-
-  return result.join(', ')
-}
-
-export const millisToProperDuration = (ms:number, retureType?:string ) => {
-  const { $t } = getIntl()
-  const days = Math.floor(ms / (24 * 60 * 60 * 1000))
-  const daysms = ms % (24 * 60 * 60 * 1000)
-  const hours = Math.floor((daysms) / (60 * 60 * 1000))
-  const hoursms = ms % (60 * 60 * 1000)
-  const minutes = Math.floor((hoursms) / (60 * 1000))
-  const minutesms = ms % (60 * 1000)
-  const seconds = Math.floor((minutesms) / (1000))
-  if (days > 0) {
-    if (retureType === 'short') {
-      return days + 'd ' + hours + 'h'
-    }
-    return $t(longDurationDisplay['days'], { days }) + ' ' + $t(longDurationDisplay['hours'], { hours })
-  }
-  if (hours > 0) {
-    if (retureType === 'short') {
-      return hours + 'h ' + minutes + 'm'
-    }
-    return $t(longDurationDisplay['hours'], { hours }) + ' ' + $t(longDurationDisplay['minutes'], { minutes })
-  } else {
-    if (retureType === 'short') {
-      return minutes + 'm ' + seconds + 's'
-    }
-    return $t(longDurationDisplay['minutes'], { minutes }) + ' ' + $t(longDurationDisplay['seconds'], { seconds })
-  }
-}
-
-export const secondToTime = (value:number) => {
-  if (!value) {
-    return ''
-  }
-  return millisToProperDuration(value * 1000, 'short')
 }
