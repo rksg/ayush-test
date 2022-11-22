@@ -9,15 +9,17 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import SwitchesTable             from './pages/Devices/Switch/SwitchesTable'
-import ApDetails                 from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }                from './pages/Devices/Wifi/ApEdit'
-import { ApForm }                from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }           from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                  from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails            from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm               from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable             from './pages/Networks/NetworksTable'
+import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
+import ApDetails                  from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                 from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }            from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                   from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable              from './pages/Networks/NetworksTable'
+import MacRegistrationListDetails
+  from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MacRegistrationListForm   from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
 import PoliciesTable             from './pages/Policies/PoliciesTable'
@@ -160,6 +162,10 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<h1>Rogue AP detection details page</h1>}
       />
+      <Route
+        // eslint-disable-next-line max-len
+        path='policies/mac-registration-lists/:macRegistrationListId/mac-registration-lists-details/:activeTab'
+        element={<MacRegistrationListDetails />} />
       <Route path='policies/mac-registration-lists' element={<MacRegistrationListsTable />} />
       <Route path='policies/mac-registration-lists/add' element={<MacRegistrationListForm />} />
       <Route
