@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
@@ -5,7 +6,8 @@ import { useIntl }                   from 'react-intl'
 
 import { useAnalyticsFilter, defaultNetworkPath, Incident } from '@acx-ui/analytics/utils'
 import { calculateSeverity }                                from '@acx-ui/analytics/utils'
-import { NetworkFilter, Option, Loader }                    from '@acx-ui/components'
+import { NetworkFilter, Option, Loader, Band }              from '@acx-ui/components'
+import { NetworkPath }                                      from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
@@ -18,7 +20,11 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   severity: { [key: string]: number };
 }
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
-type ConnectedNetworkFilterProps = { shouldQuerySwitch : boolean, withIncidents?: boolean }
+type ConnectedNetworkFilterProps = {
+  shouldQuerySwitch : boolean,
+   withIncidents?: boolean,
+   showBand?: boolean
+   }
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
 ): VenuesWithSeverityNodes =>
@@ -183,13 +189,45 @@ export const onApply = (
   setNetworkPath: CallableFunction
 ) => {
   const path = !value ? defaultNetworkPath : JSON.parse(value?.slice(-1)[0] as string)
+  console.log({ path })
+
   setNetworkPath(path, value || [])
+}
+
+export const onApplyWithBand = (
+  value?: SingleValueType | SingleValueType[],
+  bands?: Band[]
+) => {
+  let paths:NetworkPath[]=[]
+  if(value?.length){
+    value.forEach(item => {
+      const lastElement = (item as SingleValueType).slice(-1)[0] as string
+      if(lastElement.includes('{')){
+        const fullPath:NetworkPath=JSON.parse(lastElement)
+        paths.push(fullPath)
+      }else{
+        const isSwitchGroup = lastElement.indexOf('switches') === 0
+        const firstElement = (item as SingleValueType)[0] as string
+        const fullPath:NetworkPath=JSON.parse(firstElement)
+        if(isSwitchGroup && fullPath[1]){
+          fullPath[1].type = 'switchGroup'
+        }
+        paths.push(fullPath)
+      }
+    })
+  }else{
+    paths.push(defaultNetworkPath)
+  }
+  console.log({
+    paths,
+    bands
+  })
 }
 
 export { ConnectedNetworkFilter as NetworkFilter }
 
 function ConnectedNetworkFilter (
-  { shouldQuerySwitch, withIncidents } : ConnectedNetworkFilterProps
+  { shouldQuerySwitch, withIncidents, showBand } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
@@ -220,10 +258,18 @@ function ConnectedNetworkFilter (
         <NetworkFilter
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple={false}
+          showBand={showBand}
           defaultValue={raw}
           value={raw}
           options={queryResults.data}
-          onApply={(value) => onApply(value, setNetworkPath)}
+          onApply={(value,bands) => {
+            if(showBand){
+              console.log({ value,bands })
+              onApplyWithBand(value,bands as Band[])
+            }else{
+              onApply(value, setNetworkPath)
+            }
+          }}
           placement='bottomRight'
           displayRender={displayRender}
           showSearch={{ filter: search }}

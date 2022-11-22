@@ -79,6 +79,11 @@ export const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderPro
     </Loader>}
     extra={[
       <NetworkFilter
+        key='network-filter-with-band'
+        shouldQuerySwitch={shouldQuerySwitch}
+        showBand
+      />,
+      <NetworkFilter
         key='network-filter'
         shouldQuerySwitch={shouldQuerySwitch}
         withIncidents={withIncidents}
