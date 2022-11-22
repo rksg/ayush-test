@@ -316,7 +316,7 @@ describe('CalenderRangePicker', () => {
     await user.click(dateSelect[0])
     expect(screen.getByRole('display-date-range')).toHaveTextContent('- Jan 01 2022')
   })
-  it('should disable future time selection when startdate and end date are same', async () => {
+  it('should disable apply when startdate and end date are same', async () => {
     const onDateChange = jest.fn()
     const apply = jest.fn()
     render(
