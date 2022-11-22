@@ -10,6 +10,7 @@ import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
+import UsersBase        from './pages/Users'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
 import { VenuesForm }   from './pages/Venues/VenuesForm'
@@ -39,6 +40,9 @@ function AllRoutes () {
           <Route path='*' element={<RcRoutes />} />
         </Route>
         <Route path='policies/*' element={<PoliciesBase />}>
+          <Route path='*' element={<RcRoutes />} />
+        </Route>
+        <Route path='users/*' element={<UsersBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
         <Route path='venues/*' element={<VenuesRoutes />} />

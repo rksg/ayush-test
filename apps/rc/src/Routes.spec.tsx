@@ -5,6 +5,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import {
   getSelectServiceRoutePath,
+  getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation
@@ -47,6 +48,10 @@ jest.mock('./pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm', () => () => 
   return <div data-testid='MdnsProxyForm' />
 })
 
+jest.mock('./pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail', () => () => {
+  return <div data-testid='MdnsProxyDetail' />
+})
+
 jest.mock('./pages/Services/DHCPForm/DHCPForm', () => () => {
   return <div data-testid='DHCPForm' />
 })
@@ -55,7 +60,13 @@ jest.mock('./pages/Services/DHCPDetail', () => () => {
   return <div data-testid='DHCPDetail' />
 })
 
+jest.mock('./pages/Users/Wifi/ApList', () => () => {
+  return <div data-testid='UserApList' />
+})
 
+jest.mock('./pages/Users/Wifi/ApDetails', () => () => {
+  return <div data-testid='UserApDetails' />
+})
 
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/aps', async () => {
@@ -175,8 +186,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to edit MdnsProxy page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -187,15 +197,14 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to MdnsProxy details page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
         wrapRoutes: false
       }
     })
-    expect(screen.getByText('mDNS Proxy details page')).toBeVisible()
+    expect(screen.getByTestId('MdnsProxyDetail')).toBeVisible()
   })
 
   test('should navigate to create WIFI_CALLING page', async () => {
@@ -266,4 +275,52 @@ describe('RcRoutes: Services', () => {
     expect(screen.getByTestId('DHCPDetail')).toBeVisible()
   })
 
+})
+
+describe('RcRoutes: User', () => {
+  test('should redirect user to user/aps/clients', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApList')).toBeVisible()
+  })
+  test('should redirect user/aps to user/aps/clients', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/aps',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApList')).toBeVisible()
+  })
+  test('should redirect to user/aps/clients correctly', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/aps/clients',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApList')).toBeVisible()
+  })
+  test('should redirect details to details/overview', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/aps/userId/details/',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApDetails')).toBeVisible()
+  })
+  test('should redirect to details/overview correctly', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/aps/userId/details/overview',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApDetails')).toBeVisible()
+  })
 })
