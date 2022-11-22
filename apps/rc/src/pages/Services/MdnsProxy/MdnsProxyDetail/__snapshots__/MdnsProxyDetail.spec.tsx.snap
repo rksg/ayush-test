@@ -75,9 +75,9 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg>
-                    ClockOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
                   <span>
                     Last 24 hours
                   </span>
@@ -195,9 +195,9 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                                   <div
                                     class="ant-pro-table-list-toolbar-setting-item"
                                   >
-                                    <svg>
-                                      SettingsOutlined.svg
-                                    </svg>
+                                    <svg
+                                      data-testid="SettingsOutlined"
+                                    />
                                   </div>
                                 </div>
                               </div>

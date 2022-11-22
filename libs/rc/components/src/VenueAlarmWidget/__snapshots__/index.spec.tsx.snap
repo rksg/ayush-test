@@ -51,7 +51,8 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
                 <div
                   class="ant-space-item"
                 >
-                  <span
+                  <svg
+                    class="styledComponents__GreenTickIcon-sc-m7jeli-4 dlTCha"
                     data-testid="CheckMarkCircleSolid"
                   />
                 </div>

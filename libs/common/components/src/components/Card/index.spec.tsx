@@ -2,10 +2,6 @@ import { render, screen, act } from '@testing-library/react'
 
 import { Card } from '.'
 
-jest.mock('@acx-ui/icons', () => ({
-  ArrowsOut: () => <svg></svg>,
-  MoreVertical: () => <svg></svg>
-}))
 describe('Card component', () => {
   it('should render card with title', () => {
     render(<Card title='title'/>)
