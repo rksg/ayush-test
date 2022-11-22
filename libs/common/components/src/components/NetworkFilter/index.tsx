@@ -37,8 +37,8 @@ export function NetworkFilter (props: CascaderProps) {
   const [
     currentValues,
     setCurrentValues
-  ] = React.useState<SingleValueType | SingleValueType[]>(() => initialValues)
-  const [savedValues, setSavedValues] = React.useState(() => initialValues)
+  ] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
+  const [savedValues, setSavedValues] = React.useState(initialValues)
   const [open, setOpen] = React.useState(false)
 
   const onClear = () => {
