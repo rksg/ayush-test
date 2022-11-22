@@ -12,7 +12,6 @@ jest.mock('@acx-ui/icons', ()=> {
 })
 
 describe('Devices widget', () => {
-
   it('should render loader and then chart', async () => {
     const params = {
       tenantId: 'tenant-id'
@@ -25,5 +24,17 @@ describe('Devices widget', () => {
     await screen.findByText('Devices')
     expect(asFragment().querySelector('svg')).toBeDefined()
     expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(2)
+  })
+  it('should render correctly with right arrow enabled', async () => {
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    const { asFragment } = render(
+      <Provider>
+        <DevicesWidget apData={[]} switchData={[]} enableArrowClick/>
+      </Provider>,
+      { route: { params } })
+    await screen.findByText('Devices')
+    expect(asFragment().querySelectorAll('div[data-testid="ArrowChevronRight"]')).toBeTruthy()
   })
 })

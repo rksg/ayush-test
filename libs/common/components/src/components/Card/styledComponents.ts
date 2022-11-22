@@ -10,7 +10,11 @@ type WrapperProps = {
   hasTitle: boolean
 }
 
-export const ArrowChevronRightIcon = styled(ArrowChevronRight)``
+export const ArrowChevronRightIcon = styled(ArrowChevronRight)`
+  width: 20px;
+  height: 20px;
+  margin-right: -8px;
+`
 export const MoreVerticalIcon = styled(MoreVertical)``
 
 export const HistoricalOutlinedIcon = styled(HistoricalOutlined)`

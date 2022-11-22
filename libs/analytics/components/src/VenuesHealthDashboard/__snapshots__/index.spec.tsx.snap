@@ -309,7 +309,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                 class="styledComponents__Wrapper-sc-hs49h-1 ipmEhN"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-13 kyKwaH"
+                  class="styledComponents__Wrapper-sc-1abm7iv-13 kQfrCT"
                 >
                   <div
                     class="ant-pro-table"
@@ -344,7 +344,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                     style="overflow-x: auto; overflow-y: hidden;"
                                   >
                                     <table
-                                      style="min-width: 100%; table-layout: auto;"
+                                      style="width: 100%; min-width: 100%; table-layout: auto;"
                                     >
                                       <colgroup />
                                       <thead

@@ -13,3 +13,5 @@ export function HistoricalCard ({ title, ...props }: HistoricalCardProps) {
 
   return <Card {...props} title={customTitie} />
 }
+
+HistoricalCard.Icon = UI.HistoricalOutlinedIcon

@@ -8,8 +8,5 @@ export function useNavigateToPath (
   const navigate = useNavigate()
   const basePath = useTenantLink(path)
 
-  return () => navigate({
-    ...basePath,
-    pathname: basePath.pathname
-  })
+  return () => navigate(basePath)
 }

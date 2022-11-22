@@ -6,13 +6,14 @@ import type { DonutChartData } from '@acx-ui/components'
 import { useNavigateToPath }   from '@acx-ui/react-router-dom'
 
 export function DevicesWidget (props: {
-  apData: DonutChartData[], switchData: DonutChartData[]
+  apData: DonutChartData[], switchData: DonutChartData[], enableArrowClick?: boolean
 }) {
   const { $t } = useIntl()
   const onExpandClick = useNavigateToPath('/devices/')
 
   return (
-    <Card title={$t({ defaultMessage: 'Devices' })} onExpandClick={onExpandClick}>
+    <Card title={$t({ defaultMessage: 'Devices' })}
+      onExpandClick={props.enableArrowClick ? onExpandClick : undefined}>
       <AutoSizer>
         {({ height, width }) => (
           <div style={{ display: 'inline-flex' }}>
