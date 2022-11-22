@@ -12,6 +12,10 @@ import { apDetailData } from './__tests__/fixtures'
 import ApDetails from '.'
 
 /* eslint-disable max-len */
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  RangePicker: () => <div data-testid={'analytics-RangePicker'} title='RangePicker' />
+}))
 jest.mock('@acx-ui/analytics/components', () => ({
   ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
   IncidentBySeverity: () => <div data-testid={'analytics-IncidentBySeverity'} title='IncidentBySeverity' />,
@@ -40,7 +44,7 @@ describe('ApDetails', () => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getApDetailHeader.url,
-        (req, res, ctx) => res(ctx.json(apDetailData))
+        (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
   })
