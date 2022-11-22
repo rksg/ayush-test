@@ -105,7 +105,7 @@ export function useMenuConfig () {
       //     name: $t({ defaultMessage: 'Switch' })
       //   }
       // ],
-      disabled: true
+      disabled: false
     },
     {
       path: '/networks',

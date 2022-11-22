@@ -8,7 +8,7 @@ import { NotificationSolid }                          from '@acx-ui/icons'
 import { useDashboardOverviewQuery }                  from '@acx-ui/rc/services'
 import { useAlarmsListQuery, useCleanAlarmMutation }  from '@acx-ui/rc/services'
 import { Alarm, CommonUrlsInfo, useTableQuery }       from '@acx-ui/rc/utils'
-import { useParams }                                  from '@acx-ui/react-router-dom'
+import { useParams, TenantLink }                      from '@acx-ui/react-router-dom'
 import { formatter }                                  from '@acx-ui/utils'
 
 import { ListItem, AcknowledgeCircle, WarningCircle } from './styledComponents'
@@ -119,7 +119,7 @@ export default function AlarmsHeaderButton () {
             ghost={true}
             icon={<AcknowledgeCircle/>}
             onClick={()=>{
-              cleanAlarm({ params: { ...params, alarmId: item.id } })
+              // cleanAlarm({ params: { ...params, alarmId: item.id } })
             }}
           />]}>
             <List.Item.Meta
@@ -128,7 +128,10 @@ export default function AlarmsHeaderButton () {
               description={
                 <GridRow>
                   <GridCol col={{ span: 5 }}>
-                    {item.apName}
+                    <TenantLink onClick={()=>{setModalOpen(false)}}
+                      to={`/devices/${item.apName}/devices-details/aps`}>
+                      {item.apName}
+                    </TenantLink>
                   </GridCol>
                   <GridCol col={{ span: 9, offset: 10 }}>
                     {formatter('calendarFormat')(item.startTime)}
