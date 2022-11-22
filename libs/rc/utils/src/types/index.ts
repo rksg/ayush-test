@@ -71,7 +71,7 @@ export interface NetworkDetail {
 
 export interface Venue {
   id: string
-  venueId: string
+  venueId?: string
   name: string
   description: string
   status: string
@@ -99,6 +99,7 @@ export interface Venue {
   deepVenue?: NetworkVenue
   disabledActivation: boolean
   networkId? : string
+  vlanPoolId?: string
   activatedApsId?: string[]
 }
 
