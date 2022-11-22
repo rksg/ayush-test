@@ -46,8 +46,7 @@ function SearchBar () {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/search/${fixedEncodeURIComponent(searchText)}`
-    }, { replace: true })
-    navigate(0)
+    }, { replace: pathname.includes('/search/') ? true : false })
   }
   const closeSearch = () => {
     setSearchText('')

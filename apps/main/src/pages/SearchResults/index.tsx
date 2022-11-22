@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -10,10 +10,6 @@ import { useTableQuery }                from '@acx-ui/rc/utils'
 import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
 import { Collapse } from './styledComponents'
-
-export default function SearchResults () {
-  return <SearchWidgets />
-}
 
 function useSearchTerm () {
   const { searchVal } = useParams()
@@ -34,7 +30,7 @@ function SearchHeader ({ count }: { count: number }) {
   )
 }
 
-function SearchWidgets () {
+function SearchResult () {
   const { $t } = useIntl()
   const globalSearch = useSearchTerm()
   const [count, setCount] = useState(0)
@@ -56,8 +52,8 @@ function SearchWidgets () {
   }, [globalSearch, venueCount])
 
   return (
-    <>
-      <SearchHeader count={count}/>
+    <Fragment key='search-results'>
+      <SearchHeader key='search-header' count={count}/>
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
           <Collapse
@@ -69,12 +65,18 @@ function SearchWidgets () {
               header={$t({ defaultMessage: 'Venue ({venueCount})' }, { venueCount })}
             >
               <VenueTable
+                key={`search-string-${globalSearch}`}
                 globalSearch={globalSearch}
                 tableQuery={tableQuery} />
             </Collapse.Panel>
           </Collapse>
         </GridCol>
       </GridRow>
-    </>
+    </Fragment>
   )
+}
+
+export default function SearchResults () {
+  const { searchVal } = useParams()
+  return <SearchResult key={searchVal}/>
 }
