@@ -11,9 +11,6 @@ COPY ${ENV_FILE} .
 RUN export $(cat ${ENV_FILE}) \
   && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
   && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
-RUN cat ~/.npmrc
-RUN echo $ARTI_USER
-RUN echo $ARTI_PASSWORD
 
 # Install dependencies
 COPY package.json package-lock.json ./
@@ -42,13 +39,13 @@ RUN echo NX_GIT_SHA=$DRONE_COMMIT_SHA >> .env \
 ###############################################################
 FROM build-base as acx-ui
 ENV NODE_OPTIONS=--max-old-space-size=8192
-RUN --mount=type=cache,target=/app/node_modules/ node ./node_modules/.bin/nx run-many --target=lint --all --verbose
+RUN --mount=type=cache,target=/app/node_modules/ node ./node_modules/.bin/nx run-many --target=lint --all
 COPY tools/docker/tscValidator.sh ./tools/docker/tscValidator.sh
 RUN chmod +x tools/docker/tscValidator.sh
 RUN --mount=type=cache,target=/app/node_modules/ tools/docker/tscValidator.sh
 RUN --mount=type=cache,target=/app/node_modules/ node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=25%
 RUN --mount=type=cache,target=/app/node_modules/ node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
-RUN --mount=type=cache,target=/app/node_modules/ node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
+RUN --mount=type=cache,target=/app/node_modules/ node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand
 
 ###############################################################
 
