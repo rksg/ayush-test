@@ -46,7 +46,7 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
 
 export function VenuesDashboardWidget () {
   const { $t } = useIntl()
-  const onExpandClick = useNavigateToPath('/venues/')
+  const onArrowClick = useNavigateToPath('/venues/')
 
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
@@ -58,7 +58,7 @@ export function VenuesDashboardWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Venues' })} onExpandClick={onExpandClick}>
+      <Card title={$t({ defaultMessage: 'Venues' })} onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
             <DonutChart

@@ -59,7 +59,7 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
-  const onExpandClick = useNavigateToPath('/analytics/incidents/')
+  const onArrowClick = useNavigateToPath('/analytics/incidents/')
 
   const response = useIncidentsBySeverityDashboardQuery(filters)
   const { data: severities } = response
@@ -82,7 +82,7 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
 
   return <Loader states={[response]}>
     <HistoricalCard title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
-      onExpandClick={onExpandClick}>
+      onArrowClick={onArrowClick}>
       <AutoSizer>
         {({ width, height }) => (
           noData

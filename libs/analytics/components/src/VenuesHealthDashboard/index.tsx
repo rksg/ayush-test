@@ -175,13 +175,13 @@ export function VenuesHealthDashboard ({
     }
   ]
 
-  const onExpandClick = useNavigateToPath('/analytics/health/')
+  const onArrowClick = useNavigateToPath('/analytics/health/')
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard
         title={$t({ defaultMessage: 'Client Experience' })}
         subTitle={$t({ defaultMessage: 'Top 5 Venues/Services with poor experience' })}
-        onExpandClick={onExpandClick}
+        onArrowClick={onArrowClick}
       >
         <AutoSizer>
           {({ height, width }) => (

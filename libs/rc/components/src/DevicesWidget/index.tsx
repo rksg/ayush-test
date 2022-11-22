@@ -9,11 +9,11 @@ export function DevicesWidget (props: {
   apData: DonutChartData[], switchData: DonutChartData[], enableArrowClick?: boolean
 }) {
   const { $t } = useIntl()
-  const onExpandClick = useNavigateToPath('/devices/')
+  const onArrowClick = useNavigateToPath('/devices/')
 
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
-      onExpandClick={props.enableArrowClick ? onExpandClick : undefined}>
+      onArrowClick={props.enableArrowClick ? onArrowClick : undefined}>
       <AutoSizer>
         {({ height, width }) => (
           <div style={{ display: 'inline-flex' }}>

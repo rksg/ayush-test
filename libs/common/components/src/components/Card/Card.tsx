@@ -10,7 +10,7 @@ export interface CardProps extends Pick<AntCardProps, 'children'> {
   type?: CardTypes
   title?: string | { title?: string, icon: JSX.Element }
   subTitle?: string
-  onExpandClick?: () => void
+  onArrowClick?: () => void
   onMoreClick?: () => void
 }
 
@@ -43,11 +43,11 @@ function Card ({
         </>}
         extra={
           <Space>
-            { props.onExpandClick ? <UI.Button
+            { props.onArrowClick ? <UI.Button
               key={'expand-btn'}
               title={'Expand'}
               icon={<UI.ArrowChevronRightIcon />}
-              onClick={props.onExpandClick}
+              onClick={props.onArrowClick}
             /> : null }
             { props.onMoreClick ? <UI.Button
               key={'more-btn'}

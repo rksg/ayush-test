@@ -53,7 +53,7 @@ export const getSwitchClientChartData = (
 }
 
 export function ClientsWidget () {
-  const onExpandClick = useNavigateToPath('/users/')
+  const onArrowClick = useNavigateToPath('/users/')
   const intl = useIntl()
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
@@ -70,7 +70,7 @@ export function ClientsWidget () {
   const { $t } = intl
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Clients' })} onExpandClick={onExpandClick}>
+      <Card title={$t({ defaultMessage: 'Clients' })} onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'inline-flex' }}>
