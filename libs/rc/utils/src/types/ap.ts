@@ -176,7 +176,7 @@ export interface PacketCaptureState {
 
 export interface Capabilities {
   version?: string,
-  apModels?: CapabilitiesApModel[]
+  apModels: CapabilitiesApModel[]
 }
 
 export interface ModelLanPort {

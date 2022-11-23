@@ -96,7 +96,7 @@ export function ApPacketCaptureForm () {
 
     if (ap && capabilities && apRadioCustomization) {
       let captureInterfaceOptions = []
-      const apCapabilities = capabilities.apModels?.find(cap => cap.model === ap.model)
+      const apCapabilities = capabilities.apModels.find(cap => cap.model === ap.model)
       const { supportTriRadio = false, supportDual5gMode = false } = apCapabilities || {}
       const { enable24G, enable50G, enable6G, apRadioParamsDual5G } = apRadioCustomization
 
