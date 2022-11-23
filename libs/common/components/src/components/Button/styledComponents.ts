@@ -9,6 +9,7 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
       background-color: var(--acx-accents-orange-60);
       border-color: var(--acx-accents-orange-60);
     }
+    svg { path { stroke: var(--acx-primary-white) !important } }
   ` : ''}
 
   padding: 4px 12px;

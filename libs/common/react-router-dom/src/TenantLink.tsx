@@ -15,3 +15,4 @@ export function TenantLink ({
 
   return <Link {...props} to={to} />
 }
+export const MspTenantLink = (props: LinkProps) => <TenantLink {...props} tenantType='v' />

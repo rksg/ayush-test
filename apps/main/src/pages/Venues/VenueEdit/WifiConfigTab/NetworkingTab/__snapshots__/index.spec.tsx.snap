@@ -705,7 +705,7 @@ exports[`NetworkingTab should render correctly 1`] = `
                                     style="margin-right: 12px;"
                                   >
                                     <button
-                                      class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                                      class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
                                       type="button"
                                     >
                                       <span>
@@ -805,7 +805,7 @@ exports[`NetworkingTab should render correctly 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
               type="button"
             >
               <span>

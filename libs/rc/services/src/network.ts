@@ -164,7 +164,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
         const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
         const networkDeepList = networkDeepListQuery.data as { response: NetworkDetail[] }
-        const networkDeep = networkDeepList?.response[0]
+        const networkDeep = Array.isArray(networkDeepList?.response) ?
+          networkDeepList?.response[0] : undefined
 
         let networkVenuesApGroupList = {} as { response: NetworkVenue[] }
 

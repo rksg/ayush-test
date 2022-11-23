@@ -4,6 +4,12 @@ import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@acx-
 
 import { CountdownNode, showActivityMessage, showTxToast, TxStatus } from './toastService'
 
+jest.mock('@acx-ui/icons', ()=>({
+  ...jest.requireActual('@acx-ui/icons'),
+  ExpandSquareUp: () => <div data-testid='expand-square-up'/>,
+  ExpandSquareDown: () => <div data-testid='expand-square-down'/>
+}), { virtual: true })
+
 const tx = {
   requestId: '6470931c-c9ce-42f4-b9a3-48324f109bd5',
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -83,12 +89,16 @@ describe('Toast Service: showTxToast', () => {
     const failedTx = {
       ...tx,
       status: TxStatus.FAIL,
-      descriptionTemplate: 'Network "@@networkName" was not added'
+      descriptionTemplate: 'Network "@@networkName" was not added',
+      error: '{"errors":[{"code":"xxx-xxxxx","message":"Operation: ADD, Type: Network, Id: xxx, Err: xxxxxx"}],"requestId":"xxxxxxx"}'
     }
     act(() => {
       showActivityMessage(failedTx, ['AddNetworkDeep'])
     })
     await screen.findByText('Network "open-network" was not added')
+    fireEvent.click(await screen.findByRole('button', { name: 'Technical Details' }))
+    await screen.findByRole('dialog')
+    await screen.findByText(/The following information was reported for the error you encountered/)
   })
 
 })
