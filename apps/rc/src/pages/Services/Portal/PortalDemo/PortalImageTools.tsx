@@ -88,6 +88,7 @@ export default function PortalImageTools (props:{
       </div>
       {showColorPic!==false && showColorPicker &&<div
         placeholder='colorpickcontainer'
+        onClick={(e)=>e.stopPropagation()}
         style={{ marginTop: 10, marginBottom: 60, marginLeft: -10 }}>
         <SketchPicker
           color={color}
