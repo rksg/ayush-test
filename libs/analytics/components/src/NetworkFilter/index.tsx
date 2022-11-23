@@ -176,13 +176,16 @@ const search = (input: string, path: DefaultOptionType[]): boolean => {
     ? false
     : (item?.displayLabel as string)?.toLowerCase().includes(input.toLowerCase())
 }
+// eslint-disable-next-line no-empty-pattern
 export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
   selectedOptions?.map((option) => option?.displayLabel || option?.label).join(' / ')
 export const onApply = (
   value: SingleValueType | SingleValueType[] | undefined,
   setNetworkPath: CallableFunction
 ) => {
-  const path = !value ? defaultNetworkPath : JSON.parse(value?.slice(-1)[0] as string)
+  const path = !value || value.length === 0
+    ? defaultNetworkPath
+    : JSON.parse(value?.slice(-1)[0] as string)
   setNetworkPath(path, value || [])
 }
 
@@ -227,6 +230,7 @@ function ConnectedNetworkFilter (
           placement='bottomRight'
           displayRender={displayRender}
           showSearch={{ filter: search }}
+          allowClear
         />
       </Loader>
     </UI.Container>
