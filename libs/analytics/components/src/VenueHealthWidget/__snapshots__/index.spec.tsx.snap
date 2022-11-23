@@ -66,7 +66,8 @@ exports[`Health Widget should render KPI widgets 1`] = `
                       class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Title-sc-1chsnnf-0 eyxVFQ gSXMOS"
                     >
                       Client Experience
-                      <div
+                      <svg
+                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-2 dGmXEJ jKsaam"
                         data-testid="HistoricalOutlined"
                       />
                     </div>
@@ -219,7 +220,8 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                       class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Title-sc-1chsnnf-0 eyxVFQ gSXMOS"
                     >
                       Client Experience
-                      <div
+                      <svg
+                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-2 dGmXEJ jKsaam"
                         data-testid="HistoricalOutlined"
                       />
                     </div>
