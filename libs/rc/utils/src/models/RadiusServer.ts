@@ -1,13 +1,7 @@
 export class RadiusServer {
-  ip: string
+  ip?: string
 
-  port: number
+  port?: number
 
   sharedSecret?: string
-
-  constructor () {
-    this.ip = ''
-
-    this.port = 0
-  }
 }

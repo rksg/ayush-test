@@ -25,7 +25,8 @@ export enum WlanSecurityEnum {
   OpenCaptivePortal = 'OpenCaptivePortal',
   WEP = 'WEP',
   WPA23Mixed = 'WPA23Mixed',
-  WPA3 = 'WPA3'
+  WPA3 = 'WPA3',
+  None = 'None'
 }
 
 export enum PassphraseFormatEnum {
