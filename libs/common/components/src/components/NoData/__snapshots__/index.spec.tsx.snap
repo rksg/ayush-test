@@ -11,7 +11,8 @@ exports[`NoActiveData should render correctly 1`] = `
       <div
         class="ant-space-item"
       >
-        <div
+        <svg
+          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
@@ -40,7 +41,8 @@ exports[`NoActiveData should render correctly with the prop 1`] = `
       <div
         class="ant-space-item"
       >
-        <div
+        <svg
+          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
