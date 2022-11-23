@@ -11,9 +11,6 @@ COPY ${ENV_FILE} .
 RUN export $(cat ${ENV_FILE}) \
   && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
   && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
-RUN cat ~/.npmrc
-RUN echo $ARTI_USER
-RUN echo $ARTI_PASSWORD
 
 # Install dependencies
 COPY package.json package-lock.json ./
