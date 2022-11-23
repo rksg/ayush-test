@@ -4,11 +4,12 @@ import { useState } from 'react'
 import { Tooltip }                                  from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Alert }                                      from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
-import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
+import { Alert }                                                          from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                     from '@acx-ui/icons'
+import { Demo, GuestNetworkTypeEnum, PortalLanguageEnum, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import { capativeTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
+import { getLanguage }              from '../../commonUtils'
 import { portalViewTypes }          from '../contentsMap'
 import * as UI                      from '../styledComponents'
 
@@ -17,6 +18,7 @@ import PortalComponents         from './PortalComponents'
 import PortalLanguageSettings   from './PortalLanguageSettings'
 import PortalViewContent        from './PortalViewContent'
 import PortalViewContentPreview from './PortalViewContentPreview'
+
 
 
 
@@ -62,6 +64,15 @@ export default function PortalDemo ({
         view === PortalViewEnum.HostApproval?
           GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
   const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
+  const alternativeLang = demoValue.alternativeLang
+  const displayLang = getLanguage(demoValue.displayLang as keyof typeof PortalLanguageEnum)
+  let langs = [] as string[]
+  const langKeys = Object.keys(alternativeLang || {}) as Array<keyof typeof PortalLanguageEnum>
+  langKeys.map((key) =>{
+    if(alternativeLang?.[key]) langs.push(getLanguage(key))
+    return langs
+  }
+  )
   return (
     <>
       <UI.PopoverStyle />
@@ -149,6 +160,18 @@ export default function PortalDemo ({
                 resetDemo?.()
               }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
           </div>}
+          {isPreview&&<div
+            style={{ flex: 'auto', textAlign: 'right', paddingRight: 40 }}>
+            <UI.Select defaultValue={displayLang} style={{ width: 250, textAlign: 'left' }}>
+              <Option key={displayLang}>
+                {displayLang}
+              </Option>
+              {langs.map(
+                key =><Option key={key}>{key}</Option>
+              )}
+            </UI.Select>
+          </div>
+          }
         </div>
       </UI.LayoutHeader>
       <UI.LayoutContent id='democontent'>

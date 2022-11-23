@@ -17,7 +17,6 @@ export default function PortalLanguageSettings (props:{
   return (
     <Form layout='vertical'>
       <Form.Item
-        name='displayLang'
         label={$t({ defaultMessage: 'Display Language' })}
         initialValue={demoValue.displayLang}
         children={<Select value={demoValue.displayLang}

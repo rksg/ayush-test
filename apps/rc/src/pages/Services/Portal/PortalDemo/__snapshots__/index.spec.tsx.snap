@@ -151,29 +151,12 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
             MobilePhoneOutlined.svg
           </svg>
         </div>
-      </div>
-    </div>
-    <section
-      class="ant-layout styledComponents__LayoutContent-sc-cby53p-8 csUOZY"
-      id="democontent"
-    >
-      <section
-        class="ant-layout styledComponents__LayoutView-sc-cby53p-9 gMkhdZ"
-        style="background-image: url();"
-      >
-        <section
-          class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-10 fcheRJ"
-          isbg="false"
+        <div
+          style="flex-basis: auto; text-align: right; padding-right: 40px;"
         >
-          <img
-            alt="Wifi4eu"
-            class="styledComponents__Img-sc-cby53p-15 bxRRHj"
-            height="120"
-            src="WiFi4euBanner.svg"
-          />
           <div
             class="ant-select styledComponents__Select-sc-cby53p-12 fUVHGk ant-select-single ant-select-show-arrow"
-            style="width: 250px; margin-top: 10px;"
+            style="width: 250px; text-align: left;"
           >
             <div
               class="ant-select-selector"
@@ -232,6 +215,27 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
               </span>
             </span>
           </div>
+        </div>
+      </div>
+    </div>
+    <section
+      class="ant-layout styledComponents__LayoutContent-sc-cby53p-8 csUOZY"
+      id="democontent"
+    >
+      <section
+        class="ant-layout styledComponents__LayoutView-sc-cby53p-9 gMkhdZ"
+        style="background-image: url();"
+      >
+        <section
+          class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-10 fcheRJ"
+          isbg="false"
+        >
+          <img
+            alt="Wifi4eu"
+            class="styledComponents__Img-sc-cby53p-15 bxRRHj"
+            height="120"
+            src="WiFi4euBanner.svg"
+          />
           <img
             alt="Logo"
             class="styledComponents__Img-sc-cby53p-15 bxRRHj"
