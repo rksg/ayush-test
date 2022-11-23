@@ -231,7 +231,6 @@ export { ReactComponent as WindowsSolid } from './icons/WindowsSolid.svg'
 export { ReactComponent as Wired } from './icons/Wired.svg'
 export { ReactComponent as WorldOutlined } from './icons/WorldOutlined.svg'
 export { ReactComponent as WorldSolid } from './icons/WorldSolid.svg'
-export { ReactComponent as NetworkCoverage } from './icons/NetworkCoverage.svg'
-export { ReactComponent as SwitchDevice } from './icons/SwitchDevice.svg'
+export { ReactComponent as DeviceOutlined } from './icons/DeviceOutlined.svg'
 
 export * from './styledComponents'

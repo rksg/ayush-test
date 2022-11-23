@@ -18,8 +18,8 @@ jest.mock('@acx-ui/icons', ()=> ({
   SearchFullOutlined: () => <div data-testid='SearchFullOutlined'/>,
   BulbOutlined: () => <div data-testid='BulbOutlined'/>,
   PlusCircleOutlined: () => <div data-testid='PlusCircleOutlined'/>,
-  SwitchDevice: () => <div data-testid='SwitchDevice'/>,
-  NetworkCoverage: () => <div data-testid='NetworkCoverage'/>
+  DeviceOutlined: () => <div data-testid='DeviceOutlined'/>,
+  SignalUp: () => <div data-testid='SignalUp'/>
 }))
 
 const list: FloorPlanDto[] = [

@@ -1,7 +1,7 @@
 import { Tooltip } from 'antd'
 import { isEmpty } from 'lodash'
 
-import { NetworkCoverage, SwitchDevice }                           from '@acx-ui/icons'
+import { DeviceOutlined, SignalUp }                                from '@acx-ui/icons'
 import { FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
 import * as UI                  from './styledComponent'
@@ -66,8 +66,8 @@ export default function NetworkDevices ({
                 }>{
                   !contextAlbum && (
                     obj?.networkDeviceType === NetworkDeviceType.switch
-                      ? <SwitchDevice/>
-                      : <NetworkCoverage />)
+                      ? <DeviceOutlined/>
+                      : <SignalUp />)
                 } </div>
             </UI.DeviceContainer>
           </Tooltip>

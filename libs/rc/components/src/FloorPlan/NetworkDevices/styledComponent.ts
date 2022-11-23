@@ -24,6 +24,11 @@ export const DeviceContainer = styled('div')`
     transform: rotate(-45deg);
     cursor: 'pointer';
 
+    path {
+      fill: var(--acx-primary-white);
+      stroke: var(--acx-neutrals-50);
+    }
+
     &.ap-status-severity-critical {
       background-color: var(--acx-semantics-red-70) !important;
     }

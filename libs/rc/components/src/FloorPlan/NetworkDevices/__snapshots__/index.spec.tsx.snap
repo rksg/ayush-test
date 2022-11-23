@@ -11,7 +11,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
       >
         <div
-          data-testid="NetworkCoverage"
+          data-testid="SignalUp"
         />
          
       </div>
@@ -24,7 +24,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
       >
         <div
-          data-testid="SwitchDevice"
+          data-testid="DeviceOutlined"
         />
          
       </div>

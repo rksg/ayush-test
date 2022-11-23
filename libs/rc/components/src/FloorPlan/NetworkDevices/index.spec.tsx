@@ -11,8 +11,8 @@ import NetworkDevices from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
   ...jest.requireActual('@acx-ui/icons'),
-  NetworkCoverage: () => <div data-testid='NetworkCoverage'/>,
-  SwitchDevice: () => <div data-testid='SwitchDevice'/>
+  SignalUp: () => <div data-testid='SignalUp'/>,
+  DeviceOutlined: () => <div data-testid='DeviceOutlined'/>
 }))
 
 const networkDeviceType = Object.values(NetworkDeviceType)
@@ -72,7 +72,7 @@ describe('Floor Plans', () => {
       contextAlbum={false}
       context='Ap'/>)
 
-    expect(await screen.findByTestId('NetworkCoverage')).toBeVisible()
+    expect(await screen.findByTestId('SignalUp')).toBeVisible()
 
     expect(asFragment()).toMatchSnapshot()
   })
