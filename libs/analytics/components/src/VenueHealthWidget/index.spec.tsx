@@ -12,6 +12,12 @@ jest.mock('../KpiWidget', ()=>({
     Kpi Widget</div>)
 }))
 
+jest.mock('@acx-ui/icons', ()=> {
+  const icons = jest.requireActual('@acx-ui/icons')
+  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(keys)
+})
+
 describe('Health Widget', () => {
   const filters:AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
@@ -35,7 +41,7 @@ describe('Health Widget', () => {
         }
       }
     })
-    render( <Provider> <VenueHealth filters={filters}/></Provider>)
+    render(<Provider><VenueHealth filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render KPI widgets', async () => {
@@ -50,7 +56,7 @@ describe('Health Widget', () => {
       }
     })
 
-    const { asFragment } = render( <Provider> <VenueHealth filters={filters}/></Provider>)
+    const { asFragment } = render(<Provider><VenueHealth filters={filters}/></Provider>)
     await screen.findAllByText('Kpi Widget')
     expect(asFragment()).toMatchSnapshot()
   })
@@ -67,7 +73,7 @@ describe('Health Widget', () => {
       }
     })
 
-    const { asFragment } = render( <Provider> <VenueHealth filters={filters}/></Provider>)
+    const { asFragment } = render(<Provider><VenueHealth filters={filters}/></Provider>)
     await screen.findAllByText('Kpi Widget')
     expect(asFragment()).toMatchSnapshot()
   })

@@ -38,7 +38,7 @@ exports[`Table component renders compact table 1`] = `
                       style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="min-width: 100%; table-layout: auto;"
+                        style="width: 100%; min-width: 100%; table-layout: auto;"
                       >
                         <colgroup />
                         <thead
@@ -219,7 +219,7 @@ exports[`Table component renders form table 1`] = `
                       style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="min-width: 100%; table-layout: auto;"
+                        style="width: 100%; min-width: 100%; table-layout: auto;"
                       >
                         <colgroup />
                         <thead
