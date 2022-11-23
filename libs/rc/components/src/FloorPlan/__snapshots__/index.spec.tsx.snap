@@ -176,7 +176,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             data-testid="image-zoom-in"
             type="button"
           >
-            <div
+            <svg
               data-testid="MagnifyingGlassPlusOutlined"
             />
           </button>
@@ -200,7 +200,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             data-testid="image-zoom-out"
             type="button"
           >
-            <div
+            <svg
               data-testid="MagnifyingGlassMinusOutlined"
             />
           </button>
@@ -224,7 +224,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             data-testid="image-zoom-original"
             type="button"
           >
-            <div
+            <svg
               data-testid="SearchFullOutlined"
             />
           </button>
@@ -247,7 +247,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             data-testid="image-zoom-fit"
             type="button"
           >
-            <div
+            <svg
               data-testid="SearchFitOutlined"
             />
           </button>
@@ -267,7 +267,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               data-testid="galleryIcon"
               type="button"
             >
-              <div
+              <svg
                 data-testid="ApplicationsSolid"
               />
             </button>

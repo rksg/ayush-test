@@ -498,9 +498,9 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg>
-                                                      SettingsOutlined.svg
-                                                    </svg>
+                                                    <svg
+                                                      data-testid="SettingsOutlined"
+                                                    />
                                                   </div>
                                                 </div>
                                               </div>
@@ -760,9 +760,9 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg>
-                                                      SettingsOutlined.svg
-                                                    </svg>
+                                                    <svg
+                                                      data-testid="SettingsOutlined"
+                                                    />
                                                   </div>
                                                 </div>
                                               </div>

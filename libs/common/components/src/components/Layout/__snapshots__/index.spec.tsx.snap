@@ -30,8 +30,8 @@ exports[`Layout should render correctly 1`] = `
                 class=""
                 href="/t/undefined/dashboard"
               >
-                <div
-                  data-testid="logo"
+                <svg
+                  data-testid="Logo"
                 />
               </a>
             </div>
@@ -62,8 +62,8 @@ exports[`Layout should render correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="speed-indicator-outlined"
+                        <svg
+                          data-testid="SpeedIndicatorOutlined"
                         />
                       </span>
                       <span
@@ -100,8 +100,9 @@ exports[`Layout should render correctly 1`] = `
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                         >
-                          <div
-                            data-testid="ai-outlined"
+                          <svg
+                            class="menuConfig__AIOutlined-sc-t1ebvm-0 lboySK"
+                            data-testid="AIOutlined"
                           />
                         </span>
                         <span
@@ -134,8 +135,8 @@ exports[`Layout should render correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="calendar-date-outlined"
+                        <svg
+                          data-testid="CalendarDateOutlined"
                         />
                       </span>
                       <span
@@ -167,8 +168,8 @@ exports[`Layout should render correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="reports-outlined"
+                        <svg
+                          data-testid="ReportsOutlined"
                         />
                       </span>
                       <span
@@ -226,8 +227,8 @@ exports[`Layout should render correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="location-outlined"
+                        <svg
+                          data-testid="LocationOutlined"
                         />
                       </span>
                       <span
@@ -259,8 +260,8 @@ exports[`Layout should render correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="devices-outlined"
+                        <svg
+                          data-testid="DevicesOutlined"
                         />
                       </span>
                       <span
@@ -292,8 +293,8 @@ exports[`Layout should render correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="networks-outlined"
+                        <svg
+                          data-testid="NetworksOutlined"
                         />
                       </span>
                       <span
@@ -325,8 +326,8 @@ exports[`Layout should render correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="services-outlined"
+                        <svg
+                          data-testid="ServicesOutlined"
                         />
                       </span>
                       <span
@@ -358,8 +359,8 @@ exports[`Layout should render correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="policies-outlined"
+                        <svg
+                          data-testid="PoliciesOutlined"
                         />
                       </span>
                       <span
@@ -392,8 +393,8 @@ exports[`Layout should render correctly 1`] = `
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                         >
-                          <div
-                            data-testid="account-circle-outlined"
+                          <svg
+                            data-testid="AccountCircleOutlined"
                           />
                         </span>
                         <span
@@ -452,8 +453,8 @@ exports[`Layout should render correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="admin-outlined"
+                        <svg
+                          data-testid="AdminOutlined"
                         />
                       </span>
                       <span
@@ -493,8 +494,9 @@ exports[`Layout should render correctly 1`] = `
                   <span
                     class="ant-menu-title-content"
                   >
-                    <div
-                      data-testid="arrow-left"
+                    <svg
+                      class="styledComponents__Arrow-sc-iwostn-8 iueFBM"
+                      data-testid="ArrowChevronLeft"
                     />
                     <div
                       class="styledComponents__CollapseText-sc-iwostn-10 keaIHZ ant-pro-menu-item-title"
@@ -608,8 +610,8 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 class=""
                 href="/v/undefined/dashboard"
               >
-                <div
-                  data-testid="logo"
+                <svg
+                  data-testid="Logo"
                 />
               </a>
             </div>
@@ -641,8 +643,8 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="speed-indicator-outlined"
+                        <svg
+                          data-testid="SpeedIndicatorOutlined"
                         />
                       </span>
                       <span
@@ -682,8 +684,9 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                   <span
                     class="ant-menu-title-content"
                   >
-                    <div
-                      data-testid="arrow-left"
+                    <svg
+                      class="styledComponents__Arrow-sc-iwostn-8 iueFBM"
+                      data-testid="ArrowChevronLeft"
                     />
                     <div
                       class="styledComponents__CollapseText-sc-iwostn-10 keaIHZ ant-pro-menu-item-title"
@@ -788,8 +791,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 class="active"
                 href="/t/t-id/dashboard"
               >
-                <div
-                  data-testid="logo"
+                <svg
+                  data-testid="Logo"
                 />
               </a>
             </div>
@@ -822,8 +825,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconSolid-sc-iwostn-7 bZgxDC OWPZI"
                       >
-                        <div
-                          data-testid="speed-indicator-solid"
+                        <svg
+                          data-testid="SpeedIndicatorSolid"
                         />
                       </span>
                       <span
@@ -862,8 +865,9 @@ exports[`Layout should show tooltip when disabled 1`] = `
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                         >
-                          <div
-                            data-testid="ai-outlined"
+                          <svg
+                            class="menuConfig__AIOutlined-sc-t1ebvm-0 lboySK"
+                            data-testid="AIOutlined"
                           />
                         </span>
                         <span
@@ -897,8 +901,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="calendar-date-outlined"
+                        <svg
+                          data-testid="CalendarDateOutlined"
                         />
                       </span>
                       <span
@@ -931,8 +935,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="reports-outlined"
+                        <svg
+                          data-testid="ReportsOutlined"
                         />
                       </span>
                       <span
@@ -992,8 +996,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="location-outlined"
+                        <svg
+                          data-testid="LocationOutlined"
                         />
                       </span>
                       <span
@@ -1026,8 +1030,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="devices-outlined"
+                        <svg
+                          data-testid="DevicesOutlined"
                         />
                       </span>
                       <span
@@ -1060,8 +1064,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="networks-outlined"
+                        <svg
+                          data-testid="NetworksOutlined"
                         />
                       </span>
                       <span
@@ -1094,8 +1098,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="services-outlined"
+                        <svg
+                          data-testid="ServicesOutlined"
                         />
                       </span>
                       <span
@@ -1128,8 +1132,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="policies-outlined"
+                        <svg
+                          data-testid="PoliciesOutlined"
                         />
                       </span>
                       <span
@@ -1165,8 +1169,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                         >
-                          <div
-                            data-testid="account-circle-outlined"
+                          <svg
+                            data-testid="AccountCircleOutlined"
                           />
                         </span>
                         <span
@@ -1227,8 +1231,8 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
-                        <div
-                          data-testid="admin-outlined"
+                        <svg
+                          data-testid="AdminOutlined"
                         />
                       </span>
                       <span
@@ -1268,8 +1272,9 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   <span
                     class="ant-menu-title-content"
                   >
-                    <div
-                      data-testid="arrow-left"
+                    <svg
+                      class="styledComponents__Arrow-sc-iwostn-8 iueFBM"
+                      data-testid="ArrowChevronLeft"
                     />
                     <div
                       class="styledComponents__CollapseText-sc-iwostn-10 keaIHZ ant-pro-menu-item-title"

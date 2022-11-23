@@ -45,8 +45,8 @@ Array [
             class="ant-drawer-close"
             type="button"
           >
-            <div
-              data-testid="close-symbol"
+            <svg
+              data-testid="CloseSymbol"
             />
           </button>
           <div
@@ -93,8 +93,8 @@ Array [
             class="ant-drawer-close"
             type="button"
           >
-            <div
-              data-testid="close-symbol"
+            <svg
+              data-testid="CloseSymbol"
             />
           </button>
           <div
@@ -103,16 +103,16 @@ Array [
             <button
               class="sc-gsnTZi jxJcEp"
             >
-              <div
-                data-testid="arrow-back"
+              <svg
+                data-testid="ArrowBack"
               />
               Back
             </button>
             <div
               class="sc-dkzDqf bnYHGr"
             >
-              <div
-                data-testid="icon"
+              <svg
+                data-testid="BulbOutlined"
               />
               Test Drawer
             </div>

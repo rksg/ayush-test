@@ -465,9 +465,9 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg>
-                                                      SettingsOutlined.svg
-                                                    </svg>
+                                                    <svg
+                                                      data-testid="SettingsOutlined"
+                                                    />
                                                   </div>
                                                 </div>
                                               </div>
@@ -833,9 +833,9 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg>
-                                                      SettingsOutlined.svg
-                                                    </svg>
+                                                    <svg
+                                                      data-testid="SettingsOutlined"
+                                                    />
                                                   </div>
                                                 </div>
                                               </div>

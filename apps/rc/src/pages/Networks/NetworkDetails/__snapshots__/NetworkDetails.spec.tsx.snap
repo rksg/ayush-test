@@ -80,9 +80,9 @@ exports[`NetworkDetails should render correctly 1`] = `
                   <span>
                     All Active Venues
                   </span>
-                  <svg>
-                    ArrowExpand.svg
-                  </svg>
+                  <svg
+                    data-testid="ArrowExpand"
+                  />
                 </button>
               </span>
             </div>
@@ -99,9 +99,9 @@ exports[`NetworkDetails should render correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg>
-                    ClockOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
                   <span>
                     Last 24 Hours
                   </span>
