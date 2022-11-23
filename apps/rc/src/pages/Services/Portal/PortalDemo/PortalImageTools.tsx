@@ -24,12 +24,13 @@ export default function PortalImageTools (props:{
     showImg, showColorPic, defaultSize, showColorPicker, setShowColorPicker } = props
   const showMinusEn = (size !== minSize*(defaultSize as number))
   const showPlusEn = (size !== maxSize*(defaultSize as number))
+  const now = Date.now()
   return (
     <>
       <div style={{ marginTop: -6 }}
         onClick={(e)=>{e.stopPropagation()}}>
         <Upload accept='.png,.jpg,.jpeg'
-          id='contentimageupload'
+          id={'contentimageupload'+now}
           showUploadList={false}
           customRequest={async ({ file }) => {
             Utils.getBase64(file as RcFile, url => {
@@ -37,7 +38,7 @@ export default function PortalImageTools (props:{
             })
           }}
         >
-          {showImg !== false && <label htmlFor='contentimageupload'
+          {showImg !== false && <label htmlFor={'contentimageupload'+now}
             placeholder='contentimageupload'>
             <UI.PictureFilled
               title='pictureout'
@@ -87,7 +88,7 @@ export default function PortalImageTools (props:{
       </div>
       {showColorPic!==false && showColorPicker &&<div
         placeholder='colorpickcontainer'
-        style={{ marginTop: 10, position: 'absolute', marginLeft: -10 }}>
+        style={{ marginTop: 10, marginBottom: 60, marginLeft: -10 }}>
         <SketchPicker
           color={color}
           disableAlpha={true}

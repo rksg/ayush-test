@@ -181,49 +181,6 @@ exports[`SummaryForm should render portal summary successfully 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="ant-row"
-    >
-      <div
-        class="ant-col"
-      >
-        <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-        >
-          Wireless Networks (2)
-        </h4>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                >
-                  <li
-                    style="margin: 10px 0px;"
-                  >
-                    efef32751d854e2ea2bfce4b367c330c
-                  </li>
-                  <li
-                    style="margin: 10px 0px;"
-                  >
-                    1d88235da9504a98847fb5ed2b971052
-                  </li>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </form>
 </DocumentFragment>
 `;

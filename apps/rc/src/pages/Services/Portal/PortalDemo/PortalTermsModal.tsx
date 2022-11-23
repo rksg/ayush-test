@@ -29,12 +29,14 @@ export default function PortalTermsModal (props:{
     <>
       <UI.SettingOutlined onClick={() => {
         setNewTerms(terms)
-        setVisible(true)}}/>
+        setVisible(true)}}
+      title='settingicon'
+      />
       <Modal
         title={$t({ defaultMessage: 'Terms & Conditions' })}
         visible={visible}
         width={400}
-        okText='OK'
+        okText={$t({ defaultMessage: 'OK' })}
         onCancel={()=>{
           setNewTerms(terms)
           setVisible(false)

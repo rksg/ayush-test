@@ -62,7 +62,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-2 kqqYPH"
+    class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
   >
     <div
       class="ant-pro-steps-form"
@@ -108,37 +108,6 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                       class="ant-steps-item-title"
                     >
                       Settings
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-steps-item ant-steps-item-wait"
-              >
-                <div
-                  class="ant-steps-item-container"
-                >
-                  <div
-                    class="ant-steps-item-tail"
-                  />
-                  <div
-                    class="ant-steps-item-icon"
-                  >
-                    <span
-                      class="ant-steps-icon"
-                    >
-                      <span
-                        class="ant-steps-icon-dot"
-                      />
-                    </span>
-                  </div>
-                  <div
-                    class="ant-steps-item-content"
-                  >
-                    <div
-                      class="ant-steps-item-title"
-                    >
-                      Networks
                     </div>
                   </div>
                 </div>
@@ -494,91 +463,6 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                 </div>
               </form>
             </div>
-            <div
-              class="ant-pro-steps-form-step"
-            >
-              <form
-                autocomplete="off"
-                class="ant-form ant-form-vertical"
-                id="scope"
-              >
-                <input
-                  style="display: none;"
-                  type="text"
-                />
-                <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
-                >
-                  Networks
-                </h3>
-                <div
-                  class="ant-form-item"
-                >
-                  <div
-                    class="ant-row ant-form-item-row"
-                  >
-                    <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class=""
-                        for="scope_network"
-                        title="Select the wireless networks where the Portal Service will be applied:"
-                      >
-                        Select the wireless networks where the Portal Service will be applied:
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
-                    >
-                      <div
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
-                          >
-                            <div
-                              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-                            >
-                              <span
-                                aria-label="loader"
-                                role="img"
-                              >
-                                <div
-                                  aria-busy="true"
-                                  aria-live="polite"
-                                  class="ant-spin ant-spin-lg ant-spin-spinning"
-                                >
-                                  <span
-                                    class="ant-spin-dot ant-spin-dot-spin"
-                                  >
-                                    <i
-                                      class="ant-spin-dot-item"
-                                    />
-                                    <i
-                                      class="ant-spin-dot-item"
-                                    />
-                                    <i
-                                      class="ant-spin-dot-item"
-                                    />
-                                    <i
-                                      class="ant-spin-dot-item"
-                                    />
-                                  </span>
-                                </div>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
           </div>
         </div>
       </div>
@@ -593,6 +477,18 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+              type="button"
+            >
+              <span>
+                Finish
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <button
               class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
               type="button"
             >
@@ -600,40 +496,6 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                 Cancel
               </span>
             </button>
-          </div>
-          <div
-            class="ant-space-item"
-          >
-            <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
-            >
-              <div
-                class="ant-space-item"
-                style="margin-right: 12px;"
-              >
-                <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                  disabled=""
-                  type="button"
-                >
-                  <span>
-                    Back
-                  </span>
-                </button>
-              </div>
-              <div
-                class="ant-space-item"
-              >
-                <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
-                  type="button"
-                >
-                  <span>
-                    Next
-                  </span>
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>

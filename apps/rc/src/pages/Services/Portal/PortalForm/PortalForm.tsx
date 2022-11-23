@@ -15,7 +15,6 @@ import Photo                     from '../../../../assets/images/portal-demo/Por
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
 import Logo                      from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
-import PortalScopeForm           from '../PortalScope/PortalScopeForm'
 import { PortalSummaryForm }     from '../PortalSummary/PortalSummaryForm'
 
 import PortalFormContext from './PortalFormContext'
@@ -118,7 +117,7 @@ export const PortalForm = () => {
             }}/>
           </StepsForm.StepForm>
 
-          <StepsForm.StepForm
+          {/* <StepsForm.StepForm
             name='scope'
             title={$t({ defaultMessage: 'Networks' })}
             onFinish={async (data) => {
@@ -127,7 +126,7 @@ export const PortalForm = () => {
             }}
           >
             <PortalScopeForm />
-          </StepsForm.StepForm>
+          </StepsForm.StepForm> */}
 
           {!editMode&&<StepsForm.StepForm
             name='summary'

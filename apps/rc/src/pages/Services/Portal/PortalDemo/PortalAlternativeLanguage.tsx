@@ -11,7 +11,7 @@ export default function PortalAlternativeLanguage (props:{
 }) {
   const { demoValue } = props
   const alternativeLang = demoValue.alternativeLang
-  const displayLang = demoValue.displayLang
+  const displayLang = getLanguage(demoValue.displayLang as keyof typeof PortalLanguageEnum)
   const [contentLang, setContentLang]=useState(displayLang)
   const intl = useIntl()
   let langs = [] as string[]

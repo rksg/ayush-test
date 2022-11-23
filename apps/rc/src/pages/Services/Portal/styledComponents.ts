@@ -1,10 +1,3 @@
-import {
-  MobileOutlined as AntMobileOutlined,
-  UserOutlined as AntUserOutlined,
-  MailOutlined as AntMailOutlined,
-  EditOutlined as AntEditOutlined,
-  SettingFilled as AntSettingOutlined
-} from '@ant-design/icons'
 import { Popover as AntPopover, Layout as AntLayout,
   Select as AntSelect } from 'antd'
 import styled, { css  } from 'styled-components/macro'
@@ -19,7 +12,15 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   Plus as UIPlus,
   Minus as UIMinus,
   TextMinus as UITextMinus,
-  TextPlus as UITextPlus
+  TextPlus as UITextPlus,
+  ConfigurationSolid as AntSettingOutlined,
+  EnvelopClosedOutlined as AntMailOutlined,
+  Edit as AntEditOutlined,
+  AccountCircleOutlined as AntUserOutlined,
+  Facebook,
+  GoogleSolid,
+  LinkedIn,
+  Twitter
 }   from '@acx-ui/icons'
 
 export const CommonLabel = styled.div`
@@ -182,6 +183,7 @@ export const FieldInputSmall = styled.input`
   ${fieldInputStyle}
   width:250px;
   margin-bottom:0px;
+  border-radius:5px;
 `
 export const PortalButton = styled.button`
   margin-top:20px;
@@ -211,6 +213,7 @@ export const FieldLabelLink = styled.label`
   ${linkStyle}
 `
 export const ViewSection = styled.div`
+  margin-top:10px;
   height:auto;
   width:420px;
   max-width:100%;
@@ -317,22 +320,24 @@ export const ViewSectionTabsBig = styled(UITabs)`
   }
 `
 export const ViewSectionSocial=styled.div<{ $type: string | null }>`
+  color: var(--acx-primary-white);
   ${props => props.$type === 'sms' ? css`
-  background-color:var(--acx-neutrals-70);
+  background-color:var(--acx-neutrals-60);
   ` : props => props.$type === 'facebook' ? css`
-  background-color:var(--acx-accents-blue-70);
+  background-color:var(--acx-accents-blue-55);
   ` : props => props.$type === 'microsoft' ? css`
   background-color:var(--acx-neutrals-100);
   `: props => props.$type === 'twitter' ? css`
   background-color:var(--acx-accents-blue-50);
   `: props => props.$type === 'google' ? css`
-  background-color:var(--acx-semantics-red-50);
+  background-color:var(--acx-primary-white);
+  color: var(--acx-primary-black);
+  border:1px solid var(--acx-neutrals-30);
   `: css `
-  background-color:var(--acx-accents-blue-80);
+  background-color:var(--acx-accents-blue-60);
   `}
   margin:auto;
   display:flex;
-  color: var(--acx-primary-white);
   height:50px;
   width:280px;
   border-radius:5px;
@@ -351,21 +356,35 @@ export const ViewSectionSocialIcon=styled.div`
  }
 `
 const iconsStyle = css`
-height: 26px;
+margin-bottom:-7px;
+width: 25px;
+height: 25px;
 background-color: var(--acx-neutrals-20);
-padding-right: 5px;
-padding-top: 6px;
-padding-left: 5px;
 border-radius: 5px 0 0 5px;
 `
-export const ViewSectionMobileOutlined = styled(AntMobileOutlined)`
+export const ViewSectionMobileOutlined = styled(UIMobilePhoneOutlined)`
 ${iconsStyle}
+path{
+  stroke:var(--acx-primary-black);
+}
 `
 export const ViewSectionUserOutlined = styled(AntUserOutlined)`
 ${iconsStyle}
+path:nth-child(1){
+  stroke: var(--acx-neutrals-20);
+}
+path:nth-child(2),path:nth-child(3){
+  fill:var(--acx-primary-black);
+}
 `
 export const ViewSectionMailOutlined = styled(AntMailOutlined)`
 ${iconsStyle}
+path{
+  fill:var(--acx-primary-black);
+}
+path:nth-child(2){
+  stroke:var(--acx-primary-white);
+}
 `
 export const ViewSectionEditOutlined = styled(AntEditOutlined)`
 ${iconsStyle}
@@ -388,9 +407,10 @@ export const Popover = styled(AntPopover)`
 `
 export const SettingOutlined = styled(AntSettingOutlined)`
   color: var(--acx-accents-blue-50);
-  &.anticon-setting {
-    font-size: 16px;
-    padding-top:2px;
+  width: 16px;
+  height: 16px;
+  &:hover{
+    cursor: pointer;
   }
 `
 export const SelectedDiv = styled.div`
@@ -509,4 +529,36 @@ export const PictureOutlined = styled(UIPictureSolid)<{ $isDesk: boolean | null 
   path,rect,circle{stroke:var(--acx-accents-blue-50);}
   path,circle{fill:var(--acx-accents-blue-50);}
   `}
+`
+const socialIconStyle=css`
+  width: 32px;
+  height: 32px;
+  margin-top: 8px;
+`
+export const FacebookOutlined = styled(Facebook)`
+  ${socialIconStyle}
+  path{fill:var(--acx-primary-white);}
+`
+export const TwitterOutlined = styled(Twitter)`
+${socialIconStyle}
+path{fill:var(--acx-primary-white);}
+`
+export const LinkedinOutlined = styled(LinkedIn)`
+${socialIconStyle}
+path{fill:var(--acx-primary-white);}
+`
+export const SMSMobileOutlined = styled(UIMobilePhoneOutlined)`
+${socialIconStyle}
+path{
+  stroke:var(--acx-primary-white);
+}
+path:nth-child(2){
+  fill:var(--acx-primary-white);
+}
+`
+export const GoogleOutlined = styled(GoogleSolid)`
+${socialIconStyle}
+path:nth-child(4){
+  stroke:var(--acx-primary-white);
+}
 `

@@ -54,54 +54,12 @@ const portalResponse: Portal = {
   }
 }
 
-export const networkResponse = {
-  fields: [
-    'name',
-    'id',
-    'captiveType',
-    'venues',
-    'activated',
-    'nwSubType'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      name: '!!!New_Evolink!!!',
-      id: 'efef32751d854e2ea2bfce4b367c330c',
-      nwSubType: 'guest',
-      captiveType: 'SelfSignIn',
-      venues: {
-        count: 2,
-        names: [
-          'Sindhuja-Venue',
-          'Govind'
-        ]
-      }
-    },
-    {
-      name: '!!!SANWPA2!!!',
-      id: '1d88235da9504a98847fb5ed2b971052',
-      nwSubType: 'psk',
-      venues: {
-        count: 1,
-        names: [
-          'Sandeep-R550'
-        ]
-      }
-    }
-  ]
-}
-
-
 async function fillInBeforeSettings (portalName: string) {
   const insertInput = screen.getByLabelText('Service Name')
   fireEvent.change(insertInput, { target: { value: portalName } })
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating, { timeout: 7000 })
-
-  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 }
 
 describe('PortalForm', () => {
@@ -118,9 +76,7 @@ describe('PortalForm', () => {
       rest.get(CommonUrlsInfo.getService.url,
         (_, res, ctx) => {
           return res(ctx.json(portalResponse))
-        }),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(networkResponse)))
+        })
     )
 
 
@@ -133,11 +89,6 @@ describe('PortalForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Settings' })
     await userEvent.click(screen.getByText('Reset'))
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    //Networks
-    await screen.findByRole('heading', { level: 3, name: 'Networks' })
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
-
   })
 })
