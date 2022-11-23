@@ -28,7 +28,9 @@ export function VenueAnalyticsTab () {
   const onTabChange = (tab: string) => {
     navigate({
       ...location,
-      pathname: location.pathname.replace(activeSubTab as string, tab)
+      pathname: activeSubTab
+        ? location.pathname.replace(activeSubTab as string, tab)
+        : `${location.pathname}/${tab}/overview`
     })
   }
 

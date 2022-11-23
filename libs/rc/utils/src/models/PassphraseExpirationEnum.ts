@@ -1,0 +1,11 @@
+export enum PassphraseExpirationEnum {
+  UNLIMITED = 'UNLIMITED',
+  ONE_DAY = 'ONE_DAY',
+  TWO_DAYS = 'TWO_DAYS',
+  ONE_WEEK = 'ONE_WEEK',
+  TWO_WEEKS = 'TWO_WEEKS',
+  ONE_MONTH = 'ONE_MONTH',
+  SIX_MONTHS = 'SIX_MONTHS',
+  ONE_YEAR = 'ONE_YEAR',
+  TWO_YEARS = 'TWO_YEARS',
+}
