@@ -3,6 +3,7 @@ import React from 'react'
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
+import { act }   from 'react-dom/test-utils'
 
 import { fireEvent, render, screen, cleanup } from '@acx-ui/test-utils'
 
@@ -147,4 +148,121 @@ describe('NetworkFilter', () => {
     screen.getByRole('button', { name: 'Apply' }).click()
     expect(onApplyMock).toHaveBeenCalledWith([])
   })
+
+  it('single select handles onClear correctly', async () => {
+    const options: Option[] = [
+      {
+        value: 'n1',
+        label: 'SSID 1'
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      },
+      {
+        value: 'n3',
+        label: 'SSID 3'
+      },
+      {
+        value: 'n4',
+        label: 'SSID 4'
+      }
+    ]
+
+    const onApplyMock = jest.fn()
+    const onClearMock = jest.fn()
+    render(
+      <CustomCascader
+        defaultValue={['n1']}
+        options={options}
+        onApply={onApplyMock}
+        multiple={false}
+        allowClear={true}
+        onClear={onClearMock}
+      />
+    )
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const allOptions = screen.getAllByRole('menuitemcheckbox')
+    expect(allOptions).toHaveLength(options.length)
+
+    fireEvent.click(allOptions[0])
+    expect(onApplyMock).toBeCalledTimes(1)
+    expect(onApplyMock).toHaveBeenCalledWith(['n1'])
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const clearIcon = await screen.findByLabelText('close-circle')
+    expect(clearIcon).not.toBeNull()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => userEvent.click(clearIcon))
+    expect(onClearMock).toBeCalledTimes(1)
+    expect(onClearMock).toBeCalledWith()
+    expect(onApplyMock).toBeCalledTimes(2)
+    expect(onApplyMock).toHaveBeenNthCalledWith(2, [])
+  })
+
+
+  it('multi select handles onClear correctly', async () => {
+    const options: Option[] = [
+      {
+        value: 'n1',
+        label: 'SSID 1'
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      },
+      {
+        value: 'n3',
+        label: 'SSID 3'
+      },
+      {
+        value: 'n4',
+        label: 'SSID 4'
+      }
+    ]
+
+    const onApplyMock = jest.fn()
+    const onClearMock = jest.fn()
+    render(
+      <CustomCascader
+        defaultValue={[['n1']]}
+        options={options}
+        onApply={onApplyMock}
+        multiple={true}
+        allowClear={true}
+        onClear={onClearMock}
+      />
+    )
+
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const allOptions1 = screen.getAllByRole('menuitemcheckbox')
+    expect(allOptions1).toHaveLength(options.length)
+
+    fireEvent.click(allOptions1[0])
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(onApplyMock).toBeCalledTimes(1)
+    expect(onApplyMock).toHaveBeenCalledWith([])
+
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const allOptions2 = screen.getAllByRole('menuitemcheckbox')
+    fireEvent.click(allOptions2[1])
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(onApplyMock).toBeCalledTimes(2)
+    expect(onApplyMock).toHaveBeenNthCalledWith(2, [['n2']])
+
+    fireEvent.mouseEnter(await screen.findByRole('combobox'))
+    const clearIcon = await screen.findByLabelText('close-circle')
+    expect(clearIcon).not.toBeNull()
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(() => userEvent.click(clearIcon))
+    expect(onClearMock).toBeCalledTimes(1)
+    expect(onClearMock).toBeCalledWith()
+    expect(onApplyMock).toBeCalledTimes(3)
+    expect(onApplyMock).toHaveBeenNthCalledWith(3, [])
+  })
+
 })

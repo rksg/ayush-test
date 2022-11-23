@@ -1,6 +1,10 @@
 import { ApiInfo } from '../apiService'
 
 export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
+  GetDefaultDhcpServiceProfileForGuestNetwork: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcp-service-profile/guest-network-default'
+  },
   getVlanPools: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/vlan-pool'
@@ -85,6 +89,18 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
   },
+  getAp: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=false'
+  },
+  getApLanPorts: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
+  },
+  getApRadioCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
   getWifiCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities'
@@ -92,6 +108,22 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   addAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap'
+  },
+  updateAp: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber'
+  },
+  getVenueDefaultApGroup: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group'
+  },
+  getApGroupsList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/ap-groups'
+  },
+  addApGroup: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap-group'
   },
   getDhcpAp: {
     method: 'post',

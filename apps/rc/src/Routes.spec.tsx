@@ -56,11 +56,25 @@ jest.mock('./pages/Services/DHCPForm/DHCPForm', () => () => {
   return <div data-testid='DHCPForm' />
 })
 
+jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
+  return <div data-testid='PortalForm' />
+})
+
 jest.mock('./pages/Services/DHCPDetail', () => () => {
   return <div data-testid='DHCPDetail' />
 })
 
+jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
+  return <div data-testid='PortalServiceDetail' />
+})
 
+jest.mock('./pages/Users/Wifi/ApList', () => () => {
+  return <div data-testid='UserApList' />
+})
+
+jest.mock('./pages/Users/Wifi/ApDetails', () => () => {
+  return <div data-testid='UserApDetails' />
+})
 
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/aps', async () => {
@@ -269,4 +283,86 @@ describe('RcRoutes: Services', () => {
     expect(screen.getByTestId('DHCPDetail')).toBeVisible()
   })
 
+  test('should navigate to create Portal page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PortalForm')).toBeVisible()
+  })
+
+  test('should navigate to edit Portal page', async () => {
+    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })
+    path = path.replace(':serviceId', 'serviceId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PortalForm')).toBeVisible()
+  })
+
+  test('should navigate to Portal details page', async () => {
+    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })
+    path = path.replace(':serviceId', 'serviceId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PortalServiceDetail')).toBeVisible()
+  })
+
+})
+
+describe('RcRoutes: User', () => {
+  test('should redirect user to user/aps/clients', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApList')).toBeVisible()
+  })
+  test('should redirect user/aps to user/aps/clients', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/aps',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApList')).toBeVisible()
+  })
+  test('should redirect to user/aps/clients correctly', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/aps/clients',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApList')).toBeVisible()
+  })
+  test('should redirect details to details/overview', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/aps/userId/details/',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApDetails')).toBeVisible()
+  })
+  test('should redirect to details/overview correctly', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/aps/userId/details/overview',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserApDetails')).toBeVisible()
+  })
 })
