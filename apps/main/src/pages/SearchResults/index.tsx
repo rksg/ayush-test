@@ -1,16 +1,15 @@
-import { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridRow, GridCol, PageHeader }                   from '@acx-ui/components'
-import { CaretDoubleUpOutlined, CaretDoubleDownOutlined } from '@acx-ui/icons'
-import { useVenuesListQuery }                             from '@acx-ui/rc/services'
-import { useTableQuery }                                  from '@acx-ui/rc/utils'
+import { GridRow, GridCol, PageHeader } from '@acx-ui/components'
+import { useVenuesListQuery }           from '@acx-ui/rc/services'
+import { useTableQuery }                from '@acx-ui/rc/utils'
 
 import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
-import { Collapse } from './styledComponents'
+import { Collapse, Panel } from './styledComponents'
 
 
 function useSearchTerm () {
@@ -32,8 +31,29 @@ function SearchHeader ({ count }: { count: number }) {
   )
 }
 
-function SearchResult () {
+const SearchTableWrapper = ({ children, count, title }
+: { children: React.ReactNode, count: number, title: string }) => {
   const { $t } = useIntl()
+  return <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
+    <Collapse
+      defaultActiveKey={[title]}
+      expandIconPosition='end'
+      bordered={false}
+    >
+      <Panel
+        key={title}
+        header={$t({ defaultMessage: '{title} ({count})' }, {
+          title: title.at(0)?.toUpperCase() + title.slice(1),
+          count
+        })}
+      >
+        {children}
+      </Panel>
+    </Collapse>
+  </GridCol>
+}
+
+function SearchResult () {
   const globalSearch = useSearchTerm()
   const [count, setCount] = useState(0)
 
@@ -44,7 +64,10 @@ function SearchResult () {
 
   const tableQuery = useTableQuery({
     useQuery: useVenuesListQuery,
-    defaultPayload: searchPayload
+    defaultPayload: searchPayload,
+    pagination: {
+      pageSize: 5
+    }
   })
 
   const venueCount = tableQuery.data?.totalCount ?? 0
@@ -58,26 +81,16 @@ function SearchResult () {
     <Fragment key='search-results'>
       <SearchHeader key='search-header' count={count}/>
       <GridRow>
-        <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
-          <Collapse
-            defaultActiveKey={['venue']}
-            expandIconPosition='end'
-            expandIcon={({ isActive }) => (isActive)
-              ? <CaretDoubleUpOutlined />
-              : <CaretDoubleDownOutlined />
-            }
-          >
-            <Collapse.Panel
-              key='venue'
-              header={$t({ defaultMessage: 'Venue ({venueCount})' }, { venueCount })}
-            >
-              <VenueTable
-                key={`venue-search-${globalSearch}`}
-                globalSearch={globalSearch}
-                tableQuery={tableQuery} />
-            </Collapse.Panel>
-          </Collapse>
-        </GridCol>
+        <SearchTableWrapper
+          title='venue'
+          count={venueCount}
+        >
+          <VenueTable
+            key={`venue-search-${globalSearch}`}
+            globalSearch={globalSearch}
+            tableQuery={tableQuery}
+          />
+        </SearchTableWrapper>
       </GridRow>
     </Fragment>
   )
