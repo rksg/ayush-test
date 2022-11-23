@@ -4,7 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { ApViewModel, CelluarInfo, CellularSim, SimPresentData } from '@acx-ui/rc/utils'
-import { secondToTime }                                          from '@acx-ui/utils'
+import { formatter }                                             from '@acx-ui/utils'
 
 import { SimPresent } from './SimPresent'
 
@@ -130,8 +130,9 @@ export const ApCellularProperties = (props: ApCellularPropertiesProps) => {
       />
       <Form.Item
         label={$t({ defaultMessage: 'Radio uptime' })}
-        children={secondToTime(currentCellularInfo.cellularRadioUptime)
-          || $t({ defaultMessage: 'None' })
+        children={currentCellularInfo.cellularRadioUptime ?
+          formatter('durationFormat')(currentCellularInfo.cellularRadioUptime)
+          : $t({ defaultMessage: 'None' })
         }
       />
       <Form.Item

@@ -26,7 +26,7 @@ import {
   AddApGroup,
   CommonResult
 } from '@acx-ui/rc/utils'
-import { getShortDurationFormat, getUserDateFormat } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/utils'
 
 export const baseApApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -308,10 +308,10 @@ const transformApList = (result: TableResult<AP, ApExtraParams>) => {
 
 const transformApViewModel = (result: ApViewModel) => {
   const ap = JSON.parse(JSON.stringify(result))
-  ap.lastSeenTime = ap.lastSeenTime ? getUserDateFormat(ap.lastSeenTime, undefined, true) : '--'
+  ap.lastSeenTime = ap.lastSeenTime ? formatter('dateTimeFormatWithSeconds')(ap.lastSeenTime) : '--'
   // get uptime field.
   if (ap.apStatusData && ap.apStatusData.APSystem && ap.apStatusData.APSystem.uptime) {
-    ap.uptime = getShortDurationFormat(ap.apStatusData.APSystem.uptime * 1000)
+    ap.uptime = formatter('longDurationFormat')(ap.apStatusData.APSystem.uptime * 1000)
   } else {
     ap.uptime = '--'
   }

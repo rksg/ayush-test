@@ -4,7 +4,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { incidentSeverities, IncidentFilter }            from '@acx-ui/analytics/utils'
 import { DonutChartData, NoActiveContent, NoActiveData } from '@acx-ui/components'
 import {
-  Card,
+  HistoricalCard,
   Loader,
   cssStr,
   DonutChart
@@ -74,9 +74,9 @@ export function IncidentBySeverityDonutChart ({ filters, type }:
   return <Loader states={[queryResult]}>
     {
       type === 'no-card-style' ? getContent({ width: 100, height: 100 }) :
-        <Card title={$t({ defaultMessage: 'Incidents' })}>
+        <HistoricalCard title={$t({ defaultMessage: 'Incidents' })}>
           { getContent() }
-        </Card>
+        </HistoricalCard>
     }
   </Loader>
 }

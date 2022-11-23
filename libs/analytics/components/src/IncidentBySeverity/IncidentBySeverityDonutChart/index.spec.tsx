@@ -12,10 +12,11 @@ import { IncidentBySeverityDonutChart } from '.'
 
 const sample = { P1: 0, P2: 2, P3: 3, P4: 4 } as IncidentsBySeverityData
 
-jest.mock('@acx-ui/icons', () => ({
-  ...jest.requireActual('@acx-ui/icons'),
-  CheckMarkCircleSolid: () => <span data-testid='CheckMarkCircleSolid' />
-}))
+jest.mock('@acx-ui/icons', ()=> {
+  const icons = jest.requireActual('@acx-ui/icons')
+  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(keys)
+})
 
 describe('IncidentBySeverityDonutChart', () => {
   const filters = {

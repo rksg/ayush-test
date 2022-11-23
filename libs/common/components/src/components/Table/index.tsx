@@ -312,7 +312,7 @@ function Table <RecordType extends Record<string, any>> (
           setColWidth({})
         }
       }}
-      scroll={{ x: hasEllipsisColumn ? '100%' : 'max-content' }}
+      scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig

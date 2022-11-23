@@ -168,7 +168,7 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     mockServer.use(
       rest.get(
@@ -298,7 +298,7 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     mockServer.use(
       rest.get(

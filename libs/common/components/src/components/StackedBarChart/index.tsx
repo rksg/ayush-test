@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+
 import ReactECharts          from 'echarts-for-react'
 import _                     from 'lodash'
 import { MessageDescriptor } from 'react-intl'
@@ -11,6 +13,7 @@ import {
   barChartAxisLabelOptions,
   barChartSeriesLabelOptions
 } from '../Chart/helper'
+import { useOnAxisLabelClick } from '../Chart/useOnAxisLabelClick'
 
 import type { EChartsOption, RegisteredSeriesOption } from 'echarts'
 import type { EChartsReactProps }                     from 'echarts-for-react'
@@ -57,6 +60,7 @@ export interface StackedBarChartProps
     legendProp?: keyof TChartData
     dataFormatter?: (value: unknown) => string | null,
     tooltipFormat?: MessageDescriptor
+    onAxisLabelClick?: (name: string) => void
   }
 
 const computeChartData = ({ category, series }: ChartData) => {
@@ -135,12 +139,17 @@ const massageData = (
 export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   data,
   dataFormatter,
+  onAxisLabelClick,
   ...props
 }: StackedBarChartProps<TChartData>) {
-
+  const eChartsRef = useRef<ReactECharts>(null)
   const { animation, showTotal, showLabels, showTooltip, barWidth } = props
   const barColors = props.barColors ??
     Object.values(incidentSeverities).map(({ color }) => cssStr(color))
+
+  useOnAxisLabelClick(eChartsRef, onAxisLabelClick)
+  const triggerAxisLabelEvent : boolean = typeof onAxisLabelClick === 'function'
+
   let option: EChartsOption = {
     animation,
     silent: !showTooltip,
@@ -164,12 +173,14 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       axisTick: {
         show: false
       },
+      triggerEvent: triggerAxisLabelEvent,
       axisLabel: {
         show: showLabels,
         formatter: '{label|{value}}',
         rich: {
           label: {
             ...barChartAxisLabelOptions(),
+            ...(triggerAxisLabelEvent && { color: cssStr('--acx-accents-blue-50') }),
             align: 'left',
             width: props.axisLabelWidth || 75
           }
@@ -189,6 +200,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   }
   return (
     <ReactECharts
+      ref={eChartsRef}
       {...props}
       opts={{ renderer: 'svg' }}
       option={option}

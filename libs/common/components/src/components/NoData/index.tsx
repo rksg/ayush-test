@@ -24,7 +24,7 @@ export function NoActiveData ({ text }: NoDataWrapperProps) {
   return (
     <UI.NoDataWrapper>
       <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
-      <UI.NoActiveTextWrapper>{text}</UI.NoActiveTextWrapper>
+      <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
     </UI.NoDataWrapper>
   )
 }
