@@ -98,56 +98,6 @@ describe('loadLocale', () => {
       cancel: expect.any(String),
       next: expect.any(String)
     }))
-
-    const es = await loadLocale('es-ES')
-    expect(es).toEqual(expect.objectContaining({
-      ..._.omit(messages['es-ES'], 'stepsForm'),
-      'nested.lang': 'Idioma'
-    }))
-    expect(es!.stepsForm).toEqual(expect.objectContaining({
-      cancel: expect.any(String),
-      next: expect.any(String)
-    }))
-
-    const fr = await loadLocale('fr-FR')
-    expect(fr).toEqual(expect.objectContaining({
-      ..._.omit(messages['fr-FR'], 'stepsForm'),
-      'nested.lang': 'Langue'
-    }))
-    expect(fr!.stepsForm).toEqual(expect.objectContaining({
-      cancel: expect.any(String),
-      next: expect.any(String)
-    }))
-
-    const ko = await loadLocale('ko-KR')
-    expect(ko).toEqual(expect.objectContaining({
-      ..._.omit(messages['ko-KR'], 'stepsForm'),
-      'nested.lang': '언어'
-    }))
-    expect(ko!.stepsForm).toEqual(expect.objectContaining({
-      cancel: expect.any(String),
-      next: expect.any(String)
-    }))
-
-    const pt = await loadLocale('pt-BR')
-    expect(pt).toEqual(expect.objectContaining({
-      ..._.omit(messages['pt-BR'], 'stepsForm'),
-      'nested.lang': 'Linguagem'
-    }))
-    expect(pt!.stepsForm).toEqual(expect.objectContaining({
-      cancel: expect.any(String),
-      next: expect.any(String)
-    }))
-
-    const zh = await loadLocale('zh-CN')
-    expect(zh).toEqual(expect.objectContaining({
-      ..._.omit(messages['zh-CN'], 'stepsForm'),
-      'nested.lang': '语'
-    }))
-    expect(zh!.stepsForm).toEqual(expect.objectContaining({
-      cancel: expect.any(String),
-      next: expect.any(String)
-    }))
   })
 
   it('loads from cache when available', async () => {
