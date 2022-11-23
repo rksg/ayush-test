@@ -5,7 +5,9 @@ import { Provider }       from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
 import PortalServiceDetail from '.'
@@ -142,16 +144,14 @@ describe('Portal Detail Page', () => {
   })
 
   it('should render detail page', async () => {
-
-    const { asFragment } = render(
-      <Provider>
-        <PortalServiceDetail />
-      </Provider>, {
-        route: { params, path: '/:tenantId/services/portal/:serviceId/detail' }
-      })
-    await screen.findByText((`Instances (${list.data.length})`))
-    await screen.findByText('Language')
-    expect(asFragment()).toMatchSnapshot()
+    render(<Provider><PortalServiceDetail /></Provider>, {
+      route: { params, path: '/:tenantId/services/portal/:serviceId/detail' }
+    })
+    expect(await screen.findByText('English')).toBeVisible()
+    expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()
+    const body = await screen.findByRole('rowgroup', {
+      name: (_, element) => element.classList.contains('ant-table-tbody')
+    })
+    await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
   })
-
 })

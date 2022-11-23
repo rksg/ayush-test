@@ -47,7 +47,7 @@ export default function PortalInstancesTable (
     },
     {
       key: 'abrate',
-      title: $t({ defaultMessage: 'Abandonment rate' }),
+      title: $t({ defaultMessage: 'Abandonment Rate' }),
       dataIndex: 'abandonmentRate',
       render: (data) =>{
         return data+'%'
@@ -55,7 +55,7 @@ export default function PortalInstancesTable (
     },
     {
       key: 'clients',
-      title: $t({ defaultMessage: 'Number of clients' }),
+      title: $t({ defaultMessage: 'Number of Clients' }),
       dataIndex: 'clients',
       render: (data) =>{
         return data+'%'
@@ -63,7 +63,7 @@ export default function PortalInstancesTable (
     },
     {
       key: 'clientsPortal',
-      title: $t({ defaultMessage: 'Clients per portal type' }),
+      title: $t({ defaultMessage: 'Clients per Portal Type' }),
       dataIndex: 'clientsPortal',
       render: (data) =>{
         return data+'%'
