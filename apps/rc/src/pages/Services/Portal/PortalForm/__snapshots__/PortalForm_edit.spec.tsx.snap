@@ -393,6 +393,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                   >
                                     <div
                                       class="styledComponents__FieldTextLink-sc-cby53p-23 eNBZnc"
+                                      style="margin-top: 10px;"
                                     />
                                     <img
                                       alt="Logo"

@@ -28,12 +28,14 @@ export default function PortalAlternativeLanguage (props:{
   //just for display, no logic here
   if(langs.length <= 4)
     return (
-      <UI.FieldTextLink>
+      <UI.FieldTextLink style={{ marginTop: 10 }}>
         {intl.formatList(langs,{ type: 'conjunction' })}
       </UI.FieldTextLink>
     )
   else return (
-    <UI.Select value={contentLang} onChange={(val)=>setContentLang(val as string)}>
+    <UI.Select value={contentLang}
+      onChange={(val)=>setContentLang(val as string)}
+      style={{ width: 250, marginTop: 10 }}>
       <Option value={displayLang} key={displayLang} selected>{displayLang}</Option>
       {langs.map(
         (key => <Option key={key} value={key}>{key}</Option>
