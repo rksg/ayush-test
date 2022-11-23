@@ -14,8 +14,8 @@ import {
   NoData,
   Tooltip
 } from '@acx-ui/components'
-import { TenantLink }                 from '@acx-ui/react-router-dom'
-import { formatter, notAvailableMsg } from '@acx-ui/utils'
+import { TenantLink }                              from '@acx-ui/react-router-dom'
+import { intlFormats, formatter, notAvailableMsg } from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
@@ -62,8 +62,11 @@ export function VenuesHealthDashboard ({
       align: 'center' as const,
       render: (value: unknown, row)=>{
         const [n,d] = row.connectionSuccessSLA
-        return (<Tooltip title={$t({ defaultMessage: '{n} of {d} attempts' }, { n, d })}>
-          {value as string}
+        const tooltipText=$t({ defaultMessage: '{n} of {d} attempts' }, {
+          n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
         </Tooltip>)
       }
     },
@@ -80,10 +83,13 @@ export function VenuesHealthDashboard ({
         const thresholdText = $t({ defaultMessage: 'Under {threshold}' },
           { threshold: formatter('durationFormat')(threshold) })
         if(row.timeToConnectThreshold === null) return <span>-</span>
-        return (<Tooltip title={$t({
+        const tooltipText=$t({
           defaultMessage: '{n} of {d} connections under {threshold}' },
-        { n,d, threshold: formatter('longDurationFormat')(threshold) })}>
-          <span>{value as string}</span>
+        { n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }),
+          threshold: formatter('longDurationFormat')(threshold) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
           <UI.ThresholdText>
             {thresholdText}
           </UI.ThresholdText>
@@ -103,10 +109,13 @@ export function VenuesHealthDashboard ({
         const thresholdText = $t({ defaultMessage: 'Above {threshold}' },
           { threshold: formatter('networkSpeedFormat')(threshold) })
         if(row.clientThroughputThreshold === null) return <span>-</span>
-        return (<Tooltip title={$t({
+        const tooltipText = $t({
           defaultMessage: '{n} of {d} sessions above {threshold}' },
-        { n,d, threshold: formatter('networkSpeedFormat')(threshold) })}>
-          <span>{value as string}</span>
+        { n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }),
+          threshold: formatter('networkSpeedFormat')(threshold) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
           <UI.ThresholdText>
             {thresholdText}
           </UI.ThresholdText>
@@ -121,8 +130,11 @@ export function VenuesHealthDashboard ({
       width: 40,
       render: (value: unknown, row)=>{
         const [n,d] = row.onlineApsSLA
-        return (<Tooltip title={$t({ defaultMessage: '{n} of {d} APs online' }, { n, d })}>
-          {value as string}
+        const tooltipText=$t({ defaultMessage: '{n} of {d} APs online' }, {
+          n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
         </Tooltip>)
       }
     }
