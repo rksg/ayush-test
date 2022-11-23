@@ -4,7 +4,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
 <DocumentFragment>
   <div>
     <div
-      class="sc-jSMfEi bWouLl device-container context-Ap"
+      class="sc-jSMfEi iZtMRb device-container context-Ap"
     >
       <div
         class="marker ap-status-severity-attention"
@@ -17,7 +17,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
       </div>
     </div>
     <div
-      class="sc-jSMfEi bWouLl device-container context-Ap"
+      class="sc-jSMfEi iZtMRb device-container context-Ap"
     >
       <div
         class="marker switch-status-never-contacted-cloud"

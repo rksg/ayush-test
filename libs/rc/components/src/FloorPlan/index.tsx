@@ -152,7 +152,6 @@ export function FloorPlan () {
 
       }
 
-      // console.log(devicesByFlooplanId)
       setDevicesByFlooplanId(floorplansDevices)
 
     }

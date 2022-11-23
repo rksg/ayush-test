@@ -86,7 +86,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 >
                   <div>
                     <div
-                      class="sc-jSMfEi bWouLl device-container gallery"
+                      class="sc-jSMfEi iZtMRb device-container gallery"
                       style="top: 9.839357%; left: 65.20548%;"
                     >
                       <div
@@ -100,7 +100,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                       </div>
                     </div>
                     <div
-                      class="sc-jSMfEi bWouLl device-container gallery"
+                      class="sc-jSMfEi iZtMRb device-container gallery"
                       style="top: 7.056452%; left: 52.739727%;"
                     >
                       <div
@@ -492,7 +492,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                 >
                   <div>
                     <div
-                      class="sc-jSMfEi bWouLl device-container context-Album"
+                      class="sc-jSMfEi iZtMRb device-container context-Album"
                       style="top: 9.839357%; left: 65.20548%;"
                     >
                       <div
@@ -503,7 +503,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                       </div>
                     </div>
                     <div
-                      class="sc-jSMfEi bWouLl device-container context-Album"
+                      class="sc-jSMfEi iZtMRb device-container context-Album"
                       style="top: 7.056452%; left: 52.739727%;"
                     >
                       <div
