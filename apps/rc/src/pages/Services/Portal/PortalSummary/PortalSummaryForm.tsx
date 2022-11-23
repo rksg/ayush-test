@@ -90,8 +90,10 @@ export function PortalSummaryForm (props: {
       <Row gutter={20}>
         <Col span={5}>
           <Form.Item
-            label={$t({ defaultMessage: 'WiFi4EU :' })}
-            children={summaryData?.demo?.componentDisplay.WiFi4EU?'ON':'OFF'}
+            label={$t({ defaultMessage: 'WiFi4EU:' })}
+            children={summaryData?.demo?.componentDisplay.WiFi4EU
+              ? $t({ defaultMessage: 'ON' })
+              : $t({ defaultMessage: 'OFF' })}
           />
         </Col>
         <Col span={5}>
