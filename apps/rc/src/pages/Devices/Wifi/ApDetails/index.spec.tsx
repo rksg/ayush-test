@@ -17,6 +17,7 @@ jest.mock('@acx-ui/components', () => ({
   RangePicker: () => <div data-testid={'analytics-RangePicker'} title='RangePicker' />
 }))
 jest.mock('@acx-ui/analytics/components', () => ({
+  AnalyticsTabs: () => <div data-testid={'analytics-AnalyticsTabs'} title='AnalyticsTabs' />,
   ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
   IncidentBySeverity: () => <div data-testid={'analytics-IncidentBySeverity'} title='IncidentBySeverity' />,
   NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
