@@ -173,6 +173,7 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
           />
           <div
             class="ant-select styledComponents__Select-sc-cby53p-12 fUVHGk ant-select-single ant-select-show-arrow"
+            style="width: 250px; margin-top: 10px;"
           >
             <div
               class="ant-select-selector"
@@ -503,6 +504,7 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
           />
           <div
             class="ant-select styledComponents__Select-sc-cby53p-12 fUVHGk ant-select-single ant-select-show-arrow"
+            style="width: 250px; margin-top: 10px;"
           >
             <div
               class="ant-select-selector"
