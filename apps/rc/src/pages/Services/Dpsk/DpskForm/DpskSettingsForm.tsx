@@ -87,7 +87,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
           name='passphraseFormat'
           label={
             <>
-              { intl.$t({ defaultMessage: 'Passphrase format' }) }
+              { intl.$t({ defaultMessage: 'Passphrase Format' }) }
               <Tooltip
                 placement='bottom'
                 title={<FormattedMessage
@@ -113,7 +113,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
           rules={[{ required: true }]}
           label={
             <>
-              { intl.$t({ defaultMessage: 'Passphrase length' }) }
+              { intl.$t({ defaultMessage: 'Passphrase Length' }) }
               <Tooltip
                 // eslint-disable-next-line max-len
                 title={intl.$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}

@@ -60,6 +60,10 @@ jest.mock('./pages/Services/DHCPDetail', () => () => {
   return <div data-testid='DHCPDetail' />
 })
 
+jest.mock('./pages/Services/Dpsk/DpskForm/DpskForm', () => () => {
+  return <div data-testid='DpskForm' />
+})
+
 jest.mock('./pages/Users/Wifi/ApList', () => () => {
   return <div data-testid='UserApList' />
 })
@@ -205,6 +209,27 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('MdnsProxyDetail')).toBeVisible()
+  })
+
+  test('should navigate to create DPSK page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('DpskForm')).toBeVisible()
+  })
+
+  test('should navigate to edit DPSK page', async () => {
+    const path = getServiceDetailsLink({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('DpskForm')).toBeVisible()
   })
 
   test('should navigate to create WIFI_CALLING page', async () => {

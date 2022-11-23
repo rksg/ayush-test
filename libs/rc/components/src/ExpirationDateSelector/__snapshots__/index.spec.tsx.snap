@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExpirationDateSelector should render the selector 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="ant-form-item"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class="ant-form-item-required"
+            for="expirationDate_mode"
+            title="Expiration"
+          >
+            Expiration
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              <div
+                class="ant-radio-group ant-radio-group-outline"
+                id="expirationDate_mode"
+              >
+                <div
+                  class="ant-space ant-space-vertical"
+                >
+                  <div
+                    class="ant-space-item"
+                    style="margin-bottom: 16px;"
+                  >
+                    <label
+                      class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
+                    >
+                      <span
+                        class="ant-radio ant-radio-checked"
+                      >
+                        <input
+                          class="ant-radio-input"
+                          type="radio"
+                          value="NEVER"
+                        />
+                        <span
+                          class="ant-radio-inner"
+                        />
+                      </span>
+                      <span>
+                        Never expires
+                      </span>
+                    </label>
+                  </div>
+                  <div
+                    class="ant-space-item"
+                    style="margin-bottom: 16px;"
+                  >
+                    <label
+                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                    >
+                      <span
+                        class="ant-radio"
+                      >
+                        <input
+                          class="ant-radio-input"
+                          type="radio"
+                          value="BY_DATE"
+                        />
+                        <span
+                          class="ant-radio-inner"
+                        />
+                      </span>
+                      <span>
+                        <div
+                          class="sc-jSMfEi hohHQz"
+                        >
+                          By date
+                        </div>
+                      </span>
+                    </label>
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <label
+                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                    >
+                      <span
+                        class="ant-radio"
+                      >
+                        <input
+                          class="ant-radio-input"
+                          type="radio"
+                          value="AFTER_TIME"
+                        />
+                        <span
+                          class="ant-radio-inner"
+                        />
+                      </span>
+                      <span>
+                        <div
+                          class="sc-jSMfEi wvVcO"
+                        >
+                          After...
+                        </div>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;
