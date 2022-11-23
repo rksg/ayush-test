@@ -125,7 +125,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <KpiWidget filters={filters} name='connectionSuccess' type='no-chart-style'/>
+            <KpiWidget type='no-chart-style' filters={filters} name='connectionSuccess' />
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
@@ -135,8 +135,9 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <UI.Wrapper>
-            <KpiWidget filters={filters}
+            <KpiWidget
               type='no-chart-style'
+              filters={filters}
               name='clientThroughput'
               threshold={healthData?.clientThroughputThreshold?.value ??
                 kpiConfig.clientThroughput.histogram.initialThreshold}

@@ -1,4 +1,4 @@
-import { ApDetailHeader, ApRadioBands } from '@acx-ui/rc/utils'
+import { ApDetailHeader, ApRadioBands, ApVenueStatusEnum } from '@acx-ui/rc/utils'
 
 export const apDetailData: ApDetailHeader = {
   title: 'test-ap',
@@ -137,7 +137,7 @@ export const currentAP = {
   venueId: '16b11938ee934928a796534e2ee47661',
   venueName: 'venue-dhcp-ui',
   deviceStatus: '2_00_Operational',
-  deviceStatusSeverity: '2_Operational',
+  deviceStatusSeverity: ApVenueStatusEnum.OPERATIONAL,
   IP: '',
   extIp: '',
   apMac: '',
@@ -149,27 +149,27 @@ export const currentAP = {
   apStatusData: {
     APRadio: [
       {
-        channel: 0,
+        channel: '0',
         band: '2.4G',
-        Rssi: null,
+        Rssi: 'null',
         radioId: 0
       },
       {
-        channel: 0,
+        channel: '0',
         band: '5G',
-        Rssi: null,
+        Rssi: 'null',
         radioId: 1
       },
       {
-        channel: 0,
+        channel: '0',
         band: '5G',
-        Rssi: null,
+        Rssi: 'null',
         radioId: 2
       },
       {
-        channel: 0,
+        channel: '0',
         band: '5G',
-        Rssi: null,
+        Rssi: 'null',
         radioId: 1
       }
     ],
@@ -238,25 +238,25 @@ export const currentAP = {
   isMeshEnable: true,
   uptime: '1 day, 1 hour',
   channel24: {
-    channel: 0,
+    channel: '0',
     band: '2.4G',
-    Rssi: null,
+    Rssi: '',
     radioId: 0
   },
-  channel50: false,
+  // channel50: false,
   channelL50: {
-    channel: 0,
+    channel: '0',
     band: '5G',
-    Rssi: null,
+    Rssi: '',
     radioId: 1
   },
   channelU50: {
-    channel: 0,
+    channel: '0',
     band: '5G',
-    Rssi: null,
+    Rssi: '',
     radioId: 2
-  },
-  channel60: false
+  }
+  // channel60: false
 }
 
 export const apDetails = {

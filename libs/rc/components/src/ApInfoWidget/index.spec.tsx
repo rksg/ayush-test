@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { AnalyticsFilter }                     from '@acx-ui/analytics/utils'
-import {  Alarm, ApViewModel, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }                           from '@acx-ui/store'
+import { AnalyticsFilter }        from '@acx-ui/analytics/utils'
+import {  Alarm, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }              from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
@@ -97,7 +97,7 @@ describe('AP Information Widget', () => {
 
     const { asFragment } = render(
       <Provider>
-        <ApInfoWidget currentAP={currentAP as unknown as ApViewModel} filters={filters}/>
+        <ApInfoWidget currentAP={currentAP} filters={filters}/>
       </Provider>,
       { route: { params } }
     )
@@ -121,7 +121,7 @@ describe('AP Information Widget', () => {
 
     const { asFragment } = render(
       <Provider>
-        <ApInfoWidget currentAP={currentAP as unknown as ApViewModel} filters={filters}/>
+        <ApInfoWidget currentAP={currentAP} filters={filters}/>
       </Provider>,
       { route: { params } }
     )

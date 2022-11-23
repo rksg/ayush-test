@@ -38,7 +38,7 @@ export interface AP {
   isMeshEnable?: boolean
   rootAP?: {
     name: string
-    serialNumber: string
+    serialNumber?: string
   }
   hops?: number
   apDownRssi?: number
@@ -72,7 +72,7 @@ export interface CelluarInfo {
   cellularSwitchCountSIM1: string
   cellularNWLostCountSIM1: string
   cellularCardRemovalCountSIM1: string
-  cellularDHCPTimeoutCountSIM: string
+  cellularDHCPTimeoutCountSIM?: string
   cellularActiveSim: string
   cellularConnectionStatus: string
   cellularSignalStrength: string
@@ -259,7 +259,7 @@ export interface ApModel {
 
 export interface RadioProperties {
   Rssi: string;
-  txPower: string;
+  txPower?: string;
   channel: string;
   band?: string;
   radioId?: number
