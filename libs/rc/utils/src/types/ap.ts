@@ -120,10 +120,10 @@ export interface ApDetails {
   serialNumber: string
   apGroupId: string
   venueId: string
-  lanPorts: ApLanPort
+  lanPorts?: ApLanPort
   name: string
   description: string
-  softDeleted: string
+  softDeleted: boolean
   model: string
   updatedDate: string
   deviceGps?: DeviceGps
