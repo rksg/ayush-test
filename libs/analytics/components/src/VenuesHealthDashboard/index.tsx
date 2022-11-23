@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { Tooltip }                    from '@acx-ui/components'
 import {
   Card,
   Loader,
@@ -12,7 +11,8 @@ import {
   ProgressBar,
   ContentSwitcher,
   ContentSwitcherProps,
-  NoData
+  NoData,
+  Tooltip
 } from '@acx-ui/components'
 import { TenantLink }                 from '@acx-ui/react-router-dom'
 import { formatter, notAvailableMsg } from '@acx-ui/utils'
@@ -59,7 +59,13 @@ export function VenuesHealthDashboard ({
       dataIndex: 'connectionSuccessPercent',
       key: 'connectionSuccessPercent',
       width: 40,
-      align: 'center' as const
+      align: 'center' as const,
+      render: (value: unknown, row)=>{
+        const [n,d] = row.connectionSuccessSLA
+        return (<Tooltip title={$t({ defaultMessage: '{n} of {d} attempts' }, { n, d })}>
+          {value as string}
+        </Tooltip>)
+      }
     },
     {
       title: $t({ defaultMessage: 'Time To Connect' }),
@@ -68,17 +74,20 @@ export function VenuesHealthDashboard ({
       width: 80,
       align: 'center' as const,
       render: (value: unknown, row)=>{
+        const [n,d] = row.timeToConnectSLA
         const threshold = row.timeToConnectThreshold ??
           kpiConfig.timeToConnect.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: 'Under {threshold}' },
           { threshold: formatter('durationFormat')(threshold) })
-        if(value === '-') return <span>{value}</span>
-        return (<>
+        if(row.timeToConnectThreshold === null) return <span>-</span>
+        return (<Tooltip title={$t({
+          defaultMessage: '{n} of {d} connections under {threshold}' },
+        { n,d, threshold: formatter('longDurationFormat')(threshold) })}>
           <span>{value as string}</span>
           <UI.ThresholdText>
             {thresholdText}
           </UI.ThresholdText>
-        </>)
+        </Tooltip>)
       }
     },
     {
@@ -88,17 +97,20 @@ export function VenuesHealthDashboard ({
       width: 90,
       align: 'center' as const,
       render: (value: unknown, row)=>{
+        const [n,d] = row.clientThroughputSLA
         const threshold = row.clientThroughputThreshold ??
           kpiConfig.clientThroughput.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: 'Above {threshold}' },
           { threshold: formatter('networkSpeedFormat')(threshold) })
-        if(value === '-') return <span>{value}</span>
-        return (<>
+        if(row.clientThroughputThreshold === null) return <span>-</span>
+        return (<Tooltip title={$t({
+          defaultMessage: '{n} of {d} sessions above {threshold}' },
+        { n,d, threshold: formatter('networkSpeedFormat')(threshold) })}>
           <span>{value as string}</span>
           <UI.ThresholdText>
             {thresholdText}
           </UI.ThresholdText>
-        </>)
+        </Tooltip>)
       }
     },
     {
@@ -106,11 +118,17 @@ export function VenuesHealthDashboard ({
       dataIndex: 'onlineApsPercent',
       key: 'onlineApsPercent',
       align: 'center' as const,
-      width: 40
+      width: 40,
+      render: (value: unknown, row)=>{
+        const [n,d] = row.onlineApsSLA
+        return (<Tooltip title={$t({ defaultMessage: '{n} of {d} APs online' }, { n, d })}>
+          {value as string}
+        </Tooltip>)
+      }
     }
   ]
   const calcPercent = ([val, sum]:(number | null)[]) => {
-    const percent = val && sum ? val / sum : null
+    const percent = val !== null && sum ? val / sum : null
     return { percent, formatted: formatter('percentFormatRound')(percent) }
   }
 
