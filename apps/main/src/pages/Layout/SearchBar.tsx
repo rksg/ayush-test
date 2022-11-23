@@ -62,7 +62,10 @@ function SearchBar () {
       }
     }
   }
-  const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && setSearchUrl()
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    if (searchText.length <= 1) return
+    event.key === 'Enter' && setSearchUrl()
+  }
 
   return (enableSearch
     ? showSearchBar
