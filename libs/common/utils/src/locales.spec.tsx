@@ -32,31 +32,6 @@ const messages = {
     lang: '言語',
     nested: { lang: '言語' },
     stepsForm: { cancel: 'キャンセル' }
-  },
-  'es-ES': {
-    lang: 'Idioma',
-    nested: { lang: 'Idioma' },
-    stepsForm: { cancel: 'cancelar' }
-  },
-  'fr-FR': {
-    lang: 'Langue',
-    nested: { lang: 'Langue' },
-    stepsForm: { cancel: 'annuler' }
-  },
-  'ko-KR': {
-    lang: '언어',
-    nested: { lang: '언어' },
-    stepsForm: { cancel: '취소' }
-  },
-  'pt-BR': {
-    lang: 'Linguagem',
-    nested: { lang: 'Linguagem' },
-    stepsForm: { cancel: 'cancelar' }
-  },
-  'zh-CN': {
-    lang: '语',
-    nested: { lang: '语' },
-    stepsForm: { cancel: '取消' }
   }
 }
 
