@@ -1,5 +1,6 @@
 import { APMeshRole } from '../constants'
 import { ApDeep }     from '../models/ApDeep'
+import { ApPacketCaptureStateEnum } from '../models/ApPacketCaptureStateEnum'
 import { DhcpApInfo } from '../models/DhcpApInfo'
 
 export interface APRadio {
@@ -163,4 +164,11 @@ export interface PingAp {
 export interface DhcpAp {
   requestId: string,
   response?: DhcpApInfo[]
+}
+
+export interface PacketCaptureState {
+  status: ApPacketCaptureStateEnum,
+  fileName?: string,
+  fileUrl?: string,
+  sessionId?: string
 }

@@ -20,7 +20,8 @@ import {
   WifiUrlsInfo,
   VenueDefaultApGroup,
   AddApGroup,
-  CommonResult
+  CommonResult,
+  PacketCaptureState
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -203,6 +204,56 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+
+    //Model
+    getApCapabilities: build.query<PacketCaptureState, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
+        return{
+          ...req
+        }
+      }
+    }),
+
+    getApRadioCustomization: build.query<PacketCaptureState, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
+        return{
+          ...req
+        }
+      }
+    }),
+
+    getPacketCaptureState: build.query<PacketCaptureState, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
+        return{
+          ...req
+        }
+      }
+    }),
+
+    
+
+    stopPacketCapture: build.mutation<PingAp, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.stopPacketCapture, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+
+    startPacketCapture: build.mutation<PingAp, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    })
   })
 })
 
@@ -227,7 +278,12 @@ export const {
   useDownloadApLogMutation,
   useRebootApMutation,
   useFactoryResetApMutation,
-  useLazyGetDhcpApQuery
+  useLazyGetDhcpApQuery,
+  useGetPacketCaptureStateQuery,
+  useGetApCapabilitiesQuery,
+  useGetApRadioCustomizationQuery,
+  useStopPacketCaptureMutation,
+  useStartPacketCaptureMutation,
 } = apApi
 
 
