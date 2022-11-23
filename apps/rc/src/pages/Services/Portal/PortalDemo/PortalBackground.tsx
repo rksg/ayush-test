@@ -50,7 +50,7 @@ export default function PortalBackground (props:{
   return (
     <UI.Popover content={content}
       getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
-      overlayClassName='uipopover'
+      overlayClassName={UI.popoverClassName}
       trigger='click'
       placement='bottomLeft'
       visible={clicked}

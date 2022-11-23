@@ -1,6 +1,6 @@
 import { Popover as AntPopover, Layout as AntLayout,
   Select as AntSelect } from 'antd'
-import styled, { css  } from 'styled-components/macro'
+import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { Tabs as UITabs, Button as UIButton } from '@acx-ui/components'
 import { EyeSlashSolid as UIEyeSlashSolid,
@@ -22,6 +22,21 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   LinkedIn,
   Twitter
 }   from '@acx-ui/icons'
+
+export const popoverClassName = 'portal-demo-popover'
+
+export const PopoverStyle = createGlobalStyle`
+  .${popoverClassName} {
+    z-index: 0;
+    padding-top: 0px;
+    .ant-popover-arrow { display: none; }
+    .ant-popover-inner {
+      .ant-popover-inner-content {
+        padding: 10px 10px;
+      }
+    }
+  }
+`
 
 export const CommonLabel = styled.div`
   padding: 10px 10px;

@@ -64,6 +64,7 @@ export default function PortalDemo ({
   const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
   return (
     <>
+      <UI.PopoverStyle />
       {demoValue.componentDisplay.WiFi4EU && !demoValue.wifi4EU
         && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
           message={$t(defineMessage({
@@ -121,7 +122,7 @@ export default function PortalDemo ({
           {!isPreview&&<div
             style={{ flex: 'auto', textAlign: 'right', paddingRight: 5 }}>
             <UI.Popover
-              overlayClassName='uipopover'
+              overlayClassName={UI.popoverClassName}
               overlayInnerStyle={{ maxHeight: 500 , overflowY: 'auto' }}
               getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
               content={langContent}
@@ -132,7 +133,7 @@ export default function PortalDemo ({
             ><UI.Button type='default' size='small'>
                 {$t({ defaultMessage: 'Language Settings' })}</UI.Button></UI.Popover>
             <UI.Popover
-              overlayClassName='uipopover'
+              overlayClassName={UI.popoverClassName}
               overlayInnerStyle={{ minWidth: 260 }}
               getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
               content={compContent}

@@ -20,7 +20,7 @@ export default function PortalPopover (props:{
       getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
       trigger='click'
       placement='leftTop'
-      overlayClassName='uipopover'
+      overlayClassName={UI.popoverClassName}
       overlayInnerStyle={{ backgroundColor: 'var(--acx-neutrals-10)', height: 30, width }}
       visible={visible}
       onVisibleChange={(value) => {

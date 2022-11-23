@@ -649,9 +649,9 @@ exports[`PortalForm should create Portal successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="WiFi4EU :"
+                            title="WiFi4EU:"
                           >
-                            WiFi4EU :
+                            WiFi4EU:
                           </label>
                         </div>
                         <div
