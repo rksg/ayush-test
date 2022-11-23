@@ -16,8 +16,4 @@ export const Collapse = styled(AntCollapse)`
   }
 `
 
-export const Panel = styled(AntCollapse.Panel)`
-  .ant-collapse-header {
-    border-bottom: 0px;
-  }
-`
+export const Panel = styled(AntCollapse.Panel)``

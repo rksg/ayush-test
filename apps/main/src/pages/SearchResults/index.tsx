@@ -59,7 +59,8 @@ function SearchResult () {
 
   const searchPayload = {
     ...defaultVenuePayload,
-    searchString: globalSearch
+    searchString: globalSearch,
+    searchTargetFields: ['name', 'description']
   }
 
   const tableQuery = useTableQuery({
