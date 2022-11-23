@@ -4,7 +4,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import {
-  Card,
+  HistoricalCard,
   Loader,
   Table,
   TableProps,
@@ -14,7 +14,7 @@ import {
   NoData,
   Tooltip
 } from '@acx-ui/components'
-import { TenantLink }                              from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigateToPath }           from '@acx-ui/react-router-dom'
 import { intlFormats, formatter, notAvailableMsg } from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
@@ -48,7 +48,6 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Score' }),
       dataIndex: 'clientExperience',
       key: 'clientExperience',
-      width: 40,
       align: 'center' as const,
       render: (value: unknown)=>{
         return <ProgressBar percent={(value as number) * 100}/>
@@ -58,7 +57,6 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Connection Success' }),
       dataIndex: 'connectionSuccessPercent',
       key: 'connectionSuccessPercent',
-      width: 40,
       align: 'center' as const,
       render: (value: unknown, row)=>{
         const [n,d] = row.connectionSuccessSLA
@@ -74,7 +72,6 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Time To Connect' }),
       dataIndex: 'timeToConnectPercent',
       key: 'timeToConnectPercent',
-      width: 80,
       align: 'center' as const,
       render: (value: unknown, row)=>{
         const [n,d] = row.timeToConnectSLA
@@ -100,7 +97,6 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Client Throughput' }),
       dataIndex: 'clientThroughputPercent',
       key: 'clientThroughputPercent',
-      width: 90,
       align: 'center' as const,
       render: (value: unknown, row)=>{
         const [n,d] = row.clientThroughputSLA
@@ -127,7 +123,6 @@ export function VenuesHealthDashboard ({
       dataIndex: 'onlineApsPercent',
       key: 'onlineApsPercent',
       align: 'center' as const,
-      width: 40,
       render: (value: unknown, row)=>{
         const [n,d] = row.onlineApsSLA
         const tooltipText=$t({ defaultMessage: '{n} of {d} APs online' }, {
@@ -209,11 +204,14 @@ export function VenuesHealthDashboard ({
       disabled: true
     }
   ]
+
+  const onArrowClick = useNavigateToPath('/analytics/health/')
   return (
     <Loader states={[queryResults]}>
-      <Card
+      <HistoricalCard
         title={$t({ defaultMessage: 'Client Experience' })}
         subTitle={$t({ defaultMessage: 'Top 5 Venues/Services with poor experience' })}
+        onArrowClick={onArrowClick}
       >
         <AutoSizer>
           {({ height, width }) => (
@@ -221,7 +219,7 @@ export function VenuesHealthDashboard ({
               <ContentSwitcher tabDetails={tabDetails} size='small' space={8} />
             </div>)}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }

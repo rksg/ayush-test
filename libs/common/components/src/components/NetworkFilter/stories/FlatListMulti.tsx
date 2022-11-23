@@ -37,6 +37,7 @@ export function FlatListMulti () {
       placeholder='Entire Organization'
       options={options}
       onApply={onApply}
+      allowClear
     />
   </div>
 }
