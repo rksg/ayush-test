@@ -2,8 +2,6 @@ import React from 'react'
 
 import { Card as AntCard, Space } from 'antd'
 
-import { Button } from '../Button'
-
 import * as UI from './styledComponents'
 
 import type { CardProps as AntCardProps } from 'antd'
@@ -57,9 +55,9 @@ function Card ({
               onClick={props.onMoreClick}
             /> : null }
             { props.action ?
-              <Button type='link' onClick={props.action.onActionClick}>
+              <UI.LinkButton type='link' onClick={props.action.onActionClick}>
                 {props.action.actionName}
-              </Button> : null }
+              </UI.LinkButton> : null }
           </Space>
         }
       >
