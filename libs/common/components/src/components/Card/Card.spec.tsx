@@ -22,6 +22,16 @@ describe('Card component', () => {
     expect(onArrowClick).toBeCalledTimes(1)
     expect(onMoreClick).toBeCalledTimes(1)
   })
+  it('should render card with action link', () => {
+    const onActionClick = jest.fn()
+    render(<Card action={{
+      actionName: 'Details',
+      onActionClick: onActionClick
+    }}/>)
+    expect(onActionClick).toBeCalledTimes(0)
+    act(() => screen.getByText('Details').click())
+    expect(onActionClick).toBeCalledTimes(1)
+  })
   it('should render card with no border', () => {
     const { asFragment } = render(<Card type='no-border'>test</Card>)
     expect(asFragment()).toMatchSnapshot()

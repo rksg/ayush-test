@@ -12,6 +12,10 @@ export interface CardProps extends Pick<AntCardProps, 'children'> {
   subTitle?: string
   onArrowClick?: () => void
   onMoreClick?: () => void
+  action?: {
+    actionName: string
+    onActionClick: () => void
+  }
 }
 
 function Card ({
@@ -55,6 +59,10 @@ function Card ({
               icon={<UI.MoreVerticalIcon />}
               onClick={props.onMoreClick}
             /> : null }
+            { props.action ?
+              <UI.LinkButton type='link' onClick={props.action.onActionClick}>
+                {props.action.actionName}
+              </UI.LinkButton> : null }
           </Space>
         }
       >
