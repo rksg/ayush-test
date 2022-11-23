@@ -1,19 +1,17 @@
-import { AnalyticsTabs }             from '@acx-ui/analytics/components'
-import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
-import { Loader }                    from '@acx-ui/components'
-import { useApListQuery }            from '@acx-ui/rc/services'
-import { useTableQuery, getFilters } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
+import { AnalyticsTabs }   from '@acx-ui/analytics/components'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { Loader }          from '@acx-ui/components'
+import { useApListQuery }  from '@acx-ui/rc/services'
+import { useParams }       from '@acx-ui/react-router-dom'
 
 export function ApAnalyticsTab () {
   const params = useParams()
   const { serialNumber } = params
-  const tableQuery = useTableQuery({
-    useQuery: useApListQuery,
-    defaultPayload: {
+  const tableQuery = useApListQuery({
+    params,
+    payload: {
       searchString: serialNumber,
-      fields: ['apMac', 'venueName'],
-      filters: getFilters(params)
+      fields: ['apMac', 'venueName']
     }
   })
   const [{ venueName, apMac }] = tableQuery.data?.data ?? [{}]
