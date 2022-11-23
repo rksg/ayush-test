@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import {
-  IncidentBySeverityDonutChart, KpiWidget
+  IncidentBySeverityDonutChart, KpiWidget, TtcTimeWidget
 } from '@acx-ui/analytics/components'
 import { healthApi }                                                           from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }                                          from '@acx-ui/analytics/utils'
@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
+
 import * as UI from './styledComponents'
 
 const defaultPayload = {
@@ -128,12 +129,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <KpiWidget filters={filters}
-              type='no-chart-style'
-              name='timeToConnect'
-              threshold={healthData?.timeToConnectThreshold?.value ??
-                  kpiConfig.timeToConnect.histogram.initialThreshold}
-            />
+            <TtcTimeWidget filters={filters}/>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 4 }}>

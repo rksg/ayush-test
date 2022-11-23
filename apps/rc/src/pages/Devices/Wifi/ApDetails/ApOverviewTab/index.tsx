@@ -73,7 +73,6 @@ export function ApOverviewTab () {
 
 function ApWidgets (props: { filters: AnalyticsFilter }) {
   const filters = props.filters
-  console.log(filters) // eslint-disable-line no-console
   return (
     <>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
