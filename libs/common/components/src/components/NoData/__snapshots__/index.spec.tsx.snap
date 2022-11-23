@@ -14,7 +14,7 @@ exports[`NoActiveContent should render correctly 1`] = `
     </div>
   </div>
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoActiveTextWrapper-sc-m7jeli-3 iRdLpd kuAEvr"
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
   >
     <div
       class="ant-space-item"
@@ -39,7 +39,7 @@ exports[`NoActiveContent should render correctly with the prop 1`] = `
     </div>
   </div>
   <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoActiveTextWrapper-sc-m7jeli-3 iRdLpd kuAEvr"
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
   >
     <div
       class="ant-space-item"

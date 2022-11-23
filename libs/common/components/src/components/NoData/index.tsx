@@ -35,7 +35,7 @@ export function NoActiveContent ({ text }: NoDataWrapperProps) {
   return (
     <>
       <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
-      <UI.NoActiveTextWrapper>{text}</UI.NoActiveTextWrapper>
+      <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
     </>
   )
 }
