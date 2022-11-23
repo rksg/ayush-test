@@ -61,20 +61,15 @@ exports[`Health Widget should render KPI widgets 1`] = `
                 >
                   <div
                     class="ant-space-item"
-                    style="margin-right: 4px;"
                   >
                     <div
                       class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Title-sc-1chsnnf-0 eyxVFQ gSXMOS"
                     >
                       Client Experience
+                      <div
+                        data-testid="HistoricalOutlined"
+                      />
                     </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      data-testid="HistoricalOutlined"
-                    />
                   </div>
                 </div>
               </div>
@@ -219,20 +214,15 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                 >
                   <div
                     class="ant-space-item"
-                    style="margin-right: 4px;"
                   >
                     <div
                       class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Title-sc-1chsnnf-0 eyxVFQ gSXMOS"
                     >
                       Client Experience
+                      <div
+                        data-testid="HistoricalOutlined"
+                      />
                     </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      data-testid="HistoricalOutlined"
-                    />
                   </div>
                 </div>
               </div>
