@@ -109,6 +109,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
             <Loader states={[alarmQuery]}>
               { alarmData && alarmData.length > 0
                 ? <DonutChart
+                  title={$t({ defaultMessage: 'Alarms' })}
                   style={{ width: 100, height: 100 }}
                   legend={'name-value'}
                   data={alarmData}/>

@@ -1,13 +1,22 @@
 import { rest } from 'msw'
 
-import {  Alarm, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import {  Alarm, ApViewModel, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider  }              from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { VenueAlarmWidget, getChartData } from '.'
+import { getChartData, ApInfoWidget } from '.'
+import { currentAP } from './__tests__/fixtures'
+import { DateRange } from '@acx-ui/utils'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+
+jest.mock('@acx-ui/analytics/components', () => ({
+  IncidentBySeverityDonutChart: () => <div data-testid={'analytics-IncidentBySeverityDonutChart'} title='IncidentBySeverityDonutChart' />,
+  KpiWidget: () => <div data-testid={'analytics-KpiWidget'} title='KpiWidget' />,
+  TtcTimeWidget: () => <div data-testid={'analytics-TtcTimeWidget'} title='TtcTimeWidget' />
+}))
 
 jest.mock('@acx-ui/icons', () => ({
   ...jest.requireActual('@acx-ui/icons'),
@@ -57,11 +66,21 @@ const alarmListMeta = {
   ]
 }
 
-const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
+const params = { 
+  tenantId: 'tenant-id',
+  serialNumber: 'ap-serialNumber',
+  activeTab: 'overview' 
+}
 
-describe('Venue Overview Alarm Widget', () => {
+const filters:AnalyticsFilter = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  path: [{ type: 'AP', name: '28:B3:71:28:6C:10' }],
+  range: DateRange.last24Hours
+}
+describe('AP Information Widget', () => {
 
-  it('should render chart correctly', async () => {
+  it('should render alarms chart correctly', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
@@ -75,7 +94,7 @@ describe('Venue Overview Alarm Widget', () => {
 
     const { asFragment } = render(
       <Provider>
-        <VenueAlarmWidget />
+        <ApInfoWidget currentAP={currentAP as unknown as ApViewModel} filters={filters}/>
       </Provider>,
       { route: { params } }
     )
@@ -99,7 +118,7 @@ describe('Venue Overview Alarm Widget', () => {
 
     const { asFragment } = render(
       <Provider>
-        <VenueAlarmWidget />
+        <ApInfoWidget currentAP={currentAP as unknown as ApViewModel} filters={filters}/>
       </Provider>,
       { route: { params } }
     )
