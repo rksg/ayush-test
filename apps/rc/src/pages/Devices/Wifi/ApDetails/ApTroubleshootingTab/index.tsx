@@ -3,9 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Tabs }          from '@acx-ui/components'
 import { useTenantLink } from '@acx-ui/react-router-dom'
-import { ApPingForm } from './apPingForm'
-import { ApTraceRouteForm } from './apTraceRouteForm'
+
 import { ApPacketCaptureForm } from './apPacketCaptureForm'
+import { ApPingForm }          from './apPingForm'
+import { ApTraceRouteForm }    from './apTraceRouteForm'
 
 const { TabPane } = Tabs
 

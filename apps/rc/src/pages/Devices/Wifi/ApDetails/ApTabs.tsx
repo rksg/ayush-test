@@ -18,7 +18,7 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
     })
   }
   const { apDetail } = props
-  const currentApOperational = true//(apDetail?.headers?.overview === ApDeviceStatusEnum.OPERATIONAL)
+  const currentApOperational = (apDetail?.headers?.overview === ApDeviceStatusEnum.OPERATIONAL)
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>

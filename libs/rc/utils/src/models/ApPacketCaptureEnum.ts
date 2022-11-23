@@ -27,7 +27,7 @@ export enum CaptureInterfaceEnum {
   ETH7 = 'ETH7',
 }
 
-enum CaptureInterfaceEnumExtended {
+export enum CaptureInterfaceEnumExtended {
   WIRED = 'WIRED'
 }
 

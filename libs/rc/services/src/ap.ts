@@ -21,7 +21,11 @@ import {
   VenueDefaultApGroup,
   AddApGroup,
   CommonResult,
-  PacketCaptureState
+  PacketCaptureState,
+  Capabilities,
+  ModelLanPorts,
+  PacketCaptureOperationResponse,
+  ApRadioCustomization
 } from '@acx-ui/rc/utils'
 
 export const baseApApi = createApi({
@@ -206,18 +210,18 @@ export const apApi = baseApApi.injectEndpoints({
     }),
 
     //Model
-    getApCapabilities: build.query<PacketCaptureState, RequestPayload>({
+    getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
         return{
           ...req
         }
       }
     }),
 
-    getApRadioCustomization: build.query<PacketCaptureState, RequestPayload>({
+    getApRadioCustomization: build.query<ApRadioCustomization, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
         return{
           ...req
         }
@@ -233,7 +237,15 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
 
-    
+    getApLanPorts: build.query<ModelLanPorts, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
+        return{
+          ...req
+        }
+      }
+    }),
+
 
     stopPacketCapture: build.mutation<PingAp, RequestPayload>({
       query: ({ params, payload }) => {
@@ -245,7 +257,7 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
 
-    startPacketCapture: build.mutation<PingAp, RequestPayload>({
+    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
         return {
@@ -280,10 +292,11 @@ export const {
   useFactoryResetApMutation,
   useLazyGetDhcpApQuery,
   useGetPacketCaptureStateQuery,
+  useGetApLanPortsQuery,
   useGetApCapabilitiesQuery,
   useGetApRadioCustomizationQuery,
   useStopPacketCaptureMutation,
-  useStartPacketCaptureMutation,
+  useStartPacketCaptureMutation
 } = apApi
 
 

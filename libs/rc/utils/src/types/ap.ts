@@ -1,7 +1,8 @@
-import { APMeshRole } from '../constants'
-import { ApDeep }     from '../models/ApDeep'
-import { ApPacketCaptureStateEnum } from '../models/ApPacketCaptureStateEnum'
-import { DhcpApInfo } from '../models/DhcpApInfo'
+import { APMeshRole }                                          from '../constants'
+import { ApLanPortTypeEnum, CapabilitiesApModel, PoeModeEnum } from '../models'
+import { ApDeep }                                              from '../models/ApDeep'
+import { ApPacketCaptureStateEnum }                            from '../models/ApPacketCaptureEnum'
+import { DhcpApInfo }                                          from '../models/DhcpApInfo'
 
 export interface APRadio {
   channel?: number,
@@ -171,4 +172,35 @@ export interface PacketCaptureState {
   fileName?: string,
   fileUrl?: string,
   sessionId?: string
+}
+
+export interface Capabilities {
+  version?: string,
+  apModels?: CapabilitiesApModel[]
+}
+
+export interface ModelLanPort {
+  type: ApLanPortTypeEnum[],
+  untagId: string,
+  vlanMembers: string,
+  enabled: boolean,
+  header?: string;
+  portId?: string;
+}
+
+export interface ModelLanPorts {
+  lanPorts?: ModelLanPort[],
+  useVenueSettings?: boolean,
+  label?: string,
+  value?: string,
+  poeMode?: PoeModeEnum,
+  poeOut?: boolean,
+  model?: string
+}
+
+export interface PacketCaptureOperationResponse {
+  requestId: string;
+  response?: {
+    sessionId: string;
+  }
 }

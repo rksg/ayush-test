@@ -279,6 +279,16 @@ export function targetHostRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function MacAddressFilterRegExp (value: string){
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^(?:[0-9A-Fa-f]{2}([-:]?))(?:[0-9A-Fa-f]{2}\1){4}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function emailRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
@@ -289,3 +299,5 @@ export function emailRegExp (value: string) {
   }
   return Promise.resolve()
 }
+
+

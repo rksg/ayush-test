@@ -1,68 +1,204 @@
-import { useEffect, useRef, useState } from 'react'
-import React from 'react'
-import * as UI from './styledComponents'
+import { useEffect, useState } from 'react'
+import React                   from 'react'
+
 
 import { Row, Col, Form, Input, Select, Checkbox } from 'antd'
-import TextArea from 'antd/lib/input/TextArea'
-import _ from 'lodash'
-import { useIntl } from 'react-intl'
-import { useParams } from 'react-router-dom'
+import saveAs                                      from 'file-saver'
+import _                                           from 'lodash'
+import { useIntl }                                 from 'react-intl'
+import { useParams }                               from 'react-router-dom'
 
-import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { useGetApCapabilitiesQuery, useGetApQuery, useGetApRadioCustomizationQuery, useGetPacketCaptureStateQuery, usePingApMutation, useStartPacketCaptureMutation, useStopPacketCaptureMutation } from '@acx-ui/rc/services'
-import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
-import { CheckboxValueType } from 'antd/lib/checkbox/Group'
-import { ApPacketCaptureStateEnum } from 'libs/rc/utils/src/models/ApPacketCaptureEnum'
+import { Button, Loader, showToast } from '@acx-ui/components'
+import {
+  useGetApCapabilitiesQuery,
+  useGetApLanPortsQuery,
+  useGetApQuery,
+  useGetApRadioCustomizationQuery,
+  useGetPacketCaptureStateQuery,
+  useStartPacketCaptureMutation,
+  useStopPacketCaptureMutation
+} from '@acx-ui/rc/services'
+import { ApPacketCaptureStateEnum, CaptureInterfaceEnum, CaptureInterfaceEnumExtended, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
 
-export function ApPacketCaptureForm() {
+import * as UI from './styledComponents'
+
+export interface SelectOption {
+  label: string,
+  value: string
+}
+
+export function ApPacketCaptureForm () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
-  const [pingForm] = Form.useForm()
-  const [isValid, setIsValid] = useState(false)
+  const [packetCaptureForm] = Form.useForm()
+
   const [startPacketCapture] = useStartPacketCaptureMutation()
   const [stopPacketCapture] = useStopPacketCaptureMutation()
   const packetCaptureState = useGetPacketCaptureStateQuery({ params: { tenantId, serialNumber } })
-  const [isCapturing, setIsCapturing] = useState(false)
-
   const getAp = useGetApQuery({ params: { tenantId, serialNumber } })
   const getApCapabilities = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
-  const getApRadioCustomization = useGetApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
+  const getApLanPorts = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
+  const getApRadioCustomization =
+    useGetApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
+
+  const [interfaceOptions, setInterfaceOptions] = useState([] as SelectOption[])
+  const [lanPortOptions, setLanPortOptions] = useState([] as SelectOption[])
+  const [isCapturing, setIsCapturing] = useState(false)
+  const [isWired, setIsWired] = useState(false)
+  const [isValid, setIsValid] = useState(true)
+  const [isPrepare, setIsPrepare] = useState(false)
+  const [hasRequest, setHasRequest] = useState(false)
+  const [sessionId, setSessionId] = useState('')
+
+
+  const packetCaptureStateRefach = function ( ){
+    setTimeout(() => {
+      packetCaptureState.refetch()
+    }, 3000)
+  }
 
   useEffect(() => {
-    if (packetCaptureState.data) {
-      setIsCapturing(packetCaptureState.data.status === ApPacketCaptureStateEnum.CAPTURING)
+    const data = packetCaptureState.data
+    if (data) {
+      setIsPrepare(false)
+      setIsCapturing(data.status === ApPacketCaptureStateEnum.CAPTURING)
+      if (data.status === ApPacketCaptureStateEnum.CAPTURING) {
+        setSessionId(data.sessionId || '')
+      }
+
+      if (data.status === ApPacketCaptureStateEnum.STOPPING) {
+        setIsPrepare(true)
+        packetCaptureStateRefach()
+      }
+
+      if(data.status === ApPacketCaptureStateEnum.READY && hasRequest) {
+        try {
+          if (data.fileUrl && data.fileName) {
+            saveAs(data.fileUrl, data.fileName.split('?')[0]) //TODO: CORS policy
+          }
+        }
+        catch {
+          showToast({
+            type: 'error',
+            content: $t({ defaultMessage: 'Failed to download packet capture.' })
+          })
+        }
+        setHasRequest(false)
+      }
     }
   }, [packetCaptureState]
   )
 
   useEffect(() => {
     const ap = getAp.data
-    const apCapabilities = getApCapabilities.data
+    const capabilities = getApCapabilities.data
     const apRadioCustomization = getApRadioCustomization.data
 
-    if (ap && apCapabilities && apRadioCustomization) {
-      // setIsCapturing(packetCaptureState.data.status === ApPacketCaptureStateEnum.CAPTURING)
-    }
-  }, [getAp, getApCapabilities, getApRadioCustomization]
-  )
+    if (ap && capabilities && apRadioCustomization) {
+      let captureInterfaceOptions = []
+      const apCapabilities = capabilities.apModels?.find(cap => cap.model === ap.model)
+      const { supportTriRadio = false, supportDual5gMode = false } = apCapabilities || {}
+      const { enable24G, enable50G, enable6G, apRadioParamsDual5G } = apRadioCustomization
 
-  const handlePingAp = async () => {
-    try {
-      const payload = {
-        targetHost: pingForm.getFieldValue('name')
+      if (enable24G) {
+        captureInterfaceOptions.push({ label: '2.4 GHz', value: CaptureInterfaceEnum.RADIO24 })
       }
-      // const pingApResult = await pingAp({ params: { tenantId, serialNumber }, payload }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
+
+      if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G.enabled) {
+        if (apRadioParamsDual5G.lower5gEnabled) {
+          captureInterfaceOptions.push(
+            { label: 'Lower 5 GHz', value: CaptureInterfaceEnum.RADIO50LOWER }
+          )
+        }
+        if (apRadioParamsDual5G.upper5gEnabled) {
+          captureInterfaceOptions.push(
+            { label: 'Upper 5 GHz', value: CaptureInterfaceEnum.RADIO50UPPER }
+          )
+        }
+      } else {
+        if (enable50G) {
+          captureInterfaceOptions.push(
+            { label: '5 GHz', value: CaptureInterfaceEnum.RADIO50 }
+          )
+        }
+      }
+
+      if (supportTriRadio && enable6G) {
+        captureInterfaceOptions.push(
+          { label: '6 GHz', value: CaptureInterfaceEnum.RADIO60 }
+        )
+      }
+
+      captureInterfaceOptions.push(
+        { label: 'Wired', value: CaptureInterfaceEnumExtended.WIRED }
+      )
+
+      setInterfaceOptions(captureInterfaceOptions)
+      packetCaptureForm.setFieldValue('captureInterface', captureInterfaceOptions[0].value)
+    }
+  }, [getAp, getApCapabilities, getApRadioCustomization])
+
+  useEffect(() => {
+    const apLanPorts = getApLanPorts.data
+
+    if (apLanPorts) {
+      let lanPortOptions: SelectOption[] = []
+      apLanPorts.lanPorts?.forEach((lanPort, index) => {
+        if (lanPort.enabled) {
+          const portId = lanPort.portId
+          const portValue = 'ETH' + index.toString()
+          lanPortOptions.push({ label: 'LAN' + portId, value: portValue })
+        }
       })
+      setLanPortOptions(lanPortOptions)
+      packetCaptureForm.setFieldValue('wiredCaptureInterface', lanPortOptions[0].value)
+    }
+
+  }, [getApLanPorts])
+
+  const handlePackeCapture = async () => {
+    if (!isCapturing) { // Start
+      try {
+        const formValue = packetCaptureForm.getFieldsValue()
+        const payload = _.cloneDeep(formValue)
+        if (payload.captureInterface === CaptureInterfaceEnumExtended.WIRED) {
+          payload.captureInterface = payload.wiredCaptureInterface
+          payload.frameTypeFilter = []
+        }
+        delete payload.wiredCaptureInterface
+        const result =
+          await startPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
+        setIsCapturing(true)
+        setSessionId(result.response?.sessionId || '')
+
+      } catch {
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'An error occurred' })
+        })
+      }
+    } else { // Stop
+      const payload = { sessionId }
+      try {
+        await stopPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
+        packetCaptureStateRefach()
+        setIsPrepare(true)
+        setHasRequest(true)
+      } catch {
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'An error occurred' })
+        })
+      }
     }
   }
 
+  const handleInterfaceChange = (value: string) => {
+    setIsWired(value === CaptureInterfaceEnumExtended.WIRED)
+  }
+
   const onChangeForm = function () {
-    pingForm.validateFields()
+    packetCaptureForm.validateFields()
       .then(() => {
         setIsValid(true)
       })
@@ -71,13 +207,9 @@ export function ApPacketCaptureForm() {
       })
   }
 
-  const onChange = (checkedValues: CheckboxValueType[]) => {
-    console.log('checked = ', checkedValues);
-  };
-
 
   return <Form
-    form={pingForm}
+    form={packetCaptureForm}
     layout='vertical'
     onChange={onChangeForm}
     style={{ height: '399px' }}
@@ -95,44 +227,55 @@ export function ApPacketCaptureForm() {
               label={$t({ defaultMessage: 'Capture Interface:' })}
               children={
                 <Select
-                  options={[
-                    { label: $t({ defaultMessage: 'No model selected' }), value: null },
-                    // ...apModelsOptions
-                  ]}
-                // onChange={handleModelChange}
+                  options={interfaceOptions}
+                  onChange={handleInterfaceChange}
                 />
               }
             />
             <Form.Item
               name='macAddressFilter'
-              label=
-              {$t({ defaultMessage: 'MAC Address Filter:' })}
+              initialValue={''}
+              label={$t({ defaultMessage: 'MAC Address Filter:' })}
               rules={[
-                // { validator: (_, value) => targetHostRegExp(value) }
+                { validator: (_, value) => MacAddressFilterRegExp(value) }
               ]}
               validateFirst
-              // hasFeedback
-              children={<Input />}
+              children={<Input
+                placeholder={$t({ defaultMessage: 'Leave empty or enter valid MAC address' })} />}
             />
 
-            <Form.Item
-              name='frameTypeFilter'
-              label={$t({ defaultMessage: 'Frame Type Filter:' })}
-              initialValue={['MANAGEMENT', 'CONTROL', 'DATA']}
-              children={
-                <Checkbox.Group style={{ display: 'grid', rowGap: '5px' }}>
-                  <Checkbox value='MANAGEMENT'>
-                    {$t({ defaultMessage: 'Management' })}
-                  </Checkbox>
-                  <Checkbox value='CONTROL' style={{ marginLeft: '0px' }}>
-                    {$t({ defaultMessage: 'Control' })}
-                  </Checkbox>
-                  <Checkbox value='DATA' style={{ marginLeft: '0px' }}>
-                    {$t({ defaultMessage: 'Data' })}
-                  </Checkbox>
-                </Checkbox.Group>
-              }
-            />
+            {!isWired &&
+              <Form.Item
+                name='frameTypeFilter'
+                label={$t({ defaultMessage: 'Frame Type Filter:' })}
+                initialValue={['MANAGEMENT', 'CONTROL', 'DATA']}
+                children={
+                  <Checkbox.Group style={{ display: 'grid', rowGap: '5px' }}>
+                    <Checkbox value='MANAGEMENT'>
+                      {$t({ defaultMessage: 'Management' })}
+                    </Checkbox>
+                    <Checkbox value='CONTROL' style={{ marginLeft: '0px' }}>
+                      {$t({ defaultMessage: 'Control' })}
+                    </Checkbox>
+                    <Checkbox value='DATA' style={{ marginLeft: '0px' }}>
+                      {$t({ defaultMessage: 'Data' })}
+                    </Checkbox>
+                  </Checkbox.Group>
+                }
+              />
+            }
+
+            {isWired &&
+              <Form.Item
+                name='wiredCaptureInterface'
+                label={$t({ defaultMessage: 'LAN Port:' })}
+                children={
+                  <Select
+                    options={lanPortOptions}
+                  />
+                }
+              />
+            }
 
           </Loader>
 
@@ -146,7 +289,7 @@ export function ApPacketCaptureForm() {
             isLoading: true
           }]}>
         </Loader>
-        <UI.CapturingText>Capturing...</UI.CapturingText>
+        <UI.CapturingText>{isPrepare ? 'Preparing file...' : 'Capturing...'}</UI.CapturingText>
       </div>
     }
 
@@ -154,8 +297,8 @@ export function ApPacketCaptureForm() {
       style={{ marginTop: '10px' }}
       type='secondary'
       htmlType='submit'
-      // disabled={!isValid || isPingingAp}
-      onClick={handlePingAp}>
+      disabled={!isValid || isPrepare}
+      onClick={handlePackeCapture}>
       {
         isCapturing ? $t({ defaultMessage: 'Stop' }) : $t({ defaultMessage: 'Start' })
       }

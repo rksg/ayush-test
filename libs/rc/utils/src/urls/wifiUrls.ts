@@ -147,22 +147,26 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   startPacketCapture: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start'
   },
   stopPacketCapture: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop'
   },
   getPacketCaptureState: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture'
   },
   getApCapabilities: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
   },
   getApRadioCustomization: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
   },
+  getApLanPorts: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
+  }
 }

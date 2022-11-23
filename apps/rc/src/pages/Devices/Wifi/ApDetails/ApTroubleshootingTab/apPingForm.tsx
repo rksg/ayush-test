@@ -1,16 +1,16 @@
-import { useRef, useState } from 'react'
-import React                from 'react'
+import { useState } from 'react'
+import React        from 'react'
 
 
 import { Row, Col, Form, Input } from 'antd'
-import TextArea                          from 'antd/lib/input/TextArea'
-import _                                 from 'lodash'
-import { useIntl }                       from 'react-intl'
-import { useParams }                     from 'react-router-dom'
+import TextArea                  from 'antd/lib/input/TextArea'
+import _                         from 'lodash'
+import { useIntl }               from 'react-intl'
+import { useParams }             from 'react-router-dom'
 
-import { Button, Loader, showToast, Tooltip }  from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }  from '@acx-ui/icons'
-import { usePingApMutation }           from '@acx-ui/rc/services'
+import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
+import { usePingApMutation }                             from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
 export function ApPingForm () {
@@ -74,12 +74,12 @@ export function ApPingForm () {
           children={<Input />}
         />
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
-          <Button 
+          <Button
             type='secondary'
             htmlType='submit'
             disabled={!isValid || isPingingAp}
             onClick={handlePingAp}>
-            {$t({defaultMessage: 'Run'})}
+            {$t({ defaultMessage: 'Run' })}
           </Button>
         </Form.Item>
       </Col>
