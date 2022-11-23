@@ -39,17 +39,17 @@ export function IncidentBySeverityDonutChart ({ filters, type }:
 
   const data = getChartData(queryResult.data)
 
-  const getContent = (defaultWidth?: number, defaultHeight?: number) => {
+  const getContent = (size?: { width: number, height: number }) => {
     return(
-      <Loader states={[queryResult]}>
+      <>
         {
-          defaultWidth && defaultHeight
+          size
             ? <>
               {
                 data && data.length > 0
                   ? <DonutChart
                     title={$t({ defaultMessage: 'Incidents' })}
-                    style={{ width: defaultWidth, height: defaultHeight }}
+                    style={{ width: size.width, height: size.height }}
                     legend='name-value'
                     data={data}
                   />
@@ -67,12 +67,16 @@ export function IncidentBySeverityDonutChart ({ filters, type }:
               )}
             </AutoSizer>
         }
-      </Loader>
+      </>
     )
   }
 
-  return type === 'no-card-style' ? getContent(100, 100) :
-    <Card title={$t({ defaultMessage: 'Incidents' })}>
-      { getContent() }
-    </Card>
+  return <Loader states={[queryResult]}>
+    {
+      type === 'no-card-style' ? getContent({ width: 100, height: 100 }) :
+        <Card title={$t({ defaultMessage: 'Incidents' })}>
+          { getContent() }
+        </Card>
+    }
+  </Loader>
 }

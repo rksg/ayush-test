@@ -1,19 +1,22 @@
+/* eslint-disable max-len */
 import { rest } from 'msw'
 
+import { AnalyticsFilter }                     from '@acx-ui/analytics/utils'
 import {  Alarm, ApViewModel, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }              from '@acx-ui/store'
+import { Provider  }                           from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { DateRange } from '@acx-ui/utils'
+
+import { currentAP } from './__tests__/fixtures'
 
 import { getChartData, ApInfoWidget } from '.'
-import { currentAP } from './__tests__/fixtures'
-import { DateRange } from '@acx-ui/utils'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
 jest.mock('@acx-ui/analytics/components', () => ({
-  IncidentBySeverityDonutChart: () => <div data-testid={'analytics-IncidentBySeverityDonutChart'} title='IncidentBySeverityDonutChart' />,
+  IncidentBySeverityDonutChart: () =>
+    <div data-testid={'analytics-IncidentBySeverityDonutChart'} title='IncidentBySeverityDonutChart' />,
   KpiWidget: () => <div data-testid={'analytics-KpiWidget'} title='KpiWidget' />,
   TtcTimeWidget: () => <div data-testid={'analytics-TtcTimeWidget'} title='TtcTimeWidget' />
 }))
@@ -66,10 +69,10 @@ const alarmListMeta = {
   ]
 }
 
-const params = { 
+const params = {
   tenantId: 'tenant-id',
   serialNumber: 'ap-serialNumber',
-  activeTab: 'overview' 
+  activeTab: 'overview'
 }
 
 const filters:AnalyticsFilter = {
