@@ -179,10 +179,15 @@ const allOperationalAp = (selectedRows: AP[]) => {
   )
 }
 const hasInvaildAp = (selectedRows: AP[]) => {
-  return !selectedRows.every(ap =>
-    ap.fwVersion.localeCompare('6.2.0.103.486',
-      undefined, { numeric: true, sensitivity: 'base' }) >= 0
-  )
+  return !selectedRows.every(ap => {
+    if (ap.fwVersion === undefined) {
+      return true
+    }
+    else {
+      return ap.fwVersion.localeCompare('6.2.0.103.486',
+        undefined, { numeric: true, sensitivity: 'base' }) >= 0
+    }
+  })
 }
 
 const hasDhcpAps = (dhcpAps: CommonResult) => {
