@@ -248,7 +248,7 @@ exports[`Select Service Form should render form 1`] = `
                                       <div
                                         class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
                                       >
-                                        Controls network traffic by different segmentation
+                                        Controls network traffic by different segments
                                       </div>
                                     </span>
                                   </label>

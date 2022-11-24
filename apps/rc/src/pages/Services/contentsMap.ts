@@ -25,7 +25,7 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Provides mDNS service' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' }),
   [ServiceType.NETWROK_SEGMENTATION]: defineMessage(
-    { defaultMessage: 'Controls network traffic by different segmentation' })
+    { defaultMessage: 'Controls network traffic by different segments' })
 }
 export const serviceTechnologyLabelMapping: Record<ServiceTechnology, MessageDescriptor> = {
   [ServiceTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
