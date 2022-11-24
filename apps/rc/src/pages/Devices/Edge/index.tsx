@@ -52,7 +52,6 @@ const EdgesTable = () => {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
-      searchable: true,
       render: (data, row) => {
         return (
           <TenantLink to={`/devices/edge/${row.serialNumber}/edge-details/overview`}>
@@ -66,7 +65,6 @@ const EdgesTable = () => {
       key: 'status',
       dataIndex: 'status',
       sorter: true,
-      filterable: true,
       render: (data, row) => {
         return (
           <EdgeStatusLight data={row.status} />
@@ -108,7 +106,6 @@ const EdgesTable = () => {
       key: 'venue',
       dataIndex: ['venueName'],
       sorter: true,
-      filterable: true,
       render: (data, row) => {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
@@ -122,7 +119,6 @@ const EdgesTable = () => {
       key: 'tags',
       dataIndex: 'tags',
       sorter: true,
-      filterable: true,
       render: (data) => {
         return `${data}`
       }
@@ -136,7 +132,8 @@ const EdgesTable = () => {
       onClick: (selectedRows) => {
         navigate({
           ...basePath,
-          pathname: `${basePath.pathname}/devices/edge/${selectedRows[0].serialNumber}/edit`
+          pathname:
+          `${basePath.pathname}/devices/edge/${selectedRows[0].serialNumber}/edit/general-settings`
         })
       }
     },
@@ -159,12 +156,6 @@ const EdgesTable = () => {
                 .then(clearSelection)
           }
         })
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Reboot' }),
-      onClick: () => {
-        // TODO TBD
       }
     }
   ]
