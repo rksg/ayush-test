@@ -52,7 +52,7 @@ describe('NetworkHistoryWidget', () => {
 
   it('should render loader', () => {
     render( <Provider> <NetworkHistory filters={filters}/></Provider>)
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    expect(screen.getAllByRole('img', { name: 'loader' })).toBeDefined()
   })
   it('should render chart', async () => {
     const { asFragment } =render(<Provider> <NetworkHistory filters={filters}/></Provider>)

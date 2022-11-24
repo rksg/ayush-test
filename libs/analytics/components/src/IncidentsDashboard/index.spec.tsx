@@ -37,7 +37,7 @@ describe('IncidentDashboard', () => {
     const { asFragment } = render(<Provider>
       <IncidentsDashboard filters={filters} />
     </Provider>)
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByText('2 clients impacted')
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
