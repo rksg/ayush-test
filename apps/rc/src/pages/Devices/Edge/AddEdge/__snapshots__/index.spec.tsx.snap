@@ -373,9 +373,9 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                             title=""
                           >
                             Serial Number
-                            <svg>
-                              QuestionMarkCircleOutlined.svg
-                            </svg>
+                            <svg
+                              data-testid="QuestionMarkCircleOutlined"
+                            />
                           </label>
                         </div>
                         <div

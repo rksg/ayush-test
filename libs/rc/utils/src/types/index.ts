@@ -27,6 +27,7 @@ export * from './msp'
 export * from './edge'
 export * from './policy'
 export * from './wifiCallingService'
+export * from './portalService'
 
 export interface CommonResult {
   requestId: string

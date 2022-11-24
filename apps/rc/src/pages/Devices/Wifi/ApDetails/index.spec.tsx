@@ -56,14 +56,12 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'overview'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
 
-    expect(await screen.findByText('test-ap')).toBeVisible()
+    expect(await screen.findByText('Overview')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(8)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should navigate to analytic tab correctly', async () => {

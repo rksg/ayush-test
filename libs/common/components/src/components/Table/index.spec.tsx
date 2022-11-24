@@ -6,13 +6,6 @@ import userEvent from '@testing-library/user-event'
 import { render, fireEvent, screen, within, mockDOMSize } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
-jest.mock('@acx-ui/icons', ()=> ({
-  CancelCircle: () => <div data-testid='cancel-circle'/>,
-  InformationOutlined: () => <div data-testid='information-outlined'/>,
-  SearchOutlined: () => <div data-testid='search-outlined'/>,
-  SettingsOutlined: ({ onClick }: { onClick: React.MouseEventHandler<HTMLDivElement> }) =>
-    <div data-testid='settings-outlined' onClick={onClick} />
-}), { virtual: true })
 
 jest.mock('react-resizable', () => ({
   Resizable: jest.fn().mockImplementation((props) => (
@@ -315,7 +308,7 @@ describe('Table component', () => {
       extraSettings={[<div>setting element</div>]}
       onResetState={reset}
     />)
-    fireEvent.click(await screen.findByTestId('settings-outlined'))
+    fireEvent.click(await screen.findByTestId('SettingsOutlined'))
     await screen.findByText('setting element')
     fireEvent.click(await screen.findByText('Reset to default'))
     expect(reset).toHaveBeenCalled()

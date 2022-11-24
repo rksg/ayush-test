@@ -75,9 +75,9 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg>
-                    ClockOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
                   <span>
                     Last 24 Hours
                   </span>
@@ -424,9 +424,9 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg>
-                    ClockOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
                   <span>
                     Last 24 Hours
                   </span>
@@ -770,9 +770,9 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg>
-                    ClockOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
                   <span>
                     Last 24 Hours
                   </span>
@@ -1143,9 +1143,8 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
             >
               <svg
                 class="styledComponents__LineChartIcon-sc-12uzynx-3 hUtzfY"
-              >
-                LineChartOutline.svg
-              </svg>
+                data-testid="LineChartOutline"
+              />
             </button>
             <button
               class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
@@ -1153,9 +1152,8 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
             >
               <svg
                 class="styledComponents__ListIcon-sc-12uzynx-1 eqfHgC"
-              >
-                ListSolid.svg
-              </svg>
+                data-testid="ListSolid"
+              />
             </button>
             <button
               class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only styledComponents__WhiteButton-sc-12uzynx-12 kIQrsn"
@@ -1164,9 +1162,8 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
             >
               <svg
                 class="styledComponents__MeshIcon-sc-12uzynx-5 kthAiW"
-              >
-                MeshSolid.svg
-              </svg>
+                data-testid="MeshSolid"
+              />
             </button>
           </span>
           <div
@@ -1295,9 +1292,9 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg>
-                    ClockOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
                   <span>
                     Last 24 Hours
                   </span>
@@ -1675,9 +1672,9 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg>
-                    ClockOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
                   <span>
                     Last 24 Hours
                   </span>
@@ -2021,9 +2018,9 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg>
-                    ClockOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
                   <span>
                     Last 24 Hours
                   </span>
@@ -2369,9 +2366,9 @@ exports[`VenueDetails should render correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg>
-                    ClockOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
                   <span>
                     Last 24 Hours
                   </span>

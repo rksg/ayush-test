@@ -89,6 +89,18 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
   },
+  getAp: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=false'
+  },
+  getApLanPorts: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
+  },
+  getApRadioCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
   getWifiCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities'
@@ -96,10 +108,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   addAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap'
-  },
-  getAp: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber'
   },
   updateAp: {
     method: 'put',
