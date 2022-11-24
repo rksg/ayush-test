@@ -18,13 +18,17 @@ import {
   useStartPacketCaptureMutation,
   useStopPacketCaptureMutation
 } from '@acx-ui/rc/services'
-import { ApPacketCaptureStateEnum, CaptureInterfaceEnum, CaptureInterfaceEnumExtended, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
+import { ApPacketCaptureStateEnum, CaptureInterfaceEnum, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
 export interface SelectOption {
   label: string,
   value: string
+}
+
+export enum CaptureInterfaceEnumExtended {
+  WIRED = 'WIRED'
 }
 
 export function ApPacketCaptureForm () {
@@ -51,7 +55,7 @@ export function ApPacketCaptureForm () {
   const [sessionId, setSessionId] = useState('')
 
 
-  const packetCaptureStateRefach = function ( ){
+  const packetCaptureStateRefetch = function ( ){
     setTimeout(() => {
       packetCaptureState.refetch()
     }, 3000)
@@ -68,7 +72,7 @@ export function ApPacketCaptureForm () {
 
       if (data.status === ApPacketCaptureStateEnum.STOPPING) {
         setIsPrepare(true)
-        packetCaptureStateRefach()
+        packetCaptureStateRefetch()
       }
 
       if(data.status === ApPacketCaptureStateEnum.READY && hasRequest) {
@@ -181,7 +185,7 @@ export function ApPacketCaptureForm () {
       const payload = { sessionId }
       try {
         await stopPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
-        packetCaptureStateRefach()
+        packetCaptureStateRefetch()
         setIsPrepare(true)
         setHasRequest(true)
       } catch {

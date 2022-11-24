@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
-import FileSaver from 'file-saver'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { venueApi }                              from '@acx-ui/rc/services'
-import { WifiUrlsInfo }          from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { venueApi }                                                                  from '@acx-ui/rc/services'
+import { WifiUrlsInfo }                                                              from '@acx-ui/rc/utils'
+import { Provider, store }                                                           from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   apLanPort,
@@ -61,11 +61,6 @@ const stopPacketCapture = {
   requestId: '2055eee9-0f42-426e-961f-9de4f8f6e435'
 }
 
-// apLanPort
-// apRadio
-// r650Cap
-// r650ap
-
 describe('ApSettingsTab', () => {
 
   beforeEach(() => {
@@ -75,7 +70,7 @@ describe('ApSettingsTab', () => {
         (req, res, ctx) => res(ctx.json(apRadio))),
       rest.get(WifiUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPort))),
-      rest.get(WifiUrlsInfo.getAp.url,
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (req, res, ctx) => res(ctx.json(r650ap))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
         (req, res, ctx) => res(ctx.json(r650Cap))),
@@ -95,8 +90,10 @@ describe('ApSettingsTab', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+
   it('should download capture correctly', async () => {
-    const downloadSpy = jest.spyOn(FileSaver, 'saveAs')
+    // const downloadSpy = jest.spyOn(FileSaver, 'saveAs') //TODO
+    const requestSpy = jest.fn()
 
     render(
       <Provider>
@@ -107,30 +104,50 @@ describe('ApSettingsTab', () => {
     await userEvent.click(screen.getByRole('button', {
       name: /Start/i
     }))
+
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => res(ctx.json(packetCaptureStopResponse))
+      )
+    )
+
     expect(await screen.findByText(/capturing\.\.\./i)).toBeVisible()
     await userEvent.click(screen.getByRole('button', {
       name: /Stop/i
     }))
 
-
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getPacketCaptureState.url,
-        (req, res, ctx) => res(ctx.json(packetCaptureReadyResponse))
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.json({
+            sessionId: '1280ff76-cf09-469b-bb09-c6834102e598',
+            fileName: 'pcap-422039000034-20221124015617.tar.gz?GoogleAccessId',
+            status: 'READY',
+            fileUrl: 'https://storage.googleapis.com/dev-alto-file-storage-1/'
+          }))}
       )
     )
-
     expect(await screen.findByText(/preparing file\.\.\./i)).toBeVisible()
-
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+    expect(await screen.findByText(/2\.4 ghz/i)).toBeVisible()
+    // await waitFor(() => expect(downloadSpy).toHaveBeenCalledTimes(1)) // TODO
   })
 
 
   it('should cpaturing correctly', async () => {
-    const downloadSpy = jest.spyOn(FileSaver, 'saveAs')
+    let response = packetCaptureCapturingResponse
+    const requestSpy = jest.fn()
+
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getPacketCaptureState.url,
-        (req, res, ctx) => res(ctx.json(packetCaptureCapturingResponse))
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.json(response))}
       )
     )
 
@@ -140,19 +157,118 @@ describe('ApSettingsTab', () => {
       </Provider>, { route: { params } })
 
     expect(await screen.findByText(/capturing\.\.\./i)).toBeVisible()
+  })
+  it('should stop correctly', async () => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => res(ctx.json(packetCaptureReadyResponse))
+      )
+    )
 
+    render(
+      <Provider>
+        <ApPacketCaptureForm />
+      </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/capture interface:/i)).toBeVisible()
+  })
+
+  it('should stopping correctly', async () => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => res(ctx.json(packetCaptureStopResponse))
+      )
+    )
+
+    render(
+      <Provider>
+        <ApPacketCaptureForm />
+      </Provider>, { route: { params } })
+    expect(await screen.findByText(/2\.4 ghz/i)).toBeVisible()
+
+  })
+
+  it('should select wired correctly', async () => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse))
+      )
+    )
+
+    render(
+      <Provider>
+        <ApPacketCaptureForm />
+      </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/2\.4 ghz/i)).toBeVisible()
+    fireEvent.mouseDown(await screen.findByText(/2\.4 ghz/i))
+    await userEvent.click(await screen.getAllByText('Wired')[0])
+    expect(await screen.findByText(/lan port:/i)).toBeVisible()
+
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => res(ctx.json(packetCaptureStopResponse))
+      )
+    )
+    await userEvent.click(screen.getByRole('button', {
+      name: /Start/i
+    }))
+
+    expect(await screen.findByText(/capturing\.\.\./i)).toBeVisible()
     await userEvent.click(screen.getByRole('button', {
       name: /Stop/i
     }))
+  })
 
-    rest.get(
-      WifiUrlsInfo.getPacketCaptureState.url,
-      (req, res, ctx) => res(ctx.json(packetCaptureReadyResponse))
+
+  it('should validation correctly', async () => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse))
+      )
     )
+    render(
+      <Provider>
+        <ApPacketCaptureForm />
+      </Provider>, { route: { params } })
 
-    // expect(await downloadSpy).toHaveBeenCalled()
-    // expect(await downloadSpy).toHaveBeenCalled()
-    await screen.findByText(/capture interface:/i)
+    const macAddressField = screen.getByRole('textbox', {
+      name: /mac address filter:/i
+    })
+    fireEvent.change(macAddressField, { target: { value: 'test' } })
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
+    fireEvent.change(macAddressField, { target: { value: 'AA:AA:AA:AA:AA:AA' } })
+    await userEvent.click(screen.getByRole('button', {
+      name: /Start/i
+    }))
+    expect(await screen.findByText(/capturing\.\.\./i)).toBeVisible()
+  })
 
+  it('should render enable50G correctly', async () => {
+    const apRadioResponse = { ...apRadio, enable24G: false, enable50G: true }
+    let capResponse = _.cloneDeep(r650Cap)
+    capResponse.apModels[0].supportTriRadio = false
+
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse))
+      ),
+      rest.get(WifiUrlsInfo.getApRadioCustomization.url,
+        (req, res, ctx) => res(ctx.json(apRadioResponse))),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (req, res, ctx) => res(ctx.json(capResponse)))
+    )
+    render(
+      <Provider>
+        <ApPacketCaptureForm />
+      </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/5 ghz/i)).toBeVisible()
   })
 })

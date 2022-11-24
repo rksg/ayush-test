@@ -27,10 +27,6 @@ export enum CaptureInterfaceEnum {
   ETH7 = 'ETH7',
 }
 
-export enum CaptureInterfaceEnumExtended {
-  WIRED = 'WIRED'
-}
-
 export enum FrameTypeFilterEnum {
   MANAGEMENT = 'MANAGEMENT',
   CONTROL = 'CONTROL',

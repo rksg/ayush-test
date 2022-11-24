@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import _ from 'lodash'
+import _                             from 'lodash'
 
 import {
   ApExtraParams,
   AP,
   PingAp,
-  ApCapabilities,
   ApDetails,
   ApDeep,
   ApDetailHeader,
@@ -30,7 +29,6 @@ import {
   CommonResult,
   PacketCaptureState,
   Capabilities,
-  ModelLanPorts,
   PacketCaptureOperationResponse,
   ApRadioCustomization
 } from '@acx-ui/rc/utils'
@@ -54,12 +52,12 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse(result: TableResult<AP, ApExtraParams>) {
+      transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Ap', id: 'LIST' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'AddAps',
@@ -110,7 +108,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'Details' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateApCustomization',
@@ -202,7 +200,7 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse(result: TableResult<ApViewModel, ApExtraParams>) {
+      transformResponse (result: TableResult<ApViewModel, ApExtraParams>) {
         return transformApViewModel(result?.data[0])
       }
     }),
@@ -316,15 +314,6 @@ export const apApi = baseApApi.injectEndpoints({
     updateApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.updateApLanPorts, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
-    getApCapabilities: build.query<ApCapabilities, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
         return {
           ...req,
           body: payload

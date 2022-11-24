@@ -61,7 +61,7 @@ describe('ApDetails', () => {
     })
 
     expect(await screen.findByText('Overview')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(8)
+    expect(screen.getAllByRole('tab')).toHaveLength(7)
   })
 
   it('should navigate to analytic tab correctly', async () => {

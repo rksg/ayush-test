@@ -2618,9 +2618,9 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                         title=""
                       >
                         Target host or IP address
-                        <svg>
-                          QuestionMarkCircleOutlined.svg
-                        </svg>
+                        <svg
+                          data-testid="QuestionMarkCircleOutlined"
+                        />
                       </label>
                     </div>
                     <div

@@ -500,8 +500,8 @@ export const r650Cap = {
       simCardSecondaryEnabled: true,
       simCardSecondaryRoaming: true,
       capabilityScore: 140,
-      supportTriRadio: false,
-      supportDual5gMode: false,
+      supportTriRadio: true,
+      supportDual5gMode: true,
       supportChannel144: true,
       support11AX: true,
       maxChannelization24G: 40,
@@ -560,9 +560,9 @@ export const apRadio = {
     changeInterval: 33
   },
   apRadioParamsDual5G: {
-    enabled: false,
+    enabled: true,
     lower5gEnabled: false,
-    upper5gEnabled: false,
+    upper5gEnabled: true,
     radioParamsLower5G: {
       channelBandwidth: 'AUTO',
       manualChannel: 0,
@@ -587,7 +587,7 @@ export const apRadio = {
     txPower: 'MAX',
     changeInterval: 33
   },
-  enable6G: false,
+  enable6G: true,
   useVenueSettings: true,
   enable24G: true,
   enable50G: true
