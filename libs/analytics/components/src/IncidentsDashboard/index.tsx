@@ -1,9 +1,10 @@
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { IncidentFilter }                              from '@acx-ui/analytics/utils'
-import { Card, Loader, StackedBarChart, NoActiveData } from '@acx-ui/components'
-import { intlFormats }                                 from '@acx-ui/utils'
+import { IncidentFilter }                                                        from '@acx-ui/analytics/utils'
+import { HistoricalCard, Loader, StackedBarChart, NoActiveData }                 from '@acx-ui/components'
+import { NavigateFunction, Path, useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
+import { intlFormats }                                                           from '@acx-ui/utils'
 
 import {
   IncidentsBySeverityDataKey,
@@ -41,8 +42,25 @@ const IncidentSeverityWidget = ({ data }: { data: Header }) => {
     </div>
   </UI.SeverityContainer>
 }
+
+export const onAxisLabelClick = (
+  navigate: NavigateFunction,
+  basePath: Path
+) => (
+  name: string
+) => {
+  navigate({
+    ...basePath,
+    pathname: `${basePath.pathname}/tab/${name.toLowerCase()}`
+  })
+}
+
 export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/analytics/incidents/')
+  const onArrowClick = useNavigateToPath('/analytics/incidents/')
+
   const response = useIncidentsBySeverityDashboardQuery(filters)
   const { data: severities } = response
   const headers: Header[] = []
@@ -63,7 +81,8 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
   const noData = incidentsCount.every(value => !value)
 
   return <Loader states={[response]}>
-    <Card title={$t(defineMessage({ defaultMessage: 'Incidents' }))}>
+    <HistoricalCard title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
+      onArrowClick={onArrowClick}>
       <AutoSizer>
         {({ width, height }) => (
           noData
@@ -74,11 +93,12 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
               </UI.SeveritiesContainer>
               <StackedBarChart data={barCharts}
                 showTooltip
+                onAxisLabelClick={onAxisLabelClick(navigate, basePath)}
                 style={{ height: 100 }}
                 axisLabelWidth={80} />
             </UI.Container>
         )}
       </AutoSizer>
-    </Card>
+    </HistoricalCard>
   </Loader>
 }
