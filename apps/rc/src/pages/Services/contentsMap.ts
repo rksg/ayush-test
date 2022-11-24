@@ -13,7 +13,8 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP' }),
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
-  [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' })
+  [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
+  [ServiceType.NETWROK_SEGMENTATION]: defineMessage({ defaultMessage: 'Network Segmentation' })
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
@@ -22,7 +23,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Provides voice calling service over WiFi' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Provides mDNS service' }),
-  [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' })
+  [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' }),
+  [ServiceType.NETWROK_SEGMENTATION]: defineMessage({ defaultMessage: 'Controls network traffic by different segmentation' })
 }
 export const serviceTechnologyLabelMapping: Record<ServiceTechnology, MessageDescriptor> = {
   [ServiceTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
