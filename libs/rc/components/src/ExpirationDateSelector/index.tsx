@@ -60,7 +60,15 @@ export function ExpirationDateSelector (prop: ExpirationDateSelectorProps) {
             <UI.FieldLabel columns={'120px 1fr'}>
               { $t(ExpirationModeLabel[ExpirationMode.BY_DATE]) }
               { expirationMode === ExpirationMode.BY_DATE &&
-                <Form.Item name={[inputName, 'date']}>
+                <Form.Item
+                  name={[inputName, 'date']}
+                  rules={[
+                    {
+                      required: expirationMode === ExpirationMode.BY_DATE,
+                      message: $t({ defaultMessage: 'Please enter Expiration Date' })
+                    }
+                  ]}
+                >
                   <DatePicker />
                 </Form.Item>
               }
@@ -71,10 +79,26 @@ export function ExpirationDateSelector (prop: ExpirationDateSelectorProps) {
               { $t(ExpirationModeLabel[ExpirationMode.AFTER_TIME]) }
               { expirationMode === ExpirationMode.AFTER_TIME &&
                 <>
-                  <Form.Item name={[inputName, 'offset']}>
+                  <Form.Item
+                    name={[inputName, 'offset']}
+                    rules={[
+                      {
+                        required: expirationMode === ExpirationMode.AFTER_TIME,
+                        message: $t({ defaultMessage: 'Please enter Time Offset' })
+                      }
+                    ]}
+                  >
                     <InputNumber min={1} max={64} />
                   </Form.Item>
-                  <Form.Item name={[inputName, 'type']}>
+                  <Form.Item
+                    name={[inputName, 'type']}
+                    rules={[
+                      {
+                        required: expirationMode === ExpirationMode.AFTER_TIME,
+                        message: $t({ defaultMessage: 'Please enter Time Type' })
+                      }
+                    ]}
+                  >
                     <Select style={{ width: 120 }}>
                       <Option key={ExpirationType.HOURS_AFTER_TIME}>
                         {$t({ defaultMessage: 'Hours' })}
