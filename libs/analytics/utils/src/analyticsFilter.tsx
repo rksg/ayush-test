@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
 
-import { useSearchParams } from 'react-router-dom'
-
-import { useLocation } from '@acx-ui/react-router-dom'
+import { useLocation }  from '@acx-ui/react-router-dom'
 import {
   generateVenueFilter,
   DateFilter,
@@ -10,27 +8,23 @@ import {
   NetworkPath,
   NodeType,
   useDateFilter,
-  encodeURIComponentAndCovertToBase64,
-  decodeBase64String
+  useEncodedParameter
 } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
 export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
+type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {
-  const [search, setSearch] = useSearchParams()
+  const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
   const { dateFilter } = useDateFilter()
 
   return useMemo(() => {
     const isHealthPage = pathname.includes('/analytics/health')
     const getNetworkFilter = () => {
-      let networkFilter = search.has('analyticsNetworkFilter')
-        ? JSON.parse(
-          decodeBase64String(search.get('analyticsNetworkFilter') as string)
-        )
-        : { path: defaultNetworkPath, raw: [] }
+      let networkFilter = read() || { path: defaultNetworkPath, raw: [] }
       const { path: currentPath, raw: rawVal } = networkFilter
       let path, filter, raw
       if (isHealthPage) {
@@ -54,11 +48,7 @@ export function useAnalyticsFilter () {
     }
 
     const setNetworkPath = (path: NetworkPath, raw: object) => {
-      search.set(
-        'analyticsNetworkFilter',
-        encodeURIComponentAndCovertToBase64(JSON.stringify({ path, raw }))
-      )
-      setSearch(search, { replace: true })
+      write({ path, raw })
     }
 
     const { networkFilter, raw } = getNetworkFilter()
@@ -71,5 +61,5 @@ export function useAnalyticsFilter () {
       getNetworkFilter,
       raw
     }
-  }, [dateFilter, pathname, search, setSearch])
+  }, [dateFilter, pathname, read, write])
 }

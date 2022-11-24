@@ -11,8 +11,8 @@ import {
   SearchOutlined,
   Close
 }                          from '@acx-ui/icons'
-import { useNavigate, useParams, useTenantLink , useLocation }               from '@acx-ui/react-router-dom'
-import { notAvailableMsg, fixedEncodeURIComponent, decodeFixedURIComponent } from '@acx-ui/utils'
+import { useNavigate, useParams, useTenantLink , useLocation } from '@acx-ui/react-router-dom'
+import { notAvailableMsg, fixedEncodeURIComponent }            from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -22,7 +22,7 @@ function SearchBar () {
   const placeholder = useIntl().$t({ defaultMessage: 'What are you looking for?' })
   const params = useParams()
   const { pathname, key } = useLocation()
-  const searchFromUrl = decodeFixedURIComponent(params.searchVal || '')
+  const searchFromUrl = params.searchVal || ''
   const [ showSearchBar, setShowSearchBar ] = useState(searchFromUrl !== '')
   const [ searchText, setSearchText ] = useState(searchFromUrl)
   const navigate = useNavigate()

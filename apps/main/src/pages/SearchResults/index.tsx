@@ -3,7 +3,6 @@ import { useIntl }    from 'react-intl'
 import { useParams }  from 'react-router-dom'
 
 import { GridRow, GridCol, PageHeader } from '@acx-ui/components'
-import { decodeFixedURIComponent }      from '@acx-ui/utils'
 
 export default function SearchResults () {
   return (
@@ -16,14 +15,13 @@ export default function SearchResults () {
 
 function SearchHeader () {
   const { searchVal } = useParams()
-  const decodedSearchVal = decodeFixedURIComponent(searchVal as string)
   const { $t } = useIntl()
   const count = 1
   return (
     <PageHeader
       title={$t(
-        { defaultMessage: 'Search Results for "{decodedSearchVal}" ({count})' },
-        { decodedSearchVal, count }
+        { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
+        { searchVal, count }
       )}
     />
   )

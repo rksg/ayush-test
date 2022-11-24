@@ -5,9 +5,9 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDashboardFilter }                  from './dashboardFilter'
-import { resetRanges }                         from './dateUtil'
-import { encodeURIComponentAndCovertToBase64 } from './encodeDecodeUtil'
+import { useDashboardFilter }      from './dashboardFilter'
+import { resetRanges }             from './dateUtil'
+import { fixedEncodeURIComponent } from './encodedParameter'
 
 const original = Date.now
 describe('useDashboardFilter', () => {
@@ -64,7 +64,7 @@ describe('useDashboardFilter', () => {
       return <div>{JSON.stringify(filters)}</div>
     }
     const nodes = [['venue1'], ['venue2']]
-    const path = encodeURIComponentAndCovertToBase64(JSON.stringify({ nodes }))
+    const path = fixedEncodeURIComponent(JSON.stringify({ nodes }))
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
         pathname: '/incidents',

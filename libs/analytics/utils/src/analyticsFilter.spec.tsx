@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
-import { resetRanges, encodeURIComponentAndCovertToBase64 } from '@acx-ui/utils'
+import { resetRanges, fixedEncodeURIComponent } from '@acx-ui/utils'
 
 import { useAnalyticsFilter } from './analyticsFilter'
 
@@ -37,7 +37,7 @@ describe('useAnalyticsFilter', () => {
     ],
     raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
   }
-  const path = encodeURIComponentAndCovertToBase64(JSON.stringify(filter))
+  const path = fixedEncodeURIComponent(JSON.stringify(filter))
   it('should render correctly', () => {
     function Component () {
       const { filters } = useAnalyticsFilter()
@@ -92,7 +92,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = encodeURIComponentAndCovertToBase64(JSON.stringify(filter))
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
@@ -115,7 +115,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = encodeURIComponentAndCovertToBase64(JSON.stringify(filter))
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
@@ -140,7 +140,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = encodeURIComponentAndCovertToBase64(JSON.stringify(filter))
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
@@ -163,7 +163,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = encodeURIComponentAndCovertToBase64(JSON.stringify(filter))
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
@@ -186,7 +186,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = encodeURIComponentAndCovertToBase64(JSON.stringify(filter))
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>

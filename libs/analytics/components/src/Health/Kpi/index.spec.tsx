@@ -10,8 +10,8 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange }                                              from '@acx-ui/types'
-import { DateRange, NetworkPath, encodeURIComponentAndCovertToBase64 } from '@acx-ui/utils'
+import { TimeStampRange }                                  from '@acx-ui/types'
+import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -160,8 +160,8 @@ describe('Kpi Section', () => {
     })
 
     const path = [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }]
-    const period = encodeURIComponentAndCovertToBase64(JSON.stringify(filters))
-    const analyticsNetworkFilter = encodeURIComponentAndCovertToBase64(JSON.stringify({
+    const period = fixedEncodeURIComponent(JSON.stringify(filters))
+    const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
       path,
       raw: []
     }))
