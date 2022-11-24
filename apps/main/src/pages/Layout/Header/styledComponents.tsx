@@ -136,3 +136,10 @@ export const ListItem = styled(List.Item)`
 export const AcknowledgeCircle = styled(CheckCircleFilled)`
   color: var(--acx-neutrals-30);
 `
+export const VersionContainer = styled.div`
+  font-weight: 400;
+  font-family: Source Sans Pro;
+  font-style: normal;
+  font-size: 10px;
+  color: var(--acx-neutrals-40)
+`

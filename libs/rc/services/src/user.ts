@@ -4,8 +4,10 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   RequestPayload,
-  UserSettings
+  UserSettings,
+  CloudVersion
 } from '@acx-ui/rc/utils'
+
 
 export const baseUserApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -33,7 +35,20 @@ export const userApi = baseUserApi.injectEndpoints({
         })
         return result
       }
+    }),
+    getCloudVersion: build.query<CloudVersion, RequestPayload>({
+      query: ({ params }) => {
+        const cloudVersionReq = createHttpRequest(
+          CommonUrlsInfo.getCloudVersion,
+          params
+        )
+        return {
+          ...cloudVersionReq
+        }
+      }
     })
   })
 })
-export const { useGetAllUserSettingsQuery } = userApi
+
+
+export const { useGetAllUserSettingsQuery, useGetCloudVersionQuery } = userApi

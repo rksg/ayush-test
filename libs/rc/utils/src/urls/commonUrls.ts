@@ -234,7 +234,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
+  },
+  getCloudVersion: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
   }
-
 
 }
