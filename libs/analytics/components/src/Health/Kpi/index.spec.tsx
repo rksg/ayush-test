@@ -3,12 +3,11 @@ import { AnalyticsFilter }         from '@acx-ui/analytics/utils'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { Provider, store }         from '@acx-ui/store'
 import {
-  fireEvent,
+  cleanup,
   mockGraphqlMutation,
   mockGraphqlQuery,
   render,
-  screen,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 import { TimeStampRange }         from '@acx-ui/types'
 import { DateRange, NetworkPath } from '@acx-ui/utils'
@@ -26,6 +25,9 @@ describe('Kpi Section', () => {
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
   })
+
+  afterEach(() => cleanup())
+
   const sampleTS = {
     time: [
       '2022-04-07T09:15:00.000Z',
@@ -47,61 +49,6 @@ describe('Kpi Section', () => {
     timeWindow: ['2022-04-07T09:30:00.000Z', '2022-04-07T09:45:00.000Z'] as TimeStampRange,
     setTimeWindow: jest.fn()
   }
-
-  it('should render kpis for tab with valid thresholds', async () => {
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 2, 3, 3, 0] } }
-    })
-    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
-    })
-    mockGraphqlQuery(dataApiURL, 'KPI', {
-      data: {
-        mutationAllowed: true
-      }
-    })
-    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
-      data: {
-        timeToConnectThreshold: { value: 2000 }
-      }
-    })
-    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
-      data: {
-        timeToConnect: {
-          success: true
-        }
-      }
-    })
-    render(<Router><Provider>
-      <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={filters}/>
-      </HealthPageContext.Provider>
-    </Provider></Router>)
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
-    await screen.findByText('Time To Connect')
-    expect(await screen.findByText('20% meets goal')).toBeVisible()
-
-    const resetBtns = await screen.findAllByRole('button', { name: 'Reset' })
-    expect(resetBtns).toHaveLength(4)
-    const resetBtn = resetBtns[0]
-    expect(resetBtn).toBeDefined()
-    fireEvent.click(resetBtn)
-
-    const sliders = await screen.findAllByRole('slider')
-    expect(sliders).toHaveLength(4)
-    const values = sliders.map(slider => slider.style.left)
-    expect(values.find((val) => val === '50%')).toMatch('50%')
-
-    const applyBtns = await screen.findAllByRole('button', { name: 'Apply' })
-    expect(applyBtns).toHaveLength(4)
-    const applyBtn = applyBtns[0]
-    expect(applyBtn).toBeDefined()
-    fireEvent.click(applyBtn)
-    expect(await screen.findByText('Threshold set successfully.')).toBeInTheDocument()
-  }, 60000)
-
-
 
   it('should render disabled tooltip with network path', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {

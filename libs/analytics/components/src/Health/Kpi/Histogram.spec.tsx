@@ -5,9 +5,11 @@ import { AnalyticsFilter }       from '@acx-ui/analytics/utils'
 import { Provider, store }       from '@acx-ui/store'
 import {
   mockGraphqlQuery,
+  mockGraphqlMutation,
   render,
   screen,
-  fireEvent
+  fireEvent,
+  cleanup
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
@@ -35,6 +37,8 @@ describe('Threshold Histogram chart', () => {
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
   })
+
+  afterEach(() => cleanup())
 
   it('should render Histogram with data', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
@@ -142,15 +146,15 @@ describe('Threshold Histogram chart', () => {
   })
   it('should call setKpiThreshold on clicking reset btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+      data: { histogram: { data: [0, 2, 2, 3, 3, 0, 20, 20, 2000] } }
     })
 
     render(
       <Provider>
         <Histogram
           filters={filters}
-          kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect']}
+          kpi={'apCapacity'}
+          threshold={thresholdMap['apCapacity']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
           mutationAllowed={true}
@@ -160,36 +164,26 @@ describe('Threshold Histogram chart', () => {
     )
 
     const resetBtn = await screen.findByRole('button', { name: 'Reset' })
+    expect(resetBtn).toBeDefined()
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(resetBtn) })
+    const sliders = await screen.findAllByRole('slider')
+    expect(sliders).toHaveLength(1)
+    const values = sliders.map(slider => slider.style.left)
+    expect(values.find((val) => val === '50%')).toMatch('50%')
   })
 
-  it('should call setKpiThreshold on clicking apply btn', async () => {
+  it('should render success toast setKpiThreshold on clicking apply btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
     })
-    render(
-      <Provider>
-        <Histogram
-          filters={filters}
-          kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect']}
-          thresholds={thresholdMap}
-          setKpiThreshold={setKpiThreshold}
-          mutationAllowed={true}
-          isNetwork
-        />
-      </Provider>
-    )
 
-    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => { fireEvent.click(applyBtn) })
-  })
-
-  it('should see error setKpiThreshold on clicking apply btn', async () => {
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: {
+        timeToConnect: {
+          success: true
+        }
+      }
     })
     render(
       <Provider>
@@ -205,8 +199,38 @@ describe('Threshold Histogram chart', () => {
       </Provider>
     )
     const applyBtn = await screen.findByRole('button', { name: 'Apply' })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => { fireEvent.click(applyBtn) })
+    expect(applyBtn).toBeDefined()
+    fireEvent.click(applyBtn)
+    expect(await screen.findByText('Threshold set successfully.')).toBeInTheDocument()
+  })
+
+  it('should render failure toast setKpiThreshold on clicking apply btn on failure', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+    })
+
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: undefined,
+      error: new Error('network failed')
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect']}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
+        />
+      </Provider>
+    )
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+    expect(applyBtn).toBeDefined()
+    fireEvent.click(applyBtn)
+    const errorMsgs = await screen.findByText('Error setting threshold, please try again later.')
+    expect(errorMsgs).toBeInTheDocument()
   })
 })
 
