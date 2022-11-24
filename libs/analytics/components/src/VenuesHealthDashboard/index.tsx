@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { Tooltip }                    from '@acx-ui/components'
 import {
   HistoricalCard,
   Loader,
@@ -12,10 +11,11 @@ import {
   ProgressBar,
   ContentSwitcher,
   ContentSwitcherProps,
-  NoData
+  NoData,
+  Tooltip
 } from '@acx-ui/components'
-import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
-import { formatter, notAvailableMsg }    from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath }           from '@acx-ui/react-router-dom'
+import { intlFormats, formatter, notAvailableMsg } from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
@@ -57,7 +57,16 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Connection Success' }),
       dataIndex: 'connectionSuccessPercent',
       key: 'connectionSuccessPercent',
-      align: 'center' as const
+      align: 'center' as const,
+      render: (value: unknown, row)=>{
+        const [n,d] = row.connectionSuccessSLA
+        const tooltipText=$t({ defaultMessage: '{n} of {d} attempts' }, {
+          n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
+        </Tooltip>)
+      }
     },
     {
       title: $t({ defaultMessage: 'Time To Connect' }),
@@ -65,17 +74,23 @@ export function VenuesHealthDashboard ({
       key: 'timeToConnectPercent',
       align: 'center' as const,
       render: (value: unknown, row)=>{
+        const [n,d] = row.timeToConnectSLA
         const threshold = row.timeToConnectThreshold ??
           kpiConfig.timeToConnect.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: 'Under {threshold}' },
           { threshold: formatter('durationFormat')(threshold) })
-        if(value === '-') return <span>{value}</span>
-        return (<>
-          <span>{value as string}</span>
+        if(row.timeToConnectThreshold === null) return <span>-</span>
+        const tooltipText=$t({
+          defaultMessage: '{n} of {d} connections under {threshold}' },
+        { n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }),
+          threshold: formatter('longDurationFormat')(threshold) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
           <UI.ThresholdText>
             {thresholdText}
           </UI.ThresholdText>
-        </>)
+        </Tooltip>)
       }
     },
     {
@@ -84,28 +99,43 @@ export function VenuesHealthDashboard ({
       key: 'clientThroughputPercent',
       align: 'center' as const,
       render: (value: unknown, row)=>{
+        const [n,d] = row.clientThroughputSLA
         const threshold = row.clientThroughputThreshold ??
           kpiConfig.clientThroughput.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: 'Above {threshold}' },
           { threshold: formatter('networkSpeedFormat')(threshold) })
-        if(value === '-') return <span>{value}</span>
-        return (<>
-          <span>{value as string}</span>
+        if(row.clientThroughputThreshold === null) return <span>-</span>
+        const tooltipText = $t({
+          defaultMessage: '{n} of {d} sessions above {threshold}' },
+        { n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }),
+          threshold: formatter('networkSpeedFormat')(threshold) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
           <UI.ThresholdText>
             {thresholdText}
           </UI.ThresholdText>
-        </>)
+        </Tooltip>)
       }
     },
     {
       title: $t({ defaultMessage: 'Online APs' }),
       dataIndex: 'onlineApsPercent',
       key: 'onlineApsPercent',
-      align: 'center' as const
+      align: 'center' as const,
+      render: (value: unknown, row)=>{
+        const [n,d] = row.onlineApsSLA
+        const tooltipText=$t({ defaultMessage: '{n} of {d} APs online' }, {
+          n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
+        </Tooltip>)
+      }
     }
   ]
   const calcPercent = ([val, sum]:(number | null)[]) => {
-    const percent = val && sum ? val / sum : null
+    const percent = val !== null && sum ? val / sum : null
     return { percent, formatted: formatter('percentFormatRound')(percent) }
   }
 
