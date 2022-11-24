@@ -396,5 +396,5 @@ export const {
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
   useGetPortalProfileDetailQuery,
-  useGetPortalProfileListQueryr
+  useGetPortalProfileListQuery
 } = serviceApi
