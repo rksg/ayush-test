@@ -521,7 +521,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 1%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-6 styledComponents__ThresholdText-sc-hs49h-2 zsFhL bBDJpT"
                                               >
                                                 Under 2 s
                                               </span>
@@ -538,7 +538,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-6 styledComponents__ThresholdText-sc-hs49h-2 zsFhL bBDJpT"
                                               >
                                                 Above 10 Mbps
                                               </span>
@@ -627,7 +627,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-6 styledComponents__ThresholdText-sc-hs49h-2 zsFhL bBDJpT"
                                               >
                                                 Under 2 s
                                               </span>
@@ -644,7 +644,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 18%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-6 styledComponents__ThresholdText-sc-hs49h-2 zsFhL bBDJpT"
                                               >
                                                 Above 10 Mbps
                                               </span>
@@ -733,7 +733,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 93%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-6 styledComponents__ThresholdText-sc-hs49h-2 zsFhL bBDJpT"
                                               >
                                                 Under 2 s
                                               </span>
@@ -750,7 +750,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-6 styledComponents__ThresholdText-sc-hs49h-2 zsFhL bBDJpT"
                                               >
                                                 Above 10 Mbps
                                               </span>
@@ -839,7 +839,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-6 styledComponents__ThresholdText-sc-hs49h-2 zsFhL bBDJpT"
                                               >
                                                 Under 2 s
                                               </span>
@@ -944,7 +944,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-6 styledComponents__ThresholdText-sc-hs49h-2 zsFhL bBDJpT"
                                               >
                                                 Above 10 Mbps
                                               </span>
