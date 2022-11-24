@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { TableProps }               from '@acx-ui/components'
+
+import { TablePaginationConfig, TableProps } from 'antd'
+
 import { useParams, Params }        from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult } from '@acx-ui/types'
 
-export interface RequestPayload <Payload = unknown> {
+export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
   params?: Params<string>
   payload?: Payload
 }
@@ -33,11 +34,7 @@ export interface TABLE_QUERY <
   sorter?: SORTER
   rowKey?: string
 }
-export interface PAGINATION {
-  current: number,
-  pageSize: number,
-  total: number
-}
+export type PAGINATION = TablePaginationConfig
 
 const DEFAULT_PAGINATION = {
   current: 1,
@@ -66,27 +63,17 @@ const transferSorter = (order:string) => {
 
 export interface TableQuery<ResultType, Payload, ResultExtra>
   extends UseQueryResult<TableResult<ResultType, ResultExtra>> {
-  pagination: {
-    current: number;
-    pageSize: number;
-    total: number;
-  },
-  sorter: {
-    sortField: string;
-    sortOrder: string;
-  },
-  setSorter: React.Dispatch<React.SetStateAction<{
-    sortField: string;
-    sortOrder: string;
-  }>>,
+  pagination: PAGINATION,
+  sorter: SORTER,
+  setSorter: React.Dispatch<React.SetStateAction<SORTER>>,
   handleTableChange: TableProps<ResultType>['onChange'],
-  payload: Partial<Payload>,
-  setPayload: React.Dispatch<React.SetStateAction<Partial<Payload>>>,
+  payload: Payload,
+  setPayload: React.Dispatch<React.SetStateAction<Payload>>,
 }
 
 export function useTableQuery <
   ResultType,
-  Payload,
+  Payload extends RequestPayload<unknown>,
   ResultExtra
 > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
 
@@ -104,18 +91,18 @@ export function useTableQuery <
     ...option.defaultPayload,
     ...(initialPagination as unknown as Partial<Payload>),
     ...(initialSorter as unknown as Partial<Payload>)
-  }
+  } as Payload
 
-  const [pagination, setPagination] = useState(initialPagination)
-  const [sorter, setSorter] = useState(initialSorter)
-  const [payload, setPayload] = useState(initialPayload)
+  const [pagination, setPagination] = useState<PAGINATION>(initialPagination)
+  const [sorter, setSorter] = useState<SORTER>(initialSorter)
+  const [payload, setPayload] = useState<Payload>(initialPayload)
 
   const params = useParams()
   // RTKQuery
 
   const api = option.useQuery({
     params: { ...params, ...option.apiParams },
-    payload: payload as Payload
+    payload: payload
   })
 
   useEffect(() => {

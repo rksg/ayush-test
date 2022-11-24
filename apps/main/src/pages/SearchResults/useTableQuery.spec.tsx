@@ -1,13 +1,17 @@
 
 
 
-import { useVenuesListQuery }            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { Provider }                      from '@acx-ui/store'
-import { mockRestApiQuery, renderHook }  from '@acx-ui/test-utils'
+import { useVenuesListQuery, venueApi }      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, useTableQuery }     from '@acx-ui/rc/utils'
+import { Provider, store }                   from '@acx-ui/store'
+import { act, mockRestApiQuery, renderHook } from '@acx-ui/test-utils'
 
 describe('useTableQuery', () => {
-  const data = [
+  beforeEach(() => store.dispatch(venueApi.util.resetApiState()))
+
+  const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+
+  const mockedVenuesList = [
     {
       id: 'e0788dea6307472d98795300fcda1119',
       name: 'bdcPerformanceVenue2',
@@ -61,7 +65,7 @@ describe('useTableQuery', () => {
 
   it('should hook data correctly, testing with venues list', async () => {
 
-    const { result } = renderHook(
+    const { result, rerender } = renderHook(
       () => useTableQuery({
         useQuery: useVenuesListQuery,
         defaultPayload: {
@@ -73,7 +77,7 @@ describe('useTableQuery', () => {
       }), {
         wrapper: ({ children }) => <Provider>{children}</Provider>,
         route: {
-          params: { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+          params
         }
       }
     )
@@ -83,15 +87,31 @@ describe('useTableQuery', () => {
     expect(result.current.isFetching).toStrictEqual(true)
 
     mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', {
-      status: 200,
-      data
+      data: mockedVenuesList
     })
 
-    expect(result.current.pagination).toMatchObject({
+    expect(result.current.pagination).toStrictEqual({
       current: 1,
       pageSize: 5,
       total: 0
     })
+
+    await act(async () => {
+      const { status, data, error } = await store.dispatch(
+        venueApi.endpoints.venuesList.initiate({
+          ...defaultPayload,
+          pagination: { pageSize: 5 },
+          params
+        })
+      )
+
+      expect(status).toBeDefined()
+      expect(error).toBeUndefined()
+      expect(data).toStrictEqual({ data: mockedVenuesList })
+    })
+
+    rerender()
+    expect(result.current.data).toStrictEqual({ data: mockedVenuesList })
 
   })
 })
