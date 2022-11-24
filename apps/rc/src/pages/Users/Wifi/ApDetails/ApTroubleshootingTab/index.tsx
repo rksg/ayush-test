@@ -4,77 +4,41 @@ import { Row, Col } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { NetworkFilter, Button } from '@acx-ui/components'
-import {
-  ArrowExpand
-} from '@acx-ui/icons'
-import {  useParams } from '@acx-ui/react-router-dom'
+import {  useParams }            from '@acx-ui/react-router-dom'
 
 import { ClientTroubleShootingConfig } from './config'
-import * as UI                         from './styledComponents'
+import { History }                     from './History'
+import { TimeLine }                    from './TimeLine'
+
 export function ApTroubleshootingTab () {
+  // Todo use clientId to get timeline and history
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { userId: clientId } = useParams()
   const [ historyContentToggle, setHistoryContentToggle ] = useState(true)
   const { $t } = useIntl()
 
-  const onApply = () => {}
+  // Todo onApply should trigger new api call and update search params
+  const onApply = (selectionType : string) => { return selectionType}
   return (
     <Row gutter={[16, 16]}>
-      <Col span={historyContentToggle ? 18 : 21}>
+      <Col span={historyContentToggle ? 18 : 24}>
         <Row gutter={[16, 16]}>
-          <Col span={12} />
-          {ClientTroubleShootingConfig.selection.map((config) => (
-            <Col span={4}>
-              <NetworkFilter
-                multiple
-                defaultValue={config.defaultValue}
-                placeholder={config.placeHolder}
-                options={config.options}
-                onApply={onApply}
-              />
-            </Col>
-          ))}
-          <Col span={18}>
-            <Row>
-              <Col span={24}>Widget 1</Col>
-            </Row>
-            <Row>
-              <Col span={24}>Widget 2</Col>
-            </Row>
-            <Row>
-              <Col span={24}>Widget 3</Col>
-            </Row>
-            <Row>
-              <Col span={24}>Widget 4</Col>
-            </Row>
-          </Col>
-        </Row>
-      </Col>
-      {historyContentToggle ? (
-        <Col span={6}>
-          <UI.History>
-            <UI.HistoryContent>
-              <UI.HistoryContentTitle>
-                {$t({ defaultMessage: 'History' })}
-              </UI.HistoryContentTitle>
-              <UI.HistoryIcon>
-                <ArrowExpand
-                  style={{
-                    transform: 'rotate(180deg)',
-                    cursor: 'pointer',
-                    lineHeight: '20px'
-                  }}
-                  onClick={() => {
-                    setHistoryContentToggle(!historyContentToggle)
-                  }}
+          <Col span={historyContentToggle ? 12 : 8} />
+          {
+            ClientTroubleShootingConfig.selection.map((config) => (
+              <Col span={4}>
+                <NetworkFilter
+                  multiple
+                  defaultValue={config.defaultValue}
+                  placeholder={config.placeHolder}
+                  options={config.options}
+                  onApply={() => onApply(config.selectionType)}
                 />
-              </UI.HistoryIcon>
-            </UI.HistoryContent>
-          </UI.History>
-        </Col>
-      ) : (
-        <Col span={3}>
-          <Row style={{ justifyContent: 'end' }}>
-            <Col>
+              </Col>
+            ))}
+          {!historyContentToggle &&
+          <Col span={4}>
+            <Row style={{ justifyContent: 'end' }}>
               <Button
                 type='primary'
                 style={{ width: '96px' }}
@@ -83,8 +47,17 @@ export function ApTroubleshootingTab () {
                 }}>
                 {$t({ defaultMessage: 'History' })}
               </Button>
-            </Col>
-          </Row>
+            </Row>
+          </Col>
+          }
+          <Col span={24}>
+            <TimeLine/>
+          </Col>
+        </Row>
+      </Col>
+      {historyContentToggle && (
+        <Col span={6}>
+          <History setHistoryContentToggle={setHistoryContentToggle} historyContentToggle/>
         </Col>
       )}
     </Row>

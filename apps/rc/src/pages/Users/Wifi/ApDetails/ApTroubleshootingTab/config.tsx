@@ -9,15 +9,15 @@ export const ClientTroubleShootingConfig = {
       options: [
         {
           value: 'clientConnection',
-          label: 'Client Connection'
+          label: getIntl().$t({ defaultMessage: 'Client Connection' })
         },
         {
           value: 'performance',
-          label: 'Performance'
+          label: getIntl().$t({ defaultMessage: 'Performance' })
         },
         {
           value: 'infrastructure',
-          label: 'Infrastructure'
+          label: getIntl().$t({ defaultMessage: 'Infrastructure' })
         }
       ]
     },
@@ -28,23 +28,23 @@ export const ClientTroubleShootingConfig = {
       options: [
         {
           value: 'clientAssociated',
-          label: 'Client associated'
+          label: getIntl().$t({ defaultMessage: 'Client associated' })
         },
         {
           value: 'clientRoamed',
-          label: 'Client roamed'
+          label: getIntl().$t({ defaultMessage: 'Client roamed' })
         },
         {
           value: 'clientDisconnected',
-          label: 'Client disconnected'
+          label: getIntl().$t({ defaultMessage: 'Client disconnected' })
         },
         {
           value: 'connectionFailure',
-          label: 'Connection failure'
+          label: getIntl().$t({ defaultMessage: 'Connection failure' })
         },
         {
           value: 'incident',
-          label: 'Incident'
+          label: getIntl().$t({ defaultMessage: 'Incident' })
         }
       ]
     },
@@ -55,17 +55,22 @@ export const ClientTroubleShootingConfig = {
       options: [
         {
           value: '24ghz',
-          label: '2.4 GHz'
+          label: getIntl().$t({ defaultMessage: '2.4 GHz' })
         },
         {
           value: '5ghz',
-          label: '5 GHz'
+          label: getIntl().$t({ defaultMessage: '5 GHz' })
         },
         {
-          value: '5ghz',
-          label: '6 GHz'
+          value: '6ghz',
+          label: getIntl().$t({ defaultMessage: '6 GHz' })
         }
       ]
-    } ]
-
+    } ],
+  timeLine: [
+    { title: getIntl().$t({ defaultMessage: 'Connection Events' }) },
+    { title: getIntl().$t({ defaultMessage: 'Roaming' }) },
+    { title: getIntl().$t({ defaultMessage: 'Connection Quality' }) },
+    { title: getIntl().$t({ defaultMessage: 'Network Incidents' }) }
+  ]
 }
