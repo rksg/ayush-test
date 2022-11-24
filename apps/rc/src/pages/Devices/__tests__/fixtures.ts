@@ -368,3 +368,235 @@ export const dhcpAp = [{
     venueId: '16b11938ee934928a796534e2ee47661'
   }]
 }]
+
+export const r650ap = {
+  serialNumber: '422039000034',
+  apGroupId: '9150b159b5f748a1bbf55dab35a60bce',
+  venueId: '4c778ed630394b76b17bce7fe230cf9f',
+  radio:
+  {
+    apRadioParams24G:
+    {
+      manualChannel: 0,
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParams50G: {
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParamsDual5G: {
+      enabled: true,
+      radioParamsLower5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      },
+      radioParamsUpper5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      }
+    },
+    apRadioParams6G: {
+      manualChannel: 0,
+      method: 'CHANNELFLY',
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      txPower: 'MAX',
+      changeInterval: 33
+    },
+    useVenueSettings: true
+  },
+  name: 'UI team AP',
+  softDeleted: false,
+  model: 'R650',
+  position: {
+    xPercent: 0.0,
+    yPercent: 0.0
+  },
+  updatedDate: '2022-11-22T08:53:27.329+0000'
+}
+
+export const r650Cap = {
+  version: '6.2.0.103.513',
+  apModels: [
+    {
+      model: 'R650',
+      lanPorts: [
+        {
+          id: '1',
+          defaultType: 'TRUNK',
+          untagId: 1,
+          vlanMembers: '1-4094',
+          trunkPortOnly: false,
+          supportDisable: true,
+          isPoePort: false,
+          isPoeOutPort: false
+        },
+        {
+          id: '2',
+          defaultType: 'TRUNK',
+          untagId: 1,
+          vlanMembers: '1-4094',
+          trunkPortOnly: false,
+          supportDisable: false,
+          isPoePort: true,
+          isPoeOutPort: false
+        }
+      ],
+      allowDfsCountry: [
+        'US',
+        'SG'
+      ],
+      allowCbandCountry: [
+        'GB'
+      ],
+      lldpEnable: true,
+      lldpAdInterval: 30,
+      lldpHoldTime: 120,
+      lldpMgmtEnable: true,
+      ledOn: true,
+      isOutdoor: false,
+      has160MHzChannelBandwidth: true,
+      canSupportPoeOut: false,
+      canSupportPoeMode: true,
+      canSupportLacp: true,
+      requireOneEnabledTrunkPort: true,
+      poeModeCapabilities: [
+        'Auto',
+        '802.3af',
+        '802.3at'
+      ],
+      lanPortPictureDownloadUrl: 'https://storage.googleapis.com/',
+      pictureDownloadUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/',
+      canSupportCellular: false,
+      simCardPrimaryEnabled: true,
+      simCardPrimaryRoaming: true,
+      simCardSecondaryEnabled: true,
+      simCardSecondaryRoaming: true,
+      capabilityScore: 140,
+      supportTriRadio: false,
+      supportDual5gMode: false,
+      supportChannel144: true,
+      support11AX: true,
+      maxChannelization24G: 40,
+      maxChannelization5G: 160
+    }
+  ]
+}
+
+export const apRadio = {
+  apRadioParams24G: {
+    manualChannel: 0,
+    allowedChannels: [
+      '1',
+      '2',
+      '3',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10',
+      '11'
+    ],
+    channelBandwidth: '20MHz',
+    txPower: 'MAX',
+    method: 'CHANNELFLY',
+    changeInterval: 52
+  },
+  apRadioParams50G: {
+    allowedChannels: [
+      '36',
+      '40',
+      '44',
+      '48',
+      '52',
+      '56',
+      '100',
+      '104',
+      '116',
+      '120',
+      '124',
+      '128',
+      '132',
+      '136',
+      '140',
+      '144',
+      '149',
+      '153',
+      '157',
+      '161'
+    ],
+    channelBandwidth: 'AUTO',
+    manualChannel: 0,
+    txPower: 'MAX',
+    method: 'CHANNELFLY',
+    changeInterval: 33
+  },
+  apRadioParamsDual5G: {
+    enabled: false,
+    lower5gEnabled: false,
+    upper5gEnabled: false,
+    radioParamsLower5G: {
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    radioParamsUpper5G: {
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    }
+  },
+  apRadioParams6G: {
+    manualChannel: 0,
+    method: 'CHANNELFLY',
+    channelBandwidth: 'AUTO',
+    bssMinRate6G: 'HE_MCS_0',
+    mgmtTxRate6G: '6',
+    txPower: 'MAX',
+    changeInterval: 33
+  },
+  enable6G: false,
+  useVenueSettings: true,
+  enable24G: true,
+  enable50G: true
+}
+
+export const apLanPort = {
+  lanPorts: [
+    {
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '1',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '2',
+      enabled: true
+    }
+  ],
+  useVenueSettings: false
+}
+
+

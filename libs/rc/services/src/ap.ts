@@ -209,7 +209,6 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
 
-    //Model
     getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)

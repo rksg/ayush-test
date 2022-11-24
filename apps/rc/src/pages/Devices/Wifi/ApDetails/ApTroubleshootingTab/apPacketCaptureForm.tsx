@@ -74,7 +74,7 @@ export function ApPacketCaptureForm () {
       if(data.status === ApPacketCaptureStateEnum.READY && hasRequest) {
         try {
           if (data.fileUrl && data.fileName) {
-            saveAs(data.fileUrl, data.fileName.split('?')[0]) //TODO: CORS policy
+            saveAs(data.fileUrl, data.fileName.split('?')[0])
           }
         }
         catch {
