@@ -15,7 +15,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, StepsForm }    from '@acx-ui/components'
+import { Button, StepsForm }   from '@acx-ui/components'
 import {
   InformationSolid,
   QuestionMarkCircleOutlined
