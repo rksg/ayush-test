@@ -148,5 +148,25 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   factoryResetAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
+  },
+  updateApLanPorts: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
+  },
+  getApCapabilities: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
+  },
+  getApCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
+  },
+  updateApCustomization: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
+  },
+  resetApCustomization: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
   }
 }

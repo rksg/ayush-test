@@ -66,17 +66,10 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -98,9 +91,9 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -376,7 +369,41 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  AI Analytics
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+  >
+    <div
+      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+    >
+      <span
+        aria-label="loader"
+        role="img"
+      >
+        <div
+          aria-busy="true"
+          aria-live="polite"
+          class="ant-spin ant-spin-lg ant-spin-spinning"
+        >
+          <span
+            class="ant-spin-dot ant-spin-dot-spin"
+          >
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
 </DocumentFragment>
 `;
 
@@ -446,17 +473,10 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -478,9 +498,9 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -826,17 +846,10 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -858,9 +871,9 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -1206,17 +1219,10 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -1238,9 +1244,9 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -1586,17 +1592,10 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -1618,9 +1617,9 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -1966,17 +1965,10 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -1998,9 +1990,9 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -2346,17 +2338,10 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -2378,9 +2363,9 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>

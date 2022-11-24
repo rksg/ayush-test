@@ -211,9 +211,8 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                     >
                       <svg
                         class="styledComponents__BulbOutlinedIcon-sc-117mefi-0 glgoAW"
-                      >
-                        BulbOutlined.svg
-                      </svg>
+                        data-testid="BulbOutlined"
+                      />
                     </div>
                     <div
                       class="ant-space-item"
