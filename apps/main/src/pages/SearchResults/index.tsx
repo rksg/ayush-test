@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { GridRow, GridCol, PageHeader }         from '@acx-ui/components'
+import { CollapseActive, CollapseInactive }     from '@acx-ui/icons'
 import { useVenuesListQuery }                   from '@acx-ui/rc/services'
 import { RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
 
@@ -38,6 +39,10 @@ const SearchTableWrapper = ({ children, count, title }
     <Collapse
       defaultActiveKey={[title]}
       expandIconPosition='end'
+      expandIcon={({ isActive }) => (isActive)
+        ? <CollapseActive />
+        : <CollapseInactive />
+      }
       bordered={false}
     >
       <Panel
