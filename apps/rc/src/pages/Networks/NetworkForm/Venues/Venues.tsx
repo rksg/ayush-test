@@ -177,8 +177,7 @@ export function Venues () {
         setTableData(tableData)
       }
     }
-
-    if(data && venues === undefined){
+    if(data && (venues === undefined || venues?.length === 0)) {
       if(cloneMode){
         const venuesData = data?.venues?.map(item => {
           return { ...item, networkId: null, id: null }
