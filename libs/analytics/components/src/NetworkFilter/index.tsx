@@ -1,4 +1,6 @@
 /* eslint-disable no-console */
+import { useContext } from 'react'
+
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
@@ -12,6 +14,7 @@ import { NetworkPath }                                      from '@acx-ui/utils'
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
 import { LabelWithSeverityCicle }                   from './LabelWithSeverityCircles'
+import { NetworkFilterContext }                     from './NetworkFilterContext'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
@@ -21,9 +24,9 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
 }
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = {
-  shouldQuerySwitch : boolean,
-   withIncidents?: boolean,
-   showBand?: boolean
+    shouldQuerySwitch : boolean,
+    withIncidents?: boolean,
+    showBand?: boolean
    }
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
@@ -196,8 +199,9 @@ export const onApply = (
 }
 
 export const onApplyWithBand = (
-  value?: SingleValueType | SingleValueType[],
-  bands?: Band[]
+  value: SingleValueType | SingleValueType[] | undefined,
+  bands: Band[],
+  setFilterData: CallableFunction
 ) => {
   let paths:NetworkPath[]=[]
   if(value?.length){
@@ -219,10 +223,7 @@ export const onApplyWithBand = (
   }else{
     paths.push(defaultNetworkPath)
   }
-  console.log({
-    paths,
-    bands
-  })
+  setFilterData({ paths,bands })
 }
 
 export { ConnectedNetworkFilter as NetworkFilter }
@@ -232,6 +233,7 @@ function ConnectedNetworkFilter (
 ) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
+  const { setData: setFilterData } = useContext(NetworkFilterContext)
   /* eslint-disable react-hooks/rules-of-hooks */
   const incidentsList = withIncidents
     ? useIncidentsListQuery(
@@ -265,7 +267,7 @@ function ConnectedNetworkFilter (
           options={queryResults.data}
           onApply={(value,bands) => {
             if(showBand){
-              onApplyWithBand(value,bands as Band[])
+              onApplyWithBand(value, bands as Band[], setFilterData)
             }else{
               onApply(value, setNetworkPath)
             }
