@@ -266,9 +266,9 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                             title=""
                           >
                             Network Name
-                            <svg>
-                              QuestionMarkCircleOutlined.svg
-                            </svg>
+                            <svg
+                              data-testid="QuestionMarkCircleOutlined"
+                            />
                           </label>
                         </div>
                         <div

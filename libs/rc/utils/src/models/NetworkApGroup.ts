@@ -1,5 +1,5 @@
-import { RadioEnum }     from '../contents'
-import { RadioTypeEnum } from '../contents'
+import { RadioEnum }     from './RadioEnum'
+import { RadioTypeEnum } from './RadioTypeEnum'
 
 export class NetworkApGroup {
   // AP-group ID

@@ -21,12 +21,32 @@ export function serverIpAddressRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function networkWifiPortRegExp (value: number) {
+  const { $t } = getIntl()
+  if (value && value <= 0){
+    return Promise.reject($t(validationMessages.validateEqualOne))
+  } else if (value && value > 65535) {
+    return Promise.reject($t(validationMessages.validateLowerThan65535))
+  }
+  return Promise.resolve()
+}
+
 export function networkWifiSecretRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp('^[\\x21-\\x7E]+([\\x20-\\x7E]*[\\x21-\\x7E]+)*$')
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
+export function URLRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.validateURL))
   }
   return Promise.resolve()
 }
