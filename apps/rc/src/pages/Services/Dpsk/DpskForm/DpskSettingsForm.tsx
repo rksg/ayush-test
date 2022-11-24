@@ -91,12 +91,12 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
               <Tooltip
                 placement='bottom'
                 title={<FormattedMessage
-                  defaultMessage={`<p>Format options:</p>
-                    <p>Most secured - all printable ASCII characters can be used</p>
-                    <p>Keyboard friendly - only letters and numbers will be used</p>
-                    <p>Numbers only - only numbers will be used</p>
+                  defaultMessage={`Format options: <br></br><br></br>
+                    Most secured - all printable ASCII characters can be used <br></br><br></br>
+                    Keyboard friendly - only letters and numbers will be used <br></br><br></br>
+                    Numbers only - only numbers will be used
                   `}
-                  values={{ p: (chunks) => <p>{chunks}</p> }}
+                  values={{ br: () => <br /> }}
                 />}
               >
                 <QuestionMarkCircleOutlined />

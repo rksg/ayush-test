@@ -4,34 +4,49 @@ import { useIntl } from 'react-intl'
 
 import {
   DpskNetworkType,
-  DpskSaveData,
   DpskUrls,
-  ExpirationType,
-  PassphraseFormatEnum,
-  ServiceType,
   transformDpskNetwork,
   websocketServerUrl
 } from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, within } from '@acx-ui/test-utils'
+import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider }                from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  renderHook,
+  screen
+} from '@acx-ui/test-utils'
 
-import { getServiceRoutePath, ServiceOperation } from '../../serviceRouteUtils'
+import { getServiceListRoutePath } from '../../serviceRouteUtils'
 
+import{
+  createPath,
+  editPath,
+  mockedCreateFormData,
+  mockedEditFormData,
+  mockedTenantId,
+  mockedServiceId
+} from './__tests__/fixtures'
 import DpskForm from './DpskForm'
 
 
-describe('DpskForm', () => {
-  // eslint-disable-next-line max-len
-  const createPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })
+const mockedUseNavigate = jest.fn()
+const mockedTenantPath: Path = {
+  pathname: 't/' + mockedTenantId,
+  search: '',
+  hash: ''
+}
 
-  const mockedCreateFormData: DpskSaveData = {
-    name: 'Fake DPSK',
-    passphraseLength: 16,
-    passphraseFormat: PassphraseFormatEnum.NUMBERS_ONLY,
-    expirationType: ExpirationType.DAYS_AFTER_TIME,
-    expirationOffset: 5
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (to: To): Path => {
+    return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
   }
+}))
 
+
+describe('DpskForm', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
@@ -40,7 +55,7 @@ describe('DpskForm', () => {
       ),
       rest.get(
         DpskUrls.getDpsk.url,
-        (req, res, ctx) => res(ctx.json(mockedCreateFormData))
+        (req, res, ctx) => res(ctx.json(mockedEditFormData))
       ),
       rest.get(
         websocketServerUrl,
@@ -49,12 +64,24 @@ describe('DpskForm', () => {
     )
   })
 
+  it('should render the form', async ()=> {
+    const { asFragment } = render(
+      <Provider>
+        <DpskForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should create a DPSK service profile', async () => {
     render(
       <Provider>
         <DpskForm />
       </Provider>, {
-        route: { params: { tenantId: '__Tenant_ID__' }, path: createPath }
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
       }
     )
 
@@ -70,25 +97,92 @@ describe('DpskForm', () => {
     )
 
     // Set Passphrase Format
-    await userEvent.click(screen.getByRole('combobox', { name: /Passphrase format/i }))
+    await userEvent.click(screen.getByRole('combobox', { name: /Passphrase Format/i }))
     await userEvent.click(screen.getByText(mockedPassphraseFormatLabel.current))
 
     // Set Passphrase Length
     await userEvent.type(
-      screen.getByRole('spinbutton', { name: /Passphrase length/i }),
+      screen.getByRole('spinbutton', { name: /Passphrase Length/i }),
       mockedCreateFormData.passphraseLength.toString()
     )
 
-    // Set List Expiration (After date)
+    // Set List Expiration (After time)
     const expirationModeElem = screen.getByRole('radio', { name: /After/i })
     await userEvent.click(expirationModeElem)
-    await userEvent.type(
-      await within(expirationModeElem).findByRole('spinbutton'),
-      mockedCreateFormData.expirationOffset!.toString()
-    )
-    await userEvent.click(within(expirationModeElem).getByRole('combobox'))
+
+    const inputNumberElems = await screen.findAllByRole('spinbutton')
+    const expirationOffsetElem = inputNumberElems[1]
+    expect(expirationOffsetElem).toBeInTheDocument()
+
+    const comboboxElems = await screen.findAllByRole('combobox')
+    const expirationTypeElem = comboboxElems[1]
+    expect(expirationTypeElem).toBeInTheDocument()
+
+    await userEvent.type(expirationOffsetElem, mockedCreateFormData.expirationOffset!.toString())
+    await userEvent.click(expirationTypeElem)
     await userEvent.click(screen.getByText('Days'))
 
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+  })
+
+  it('should render Edit form', async () => {
+    render(
+      <Provider>
+        <DpskForm editMode={true} />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId, serviceId: '__Service_ID__' },
+          path: editPath
+        }
+      }
+    )
+
+    // Verify service name
+    const nameInput = await screen.findByDisplayValue(mockedEditFormData.name)
+    expect(nameInput).toBeInTheDocument()
+  })
+
+  it('should show toast when edit service profile failed', async () => {
+    mockServer.use(
+      rest.put(
+        DpskUrls.updateDpsk.url,
+        (req, res, ctx) => res(ctx.status(404), ctx.json({}))
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskForm editMode={true} />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId, serviceId: mockedServiceId },
+          path: editPath
+        }
+      }
+    )
+
+    await screen.findByDisplayValue(mockedEditFormData.name)
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+
+    const errorMsgElem = await screen.findByText('An error occurred')
+    expect(errorMsgElem).toBeInTheDocument()
+  })
+
+  it('should navigate to the Select service page when clicking Cancel button', async () => {
+    const { result: selectServicePath } = renderHook(() => {
+      return useTenantLink(getServiceListRoutePath(true))
+    })
+
+    render(
+      <Provider>
+        <DpskForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current)
   })
 })

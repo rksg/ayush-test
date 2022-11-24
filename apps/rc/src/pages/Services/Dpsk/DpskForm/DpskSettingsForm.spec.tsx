@@ -6,12 +6,6 @@ import { render, screen }                                     from '@acx-ui/test
 import DpskSettingsForm from './DpskSettingsForm'
 
 describe('DpskSettingsForm', () => {
-  it('should render the form', async ()=> {
-    const { asFragment } = render(<Form><DpskSettingsForm /></Form>)
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should render the form with the giving data', async ()=> {
     const mockedData: DpskSaveData = {
       name: 'DPSK 1',
@@ -32,5 +26,16 @@ describe('DpskSettingsForm', () => {
 
     const expirationModeRadio = await screen.findByRole('radio', { name: /After/ })
     expect(expirationModeRadio).toBeChecked()
+  })
+
+  it('should render the form without data', async ()=> {
+    render(
+      <Form>
+        <DpskSettingsForm />
+      </Form>
+    )
+
+    const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
+    expect(nameInput).toHaveValue('')
   })
 })
