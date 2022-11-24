@@ -24,8 +24,10 @@ export * from './network'
 export * from './user'
 export * from './services'
 export * from './msp'
+export * from './edge'
 export * from './policy'
 export * from './wifiCallingService'
+export * from './portalService'
 
 export interface CommonResult {
   requestId: string
@@ -70,7 +72,7 @@ export interface NetworkDetail {
 
 export interface Venue {
   id: string
-  venueId: string
+  venueId?: string
   name: string
   description: string
   status: string
@@ -98,6 +100,7 @@ export interface Venue {
   deepVenue?: NetworkVenue
   disabledActivation: boolean
   networkId? : string
+  vlanPoolId?: string
   activatedApsId?: string[]
 }
 

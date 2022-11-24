@@ -1,13 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import _                             from 'lodash'
 
 import {
   ApExtraParams,
   AP,
   ApCapabilities,
+  ApDetails,
   ApDeep,
   ApDetailHeader,
   ApGroup,
-  APRadio,
   ApRadioBands,
   CommonUrlsInfo,
   createHttpRequest,
@@ -16,13 +17,18 @@ import {
   RequestPayload,
   showActivityMessage,
   TableResult,
-  VenueCapabilities,
+  RadioProperties,
   WifiUrlsInfo,
   WifiApSetting,
+  ApLanPort,
+  ApRadio,
+  ApViewModel,
+  VenueCapabilities,
   VenueDefaultApGroup,
   AddApGroup,
   CommonResult
 } from '@acx-ui/rc/utils'
+import { formatter } from '@acx-ui/utils'
 
 export const baseApApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -182,6 +188,42 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
     }),
+    apViewModel: build.query<ApViewModel, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApsList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<ApViewModel, ApExtraParams>) {
+        return transformApViewModel(result?.data[0])
+      }
+    }),
+    apDetails: build.query<ApDetails, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getAp, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    apLanPorts: build.query<ApLanPort, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    apRadioCustomization: build.query<ApRadio, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
+        return {
+          ...req
+        }
+      }
+    }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
@@ -251,6 +293,11 @@ export const apApi = baseApApi.injectEndpoints({
 export const {
   useApListQuery,
   useLazyApListQuery,
+  useApDetailHeaderQuery,
+  useApViewModelQuery,
+  useApDetailsQuery,
+  useApLanPortsQuery,
+  useApRadioCustomizationQuery,
   useAddApMutation,
   useGetApQuery,
   useUpdateApMutation,
@@ -260,7 +307,6 @@ export const {
   useApGroupsListQuery,
   useLazyApGroupsListQuery,
   useWifiCapabilitiesQuery,
-  useApDetailHeaderQuery,
   useVenueDefaultApGroupQuery,
   useLazyVenueDefaultApGroupQuery,
   useDeleteApMutation,
@@ -276,7 +322,7 @@ export const {
 } = apApi
 
 
-const transformApList = function (result: TableResult<AP, ApExtraParams>) {
+const transformApList = (result: TableResult<AP, ApExtraParams>) => {
   let channelColumnStatus = {
     channel24: true,
     channel50: false,
@@ -290,15 +336,15 @@ const transformApList = function (result: TableResult<AP, ApExtraParams>) {
       const apRadioArray = item.apStatusData.APRadio
 
       const apRadioObject = {
-        apRadio24: apRadioArray.find((item: APRadio) =>
+        apRadio24: apRadioArray.find((item: RadioProperties) =>
           item.band === ApRadioBands.band24),
-        apRadio50: apRadioArray.find((item: APRadio) =>
+        apRadio50: apRadioArray.find((item: RadioProperties) =>
           item.band === ApRadioBands.band50 && item.radioId === 1),
-        apRadioL50: apRadioArray.find((item: APRadio) =>
+        apRadioL50: apRadioArray.find((item: RadioProperties) =>
           item.band === ApRadioBands.band50 && item.radioId === 1),
-        apRadioU50: apRadioArray.find((item: APRadio) =>
+        apRadioU50: apRadioArray.find((item: RadioProperties) =>
           item.band === ApRadioBands.band50 && item.radioId === 2),
-        apRadio60: apRadioArray.find((item: APRadio) =>
+        apRadio60: apRadioArray.find((item: RadioProperties) =>
           item.radioId === 2)
       }
 
@@ -323,7 +369,48 @@ const transformApList = function (result: TableResult<AP, ApExtraParams>) {
     }
   })
   result.extra = channelColumnStatus
-
   return result
+}
 
+const transformApViewModel = (result: ApViewModel) => {
+  const ap = JSON.parse(JSON.stringify(result))
+  ap.lastSeenTime = ap.lastSeenTime ? formatter('dateTimeFormatWithSeconds')(ap.lastSeenTime) : '--'
+  // get uptime field.
+  if (ap.apStatusData && ap.apStatusData.APSystem && ap.apStatusData.APSystem.uptime) {
+    ap.uptime = formatter('longDurationFormat')(ap.apStatusData.APSystem.uptime * 1000)
+  } else {
+    ap.uptime = '--'
+  }
+
+  // set Radio Properties fields.
+  if (ap.apStatusData && ap.apStatusData.APRadio) {
+    const apRadio24 = _.find(ap.apStatusData.APRadio,
+      r => r.band === ApRadioBands.band24)
+    const apRadioU50 = _.find(ap.apStatusData.APRadio,
+      r => r.band === ApRadioBands.band50 && r.radioId === 2)
+    const apRadio50 = !apRadioU50 &&_.find(ap.apStatusData.APRadio,
+      r => r.band === ApRadioBands.band50 && r.radioId === 1)
+    const apRadio60 = !apRadioU50 && _.find(ap.apStatusData.APRadio,
+      r => r.radioId === 2)
+    const apRadioL50 = apRadioU50 && _.find(ap.apStatusData.APRadio,
+      r => r.band === ApRadioBands.band50 && r.radioId === 1)
+
+    ap.channel24 = apRadio24 as RadioProperties
+    ap.channel50 = apRadio50 as RadioProperties
+    ap.channelL50 = apRadioL50 as RadioProperties
+    ap.channelU50 = apRadioU50 as RadioProperties
+    ap.channel60 = apRadio60 as RadioProperties
+  } else {
+    ap.channel24 = {
+      Rssi: '--',
+      channel: '--',
+      txPower: '--'
+    } as RadioProperties
+    ap.channel50 = {
+      Rssi: '--',
+      channel: '--',
+      txPower: '--'
+    } as RadioProperties
+  }
+  return ap
 }

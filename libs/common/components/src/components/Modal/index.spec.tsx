@@ -4,10 +4,6 @@ import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { Modal } from '.'
 
-jest.mock('@acx-ui/icons', ()=> ({
-  CloseSymbol: () => <div data-testid='close-symbol'/>
-}), { virtual: true })
-
 describe('Modal', () => {
   const handleCancel = jest.fn()
   const handleConfirm = jest.fn()

@@ -95,6 +95,18 @@ export const validationMessages = {
     defaultMessage: 'VLAN ID must be between 1 and 4094',
     description: 'Validation - VLAN range checks'
   }),
+  validateURL: defineMessage({
+    defaultMessage: 'Please enter a valid URL',
+    description: 'Validation - Please enter a valid URL'
+  }),
+  validateEqualOne: defineMessage({
+    defaultMessage: 'This value should be higher than or equal to 1',
+    description: 'Validation - This value should be higher than or equal to 1'
+  }),
+  validateLowerThan65535: defineMessage({
+    defaultMessage: 'This value should be lower than or equal to 65535',
+    description: 'Validation - This value should be lower than or equal to 65535'
+  }),
   gpsCoordinates: defineMessage({
     defaultMessage: 'Please enter valid GPS coordinates',
     description: 'Validation - GPS coordinates checks'
@@ -107,6 +119,10 @@ export const validationMessages = {
     defaultMessage: `The cellular AP cannot 
       be moved to the venue which doesn\'t enable DHCP service`,
     description: 'Validation - Cellular AP Dhcp checks'
+  }),
+  emailAddress: defineMessage({
+    defaultMessage: 'Please enter a valid email address',
+    description: 'Validation - email address checks'
   })
 }
 

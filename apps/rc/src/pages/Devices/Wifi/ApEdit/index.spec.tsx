@@ -70,7 +70,7 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.getAp.url,
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
         (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
@@ -160,7 +160,7 @@ describe('ApEdit', () => {
       mockServer.use(
         rest.post(WifiUrlsInfo.getDhcpAp.url,
           (_, res, ctx) => res(ctx.json(dhcpAp[1]))),
-        rest.get(WifiUrlsInfo.getAp.url,
+        rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
           (_, res, ctx) => res(ctx.json({
             ...apDetailsList[0],
             meshRole: 'RAP'
