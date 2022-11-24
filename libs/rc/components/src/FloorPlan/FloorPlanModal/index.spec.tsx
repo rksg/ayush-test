@@ -8,6 +8,12 @@ import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import AddEditFloorplanModal, { getFileExtension } from '.'
 
+
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  PlusCircleOutlined: () => <div data-testid='PlusCircleOutlined'/>
+}))
+
 describe('Floor Plan Modal', () => {
 
   it('should render correctly', async () => {

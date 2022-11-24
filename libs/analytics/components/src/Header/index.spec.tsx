@@ -13,6 +13,11 @@ jest.mock('../NetworkFilter', () => ({
   NetworkFilter: () => <div>network filter</div>
 }))
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  ClockOutlined: () => <div data-testid='clock-outlined'/>
+}))
+
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({

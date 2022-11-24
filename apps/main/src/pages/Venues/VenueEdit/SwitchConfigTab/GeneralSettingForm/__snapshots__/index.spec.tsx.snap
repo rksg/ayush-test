@@ -280,9 +280,9 @@ exports[`GeneralSettingForm should render correctly 1`] = `
                                       role="configBtn"
                                       type="button"
                                     >
-                                      <svg
-                                        data-testid="ConfigurationOutlined"
-                                      />
+                                      <svg>
+                                        ConfigurationOutlined.svg
+                                      </svg>
                                     </button>
                                   </div>
                                 </div>

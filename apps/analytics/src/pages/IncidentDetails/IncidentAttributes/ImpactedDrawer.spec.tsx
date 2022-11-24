@@ -90,7 +90,7 @@ describe('Drawer', () => {
       screen.getByText(`${sample[0].username} (2)`)
       screen.getByText('1 Impacted Client')
       screen.getByText('Hostname')
-      const icons = screen.getAllByTestId('InformationOutlined')
+      const icons = screen.getAllByText('InformationOutlined.svg')
       expect(icons.length).toBe(2)
     })
     it('should render error', async () => {

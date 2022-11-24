@@ -70,9 +70,9 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
                 class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
-                <svg
-                  data-testid="ClockOutlined"
-                />
+                <svg>
+                  ClockOutlined.svg
+                </svg>
                 <span>
                   Last 24 Hours
                 </span>
@@ -98,9 +98,9 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>
@@ -450,9 +450,9 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
                 class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
-                <svg
-                  data-testid="ClockOutlined"
-                />
+                <svg>
+                  ClockOutlined.svg
+                </svg>
                 <span>
                   Last 24 Hours
                 </span>
@@ -478,9 +478,9 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>
@@ -830,9 +830,9 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
                 class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
-                <svg
-                  data-testid="ClockOutlined"
-                />
+                <svg>
+                  ClockOutlined.svg
+                </svg>
                 <span>
                   Last 24 Hours
                 </span>
@@ -858,9 +858,9 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>
@@ -1210,9 +1210,9 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                 class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
-                <svg
-                  data-testid="ClockOutlined"
-                />
+                <svg>
+                  ClockOutlined.svg
+                </svg>
                 <span>
                   Last 24 Hours
                 </span>
@@ -1238,9 +1238,9 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>
@@ -1590,9 +1590,9 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
                 class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
-                <svg
-                  data-testid="ClockOutlined"
-                />
+                <svg>
+                  ClockOutlined.svg
+                </svg>
                 <span>
                   Last 24 Hours
                 </span>
@@ -1618,9 +1618,9 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>
@@ -1970,9 +1970,9 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                 class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
-                <svg
-                  data-testid="ClockOutlined"
-                />
+                <svg>
+                  ClockOutlined.svg
+                </svg>
                 <span>
                   Last 24 Hours
                 </span>
@@ -1998,9 +1998,9 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>
@@ -2350,9 +2350,9 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                 class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
-                <svg
-                  data-testid="ClockOutlined"
-                />
+                <svg>
+                  ClockOutlined.svg
+                </svg>
                 <span>
                   Last 24 Hours
                 </span>
@@ -2378,9 +2378,9 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>

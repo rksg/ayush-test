@@ -77,9 +77,9 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg
-                    data-testid="ClockOutlined"
-                  />
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
                   <span>
                     Last 24 Hours
                   </span>
@@ -105,9 +105,9 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>
@@ -360,9 +360,9 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg
-                    data-testid="ClockOutlined"
-                  />
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
                   <span>
                     Last 24 Hours
                   </span>
@@ -388,9 +388,9 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>
@@ -643,9 +643,9 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg
-                    data-testid="ClockOutlined"
-                  />
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
                   <span>
                     Last 24 Hours
                   </span>
@@ -671,9 +671,9 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>
@@ -926,9 +926,9 @@ exports[`ApDetails should render correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg
-                    data-testid="ClockOutlined"
-                  />
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
                   <span>
                     Last 24 Hours
                   </span>
@@ -954,9 +954,9 @@ exports[`ApDetails should render correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg
-                      data-testid="ArrowExpand"
-                    />
+                    <svg>
+                      ArrowExpand.svg
+                    </svg>
                   </div>
                 </div>
               </button>

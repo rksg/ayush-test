@@ -57,9 +57,8 @@ exports[`Table component renders compact table 1`] = `
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <svg
-                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
-                                  data-testid="InformationOutlined"
+                                <div
+                                  data-testid="information-outlined"
                                 />
                               </span>
                             </th>
@@ -238,9 +237,8 @@ exports[`Table component renders form table 1`] = `
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <svg
-                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
-                                  data-testid="InformationOutlined"
+                                <div
+                                  data-testid="information-outlined"
                                 />
                               </span>
                             </th>
@@ -401,8 +399,8 @@ exports[`Table component should render correctly 1`] = `
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg
-                          data-testid="SettingsOutlined"
+                        <div
+                          data-testid="settings-outlined"
                         />
                       </div>
                     </div>
@@ -465,9 +463,8 @@ exports[`Table component should render correctly 1`] = `
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <svg
-                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
-                                  data-testid="InformationOutlined"
+                                <div
+                                  data-testid="information-outlined"
                                 />
                               </span>
                             </th>
@@ -742,8 +739,8 @@ exports[`Table component should render multi select table and render action butt
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg
-                          data-testid="SettingsOutlined"
+                        <div
+                          data-testid="settings-outlined"
                         />
                       </div>
                     </div>
@@ -837,9 +834,8 @@ exports[`Table component should render multi select table and render action butt
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <svg
-                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
-                                  data-testid="InformationOutlined"
+                                <div
+                                  data-testid="information-outlined"
                                 />
                               </span>
                             </th>
@@ -1183,8 +1179,8 @@ exports[`Table component should render multi select table and render action butt
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg
-                          data-testid="SettingsOutlined"
+                        <div
+                          data-testid="settings-outlined"
                         />
                       </div>
                     </div>
@@ -1240,8 +1236,8 @@ exports[`Table component should render multi select table and render action butt
                                 title="Clear selection"
                                 type="button"
                               >
-                                <svg
-                                  data-testid="CancelCircle"
+                                <div
+                                  data-testid="cancel-circle"
                                 />
                               </button>
                             </div>
@@ -1378,9 +1374,8 @@ exports[`Table component should render multi select table and render action butt
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <svg
-                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
-                                  data-testid="InformationOutlined"
+                                <div
+                                  data-testid="information-outlined"
                                 />
                               </span>
                             </th>
@@ -1724,8 +1719,8 @@ exports[`Table component should render multi select table and render action butt
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg
-                          data-testid="SettingsOutlined"
+                        <div
+                          data-testid="settings-outlined"
                         />
                       </div>
                     </div>
@@ -1819,9 +1814,8 @@ exports[`Table component should render multi select table and render action butt
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <svg
-                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
-                                  data-testid="InformationOutlined"
+                                <div
+                                  data-testid="information-outlined"
                                 />
                               </span>
                             </th>

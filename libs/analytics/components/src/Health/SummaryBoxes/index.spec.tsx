@@ -13,6 +13,12 @@ import { api }                           from './services'
 
 import { SummaryBoxes, Box } from '.'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  CaretDoubleUpOutlined: () => <div data-testid='up-arrow'/>,
+  CaretDoubleDownOutlined: () => <div data-testid='down-arrow'/>
+}), { virtual: true })
+
 describe('box', () => {
   const boxProps = {
     type: 'successCount',
@@ -25,16 +31,16 @@ describe('box', () => {
     const onClick = jest.fn()
     const { asFragment } = render(<Box {...boxProps} isOpen onClick={onClick}/>)
     expect(asFragment()).toMatchSnapshot()
-    await userEvent.click(screen.getByTestId('CaretDoubleUpOutlined'))
+    await userEvent.click(screen.getByTestId('up-arrow'))
     expect(onClick).toBeCalledTimes(1)
   })
   it('should render correctly when disabled', async () => {
     const onClick = jest.fn()
     const { asFragment } = render(<Box {...boxProps} disabled onClick={onClick}/>)
     expect(asFragment()).toMatchSnapshot()
-    await userEvent.click(screen.getByTestId('CaretDoubleDownOutlined'))
+    await userEvent.click(screen.getByTestId('down-arrow'))
     expect(onClick).toBeCalledTimes(0)
-    await userEvent.hover(screen.getByTestId('CaretDoubleDownOutlined'))
+    await userEvent.hover(screen.getByTestId('down-arrow'))
     expect(await screen.findByRole('tooltip', { hidden: true })).not.toBe(null)
   })
 })
@@ -74,15 +80,15 @@ describe('Incidents Page', () => {
       render(<Router><Provider><SummaryBoxes filters={filters}/></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-      const downArrows = screen.getAllByTestId('CaretDoubleDownOutlined')
+      const downArrows = screen.getAllByTestId('down-arrow')
       expect(downArrows).toHaveLength(4)
 
       await userEvent.click(downArrows[0])
-      const upArrows = screen.getAllByTestId('CaretDoubleUpOutlined')
+      const upArrows = screen.getAllByTestId('up-arrow')
       expect(upArrows).toHaveLength(3)
 
       await userEvent.click(upArrows[1])
-      expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
+      expect(screen.getAllByTestId('down-arrow')).toHaveLength(4)
     })
 
     it('should handle toggle ttc', async () => {
@@ -90,14 +96,14 @@ describe('Incidents Page', () => {
       render(<Router><Provider><SummaryBoxes filters={filters}/></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-      expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
+      expect(screen.getAllByTestId('down-arrow')).toHaveLength(4)
 
       const button = screen.getByRole('button', { name: /time to connect/i })
       await userEvent.click(button)
-      expect(screen.getAllByTestId('CaretDoubleUpOutlined')).toHaveLength(1)
+      expect(screen.getAllByTestId('up-arrow')).toHaveLength(1)
 
       await userEvent.click(button)
-      expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
+      expect(screen.getAllByTestId('down-arrow')).toHaveLength(4)
     })
   })
 })

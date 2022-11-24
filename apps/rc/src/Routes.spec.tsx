@@ -56,16 +56,8 @@ jest.mock('./pages/Services/DHCPForm/DHCPForm', () => () => {
   return <div data-testid='DHCPForm' />
 })
 
-jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
-  return <div data-testid='PortalForm' />
-})
-
 jest.mock('./pages/Services/DHCPDetail', () => () => {
   return <div data-testid='DHCPDetail' />
-})
-
-jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
-  return <div data-testid='PortalServiceDetail' />
 })
 
 jest.mock('./pages/Users/Wifi/ApList', () => () => {
@@ -281,40 +273,6 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('DHCPDetail')).toBeVisible()
-  })
-
-  test('should navigate to create Portal page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('PortalForm')).toBeVisible()
-  })
-
-  test('should navigate to edit Portal page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })
-    path = path.replace(':serviceId', 'serviceId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/t/tenantId/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('PortalForm')).toBeVisible()
-  })
-
-  test('should navigate to Portal details page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })
-    path = path.replace(':serviceId', 'serviceId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/t/tenantId/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('PortalServiceDetail')).toBeVisible()
   })
 
 })

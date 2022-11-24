@@ -260,9 +260,9 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                             title=""
                           >
                             Network Name
-                            <svg
-                              data-testid="QuestionMarkCircleOutlined"
-                            />
+                            <svg>
+                              QuestionMarkCircleOutlined.svg
+                            </svg>
                           </label>
                         </div>
                         <div

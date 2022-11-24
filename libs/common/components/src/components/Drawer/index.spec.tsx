@@ -5,6 +5,14 @@ import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { Drawer } from '.'
 
+
+
+jest.mock('@acx-ui/icons', ()=> ({
+  CloseSymbol: () => <div data-testid='close-symbol'/>,
+  ArrowBack: () => <div data-testid='arrow-back'/>,
+  BulbOutlined: () => <div data-testid='icon'/>
+}), { virtual: true })
+
 const onClose = jest.fn()
 const resetFields = jest.fn()
 const content = <p>some content</p>
@@ -77,8 +85,8 @@ describe('Drawer', () => {
 
     await screen.findByText('Test Custom Drawer')
     await screen.findByText('Test Custom DrawerSubtitle')
-    await screen.findAllByTestId('BulbOutlined')
-    await screen.findAllByTestId('ArrowBack')
+    await screen.findAllByTestId('icon')
+    await screen.findAllByTestId('arrow-back')
     await screen.findByText('Back')
 
     fireEvent.click(closeButton)

@@ -8,8 +8,7 @@ exports[`NoActiveContent should render correctly 1`] = `
     <div
       class="ant-space-item"
     >
-      <svg
-        class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+      <div
         data-testid="CheckMarkCircleSolid"
       />
     </div>
@@ -34,8 +33,7 @@ exports[`NoActiveContent should render correctly with the prop 1`] = `
     <div
       class="ant-space-item"
     >
-      <svg
-        class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+      <div
         data-testid="CheckMarkCircleSolid"
       />
     </div>
@@ -63,8 +61,7 @@ exports[`NoActiveData should render correctly 1`] = `
       <div
         class="ant-space-item"
       >
-        <svg
-          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+        <div
           data-testid="CheckMarkCircleSolid"
         />
       </div>
@@ -93,8 +90,7 @@ exports[`NoActiveData should render correctly with the prop 1`] = `
       <div
         class="ant-space-item"
       >
-        <svg
-          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+        <div
           data-testid="CheckMarkCircleSolid"
         />
       </div>

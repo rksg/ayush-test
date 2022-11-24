@@ -91,9 +91,9 @@ exports[`Networks Table should click disabled row 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg
-                            data-testid="SettingsOutlined"
-                          />
+                          <svg>
+                            SettingsOutlined.svg
+                          </svg>
                         </div>
                       </div>
                     </div>
@@ -1898,9 +1898,9 @@ exports[`Networks Table should delete selected row 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg
-                            data-testid="SettingsOutlined"
-                          />
+                          <svg>
+                            SettingsOutlined.svg
+                          </svg>
                         </div>
                       </div>
                     </div>
@@ -3705,9 +3705,9 @@ exports[`Networks Table should render table 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg
-                            data-testid="SettingsOutlined"
-                          />
+                          <svg>
+                            SettingsOutlined.svg
+                          </svg>
                         </div>
                       </div>
                     </div>

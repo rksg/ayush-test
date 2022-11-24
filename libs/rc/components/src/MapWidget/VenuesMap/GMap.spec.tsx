@@ -6,6 +6,19 @@ import { render } from '@acx-ui/test-utils'
 import GMap                   from './GMap'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
+jest.mock('@acx-ui/icons', () => ({
+  ...jest.requireActual('@acx-ui/icons'),
+  Close: () => <div data-testid='Close' />,
+  VenueInfoMarkerGreen: () => <div data-testid='VenueInfoMarkerGreen' />,
+  VenueInfoMarkerGrey: () => <div data-testid='VenueInfoMarkerGrey' />,
+  VenueInfoMarkerOrange: () => <div data-testid='VenueInfoMarkerOrange' />,
+  VenueInfoMarkerRed: () => <div data-testid='VenueInfoMarkerRed' />,
+  VenueMarkerGreen: () => <div data-testid='VenueMarkerGreen' />,
+  VenueMarkerGrey: () => <div data-testid='VenueMarkerGrey' />,
+  VenueMarkerOrange: () => <div data-testid='VenueMarkerOrange' />,
+  VenueMarkerRed: () => <div data-testid='VenueMarkerRed' />
+}))
+
 export  const common = {
   venueId: '7ae27179b7b84de89eb7e56d9b15943d',
   name: 'Aparna-Venue',

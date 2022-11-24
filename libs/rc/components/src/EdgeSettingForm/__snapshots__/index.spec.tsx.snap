@@ -230,7 +230,7 @@ exports[`EdgeSettingForm should create EdgeSettingForm successfully 1`] = `
           title=""
         >
           Serial Number
-          <svg
+          <div
             data-testid="QuestionMarkCircleOutlined"
           />
         </label>

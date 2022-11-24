@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Card component should render card with grey background 1`] = `
+exports[`Card should render card with grey background 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
@@ -49,7 +49,7 @@ exports[`Card component should render card with grey background 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Card component should render card with no border 1`] = `
+exports[`Card should render card with no border 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-13w5wfx-4 ebSYxh"

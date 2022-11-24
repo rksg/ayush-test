@@ -9,6 +9,11 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import FloorPlanForm from '.'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  PlusCircleOutlined: () => <div data-testid='PlusCircleOutlined'/>
+}))
+
 describe('Floor Plan Form', () => {
 
   it('should render correctly', async () => {

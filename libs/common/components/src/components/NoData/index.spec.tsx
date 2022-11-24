@@ -2,6 +2,10 @@ import { render } from '@acx-ui/test-utils'
 
 import { NoActiveContent, NoActiveData, NoData, NotAvailable } from '.'
 
+jest.mock('@acx-ui/icons', ()=>({
+  CheckMarkCircleSolid: () => <div data-testid='CheckMarkCircleSolid'/>
+}), { virtual: true })
+
 describe('NoData', () => {
   it('should render correctly', () => {
     const { asFragment } = render(<NoData/>)

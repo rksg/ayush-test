@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { healthApi }                               from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig }              from '@acx-ui/analytics/utils'
-import { Card, GridRow, GridCol, Loader, Tooltip } from '@acx-ui/components'
+import { healthApi }                      from '@acx-ui/analytics/services'
+import { AnalyticsFilter, kpiConfig }     from '@acx-ui/analytics/utils'
+import { Card, GridRow, GridCol, Loader } from '@acx-ui/components'
 
 import { KpiWidget } from '../KpiWidget'
 
@@ -25,20 +25,16 @@ function VenueHealthWidget ({
       <Card>
         <GridRow style={{ flexGrow: '1' }}>
           <GridCol col={{ span: 3 }}>
-            <UI.Wrapper>
+            <UI.Wrapper size={4}>
               <UI.Title>
                 {$t({ defaultMessage: 'Client Experience' })}
-                <Tooltip
-                  title={$t({ defaultMessage:
-                    'Historical data is slightly delayed, and not real-time' })}>
-                  <UI.HistoricalIcon />
-                </Tooltip>
               </UI.Title>
+              <UI.HistoricalIcon />
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>
             <UI.Wrapper>
-              <KpiWidget filters={filters} name='connectionSuccess'/>
+              <KpiWidget filters={filters} name='connectionSuccess' />
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 7 }}>

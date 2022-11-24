@@ -17,6 +17,12 @@ import { HealthPageContext } from '../HealthPageContext'
 
 import KpiSection from '.'
 
+jest.mock('@acx-ui/icons', ()=> {
+  const icons = jest.requireActual('@acx-ui/icons')
+  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(keys)
+})
+
 describe('Kpi Section', () => {
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())

@@ -7,9 +7,8 @@ exports[`Alert should render correctly 1`] = `
     data-show="true"
     role="alert"
   >
-    <svg
-      class="ant-alert-icon"
-      data-testid="InformationSolid"
+    <div
+      data-testid="information-solid"
     />
     <div
       class="ant-alert-content"

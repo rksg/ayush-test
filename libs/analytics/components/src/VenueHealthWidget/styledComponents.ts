@@ -14,5 +14,5 @@ export const Wrapper = styled(Space)`
 `
 
 export const HistoricalIcon = styled(HistoricalCard.Icon)`
-  margin: 0px 0px -4px 4px;
+  margin-bottom: -4px;
 `

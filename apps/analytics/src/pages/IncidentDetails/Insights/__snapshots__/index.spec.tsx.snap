@@ -54,8 +54,9 @@ exports[`Insights Component should render correctly 1`] = `
             >
               <svg
                 class="styledComponents__BulbOutlinedIcon-sc-117mefi-0 glgoAW"
-                data-testid="BulbOutlined"
-              />
+              >
+                BulbOutlined.svg
+              </svg>
             </div>
             <div
               class="ant-space-item"

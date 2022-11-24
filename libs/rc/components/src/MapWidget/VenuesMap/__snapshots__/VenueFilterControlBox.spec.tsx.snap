@@ -32,14 +32,8 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
           class="anticon"
           role="img"
         >
-          <svg
-            aria-hidden="true"
-            class="styledComponents__VenueMarkerRedIcon-sc-1g4gbr4-6 iUeWNp"
+          <div
             data-testid="VenueMarkerRed"
-            fill="currentColor"
-            focusable="false"
-            height="1em"
-            width="1em"
           />
         </span>
       </span>
@@ -66,14 +60,8 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
           class="anticon"
           role="img"
         >
-          <svg
-            aria-hidden="true"
-            class="styledComponents__VenueMarkerOrangeIcon-sc-1g4gbr4-5 hiHDnh"
+          <div
             data-testid="VenueMarkerOrange"
-            fill="currentColor"
-            focusable="false"
-            height="1em"
-            width="1em"
           />
         </span>
       </span>
@@ -100,14 +88,8 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
           class="anticon"
           role="img"
         >
-          <svg
-            aria-hidden="true"
-            class="styledComponents__VenueMarkerGreyIcon-sc-1g4gbr4-4 iGNUUR"
+          <div
             data-testid="VenueMarkerGrey"
-            fill="currentColor"
-            focusable="false"
-            height="1em"
-            width="1em"
           />
         </span>
       </span>
@@ -134,14 +116,8 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
           class="anticon"
           role="img"
         >
-          <svg
-            aria-hidden="true"
-            class="styledComponents__VenueMarkerGreenIcon-sc-1g4gbr4-3 gaEfWM"
+          <div
             data-testid="VenueMarkerGreen"
-            fill="currentColor"
-            focusable="false"
-            height="1em"
-            width="1em"
           />
         </span>
       </span>

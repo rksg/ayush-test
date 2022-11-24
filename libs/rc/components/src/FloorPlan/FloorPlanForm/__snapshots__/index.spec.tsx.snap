@@ -241,7 +241,7 @@ exports[`Floor Plan Form should render correctly 1`] = `
                           type="file"
                         />
                         <div>
-                          <svg
+                          <div
                             data-testid="PlusCircleOutlined"
                           />
                           <div

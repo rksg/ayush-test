@@ -43,9 +43,8 @@ exports[`Incidents Page should match snapshot 1`] = `
                 </span>
               </div>
             </div>
-            <svg
-              class="styledComponents__DownArrow-sc-1tt9ql2-3 dYYyrJ"
-              data-testid="CaretDoubleDownOutlined"
+            <div
+              data-testid="down-arrow"
             />
           </button>
         </div>
@@ -84,9 +83,8 @@ exports[`Incidents Page should match snapshot 1`] = `
                 </span>
               </div>
             </div>
-            <svg
-              class="styledComponents__DownArrow-sc-1tt9ql2-3 dYYyrJ"
-              data-testid="CaretDoubleDownOutlined"
+            <div
+              data-testid="down-arrow"
             />
           </button>
         </div>
@@ -120,9 +118,8 @@ exports[`Incidents Page should match snapshot 1`] = `
                 </span>
               </div>
             </div>
-            <svg
-              class="styledComponents__DownArrow-sc-1tt9ql2-3 dYYyrJ"
-              data-testid="CaretDoubleDownOutlined"
+            <div
+              data-testid="down-arrow"
             />
           </button>
         </div>
@@ -156,9 +153,8 @@ exports[`Incidents Page should match snapshot 1`] = `
                 </span>
               </div>
             </div>
-            <svg
-              class="styledComponents__DownArrow-sc-1tt9ql2-3 kGNCcp"
-              data-testid="CaretDoubleDownOutlined"
+            <div
+              data-testid="down-arrow"
             />
           </button>
         </div>
@@ -211,9 +207,8 @@ exports[`Incidents Page should show - when no data 1`] = `
                 </span>
               </div>
             </div>
-            <svg
-              class="styledComponents__DownArrow-sc-1tt9ql2-3 dYYyrJ"
-              data-testid="CaretDoubleDownOutlined"
+            <div
+              data-testid="down-arrow"
             />
           </button>
         </div>
@@ -252,9 +247,8 @@ exports[`Incidents Page should show - when no data 1`] = `
                 </span>
               </div>
             </div>
-            <svg
-              class="styledComponents__DownArrow-sc-1tt9ql2-3 dYYyrJ"
-              data-testid="CaretDoubleDownOutlined"
+            <div
+              data-testid="down-arrow"
             />
           </button>
         </div>
@@ -288,9 +282,8 @@ exports[`Incidents Page should show - when no data 1`] = `
                 </span>
               </div>
             </div>
-            <svg
-              class="styledComponents__DownArrow-sc-1tt9ql2-3 dYYyrJ"
-              data-testid="CaretDoubleDownOutlined"
+            <div
+              data-testid="down-arrow"
             />
           </button>
         </div>
@@ -324,9 +317,8 @@ exports[`Incidents Page should show - when no data 1`] = `
                 </span>
               </div>
             </div>
-            <svg
-              class="styledComponents__DownArrow-sc-1tt9ql2-3 kGNCcp"
-              data-testid="CaretDoubleDownOutlined"
+            <div
+              data-testid="down-arrow"
             />
           </button>
         </div>
@@ -369,9 +361,8 @@ exports[`box should render correctly 1`] = `
         </span>
       </div>
     </div>
-    <svg
-      class="styledComponents__UpArrow-sc-1tt9ql2-2 iuqtDT"
-      data-testid="CaretDoubleUpOutlined"
+    <div
+      data-testid="up-arrow"
     />
   </button>
 </DocumentFragment>
@@ -410,9 +401,8 @@ exports[`box should render correctly when disabled 1`] = `
         </span>
       </div>
     </div>
-    <svg
-      class="styledComponents__DownArrow-sc-1tt9ql2-3 dYYyrJ"
-      data-testid="CaretDoubleDownOutlined"
+    <div
+      data-testid="down-arrow"
     />
   </button>
 </DocumentFragment>

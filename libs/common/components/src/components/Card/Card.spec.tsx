@@ -2,7 +2,13 @@ import { render, screen, act } from '@testing-library/react'
 
 import { Card } from '.'
 
-describe('Card component', () => {
+jest.mock('@acx-ui/icons', ()=> {
+  const icons = jest.requireActual('@acx-ui/icons')
+  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(keys)
+})
+
+describe('Card', () => {
   it('should render card with title', () => {
     render(<Card title='title'/>)
     expect(screen.getByText('title')).toBeVisible()

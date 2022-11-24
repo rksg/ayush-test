@@ -59,9 +59,9 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg
-                            data-testid="SettingsOutlined"
-                          />
+                          <svg>
+                            SettingsOutlined.svg
+                          </svg>
                         </div>
                       </div>
                     </div>

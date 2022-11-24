@@ -2,6 +2,10 @@ import { screen, render, fireEvent } from '@acx-ui/test-utils'
 
 import { SearchBar } from '.'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  SearchOutlined: () => <div data-testid='search-icon'/>
+}), { virtual: true })
+
 describe('SearchBar', () => {
   it('should match snapshot', () => {
     const { asFragment } = render(<SearchBar onChange={jest.fn()}/>)

@@ -12,6 +12,35 @@ import { LayoutUI } from './styledComponents'
 
 import { Layout } from '.'
 
+// TODO: mock icons for now, should use other way to mock svg
+jest.mock('@acx-ui/icons', ()=>({
+  Logo: () => <div data-testid='logo'/>,
+  ArrowChevronLeft: () => <div data-testid='arrow-left'/>,
+  ArrowChevronRight: () => <div data-testid='arrow-right'/>,
+  AIOutlined: () => <div data-testid='ai-outlined'/>,
+  AISolid: () => <div data-testid='ai-solid'/>,
+  AccountCircleOutlined: () => <div data-testid='account-circle-outlined'/>,
+  AccountCircleSolid: () => <div data-testid='account-circle-solid'/>,
+  AdminOutlined: () => <div data-testid='admin-outlined'/>,
+  AdminSolid: () => <div data-testid='admin-solid'/>,
+  CalendarDateOutlined: () => <div data-testid='calendar-date-outlined'/>,
+  CalendarDateSolid: () => <div data-testid='calendar-date-solid'/>,
+  DevicesOutlined: () => <div data-testid='devices-outlined'/>,
+  DevicesSolid: () => <div data-testid='devices-solid'/>,
+  LocationOutlined: () => <div data-testid='location-outlined'/>,
+  LocationSolid: () => <div data-testid='location-solid'/>,
+  NetworksOutlined: () => <div data-testid='networks-outlined'/>,
+  NetworksSolid: () => <div data-testid='networks-solid'/>,
+  PoliciesOutlined: () => <div data-testid='policies-outlined'/>,
+  PoliciesSolid: () => <div data-testid='policies-solid'/>,
+  ReportsOutlined: () => <div data-testid='reports-outlined'/>,
+  ReportsSolid: () => <div data-testid='reports-solid'/>,
+  ServicesOutlined: () => <div data-testid='services-outlined'/>,
+  ServicesSolid: () => <div data-testid='services-solid'/>,
+  SpeedIndicatorOutlined: () => <div data-testid='speed-indicator-outlined'/>,
+  SpeedIndicatorSolid: () => <div data-testid='speed-indicator-solid'/>
+}), { virtual: true })
+
 describe('Layout', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(<Layout
@@ -20,7 +49,7 @@ describe('Layout', () => {
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, { route: true })
-    await screen.findByTestId('AIOutlined')
+    await screen.findByTestId('ai-outlined')
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render with custom tenant type correctly', async () => {
@@ -39,7 +68,7 @@ describe('Layout', () => {
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, { route: true })
-    await screen.findByTestId('SpeedIndicatorOutlined')
+    await screen.findByTestId('speed-indicator-outlined')
     await screen.findByRole('menuitem', {
       name: (name, element) => name === 'Dashboard' &&
         (element as HTMLElement).hasAttribute('data-menu-id')
@@ -53,9 +82,9 @@ describe('Layout', () => {
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, { route: true })
-    await screen.findByTestId('AIOutlined')
+    await screen.findByTestId('ai-outlined')
     fireEvent.click(screen.getByText('Collapse'))
-    await screen.findByTestId('ArrowChevronRight')
+    await screen.findByTestId('arrow-right')
   })
   it('should render corresponding icons', async () => {
     render(<Layout
@@ -69,9 +98,9 @@ describe('Layout', () => {
         params: { tenantId: 't-id', page: 'dashboard' }
       }
     })
-    await screen.findByTestId('AIOutlined')
-    fireEvent.click(screen.getByTestId('AccountCircleOutlined'))
-    await screen.findByTestId('AccountCircleSolid')
+    await screen.findByTestId('ai-outlined')
+    fireEvent.click(screen.getByTestId('account-circle-outlined'))
+    await screen.findByTestId('account-circle-solid')
   })
   it('should show tooltip when disabled', async () => {
     const { asFragment } = render(<Layout
@@ -85,8 +114,8 @@ describe('Layout', () => {
         params: { tenantId: 't-id', page: 'dashboard' }
       }
     })
-    await screen.findByTestId('AIOutlined')
-    fireEvent.mouseOver(screen.getByTestId('AccountCircleOutlined'))
+    await screen.findByTestId('ai-outlined')
+    fireEvent.mouseOver(screen.getByTestId('account-circle-outlined'))
     await screen.findByRole('tooltip', { hidden: true })
     expect(asFragment()).toMatchSnapshot()
   })

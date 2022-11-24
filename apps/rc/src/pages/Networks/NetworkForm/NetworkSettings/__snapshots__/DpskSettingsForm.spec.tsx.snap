@@ -224,9 +224,9 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                         title=""
                       >
                         Passphrase format
-                        <svg
-                          data-testid="QuestionMarkCircleOutlined"
-                        />
+                        <svg>
+                          QuestionMarkCircleOutlined.svg
+                        </svg>
                       </label>
                     </div>
                     <div
@@ -323,9 +323,9 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                         title=""
                       >
                         Passphrase length
-                        <svg
-                          data-testid="QuestionMarkCircleOutlined"
-                        />
+                        <svg>
+                          QuestionMarkCircleOutlined.svg
+                        </svg>
                       </label>
                     </div>
                     <div

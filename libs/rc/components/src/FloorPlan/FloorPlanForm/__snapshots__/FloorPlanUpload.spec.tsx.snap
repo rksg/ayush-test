@@ -25,7 +25,7 @@ exports[`Floor Plan Upload should pass file validation 1`] = `
               type="file"
             />
             <div>
-              <svg
+              <div
                 data-testid="PlusCircleOutlined"
               />
               <div
@@ -67,7 +67,7 @@ exports[`Floor Plan Upload should render correctly 1`] = `
               type="file"
             />
             <div>
-              <svg
+              <div
                 data-testid="PlusCircleOutlined"
               />
               <div
@@ -109,7 +109,7 @@ exports[`Floor Plan Upload should show error correctly 1`] = `
               type="file"
             />
             <div>
-              <svg
+              <div
                 data-testid="PlusCircleOutlined"
               />
               <div

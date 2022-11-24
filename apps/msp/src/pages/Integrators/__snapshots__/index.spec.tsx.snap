@@ -76,9 +76,9 @@ exports[`Integrators should render table 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg
-                    data-testid="DownloadOutlined"
-                  />
+                  <svg>
+                    DownloadOutlined.svg
+                  </svg>
                 </button>
               </span>
             </div>
@@ -110,9 +110,9 @@ exports[`Integrators should render table 1`] = `
                 <span
                   class="ant-input-prefix"
                 >
-                  <svg
-                    data-testid="SearchOutlined"
-                  />
+                  <svg>
+                    SearchOutlined.svg
+                  </svg>
                 </span>
                 <input
                   class="ant-input"
@@ -191,9 +191,9 @@ exports[`Integrators should render table 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg
-                            data-testid="SettingsOutlined"
-                          />
+                          <svg>
+                            SettingsOutlined.svg
+                          </svg>
                         </div>
                       </div>
                     </div>

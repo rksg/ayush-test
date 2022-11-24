@@ -6,6 +6,11 @@ import { Modal }                                                         from 'a
 
 import { showActionModal, convertToJSON, isErrorWithMessage } from '.'
 
+jest.mock('@acx-ui/icons', ()=>({
+  ExpandSquareUp: () => <div data-testid='expand-square-up'/>,
+  ExpandSquareDown: () => <div data-testid='expand-square-down'/>
+}), { virtual: true })
+
 Object.assign(navigator, {
   clipboard: {
     writeText: () => { }
@@ -107,9 +112,9 @@ describe('ActionModal', () => {
         const collapseBtn = await screen.findByRole('button', { name: 'Technical details' })
 
         expect(collapseBtn).toHaveAttribute('aria-expanded', 'false')
-        expect(await screen.findByTestId('ExpandSquareDown')).toBeVisible()
+        expect(await screen.findByTestId('expand-square-down')).toBeVisible()
         fireEvent.click(collapseBtn)
-        expect(await screen.findByTestId('ExpandSquareUp')).toBeVisible()
+        expect(await screen.findByTestId('expand-square-up')).toBeVisible()
 
         const pattern = new RegExp(mockErrorDetails.message, 'i')
         expect(await screen.findByText(pattern)).toBeVisible()

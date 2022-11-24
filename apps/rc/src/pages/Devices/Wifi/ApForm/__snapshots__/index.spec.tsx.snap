@@ -344,9 +344,9 @@ exports[`AP Form - Add should render correctly 1`] = `
                               title=""
                             >
                               AP Name
-                              <svg
-                                data-testid="QuestionMarkCircleOutlined"
-                              />
+                              <svg>
+                                QuestionMarkCircleOutlined.svg
+                              </svg>
                             </label>
                           </div>
                           <div

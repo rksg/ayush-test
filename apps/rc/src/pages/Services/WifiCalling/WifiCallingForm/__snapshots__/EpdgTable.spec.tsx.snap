@@ -56,9 +56,9 @@ exports[`EpdgTable should render drawer successfully after clicking the Add butt
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg
-                          data-testid="SettingsOutlined"
-                        />
+                        <svg>
+                          SettingsOutlined.svg
+                        </svg>
                       </div>
                     </div>
                   </div>
@@ -382,9 +382,9 @@ exports[`EpdgTable should render drawer successfully after clicking the Delete b
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg
-                          data-testid="SettingsOutlined"
-                        />
+                        <svg>
+                          SettingsOutlined.svg
+                        </svg>
                       </div>
                     </div>
                   </div>
@@ -439,9 +439,9 @@ exports[`EpdgTable should render drawer successfully after clicking the Delete b
                                 title="Clear selection"
                                 type="button"
                               >
-                                <svg
-                                  data-testid="CancelCircle"
-                                />
+                                <svg>
+                                  CancelCircle.svg
+                                </svg>
                               </button>
                             </div>
                           </div>
@@ -807,9 +807,9 @@ exports[`EpdgTable should render drawer successfully after clicking the Edit but
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg
-                          data-testid="SettingsOutlined"
-                        />
+                        <svg>
+                          SettingsOutlined.svg
+                        </svg>
                       </div>
                     </div>
                   </div>
@@ -864,9 +864,9 @@ exports[`EpdgTable should render drawer successfully after clicking the Edit but
                                 title="Clear selection"
                                 type="button"
                               >
-                                <svg
-                                  data-testid="CancelCircle"
-                                />
+                                <svg>
+                                  CancelCircle.svg
+                                </svg>
                               </button>
                             </div>
                           </div>

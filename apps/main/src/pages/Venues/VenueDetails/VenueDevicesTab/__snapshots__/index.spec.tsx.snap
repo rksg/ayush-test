@@ -75,9 +75,9 @@ exports[`VenueMeshAps should render correctly 1`] = `
                   style="pointer-events: none;"
                   type="button"
                 >
-                  <svg
-                    data-testid="ClockOutlined"
-                  />
+                  <svg>
+                    ClockOutlined.svg
+                  </svg>
                   <span>
                     Last 24 Hours
                   </span>
@@ -448,8 +448,9 @@ exports[`VenueMeshAps should render correctly 1`] = `
             >
               <svg
                 class="styledComponents__LineChartIcon-sc-12uzynx-3 hUtzfY"
-                data-testid="LineChartOutline"
-              />
+              >
+                LineChartOutline.svg
+              </svg>
             </button>
             <button
               class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
@@ -457,8 +458,9 @@ exports[`VenueMeshAps should render correctly 1`] = `
             >
               <svg
                 class="styledComponents__ListIcon-sc-12uzynx-1 eqfHgC"
-                data-testid="ListSolid"
-              />
+              >
+                ListSolid.svg
+              </svg>
             </button>
             <button
               class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only styledComponents__WhiteButton-sc-12uzynx-12 kIQrsn"
@@ -467,8 +469,9 @@ exports[`VenueMeshAps should render correctly 1`] = `
             >
               <svg
                 class="styledComponents__MeshIcon-sc-12uzynx-5 kthAiW"
-                data-testid="MeshSolid"
-              />
+              >
+                MeshSolid.svg
+              </svg>
             </button>
           </span>
           <div

@@ -7,6 +7,11 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import FloorplanUpload from './FloorPlanUpload'
 
+jest.mock('@acx-ui/icons', ()=> ({
+  ...jest.requireActual('@acx-ui/icons'),
+  PlusCircleOutlined: () => <div data-testid='PlusCircleOutlined'/>
+}))
+
 describe('Floor Plan Upload', () => {
 
   beforeEach(() => {

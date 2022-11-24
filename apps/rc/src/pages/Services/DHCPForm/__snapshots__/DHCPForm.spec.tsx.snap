@@ -610,9 +610,9 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg
-                                                      data-testid="SettingsOutlined"
-                                                    />
+                                                    <svg>
+                                                      SettingsOutlined.svg
+                                                    </svg>
                                                   </div>
                                                 </div>
                                               </div>
@@ -1321,9 +1321,9 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                     <div
                                       class="ant-pro-table-list-toolbar-setting-item"
                                     >
-                                      <svg
-                                        data-testid="SettingsOutlined"
-                                      />
+                                      <svg>
+                                        SettingsOutlined.svg
+                                      </svg>
                                     </div>
                                   </div>
                                 </div>

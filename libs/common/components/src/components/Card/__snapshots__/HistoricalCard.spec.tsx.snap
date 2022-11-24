@@ -34,8 +34,7 @@ exports[`HistoricalCard should render HistoricalCard 1`] = `
               <div
                 class="ant-space-item"
               >
-                <svg
-                  class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 dGmXEJ"
+                <div
                   data-testid="HistoricalOutlined"
                 />
               </div>
