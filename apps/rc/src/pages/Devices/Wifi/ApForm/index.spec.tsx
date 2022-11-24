@@ -100,7 +100,7 @@ describe('AP Form - Add', () => {
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.getAp.url,
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
         (_, res, ctx) => res(ctx.json(apDetailsList)))

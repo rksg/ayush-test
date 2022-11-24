@@ -36,16 +36,15 @@ const defaultPayload = {
   ]
 }
 
-const seriesMapping = [
-  { key: AlaramSeverity.CRITICAL,
-    name: 'Critical',
-    color: cssStr('--acx-semantics-red-50') },
-  { key: AlaramSeverity.MAJOR,
-    name: 'Major',
-    color: cssStr('--acx-accents-orange-30') }
-] as Array<{ key: string, name: string, color: string }>
-
 export const getAlarmsDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
+  const seriesMapping = [
+    { key: AlaramSeverity.CRITICAL,
+      name: 'Critical',
+      color: cssStr('--acx-semantics-red-50') },
+    { key: AlaramSeverity.MAJOR,
+      name: 'Major',
+      color: cssStr('--acx-accents-orange-30') }
+  ] as Array<{ key: string, name: string, color: string }>
   const chartData: DonutChartData[] = []
   const alarmsSummary = overviewData?.summary?.alarms?.summary
   if (alarmsSummary) {

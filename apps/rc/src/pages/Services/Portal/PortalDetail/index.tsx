@@ -55,7 +55,6 @@ export default function PortalServiceDetail () {
             <PortalOverview demoValue={queryResults.data?.demo as Demo} />
           </Loader>
         </GridCol>
-
         <GridCol col={{ span: 24 }}>
           <Loader states={[tableQuery]}>
             <PortalInstancesTable

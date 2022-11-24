@@ -15,7 +15,6 @@ import Photo                     from '../../../../assets/images/portal-demo/Por
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
 import Logo                      from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
-import PortalScopeForm           from '../PortalScope/PortalScopeForm'
 import { PortalSummaryForm }     from '../PortalSummary/PortalSummaryForm'
 
 import PortalFormContext from './PortalFormContext'
@@ -122,17 +121,6 @@ export const PortalForm = (props:{
             <PortalSettingForm resetDemoField={()=>{
               formRef.current?.setFieldsValue({ demo: { ...portalData.demo } })
             }}/>
-          </StepsForm.StepForm>
-
-          <StepsForm.StepForm
-            name='scope'
-            title={$t({ defaultMessage: 'Networks' })}
-            onFinish={async (data) => {
-              setPortalData({ ...portalData, ...data })
-              return true
-            }}
-          >
-            <PortalScopeForm />
           </StepsForm.StepForm>
 
           {!editMode&&<StepsForm.StepForm

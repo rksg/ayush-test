@@ -85,7 +85,7 @@ describe('AddEdge', () => {
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
-      { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
+      { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     // AddEdge success should back to /devices/edge/list, use UI to test this case is normal
@@ -147,7 +147,7 @@ describe('AddEdge api fail', () => {
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
-      { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
+      { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('An error occurred')
