@@ -35,7 +35,7 @@ describe('Health Widget', () => {
         }
       }
     })
-    render( <Provider> <VenueHealth filters={filters}/></Provider>)
+    render(<Provider><VenueHealth filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render KPI widgets', async () => {
@@ -50,7 +50,7 @@ describe('Health Widget', () => {
       }
     })
 
-    const { asFragment } = render( <Provider> <VenueHealth filters={filters}/></Provider>)
+    const { asFragment } = render(<Provider><VenueHealth filters={filters}/></Provider>)
     await screen.findAllByText('Kpi Widget')
     expect(asFragment()).toMatchSnapshot()
   })
@@ -67,7 +67,7 @@ describe('Health Widget', () => {
       }
     })
 
-    const { asFragment } = render( <Provider> <VenueHealth filters={filters}/></Provider>)
+    const { asFragment } = render(<Provider><VenueHealth filters={filters}/></Provider>)
     await screen.findAllByText('Kpi Widget')
     expect(asFragment()).toMatchSnapshot()
   })

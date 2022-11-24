@@ -11,7 +11,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
       style="padding: 10px 8px 10px 8px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
         type="default"
       >
         <div
@@ -27,9 +27,17 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                 class="ant-card-head-title"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  class="ant-space ant-space-horizontal ant-space-align-center"
                 >
-                  TEST_2
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                    >
+                      TEST_2
+                    </div>
+                  </div>
                 </div>
               </div>
               <div
@@ -64,7 +72,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
       style="padding: 10px 8px 10px 8px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
         type="default"
       >
         <div
@@ -80,9 +88,17 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                 class="ant-card-head-title"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                  class="ant-space ant-space-horizontal ant-space-align-center"
                 >
-                  dscx
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                    >
+                      dscx
+                    </div>
+                  </div>
                 </div>
               </div>
               <div

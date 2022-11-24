@@ -1,0 +1,5 @@
+export enum PassphraseFormatEnum {
+  MOST_SECURED = 'MOST_SECURED',
+  KEYBOARD_FRIENDLY = 'KEYBOARD_FRIENDLY',
+  NUMBERS_ONLY = 'NUMBERS_ONLY',
+}

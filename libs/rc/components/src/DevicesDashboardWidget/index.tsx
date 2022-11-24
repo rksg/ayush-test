@@ -23,6 +23,7 @@ export function DevicesDashboardWidget () {
       <DevicesWidget
         apData={queryResults.data.apData}
         switchData={queryResults.data.switchData}
+        enableArrowClick
       />
     </Loader>
   )

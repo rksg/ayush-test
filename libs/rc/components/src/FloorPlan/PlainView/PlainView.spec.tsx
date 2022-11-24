@@ -9,15 +9,6 @@ import { render, screen, fireEvent, waitFor }                                   
 import PlainView, { getImageFitPercentage } from './PlainView'
 import Thumbnail                            from './Thumbnail'
 
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  MagnifyingGlassPlusOutlined: () => <div data-testid='MagnifyingGlassPlusOutlined'/>,
-  ApplicationsSolid: () => <div data-testid='ApplicationsSolid'/>,
-  MagnifyingGlassMinusOutlined: () => <div data-testid='MagnifyingGlassMinusOutlined'/>,
-  SearchFitOutlined: () => <div data-testid='SearchFitOutlined'/>,
-  SearchFullOutlined: () => <div data-testid='SearchFullOutlined'/>
-}))
-
 const list: FloorPlanDto[] = [
   {
     id: '94bed28abef24175ab58a3800d01e24a',

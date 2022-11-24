@@ -140,7 +140,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
         data-testid="image-zoom-in"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassPlusOutlined"
         />
       </button>
@@ -164,7 +164,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
         data-testid="image-zoom-out"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassMinusOutlined"
         />
       </button>
@@ -188,7 +188,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
         data-testid="image-zoom-original"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFullOutlined"
         />
       </button>
@@ -211,7 +211,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
         data-testid="image-zoom-fit"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFitOutlined"
         />
       </button>
@@ -231,7 +231,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
           data-testid="galleryIcon"
           type="button"
         >
-          <div
+          <svg
             data-testid="ApplicationsSolid"
           />
         </button>
@@ -728,7 +728,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
         data-testid="image-zoom-in"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassPlusOutlined"
         />
       </button>
@@ -752,7 +752,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
         data-testid="image-zoom-out"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassMinusOutlined"
         />
       </button>
@@ -776,7 +776,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
         data-testid="image-zoom-original"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFullOutlined"
         />
       </button>
@@ -799,7 +799,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
         data-testid="image-zoom-fit"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFitOutlined"
         />
       </button>
@@ -819,7 +819,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
           data-testid="galleryIcon"
           type="button"
         >
-          <div
+          <svg
             data-testid="ApplicationsSolid"
           />
         </button>
@@ -1038,7 +1038,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
         data-testid="image-zoom-in"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassPlusOutlined"
         />
       </button>
@@ -1062,7 +1062,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
         data-testid="image-zoom-out"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassMinusOutlined"
         />
       </button>
@@ -1086,7 +1086,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
         data-testid="image-zoom-original"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFullOutlined"
         />
       </button>
@@ -1109,7 +1109,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
         data-testid="image-zoom-fit"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFitOutlined"
         />
       </button>
@@ -1130,7 +1130,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
           data-testid="galleryIcon"
           type="button"
         >
-          <div
+          <svg
             data-testid="ApplicationsSolid"
           />
         </button>
@@ -1349,7 +1349,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         data-testid="image-zoom-in"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassPlusOutlined"
         />
       </button>
@@ -1373,7 +1373,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         data-testid="image-zoom-out"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassMinusOutlined"
         />
       </button>
@@ -1397,7 +1397,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         data-testid="image-zoom-original"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFullOutlined"
         />
       </button>
@@ -1420,7 +1420,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         data-testid="image-zoom-fit"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFitOutlined"
         />
       </button>
@@ -1440,7 +1440,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
           data-testid="galleryIcon"
           type="button"
         >
-          <div
+          <svg
             data-testid="ApplicationsSolid"
           />
         </button>
@@ -1659,7 +1659,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
         data-testid="image-zoom-in"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassPlusOutlined"
         />
       </button>
@@ -1683,7 +1683,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
         data-testid="image-zoom-out"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassMinusOutlined"
         />
       </button>
@@ -1707,7 +1707,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
         data-testid="image-zoom-original"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFullOutlined"
         />
       </button>
@@ -1730,7 +1730,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
         data-testid="image-zoom-fit"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFitOutlined"
         />
       </button>
@@ -1750,7 +1750,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
           data-testid="galleryIcon"
           type="button"
         >
-          <div
+          <svg
             data-testid="ApplicationsSolid"
           />
         </button>
@@ -1969,7 +1969,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
         data-testid="image-zoom-in"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassPlusOutlined"
         />
       </button>
@@ -1993,7 +1993,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
         data-testid="image-zoom-out"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassMinusOutlined"
         />
       </button>
@@ -2017,7 +2017,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
         data-testid="image-zoom-original"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFullOutlined"
         />
       </button>
@@ -2040,7 +2040,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
         data-testid="image-zoom-fit"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFitOutlined"
         />
       </button>
@@ -2060,7 +2060,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
           data-testid="galleryIcon"
           type="button"
         >
-          <div
+          <svg
             data-testid="ApplicationsSolid"
           />
         </button>
@@ -2279,7 +2279,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
         data-testid="image-zoom-in"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassPlusOutlined"
         />
       </button>
@@ -2303,7 +2303,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
         data-testid="image-zoom-out"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassMinusOutlined"
         />
       </button>
@@ -2327,7 +2327,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
         data-testid="image-zoom-original"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFullOutlined"
         />
       </button>
@@ -2350,7 +2350,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
         data-testid="image-zoom-fit"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFitOutlined"
         />
       </button>
@@ -2370,7 +2370,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
           data-testid="galleryIcon"
           type="button"
         >
-          <div
+          <svg
             data-testid="ApplicationsSolid"
           />
         </button>
@@ -2589,7 +2589,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
         data-testid="image-zoom-in"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassPlusOutlined"
         />
       </button>
@@ -2613,7 +2613,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
         data-testid="image-zoom-out"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassMinusOutlined"
         />
       </button>
@@ -2637,7 +2637,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
         data-testid="image-zoom-original"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFullOutlined"
         />
       </button>
@@ -2660,7 +2660,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
         data-testid="image-zoom-fit"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFitOutlined"
         />
       </button>
@@ -2680,7 +2680,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
           data-testid="galleryIcon"
           type="button"
         >
-          <div
+          <svg
             data-testid="ApplicationsSolid"
           />
         </button>
@@ -2899,7 +2899,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
         data-testid="image-zoom-in"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassPlusOutlined"
         />
       </button>
@@ -2923,7 +2923,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
         data-testid="image-zoom-out"
         type="button"
       >
-        <div
+        <svg
           data-testid="MagnifyingGlassMinusOutlined"
         />
       </button>
@@ -2947,7 +2947,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
         data-testid="image-zoom-original"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFullOutlined"
         />
       </button>
@@ -2970,7 +2970,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
         data-testid="image-zoom-fit"
         type="button"
       >
-        <div
+        <svg
           data-testid="SearchFitOutlined"
         />
       </button>
@@ -2990,7 +2990,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
           data-testid="galleryIcon"
           type="button"
         >
-          <div
+          <svg
             data-testid="ApplicationsSolid"
           />
         </button>

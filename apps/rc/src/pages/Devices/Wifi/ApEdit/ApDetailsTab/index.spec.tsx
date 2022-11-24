@@ -42,7 +42,7 @@ describe('ApDetailsTab', () => {
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.getAp.url,
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0])))
     )
   })

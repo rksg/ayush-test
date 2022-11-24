@@ -13,7 +13,7 @@ import {
 import * as contents from '../contentsMap'
 
 export function AaaSummaryForm (props: {
-  summaryData: NetworkSaveData;
+  summaryData: NetworkSaveData
 }) {
   const { $t } = useIntl()
   const { summaryData } = props

@@ -12,13 +12,6 @@ import { render,
 import { AlarmWidget, getAlarmsDonutChartData } from '.'
 
 const mockedUsedNavigate = jest.fn()
-
-jest.mock('@acx-ui/icons', () => ({
-  ...jest.requireActual('@acx-ui/icons'),
-  CheckMarkCircleSolid: () => <div data-testid='CheckMarkCircleSolid' />
-}))
-
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
