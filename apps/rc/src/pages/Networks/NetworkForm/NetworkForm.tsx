@@ -22,7 +22,8 @@ import {
   NetworkSaveData,
   RadiusErrorsType,
   RadiusValidate,
-  RadiusValidateErrors
+  RadiusValidateErrors,
+  GuestNetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -30,10 +31,13 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-
-import { OnboardingForm } from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm } from './CaptivePortal/PortalTypeForm'
-import { PortalWebForm }  from './CaptivePortal/PortalWebForm'
+import { GuestPassForm }    from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm } from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }   from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }   from './CaptivePortal/PortalTypeForm'
+import { PortalWebForm }    from './CaptivePortal/PortalWebForm'
+import { SelfSignInForm }   from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }        from './CaptivePortal/WISPrForm'
 import {
   multipleConflictMessage,
   radiusErrorMessage
@@ -52,15 +56,25 @@ import {
   transferMoreSettingsToSave
 } from './parser'
 import { Venues } from './Venues/Venues'
+//import PortalInstance from './PortalInstance'
 
 const settingTitle = defineMessage({
   defaultMessage: `{type, select,
     aaa {AAA Settings}
     dpsk {DPSK Settings}
     other {Settings}
+    guest {Portal Type}
   }`
 })
-
+const onboardingTitle = defineMessage({
+  defaultMessage: `{type, select,
+    WISPr {Settings}
+    Cloudpath {Settings}
+    GuestPass {Host Settings}
+    HostApproval {Host Settings}
+    other {Onboarding}
+  }`
+})
 export default function NetworkForm () {
   const intl = useIntl()
   const navigate = useNavigate()
@@ -72,7 +86,6 @@ export default function NetworkForm () {
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [getValidateRadius] = useLazyValidateRadiusQuery()
-
   const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
@@ -233,7 +246,6 @@ export default function NetworkForm () {
     }
     return false
   }
-
   return (
     <>
       <PageHeader
@@ -297,7 +309,7 @@ export default function NetworkForm () {
             {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm saveState={saveState}/>}
             {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm saveState={saveState}/>}
             {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm saveState={saveState}/>}
-            {saveState.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm />}
+            {saveState.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
 
           </StepsForm.StepForm>
@@ -318,12 +330,23 @@ export default function NetworkForm () {
           { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
               <StepsForm.StepForm
                 name='onboarding'
-                title={intl.$t({ defaultMessage: 'Onboarding' })}
+                title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                 onFinish={async () => {
                   return true
                 }}
               >
-                <OnboardingForm />
+                {saveState?.guestPortal?.guestNetworkType===
+                 GuestNetworkTypeEnum.ClickThrough&&<OnboardingForm />}
+                {saveState?.guestPortal?.guestNetworkType===
+                 GuestNetworkTypeEnum.SelfSignIn&&<SelfSignInForm />}
+                {saveState?.guestPortal?.guestNetworkType===
+                 GuestNetworkTypeEnum.Cloudpath&&<div>cloud path</div>}
+                {saveState?.guestPortal?.guestNetworkType===
+                 GuestNetworkTypeEnum.HostApproval&&<HostApprovalForm />}
+                {saveState?.guestPortal?.guestNetworkType===
+                 GuestNetworkTypeEnum.GuestPass&&<GuestPassForm />}
+                {saveState?.guestPortal?.guestNetworkType===
+                 GuestNetworkTypeEnum.WISPr&&<WISPrForm />}
               </StepsForm.StepForm>
           }
 

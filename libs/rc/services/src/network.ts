@@ -18,7 +18,8 @@ import {
   CommonResult,
   NetworkDetail,
   RadiusValidate,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  ExternalProviders
 } from '@acx-ui/rc/utils'
 
 export const baseNetworkApi = createApi({
@@ -251,6 +252,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    externalProviders: build.query<ExternalProviders, RequestPayload>({
+      query: ({ params }) => {
+        const externalProvidersReq = createHttpRequest(CommonUrlsInfo.getExternalProviders, params)
+        return {
+          ...externalProvidersReq
+        }
+      }
     })
   })
 })
@@ -354,5 +363,6 @@ export const {
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
   useValidateRadiusQuery,
-  useLazyValidateRadiusQuery
+  useLazyValidateRadiusQuery,
+  useExternalProvidersQuery
 } = networkApi

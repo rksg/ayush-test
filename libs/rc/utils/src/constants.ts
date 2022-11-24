@@ -447,3 +447,10 @@ export const CountryIsoDisctionary = {
   'Zimbabwe': 'zw',
   'Åland Islands': 'ax'
 }
+export enum CaptivePassphraseExpirationEnum {
+  ONE_HOUR = 'ONE_HOUR',
+  FOUR_HOURS = 'FOUR_HOURS',
+  ONE_DAY = 'ONE_DAY',
+  ONE_WEEK = 'ONE_WEEK',
+  ONE_MONTH = 'ONE_MONTH'
+}

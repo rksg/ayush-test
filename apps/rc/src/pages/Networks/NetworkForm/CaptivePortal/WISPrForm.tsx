@@ -1,0 +1,335 @@
+import { useEffect, useRef, useState } from 'react'
+
+import {
+  Col,
+  Form,
+  Row,
+  Select,
+  Tooltip,
+  Checkbox,
+  Space,
+  Input,
+  InputRef
+} from 'antd'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
+
+import { Button, StepsForm }    from '@acx-ui/components'
+import {
+  InformationSolid,
+  QuestionMarkCircleOutlined
+} from '@acx-ui/icons'
+import { useExternalProvidersQuery }                                                                                                                                                                                                                                  from '@acx-ui/rc/services'
+import { generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, serverIpAddressRegExp, trailingNorLeadingSpaces, WlanSecurityEnum } from '@acx-ui/rc/utils'
+
+import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+
+import { AuthAccServerSetting } from './AuthAccServerSetting'
+import { AuthAccServerSummary } from './AuthAccServerSummary'
+import { DhcpCheckbox }         from './DhcpCheckbox'
+import { RedirectUrlInput }     from './RedirectUrlInput'
+
+
+
+export function WISPrForm () {
+  const { $t } = useIntl()
+  const params = useParams()
+  const inputKey = useRef<InputRef>(null)
+  const { useWatch } = Form
+  const form = Form.useFormInstance()
+  const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
+  const enablePreShared = useWatch('enablePreShared')
+  const externalProviderRegion = useWatch(['wisprPage','externalProviderRegion'])
+  const { data } = useExternalProvidersQuery({ params })
+  const [externalProviders, setExternalProviders]=useState<Providers[]>()
+  const [regionOption, setRegionOption]=useState<Regions[]>()
+  const [isOtherProvider, setIsOtherProvider]=useState(false)
+  useEffect(()=>{
+    if(data){
+      const providers = data.providers
+      setExternalProviders(providers)
+      form.setFieldValue(['wisprPage','integrationKey'], generateRandomString())
+    }
+  },[data])
+  const onGenerateHexKey = () => {
+    let hexKey = generateHexKey(26)
+    form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
+  }
+  const securityDescription = () => {
+    const wlanSecurity = form.getFieldValue([ 'wlan', 'wlanSecurity' ])
+    return (
+      <>
+        {SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum]}
+        {[
+          WlanSecurityEnum.WPA2Personal,
+          WlanSecurityEnum.WPAPersonal,
+          WlanSecurityEnum.WEP
+        ].indexOf(wlanSecurity) > -1 &&
+          <Space align='start'>
+            <InformationSolid />
+            {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
+          </Space>
+        }
+      </>
+    )
+  }
+  const generateRandomString = () => {
+    const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    let randomString = ''
+    for (let i = 0; i < 16; i++) {
+      const randomPosition = Math.floor(Math.random() * charSet.length)
+      randomString += charSet.substring(randomPosition, randomPosition + 1)
+    }
+    return randomString
+  }
+  const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
+    <Select.Option key={key}>{ PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum] }
+    </Select.Option>
+  ))
+  const region = regionOption?.length === 1? regionOption?.[0]:
+    _.find(regionOption,{ name: externalProviderRegion })
+  return (
+    <Row gutter={20}>
+      <Col span={10}>
+        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <Form.Item
+          name={['wisprPage','externalProviderName']}
+          rules={
+            [{ required: true }]
+          }
+          label={$t({ defaultMessage: 'Portal Provider' })}
+          initialValue=''
+          children={<Select onChange={(value)=>{
+            const regions = _.find(externalProviders,{ name: value })?.regions
+            form.setFieldValue(['wisprPage','customExternalProvider'], false)
+            form.setFieldValue(['wisprPage','captivePortalUrl'], '')
+            if(regions?.length===1){
+              form.setFieldValue(['wisprPage','externalProviderRegion'], regions[0].name)
+              if(regions[0].captivePortalUrl){
+                form.setFieldValue(['wisprPage','captivePortalUrl'],
+                  regions[0].captivePortalUrl)
+              }
+              if(regions[0].redirectUrl){
+                form.setFieldValue('redirectCheckbox', true)
+                form.setFieldValue('redirectUrl', regions[0].redirectUrl)
+              }
+            }else form.setFieldValue(['wisprPage','externalProviderRegion'], '')
+            if(value==='Other provider'){
+              setIsOtherProvider(true)
+              form.setFieldValue(['wisprPage','customExternalProvider'], true)
+            }else{
+              setIsOtherProvider(false)
+            }
+            setRegionOption(regions)
+          }}>
+            <Select.Option value={''}>
+              {$t({ defaultMessage: 'Select provider' })}
+            </Select.Option>
+            {externalProviders?.map(item=>{
+              return <Select.Option key={item.name} value={item.name}>
+                {item.name}
+              </Select.Option>
+            })}
+            <Select.Option value={'Other provider'}>
+              {$t({ defaultMessage: 'Other provider' })}
+            </Select.Option>
+          </Select>}
+        />
+        {isOtherProvider&&<Form.Item
+          name='providerName'
+          initialValue=''
+          label={$t({ defaultMessage: 'Provider Name' })}
+          children={<Input placeholder={$t({ defaultMessage: 'Provider Name' })}
+          />}
+        />
+
+        }
+        {regionOption && regionOption.length>1&&<Form.Item
+          name={['wisprPage','externalProviderRegion']}
+          rules={
+            [{ required: true }]
+          }
+          initialValue=''
+          label={$t({ defaultMessage: 'Region' })}
+          children={<Select>
+            <Select.Option value={''}>
+              {$t({ defaultMessage: 'Select Region' })}
+            </Select.Option>
+            {regionOption?.map(item=>{
+              return <Select.Option key={item.name} value={item.name}>
+                {item.name}
+              </Select.Option>
+            })}
+          </Select>}
+        />}
+        <Form.Item
+          name={['wisprPage','captivePortalUrl']}
+          rules={
+            [{ required: true }]
+          }
+          label={<>
+            {$t({ defaultMessage: 'Captive Portal URL' })}
+            <Tooltip title={$t({ defaultMessage: 'Copy this from your vendor\'s configuration' })}
+              placement='bottom'>
+              <QuestionMarkCircleOutlined style={{ marginBottom: -3 }} />
+            </Tooltip>
+          </>}
+          children={<Input placeholder={$t({ defaultMessage:
+          'Tip: Copy this from your vendor\'s configuration' })}
+          />}
+        />
+        <RedirectUrlInput></RedirectUrlInput>
+        <Form.Item
+          name={['wisprPage','integrationKey']}
+          label={<>{$t({ defaultMessage: 'Integration Key' })}
+            <Tooltip title={$t({ defaultMessage: 'Copy this password to your vendor\'s'
+            +' configuration, to allow it to connect to Ruckus Cloud' })}
+            placement='bottom'>
+              <QuestionMarkCircleOutlined style={{ marginBottom: -1 }} />
+            </Tooltip>
+          </>}
+          extra={
+            <div style={{ marginLeft: 210, marginTop: -37 }}>
+              <Button onClick={() => {
+                inputKey?.current?.focus()
+                inputKey?.current?.select()
+                navigator.clipboard.writeText(form.getFieldValue(['wisprPage','integrationKey']))
+              }}
+              type='link'>
+                {$t({ defaultMessage: 'Copy Key' })}
+              </Button></div>}
+          children={<Input readOnly style={{ width: 200 }} ref={inputKey}/>}
+        />
+        <Form.Item>
+          <Form.Item name='enablePreShared'
+            noStyle
+            valuePropName='checked'
+            initialValue={false}
+            children={
+              <Checkbox>
+                {$t({ defaultMessage: 'Enable Pre-Shared Key (PSK)' })}
+              </Checkbox>
+            }
+          />
+          <Tooltip title={$t({ defaultMessage: 'Require users to enter a passphrase to connect' })}
+            placement='bottom'>
+            <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+          </Tooltip>
+        </Form.Item>
+        {enablePreShared && wlanSecurity !== WlanSecurityEnum.WEP &&
+         wlanSecurity !== WlanSecurityEnum.WPA3 &&
+          <Form.Item
+            name={['wlan', 'passphrase']}
+            label={SecurityOptionsPassphraseLabel[wlanSecurity as keyof typeof PskWlanSecurityEnum]
+              ??SecurityOptionsPassphraseLabel.WPA2Personal}
+            rules={[
+              { required: true, min: 8 },
+              { max: 64 },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) },
+              { validator: (_, value) => passphraseRegExp(value) }
+            ]}
+            validateFirst
+            extra={$t({ defaultMessage: '8 characters minimum' })}
+            children={<Input.Password />}
+          />
+        }
+        {enablePreShared && wlanSecurity === 'WEP' &&
+          <Form.Item
+            name={['wlan', 'wepHexKey']}
+            label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
+            rules={[
+              { required: true },
+              { validator: (_, value) => hexRegExp(value) }
+            ]}
+            extra={<>{$t({ defaultMessage: 'Must be 26 hex characters' })}
+              <div style={{ textAlign: 'right', marginTop: -25 }}>
+                <Button type='link' onClick={onGenerateHexKey}>
+                  {$t({ defaultMessage: 'Generate' })}
+                </Button></div>
+            </>}
+            children={<Input.Password />}
+          />
+        }
+        {enablePreShared &&
+          [WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(wlanSecurity) &&
+          <Form.Item
+            name={['wlan', 'saePassphrase']}
+            label={wlanSecurity === WlanSecurityEnum.WPA3
+              ? $t({ defaultMessage: 'SAE Passphrase' })
+              : $t({ defaultMessage: 'WPA3 SAE Passphrase' })
+            }
+            rules={[
+              { required: true, min: 8 },
+              { max: 64 },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) },
+              { validator: (_, value) => passphraseRegExp(value) }
+            ]}
+            validateFirst
+            extra={$t({ defaultMessage: '8 characters minimum' })}
+            children={<Input.Password />}
+          />
+        }
+        {enablePreShared && <Form.Item
+          label={$t({ defaultMessage: 'Security Protocol' })}
+          name={['wlan', 'wlanSecurity']}
+          initialValue={WlanSecurityEnum.WPA2Personal}
+          extra={securityDescription()}
+        >
+          <Select>
+            {securityOptions}
+          </Select>
+        </Form.Item>}
+        <Form.Item
+          name={['wlan','bypassCPUsingMacAddressAuthentication']}
+          noStyle
+          valuePropName='checked'
+          initialValue={false}
+          children={
+            <Checkbox>
+              {$t({ defaultMessage: 'Enable MAC auth bypass' })}
+            </Checkbox>
+          }
+        />
+        <DhcpCheckbox />
+        <Form.Item
+          name='walledGardens'
+          rules={[
+            { validator: (_, value) => serverIpAddressRegExp(value) }
+          ]}
+          label={<>{$t({ defaultMessage: 'Walled Garden' })}
+            <Tooltip title={$t({ defaultMessage: 'Unauthenticated users will be allowed '
+            +'to access these destinations(i.e., without redirection to captive '+
+            'portal).' })+'\n'+
+             $t({ defaultMessage: 'Each destination should be entered in a new line.' })+'\n'+
+             $t({ defaultMessage: 'Accepted formats for destinations are:' })+'\n\n'+
+             $t({ defaultMessage: '-IP address(e.g. 10.11.12.13)' })+'\n\n'+
+             $t({ defaultMessage: '-IP address range(e.g. 10.11.12.13-10.11.12.15)' })+'\n\n'+
+             $t({ defaultMessage: '-CIDR(e.g. 10.11.12.13/28)' })+'\n\n'+
+             $t({ defaultMessage: '-IP address and mask(e.g. 10.11.12.13 255.255.255.0)' })+'\n\n'+
+             $t({ defaultMessage: '-Website FQDN(e.g. www.ruckus.com)' })+'\n\n'+
+             $t({ defaultMessage: '-Website FQDN with a wildcard(e.g. *.amazon.com; *.com)' })+'\n'}
+            placement='bottom'>
+              <QuestionMarkCircleOutlined style={{ marginBottom: -1 }} />
+            </Tooltip>
+          </>}
+          children={
+            <Input.TextArea rows={15}
+              style={{ resize: 'none' }}
+              placeholder={$t({ defaultMessage: 'Enter permitted walled '+
+              'garden destinations and IP subnets, a new line for each '+
+              'entry. Hover over the question mark for help with this field.' })}
+            />
+          }
+        />
+        {!regionOption && isOtherProvider && <AuthAccServerSetting/>}
+        {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
+
+      </Col>
+      <Col span={14}>
+        <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
+          networkPortalType={GuestNetworkTypeEnum.WISPr}/>
+      </Col>
+    </Row>
+  )
+}

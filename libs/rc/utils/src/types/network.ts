@@ -118,3 +118,71 @@ export interface NetworkSaveData {
     expiration?: PassphraseExpirationEnum;
   }
 }
+export interface ExternalProviders{
+  providers: Providers[]
+}
+export interface Providers{
+  customExternalProvider: boolean,
+  name: string,
+  regions: Regions[]
+}
+export interface Regions{
+  name: string,
+  showAnalyticsData: boolean,
+  captivePortalUrl: string,
+  redirectUrl: string,
+  authRadius?: {
+    primary: {
+      ip: string;
+      port: string;
+    };
+    secondary: {
+      ip: string;
+      port: string;
+    };
+  },
+  accountingRadius?: {
+    primary: {
+      ip: string;
+      port: string;
+    };
+    secondary: {
+      ip: string;
+      port: string;
+    };
+  }
+}
+export interface ExternalProviders{
+  providers: Providers[]
+}
+export interface Providers{
+  customExternalProvider: boolean,
+  name: string,
+  regions: Regions[]
+}
+export interface Regions{
+  name: string,
+  showAnalyticsData: boolean,
+  captivePortalUrl: string,
+  redirectUrl: string,
+  authRadius?: {
+    primary: {
+      ip: string;
+      port: string;
+    };
+    secondary: {
+      ip: string;
+      port: string;
+    };
+  },
+  accountingRadius?: {
+    primary: {
+      ip: string;
+      port: string;
+    };
+    secondary: {
+      ip: string;
+      port: string;
+    };
+  }
+}

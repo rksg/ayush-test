@@ -1,5 +1,6 @@
 export * from './services/mdnsProxyUrls'
 export * from './services/wifiCallingUrls'
+export * from './services/portalUrls'
 export * from './commonUrls'
 export * from './wifiUrls'
 export * from './switchUrls'

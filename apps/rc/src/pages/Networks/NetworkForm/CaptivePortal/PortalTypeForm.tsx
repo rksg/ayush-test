@@ -1,41 +1,52 @@
+import { useContext } from 'react'
+
 import {
   Col,
   Form,
   Radio,
   RadioChangeEvent,
   Row,
-  Space
+  Space,
+  Tooltip
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { StepsForm }                             from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { notAvailableMsg }                       from '@acx-ui/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                                     from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                                     from '../NetworkFormContext'
 import { RadioDescription }                                   from '../styledComponents'
 
 
+
 export function PortalTypeForm () {
+  const portalType = Form.useWatch(['guestPortal', 'guestNetworkType'])
   return (
     <Row gutter={20}>
       <Col span={10}>
         <TypesForm />
       </Col>
       <Col span={14}>
-        <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL} />
+        <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
+          networkPortalType={portalType}/>
       </Col>
     </Row>
   )
 }
 
-/* eslint-disable */
-const onChange = (e: RadioChangeEvent) => {
-  // setSettingStepTitle(e.target.value as NetworkTypeEnum)
-}
-/* eslint-enable */
 
 function TypesForm () {
+  const {
+    data,
+    setData
+  } = useContext(NetworkFormContext)
+  const onChange = (e: RadioChangeEvent) => {
+    setData && setData({ ...data, guestPortal:
+       { ...data?.guestPortal, guestNetworkType: e.target.value as GuestNetworkTypeEnum } })
+  }
   const intl = useIntl()
   return (
     <>
@@ -62,11 +73,13 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.Cloudpath}>
-              {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
-              <RadioDescription>
-                {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
-              </RadioDescription>
+            <Radio value={GuestNetworkTypeEnum.Cloudpath} disabled={true}>
+              <Tooltip title={intl.$t(notAvailableMsg)}>
+                {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
+                <RadioDescription>
+                  {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
+                </RadioDescription>
+              </Tooltip>
             </Radio>
 
             <Radio value={GuestNetworkTypeEnum.HostApproval}>
