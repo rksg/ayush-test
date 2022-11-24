@@ -4,7 +4,7 @@ import { KpiShortText } from '../KpiWidget/styledComponents'
 
 export const VenueName = styled.div`
     white-space: nowrap;
-    width: 155px;
+    width: 125px;
     overflow: hidden;
     text-overflow: ellipsis;
 `

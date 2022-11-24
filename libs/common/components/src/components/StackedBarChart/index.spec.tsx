@@ -18,6 +18,7 @@ describe('StackedBarChart', () => {
     const { asFragment } = render(
       <StackedBarChart
         data={data}
+        onAxisLabelClick={() => {}}
         barColors={barColors}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()

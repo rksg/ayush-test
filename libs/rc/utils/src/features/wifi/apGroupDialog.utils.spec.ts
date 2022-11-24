@@ -1,8 +1,9 @@
+import { NetworkVenue, VlanPool } from '../../models'
+
 import {
   getVlanString,
   aggregateApGroupPayload
 } from './apGroupDialog.utils'
-import { NetworkVenue, VlanPool } from './models'
 
 const data = {
   venueId: '4c778ed630394b76b17bce7fe230cf9f',

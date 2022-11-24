@@ -5,10 +5,10 @@ import moment from 'moment'
 
 import { get } from '@acx-ui/config'
 
-import { NetworkVenue }          from './models/NetworkVenue'
-import { NetworkVenueScheduler } from './models/NetworkVenueScheduler'
-import { SchedulerTypeEnum }     from './models/SchedulerTypeEnum'
-import { Network }               from './types'
+import { NetworkVenue }          from '../../models/NetworkVenue'
+import { NetworkVenueScheduler } from '../../models/NetworkVenueScheduler'
+import { SchedulerTypeEnum }     from '../../models/SchedulerTypeEnum'
+import { Network }               from '../../types'
 
 interface ITimeZone {
   dstOffset: number

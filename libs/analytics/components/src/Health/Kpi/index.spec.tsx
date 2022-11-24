@@ -17,11 +17,6 @@ import { HealthPageContext } from '../HealthPageContext'
 
 import KpiSection from '.'
 
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  InformationOutlined: () => <div data-testid='information-outlined'/>
-}))
-
 describe('Kpi Section', () => {
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
