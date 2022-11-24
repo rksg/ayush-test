@@ -21,7 +21,7 @@ describe('useEncodedParameter', () => {
     result.current.write({ value: 'value1' })
     expect(result.current.read()).toEqual({ value: 'value1' })
   })
-  it('does not crash the page having  old parameters', () => {
+  it('does not crash the page having old parameters', () => {
     const { result } = renderHook(
       () => useEncodedParameter<{ value: string }>('name2'),
       {
