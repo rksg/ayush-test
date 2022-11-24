@@ -1,15 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo }   from '@acx-ui/rc/utils'
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockVenueData, mockEdgeData } from '../../../__tests__/fixtures'
+import { mockEdgeData, mockVenueData } from '../../../__tests__/fixtures'
 
 import GeneralSettings from './index'
 
@@ -42,6 +41,8 @@ describe('EditEdge general settings', () => {
       )
     )
   })
+
+  afterEach(() => jest.restoreAllMocks())
 
   it('should create GeneralSettings successfully', async () => {
     const { asFragment } = render(
@@ -83,11 +84,12 @@ describe('EditEdge general settings', () => {
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
-    await user.click(screen.getByRole('button', { name: 'Apply' }))
-    // AddEdge success should back to /devices, use UI to test this case is normal
+    const applyButton = screen.getByRole('button', { name: 'Apply' })
+    await user.click(applyButton)
+    // EditEdge success should back to /devices/edge/list, use UI to test this case is normal
     // but use jest always fail
     // expect(mockedUsedNavigate).toHaveBeenCalledWith({
-    //   pathname: `/t/${params.tenantId}/devices`,
+    //   pathname: `/t/${params.tenantId}/devices/edge/list`,
     //   hash: '',
     //   search: ''
     // })
@@ -151,6 +153,6 @@ describe('EditEdge general settings api fail', () => {
       { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
-    await screen.findByText('An error occurred')
+    await screen.findAllByText('An error occurred')
   })
 })

@@ -8,7 +8,7 @@ import { useGetEdgeQuery }                        from '@acx-ui/rc/services'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                                from '@acx-ui/utils'
 
-import GeneralSettings from './ GeneralSettings'
+import GeneralSettings from './GeneralSettings'
 import Settings        from './Settings'
 
 const intl = getIntl()
@@ -28,7 +28,7 @@ const EditEdgeTabs = () => {
 
   const navigate = useNavigate()
   const { activeTab, serialNumber } = useParams()
-  const basePath = useTenantLink(`/devices/edge/${serialNumber}/edit/`)
+  const basePath = useTenantLink(`/devices/edge/${serialNumber}/edit`)
 
   const onTabChange = (activeKey: string) => {
     if(activeKey === 'settings') activeKey = `${activeKey}/ports`

@@ -71,7 +71,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         name='edgeGroupId'
         label={$t({ defaultMessage: 'SmartEdge Group' })}
       >
-        <Select options={edgeGroupOptions} />
+        <Select options={edgeGroupOptions} loading />
       </Form.Item>
       <Form.Item
         name='name'

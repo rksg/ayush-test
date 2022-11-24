@@ -72,7 +72,6 @@ function DeviceRoutes () {
         element={<ApDetails />}
       />
       <Route path='devices/edge/add' element={<AddEdge />} />
-      {/* <Route path='devices/edge/:serialNumber/edit' element={<EditEdge />} /> */}
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab'
         element={<EditEdge />} />
