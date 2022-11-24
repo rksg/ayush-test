@@ -89,34 +89,45 @@ export function useTableQuery <
   Payload,
   ResultExtra
 > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
-  const [pagination, setPagination] = useState({
+
+  const initialPagination = {
     ...DEFAULT_PAGINATION,
     ...(option?.pagination || {})
-  })
-  const [sorter, setSorter] = useState({
+  }
+
+  const initialSorter = {
     ...DEFAULT_SORTER,
     ...(option?.sorter || {})
-  })
-  const [payload, setPayload] = useState({
-    ...option.defaultPayload,
-    ...(pagination as unknown as Partial<Payload>),
-    ...(sorter as unknown as Partial<Payload>)
-  })
+  }
 
+  const initialPayload = {
+    ...option.defaultPayload,
+    ...(initialPagination as unknown as Partial<Payload>),
+    ...(initialSorter as unknown as Partial<Payload>)
+  }
+
+  console.log(initialPagination, initialSorter, initialPayload)
+
+  const [pagination, setPagination] = useState(initialPagination)
+  const [sorter, setSorter] = useState(initialSorter)
+  const [payload, setPayload] = useState(initialPayload)
+
+  const params = useParams()
   // RTKQuery
+
   const api = option.useQuery({
-    params: { ...useParams(), ...option.apiParams },
+    params: { ...params, ...option.apiParams },
     payload: payload as Payload
   })
 
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {
       if (data) {
-        setPagination({
-          ...DEFAULT_PAGINATION,
+        setPagination((prev) => ({ // might need to calculate and see right page in this updater callback
+          ...prev,
           current: data.page,
           total: data.totalCount
-        })
+        }))
       }
     }
     handlePagination(api.data)
