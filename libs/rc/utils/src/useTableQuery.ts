@@ -108,7 +108,7 @@ export function useTableQuery <
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {
       if (data) {
-        setPagination((prev) => ({ // might need to calculate and see right page in this updater callback
+        setPagination((prev) => ({
           ...prev,
           current: data.page,
           total: data.totalCount
