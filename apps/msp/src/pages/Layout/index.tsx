@@ -13,8 +13,7 @@ import {
   ArrowExpand,
   AccountCircleSolid,
   NotificationSolid,
-  QuestionMarkCircleSolid,
-  SearchOutlined
+  QuestionMarkCircleSolid
 } from '@acx-ui/icons'
 import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
 
@@ -45,7 +44,6 @@ function Layout () {
         }</Dropdown>
       }
       rightHeaderContent={<>
-        <LayoutUI.ButtonOutlined shape='circle' icon={<SearchOutlined />} />
         <LayoutUI.Divider />
         <LayoutUI.ButtonSolid icon={<NotificationSolid />} />
         <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />

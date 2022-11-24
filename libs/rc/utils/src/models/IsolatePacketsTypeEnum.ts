@@ -1,0 +1,5 @@
+export enum IsolatePacketsTypeEnum {
+  UNICAST = 'UNICAST',
+  MULTICAST = 'MULTICAST',
+  UNICAST_MULTICAST = 'UNICAST_MULTICAST',
+}

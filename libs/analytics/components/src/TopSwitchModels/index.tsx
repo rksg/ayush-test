@@ -1,9 +1,9 @@
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter }                                       from '@acx-ui/analytics/utils'
-import type { DonutChartData }                                   from '@acx-ui/components'
-import { Card, Loader, NoData, DonutChart, qualitativeColorSet } from '@acx-ui/components'
+import { AnalyticsFilter }                                                 from '@acx-ui/analytics/utils'
+import type { DonutChartData }                                             from '@acx-ui/components'
+import { HistoricalCard, Loader, NoData, DonutChart, qualitativeColorSet } from '@acx-ui/components'
 
 import { useTopSwitchModelsQuery } from './services'
 
@@ -39,7 +39,7 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 Switch Models' })} >
+      <HistoricalCard title={$t({ defaultMessage: 'Top 5 Switch Models' })}>
         <AutoSizer>
           {({ height, width }) => (
             isDataAvailable ?
@@ -59,7 +59,7 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
               : <NoData />
           )}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }

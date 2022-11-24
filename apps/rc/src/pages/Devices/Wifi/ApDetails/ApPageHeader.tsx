@@ -1,10 +1,16 @@
-import { Dropdown, Menu, MenuProps, Space } from 'antd'
-import { useIntl }                          from 'react-intl'
+import {
+  Dropdown,
+  Menu,
+  MenuProps,
+  Space
+} from 'antd'
+import moment      from 'moment'
+import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }         from '@acx-ui/components'
-import { ClockOutlined, ArrowExpand } from '@acx-ui/icons'
-import { useApActions }               from '@acx-ui/rc/components'
-import { useApDetailHeaderQuery }     from '@acx-ui/rc/services'
+import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { ArrowExpand }                     from '@acx-ui/icons'
+import { useApActions }                    from '@acx-ui/rc/components'
+import { useApDetailHeaderQuery }          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum
@@ -14,11 +20,13 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
 
 import ApTabs from './ApTabs'
 
 function ApPageHeader () {
   const { $t } = useIntl()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { tenantId, serialNumber } = useParams()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
@@ -71,9 +79,14 @@ function ApPageHeader () {
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
       ]}
       extra={[
-        <Button key='date-filter' icon={<ClockOutlined />}>
-          {$t({ defaultMessage: 'Last 24 Hours' })}
-        </Button>,
+        <RangePicker
+          key='date-filter'
+          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+          enableDates={dateRangeForLast(3,'months')}
+          onDateApply={setDateFilter as CallableFunction}
+          showTimePicker
+          selectionType={range}
+        />,
         <Dropdown overlay={menu} key='actionMenu'>
           <Button>
             <Space>

@@ -39,7 +39,6 @@ export const networkTypesDescription: Record<NetworkTypeEnum, MessageDescriptor>
     description: 'Description for Captive Portal'
   })
 }
-/* eslint-enable */
 
 export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
   [WlanSecurityEnum.Open]: defineMessage({
@@ -77,6 +76,10 @@ export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
   [WlanSecurityEnum.WPA3]: defineMessage({
     defaultMessage: 'WPA3',
     description: 'WLAN security type - WPA3'
+  }),
+  [WlanSecurityEnum.None]: defineMessage({
+    defaultMessage: 'None',
+    description: 'WLAN security type - None'
   })
 }
 
@@ -118,6 +121,24 @@ export const aaaServerTypes: Record<AaaServerOrderEnum, MessageDescriptor> = {
   })
 }
 
+export const GuestNetworkTypeLabel: Record<GuestNetworkTypeEnum, string> = {
+  [GuestNetworkTypeEnum.ClickThrough]: 'Click-Through',
+  [GuestNetworkTypeEnum.SelfSignIn]: 'Self Sign In',
+  [GuestNetworkTypeEnum.Cloudpath]: 'Cloudpath Captive Portal',
+  [GuestNetworkTypeEnum.HostApproval]: 'Host Approval',
+  [GuestNetworkTypeEnum.GuestPass]: 'Guest Pass',
+  [GuestNetworkTypeEnum.WISPr]: '3rd Party Captive Portal (WISPr)'
+}
+
+export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> = {
+  [GuestNetworkTypeEnum.ClickThrough]: 'Users just need to accept Terms and Conditions in order to access the network',
+  [GuestNetworkTypeEnum.SelfSignIn]: 'Users can sign in with their social media account or register their details in the portal and get personal password',
+  [GuestNetworkTypeEnum.Cloudpath]: 'Users connect through an enhanced captive portal experience with Cloudpath',
+  [GuestNetworkTypeEnum.HostApproval]: 'Users register their details in the portal including their host email - the host needs to approve the request',
+  [GuestNetworkTypeEnum.GuestPass]: 'Users sign in with personal password which they need to get in advance from the network administration staff',
+  [GuestNetworkTypeEnum.WISPr]: 'Users connect through a 3rd party captive portal, authenticated by a AAA server'
+}
+
 export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, MessageDescriptor>> = {
   [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Settings' }),
   [NetworkTypeEnum.AAA]: defineMessage({ defaultMessage: 'AAA Settings' }),
@@ -153,4 +174,40 @@ export const radiusErrorMessage = {
     defaultMessage: 'One of the values you entered conflicts with an existing accounting server configuration in another network.'
   })
 }
-/* eslint-enable */
+/* eslint-disable max-len */
+export const capativeTypes: Record<GuestNetworkTypeEnum, MessageDescriptor> = {
+  [GuestNetworkTypeEnum.ClickThrough]: defineMessage({ defaultMessage: 'Click-Through' }),
+  [GuestNetworkTypeEnum.SelfSignIn]: defineMessage({ defaultMessage: 'Sefl Sign In' }),
+  [GuestNetworkTypeEnum.Cloudpath]: defineMessage({ defaultMessage: 'Cloudpath Captive Portal' }),
+  [GuestNetworkTypeEnum.HostApproval]: defineMessage({ defaultMessage: 'Host Approval' }),
+  [GuestNetworkTypeEnum.GuestPass]: defineMessage({ defaultMessage: 'Guest Pass' }),
+  [GuestNetworkTypeEnum.WISPr]: defineMessage({ defaultMessage: '3rd Party Captive Portal(WISPr)' })
+}
+
+/* eslint-disable max-len */
+export const capativeTypesDescription: Record<GuestNetworkTypeEnum, MessageDescriptor> = {
+  [GuestNetworkTypeEnum.ClickThrough]: defineMessage({
+    defaultMessage: 'Users just need to accept Terms and Conditions in order to access the network',
+    description: 'Description for Click-Through'
+  }),
+  [GuestNetworkTypeEnum.SelfSignIn]: defineMessage({
+    defaultMessage: 'Users can sign in with their social media account or register their details in the portal and get personal password',
+    description: 'Description for Sefl Sign In'
+  }),
+  [GuestNetworkTypeEnum.Cloudpath]: defineMessage({
+    defaultMessage: 'Users connect through an enhanced captive portal experience with Cloudpath',
+    description: 'Description for Cloudpath Captive Portal'
+  }),
+  [GuestNetworkTypeEnum.HostApproval]: defineMessage({
+    defaultMessage: 'Users register their details in the portal including their host email - the host needs to approve the request',
+    description: 'Description for Host Approval'
+  }),
+  [GuestNetworkTypeEnum.GuestPass]: defineMessage({
+    defaultMessage: 'Users sign in with personal password which they need to get in advance from the network administration staff',
+    description: 'Description for Guest Pass'
+  }),
+  [GuestNetworkTypeEnum.WISPr]: defineMessage({
+    defaultMessage: 'Users connect through a 3rd party captive portal, authenticated by a AAA server',
+    description: 'Description for 3rd Party Captive Portal(WISPr)'
+  })
+}
