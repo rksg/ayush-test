@@ -1,14 +1,10 @@
 
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { useVenuesListQuery } from '@acx-ui/rc/services'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { Provider }                     from '@acx-ui/store'
-import { mockRestApiQuery, renderHook } from '@acx-ui/test-utils'
 
-import { CommonUrlsInfo } from './urls'
-import { useTableQuery }  from './useTableQuery'
-
+import { useVenuesListQuery }            from '@acx-ui/rc/services'
+import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
+import { mockRestApiQuery, renderHook }  from '@acx-ui/test-utils'
 
 describe('useTableQuery', () => {
   const data = [

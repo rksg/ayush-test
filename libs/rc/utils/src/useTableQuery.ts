@@ -106,8 +106,6 @@ export function useTableQuery <
     ...(initialSorter as unknown as Partial<Payload>)
   }
 
-  console.log(initialPagination, initialSorter, initialPayload)
-
   const [pagination, setPagination] = useState(initialPagination)
   const [sorter, setSorter] = useState(initialSorter)
   const [payload, setPayload] = useState(initialPayload)
