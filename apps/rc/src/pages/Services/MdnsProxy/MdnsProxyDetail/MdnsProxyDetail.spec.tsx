@@ -1,14 +1,25 @@
+import { rest } from 'msw'
+
 import {
   getServiceDetailsLink,
   getServiceRoutePath,
+  MdnsProxyUrls,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+
+import { mockedFormData } from '../MdnsProxyForm/__tests__/fixtures'
 
 import MdnsProxyDetail from './MdnsProxyDetail'
 
+mockServer.use(
+  rest.get(
+    MdnsProxyUrls.getMdnsProxy.url,
+    (req, res, ctx) => res(ctx.json({ ...mockedFormData }))
+  )
+)
 
 describe('MdnsProxyDetail', () => {
   const params = {
