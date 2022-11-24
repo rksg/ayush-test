@@ -101,7 +101,7 @@ export default function PortalDemo ({
               style={{ width: 300 }}>
               {viewKeys.map((key =>
                 <Option key={key} value={key}>
-                  {$t(portalViewTypes[key])}}</Option>
+                  {$t(portalViewTypes[key])}</Option>
               ))}
             </UI.Select></div>}
           </div>

@@ -35,7 +35,6 @@ import { GuestPassForm }    from './CaptivePortal/GuestPassForm'
 import { HostApprovalForm } from './CaptivePortal/HostApprovalForm'
 import { OnboardingForm }   from './CaptivePortal/OnboardingForm'
 import { PortalTypeForm }   from './CaptivePortal/PortalTypeForm'
-import { PortalWebForm }    from './CaptivePortal/PortalWebForm'
 import { SelfSignInForm }   from './CaptivePortal/SelfSignInForm'
 import { WISPrForm }        from './CaptivePortal/WISPrForm'
 import {
@@ -55,7 +54,8 @@ import {
   tranferSettingsToSave,
   transferMoreSettingsToSave
 } from './parser'
-import { Venues } from './Venues/Venues'
+import PortalInstance from './PortalInstance'
+import { Venues }     from './Venues/Venues'
 //import PortalInstance from './PortalInstance'
 
 const settingTitle = defineMessage({
@@ -356,7 +356,7 @@ export default function NetworkForm () {
                 title={intl.$t({ defaultMessage: 'Portal Web Page' })}
                 onFinish={handlePortalWebPage}
               >
-                <PortalWebForm />
+                <PortalInstance />
               </StepsForm.StepForm>
           }
           <StepsForm.StepForm

@@ -74,7 +74,7 @@ const PortalInstance = () => {
         </Col>
       </Row>
       {portalServiceID&&<Row>
-        {/* //<PortalDemo value={demoValue} isPreview={true} fromNetwork={true}/> */}
+        <PortalDemo value={demoValue} isPreview={true} fromNetwork={true}/>
       </Row>}
     </>
   )
