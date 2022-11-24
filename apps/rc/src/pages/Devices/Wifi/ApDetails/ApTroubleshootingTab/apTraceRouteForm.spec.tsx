@@ -20,7 +20,7 @@ const pingResponse = {
     { response: 'traceroute to 1.1.1.1 (1.1.1.1)' }
 }
 
-describe('ApSettingsTab', () => {
+describe('ApTraceRouteForm', () => {
 
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())

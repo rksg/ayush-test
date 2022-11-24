@@ -105,36 +105,45 @@ export function ApPacketCaptureForm () {
       const { enable24G, enable50G, enable6G, apRadioParamsDual5G } = apRadioCustomization
 
       if (enable24G) {
-        captureInterfaceOptions.push({ label: '2.4 GHz', value: CaptureInterfaceEnum.RADIO24 })
+        captureInterfaceOptions.push({
+          label: $t({ defaultMessage: '2.4 GHz' }),
+          value: CaptureInterfaceEnum.RADIO24
+        })
       }
 
       if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G.enabled) {
         if (apRadioParamsDual5G.lower5gEnabled) {
           captureInterfaceOptions.push(
-            { label: 'Lower 5 GHz', value: CaptureInterfaceEnum.RADIO50LOWER }
+            {
+              label: $t({ defaultMessage: 'Lower 5 GHz' }),
+              value: CaptureInterfaceEnum.RADIO50LOWER
+            }
           )
         }
         if (apRadioParamsDual5G.upper5gEnabled) {
           captureInterfaceOptions.push(
-            { label: 'Upper 5 GHz', value: CaptureInterfaceEnum.RADIO50UPPER }
+            {
+              label: $t({ defaultMessage: 'Upper 5 GHz' }),
+              value: CaptureInterfaceEnum.RADIO50UPPER
+            }
           )
         }
       } else {
         if (enable50G) {
           captureInterfaceOptions.push(
-            { label: '5 GHz', value: CaptureInterfaceEnum.RADIO50 }
+            { label: $t({ defaultMessage: '5 GHz' }), value: CaptureInterfaceEnum.RADIO50 }
           )
         }
       }
 
       if (supportTriRadio && enable6G) {
         captureInterfaceOptions.push(
-          { label: '6 GHz', value: CaptureInterfaceEnum.RADIO60 }
+          { label: $t({ defaultMessage: '6 GHz' }), value: CaptureInterfaceEnum.RADIO60 }
         )
       }
 
       captureInterfaceOptions.push(
-        { label: 'Wired', value: CaptureInterfaceEnumExtended.WIRED }
+        { label: $t({ defaultMessage: 'Wired' }), value: CaptureInterfaceEnumExtended.WIRED }
       )
 
       setInterfaceOptions(captureInterfaceOptions)
@@ -151,7 +160,9 @@ export function ApPacketCaptureForm () {
         if (lanPort.enabled) {
           const portId = lanPort.portId
           const portValue = 'ETH' + index.toString()
-          lanPortOptions.push({ label: 'LAN' + portId, value: portValue })
+          lanPortOptions.push({
+            label: $t({ defaultMessage: 'LAN' }) + portId, value: portValue
+          })
         }
       })
       setLanPortOptions(lanPortOptions)

@@ -20,7 +20,7 @@ const pingResponse = {
     { response: 'PING 1.1.1.1 (1.1.1.1)' }
 }
 
-describe('ApSettingsTab', () => {
+describe('ApPingForm', () => {
 
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())

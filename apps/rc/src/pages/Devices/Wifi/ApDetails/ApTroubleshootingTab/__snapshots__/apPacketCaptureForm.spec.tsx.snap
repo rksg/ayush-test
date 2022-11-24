@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ApSettingsTab should render correctly 1`] = `
+exports[`ApPacketCaptureForm should render correctly 1`] = `
 <DocumentFragment>
   <form
     class="ant-form ant-form-vertical"

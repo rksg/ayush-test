@@ -561,7 +561,7 @@ export const apRadio = {
   },
   apRadioParamsDual5G: {
     enabled: true,
-    lower5gEnabled: false,
+    lower5gEnabled: true,
     upper5gEnabled: true,
     radioParamsLower5G: {
       channelBandwidth: 'AUTO',
