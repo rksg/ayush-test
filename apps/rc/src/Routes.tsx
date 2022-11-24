@@ -72,6 +72,10 @@ function DeviceRoutes () {
         path='devices/aps/:serialNumber/details/:activeTab'
         element={<ApDetails />}
       />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+        element={<ApDetails />}
+      />
       <Route path='devices/edge/add' element={<AddEdge />} />
       <Route path='devices/switches' element={<SwitchesTable />} />
     </Route>
