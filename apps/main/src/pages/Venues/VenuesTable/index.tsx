@@ -14,9 +14,9 @@ import {
   deviceStatusColors,
   getDeviceConnectionStatusColors
 } from '@acx-ui/components'
-import { useVenuesListQuery, useDeleteVenueMutation }                              from '@acx-ui/rc/services'
-import { useTableQuery, ApDeviceStatusEnum, Venue, ApVenueStatusEnum, TableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                      from '@acx-ui/react-router-dom'
+import { useVenuesListQuery, useDeleteVenueMutation }                                              from '@acx-ui/rc/services'
+import { useTableQuery, ApDeviceStatusEnum, Venue, ApVenueStatusEnum, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }                                                      from '@acx-ui/react-router-dom'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -172,12 +172,7 @@ export const defaultVenuePayload = {
 }
 
 type VenueTableProps = {
-  tableQuery: TableQuery<Venue, {
-    fields: string[];
-    filters: {};
-    sortField: string;
-    sortOrder: string;
-  }, unknown>
+  tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>
   globalSearch?: string
 }
 
@@ -242,7 +237,7 @@ export const VenueTable = ({ tableQuery, globalSearch }: VenueTableProps) => {
 export function VenuesTable () {
   const { $t } = useIntl()
 
-  const tableQuery = useTableQuery({
+  const tableQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
     useQuery: useVenuesListQuery,
     defaultPayload: defaultVenuePayload
   })

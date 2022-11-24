@@ -3,9 +3,9 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridRow, GridCol, PageHeader } from '@acx-ui/components'
-import { useVenuesListQuery }           from '@acx-ui/rc/services'
-import { useTableQuery }                from '@acx-ui/rc/utils'
+import { GridRow, GridCol, PageHeader }         from '@acx-ui/components'
+import { useVenuesListQuery }                   from '@acx-ui/rc/services'
+import { RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
 
 import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
@@ -63,7 +63,7 @@ function SearchResult () {
     searchTargetFields: ['name', 'description']
   }
 
-  const tableQuery = useTableQuery({
+  const tableQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
     useQuery: useVenuesListQuery,
     defaultPayload: searchPayload,
     pagination: {

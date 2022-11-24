@@ -113,5 +113,17 @@ describe('useTableQuery', () => {
     rerender()
     expect(result.current.data).toStrictEqual({ data: mockedVenuesList })
 
+    act(() => {
+      const handleTableChange = result.current.handleTableChange as CallableFunction
+      expect(handleTableChange).toBeDefined()
+      handleTableChange(
+        { pageSize: 5 },
+        {},
+        { sortField: 'name', sortOrder: 'ASC' },
+        {}
+      )
+
+      expect(result.current.pagination.pageSize).toEqual(5)
+    })
   })
 })
