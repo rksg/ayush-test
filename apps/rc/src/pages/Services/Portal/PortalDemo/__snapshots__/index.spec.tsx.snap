@@ -123,10 +123,9 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
             class="styledComponents__FieldExtraTooltip-sc-cby53p-14 eLVmeY"
           >
             <svg
+              data-testid="QuestionMarkCircleOutlined"
               width="16"
-            >
-              QuestionMarkCircleOutlined.svg
-            </svg>
+            />
           </div>
         </div>
         <div
@@ -134,22 +133,19 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
         >
           <svg
             class="styledComponents__DesktopOutlined-sc-cby53p-52 jdArsH"
+            data-testid="DesktopOutlined"
             title="deskicon"
-          >
-            DesktopOutlined.svg
-          </svg>
+          />
           <svg
             class="styledComponents__TabletOutlined-sc-cby53p-51 harqqd"
+            data-testid="TabletOutlined"
             title="tableticon"
-          >
-            TabletOutlined.svg
-          </svg>
+          />
           <svg
             class="styledComponents__MobileOutlined-sc-cby53p-53 bCsSrR"
+            data-testid="MobilePhoneOutlined"
             title="mobileicon"
-          >
-            MobilePhoneOutlined.svg
-          </svg>
+          />
         </div>
         <div
           style="flex-basis: auto; text-align: right; padding-right: 40px;"
@@ -423,10 +419,9 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
             class="styledComponents__FieldExtraTooltip-sc-cby53p-14 eLVmeY"
           >
             <svg
+              data-testid="QuestionMarkCircleOutlined"
               width="16"
-            >
-              QuestionMarkCircleOutlined.svg
-            </svg>
+            />
           </div>
         </div>
         <div
@@ -434,22 +429,19 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
         >
           <svg
             class="styledComponents__DesktopOutlined-sc-cby53p-52 jdArsH"
+            data-testid="DesktopOutlined"
             title="deskicon"
-          >
-            DesktopOutlined.svg
-          </svg>
+          />
           <svg
             class="styledComponents__TabletOutlined-sc-cby53p-51 harqqd"
+            data-testid="TabletOutlined"
             title="tableticon"
-          >
-            TabletOutlined.svg
-          </svg>
+          />
           <svg
             class="styledComponents__MobileOutlined-sc-cby53p-53 bCsSrR"
+            data-testid="MobilePhoneOutlined"
             title="mobileicon"
-          >
-            MobilePhoneOutlined.svg
-          </svg>
+          />
         </div>
         <div
           style="flex-basis: auto; text-align: right; padding-right: 5px;"
@@ -487,11 +479,10 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
     >
       <svg
         class="styledComponents__PictureOutlined-sc-cby53p-54 bFJPWe styledComponents__Popover-sc-cby53p-41"
+        data-testid="PictureSolid"
         style="position: absolute; left: 10px; top: 60px; cursor: pointer;"
         title="background setting"
-      >
-        PictureSolid.svg
-      </svg>
+      />
       <section
         class="ant-layout styledComponents__LayoutView-sc-cby53p-9 gMkhdZ"
         style="background-image: url();"

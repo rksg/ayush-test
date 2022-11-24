@@ -677,9 +677,9 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                   title=""
                                                 >
                                                   Port type
-                                                  <svg>
-                                                    QuestionMarkCircleOutlined.svg
-                                                  </svg>
+                                                  <svg
+                                                    data-testid="QuestionMarkCircleOutlined"
+                                                  />
                                                 </label>
                                               </div>
                                               <div
@@ -770,9 +770,9 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                   title=""
                                                 >
                                                   VLAN untag ID
-                                                  <svg>
-                                                    QuestionMarkCircleOutlined.svg
-                                                  </svg>
+                                                  <svg
+                                                    data-testid="QuestionMarkCircleOutlined"
+                                                  />
                                                 </label>
                                               </div>
                                               <div
@@ -883,9 +883,9 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                   title=""
                                                 >
                                                   VLAN member
-                                                  <svg>
-                                                    QuestionMarkCircleOutlined.svg
-                                                  </svg>
+                                                  <svg
+                                                    data-testid="QuestionMarkCircleOutlined"
+                                                  />
                                                 </label>
                                               </div>
                                               <div
@@ -1012,9 +1012,9 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                   title=""
                                                 >
                                                   Port type
-                                                  <svg>
-                                                    QuestionMarkCircleOutlined.svg
-                                                  </svg>
+                                                  <svg
+                                                    data-testid="QuestionMarkCircleOutlined"
+                                                  />
                                                 </label>
                                               </div>
                                               <div
@@ -1105,9 +1105,9 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                   title=""
                                                 >
                                                   VLAN untag ID
-                                                  <svg>
-                                                    QuestionMarkCircleOutlined.svg
-                                                  </svg>
+                                                  <svg
+                                                    data-testid="QuestionMarkCircleOutlined"
+                                                  />
                                                 </label>
                                               </div>
                                               <div
@@ -1218,9 +1218,9 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                                   title=""
                                                 >
                                                   VLAN member
-                                                  <svg>
-                                                    QuestionMarkCircleOutlined.svg
-                                                  </svg>
+                                                  <svg
+                                                    data-testid="QuestionMarkCircleOutlined"
+                                                  />
                                                 </label>
                                               </div>
                                               <div

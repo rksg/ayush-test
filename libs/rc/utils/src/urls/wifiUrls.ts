@@ -149,10 +149,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
   },
-  getApLanPorts: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
-  },
   updateApLanPorts: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
