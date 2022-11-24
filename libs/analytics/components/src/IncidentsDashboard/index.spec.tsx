@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom'
+import { BrowserRouter } from 'react-router-dom'
+
 import { dataApiURL }         from '@acx-ui/analytics/services'
 import { IncidentFilter }     from '@acx-ui/analytics/utils'
 import { Path }               from '@acx-ui/react-router-dom'
@@ -41,10 +43,13 @@ describe('IncidentDashboard', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
       data: { network: { hierarchyNode: expectedIncidentDashboardData } }
     })
-    const { asFragment } = render(<Provider>
-      <IncidentsDashboard filters={filters} />
-    </Provider>)
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+    const { asFragment } = render(
+      <BrowserRouter>
+        <Provider>
+          <IncidentsDashboard filters={filters} />
+        </Provider>
+      </BrowserRouter>)
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('2 clients impacted')
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
