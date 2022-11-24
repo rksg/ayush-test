@@ -8,11 +8,6 @@ import { DateRange, getIntl }               from '@acx-ui/utils'
 
 import HealthPill from './Pill'
 
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  InformationOutlined: (props: {}) => <div data-testid='information-outlined' {...props} />
-}))
-
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
@@ -195,7 +190,7 @@ describe('Pill without kpi threshold', () => {
     const { tooltip } = kpiConfig['onlineAPs'].pill
     const { $t } = getIntl()
     await screen.findByText('Online APs')
-    const infoIcon = await screen.findByTestId('information-outlined')
+    const infoIcon = await screen.findByTestId('InformationOutlined')
     await userEvent.hover(infoIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent($t(tooltip, { br: '\n' }).replace('\n', '').replace('\n', ' '))
