@@ -8,11 +8,6 @@ import { DateRange } from '@acx-ui/utils'
 
 import { RangePicker } from '.'
 
-jest.mock('@acx-ui/icons', () => ({
-  CaretDownSolid: () => <div>CaretDownSolid</div>,
-  ClockOutlined: () => <div>ClockOutlined</div>
-}))
-
 describe('CalenderRangePicker', () => {
   it('should render default CalenderRangePicker', () => {
     const { asFragment } = render(

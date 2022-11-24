@@ -105,6 +105,10 @@ export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
   [WlanSecurityEnum.WPA3]: defineMessage({
     defaultMessage: 'WPA3',
     description: 'WLAN security type - WPA3'
+  }),
+  [WlanSecurityEnum.None]: defineMessage({
+    defaultMessage: 'None',
+    description: 'WLAN security type - None'
   })
 }
 

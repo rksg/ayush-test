@@ -6,7 +6,7 @@ exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
       type="default"
     >
       <div
@@ -22,9 +22,25 @@ exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
-                Top 5 SSIDs by Traffic
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 4px;"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  >
+                    Top 5 SSIDs by Traffic
+                  </div>
+                </div>
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    data-testid="HistoricalOutlined"
+                  />
+                </div>
               </div>
             </div>
             <div
@@ -49,7 +65,7 @@ exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
                 class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
                 >
                   <div
                     class="ant-space-item"

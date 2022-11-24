@@ -3,7 +3,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
-  Card,
+  HistoricalCard,
   Loader,
   Table,
   NoData } from '@acx-ui/components'
@@ -85,7 +85,7 @@ function TopSwitchesByErrorWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 Switches by Error' })}>
+      <HistoricalCard title={$t({ defaultMessage: 'Top 5 Switches by Error' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
@@ -93,7 +93,7 @@ function TopSwitchesByErrorWidget ({
             </div>
           )}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }
