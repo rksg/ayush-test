@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Badge, Select, Button, List } from 'antd'
 import { useIntl }                     from 'react-intl'
 
-import { LayoutUI, GridRow, GridCol, Drawer, Loader } from '@acx-ui/components'
-import { NotificationSolid }                          from '@acx-ui/icons'
-import { useDashboardOverviewQuery }                  from '@acx-ui/rc/services'
+import { LayoutUI, GridRow, GridCol, Drawer, Loader, Tooltip } from '@acx-ui/components'
+import { NotificationSolid }                                   from '@acx-ui/icons'
+import { useDashboardOverviewQuery }                           from '@acx-ui/rc/services'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
@@ -14,7 +14,7 @@ import { Alarm, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                from '@acx-ui/react-router-dom'
 import { formatter }                            from '@acx-ui/utils'
 
-import { ListItem, AcknowledgeCircle, WarningCircle } from './styledComponents'
+import { ListItem, AcknowledgeCircle, WarningCircle, ClearButton } from './styledComponents'
 
 
 const defaultArray: Alarm[] = []
@@ -128,13 +128,19 @@ export default function AlarmsHeaderButton () {
         dataSource={tableData}
         renderItem={(item) => (
 
-          <ListItem actions={[<Button
-            ghost={true}
-            icon={<AcknowledgeCircle/>}
-            onClick={()=>{
-              clearAlarm({ params: { ...params, alarmId: item.id } })
-            }}
-          />]}>
+          <ListItem actions={[
+            <Tooltip placement='topLeft'
+              title={$t({ defaultMessage: 'Clear this alarm' })}
+              arrowPointAtCenter>
+              <ClearButton
+                ghost={true}
+                icon={<AcknowledgeCircle/>}
+                onClick={()=>{
+                  // clearAlarm({ params: { ...params, alarmId: item.id } })
+                }}
+              />
+            </Tooltip>
+          ]}>
             <List.Item.Meta
               avatar={<WarningCircle />}
               title={item.message}

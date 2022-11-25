@@ -21,6 +21,7 @@ export default function About (props: {
   const { data } = useGetCloudVersionQuery({ params })
 
   return <AboutModal
+    data-testid={'modal-about-id'}
     visible={props.modalState}
     width={320}
     centered

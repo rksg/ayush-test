@@ -18,7 +18,7 @@ export default function Firewall (props: {
     visible={props.modalState}
     onClose={() => props.setIsModalOpen(false)}
     mask={true}
-    children={<>
+    children={<div data-testid={'drawer-firewall-id'}>
       <GridRow style={{ paddingBottom: 5 }}>
         <GridCol col={{ span: 24 }}>
           <Description>
@@ -65,7 +65,8 @@ export default function Firewall (props: {
           <CopyableText color={'var(--acx-primary-black)'}>device.asia.ruckus.cloud</CopyableText>
         </GridCol>
       </GridRow>
-    </>}
+    </div>
+    }
     destroyOnClose={true}
     width={420}
   />

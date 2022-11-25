@@ -1,7 +1,12 @@
-import { ExportOutlined, CheckCircleFilled }                from '@ant-design/icons'
-import { Popover as AntPopover, PopoverProps, Modal, List } from 'antd'
-import { Typography }                                       from 'antd'
-import styled                                               from 'styled-components/macro'
+import { ExportOutlined, CheckCircleFilled } from '@ant-design/icons'
+import { Popover as AntPopover,
+  PopoverProps,
+  Modal,
+  List,
+  Button,
+  Typography
+} from 'antd'
+import styled from 'styled-components/macro'
 
 import { LayoutUI, GridRow, GridCol } from '@acx-ui/components'
 import { WarningCircleSolid }         from '@acx-ui/icons'
@@ -135,6 +140,10 @@ export const ListItem = styled(List.Item)`
 `
 export const AcknowledgeCircle = styled(CheckCircleFilled)`
   color: var(--acx-neutrals-30);
+  :hover {
+    color: var(--acx-semantics-green-60);
+    border: none;
+  }
 `
 export const VersionContainer = styled.div`
   font-weight: 400;
@@ -142,4 +151,8 @@ export const VersionContainer = styled.div`
   font-style: normal;
   font-size: 10px;
   color: var(--acx-neutrals-40)
+`
+
+export const ClearButton = styled(Button)`
+  border: none;
 `
