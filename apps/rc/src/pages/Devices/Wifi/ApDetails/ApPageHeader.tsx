@@ -52,7 +52,7 @@ function ApPageHeader () {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={currentApOperational ? [{
+      items={[{
         label: $t({ defaultMessage: 'Reboot' }),
         key: 'reboot'
       }, {
@@ -62,14 +62,12 @@ function ApPageHeader () {
         label: $t({ defaultMessage: 'Blink LEDs' }),
         key: 'blinkLed'
       }, {
-        type: 'divider'
+        type: 'divider',
+        key: 'divider'
       }, {
         label: $t({ defaultMessage: 'Delete AP' }),
         key: 'delete'
-      }] : [{
-        label: $t({ defaultMessage: 'Delete AP' }),
-        key: 'delete'
-      }]}
+      }].filter(item => currentApOperational || item.key === 'delete')}
     />
   )
   return (
