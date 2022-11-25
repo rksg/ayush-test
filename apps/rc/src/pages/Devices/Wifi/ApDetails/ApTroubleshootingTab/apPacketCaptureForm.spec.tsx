@@ -147,38 +147,6 @@ describe('ApPacketCaptureForm', () => {
     expect(await screen.findByText(/2\.4 ghz/i)).toBeVisible()
   })
 
-  it('should select wired correctly', async () => {
-    mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getPacketCaptureState.url,
-        (req, res, ctx) => {
-          return res(ctx.json(packetCaptureIdleResponse))}
-      )
-    )
-    render(
-      <Provider>
-        <ApPacketCaptureForm />
-      </Provider>, { route: { params } })
-
-    expect(await screen.findByText(/2\.4 ghz/i)).toBeVisible()
-    fireEvent.mouseDown(await screen.findByText(/2\.4 ghz/i))
-    await userEvent.click(await screen.getAllByText('Wired')[0])
-    expect(await screen.findByText(/lan port:/i)).toBeVisible()
-    const macAddressField = screen.getByRole('textbox', {
-      name: /mac address filter:/i
-    })
-    fireEvent.change(macAddressField, { target: { value: 'AA:AA:AA:AA:AA:AA' } })
-
-    await userEvent.click(screen.getByRole('button', {
-      name: /Start/i
-    }))
-
-    expect(await screen.findByText(/capturing\.\.\./i)).toBeVisible()
-    await userEvent.click(screen.getByRole('button', {
-      name: /Stop/i
-    }))
-  })
-
   it('should render enable50G correctly', async () => {
     const apRadioResponse = { ...apRadio, enable24G: false, enable50G: true }
     let capResponse = _.cloneDeep(r650Cap)
@@ -246,6 +214,38 @@ describe('ApPacketCaptureForm', () => {
     }))
     expect(await screen.findByText('An error occurred')).toBeVisible()
   })
+
+  it('should select wired correctly', async () => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => {
+          return res(ctx.json(packetCaptureIdleResponse))}
+      )
+    )
+    render(
+      <Provider>
+        <ApPacketCaptureForm />
+      </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/2\.4 ghz/i)).toBeVisible()
+    fireEvent.mouseDown(await screen.findByText(/2\.4 ghz/i))
+    await userEvent.click(await screen.getAllByText('Wired')[0])
+    expect(await screen.findByText(/lan port:/i)).toBeVisible()
+    const macAddressField = screen.getByRole('textbox', {
+      name: /mac address filter:/i
+    })
+    fireEvent.change(macAddressField, { target: { value: 'AA:AA:AA:AA:AA:AA' } })
+
+    await userEvent.click(screen.getByRole('button', {
+      name: /Start/i
+    }))
+
+    expect(await screen.findByText(/capturing\.\.\./i)).toBeVisible()
+    await userEvent.click(screen.getByRole('button', {
+      name: /Stop/i
+    }))
+  })
 })
 
 describe('ApPacketCaptureForm - validation', () => {
@@ -292,5 +292,6 @@ describe('ApPacketCaptureForm - validation', () => {
     }))
     expect(await screen.findByText(/capturing\.\.\./i)).toBeVisible()
   })
+
 
 })
