@@ -81,19 +81,21 @@ const transformMeshRole = (value: APMeshRole) => {
   return transformDisplayText(meshRole)
 }
 
-const APStatus = function ({ status }: { status: ApDeviceStatusEnum }) {
+export const APStatus = (
+  { status, showText = true }: { status: ApDeviceStatusEnum, showText?: boolean }
+) => {
   const intl = useIntl()
   const apStatus = transformApStatus(intl, status, APView.AP_LIST)
   return (
     <span>
       <Badge color={handleStatusColor(apStatus.deviceStatus)}
-        text={apStatus.message}
+        text={showText ? apStatus.message : ''}
       />
     </span>
   )
 }
 
-export interface ApTableProps
+interface ApTableProps
   extends Omit<TableProps<AP>, 'columns'> {
 }
 

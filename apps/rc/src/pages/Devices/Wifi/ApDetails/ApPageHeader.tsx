@@ -1,14 +1,13 @@
-import { Badge, Dropdown, Menu, Space } from 'antd'
-import { useIntl }                      from 'react-intl'
+import { Dropdown, Menu, Space } from 'antd'
+import { useIntl }               from 'react-intl'
 
-import { Button, deviceStatusColors, PageHeader } from '@acx-ui/components'
-import { ClockOutlined, ArrowExpand }             from '@acx-ui/icons'
-import { useApDetailHeaderQuery }                 from '@acx-ui/rc/services'
+import { Button, PageHeader }         from '@acx-ui/components'
+import { ClockOutlined, ArrowExpand } from '@acx-ui/icons'
+import { APStatus }                   from '@acx-ui/rc/components'
+import { useApDetailHeaderQuery }     from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
-  ApDeviceStatusEnum,
-  APView,
-  transformApStatus
+  ApDeviceStatusEnum
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -19,7 +18,7 @@ import {
 import ApTabs from './ApTabs'
 
 function ApPageHeader () {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
 
@@ -38,49 +37,43 @@ function ApPageHeader () {
       // onClick={handleMenuClick}
       items={[
         {
-          label: intl.$t({ defaultMessage: 'Reboot' }),
+          label: $t({ defaultMessage: 'Reboot' }),
           key: '1'
         },
         {
-          label: intl.$t({ defaultMessage: 'Download Log' }),
+          label: $t({ defaultMessage: 'Download Log' }),
           key: '2'
         },
         {
-          label: intl.$t({ defaultMessage: 'Blink LEDs' }),
+          label: $t({ defaultMessage: 'Blink LEDs' }),
           key: '3'
         },
         {
           type: 'divider'
         },
         {
-          label: intl.$t({ defaultMessage: 'Delete AP' }),
+          label: $t({ defaultMessage: 'Delete AP' }),
           key: '4'
         }
       ]}
     />
   )
 
-  const APStatus = function () {
-    const apStatus = transformApStatus(intl, status, APView.AP_LIST)
-    return <Badge color={`var(${deviceStatusColors[apStatus.deviceStatus]})`}
-      text={currentApOperational ? '' : apStatus.message}/>
-  }
-
   return (
     <PageHeader
       title={data?.title || ''}
-      titleExtra={<APStatus />}
+      titleExtra={<APStatus status={status} showText={!currentApOperational} />}
       breadcrumb={[
-        { text: intl.$t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
+        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
       ]}
       extra={[
         <Button key='date-filter' icon={<ClockOutlined />}>
-          {intl.$t({ defaultMessage: 'Last 24 Hours' })}
+          {$t({ defaultMessage: 'Last 24 Hours' })}
         </Button>,
         <Dropdown overlay={menu} key='actionMenu'>
           <Button>
             <Space>
-              {intl.$t({ defaultMessage: 'More Actions' })}
+              {$t({ defaultMessage: 'More Actions' })}
               <ArrowExpand />
             </Space>
           </Button>
@@ -94,7 +87,7 @@ function ApPageHeader () {
               pathname: `${basePath.pathname}/edit/details`
             })
           }
-        >{intl.$t({ defaultMessage: 'Configure' })}</Button>
+        >{$t({ defaultMessage: 'Configure' })}</Button>
       ]}
       footer={<ApTabs apDetail={data as ApDetailHeader} />}
     />
