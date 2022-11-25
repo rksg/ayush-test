@@ -179,30 +179,6 @@ describe('ApPacketCaptureForm', () => {
     }))
   })
 
-  it('should validate field correctly', async () => {
-    mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getPacketCaptureState.url,
-        (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse))
-      )
-    )
-    render(
-      <Provider>
-        <ApPacketCaptureForm />
-      </Provider>, { route: { params } })
-
-    const macAddressField = screen.getByRole('textbox', {
-      name: /mac address filter:/i
-    })
-    fireEvent.change(macAddressField, { target: { value: 'test' } })
-    expect(await screen.findByText('This field is invalid')).toBeVisible()
-    fireEvent.change(macAddressField, { target: { value: 'AA:AA:AA:AA:AA:AA' } })
-    await userEvent.click(screen.getByRole('button', {
-      name: /Start/i
-    }))
-    expect(await screen.findByText(/capturing\.\.\./i)).toBeVisible()
-  })
-
   it('should render enable50G correctly', async () => {
     const apRadioResponse = { ...apRadio, enable24G: false, enable50G: true }
     let capResponse = _.cloneDeep(r650Cap)
@@ -270,4 +246,51 @@ describe('ApPacketCaptureForm', () => {
     }))
     expect(await screen.findByText('An error occurred')).toBeVisible()
   })
+})
+
+describe('ApPacketCaptureForm - validation', () => {
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    mockServer.use(
+      rest.get(WifiUrlsInfo.getApRadioCustomization.url,
+        (req, res, ctx) => res(ctx.json(apRadio))),
+      rest.get(WifiUrlsInfo.getApLanPorts.url,
+        (req, res, ctx) => res(ctx.json(apLanPort))),
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (req, res, ctx) => res(ctx.json(r650ap))),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (req, res, ctx) => res(ctx.json(r650Cap))),
+      rest.post(WifiUrlsInfo.startPacketCapture.url,
+        (req, res, ctx) => res(ctx.json(startPacketCackture))),
+      rest.post(WifiUrlsInfo.stopPacketCapture.url,
+        (req, res, ctx) => res(ctx.json(stopPacketCapture))),
+      rest.get(WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse)))
+    )
+  })
+
+  it('should validate field correctly', async () => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getPacketCaptureState.url,
+        (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse))
+      )
+    )
+    render(
+      <Provider>
+        <ApPacketCaptureForm />
+      </Provider>, { route: { params } })
+
+    const macAddressField = screen.getByRole('textbox', {
+      name: /mac address filter:/i
+    })
+    fireEvent.change(macAddressField, { target: { value: 'test' } })
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
+    fireEvent.change(macAddressField, { target: { value: 'AA:AA:AA:AA:AA:AA' } })
+    await userEvent.click(screen.getByRole('button', {
+      name: /Start/i
+    }))
+    expect(await screen.findByText(/capturing\.\.\./i)).toBeVisible()
+  })
+
 })
