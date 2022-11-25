@@ -24,7 +24,7 @@ const MspRoutes = React.lazy(() => import('msp/Routes'))
 function AllRoutes () {
   return rootRoutes(
     <>
-      <Route path='t/:tenantId' element={<SplitProvider><Layout /></SplitProvider>}>
+      <Route path='t/:tenantId' element={<Layout />}>
         <Route index element={<TenantNavigate replace to='/dashboard' />} />
         <Route path='dashboard' element={<Dashboard />} />
         <Route path='analytics/*' element={<AnalyticsBase />}>
