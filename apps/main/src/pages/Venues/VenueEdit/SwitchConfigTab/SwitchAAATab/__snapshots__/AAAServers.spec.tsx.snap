@@ -113,9 +113,9 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                     <div
                                       class="ant-pro-table-list-toolbar-setting-item"
                                     >
-                                      <svg>
-                                        SettingsOutlined.svg
-                                      </svg>
+                                      <svg
+                                        data-testid="SettingsOutlined"
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -170,9 +170,9 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                               title="Clear selection"
                                               type="button"
                                             >
-                                              <svg>
-                                                CancelCircle.svg
-                                              </svg>
+                                              <svg
+                                                data-testid="CancelCircle"
+                                              />
                                             </button>
                                           </div>
                                         </div>
@@ -722,9 +722,9 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                     <div
                                       class="ant-pro-table-list-toolbar-setting-item"
                                     >
-                                      <svg>
-                                        SettingsOutlined.svg
-                                      </svg>
+                                      <svg
+                                        data-testid="SettingsOutlined"
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -1073,9 +1073,9 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                     <div
                                       class="ant-pro-table-list-toolbar-setting-item"
                                     >
-                                      <svg>
-                                        SettingsOutlined.svg
-                                      </svg>
+                                      <svg
+                                        data-testid="SettingsOutlined"
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -1301,9 +1301,8 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
       >
         <svg
           class="ant-alert-icon"
-        >
-          InformationSolid.svg
-        </svg>
+          data-testid="InformationSolid"
+        />
         <div
           class="ant-alert-content"
         >
@@ -1419,9 +1418,9 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                                     <div
                                       class="ant-pro-table-list-toolbar-setting-item"
                                     >
-                                      <svg>
-                                        SettingsOutlined.svg
-                                      </svg>
+                                      <svg
+                                        data-testid="SettingsOutlined"
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -1770,9 +1769,9 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                                     <div
                                       class="ant-pro-table-list-toolbar-setting-item"
                                     >
-                                      <svg>
-                                        SettingsOutlined.svg
-                                      </svg>
+                                      <svg
+                                        data-testid="SettingsOutlined"
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -2121,9 +2120,9 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                                     <div
                                       class="ant-pro-table-list-toolbar-setting-item"
                                     >
-                                      <svg>
-                                        SettingsOutlined.svg
-                                      </svg>
+                                      <svg
+                                        data-testid="SettingsOutlined"
+                                      />
                                     </div>
                                   </div>
                                 </div>

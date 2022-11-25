@@ -9,22 +9,25 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
-import ApDetails         from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }        from './pages/Devices/Wifi/ApEdit'
-import { ApForm }        from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }   from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable          from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable     from './pages/Networks/NetworksTable'
-import PoliciesTable     from './pages/Policies/PoliciesTable'
-import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
-import DHCPDetail        from './pages/Services/DHCPDetail'
-import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
-import MdnsProxyDetail   from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
-import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import SelectServiceForm from './pages/Services/SelectServiceForm'
+import AddEdge             from './pages/Devices/Edge/AddEdge'
+import SwitchesTable       from './pages/Devices/Switch/SwitchesTable'
+import ApDetails           from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }          from './pages/Devices/Wifi/ApEdit'
+import { ApForm }          from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }     from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable            from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails      from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm         from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable       from './pages/Networks/NetworksTable'
+import PoliciesTable       from './pages/Policies/PoliciesTable'
+import SelectPolicyForm    from './pages/Policies/SelectPolicyForm'
+import DHCPDetail          from './pages/Services/DHCPDetail'
+import DHCPForm            from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyDetail     from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
+import MdnsProxyForm       from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import PortalServiceDetail from './pages/Services/Portal/PortalDetail'
+import PortalForm          from './pages/Services/Portal/PortalForm/PortalForm'
+import SelectServiceForm   from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,
@@ -35,6 +38,8 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import UserApDetails            from './pages/Users/Wifi/ApDetails'
+import UserApList               from './pages/Users/Wifi/ApList'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -43,6 +48,7 @@ export default function RcRoutes () {
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
       <Route path='policies/*' element={<PolicyRoutes />} />
+      <Route path='users/*' element={<UserRoutes />} />
     </Route>
   )
   return (
@@ -66,6 +72,11 @@ function DeviceRoutes () {
         path='devices/aps/:serialNumber/details/:activeTab'
         element={<ApDetails />}
       />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+        element={<ApDetails />}
+      />
+      <Route path='devices/edge/add' element={<AddEdge />} />
       <Route path='devices/switches' element={<SwitchesTable />} />
     </Route>
   )
@@ -131,6 +142,18 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<DHCPDetail/>}
       />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
+        element={<PortalForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
+        element={<PortalForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
+        element={<PortalServiceDetail/>}
+      />
     </Route>
   )
 }
@@ -155,6 +178,18 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<h1>Rogue AP detection details page</h1>}
       />
+    </Route>
+  )
+}
+
+function UserRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='users' element={<TenantNavigate replace to='/users/aps/clients' />} />
+      <Route path='users/aps' element={<TenantNavigate replace to='/users/aps/clients' />} />
+      <Route path='users/aps/:activeTab' element={<UserApList />} />
+      <Route path='users/aps/:userId/details/' element={<UserApDetails />} />
+      <Route path='users/aps/:userId/details/:activeTab' element={<UserApDetails />} />
     </Route>
   )
 }

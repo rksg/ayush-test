@@ -46,7 +46,7 @@ export const showToast = (config: ToastProps): string | number => {
 const toastContent = (key: string | number, config: ToastProps) => {
   const { content, extraContent, link, type: toastType, onClose, closable = true } = config
   return (
-    <UI.Toast>
+    <UI.Toast data-testid='toast-content'>
       <UI.Content>
         <label>{content}</label>
         { extraContent || null }
