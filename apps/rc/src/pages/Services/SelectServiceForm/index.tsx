@@ -74,12 +74,12 @@ export default function SelectServiceForm () {
                       {$t(serviceTypeDescMapping[ServiceType.DPSK])}
                     </UI.RadioDescription>
                   </Radio>
-                  <Radio key={ServiceType.NETWROK_SEGMENTATION}
-                    value={ServiceType.NETWROK_SEGMENTATION}>
+                  <Radio key={ServiceType.NETWORK_SEGMENTATION}
+                    value={ServiceType.NETWORK_SEGMENTATION}>
 
-                    {$t(serviceTypeLabelMapping[ServiceType.NETWROK_SEGMENTATION])}
+                    {$t(serviceTypeLabelMapping[ServiceType.NETWORK_SEGMENTATION])}
                     <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.NETWROK_SEGMENTATION])}
+                      {$t(serviceTypeDescMapping[ServiceType.NETWORK_SEGMENTATION])}
                     </UI.RadioDescription>
                   </Radio>
                 </Space>
