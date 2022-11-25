@@ -2,12 +2,13 @@ import { get } from 'lodash'
 
 import {
   NetworkTypeEnum,
-  CreateNetworkFormFields,
   NetworkSaveData,
   OpenWlanAdvancedCustomization,
   AAAWlanAdvancedCustomization,
   DpskWlanAdvancedCustomization,
   PskWlanAdvancedCustomization,
+  GuestWlanAdvancedCustomization,
+  WlanSecurityEnum,
   RfBandUsageEnum,
   PhyTypeConstraintEnum
 } from '@acx-ui/rc/utils'
@@ -154,6 +155,25 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
   return saveData
 }
 
+const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
+  let saveData = { ...data,
+    ...{
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.None,
+        bypassCPUsingMacAddressAuthentication: true,
+        advancedCustomization: new GuestWlanAdvancedCustomization(),
+        macAddressAuthentication: false,
+        vlanId: 1,
+        enabled: true,
+        bypassCNA: false
+      }
+    }
+  }
+  saveData.type = data.type
+  saveData.guestPortal = { ...data.guestPortal }
+  return saveData
+}
+
 const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData
   if (editMode) {
@@ -285,7 +305,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   return saveData
 }
 
-export function transferDetailToSave (data: CreateNetworkFormFields) {
+export function transferDetailToSave (data: NetworkSaveData) {
   return {
     name: data.name,
     description: data.description,
@@ -301,6 +321,7 @@ export function tranferSettingsToSave (data: NetworkSaveData, editMode: boolean)
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data, editMode),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data, editMode),
     [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data, editMode),
+    [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data),
     [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data, editMode)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]

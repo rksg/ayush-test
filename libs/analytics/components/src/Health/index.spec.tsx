@@ -12,11 +12,6 @@ import { header, networkHierarchy } from '../__tests__/fixtures'
 
 import { HealthPage } from '.'
 
-
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  ClockOutlined: () => <div data-testid='clock-outlined'/>
-}))
 const mockedUseNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

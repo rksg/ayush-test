@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, AnalyticsFilter }                 from '@acx-ui/analytics/utils'
-import { Card, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                      from '@acx-ui/utils'
+import { getSeriesData, AnalyticsFilter }                           from '@acx-ui/analytics/utils'
+import { HistoricalCard, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { formatter }                                                from '@acx-ui/utils'
 
 import {
   useSwitchesTrafficByVolumeQuery,
@@ -28,7 +28,7 @@ export function SwitchesTrafficByVolume ({ filters }: { filters : AnalyticsFilte
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Traffic by Volume' })} >
+      <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
@@ -40,7 +40,7 @@ export function SwitchesTrafficByVolume ({ filters }: { filters : AnalyticsFilte
               : <NoData/>
           )}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }

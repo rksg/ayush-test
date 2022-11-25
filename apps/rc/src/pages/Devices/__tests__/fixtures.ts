@@ -23,8 +23,7 @@ export const venuelist = {
       latitude: '40.769141',
       longitude: '-73.9429713',
       name: 'My-Venue'
-    },
-    {
+    }, {
       country: 'Malaysia',
       dhcp: { enabled: true, mode: 'DHCPMODE_EACH_AP' },
       id: 'a4f9622e9c7547ba934fbb5ee55646c2',
@@ -46,21 +45,6 @@ export const venuelist = {
       name: 'Venue-MESH'
     }
   ]
-}
-
-export const venueDetail = {
-  id: '16b11938ee934928a796534e2ee47661',
-  createdDate: '2022-11-02T10:43:27.921+00:00',
-  updatedDate: '2022-11-02T10:43:27.921+00:00',
-  name: 'venue-dhcp-ui',
-  address: {
-    country: 'United States',
-    city: 'Sunnyvale, California',
-    addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-    latitude: 37.4112751,
-    longitude: -122.0191908,
-    timezone: 'America/Los_Angeles'
-  }
 }
 
 export const apGroupsList = {
@@ -137,259 +121,742 @@ export const venueDefaultApGroup = {
 }
 
 export const venueCaps = {
-  apModels: [
-    {
-      ledOn: true,
-      model: 'E510'
-    },
-    {
-      ledOn: true,
-      model: 'H320',
-      canSupportPoeMode: false,
-      canSupportPoeOut: false,
-      lanPortPictureDownloadUrl: 'xxxxxxx/h320.jpg',
-      lanPorts: [
-        {
-          defaultType: 'ACCESS',
-          id: '1',
-          isPoeOutPort: false,
-          isPoePort: false,
-          supportDisable: true,
-          trunkPortOnly: false,
-          untagId: 1,
-          vlanMembers: '1'
-        },
-        {
-          defaultType: 'ACCESS',
-          id: '2',
-          isPoeOutPort: false,
-          isPoePort: false,
-          supportDisable: true,
-          trunkPortOnly: false,
-          untagId: 1,
-          vlanMembers: '1'
-        },
-        {
-          defaultType: 'TRUNK',
-          id: '3',
-          isPoeOutPort: false,
-          isPoePort: true,
-          supportDisable: false,
-          trunkPortOnly: true,
-          untagId: 1,
-          vlanMembers: '1-4094'
-        }
-      ]
-    },
-    {
-      ledOn: true,
-      model: 'T750',
-      canSupportPoeMode: true,
-      canSupportPoeOut: true,
-      lanPortPictureDownloadUrl: 'xxxxxxx/t750.jpg',
-      lanPorts: [
-        {
-          defaultType: 'TRUNK',
-          id: '1',
-          isPoeOutPort: true,
-          isPoePort: false,
-          supportDisable: true,
-          trunkPortOnly: false,
-          untagId: 1,
-          vlanMembers: '1-4094'
-        },
-        {
-          defaultType: 'TRUNK',
-          id: '2',
-          isPoeOutPort: false,
-          isPoePort: false,
-          supportDisable: true,
-          trunkPortOnly: false,
-          untagId: 1,
-          vlanMembers: '1-4094'
-        },
-        {
-          defaultType: 'TRUNK',
-          id: '3',
-          isPoeOutPort: false,
-          isPoePort: true,
-          supportDisable: false,
-          trunkPortOnly: false,
-          untagId: 1,
-          vlanMembers: '1-4094'
-        }
-      ],
-      poeModeCapabilities: [
-        'Auto',
-        '802.3at',
-        '802.3bt-Class_5',
-        '802.3bt-Class_6',
-        '802.3bt-Class_7'
-      ]
-    },
-    {
-      allowDfsCountry: ['US', 'SG'],
-      canSupportCellular: true,
-      canSupportLacp: false,
-      canSupportPoeMode: true,
-      canSupportPoeOut: false,
-      capabilityScore: 79,
-      has160MHzChannelBandwidth: false,
-      isOutdoor: false,
-      lanPortPictureDownloadUrl: 'xxxxxxx/m510.jpg',
-      lanPorts: [
-        {
-          id: '1',
-          displayLabel: 'WAN',
-          defaultType: 'TRUNK',
-          untagId: 1,
-          vlanMembers: '1-4094'
-        }
-      ],
-      ledOn: true,
-      lldpAdInterval: 30,
-      lldpEnable: true,
-      lldpHoldTime: 120,
-      lldpMgmtEnable: true,
-      model: 'M510',
-      pictureDownloadUrl: 'xxxxxx',
-      poeModeCapabilities: ['Auto', '802.3af', '802.3at'],
-      primaryWanRecoveryTimer: 60,
-      requireOneEnabledTrunkPort: true,
-      simCardPrimaryApn: 'defaultapn',
-      simCardPrimaryCellularNetworkSelection: 'AUTO',
-      simCardPrimaryEnabled: true,
-      simCardPrimaryRoaming: true,
-      simCardSecondaryApn: 'defaultapn',
-      simCardSecondaryCellularNetworkSelection: 'AUTO',
-      simCardSecondaryEnabled: true,
-      simCardSecondaryRoaming: true,
-      support11AX: false,
-      supportChannel144: true,
-      supportDual5gMode: false,
-      supportTriRadio: false,
-      wanConnection: 'ETH_WITH_CELLULAR_FAILOVER'
-    }
-  ],
+  apModels: [{
+    ledOn: true,
+    model: 'E510'
+  }, {
+    ledOn: true,
+    model: 'H320',
+    canSupportPoeMode: false,
+    canSupportPoeOut: false,
+    lanPortPictureDownloadUrl: 'xxxxxxx/h320.jpg',
+    lanPorts: [{
+      defaultType: 'ACCESS',
+      id: '1',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'ACCESS',
+      id: '2',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'TRUNK',
+      id: '3',
+      isPoeOutPort: false,
+      isPoePort: true,
+      supportDisable: false,
+      trunkPortOnly: true,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }]
+  }, {
+    ledOn: true,
+    model: 'T750',
+    canSupportPoeMode: true,
+    canSupportPoeOut: true,
+    lanPortPictureDownloadUrl: 'xxxxxxx/t750.jpg',
+    lanPorts: [{
+      defaultType: 'TRUNK',
+      id: '1',
+      isPoeOutPort: true,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }, {
+      defaultType: 'TRUNK',
+      id: '2',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }, {
+      defaultType: 'TRUNK',
+      id: '3',
+      isPoeOutPort: false,
+      isPoePort: true,
+      supportDisable: false,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }],
+    poeModeCapabilities: [
+      'Auto',
+      '802.3at',
+      '802.3bt-Class_5',
+      '802.3bt-Class_6',
+      '802.3bt-Class_7'
+    ]
+  }, {
+    allowDfsCountry: ['US', 'SG'],
+    canSupportCellular: true,
+    canSupportLacp: false,
+    canSupportPoeMode: true,
+    canSupportPoeOut: false,
+    capabilityScore: 79,
+    has160MHzChannelBandwidth: false,
+    isOutdoor: false,
+    lanPortPictureDownloadUrl: 'xxxxxxx/m510.jpg',
+    lanPorts: [{
+      id: '1',
+      displayLabel: 'WAN',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }],
+    ledOn: true,
+    lldpAdInterval: 30,
+    lldpEnable: true,
+    lldpHoldTime: 120,
+    lldpMgmtEnable: true,
+    model: 'M510',
+    pictureDownloadUrl: 'xxxxxx',
+    poeModeCapabilities: ['Auto', '802.3af', '802.3at'],
+    primaryWanRecoveryTimer: 60,
+    requireOneEnabledTrunkPort: true,
+    simCardPrimaryApn: 'defaultapn',
+    simCardPrimaryCellularNetworkSelection: 'AUTO',
+    simCardPrimaryEnabled: true,
+    simCardPrimaryRoaming: true,
+    simCardSecondaryApn: 'defaultapn',
+    simCardSecondaryCellularNetworkSelection: 'AUTO',
+    simCardSecondaryEnabled: true,
+    simCardSecondaryRoaming: true,
+    support11AX: false,
+    supportChannel144: true,
+    supportDual5gMode: false,
+    supportTriRadio: false,
+    wanConnection: 'ETH_WITH_CELLULAR_FAILOVER'
+  }, {
+    model: 'R650'
+  }],
+  version: '6.0.0.x.xxx'
+}
+
+export const apCaps = {
+  apModels: [{
+    model: 'E510'
+  }, {
+    model: 'H320'
+  }, {
+    model: 'R650'
+  }],
   version: '6.0.0.x.xxx'
 }
 
 export const aplist = {
   totalCount: 2,
   page: 1,
-  data: [
-    {
-      name: 'mock-ap',
-      serialNumber: '125488555569',
-      venueId: '52001e212a02484e815a8cadf0024f2b'
-    },
-    {
-      name: 'mock-ap2',
-      serialNumber: '150000000761',
-      venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b'
-    }
-  ]
+  data: [{
+    name: 'mock-ap',
+    serialNumber: '125488555569',
+    venueId: '52001e212a02484e815a8cadf0024f2b'
+  }, {
+    name: 'mock-ap2',
+    serialNumber: '150000000761',
+    venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b'
+  }]
 }
 
-export const apGrouplist = [
-  {
-    id: 'f9903daeeadb4af88969b32d185cbf27',
-    isDefault: true,
-    venueId: '2c16284692364ab6a01f4c60f5941836'
-  },
-  {
-    id: '9095a8cf11c845a9afe4d3643c46a44d',
-    isDefault: false,
-    name: 'testgroup',
-    venueId: '7ae27179b7b84de89eb7e56d9b15943d'
-  }
-]
+export const apGrouplist = [{
+  id: 'f9903daeeadb4af88969b32d185cbf27',
+  isDefault: true,
+  venueId: '2c16284692364ab6a01f4c60f5941836'
+}, {
+  id: '9095a8cf11c845a9afe4d3643c46a44d',
+  isDefault: false,
+  name: 'testgroup',
+  venueId: '7ae27179b7b84de89eb7e56d9b15943d'
+}]
 
-export const apDetailsList = [
-  {
-    apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
-    clientCount: 0,
-    indoorModel: false,
-    lastUpdated: '2022-07-05T08:29:15.484Z',
-    mac: '456789876554',
-    meshRole: 'DISABLED',
-    name: 'test ap',
-    position: { xPercent: 0, yPercent: 0 },
-    radio: {
-      apRadioParams24G: {
-        changeInterval: 33,
-        channelBandwidth: 'AUTO',
-        manualChannel: 0,
-        method: 'BACKGROUND_SCANNING',
-        operativeChannel: 0,
-        snr_dB: 0,
-        txPower: 'MAX'
-      },
-      apRadioParams50G: {
-        changeInterval: 33,
-        channelBandwidth: 'AUTO',
-        manualChannel: 0,
-        method: 'BACKGROUND_SCANNING',
-        operativeChannel: 0,
-        snr_dB: 0,
-        txPower: 'MAX'
-      },
-      useVenueSettings: true
+export const apDetailsList = [{
+  apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+  clientCount: 0,
+  indoorModel: false,
+  lastUpdated: '2022-07-05T08:29:15.484Z',
+  mac: '456789876554',
+  meshRole: 'DISABLED',
+  model: 'R650',
+  name: 'test ap',
+  position: { xPercent: 0, yPercent: 0 },
+  radio: {
+    apRadioParams24G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
     },
-    serialNumber: '456789876554',
-    softDeleted: false,
-    state: 'InSetupPhase',
-    subState: 'NeverContactedCloud',
-    updatedDate: '2022-07-05T08:29:15.484+0000',
-    uptime_seconds: 0,
-    venueId: '908c47ee1cd445838c3bf71d4addccdf'
+    apRadioParams50G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
+    },
+    useVenueSettings: true
   },
-  {
-    apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
-    clientCount: 0,
-    description: 'yyy',
-    externalIp: '210.58.90.254',
-    firmware: '6.2.0.103.500',
-    indoorModel: true,
-    ip: '10.206.1.16',
-    lastContacted: '2022-11-08T07:55:12.936Z',
-    lastUpdated: '2022-11-08T06:18:21.378Z',
-    mac: '28:B3:71:28:6C:10',
-    meshRole: 'DISABLED',
-    model: 'R650',
-    name: 'UI team ONLY',
-    radio: {
-      apRadioParams24G: {
-        changeInterval: 33,
-        channelBandwidth: 'AUTO',
-        manualChannel: 0,
-        method: 'BACKGROUND_SCANNING',
-        operativeChannel: 0,
-        snr_dB: 0,
-        txPower: 'MAX'
-      },
-      apRadioParams50G: {
-        changeInterval: 33,
-        channelBandwidth: 'AUTO',
-        manualChannel: 0,
-        method: 'BACKGROUND_SCANNING',
-        operativeChannel: 0,
-        snr_dB: 0,
-        txPower: 'MAX'
-      },
-      useVenueSettings: true
+  serialNumber: '456789876554',
+  softDeleted: false,
+  state: 'InSetupPhase',
+  subState: 'NeverContactedCloud',
+  updatedDate: '2022-07-05T08:29:15.484+0000',
+  uptime_seconds: 0,
+  venueId: '908c47ee1cd445838c3bf71d4addccdf'
+}, {
+  apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
+  clientCount: 0,
+  description: 'yyy',
+  externalIp: '210.58.90.254',
+  firmware: '6.2.0.103.500',
+  indoorModel: true,
+  ip: '10.206.1.16',
+  lastContacted: '2022-11-08T07:55:12.936Z',
+  lastUpdated: '2022-11-08T06:18:21.378Z',
+  mac: '28:B3:71:28:6C:10',
+  meshRole: 'DISABLED',
+  model: 'R650',
+  name: 'UI team ONLY',
+  radio: {
+    apRadioParams24G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
     },
+    apRadioParams50G: {
+      changeInterval: 33,
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      method: 'BACKGROUND_SCANNING',
+      operativeChannel: 0,
+      snr_dB: 0,
+      txPower: 'MAX'
+    },
+    useVenueSettings: true
+  },
+  serialNumber: '422039000034',
+  softDeleted: false,
+  state: 'Operational',
+  subState: 'Operational',
+  updatedDate: '2022-11-08T06:18:21.378+0000',
+  uptime_seconds: 684831,
+  venueId: '16b11938ee934928a796534e2ee47661'
+}]
+
+export const dhcpAp = [{
+  requestId: '3be06d50-5ae9-4d7f-92b6-146b5b7d77b4',
+  response: [{
+    dhcpApRole: 'PrimaryServer',
     serialNumber: '422039000034',
-    softDeleted: false,
-    state: 'Operational',
-    subState: 'Operational',
-    updatedDate: '2022-11-08T06:18:21.378+0000',
-    uptime_seconds: 684831,
+    venueDhcpEnabled: true,
+    venueDhcpMode: 'EnableOnMultipleAPs',
+    venueId: 'a4f9622e9c7547ba934fbb5ee55646c2'
+  }]
+}, {
+  requestId: '3be06d50-5ae9-4d7f-92b6-146b5b7d77b4',
+  response: [{
+    dhcpApRole: 'BackupServer',
+    serialNumber: '422039000034',
+    venueDhcpEnabled: true,
+    venueDhcpMode: 'EnableOnMultipleAPs',
     venueId: '16b11938ee934928a796534e2ee47661'
-  }
-]
+  }]
+}]
 
-export const apDetail = {
+export const apLanPorts = [{
+  lanPorts: [{
+    type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true
+  }, {
+    type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '2', enabled: true
+  }],
+  useVenueSettings: true
+}]
+
+export const venueSetting = {
+  tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
+  wifiFirmwareVersion: '6.2.0.103.486',
+  countryCode: 'US',
+  mesh: {
+    enabled: true
+  },
+  bandBalancing: {
+    enabled: false,
+    clientPercent24: 25
+  },
+  radioCustomization: {
+    radioParams6G: {
+      method: 'CHANNELFLY',
+      scanInterval: 20,
+      allowedChannels:
+        // eslint-disable-next-line max-len
+        [
+          '1',
+          '5',
+          '9',
+          '13',
+          '17',
+          '21',
+          '25',
+          '29',
+          '33',
+          '37',
+          '41',
+          '45',
+          '49',
+          '53',
+          '57',
+          '61',
+          '65',
+          '69',
+          '73',
+          '77',
+          '81',
+          '85',
+          '89',
+          '93',
+          '97',
+          '101',
+          '105',
+          '109',
+          '113',
+          '117',
+          '121',
+          '125',
+          '129',
+          '133',
+          '137',
+          '141',
+          '145',
+          '149',
+          '153',
+          '157',
+          '161',
+          '165',
+          '169',
+          '173',
+          '177',
+          '181',
+          '185',
+          '189',
+          '193',
+          '197',
+          '201',
+          '205',
+          '209',
+          '213',
+          '217',
+          '221'
+        ],
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      changeInterval: 33,
+      txPower: 'MAX'
+    },
+    radioParamsDual5G: {
+      inheritParamsLower5G: true,
+      radioParamsLower5G: {
+        allowedIndoorChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
+        allowedOutdoorChannels: [
+          '36',
+          '40',
+          '44',
+          '48',
+          '52',
+          '56',
+          '60',
+          '64'
+        ],
+        channelBandwidth: 'AUTO',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33,
+        scanInterval: 20,
+        txPower: 'MAX'
+      },
+      inheritParamsUpper5G: true,
+      radioParamsUpper5G: {
+        // eslint-disable-next-line max-len
+        allowedIndoorChannels: [
+          '100',
+          '104',
+          '108',
+          '112',
+          '116',
+          '120',
+          '124',
+          '128',
+          '132',
+          '136',
+          '149',
+          '153',
+          '157',
+          '161'
+        ],
+        // eslint-disable-next-line max-len
+        allowedOutdoorChannels: [
+          '100',
+          '104',
+          '108',
+          '112',
+          '116',
+          '120',
+          '124',
+          '128',
+          '132',
+          '136',
+          '149',
+          '153',
+          '157',
+          '161'
+        ],
+        channelBandwidth: 'AUTO',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33,
+        scanInterval: 20,
+        txPower: 'MAX'
+      }
+    },
+    radioParams24G: {
+      allowedChannels: [
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11'
+      ],
+      channelBandwidth: 'AUTO',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20,
+      txPower: 'MAX'
+    },
+    radioParams50G: {
+      combineChannels: false,
+      // eslint-disable-next-line max-len
+      allowedIndoorChannels: [
+        '36',
+        '40',
+        '44',
+        '48',
+        '52',
+        '56',
+        '60',
+        '64',
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      // eslint-disable-next-line max-len
+      allowedOutdoorChannels: [
+        '36',
+        '40',
+        '44',
+        '48',
+        '52',
+        '56',
+        '60',
+        '64',
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      channelBandwidth: 'AUTO',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33,
+      scanInterval: 20,
+      txPower: 'MAX'
+    }
+  },
+  denialOfServiceProtection: {
+    enabled: false,
+    blockingPeriod: 60,
+    failThreshold: 5,
+    checkPeriod: 30
+  },
+  syslog: {
+    enabled: false,
+    port: 514,
+    facility: 'KEEP_ORIGINAL',
+    priority: 'INFO',
+    protocol: 'UDP',
+    flowLevel: 'CLIENT_FLOW',
+    secondaryPort: 514,
+    secondaryProtocol: 'TCP'
+  },
+  dhcpServiceSetting: {
+    enabled: false,
+    mode: 'EnableOnEachAPs',
+    wanPortSelectionMode: 'Dynamic'
+  },
+  rogueAp: {
+    enabled: false,
+    reportThreshold: 0
+  },
+  enableClientIsolationAllowlist: false,
+  id: 'f892848466d047798430de7ac234e940'
+}
+
+export const venueLanPorts = [{
+  lanPorts: [{ type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true }],
+  model: 'E510'
+}, {
+  lanPorts: [
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '1', enabled: false },
+    { type: 'ACCESS', untagId: 1, vlanMembers: '1', portId: '2', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+  ],
+  model: 'H320'
+}, {
+  lanPorts: [{
+    defaultType: 'TRUNK',
+    id: '1',
+    isPoeOutPort: false,
+    isPoePort: false,
+    supportDisable: true,
+    trunkPortOnly: false,
+    untagId: 1,
+    vlanMembers: '1-4094'
+  }, {
+    defaultType: 'TRUNK',
+    id: '2',
+    isPoeOutPort: false,
+    isPoePort: true,
+    supportDisable: false,
+    trunkPortOnly: false,
+    untagId: 1,
+    vlanMembers: '1-4094'
+  }],
+  model: 'R650'
+}, {
+  lanPorts: [
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '1', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '2', enabled: true },
+    { type: 'TRUNK', untagId: 1, vlanMembers: '1-4094', portId: '3', enabled: true }
+  ],
+  model: 'T750',
+  poeMode: 'Auto',
+  poeOut: false
+}]
+
+export const venueData = {
+  address: {
+    addressLine: '1093 Main St, New York, NY, 10044, United States',
+    city: 'New York',
+    country: 'United States',
+    latitude: 40.7690084,
+    longitude: -73.9431541,
+    timezone: 'America/New_York'
+  },
+  createdDate: '2022-07-08T04:59:22.351+00:00',
+  description: 'My-Venue',
+  floorPlans: [],
+  id: '4c778ed630394b76b17bce7fe230cf9f',
+  name: 'My-Venue',
+  updatedDate: '2022-07-08T04:59:22.351+00:00'
+}
+
+export const apRadio = {
+  apRadioParams24G: {
+    manualChannel: 0,
+    allowedChannels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
+    channelBandwidth: 'AUTO',
+    txPower: 'MAX',
+    method: 'BACKGROUND_SCANNING',
+    changeInterval: 33
+  },
+  apRadioParams50G: {
+    allowedChannels: [
+      '36',
+      '40',
+      '44',
+      '48',
+      '52',
+      '56',
+      '60',
+      '64',
+      '100',
+      '104',
+      '108',
+      '112',
+      '116',
+      '120',
+      '124',
+      '128',
+      '132',
+      '136',
+      '140',
+      '144',
+      '149',
+      '153',
+      '157',
+      '161'
+    ],
+    channelBandwidth: 'AUTO',
+    manualChannel: 0,
+    txPower: 'MAX',
+    method: 'BACKGROUND_SCANNING',
+    changeInterval: 33
+  },
+  apRadioParamsDual5G: {
+    enabled: false,
+    lower5gEnabled: false,
+    upper5gEnabled: false,
+    radioParamsLower5G: {
+      allowedChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    radioParamsUpper5G: {
+      allowedChannels: [
+        '100',
+        '104',
+        '108',
+        '112',
+        '116',
+        '120',
+        '124',
+        '128',
+        '132',
+        '136',
+        '140',
+        '144',
+        '149',
+        '153',
+        '157',
+        '161'
+      ],
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    }
+  },
+  apRadioParams6G: {
+    manualChannel: 0,
+    method: 'CHANNELFLY',
+    allowedChannels: [
+      '1',
+      '5',
+      '9',
+      '13',
+      '17',
+      '21',
+      '25',
+      '29',
+      '33',
+      '37',
+      '41',
+      '45',
+      '49',
+      '53',
+      '57',
+      '61',
+      '65',
+      '69',
+      '73',
+      '77',
+      '81',
+      '85',
+      '89',
+      '93',
+      '97',
+      '101',
+      '105',
+      '109',
+      '113',
+      '117',
+      '121',
+      '125',
+      '129',
+      '133',
+      '137',
+      '141',
+      '145',
+      '149',
+      '153',
+      '157',
+      '161',
+      '165',
+      '169',
+      '173',
+      '177',
+      '181',
+      '185',
+      '189',
+      '193',
+      '197',
+      '201',
+      '205',
+      '209',
+      '213',
+      '217',
+      '221'
+    ],
+    channelBandwidth: 'AUTO',
+    bssMinRate6G: 'HE_MCS_0',
+    mgmtTxRate6G: '6',
+    txPower: 'MAX',
+    changeInterval: 33
+  },
+  enable6G: false,
+  useVenueSettings: false,
+  enable24G: true,
+  enable50G: true
+}
+
+export const apRadioDetail = {
   serialNumber: '422039000034',
   apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
   venueId: '16b11938ee934928a796534e2ee47661',
@@ -607,160 +1074,22 @@ export const apDetail = {
   updatedDate: '2022-11-16T08:27:35.647+0000'
 }
 
-export const apRadio = {
-  apRadioParams24G: {
-    manualChannel: 0,
-    allowedChannels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
-    channelBandwidth: 'AUTO',
-    txPower: 'MAX',
-    method: 'BACKGROUND_SCANNING',
-    changeInterval: 33
-  },
-  apRadioParams50G: {
-    allowedChannels: [
-      '36',
-      '40',
-      '44',
-      '48',
-      '52',
-      '56',
-      '60',
-      '64',
-      '100',
-      '104',
-      '108',
-      '112',
-      '116',
-      '120',
-      '124',
-      '128',
-      '132',
-      '136',
-      '140',
-      '144',
-      '149',
-      '153',
-      '157',
-      '161'
-    ],
-    channelBandwidth: 'AUTO',
-    manualChannel: 0,
-    txPower: 'MAX',
-    method: 'BACKGROUND_SCANNING',
-    changeInterval: 33
-  },
-  apRadioParamsDual5G: {
-    enabled: false,
-    lower5gEnabled: false,
-    upper5gEnabled: false,
-    radioParamsLower5G: {
-      allowedChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
-      channelBandwidth: 'AUTO',
-      manualChannel: 0,
-      txPower: 'MAX',
-      method: 'BACKGROUND_SCANNING',
-      changeInterval: 33
-    },
-    radioParamsUpper5G: {
-      allowedChannels: [
-        '100',
-        '104',
-        '108',
-        '112',
-        '116',
-        '120',
-        '124',
-        '128',
-        '132',
-        '136',
-        '140',
-        '144',
-        '149',
-        '153',
-        '157',
-        '161'
-      ],
-      channelBandwidth: 'AUTO',
-      manualChannel: 0,
-      txPower: 'MAX',
-      method: 'BACKGROUND_SCANNING',
-      changeInterval: 33
-    }
-  },
-  apRadioParams6G: {
-    manualChannel: 0,
-    method: 'CHANNELFLY',
-    allowedChannels: [
-      '1',
-      '5',
-      '9',
-      '13',
-      '17',
-      '21',
-      '25',
-      '29',
-      '33',
-      '37',
-      '41',
-      '45',
-      '49',
-      '53',
-      '57',
-      '61',
-      '65',
-      '69',
-      '73',
-      '77',
-      '81',
-      '85',
-      '89',
-      '93',
-      '97',
-      '101',
-      '105',
-      '109',
-      '113',
-      '117',
-      '121',
-      '125',
-      '129',
-      '133',
-      '137',
-      '141',
-      '145',
-      '149',
-      '153',
-      '157',
-      '161',
-      '165',
-      '169',
-      '173',
-      '177',
-      '181',
-      '185',
-      '189',
-      '193',
-      '197',
-      '201',
-      '205',
-      '209',
-      '213',
-      '217',
-      '221'
-    ],
-    channelBandwidth: 'AUTO',
-    bssMinRate6G: 'HE_MCS_0',
-    mgmtTxRate6G: '6',
-    txPower: 'MAX',
-    changeInterval: 33
-  },
-  enable6G: false,
-  useVenueSettings: false,
-  enable24G: true,
-  enable50G: true
+export const venueRadioDetail = {
+  id: '16b11938ee934928a796534e2ee47661',
+  createdDate: '2022-11-02T10:43:27.921+00:00',
+  updatedDate: '2022-11-02T10:43:27.921+00:00',
+  name: 'venue-dhcp-ui',
+  address: {
+    country: 'United States',
+    city: 'Sunnyvale, California',
+    addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
+    latitude: 37.4112751,
+    longitude: -122.0191908,
+    timezone: 'America/Los_Angeles'
+  }
 }
 
-export const validChannels = {
+export const validRadioChannels = {
   '2.4GChannels': {
     'auto': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
     '20MHz': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
@@ -1657,7 +1986,7 @@ export const validChannels = {
   }
 }
 
-export const radioCustomization = {
+export const apRadioCustomization = {
   radioParams6G: {
     method: 'CHANNELFLY',
     scanInterval: 10,
@@ -1851,22 +2180,3 @@ export const radioCustomization = {
     scanInterval: 20
   }
 }
-export const dhcpAp = [{
-  requestId: '3be06d50-5ae9-4d7f-92b6-146b5b7d77b4',
-  response: [{
-    dhcpApRole: 'PrimaryServer',
-    serialNumber: '422039000034',
-    venueDhcpEnabled: true,
-    venueDhcpMode: 'EnableOnMultipleAPs',
-    venueId: 'a4f9622e9c7547ba934fbb5ee55646c2'
-  }]
-}, {
-  requestId: '3be06d50-5ae9-4d7f-92b6-146b5b7d77b4',
-  response: [{
-    dhcpApRole: 'BackupServer',
-    serialNumber: '422039000034',
-    venueDhcpEnabled: true,
-    venueDhcpMode: 'EnableOnMultipleAPs',
-    venueId: '16b11938ee934928a796534e2ee47661'
-  }]
-}]

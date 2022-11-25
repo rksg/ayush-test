@@ -260,9 +260,9 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                         <div
                                                           class="ant-pro-table-list-toolbar-setting-item"
                                                         >
-                                                          <svg>
-                                                            SettingsOutlined.svg
-                                                          </svg>
+                                                          <svg
+                                                            data-testid="SettingsOutlined"
+                                                          />
                                                         </div>
                                                       </div>
                                                     </div>
@@ -770,9 +770,9 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                         <div
                                                           class="ant-pro-table-list-toolbar-setting-item"
                                                         >
-                                                          <svg>
-                                                            SettingsOutlined.svg
-                                                          </svg>
+                                                          <svg
+                                                            data-testid="SettingsOutlined"
+                                                          />
                                                         </div>
                                                       </div>
                                                     </div>
@@ -1121,9 +1121,9 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                         <div
                                                           class="ant-pro-table-list-toolbar-setting-item"
                                                         >
-                                                          <svg>
-                                                            SettingsOutlined.svg
-                                                          </svg>
+                                                          <svg
+                                                            data-testid="SettingsOutlined"
+                                                          />
                                                         </div>
                                                       </div>
                                                     </div>

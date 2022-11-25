@@ -7,6 +7,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../index'
 
+import { LanPorts }      from './LanPorts'
 import { RadioSettings } from './RadioTab/RadioSettings'
 
 const { TabPane } = Tabs
@@ -57,7 +58,7 @@ export function ApSettingsTab () {
         <RadioSettings />
       </TabPane>
       <TabPane tab={tabTitleMap('lanPort')} key='lanPort'>
-        {$t({ defaultMessage: 'LAN Port' })}
+        <LanPorts />
       </TabPane>
       <TabPane tab={tabTitleMap('proxy')} key='proxy'>
         {$t({ defaultMessage: 'mDNS Proxy' })}

@@ -9,11 +9,11 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 import { ApEditContext } from '../..'
 import {
   apRadio,
-  apDetail,
+  apRadioDetail,
   venuelist,
-  venueDetail,
-  validChannels,
-  radioCustomization
+  venueRadioDetail,
+  validRadioChannels,
+  apRadioCustomization
 } from '../../../../__tests__/fixtures'
 
 import { RadioSettings } from './RadioSettings'
@@ -32,19 +32,19 @@ describe('RadioSettingsTab', () => {
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(
         CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueDetail))),
+        (_, res, ctx) => res(ctx.json(venueRadioDetail))),
       rest.get(
         WifiUrlsInfo.getAp.url,
-        (_, res, ctx) => res(ctx.json(apDetail))),
+        (_, res, ctx) => res(ctx.json(apRadioDetail))),
       rest.get(
         WifiUrlsInfo.getApRadio.url,
         (_, res, ctx) => res(ctx.json(apRadio))),
       rest.get(
         WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
-        (_, res, ctx) => res(ctx.json(validChannels))),
+        (_, res, ctx) => res(ctx.json(validRadioChannels))),
       rest.get(
         WifiUrlsInfo.getVenueRadioCustomization.url,
-        (_, res, ctx) => res(ctx.json(radioCustomization))),
+        (_, res, ctx) => res(ctx.json(apRadioCustomization))),
       rest.put(
         WifiUrlsInfo.updateApRadio.url,
         (_, res, ctx) => res(ctx.json({})))
@@ -82,7 +82,7 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   it('should render correctly with Auto bandwidth', async () => {
-    radioCustomization.radioParams50G.channelBandwidth = 'AUTO'
+    apRadioCustomization.radioParams50G.channelBandwidth = 'AUTO'
     const { asFragment } = render(
       <Provider>
         <ApEditContext.Provider value={{
