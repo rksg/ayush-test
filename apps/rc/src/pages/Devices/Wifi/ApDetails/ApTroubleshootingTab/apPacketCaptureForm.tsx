@@ -304,7 +304,10 @@ export function ApPacketCaptureForm () {
             isLoading: true
           }]}>
         </Loader>
-        <UI.CapturingText>{isPrepare ? 'Preparing file...' : 'Capturing...'}</UI.CapturingText>
+        <UI.CapturingText>
+          {isPrepare ?
+            $t({ defaultMessage: 'Preparing file...' }) : $t({ defaultMessage: 'Capturing...' })}
+        </UI.CapturingText>
       </div>
     }
 
