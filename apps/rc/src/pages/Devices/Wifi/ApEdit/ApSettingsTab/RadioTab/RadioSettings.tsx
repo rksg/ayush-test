@@ -9,7 +9,8 @@ import {
   useGetApQuery,
   useGetVenueQuery,
   useGetApRadioQuery,
-  useUpdateApRadioMutation
+  useUpdateApRadioMutation,
+  useDeleteApRadioMutation
 } from '@acx-ui/rc/services'
 import {
   ApRadioChannelsForm
@@ -43,6 +44,9 @@ export function RadioSettings () {
 
   const [ updateApRadio, { isLoading: isUpdatingVenueRadio } ] =
     useUpdateApRadioMutation()
+
+  const [ deleteApRadio, { isLoading: isDeletingVenueRadio } ] =
+    useDeleteApRadioMutation()
 
   const { data: venue } = useGetVenueQuery({ params: { tenantId, venueId } })
 
@@ -79,9 +83,18 @@ export function RadioSettings () {
 
   const handleUpdateRadioSettings =
   async (formData: ApRadioChannelsForm) => {
-    updateApRadio({
-      params: { tenantId, serialNumber },
-      payload: formData
+    if(venueSetting){
+      deleteApRadio({ params: { tenantId, serialNumber } })
+    }else{
+      updateApRadio({
+        params: { tenantId, serialNumber },
+        payload: formData
+      })
+    }
+    setEditContextData({
+      ...editContextData,
+      tabTitle: $t({ defaultMessage: 'Radio' }),
+      isDirty: false
     })
   }
 
@@ -103,7 +116,8 @@ export function RadioSettings () {
     })
   }
   return (
-    <Loader states={[{ isLoading: isLoadingVenueData, isFetching: isUpdatingVenueRadio }]}>
+    <Loader states={[
+      { isLoading: isLoadingVenueData, isFetching: isUpdatingVenueRadio || isDeletingVenueRadio }]}>
       <StepsForm
         formRef={formRef}
         onFormChange={handleChange}

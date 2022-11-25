@@ -165,6 +165,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
   },
+  deleteApRadio: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
   blinkLedAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led'

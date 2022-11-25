@@ -271,6 +271,15 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    deleteApRadio: build.mutation<ApRadioChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApRadio, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
     blinkLedAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.blinkLedAp, params)
@@ -357,6 +366,7 @@ export const {
   useLazyGetDhcpApQuery,
   useGetApRadioQuery,
   useUpdateApRadioMutation,
+  useDeleteApRadioMutation,
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
   useGetApCapabilitiesQuery,
