@@ -1,6 +1,7 @@
 import { AnalyticsFilter, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                    from '@acx-ui/components'
 
+import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
 
 export function ApOverviewTab () {
@@ -16,8 +17,8 @@ export function ApOverviewTab () {
       <GridCol col={{ span: 18 }} style={{ height: '152px', background: '#F7F7F7' }}>
         Charts
       </GridCol>
-      <GridCol col={{ span: 6 }} style={{ height: '152px', background: '#F7F7F7' }}>
-        AP
+      <GridCol col={{ span: 6 }} style={{ height: '152px' }}>
+        <ApPhoto />
       </GridCol>
       <GridCol col={{ span: 18 }} style={{ background: '#F7F7F7' }}>
        Floor Plan

@@ -1,0 +1,163 @@
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
+
+
+import {
+  ArrowsOut,
+  PhotoSolid
+} from '@acx-ui/icons'
+
+export const StyledSpace = styled(Space)`
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  text-align: center;
+  z-index: 1;
+`
+
+export const PhotoDiv = styled.div`
+  margin: 0 auto;
+
+  .ant-image-img{
+    max-height: 125px;
+    vertical-align: middle;
+  }
+`
+export const RoundIconDiv = styled.div`
+  width: 28px;
+  height: 28px;
+  background-color: var(--acx-neutrals-10);
+  border-radius: 15px;
+  padding: 4px;
+  cursor: pointer;
+`
+
+export const PhotoIcon = styled(PhotoSolid)`
+width: 20px;
+height: 20px;
+path:nth-of-type(1){
+    fill: var(--acx-accents-blue-50);
+}
+path:nth-of-type(2){
+    stroke: var(--acx-accents-blue-50);
+}
+path:nth-of-type(3){
+    stroke: var(--acx-accents-blue-50);
+}
+`
+
+export const ArrowsOutIcon = styled(ArrowsOut)`
+width: 20px;
+height: 20px;
+path{
+    stroke: var(--acx-accents-blue-50);
+}
+`
+
+export const AppContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .crop-container {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    right: 20px;
+    bottom: 200px;
+  }
+  
+  .controls {
+    position: absolute;
+    bottom: 150px;
+    left: 50%;
+    width: 70%;
+    transform: translateX(-50%);
+    height: 40px;
+    display: flex;
+    align-items: center;
+  }
+
+  .controls span{
+    font-size: 24px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .slider {
+    padding: 22px 0px;
+  }
+  
+  .zoom-range {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    height: 2px;
+    border-top: 1px solid var(--acx-neutrals-25);
+    border-bottom: 1px solid var(--acx-neutrals-25);
+    background: var(--acx-accents-blue-50);
+    width: 100%;
+  }
+  
+  .zoom-range::-moz-range-thumb {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid var(--acx-accents-blue-50);
+    background: var(--acx-accents-blue-50);
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  }
+  
+  .zoom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid var(--acx-accents-blue-50);
+    background: var(--acx-accents-blue-50);
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  }
+  
+  .controls:hover input[type='range']::-webkit-slider-thumb {
+    box-shadow: 0px 0px 0px 8px rgba(63, 81, 181, 0.16);
+    border-radius: 50%;
+  }
+  
+  .controls:hover input[type='range']::-moz-range-thumb {
+    box-shadow: 0px 0px 0px 8px rgba(63, 81, 181, 0.16);
+  }
+`
+
+export const DotsDiv = styled.div`
+  position: absolute;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  bottom: 0;
+  padding-bottom: 5px;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--acx-neutrals-25);
+    border-radius: 50%;
+    margin: 0 3px;
+    cursor: pointer;
+  }
+
+  .active-dot {
+    background: var(--acx-neutrals-50);
+    cursor: default;
+  }
+`
+
+export const FooterDiv = styled.div`
+  .ant-drawer-footer{
+    justify-content: start;
+  }
+`

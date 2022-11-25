@@ -10,6 +10,10 @@ export interface RequestPayload <Payload = unknown> {
   params?: Params<string>
   payload?: Payload
 }
+export interface RequestFormData <FormData = unknown> {
+  params?: Params<string>
+  payload?: FormData
+}
 
 export interface TableResult <ResultItemType, ResultExtra = unknown> {
   data: ResultItemType[]

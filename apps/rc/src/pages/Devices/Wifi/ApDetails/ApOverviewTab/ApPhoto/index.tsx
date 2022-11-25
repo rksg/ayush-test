@@ -1,0 +1,218 @@
+import { useState, useEffect } from 'react'
+
+import { Upload, Image } from 'antd'
+import { useParams }     from 'react-router-dom'
+
+import { Card, Loader, showToast } from '@acx-ui/components'
+import {
+  useGetApPhotoQuery,
+  useAddApPhotoMutation,
+  useApViewModelQuery,
+  useWifiCapabilitiesQuery
+} from '@acx-ui/rc/services'
+import { FileValidation, WifiEntityEnum } from '@acx-ui/rc/utils'
+import { getIntl }                        from '@acx-ui/utils'
+
+import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.jpg'
+
+import { ApPhotoDrawer }                                                          from './ApPhotoDrawer'
+import { StyledSpace, RoundIconDiv, PhotoDiv, ArrowsOutIcon, PhotoIcon, DotsDiv } from './styledComponents'
+
+
+export const getFileExtension = function (fileName: string) {
+  // eslint-disable-next-line max-len
+  const extensionsRegex: RegExp = /(png|jpeg|jpg|gif|svg)$/i
+  const matched = extensionsRegex.exec(fileName)
+  if (matched) {
+    return matched[0]
+  } else {
+    return ''
+  }
+}
+
+export function ApPhoto () {
+  const [imageUrl, setImageUrl] = useState('')
+  const [defaultImageUrl, setDefaultImageUrl] = useState('')
+  const [tempUrl, setTempUrl] = useState('')
+  const [visible, setVisible] = useState(false)
+  const [drawerVisible, setDrawerVisible] = useState(false)
+  const [activeImage, setActiveImage] = useState<boolean[]>([false])
+  const params = useParams()
+
+  const apViewModelPayload = {
+    entityType: WifiEntityEnum.apsTree,
+    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
+      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
+      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
+      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
+      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
+    filters: { serialNumber: [params.serialNumber] }
+  }
+  const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
+  const wifiCapabilitiesQuery = useWifiCapabilitiesQuery({ params })
+  const currentAP = apViewModelQuery.data
+  const wifiCapabilities = wifiCapabilitiesQuery.data
+
+  const [fileValidation, setFileValidation] = useState<FileValidation>({
+    file: {} as File,
+    isValidfileType: true,
+    isValidFileSize: true
+  })
+
+  const [addApPhoto] = useAddApPhotoMutation()
+  const apPhoto = useGetApPhotoQuery({ params })
+
+  useEffect(() => {
+    if (!apPhoto.isLoading) {
+      if(apPhoto?.data?.imageUrl){
+        setActiveImage([true, false])
+        setImageUrl(apPhoto?.data.imageUrl)
+      }else{
+        setActiveImage([true])
+        setImageUrl('')
+      }
+    }
+    if(wifiCapabilities){
+      const allModelsCapabilities = wifiCapabilities?.apModels
+      const filteredModelCapabilities = allModelsCapabilities?.filter((modelCapabilities:
+        { model: string })=> modelCapabilities.model === apViewModelQuery.data?.model)
+      if(filteredModelCapabilities[0]){
+        setActiveImage([true])
+        setDefaultImageUrl(filteredModelCapabilities[0].pictureDownloadUrl)
+      }else{
+        setActiveImage([true])
+        setDefaultImageUrl(PlaceHolder)
+      }
+    }
+  }, [apPhoto, currentAP, wifiCapabilities])
+
+  const { $t } = getIntl()
+  const beforeUpload = async function (file: File) {
+    setFileValidation({
+      file: {} as File,
+      isValidfileType: true,
+      isValidFileSize: true
+    })
+    const acceptedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp']
+    const validImage = acceptedImageTypes.includes(file.type)
+    if (!validImage) {
+      const content = $t({ defaultMessage: 'Invalid Image type!' })
+      openToastAndResetFile({ ...fileValidation, isValidfileType: false }, content)
+      return
+    }
+    const isLt10M = file.size / 1024 / 1024 < 10
+    if (!isLt10M) {
+      const content = $t({ defaultMessage: 'Image must smaller than 10MB!' })
+      openToastAndResetFile({ ...fileValidation, isValidFileSize: false }, content)
+      return
+    }
+
+    setFileValidation({ ...fileValidation, file: file })
+    // validateFile({ ...fileValidation, file: file })
+    const reader = new FileReader()
+    // reader.readAsDataURL(file)
+    reader.onload = () => {
+      setTempUrl(URL.createObjectURL(file))
+      setImageUrl(reader.result as string)
+    }
+    const formData = new FormData()
+    formData.append('file', file, file.name)
+
+    await addApPhoto({
+      params: { ...params },
+      payload: formData
+    })
+
+    return false
+  }
+
+  const openToastAndResetFile = function (validationAttributes: FileValidation, content: string) {
+    showToast({
+      type: 'error',
+      content
+    })
+    setFileValidation(validationAttributes)
+    // validateFile(fileValidation)
+    setImageUrl('')
+    setTempUrl('')
+  }
+
+  return (
+    <Loader states={[apPhoto, wifiCapabilitiesQuery]}>
+      <Card>
+        <StyledSpace>
+          <RoundIconDiv>
+            <ArrowsOutIcon onClick={() => setVisible(true)}/>
+          </RoundIconDiv>
+          <Upload
+            name='apPhoto'
+            listType='picture'
+            showUploadList={false}
+            action={tempUrl}
+            beforeUpload={beforeUpload}
+            accept='image/*'
+            style={{
+              height: '180px'
+            }}
+          >
+            <RoundIconDiv>
+              <PhotoIcon />
+            </RoundIconDiv>
+          </Upload>
+        </StyledSpace>
+        <PhotoDiv></PhotoDiv>
+        <PhotoDiv>
+          {defaultImageUrl !== '' && activeImage[0] &&
+            <Image
+              preview={{ visible: false, mask: null }}
+              src={defaultImageUrl}
+              style={{ cursor: 'pointer' }}
+              data-testid='image1'
+            />
+          }
+          {imageUrl !== '' && activeImage[1] &&
+            <Image
+              preview={{ visible: false, mask: null }}
+              src={imageUrl}
+              style={{ cursor: 'pointer' }}
+              onDoubleClick={() => setDrawerVisible(true)}
+              data-testid='image2'
+            />
+          }
+          <DotsDiv>
+            {defaultImageUrl !== '' &&
+              <div
+                className={`dot ${activeImage[0] ? 'active-dot' : ''}`}
+                onClick={() => imageUrl !== '' ?
+                  setActiveImage([true, false]) : setActiveImage([true])}
+                data-testid='dot1'>
+              </div>
+            }
+            {imageUrl !== '' &&
+              <div
+                className={`dot ${activeImage[1] ? 'active-dot' : ''}`}
+                onClick={() => setActiveImage([false, true])}
+                data-testid='dot2'>
+              </div>
+            }
+          </DotsDiv>
+          <div style={{ display: 'none' }}>
+            <Image.PreviewGroup
+              preview={{ visible, onVisibleChange: (vis) => setVisible(vis), current: 0 }}
+            >
+              {defaultImageUrl &&<Image src={defaultImageUrl} /> }
+              {imageUrl && <Image src={imageUrl}/> }
+            </Image.PreviewGroup>
+          </div>
+        </PhotoDiv>
+      </Card>
+      <ApPhotoDrawer
+        visible={drawerVisible}
+        setVisible={setDrawerVisible}
+        tempUrl={tempUrl}
+        uploadFunc={beforeUpload}
+      />
+    </Loader>
+  )
+
+}

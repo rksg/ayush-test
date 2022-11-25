@@ -128,5 +128,17 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   factoryResetAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
+  },
+  getApPhoto: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture'
+  },
+  addApPhoto: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep'
+  },
+  deleteApPhoto: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture'
   }
 }

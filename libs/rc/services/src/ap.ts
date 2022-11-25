@@ -13,12 +13,14 @@ import {
   createHttpRequest,
   onSocketActivityChanged,
   RequestPayload,
+  RequestFormData,
   showActivityMessage,
   TableResult,
   RadioProperties,
   WifiUrlsInfo,
   ApLanPort,
   ApRadio,
+  APPhoto,
   ApViewModel,
   VenueCapabilities,
   CommonResult
@@ -173,6 +175,35 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getApPhoto: build.query<APPhoto, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApPhoto, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'PHOTO' }],
+      keepUnusedDataFor: 0
+    }),
+    addApPhoto: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        return{
+          url: `/api/tenant/${params?.tenantId}/wifi/ap/${params?.serialNumber}/picture/deep`,
+          method: 'POST',
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
+    }),
+    deleteApPhoto: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApPhoto, params)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
     })
   })
 })
@@ -193,7 +224,10 @@ export const {
   useDownloadApLogMutation,
   useRebootApMutation,
   useFactoryResetApMutation,
-  useLazyGetDhcpApQuery
+  useLazyGetDhcpApQuery,
+  useGetApPhotoQuery,
+  useAddApPhotoMutation,
+  useDeleteApPhotoMutation
 } = apApi
 
 
