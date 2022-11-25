@@ -8,6 +8,7 @@ export * from './onSocketActivityChanged'
 export * from './useTableQuery'
 export * from './validator'
 
+export * from './client.utils'
 export * from './network.utils'
 export * from './schedule.utils'
 export * from './apGroupDialog.utils'

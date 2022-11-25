@@ -14,7 +14,7 @@ import {
   VenueExtended,
   VenueDetailHeader,
   APMesh,
-  VenueCapabilities,
+  Capabilities,
   VenueLed,
   VenueApModels,
   ExternalAntenna,
@@ -251,7 +251,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
     }),
-    getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
+    getVenueCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
         return{
@@ -584,6 +584,7 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
+  useLazyGetVenueQuery,
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
   useGetVenueSettingsQuery,

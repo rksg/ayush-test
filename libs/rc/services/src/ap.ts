@@ -15,7 +15,7 @@ import {
   RequestPayload,
   showActivityMessage,
   TableResult,
-  VenueCapabilities,
+  Capabilities,
   WifiUrlsInfo,
   VenueDefaultApGroup,
   AddApGroup,
@@ -134,7 +134,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
+    wifiCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
         return{
@@ -183,6 +183,14 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getApCapabilities: build.query<Capabilities, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApCapabilities, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -192,6 +200,7 @@ export const {
   useLazyApListQuery,
   useAddApMutation,
   useGetApQuery,
+  useLazyGetApQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
   useApGroupListQuery,
@@ -206,6 +215,8 @@ export const {
   useDownloadApLogMutation,
   useRebootApMutation,
   useFactoryResetApMutation,
+  useGetApCapabilitiesQuery,
+  useLazyGetApCapabilitiesQuery,
   useLazyGetDhcpApQuery
 } = apApi
 

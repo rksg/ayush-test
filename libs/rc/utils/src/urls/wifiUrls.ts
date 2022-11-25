@@ -136,5 +136,13 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   factoryResetAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
+  },
+  getApCapabilities: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
+  },
+  getDpskPassphraseByQuery: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/dpsk-passphrase/query'
   }
 }

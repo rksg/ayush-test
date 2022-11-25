@@ -150,7 +150,9 @@ export const formats = {
   enabledFormat: (value: boolean) => (value ? 'Enabled' : 'Disabled'),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
-    (txpowerMapping[value] ? txpowerMapping[value] : value)
+    (txpowerMapping[value] ? txpowerMapping[value] : value),
+  numberWithCommas: (number: number) =>
+    number?.toLocaleString('en-US', { maximumFractionDigits: 0 })
 } as const
 
 export const dateTimeFormats = {
