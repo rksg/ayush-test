@@ -134,7 +134,11 @@ export function RadioSettings () {
               }
             </Col>
             <Col span={8}>
-              <Button type='link' onClick={handleVenueSetting}>Customize</Button>
+              <Button type='link' onClick={handleVenueSetting}>
+                {venueSetting ?
+                  $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use Venue Settings' })
+                }
+              </Button>
             </Col>
           </Row>
           <Tabs onChange={onTabChange}

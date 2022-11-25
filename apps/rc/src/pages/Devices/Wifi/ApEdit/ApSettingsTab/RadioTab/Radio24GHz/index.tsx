@@ -134,12 +134,11 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
             valuePropName='checked'
             style={{ marginTop: '16px' }}
             initialValue={true}
-            children={useVenueSettings ? <span>{enable24G ?
-              $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })}</span>
+            children={useVenueSettings ? <span>{$t({ defaultMessage: 'On' })}</span>
               :<Switch onChange={(checked)=>onChange(checked, 'enable24G')} />
             }
           />
-          {enable24G && <>
+          {(enable24G || useVenueSettings) && <>
             <Form.Item
               label={$t({ defaultMessage: 'Channel selection method:' })}
               name={['apRadioParams24G', 'method']}>
@@ -233,7 +232,7 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
         </Col>
       </Row>
       }
-      {!enable24G &&
+      {!enable24G && !useVenueSettings &&
         <DisabledDiv>
           {$t({ defaultMessage: '2.4 GHz Radio is disabled' })}
         </DisabledDiv>

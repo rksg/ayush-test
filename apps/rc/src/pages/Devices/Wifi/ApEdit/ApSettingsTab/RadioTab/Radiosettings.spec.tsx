@@ -78,7 +78,7 @@ describe('RadioSettingsTab', () => {
     const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
     fireEvent.click(transmitSelect)
     fireEvent.click((await screen.findAllByTitle('Auto'))[0])
-    fireEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   it('should render correctly with Auto bandwidth', async () => {
@@ -110,7 +110,7 @@ describe('RadioSettingsTab', () => {
     const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
     fireEvent.click(transmitSelect)
     fireEvent.click((await screen.findAllByTitle('Auto'))[0])
-    fireEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
 })
