@@ -5,9 +5,9 @@ import { useIntl }      from 'react-intl'
 
 import * as UI from '../../../Networks/NetworkForm/NetworkMoreSettings/styledComponents'
 
-import DeviceOSDrawer from './DeviceOSDrawer'
-import Layer2Drawer   from './Layer2Drawer'
-import Layer3Drawer   from './Layer3Drawer'
+// import DeviceOSDrawer from './DeviceOSDrawer'
+import Layer2Drawer from './Layer2Drawer'
+// import Layer3Drawer   from './Layer3Drawer'
 const { useWatch } = Form
 
 const AccessControlComponent = () => {
@@ -57,7 +57,7 @@ const AccessControlComponent = () => {
             children={<Switch />}
           />
 
-          {enableLayer3 && <Layer3Drawer />}
+          {enableLayer3 && '<Layer3Drawer />'}
         </div>
       </UI.FieldLabel>
 
@@ -72,7 +72,7 @@ const AccessControlComponent = () => {
             children={<Switch />}
           />
 
-          {enableDeviceOs && <DeviceOSDrawer />}
+          {enableDeviceOs && '<DeviceOSDrawer />'}
         </div>
       </UI.FieldLabel>
 
