@@ -250,5 +250,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getClientSessionHistory: {
     method: 'post',
     url: '/api/reporting/tenant/:tenantId/report/clientSessionHistory'
+  },
+  getApNetworkList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'
   }
 }
