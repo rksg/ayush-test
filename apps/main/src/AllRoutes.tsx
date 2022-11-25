@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { SplitProvider }                     from '@acx-ui/feature-toggle'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import AnalyticsBase    from './pages/Analytics'
