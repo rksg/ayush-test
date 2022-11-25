@@ -3,10 +3,11 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridRow, GridCol, PageHeader }         from '@acx-ui/components'
-import { CollapseActive, CollapseInactive }     from '@acx-ui/icons'
-import { useVenuesListQuery }                   from '@acx-ui/rc/services'
-import { RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { GridRow, GridCol, PageHeader }                  from '@acx-ui/components'
+import { CollapseActive, CollapseInactive }              from '@acx-ui/icons'
+import { NetworkTable }                                  from '@acx-ui/rc/components'
+import { useNetworkListQuery, useVenuesListQuery }       from '@acx-ui/rc/services'
+import { Network, RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
 
 import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
@@ -64,7 +65,7 @@ function SearchResult () {
   const globalSearch = useSearchTerm()
   const [count, setCount] = useState(0)
 
-  const searchPayload = {
+  const searchVenuePayload = {
     ...defaultVenuePayload,
     searchString: globalSearch,
     searchTargetFields: ['name', 'description']
@@ -72,18 +73,30 @@ function SearchResult () {
 
   const venueQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
     useQuery: useVenuesListQuery,
-    defaultPayload: searchPayload,
+    defaultPayload: searchVenuePayload,
+    pagination: {
+      pageSize: 5
+    }
+  })
+
+  const networkQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
+    useQuery: useNetworkListQuery,
+    defaultPayload: {
+      ...NetworkTable.defaultNetworkPayload,
+      searchString: globalSearch
+    },
     pagination: {
       pageSize: 5
     }
   })
 
   const venueCount = venueQuery.data?.totalCount ?? 0
+  const networkCount = networkQuery.data?.totalCount ?? 0
 
   useEffect(() => {
     // sum all table queries here
-    setCount(() => venueCount)
-  }, [globalSearch, venueCount])
+    setCount(() => venueCount + networkCount)
+  }, [globalSearch, networkCount, venueCount])
 
   return (
     <Fragment key='search-results'>
@@ -97,6 +110,18 @@ function SearchResult () {
             key={`venue-search-${globalSearch}`}
             globalSearch={globalSearch}
             tableQuery={venueQuery}
+          />
+        </SearchTableWrapper>
+      </GridRow>
+      <GridRow>
+        <SearchTableWrapper
+          title='networks'
+          count={networkCount}
+        >
+          <NetworkTable
+            key={`network-search-${globalSearch}`}
+            tableQuery={networkQuery}
+            globalSearch={globalSearch}
           />
         </SearchTableWrapper>
       </GridRow>

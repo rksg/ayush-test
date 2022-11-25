@@ -937,3 +937,39 @@ export const venueListData = [
     status: '3_RequiresAttention'
   }
 ]
+
+
+export const networkListData = [
+  {
+    name: '!!!!!_Cap_',
+    id: 'e796c63f5db646e181f9e5aa8a75e3c1',
+    vlan: 1,
+    nwSubType: 'guest',
+    captiveType: 'ClickThrough',
+    ssid: '!!!!!_Cap_',
+    venues: {
+      count: 0,
+      names: [
+
+      ]
+    },
+    aps: 0,
+    clients: 0
+  },
+  {
+    name: 'Joseph_captive',
+    id: '349f5794ff5c4d8fa480a7860c12d098',
+    vlan: 1,
+    nwSubType: 'guest',
+    captiveType: 'GuestPass',
+    ssid: 'Joseph_captive',
+    venues: {
+      count: 0,
+      names: [
+
+      ]
+    },
+    aps: 0,
+    clients: 0
+  }
+]

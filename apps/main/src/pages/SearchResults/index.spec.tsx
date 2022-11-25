@@ -5,6 +5,7 @@ import { Provider }                                                    from '@ac
 import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
+  networkListData,
   venueListData,
   overViewData
 } from './__fixtures__/searchMocks'
@@ -15,16 +16,18 @@ const params = { searchVal: 'test%3F', tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fc
 
 describe('Search Results', () => {
   beforeEach(async () => {
-    const body = venueListData
-
     mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', {
       status: 200,
-      data: body
+      data: venueListData
     })
 
     mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', {
       status: 200,
       data: overViewData
+    })
+
+    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', {
+      data: networkListData
     })
   })
 
@@ -61,5 +64,7 @@ describe('Search Results', () => {
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('500')).toBeInTheDocument()
+    const vlan1s = await screen.findAllByText(/VLAN-1/i)
+    expect(vlan1s).toHaveLength(2)
   })
 })
