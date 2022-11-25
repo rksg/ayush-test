@@ -137,6 +137,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/ap'
   },
+  deleteSoloAp: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber?resetFirmware=true'
+  },
+  deleteSoloAps: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/?resetFirmware=true'
+  },
   downloadApLog: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/download-log'
@@ -148,6 +156,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   factoryResetAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
+  },
+  blinkLedAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led'
   },
   updateApLanPorts: {
     method: 'put',
