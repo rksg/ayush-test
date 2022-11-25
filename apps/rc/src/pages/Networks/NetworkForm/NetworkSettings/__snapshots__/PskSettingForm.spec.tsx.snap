@@ -260,9 +260,9 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                             title=""
                           >
                             Network Name
-                            <svg>
-                              QuestionMarkCircleOutlined.svg
-                            </svg>
+                            <svg
+                              data-testid="QuestionMarkCircleOutlined"
+                            />
                           </label>
                         </div>
                         <div
@@ -475,14 +475,13 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                               style="margin-bottom: 8px;"
                                             >
                                               <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                               >
                                                 <span
-                                                  class="ant-radio ant-radio-disabled"
+                                                  class="ant-radio"
                                                 >
                                                   <input
                                                     class="ant-radio-input"
-                                                    disabled=""
                                                     type="radio"
                                                     value="guest"
                                                   />
@@ -981,7 +980,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
                   type="button"
                 >
                   <span>

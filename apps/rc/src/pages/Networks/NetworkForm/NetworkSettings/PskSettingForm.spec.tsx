@@ -8,22 +8,22 @@ import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemov
 
 import {
   venuesResponse,
+  venueListResponse,
   networksResponse,
   successResponse,
-  networkDeepResponse,
-  venueListResponse
+  networkDeepResponse
 } from '../__tests__/fixtures'
 import NetworkForm from '../NetworkForm'
 
 async function fillInBeforeSettings (networkName: string) {
-  const insertInput = screen.getByLabelText(/Network Name/)
+  const insertInput = await screen.findByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating)
 
-  await userEvent.click(screen.getByRole('radio', { name: /defined for the network/ }))
-  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  await userEvent.click(await screen.findByRole('radio', { name: /defined for the network/ }))
+  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
   await waitFor(async () => {
     expect(await screen.findByRole('heading', { level: 3, name: 'Settings' })).toBeVisible()
@@ -31,18 +31,18 @@ async function fillInBeforeSettings (networkName: string) {
 }
 
 async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?: boolean) {
-  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
   if (waitForIpValidation) {
-    const validating = await screen.findByRole('img', { name: 'loading' })
+    const validating = await screen.findAllByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
   }
   await screen.findByRole('heading', { level: 3, name: 'Venues' })
 
-  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
   await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
   checkSummary()
-  const finish = screen.getByText('Finish')
+  const finish = await screen.findByText('Finish')
   await userEvent.click(finish)
   await waitForElementToBeRemoved(finish)
 }
@@ -55,6 +55,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
@@ -80,11 +82,11 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const passphraseTextbox = screen.getByLabelText('Passphrase')
+    const passphraseTextbox = await screen.findByLabelText('Passphrase')
     fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
 
     await fillInAfterSettings(async () => {
-      expect(screen.getByText('PSK network test')).toBeVisible()
+      expect(await screen.findByText('PSK network test')).toBeVisible()
     })
   })
 
@@ -93,18 +95,18 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const passphraseTextbox = screen.getByLabelText('Passphrase')
+    const passphraseTextbox = await screen.findByLabelText(/Passphrase/)
     fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
 
-    await userEvent.click(screen.getByRole('switch'))
+    await userEvent.click(await screen.findByRole('switch'))
 
-    const ipTextbox = screen.getByLabelText('IP Address')
+    const ipTextbox = await screen.findByLabelText('IP Address')
     fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
 
-    const portTextbox = screen.getByLabelText('Port')
+    const portTextbox = await screen.findByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
 
-    const secretTextbox = screen.getByLabelText('Shared secret')
+    const secretTextbox = await screen.findByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
   })
 
@@ -114,32 +116,32 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const securityProtocols = screen.getByRole('combobox', { name: 'Security Protocol' })
+    const securityProtocols = await screen.findByRole('combobox', { name: 'Security Protocol' })
 
     fireEvent.mouseDown(securityProtocols)
 
-    const option = screen.getAllByLabelText('WPA3')[0]
+    const option = screen.getAllByText('WPA3')[0]
 
     await userEvent.click(option)
 
-    const passphraseTextbox = screen.getByLabelText('Passphrase')
+    const passphraseTextbox = await screen.findByLabelText('Passphrase')
     fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
 
-    await userEvent.click(screen.getByRole('switch'))
+    await userEvent.click(await screen.findByRole('switch'))
 
-    const ipTextbox = screen.getByLabelText('IP Address')
+    const ipTextbox = await screen.findByLabelText('IP Address')
     fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
 
-    const portTextbox = screen.getByLabelText('Port')
+    const portTextbox = await screen.findByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
 
-    const secretTextbox = screen.getByLabelText('Shared secret')
+    const secretTextbox = await screen.findByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
     await fillInAfterSettings(async () => {
-      expect(screen.getByText('PSK network test')).toBeVisible()
-      expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
-      expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
+      expect(await screen.findByText('PSK network test')).toBeVisible()
+      expect(await screen.findByText('192.168.1.1:1111')).toBeVisible()
+      expect(await screen.findAllByDisplayValue('secret-1')).toHaveLength(2)
     }, true)
   }, 20000)
 
@@ -148,7 +150,7 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const securityProtocols = screen.getByRole('combobox', { name: 'Security Protocol' })
+    const securityProtocols = await screen.findByRole('combobox', { name: 'Security Protocol' })
 
     fireEvent.mouseDown(securityProtocols)
 
@@ -166,52 +168,53 @@ describe('NetworkForm', () => {
     await userEvent.click(mixOption3)
 
     fireEvent.mouseDown(securityProtocols)
-    const option = screen.getByText('WEP')
+    const option = await screen.findByText('WEP')
 
     await userEvent.click(option)
 
-    await userEvent.click(screen.getByText('Generate'))
+    await userEvent.click(await screen.findByText('Generate'))
 
-    await userEvent.click(screen.getByRole('switch'))
+    await userEvent.click(await screen.findByRole('switch'))
 
-    const ipTextbox = screen.getByLabelText('IP Address')
+    const ipTextbox = await screen.findByLabelText('IP Address')
     fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
 
-    const portTextbox = screen.getByLabelText('Port')
+    const portTextbox = await screen.findByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
 
-    const secretTextbox = screen.getByLabelText('Shared secret')
+    const secretTextbox = await screen.findByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add Secondary Server' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Secondary Server' }))
 
-    const ipTextboxAlt = screen.getAllByLabelText('IP Address')[1]
-    fireEvent.change(ipTextboxAlt, { target: { value: '192.168.2.2' } })
+    const ipTextboxAlt = await screen.findAllByLabelText('IP Address')
+    fireEvent.change(ipTextboxAlt[1], { target: { value: '192.168.2.2' } })
 
-    const portTextboxAlt = screen.getAllByLabelText('Port')[1]
-    fireEvent.change(portTextboxAlt, { target: { value: '2222' } })
+    const portTextboxAlt = await screen.findAllByLabelText('Port')
+    fireEvent.change(portTextboxAlt[1], { target: { value: '2222' } })
 
-    const secretTextboxAlt = screen.getAllByLabelText('Shared secret')[1]
-    fireEvent.change(secretTextboxAlt, { target: { value: 'secret-2' } })
+    const secretTextboxAlt = await screen.findAllByLabelText('Shared secret')
+    fireEvent.change(secretTextboxAlt[1], { target: { value: 'secret-2' } })
 
-    await userEvent.click(screen.getAllByRole('switch')[1])
+    const switchButton = await screen.findAllByRole('switch')
+    await userEvent.click(switchButton[1])
 
-    const ipTextboxAcc = screen.getAllByLabelText('IP Address')[2]
-    fireEvent.change(ipTextboxAcc, { target: { value: '192.168.3.3' } })
+    const ipTextboxAcc = await screen.findAllByLabelText('IP Address')
+    fireEvent.change(ipTextboxAcc[2], { target: { value: '192.168.3.3' } })
 
-    const portTextboxAcc = screen.getAllByLabelText('Port')[2]
-    fireEvent.change(portTextboxAcc, { target: { value: '3333' } })
+    const portTextboxAcc = await screen.findAllByLabelText('Port')
+    fireEvent.change(portTextboxAcc[2], { target: { value: '3333' } })
 
-    const secretTextboxAcc = screen.getAllByLabelText('Shared secret')[2]
-    fireEvent.change(secretTextboxAcc, { target: { value: 'secret-3' } })
+    const secretTextboxAcc = await screen.findAllByLabelText('Shared secret')
+    fireEvent.change(secretTextboxAcc[2], { target: { value: 'secret-3' } })
     await fillInAfterSettings(async () => {
-      expect(screen.getByText('PSK network test')).toBeVisible()
-      expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
-      expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
-      expect(screen.getByText('192.168.2.2:2222')).toBeVisible()
-      expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
-      expect(screen.getByText('192.168.3.3:3333')).toBeVisible()
-      expect(screen.getAllByDisplayValue('secret-3')).toHaveLength(2)
+      expect(await screen.findByText('PSK network test')).toBeVisible()
+      expect(await screen.findByText('192.168.1.1:1111')).toBeVisible()
+      expect(await screen.findAllByDisplayValue('secret-1')).toHaveLength(2)
+      expect(await screen.findByText('192.168.2.2:2222')).toBeVisible()
+      expect(await screen.findAllByDisplayValue('secret-2')).toHaveLength(2)
+      expect(await screen.findByText('192.168.3.3:3333')).toBeVisible()
+      expect(await screen.findAllByDisplayValue('secret-3')).toHaveLength(2)
     }, true)
   })
 })

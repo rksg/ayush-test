@@ -30,6 +30,10 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+
+import { OnboardingForm } from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm } from './CaptivePortal/PortalTypeForm'
+import { PortalWebForm }  from './CaptivePortal/PortalWebForm'
 import {
   multipleConflictMessage,
   radiusErrorMessage
@@ -102,6 +106,19 @@ export default function NetworkForm () {
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
   }, [data])
+
+  const handlePortalWebPage = async (data: NetworkSaveData) => {
+    const tmpGuestPageState = {
+      guestPortal: {
+        ...saveState?.guestPortal,
+        guestPage: {
+          ...data
+        }
+      }
+    }
+    updateSaveData({ ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    return true
+  }
 
   const handleAddNetwork = async () => {
     try {
@@ -280,6 +297,7 @@ export default function NetworkForm () {
             {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm saveState={saveState}/>}
             {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm saveState={saveState}/>}
             {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm />}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
 
           </StepsForm.StepForm>
@@ -297,6 +315,27 @@ export default function NetworkForm () {
               <NetworkMoreSettingsForm wlanData={saveState} />
 
             </StepsForm.StepForm>}
+          { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+              <StepsForm.StepForm
+                name='onboarding'
+                title={intl.$t({ defaultMessage: 'Onboarding' })}
+                onFinish={async () => {
+                  return true
+                }}
+              >
+                <OnboardingForm />
+              </StepsForm.StepForm>
+          }
+
+          { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+              <StepsForm.StepForm
+                name='portalweb'
+                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+                onFinish={handlePortalWebPage}
+              >
+                <PortalWebForm />
+              </StepsForm.StepForm>
+          }
           <StepsForm.StepForm
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
