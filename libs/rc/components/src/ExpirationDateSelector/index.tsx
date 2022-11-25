@@ -1,16 +1,17 @@
-import { useEffect, useRef } from 'react'
-
 import {
   Select,
   InputNumber,
   Radio,
   Space,
   DatePicker,
-  Form
+  Form,
+  DatePickerProps
 } from 'antd'
-import { useIntl } from 'react-intl'
+import moment         from 'moment-timezone'
+import { StoreValue } from 'rc-field-form/lib/interface'
+import { useIntl }    from 'react-intl'
 
-import { ExpirationDateEntity, ExpirationMode, ExpirationType } from '@acx-ui/rc/utils'
+import { ExpirationMode, ExpirationType } from '@acx-ui/rc/utils'
 
 import {
   ExpirationModeLabel
@@ -20,19 +21,28 @@ import * as UI from './styledComponents'
 export * from './models'
 
 export interface ExpirationDateSelectorProps {
-  data?: ExpirationDateEntity,
   inputName?: string,
   label: string,
   isRequired?: boolean
 }
 
+const DATE_FORMAT = 'YYYY-MM-DD'
+
+type ExpirationDatePickerWrapperProps = Omit<DatePickerProps, 'value'> & { value?: string }
+
+function ExpirationDatePickerWrapper (props: ExpirationDatePickerWrapperProps) {
+  return (
+    <DatePicker
+      {...props}
+      value={props.value ? moment(props.value, DATE_FORMAT) : null}
+    />
+  )
+}
+
 export function ExpirationDateSelector (prop: ExpirationDateSelectorProps) {
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
   const { Option } = Select
-  const defaultDataRef = useRef<ExpirationDateEntity>(new ExpirationDateEntity())
   const {
-    data = defaultDataRef.current,
     label,
     isRequired = true,
     inputName = 'expirationDate'
@@ -40,9 +50,9 @@ export function ExpirationDateSelector (prop: ExpirationDateSelectorProps) {
 
   const expirationMode = Form.useWatch<ExpirationMode>([inputName, 'mode'])
 
-  useEffect(() => {
-    form.setFieldValue(inputName, data)
-  }, [data, form, inputName])
+  const normalizeDate = (value: StoreValue) => {
+    return value.format(DATE_FORMAT)
+  }
 
   return (
     <Form.Item
@@ -68,8 +78,9 @@ export function ExpirationDateSelector (prop: ExpirationDateSelectorProps) {
                       message: $t({ defaultMessage: 'Please enter Expiration Date' })
                     }
                   ]}
+                  normalize={normalizeDate}
                 >
-                  <DatePicker />
+                  <ExpirationDatePickerWrapper format={DATE_FORMAT} />
                 </Form.Item>
               }
             </UI.FieldLabel>

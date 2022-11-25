@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import {
   Form,
@@ -21,8 +21,7 @@ import {
   transformDpskNetwork,
   DpskNetworkType,
   DpskSaveData,
-  CreateDpskFormFields,
-  ExpirationDateEntity
+  CreateDpskFormFields
 } from '@acx-ui/rc/utils'
 
 import {
@@ -41,7 +40,6 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat')
   const { data } = props
   const { Option } = Select
-  const [ expirationDate, setExpirationDate ] = useState<ExpirationDateEntity>()
 
   useEffect(() => {
     form.resetFields()
@@ -52,7 +50,6 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
     const formData: CreateDpskFormFields = transferSaveDataToFormFields(data)
 
     form.setFieldsValue(formData)
-    setExpirationDate(formData.expiration)
   }, [data, form])
 
   const nameValidator = async (value: string) => {
@@ -127,7 +124,6 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
           <InputNumber min={8} max={63}/>
         </Form.Item>
         <ExpirationDateSelector
-          data={expirationDate}
           inputName={'expiration'}
           label={intl.$t({ defaultMessage: 'List Expiration' })}
         />
