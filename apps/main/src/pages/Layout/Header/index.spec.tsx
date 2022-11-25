@@ -192,17 +192,20 @@ describe('Header Component', () => {
   })
 
   it('should render Alarm component correctly', async () => {
-    render(
+    const { asFragment } = render(
       <Provider>
         <AlarmButton/>
       </Provider>, {
         route: { params, path: '/:tenantId/' }
       })
-
+    const alarmBtn = await screen.findByRole('button')
+    await userEvent.click(alarmBtn)
     await waitFor(async () => {
       expect(await screen.findByText(('testamy_ap'))).toBeInTheDocument()
     })
-
+    expect(asFragment()).toMatchSnapshot()
+    const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
+    await userEvent.click(cancelBtn)
   })
 
 })
