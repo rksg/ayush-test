@@ -29,7 +29,7 @@ const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk',
-  [ServiceType.NETWROK_SEGMENTATION]: 'networkSegmentation'
+  [ServiceType.NETWORK_SEGMENTATION]: 'networkSegmentation'
 }
 
 export function getServiceRoutePath ({ type, oper }: ServiceRoutePathProps): string {
