@@ -4,8 +4,7 @@ import ProLayout             from '@ant-design/pro-layout'
 import { isEmpty, uniqueId } from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Logo }                   from '@acx-ui/icons'
+import { Logo }   from '@acx-ui/icons'
 import {
   TenantType,
   useLocation,
@@ -27,8 +26,7 @@ interface MenuItem {
   activeIcon?: React.FC
   routes?: Array<MenuItem>
   pro_layout_parentKeys?: string[]
-  disabled?: boolean,
-  featureFlag?: Features
+  disabled?: boolean
 }
 
 export interface LayoutProps {
@@ -56,19 +54,15 @@ export function Layout ({
   const mspBasePath = useTenantLink('/', 'v')
   const newRoutes = routes.map((item => {
     const base = item.tenantType === 'v' ? mspBasePath : basePath
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const disabled = item.featureFlag ? !useIsSplitOn(item.featureFlag) : (item.disabled || false)
-    const routes = item.routes?.map(sub => ({
-      ...sub,
-      path: `${base.pathname}${sub.path}`,
-      uri: sub.path
-    }))
     return {
       ...item,
       path: `${base.pathname}${item.path}`,
       uri: item.path,
-      disabled,
-      routes: disabled ? [] : routes
+      routes: item.disabled ? [] : item.routes?.map(sub=>({
+        ...sub,
+        path: `${base.pathname}${sub.path}`,
+        uri: sub.path
+      }))
     }
   }))
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {

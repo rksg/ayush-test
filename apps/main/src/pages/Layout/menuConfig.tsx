@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
 import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
-import { Features }                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   AIOutlined as AIOutlinedBase,
   AISolid as AISolidBase,
@@ -95,7 +95,7 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Devices' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
-      featureFlag: Features.DEVICES,
+      disabled: !useIsSplitOn(Features.DEVICES),
       routes:
         [
           {
@@ -119,21 +119,21 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Services' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.SERVICES)
     },
     {
       path: '/policies',
       name: $t({ defaultMessage: 'Policies' }),
       inactiveIcon: PoliciesOutlined,
       activeIcon: PoliciesSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.POLICIES)
     },
     {
       path: '/users',
       name: $t({ defaultMessage: 'Users' }),
       inactiveIcon: AccountCircleOutlined,
       activeIcon: AccountCircleSolid,
-      featureFlag: Features.USERS,
+      disabled: !useIsSplitOn(Features.USERS),
       routes: [
         {
           path: '/users/aps',

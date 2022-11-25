@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { SplitProvider }                     from '@acx-ui/feature-toggle'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import AnalyticsBase    from './pages/Analytics'
@@ -23,7 +24,7 @@ const MspRoutes = React.lazy(() => import('msp/Routes'))
 function AllRoutes () {
   return rootRoutes(
     <>
-      <Route path='t/:tenantId' element={<Layout />}>
+      <Route path='t/:tenantId' element={<SplitProvider><Layout /></SplitProvider>}>
         <Route index element={<TenantNavigate replace to='/dashboard' />} />
         <Route path='dashboard' element={<Dashboard />} />
         <Route path='analytics/*' element={<AnalyticsBase />}>
