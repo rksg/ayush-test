@@ -10,7 +10,7 @@ import { RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
 
 import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
-import { Collapse, Panel, StyledPageHeader } from './styledComponents'
+import { Collapse, Panel } from './styledComponents'
 
 
 function useSearchTerm () {
@@ -23,14 +23,12 @@ function SearchHeader ({ count }: { count: number }) {
   const searchVal = useSearchTerm()
   const { $t } = useIntl()
   return (
-    <StyledPageHeader>
-      <PageHeader
-        title={$t(
-          { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
-          { searchVal, count }
-        )}
-      />
-    </StyledPageHeader>
+    <PageHeader
+      title={$t(
+        { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
+        { searchVal, count }
+      )}
+    />
   )
 }
 
