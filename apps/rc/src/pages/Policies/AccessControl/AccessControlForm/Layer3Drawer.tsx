@@ -1,39 +1,44 @@
-import React, { SetStateAction, useRef, useState } from 'react'
+import React, { useState } from 'react'
 
-import { Form, Input, InputNumber, Radio, RadioChangeEvent, Select, Space } from 'antd'
-import { useIntl }                                                          from 'react-intl'
+import { Form, Input, Radio, RadioChangeEvent } from 'antd'
+import { useIntl }                              from 'react-intl'
 
-import { Button, Drawer, Fieldset, GridCol, GridRow, showToast, Table, TableProps } from '@acx-ui/components'
-import { DownloadOutlined }                                                         from '@acx-ui/icons'
+import { Button, Drawer, Fieldset, GridCol, GridRow, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { DownloadOutlined }                                                               from '@acx-ui/icons'
+import { macAddressRegExp, serverIpAddressRegExp, subnetMaskIpRegExp }                    from '@acx-ui/rc/utils'
 
 const { useWatch } = Form
+
+interface Layer3NetworkCol {
+  type: string,
+  subnet?: string,
+  mask?: string,
+  ip?: string,
+  port: string
+}
+
 
 interface Layer3Rule {
   id: number,
   description: string,
   access: string,
   protocol: string,
-  source: {
-    type: string,
-    port: number
-  },
-  destination: {
-    type: string,
-    port: number
-  }
+  source: Layer3NetworkCol,
+  destination: Layer3NetworkCol
 }
 
 
 const Layer3Drawer = () => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(true)
-  const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
-  const [layer3RuleList, setLayer3RuleList] = useState([] as Layer3Rule[])
-  const [layer3Rule, setLayer3Rule] = useState({} as Layer3Rule)
   const form = Form.useFormInstance()
+  const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
+  const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
+  const [layer3RuleList, setLayer3RuleList] = useState(
+    form.getFieldValue(['accessControlComponent', 'layer3', 'ruleList']) ?? [] as Layer3Rule[]
+  )
+  const [layer3Rule, setLayer3Rule] = useState({} as Layer3Rule)
   const [drawerForm] = Form.useForm()
-
-  console.log(form.getFieldValue('accessControlComponent'))
 
   const [
     defaultAccessStatus,
@@ -50,19 +55,33 @@ const Layer3Drawer = () => {
       key: 'id'
     },
     {
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
       title: $t({ defaultMessage: 'Access' }),
       dataIndex: 'access',
-      key: 'access'
+      key: 'access',
+      render: (data, row) => {
+        return row.access
+      }
     },
     {
       title: $t({ defaultMessage: 'Source' }),
       dataIndex: 'source',
-      key: 'source'
+      key: 'source',
+      render: (data, row) => {
+        return renderNetworkColumn(row.source)
+      }
     },
     {
-      title: $t({ defaultMessage: 'Description' }),
-      dataIndex: 'description',
-      key: 'description'
+      title: $t({ defaultMessage: 'Destination' }),
+      dataIndex: 'destination',
+      key: 'destination',
+      render: (data, row) => {
+        return renderNetworkColumn(row.destination)
+      }
     },
     {
       title: $t({ defaultMessage: 'Protocol' }),
@@ -76,35 +95,161 @@ const Layer3Drawer = () => {
 
   const RuleSource =['Any', 'Subnet', 'Ip']
 
+  const renderNetworkColumn = (network: Layer3NetworkCol) => {
+    if (network && network.type === 'Subnet') {
+      return <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <span>{$t({ defaultMessage: 'IP:' })} {`${network.subnet}/${network.mask}`}</span>
+        <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? 'Any' : network.port }</span>
+      </div>
+    }
+    if (network && network.type === 'Ip') {
+      return <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <span>{$t({ defaultMessage: 'IP:' })} {`${network.ip}`}</span>
+        <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? 'Any' : network.port }</span>
+      </div>
+    }
+
+    return <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <span>{$t({ defaultMessage: 'IP:' })} {network.type ?? 'Any'}</span>
+      <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? 'Any' : network.port }</span>
+    </div>
+  }
+
   const onSourceChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value)
     setSourceValue(e.target.value)
     drawerForm.setFieldValue('sourceType', RuleSource[e.target.value - 1])
   }
 
   const onDestChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value)
     setDestValue(e.target.value)
     drawerForm.setFieldValue('destType', RuleSource[e.target.value - 1])
   }
 
   const handleAddAction = () => {
     setRuleDrawerVisible(true)
-    console.log('handle Add action')
+    drawerForm.resetFields()
   }
 
   const handleRuleDrawerClose = () => {
     setRuleDrawerVisible(false)
+    setRuleDrawerEditMode(false)
+    setLayer3Rule({} as Layer3Rule)
   }
 
   const handleLayer3DrawerClose = () => {
     setVisible(false)
+    setLayer3RuleList(form.getFieldValue(['accessControlComponent', 'layer3', 'ruleList']))
+  }
+
+  const handleLayer3Rule = () => {
+    setRuleDrawerEditMode(false)
+
+    const ruleObject = {
+      description: drawerForm.getFieldValue('description') ?? '',
+      access: form.getFieldValue(['accessControlComponent', 'layer3', 'access']),
+      protocol: drawerForm.getFieldValue('protocol'),
+      source: {
+        type: drawerForm.getFieldValue('sourceType') ?? 'Any',
+        subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
+        mask: drawerForm.getFieldValue('sourceMask') ?? '',
+        ip: drawerForm.getFieldValue('sourceIp') ?? '',
+        port: drawerForm.getFieldValue('sourcePort') ?? ''
+      },
+      destination: {
+        type: drawerForm.getFieldValue('destType') ?? 'Any',
+        subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
+        mask: drawerForm.getFieldValue('destMask') ?? '',
+        ip: drawerForm.getFieldValue('destIp') ?? '',
+        port: drawerForm.getFieldValue('destPort') ?? ''
+      }
+    }
+    if (ruleDrawerEditMode && layer3Rule.hasOwnProperty('id')) {
+      const updateId = layer3Rule.id - 1
+      layer3RuleList[updateId] = {
+        id: layer3Rule.id,
+        ...ruleObject
+      }
+      setLayer3RuleList([...layer3RuleList])
+    } else {
+      setLayer3RuleList([
+        ...layer3RuleList, {
+          id: layer3RuleList.length + 1,
+          ...ruleObject
+        }
+      ])
+    }
+
   }
 
   const actions = [{
     label: $t({ defaultMessage: 'Add' }),
     onClick: handleAddAction
   }]
+
+  const rowActions: TableProps<Layer3Rule>['actions'] = [{
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: ([editRow]: Layer3Rule[], clearSelection: () => void) => {
+      setRuleDrawerVisible(true)
+      setRuleDrawerEditMode(true)
+      setLayer3Rule(editRow)
+      drawerForm.setFieldValue('description', editRow.description)
+      drawerForm.setFieldValue('access', editRow.access)
+      drawerForm.setFieldValue('protocol', editRow.protocol)
+      drawerForm.setFieldValue('source', editRow.source)
+      drawerForm.setFieldValue('destination', editRow.destination)
+      clearSelection()
+    }
+  },{
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: ([{ id }]: Layer3Rule[]) => {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'Rule' }),
+          entityValue: id.toString()
+        },
+        onOk: () => {
+          setLayer3RuleList(layer3RuleList
+            .filter((rule: Layer3Rule) => rule.id !== id)
+            .map((rule: Layer3Rule, ruleId: number) => {
+              return {
+                ...rule,
+                id: ruleId + 1
+              }
+            }))
+        }
+      })
+    }
+  }, {
+    label: $t({ defaultMessage: 'Move up' }),
+    onClick: ([editRow]: Layer3Rule[], clearSelection: () => void) => {
+      if (editRow.id === 1) return
+      [layer3RuleList[editRow.id - 1 - 1], layer3RuleList[editRow.id - 1]]
+        = [layer3RuleList[editRow.id - 1], layer3RuleList[editRow.id - 1 - 1]]
+      setLayer3RuleList(layer3RuleList.map((rule: Layer3Rule, ruleId: number) => {
+        return {
+          ...rule,
+          id: ruleId + 1
+        }
+      }))
+      clearSelection()
+    }
+  }, {
+    label: $t({ defaultMessage: 'Move down' }),
+    onClick: ([editRow]: Layer3Rule[], clearSelection: () => void) => {
+      if (editRow.id === layer3RuleList.length) return
+      [layer3RuleList[editRow.id - 1 + 1], layer3RuleList[editRow.id - 1]]
+        = [layer3RuleList[editRow.id - 1], layer3RuleList[editRow.id - 1 + 1]]
+      setLayer3RuleList(layer3RuleList.map((rule: Layer3Rule, ruleId: number) => {
+        return {
+          ...rule,
+          id: ruleId + 1
+        }
+      }))
+      clearSelection()
+    }
+  }] as { label: string, onClick: () => void }[]
 
   const selectProtocol = (
     <select
@@ -114,7 +259,6 @@ const Layer3Drawer = () => {
           ...layer3Rule,
           protocol: evt.target.value
         })
-        console.log(form.getFieldValue('protocol'), layer3Rule, evt.target.value)
       }}
     >
       <option value='ANYPROTOCOL'>
@@ -194,9 +338,11 @@ const Layer3Drawer = () => {
     />
     <Table
       columns={basicColumns}
-      dataSource={layer3RuleList}
+      dataSource={layer3RuleList as Layer3Rule[]}
       rowKey='id'
       actions={actions}
+      rowActions={rowActions}
+      rowSelection={{ type: 'radio' }}
     />
   </Form>
 
@@ -291,7 +437,8 @@ const Layer3Drawer = () => {
                   style={{ width: '48%' }}
                   name='sourceNetworkAddress'
                   rules={[
-                    { required: true, message: 'You must specify subnet network' }
+                    { required: true },
+                    { validator: (_, value) => macAddressRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Network Address' })}/>
@@ -300,7 +447,8 @@ const Layer3Drawer = () => {
                   style={{ width: '48%' }}
                   name='sourceMask'
                   rules={[
-                    { required: true, message: 'You must specify mask' }
+                    { required: true },
+                    { validator: (_, value) => subnetMaskIpRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Mask' })}/>
@@ -317,7 +465,8 @@ const Layer3Drawer = () => {
             {sourceValue === 3 ? <Form.Item
               name='sourceIp'
               rules={[
-                { required: true, message: 'You must specify IP Address' }
+                { required: true },
+                { validator: (_, value) => serverIpAddressRegExp(value) }
               ]}
             >
               <Input />
@@ -430,22 +579,19 @@ const Layer3Drawer = () => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
+        zIndex={10}
         onClose={handleLayer3DrawerClose}
-        // destroyOnClose={true}
+        destroyOnClose={true}
         children={content}
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
             onCancel={handleLayer3DrawerClose}
-            onSave={async (addAnotherRuleChecked: boolean) => {
+            onSave={async () => {
               try {
-                console.log('on save event', addAnotherRuleChecked)
-                console.log(form.getFieldValue('accessControlComponent'))
                 form.setFieldValue(['accessControlComponent', 'layer3', 'ruleList'], [
                   ...form.getFieldValue(['accessControlComponent', 'layer3', 'ruleList']),
-                  {
-                    description: form.getFieldValue('description')
-                  }
+                  ...layer3RuleList
                 ])
                 handleLayer3DrawerClose()
               } catch (error) {
@@ -457,39 +603,26 @@ const Layer3Drawer = () => {
         width={'830px'}
       />
       <Drawer
-        title={$t({ defaultMessage: 'Add Layer 3 Rule' })}
+        title={ruleDrawerEditMode
+          ? $t({ defaultMessage: 'Edit Layer 3 Rule' })
+          : $t({ defaultMessage: 'Add Layer 3 Rule' })
+        }
         visible={ruleDrawerVisible}
-        onClose={handleRuleDrawerClose}
+        zIndex={100}
         destroyOnClose={true}
+        onClose={handleRuleDrawerClose}
         children={ruleContent}
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
             onCancel={handleRuleDrawerClose}
-            onSave={async (addAnotherRuleChecked: boolean) => {
+            onSave={async () => {
               try {
                 await drawerForm.validateFields()
 
-                console.log('on save event', addAnotherRuleChecked)
-                console.log(form.getFieldValue('description'))
-                console.log(drawerForm.getFieldValue('description'))
-                console.log(drawerForm.getFieldValue('access'))
-                console.log(drawerForm.getFieldValue('protocol'))
-                console.log(drawerForm.getFieldValue('sourceNetworkAddress'))
-                console.log(drawerForm.getFieldValue('sourceMask'))
-                console.log(drawerForm.getFieldValue('sourceIp'))
-                console.log(drawerForm.getFieldValue('sourcePort'))
-                console.log(drawerForm.getFieldValue('destNetworkAddress'))
-                console.log(drawerForm.getFieldValue('destMask'))
-                console.log(drawerForm.getFieldValue('destIp'))
-                console.log(drawerForm.getFieldValue('destPort'))
-                //   setMacAddressList([...macAddressList, ...addressTags.map(tag => {
-                //     return {
-                //       macAddress: tag
-                //     }
-                //   })])
-                //   handleRuleDrawerClose()
-                // }
+                handleLayer3Rule()
+                drawerForm.resetFields()
+                handleRuleDrawerClose()
               } catch (error) {
                 if (error instanceof Error) throw error
               }

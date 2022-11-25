@@ -7,8 +7,8 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { AccessControlProfile }                  from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { AccessControlProfile }       from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import AccessControlSettingForm from './AccessControlSettingForm'
 
@@ -20,14 +20,12 @@ const AccessControlForm = (props: AccessControlFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToPolicies = useTenantLink('/policies')
-  const params = useParams()
   const { edit } = props
 
   const formRef = useRef<StepsFormInstance<AccessControlProfile>>()
 
   const handleAddAccessControlPolicy = async () => {
     try {
-      console.log('add access control')
       navigate(linkToPolicies, { replace: true })
     } catch(error) {
       showToast({
@@ -39,7 +37,6 @@ const AccessControlForm = (props: AccessControlFormProps) => {
 
   const handleUpdateAccessControlPolicy = async () => {
     try {
-      console.log('update access control')
       navigate(linkToPolicies, { replace: true })
     } catch(error) {
       showToast({
@@ -73,20 +70,6 @@ const AccessControlForm = (props: AccessControlFormProps) => {
         >
           <AccessControlSettingForm />
         </StepsForm.StepForm>
-
-        <StepsForm.StepForm
-          name='scope'
-          title={$t({ defaultMessage: 'Scope' })}
-        >
-          access control scope
-        </StepsForm.StepForm>
-
-        { !edit && <StepsForm.StepForm
-          name='summary'
-          title={$t({ defaultMessage: 'Summary' })}
-        >
-          access control summary
-        </StepsForm.StepForm> }
       </StepsForm>
     </>
   )

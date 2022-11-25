@@ -46,8 +46,13 @@ const AccessControlSettingForm = () => {
             },
             layer3: {
               ruleList: [],
-              defaultAccess: '',
-              access: ''
+              defaultAccess: 'ALLOW',
+              access: 'ALLOW'
+            },
+            deviceOS: {
+              ruleList: [],
+              defaultAccess: 'ALLOW',
+              access: 'ALLOW'
             }
           }}
           children={<AccessControlComponent />}

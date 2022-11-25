@@ -1,16 +1,18 @@
-import * as UI from '../../../Networks/NetworkForm/NetworkMoreSettings/styledComponents';
-import { Form, Switch } from 'antd';
-import React, { useState } from 'react';
-import { useIntl } from 'react-intl';
-import Layer2Drawer from './Layer2Drawer';
-import { Button, StepsFormInstance } from '@acx-ui/components';
-import { AccessControlProfile } from '@acx-ui/rc/utils';
-import Layer3Drawer from './Layer3Drawer';
+import React from 'react'
+
+import { Form, Switch } from 'antd'
+import { useIntl }      from 'react-intl'
+
+import * as UI from '../../../Networks/NetworkForm/NetworkMoreSettings/styledComponents'
+
+import DeviceOSDrawer from './DeviceOSDrawer'
+import Layer2Drawer   from './Layer2Drawer'
+import Layer3Drawer   from './Layer3Drawer'
 const { useWatch } = Form
 
 const AccessControlComponent = () => {
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
+
   const [
     enableLayer2,
     enableLayer3,
@@ -26,9 +28,6 @@ const AccessControlComponent = () => {
     useWatch<boolean>('enableURLFiltering'),
     useWatch<boolean>('enableClientRateLimit')
   ]
-
-  console.log(form.getFieldValue('enableLayer2'))
-  console.log(form.getFieldValue('accessControlComponent'))
 
   return (
     <>
@@ -70,20 +69,12 @@ const AccessControlComponent = () => {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch
-              onChange={function (checked: boolean) {
-                if (!checked) {
-                  // form.setFieldValue(['wlan', 'advancedCustomization', 'devicePolicyId'], null)
-                }
-              }} />}
+            children={<Switch />}
           />
 
-          {enableDeviceOs && <>
-            {$t({ defaultMessage: 'Change' })}
-          </>}
+          {enableDeviceOs && <DeviceOSDrawer />}
         </div>
       </UI.FieldLabel>
-
 
       <UI.FieldLabel width='175px'>
         {$t({ defaultMessage: 'Applications' })}
@@ -110,16 +101,7 @@ const AccessControlComponent = () => {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch
-              onChange={function (checked: boolean) {
-                if (!checked) {
-                  console.log(checked)
-                  // form.setFieldValue(
-                  //   ['wlan', 'advancedCustomization', 'userDownlinkRateLimiting'], 0)
-                  // form.setFieldValue(
-                  //   ['wlan', 'advancedCustomization', 'userUplinkRateLimiting'], 0)
-                }
-              }} />}
+            children={<Switch />}
           />
 
           {enableURLFiltering && <>
@@ -136,16 +118,7 @@ const AccessControlComponent = () => {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch
-              onChange={function (checked: boolean) {
-                if (!checked) {
-                  console.log(checked)
-                  // form.setFieldValue(
-                  //   ['wlan', 'advancedCustomization', 'userDownlinkRateLimiting'], 0)
-                  // form.setFieldValue(
-                  //   ['wlan', 'advancedCustomization', 'userUplinkRateLimiting'], 0)
-                }
-              }} />}
+            children={<Switch />}
           />
 
           {enableClientRateLimit && <>
