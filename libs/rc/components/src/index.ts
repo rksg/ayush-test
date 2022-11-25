@@ -8,11 +8,13 @@ export { FloorPlan } from './FloorPlan'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortSettings } from './LanPortSettings'
 export { NetworkApGroupDialog } from './NetworkApGroupDialog'
+export { NetworkTable } from './NetworkTable'
 export { MapWidget } from './MapWidget'
 export { ToggleButton } from './ToggleButton'
 export { TopologyFloorPlanWidget } from './TopologyFloorPlanWidget'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget } from './VenuesDashboardWidget'
+
 
 export * from './pipes/apGroupPipes'

@@ -70,7 +70,7 @@ function SearchResult () {
     searchTargetFields: ['name', 'description']
   }
 
-  const tableQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
+  const venueQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
     useQuery: useVenuesListQuery,
     defaultPayload: searchPayload,
     pagination: {
@@ -78,7 +78,7 @@ function SearchResult () {
     }
   })
 
-  const venueCount = tableQuery.data?.totalCount ?? 0
+  const venueCount = venueQuery.data?.totalCount ?? 0
 
   useEffect(() => {
     // sum all table queries here
@@ -96,7 +96,7 @@ function SearchResult () {
           <VenueTable
             key={`venue-search-${globalSearch}`}
             globalSearch={globalSearch}
-            tableQuery={tableQuery}
+            tableQuery={venueQuery}
           />
         </SearchTableWrapper>
       </GridRow>
