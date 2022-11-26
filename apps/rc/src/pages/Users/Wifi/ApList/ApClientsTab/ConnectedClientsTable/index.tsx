@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                                                        from '@acx-ui/components'
+import { Subtitle, Tooltip }                                              from '@acx-ui/components'
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useNetworkListQuery }                  from '@acx-ui/rc/services'
+import { useGetClientListQuery }                                          from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   useTableQuery,
@@ -12,7 +12,7 @@ import {
   NetworkType
 }                                                            from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { getIntl }                          from '@acx-ui/utils'
+import { getIntl }                                           from '@acx-ui/utils'
 
 const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
 
@@ -24,8 +24,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       dataIndex: 'hostname',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) => 
-      <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+      render: (data, row) =>
+        <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
     },
     {
       key: 'name',
@@ -145,20 +145,29 @@ const transformVLAN = (row: Network) => {
 
 const defaultPayload = {
   searchString: '',
+  searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType'],
   fields: [
-    'check-all',
-    'name',
-    'description',
-    'nwSubType',
-    'venues',
-    'aps',
-    'clients',
-    'vlan',
-    'cog',
+    'hostname',
+    'osType',
+    'healthCheckStatus',
+    'clientMac',
+    'ipAddress',
+    'Username',
+    'serialNumber',
+    'venueId',
+    'switchSerialNumber',
     'ssid',
-    'vlanPool',
-    'captiveType',
-    'id'
+    'wifiCallingClient',
+    'sessStartTime',
+    'clientAnalytics',
+    'cog',
+    'venueName',
+    'apName',
+    'clientVlan',
+    'networkId',
+    'switchName',
+    'healthStatusReason',
+    'lastUpdateTime'
   ]
 }
 
@@ -168,7 +177,7 @@ export default function ConnectedClientsTable () {
     const navigate = useNavigate()
     const linkToEditNetwork = useTenantLink('/networks/')
     const tableQuery = useTableQuery({
-      useQuery: useNetworkListQuery,
+      useQuery: useGetClientListQuery,
       defaultPayload
     })
     const { tenantId } = useParams()
@@ -178,7 +187,7 @@ export default function ConnectedClientsTable () {
         tableQuery
       ]}>
         <Subtitle level={4}>
-          {$t({ defaultMessage: 'Connected Clients' })} 
+          {$t({ defaultMessage: 'Connected Clients' })}
         </Subtitle>
         <Table
           columns={getCols(useIntl())}
@@ -192,8 +201,6 @@ export default function ConnectedClientsTable () {
   }
 
   return (
-    <>
-      <ConnectedClientsTable />
-    </>
+    <ConnectedClientsTable />
   )
 }
