@@ -289,6 +289,26 @@ export function serialNumberRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function targetHostRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(\\b((?=[a-z0-9-]{1,63}\\.)(xn--)?[a-z0-9]+(-[a-z0-9]+)*\\.)+[a-z]{2,63}\\b)$)')
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.targetHost))
+  }
+  return Promise.resolve()
+}
+
+export function MacAddressFilterRegExp (value: string){
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^(?:[0-9A-Fa-f]{2}([-:]?))(?:[0-9A-Fa-f]{2}\1){4}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function emailRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
@@ -299,3 +319,5 @@ export function emailRegExp (value: string) {
   }
   return Promise.resolve()
 }
+
+
