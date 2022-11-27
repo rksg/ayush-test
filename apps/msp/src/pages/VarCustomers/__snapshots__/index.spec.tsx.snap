@@ -74,9 +74,9 @@ exports[`VarCustomers should render correctly 1`] = `
                 <span
                   class="ant-input-prefix"
                 >
-                  <svg>
-                    SearchOutlined.svg
-                  </svg>
+                  <svg
+                    data-testid="SearchOutlined"
+                  />
                 </span>
                 <input
                   class="ant-input"
@@ -155,9 +155,9 @@ exports[`VarCustomers should render correctly 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg>
-                            SettingsOutlined.svg
-                          </svg>
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
                         </div>
                       </div>
                     </div>

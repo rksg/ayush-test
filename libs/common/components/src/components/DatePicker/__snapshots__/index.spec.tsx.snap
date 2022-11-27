@@ -65,9 +65,9 @@ exports[`CalenderRangePicker should render default CalenderRangePicker 1`] = `
       <span
         class="ant-picker-suffix"
       >
-        <div>
-          ClockOutlined
-        </div>
+        <svg
+          data-testid="ClockOutlined"
+        />
       </span>
     </div>
   </div>

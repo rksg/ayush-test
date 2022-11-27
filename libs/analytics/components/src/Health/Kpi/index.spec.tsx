@@ -10,17 +10,12 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange }         from '@acx-ui/types'
-import { DateRange, NetworkPath } from '@acx-ui/utils'
+import { TimeStampRange }                                  from '@acx-ui/types'
+import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
 import KpiSection from '.'
-
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  InformationOutlined: () => <div data-testid='information-outlined'/>
-}))
 
 describe('Kpi Section', () => {
   beforeEach(() => {
@@ -165,11 +160,11 @@ describe('Kpi Section', () => {
     })
 
     const path = [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }]
-    const period = Buffer.from(JSON.stringify(filters)).toString('base64')
-    const analyticsNetworkFilter = Buffer.from(JSON.stringify({
+    const period = fixedEncodeURIComponent(JSON.stringify(filters))
+    const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
       path,
       raw: []
-    })).toString('base64')
+    }))
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>

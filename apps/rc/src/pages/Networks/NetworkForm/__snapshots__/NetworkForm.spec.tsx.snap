@@ -260,9 +260,9 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                             title=""
                           >
                             Network Name
-                            <svg>
-                              QuestionMarkCircleOutlined.svg
-                            </svg>
+                            <svg
+                              data-testid="QuestionMarkCircleOutlined"
+                            />
                           </label>
                         </div>
                         <div
@@ -805,9 +805,9 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                       class="ant-space-item"
                                       style="margin-right: 8px;"
                                     >
-                                      <svg>
-                                        InformationSolid.svg
-                                      </svg>
+                                      <svg
+                                        data-testid="InformationSolid"
+                                      />
                                     </div>
                                     <div
                                       class="ant-space-item"
@@ -834,9 +834,9 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                   title=""
                                 >
                                   Management Frame Protection (802.11w)
-                                  <svg>
-                                    QuestionMarkCircleOutlined.svg
-                                  </svg>
+                                  <svg
+                                    data-testid="QuestionMarkCircleOutlined"
+                                  />
                                 </label>
                               </div>
                               <div
@@ -966,9 +966,9 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                               <span>
                                                 Use MAC Auth
                                               </span>
-                                              <svg>
-                                                QuestionMarkCircleOutlined.svg
-                                              </svg>
+                                              <svg
+                                                data-testid="QuestionMarkCircleOutlined"
+                                              />
                                             </div>
                                           </div>
                                         </div>
@@ -1123,9 +1123,9 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                 <div
                                                   class="ant-pro-table-list-toolbar-setting-item"
                                                 >
-                                                  <svg>
-                                                    SettingsOutlined.svg
-                                                  </svg>
+                                                  <svg
+                                                    data-testid="SettingsOutlined"
+                                                  />
                                                 </div>
                                               </div>
                                             </div>
@@ -2399,9 +2399,9 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                             title=""
                           >
                             Network Name
-                            <svg>
-                              QuestionMarkCircleOutlined.svg
-                            </svg>
+                            <svg
+                              data-testid="QuestionMarkCircleOutlined"
+                            />
                           </label>
                         </div>
                         <div
@@ -2944,9 +2944,9 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                       class="ant-space-item"
                                       style="margin-right: 8px;"
                                     >
-                                      <svg>
-                                        InformationSolid.svg
-                                      </svg>
+                                      <svg
+                                        data-testid="InformationSolid"
+                                      />
                                     </div>
                                     <div
                                       class="ant-space-item"
@@ -2973,9 +2973,9 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                   title=""
                                 >
                                   Management Frame Protection (802.11w)
-                                  <svg>
-                                    QuestionMarkCircleOutlined.svg
-                                  </svg>
+                                  <svg
+                                    data-testid="QuestionMarkCircleOutlined"
+                                  />
                                 </label>
                               </div>
                               <div
@@ -3105,9 +3105,9 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                               <span>
                                                 Use MAC Auth
                                               </span>
-                                              <svg>
-                                                QuestionMarkCircleOutlined.svg
-                                              </svg>
+                                              <svg
+                                                data-testid="QuestionMarkCircleOutlined"
+                                              />
                                             </div>
                                           </div>
                                         </div>
@@ -3262,9 +3262,9 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                 <div
                                                   class="ant-pro-table-list-toolbar-setting-item"
                                                 >
-                                                  <svg>
-                                                    SettingsOutlined.svg
-                                                  </svg>
+                                                  <svg
+                                                    data-testid="SettingsOutlined"
+                                                  />
                                                 </div>
                                               </div>
                                             </div>
@@ -4538,9 +4538,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             title=""
                           >
                             Network Name
-                            <svg>
-                              QuestionMarkCircleOutlined.svg
-                            </svg>
+                            <svg
+                              data-testid="QuestionMarkCircleOutlined"
+                            />
                           </label>
                         </div>
                         <div

@@ -15,14 +15,13 @@ export default function SearchResults () {
 
 function SearchHeader () {
   const { searchVal } = useParams()
-  const decodedSearchVal = decodeURIComponent(searchVal as string)
   const { $t } = useIntl()
   const count = 1
   return (
     <PageHeader
       title={$t(
-        { defaultMessage: 'Search Results for "{decodedSearchVal}" ({count})' },
-        { decodedSearchVal, count }
+        { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
+        { searchVal, count }
       )}
     />
   )
