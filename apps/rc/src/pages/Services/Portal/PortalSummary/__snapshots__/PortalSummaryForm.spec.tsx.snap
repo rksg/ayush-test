@@ -122,7 +122,7 @@ exports[`SummaryForm should render portal summary successfully 1`] = `
                 <div
                   class="ant-form-item-control-input-content"
                 >
-                  Czech (čeština), Finnish (suomi), French (français), German (Deutsch), Greek, and Hungarian (magyar)
+                  Czech (čeština), Finnish (suomi), French (français), German (Deutsch), Greek (Ελληνικά), and Hungarian (magyar)
                 </div>
               </div>
             </div>
