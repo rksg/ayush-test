@@ -4,60 +4,86 @@ import { Row, Col } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { NetworkFilter, Button } from '@acx-ui/components'
-import {  useParams }            from '@acx-ui/react-router-dom'
+import { useParams }             from '@acx-ui/react-router-dom'
+import { useEncodedParameter }   from '@acx-ui/utils'
 
 import { ClientTroubleShootingConfig } from './config'
-import { History }                     from './History'
-import { TimeLine }                    from './TimeLine'
+import { History }                     from './EventsHistory'
+import { TimeLine }                    from './EventsTimeline'
 
+type ClientTroubleShootingSelectionsType = {
+  category?: [];
+  type?: [];
+  radio?: [];
+}
+type SingleValueType = (string | number)[]
+type selectionType = SingleValueType | SingleValueType[] | undefined
 export function ApTroubleshootingTab () {
   // Todo use clientId to get timeline and history
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { userId: clientId } = useParams()
-  const [ historyContentToggle, setHistoryContentToggle ] = useState(true)
+  const [historyContentToggle, setHistoryContentToggle] = useState(true)
   const { $t } = useIntl()
+  const { read, write } =
+    useEncodedParameter<ClientTroubleShootingSelectionsType>(
+      'clientTroubleShootingSelections'
+    )
 
   // Todo onApply should trigger new api call and update search params
-  const onApply = (selectionType : string) => { return selectionType}
+  const onApply = (value: selectionType, selectionType: string) => {
+    return write({ ...read(), [selectionType]: value })
+  }
   return (
     <Row gutter={[16, 16]}>
       <Col span={historyContentToggle ? 18 : 24}>
         <Row gutter={[16, 16]}>
           <Col span={historyContentToggle ? 12 : 8} />
-          {
-            ClientTroubleShootingConfig.selection.map((config) => (
-              <Col span={4}>
-                <NetworkFilter
-                  multiple
-                  defaultValue={config.defaultValue}
-                  placeholder={config.placeHolder}
-                  options={config.options}
-                  onApply={() => onApply(config.selectionType)}
-                />
-              </Col>
-            ))}
-          {!historyContentToggle &&
-          <Col span={4}>
-            <Row style={{ justifyContent: 'end' }}>
-              <Button
-                type='primary'
-                style={{ width: '96px' }}
-                onClick={() => {
-                  setHistoryContentToggle(!historyContentToggle)
-                }}>
-                {$t({ defaultMessage: 'History' })}
-              </Button>
-            </Row>
-          </Col>
-          }
+          {ClientTroubleShootingConfig.selection.map((config) => (
+            <Col span={4}>
+              <NetworkFilter
+                multiple
+                defaultValue={
+                  read()?.[
+                    config.selectionType as keyof ClientTroubleShootingSelectionsType
+                  ]
+                    ? read()?.[
+                        config.selectionType as keyof ClientTroubleShootingSelectionsType
+                    ]
+                    : config.defaultValue
+                }
+                placeholder={config.placeHolder}
+                options={config.options}
+                onApply={(value: selectionType) =>
+                  onApply(value, config.selectionType)
+                }
+              />
+            </Col>
+          ))}
+          {!historyContentToggle && (
+            <Col span={4}>
+              <Row style={{ justifyContent: 'end' }}>
+                <Button
+                  type='primary'
+                  style={{ width: '96px' }}
+                  onClick={() => {
+                    setHistoryContentToggle(!historyContentToggle)
+                  }}>
+                  {$t({ defaultMessage: 'History' })}
+                </Button>
+              </Row>
+            </Col>
+          )}
           <Col span={24}>
-            <TimeLine/>
+            <TimeLine />
           </Col>
         </Row>
       </Col>
       {historyContentToggle && (
         <Col span={6}>
-          <History setHistoryContentToggle={setHistoryContentToggle} historyContentToggle/>
+          <History
+            setHistoryContentToggle={setHistoryContentToggle}
+            historyContentToggle
+          />
         </Col>
       )}
     </Row>

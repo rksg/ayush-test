@@ -12,7 +12,8 @@ export function TimeLine (){
       bordered={false}
       expandIcon={({ isActive }) =>
         isActive ? <MinusSquareOutlined /> : <PlusSquareOutlined />
-      }>
+      }
+      ghost>
       {ClientTroubleShootingConfig.timeLine.map((config,index)=>
         <Panel
           header={config.title}

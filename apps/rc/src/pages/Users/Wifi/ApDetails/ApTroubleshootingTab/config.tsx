@@ -8,7 +8,7 @@ export const ClientTroubleShootingConfig = {
       placeHolder: getIntl().$t({ defaultMessage: 'All Categories' }),
       options: [
         {
-          value: 'clientConnection',
+          value: 'connection',
           label: getIntl().$t({ defaultMessage: 'Client Connection' })
         },
         {
@@ -16,7 +16,7 @@ export const ClientTroubleShootingConfig = {
           label: getIntl().$t({ defaultMessage: 'Performance' })
         },
         {
-          value: 'infrastructure',
+          value: 'Infrastructure',
           label: getIntl().$t({ defaultMessage: 'Infrastructure' })
         }
       ]
@@ -27,19 +27,19 @@ export const ClientTroubleShootingConfig = {
       placeHolder: getIntl().$t({ defaultMessage: 'All Types' }),
       options: [
         {
-          value: 'clientAssociated',
+          value: 'info-updated',
           label: getIntl().$t({ defaultMessage: 'Client associated' })
         },
         {
-          value: 'clientRoamed',
+          value: 'roamed',
           label: getIntl().$t({ defaultMessage: 'Client roamed' })
         },
         {
-          value: 'clientDisconnected',
+          value: 'disconnected',
           label: getIntl().$t({ defaultMessage: 'Client disconnected' })
         },
         {
-          value: 'connectionFailure',
+          value: 'failure',
           label: getIntl().$t({ defaultMessage: 'Connection failure' })
         },
         {
@@ -54,15 +54,15 @@ export const ClientTroubleShootingConfig = {
       placeHolder: getIntl().$t({ defaultMessage: 'All Radios' }),
       options: [
         {
-          value: '24ghz',
+          value: '2.4',
           label: getIntl().$t({ defaultMessage: '2.4 GHz' })
         },
         {
-          value: '5ghz',
+          value: '5',
           label: getIntl().$t({ defaultMessage: '5 GHz' })
         },
         {
-          value: '6ghz',
+          value: '6(5)',
           label: getIntl().$t({ defaultMessage: '6 GHz' })
         }
       ]
