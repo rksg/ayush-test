@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
+import ConnectedClientsTable from './ConnectedClientsTable'
+
 export function ApClientsTab () {
   const { $t } = useIntl()
-  return <>
-    { $t({ defaultMessage: 'Ap Clients Tab' })}
-  </>
+  return <ConnectedClientsTable />
 }
