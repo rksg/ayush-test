@@ -37,7 +37,7 @@ describe('ClientProperties', () => {
     mockServer.use(
       rest.get(ClientUrlsInfo.getClientDetails.url,
         (_, res, ctx) => res(ctx.json(clientList[0]))),
-      rest.get(WifiUrlsInfo.getAp.url,
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
@@ -97,7 +97,7 @@ describe('ClientProperties', () => {
             wifiCallingTx: 121212,
             wifiCallingRx: 121212
           }))),
-        rest.get(WifiUrlsInfo.getAp.url,
+        rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
           (_, res, ctx) => res(ctx.json(null))),
         rest.get(WifiUrlsInfo.getNetwork.url,
           (_, res, ctx) => res(ctx.json(null))),
@@ -123,7 +123,7 @@ describe('ClientProperties', () => {
             noiseFloor_dBm: -60,
             receiveSignalStrength_dBm: -90
           }))),
-        rest.get(WifiUrlsInfo.getAp.url,
+        rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
           (_, res, ctx) => res(ctx.json({
             ...clientApList[0],
             name: null
@@ -200,14 +200,13 @@ describe('ClientProperties', () => {
         tenantId: 'tenant-id',
         userId: 'user-id'
       }
-      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
+      render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
-      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render historical client without some data correctly', async () => {
@@ -223,7 +222,7 @@ describe('ClientProperties', () => {
               ssid: null
             }]
           }))),
-        rest.get(WifiUrlsInfo.getAp.url,
+        rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
           (_, res, ctx) => res(ctx.json(null))),
         rest.get(WifiUrlsInfo.getNetwork.url,
           (_, res, ctx) => res(ctx.json(null))),
@@ -235,14 +234,13 @@ describe('ClientProperties', () => {
         tenantId: 'tenant-id',
         userId: 'user-id'
       }
-      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
+      render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
-      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render historical client (guest) correctly', async () => {
@@ -256,7 +254,7 @@ describe('ClientProperties', () => {
               ssid: null
             }]
           }))),
-        rest.get(WifiUrlsInfo.getAp.url,
+        rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
           (_, res, ctx) => res(ctx.json({
             ...clientApList[0],
             name: null
@@ -279,7 +277,7 @@ describe('ClientProperties', () => {
         tenantId: 'tenant-id',
         userId: 'user-id'
       }
-      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
+      render(<Provider><ClientProperties /></Provider>, {
         route: {
           params,
           path: '/:tenantId/users/aps/:userId/details/overview',
@@ -292,7 +290,6 @@ describe('ClientProperties', () => {
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('Guest Details')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
-      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render historical client (dpsk) correctly', async () => {
@@ -309,7 +306,7 @@ describe('ClientProperties', () => {
         tenantId: 'tenant-id',
         userId: 'user-id'
       }
-      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
+      render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -317,7 +314,6 @@ describe('ClientProperties', () => {
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('DPSK Passphrase Details')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
-      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render correctly when search parameters is disappeared', async () => {
@@ -331,14 +327,13 @@ describe('ClientProperties', () => {
         tenantId: 'tenant-id',
         userId: 'user-id'
       }
-      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
+      render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
-      expect(asFragment()).toMatchSnapshot()
     })
   })
 })

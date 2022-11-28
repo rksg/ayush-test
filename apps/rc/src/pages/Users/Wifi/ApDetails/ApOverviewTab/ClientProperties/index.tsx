@@ -50,8 +50,8 @@ export function ClientProperties () {
 
   const [clientStatus, setClientStatus]
     = useState(searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED)
-  const [clientDetails, setClientDetails] = useState({} as Client as ClientExtended)
-  const [client, setClient] = useState({} as Client as ClientExtended)
+  const [clientDetails, setClientDetails] = useState({} as ClientExtended)
+  const [client, setClient] = useState({} as ClientExtended)
   const [networkType, setNetworkType] = useState('')
 
   const [getClientDetails] = useLazyGetClientDetailsQuery()
@@ -69,7 +69,7 @@ export function ClientProperties () {
         const clientData = await getClientDetails({
           params: { tenantId, clientId }
         }, true)?.unwrap()
-        setClientDetails(clientData as Client as ClientExtended)
+        setClientDetails(clientData as ClientExtended)
       } catch {
         setClientStatus(ClientStatusEnum.HISTORICAL)
         getHistoricalClientData()
@@ -84,7 +84,7 @@ export function ClientProperties () {
           searchString: clientId
         }
       }, true)?.unwrap()
-      setClientDetails(historicalisData as Client as ClientExtended)
+      setClientDetails(historicalisData as ClientExtended)
     }
 
     clientStatus === ClientStatusEnum.CONNECTED
@@ -173,7 +173,6 @@ export function ClientProperties () {
       isLoading: !client?.clientMac
     }]}>
       <UI.Form
-        key='sss'
         labelCol={{ span: 12 }}
         labelAlign='left'
       >{

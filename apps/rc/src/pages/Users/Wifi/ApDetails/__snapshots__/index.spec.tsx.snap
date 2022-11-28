@@ -1145,7 +1145,7 @@ exports[`ApDetails should render correctly 1`] = `
       style="padding-left: 12px; padding-right: 12px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-3 bEgENV"
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
         type="default"
       >
         <div
@@ -1161,8 +1161,16 @@ exports[`ApDetails should render correctly 1`] = `
                 class="ant-card-head-title"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
-                />
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                    />
+                  </div>
+                </div>
               </div>
               <div
                 class="ant-card-extra"
@@ -1281,9 +1289,9 @@ exports[`ApDetails should render correctly 1`] = `
                               class="ant-space-item"
                               style="margin-right: 4px;"
                             >
-                              <svg>
-                                WindowsSolid.svg
-                              </svg>
+                              <svg
+                                data-testid="WindowsSolid"
+                              />
                             </div>
                             <div
                               class="ant-space-item"
@@ -1841,9 +1849,8 @@ exports[`ApDetails should render correctly 1`] = `
                               64 dB
                               <svg
                                 class="styledComponents__SNRSolidIcon-sc-13pjjdq-0 cjMfQm"
-                              >
-                                SNRSolid.svg
-                              </svg>
+                                data-testid="SNRSolid"
+                              />
                             </span>
                           </div>
                         </div>

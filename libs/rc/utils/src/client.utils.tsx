@@ -10,24 +10,12 @@ import {
 
 export function convertClientOsType (origOsType: string) {
   const osType = origOsType ? origOsType.toLowerCase() : ''
-
-  if (osType.includes('ios')
-    || osType.includes('mac')
-    || osType.includes('apple')
-  ) {
-    return 'apple'
-  } else if (osType.includes('android')) {
-    return 'android'
-  } else if (osType.includes('windows')) {
-    return 'windows'
-  } else if (osType.includes('linux')) {
-    return 'linux'
-  } else if (osType.includes('kindle')) {
-    return 'kindle'
-  } else if (osType.includes('chrome')) {
-    return 'chrome'
-  } else if (osType.includes('blackberry')) {
-    return 'blackberry'
+  const osList = ['ios', 'mac', 'apple', 'android', 'windows',
+    'linux', 'kindle', 'chrome', 'blackberry'
+  ]
+  const type = osList.filter(t => osType.includes(t))?.[0] || null
+  if (type) {
+    return type === 'ios' || type === 'mac' ? 'apple' : type
   }
   return osType
 }
