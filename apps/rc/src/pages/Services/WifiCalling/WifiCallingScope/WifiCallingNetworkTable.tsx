@@ -4,9 +4,15 @@ import { Switch }    from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { showToast, Table, TableProps }                                                      from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery, useNetworkListQuery }                                from '@acx-ui/rc/services'
-import { useTableQuery, WifiCallingActionPayload, WifiCallingActionTypes, WifiCallingScope } from '@acx-ui/rc/utils'
+import { showToast, Table, TableProps }                       from '@acx-ui/components'
+import { useGetWifiCallingServiceQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import {
+  Network,
+  useTableQuery,
+  WifiCallingActionPayload,
+  WifiCallingActionTypes,
+  WifiCallingScope
+} from '@acx-ui/rc/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
@@ -27,26 +33,40 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
   const { data } = useGetWifiCallingServiceQuery({ params: useParams() })
 
-  const basicColumns: TableProps<WifiCallingScope>['columns'] = [
+  const basicColumns: TableProps<Network>['columns'] = [
     {
       title: $t({ defaultMessage: 'Network Name' }),
-      dataIndex: 'networkName',
-      key: 'networkName'
+      dataIndex: 'name',
+      key: 'name'
     },
     {
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'type',
-      key: 'type'
+      dataIndex: 'nwSubType',
+      key: 'nwSubType'
     },
     {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venues',
-      key: 'venues'
+      key: 'venues',
+      render: (data, row) => {
+        return row.venues.count
+      }
     },
     {
       title: $t({ defaultMessage: 'Activate' }),
       dataIndex: 'activate',
-      key: 'activate'
+      key: 'activate',
+      render: (data, row) => {
+        return <Switch
+          checked={state.networkIds.includes(row.id)}
+          onClick={() => {
+            state.networkIds.includes(row.id)
+              ? deactivateNetwork([row])
+              : activateNetwork([row])
+          }
+          }
+        />
+      }
     }
   ]
 
@@ -71,36 +91,14 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
     }
   }, [data, tableQuery.data])
 
-  const basicData = tableQuery.data?.data.map((network) => {
-    return {
-      id: network.id,
-      networkName: network.name,
-      type: network.nwSubType,
-      venues: network.venues.count,
-      activate: <Switch
-        checked={state.networkIds.includes(network.id)}
-        onClick={() => {
-          const selectRow = {
-            id: network.id,
-            networkName: network.name,
-            type: network.nwSubType,
-            venues: network.venues.count
-          }
-          state.networkIds.includes(network.id)
-            ? deactivateNetwork([selectRow])
-            : activateNetwork([selectRow])
-        }
-        }
-      />
-    }
-  })
+  const basicData = tableQuery.data?.data
 
-  const activateNetwork = (selectRows: WifiCallingScope[]) => {
+  const activateNetwork = (selectRows: Network[]) => {
     dispatch({
       type: WifiCallingActionTypes.ADD_NETWORK_ID,
       payload: {
         networkIds: selectRows.map(row => row.id),
-        networksName: selectRows.map(row => row.networkName)
+        networksName: selectRows.map(row => row.name)
       }
     } as WifiCallingActionPayload)
 
@@ -113,7 +111,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
     })
   }
 
-  const deactivateNetwork = (selectRows: WifiCallingScope[]) => {
+  const deactivateNetwork = (selectRows: Network[]) => {
     dispatch({
       type: WifiCallingActionTypes.DELETE_NETWORK_ID,
       payload: {
@@ -133,13 +131,13 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
   const rowActions: TableProps<WifiCallingScope>['actions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
-    onClick: (selectRows: WifiCallingScope[], clearSelection: () => void) => {
+    onClick: (selectRows: Network[], clearSelection: () => void) => {
       activateNetwork(selectRows)
       clearSelection()
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
-    onClick: (selectRows: WifiCallingScope[], clearSelection: () => void) => {
+    onClick: (selectRows: Network[], clearSelection: () => void) => {
       deactivateNetwork(selectRows)
       clearSelection()
     }
@@ -150,6 +148,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       columns={basicColumns}
       dataSource={basicData}
       pagination={tableQuery.pagination}
+      onChange={tableQuery.handleTableChange}
       rowKey='id'
       rowActions={rowActions}
       rowSelection={{ type: 'checkbox' }}

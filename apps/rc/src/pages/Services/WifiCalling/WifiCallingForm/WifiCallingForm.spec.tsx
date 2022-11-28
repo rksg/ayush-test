@@ -71,6 +71,25 @@ const initState = {
   networksName: []
 }
 
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) =>
+    <select
+      role='combobox'
+      onChange={e => onChange(e.target.value)}
+      {...otherProps}>
+      {children}
+    </select>
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
+
+  return { ...antd, Select }
+})
+
 describe('WifiCallingForm', () => {
   beforeEach(() => {
     mockServer.use(
@@ -135,26 +154,24 @@ describe('WifiCallingForm', () => {
     expect(domainInput).toHaveValue('aaa.bbb.com')
     expect(ipInput).toHaveValue('10.10.10.10')
 
-    const saveButton = screen.getByRole('button', { name: 'Save' })
+    const saveButton = await screen.findByText('Save')
     expect(saveButton).toBeInTheDocument()
     fireEvent.click(saveButton)
 
     await screen.findByTestId('selectQosPriorityId')
 
-    const WIFICALLING_PRI_BE = 'WIFICALLING_PRI_BE'
-
     fireEvent.select(screen.getByTestId('selectQosPriorityId'), {
-      target: { WIFICALLING_PRI_BE }
+      target: { name: 'Video' }
     })
 
     await userEvent.click(screen.getByRole('combobox'))
 
     await userEvent.selectOptions(
       screen.getByRole('combobox'),
-      screen.getByRole('option', { name: 'WIFICALLING_PRI_BE' })
+      screen.getByRole('option', { name: 'Video' })
     )
 
-    await screen.findByText('WIFICALLING_PRI_BE')
+    await screen.findByText('Video')
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 

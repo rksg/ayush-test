@@ -3,9 +3,11 @@ import userEvent     from '@testing-library/user-event'
 import { rest }      from 'msw'
 
 import { QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Path, To }                         from '@acx-ui/react-router-dom'
 import { Provider }                         from '@acx-ui/store'
 import { mockServer, render, screen }       from '@acx-ui/test-utils'
 
+import { mockedTenantId }     from '../../MdnsProxy/MdnsProxyForm/__tests__/fixtures'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
 import WifiCallingConfigureForm from './WifiCallingConfigureForm'
@@ -87,6 +89,21 @@ const initState = {
   networksName: []
 }
 
+const mockedUseNavigate = jest.fn()
+const mockedTenantPath: Path = {
+  pathname: 't/' + mockedTenantId,
+  search: '',
+  hash: ''
+}
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (to: To): Path => {
+    return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
+  }
+}))
+
 describe('WifiCallingConfigureForm', () => {
   beforeEach(() => {
     mockServer.use(
@@ -150,5 +167,25 @@ describe('WifiCallingConfigureForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
 
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render form successfully then click the cancel button', async () => {
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingConfigureForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
+        }
+      }
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
   })
 })

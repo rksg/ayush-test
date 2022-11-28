@@ -1,10 +1,10 @@
 import React, { MutableRefObject, useContext, useEffect } from 'react'
 
-import { ProFormInstance }       from '@ant-design/pro-form'
-import { Col, Form, Input, Row } from 'antd'
-import TextArea                  from 'antd/lib/input/TextArea'
-import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
+import { ProFormInstance }               from '@ant-design/pro-form'
+import { Col, Form, Input, Row, Select } from 'antd'
+import TextArea                          from 'antd/lib/input/TextArea'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
 
 import { StepsForm }                                                        from '@acx-ui/components'
 import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
@@ -58,23 +58,23 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   }
 
   const selectQosPriority = (
-    <select
+    <Select
       style={{ width: '100%' }}
       data-testid='selectQosPriorityId'
       onChange={(options) => handleQosPriority(options.toString() as QosPriorityEnum)}>
       <option value='WIFICALLING_PRI_VOICE'>
-        {$t({ defaultMessage: 'WIFICALLING_PRI_VOICE' })}
+        {$t({ defaultMessage: 'Voice' })}
       </option>
       <option value='WIFICALLING_PRI_VIDEO'>
-        {$t({ defaultMessage: 'WIFICALLING_PRI_VIDEO' })}
+        {$t({ defaultMessage: 'Video' })}
       </option>
       <option value='WIFICALLING_PRI_BE'>
-        {$t({ defaultMessage: 'WIFICALLING_PRI_BE' })}
+        {$t({ defaultMessage: 'Best Effort' })}
       </option>
       <option value='WIFICALLING_PRI_BG'>
-        {$t({ defaultMessage: 'WIFICALLING_PRI_BG' })}
+        {$t({ defaultMessage: 'Background' })}
       </option>
-    </select>
+    </Select>
   )
 
   useEffect(() => {

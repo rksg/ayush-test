@@ -353,27 +353,29 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                               <select
                                 data-testid="selectQosPriorityId"
                                 id="settings_qosPriority"
+                                name="Video"
+                                role="combobox"
                                 style="width: 100%;"
                               >
                                 <option
                                   value="WIFICALLING_PRI_VOICE"
                                 >
-                                  WIFICALLING_PRI_VOICE
+                                  Voice
                                 </option>
                                 <option
                                   value="WIFICALLING_PRI_VIDEO"
                                 >
-                                  WIFICALLING_PRI_VIDEO
+                                  Video
                                 </option>
                                 <option
                                   value="WIFICALLING_PRI_BE"
                                 >
-                                  WIFICALLING_PRI_BE
+                                  Best Effort
                                 </option>
                                 <option
                                   value="WIFICALLING_PRI_BG"
                                 >
-                                  WIFICALLING_PRI_BG
+                                  Background
                                 </option>
                               </select>
                             </div>
@@ -1246,7 +1248,7 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                                 class="ant-typography"
                                 id="summary_qosPriority"
                               >
-                                [object Object]
+                                WIFICALLING_PRI_VIDEO
                               </div>
                             </div>
                           </div>
