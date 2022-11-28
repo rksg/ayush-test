@@ -19,11 +19,11 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('EdgeList', () => {
   let params: { tenantId: string }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -40,8 +40,23 @@ describe('EdgeList', () => {
       rest.delete(
         EdgeUrlsInfo.deleteEdges.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.patch(
+        EdgeUrlsInfo.sendOtp.url,
+        (req, res, ctx) => res(ctx.status(202))
       )
     )
+  })
+
+  it('feature flag off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <EdgeList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/list' }
+      })
+    await screen.findByText('Edges is not enabled')
   })
 
   it('should create EdgeList successfully', async () => {
@@ -93,7 +108,7 @@ describe('EdgeList', () => {
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/0000000001/edit`,
+      pathname: `/t/${params.tenantId}/devices/edge/0000000001/edit/general-settings`,
       hash: '',
       search: ''
     })
@@ -152,5 +167,22 @@ describe('EdgeList', () => {
     await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+  })
+
+  it('should send OTP sucessfully', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/list' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = screen.getByRole('row', { name: /Smart Edge 5/i })
+    await user.click(within(row).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Send OTP' }))
+    await screen.findByText('Are you sure you want to send OTP?')
+    await user.click(screen.getByRole('button', { name: 'OK' }))
   })
 })

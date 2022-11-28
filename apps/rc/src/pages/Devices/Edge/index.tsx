@@ -3,14 +3,13 @@ import { useIntl } from 'react-intl'
 import {
   Button,
   Loader,
-  PageHeader,
-  Table,
-  TableProps,
-  showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { useDeleteEdgeMutation, useGetEdgeListQuery } from '@acx-ui/rc/services'
-import { EdgeViewModel, useTableQuery }               from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
+  PageHeader, showActionModal, Table,
+  TableProps
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation } from '@acx-ui/rc/services'
+import { EdgeStatusEnum, EdgeViewModel, useTableQuery }                   from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                         from '@acx-ui/react-router-dom'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
 
@@ -19,7 +18,7 @@ const EdgesTable = () => {
   const defaultPayload = {
     fields: [
       'name',
-      'status',
+      'deviceStatus',
       'type',
       'model',
       'serialNumber',
@@ -43,6 +42,7 @@ const EdgesTable = () => {
     defaultPayload
   })
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
+  const [sendOtp] = useSendOtpMutation()
 
   const columns: TableProps<EdgeViewModel>['columns'] = [
     {
@@ -62,12 +62,12 @@ const EdgesTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Status' }),
-      key: 'status',
-      dataIndex: 'status',
+      key: 'deviceStatus',
+      dataIndex: 'deviceStatus',
       sorter: true,
       render: (data, row) => {
         return (
-          <EdgeStatusLight data={row.status} />
+          <EdgeStatusLight data={row.deviceStatus} />
         )
       }
     },
@@ -154,6 +154,22 @@ const EdgesTable = () => {
                 .then(clearSelection) :
               deleteEdge({ payload: rows.map(item => item.serialNumber) })
                 .then(clearSelection)
+          }
+        })
+      }
+    },
+    {
+      visible: (selectedRows) => (selectedRows.length === 1 &&
+        EdgeStatusEnum.NEVER_CONTACTED_CLOUD === selectedRows[0]?.deviceStatus),
+      label: $t({ defaultMessage: 'Send OTP' }),
+      onClick: (rows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Send OTP' }),
+          content: $t({ defaultMessage: 'Are you sure you want to send OTP?' }),
+          onOk: () => {
+            sendOtp({ params: { serialNumber: rows[0].serialNumber } })
+              .then(clearSelection)
           }
         })
       }

@@ -33,7 +33,7 @@ const Dot = styled.div.attrs((props: DotProps) => props)`
 export function StatusLight (props: StatusLightProps) {
   return (
     <Dot color={props.config[props.data]?.color}>
-      {props.config[props.data]?.text}
+      {props.config[props.data]?.text || props.data}
     </Dot>
   )
 }

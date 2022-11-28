@@ -29,6 +29,10 @@ export const EdgeStatusLight = (props: EdgeStatusLightProps) => {
       color: '--acx-neutrals-50',
       text: $t({ defaultMessage: 'Offline' })
     },
+    [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]: {
+      color: '--acx-neutrals-50',
+      text: $t({ defaultMessage: 'Never Contacted Cloud' })
+    },
     [EdgeStatusEnum.OPERATIONAL]: {
       color: '--acx-semantics-green-50',
       text: $t({ defaultMessage: 'Operational' })

@@ -12,5 +12,9 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   deleteEdges: {
     method: 'delete',
     url: '/api/edges'
+  },
+  sendOtp: {
+    method: 'PATCH',
+    url: '/api/edges/:serialNumber'
   }
 }

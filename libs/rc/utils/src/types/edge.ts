@@ -1,6 +1,6 @@
 export interface EdgeViewModel {
   name: string
-  status: string
+  deviceStatus: string
   type: string
   model: string
   serialNumber: string
@@ -14,7 +14,8 @@ export interface EdgeViewModel {
 export enum EdgeStatusEnum {
   REQUIRES_ATTENTION = 'Requires Attention',
   TEMPORARILY_DEGRADED = 'Temporarily degraded',
-  IN_SETUP_PHASE = 'In Setup Phase',
-  OFFLINE = 'Offline',
-  OPERATIONAL = 'Operational'
+  IN_SETUP_PHASE = '1_07_Initializing',
+  OFFLINE = '1_09_Offline',
+  OPERATIONAL = '2_00_Operational',
+  NEVER_CONTACTED_CLOUD = '1_01_NeverContactedCloud'
 }

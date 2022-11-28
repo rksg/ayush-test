@@ -38,6 +38,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+    }),
+    sendOtp: build.mutation<string, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.sendOtp, params)
+        return {
+          ...req,
+          body: { otpState: 'RENEW' }
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     })
   })
 })
@@ -45,5 +55,6 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
 export const {
   useGetEdgeListQuery,
   useLazyGetEdgeListQuery,
-  useDeleteEdgeMutation
+  useDeleteEdgeMutation,
+  useSendOtpMutation
 } = edgeApi
