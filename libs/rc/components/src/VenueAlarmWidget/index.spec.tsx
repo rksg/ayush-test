@@ -9,11 +9,6 @@ import { render,
 
 import { VenueAlarmWidget, getChartData } from '.'
 
-jest.mock('@acx-ui/icons', () => ({
-  ...jest.requireActual('@acx-ui/icons'),
-  CheckMarkCircleSolid: () => <span data-testid='CheckMarkCircleSolid' />
-}))
-
 const alarmList = {
   data: [
     {

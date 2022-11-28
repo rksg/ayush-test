@@ -21,6 +21,9 @@ import {
   WifiCallingUrls,
   WifiUrlsInfo,
   MdnsProxyForwardingRule,
+  PortalDetailInstances,
+  Portal,
+  PortalUrlsInfo,
   WifiCallingFormContextType, WifiCallingSetting
 } from '@acx-ui/rc/utils'
 import {
@@ -237,6 +240,33 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
 
       },
+
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortal: build.query<Portal | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
+        if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        return result as QueryReturnValue<Portal,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    savePortal: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload }) => {
+        const createPortalReq = createHttpRequest(
+          PortalUrlsInfo.savePortal, params
+        )
+        return {
+          ...createPortalReq,
+          body: payload
+        }
+      },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     dhcpVenueInstances: build.query<TableResult<DHCPDetailInstances>, RequestPayload>({
@@ -304,6 +334,24 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
+        return {
+          ...instancesRes
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
+      query: ({ params }) => {
+        const portalDetailReq = createHttpRequest(PortalUrlsInfo.getPortalProfileDetail, params)
+        return {
+          ...portalDetailReq
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
     })
   })
 })
@@ -331,5 +379,9 @@ export const {
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceListQuery,
   useCreateWifiCallingServiceMutation,
-  useUpdateWifiCallingServiceMutation
+  useUpdateWifiCallingServiceMutation,
+  useGetPortalQuery,
+  useSavePortalMutation,
+  usePortalNetworkInstancesQuery,
+  useGetPortalProfileDetailQuery
 } = serviceApi

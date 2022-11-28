@@ -10,11 +10,11 @@ import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved }
 
 import {
   venuesResponse,
+  venueListResponse,
   networksResponse,
   successResponse,
   cloudpathResponse,
-  networkDeepResponse,
-  venueListResponse
+  networkDeepResponse
 } from '../__tests__/fixtures'
 import { radiusErrorMessage, multipleConflictMessage } from '../contentsMap'
 import NetworkForm                                     from '../NetworkForm'
@@ -119,6 +119,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
@@ -153,6 +155,10 @@ describe('NetworkForm', () => {
     const secretTextbox = await screen.findByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
+
+    const toggle = screen.getAllByRole('switch')
+    fireEvent.click(toggle[0])
+    fireEvent.click(toggle[0])
     await fillInAfterSettings(async () => {
       expect(screen.getByText('AAA network test')).toBeVisible()
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()

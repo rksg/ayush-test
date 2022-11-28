@@ -291,9 +291,9 @@ exports[`WifiCallingSettingForm should render WifiCallingSettingForm successfull
                                     <div
                                       class="ant-pro-table-list-toolbar-setting-item"
                                     >
-                                      <svg>
-                                        SettingsOutlined.svg
-                                      </svg>
+                                      <svg
+                                        data-testid="SettingsOutlined"
+                                      />
                                     </div>
                                   </div>
                                 </div>

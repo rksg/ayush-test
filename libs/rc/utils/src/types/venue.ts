@@ -80,6 +80,24 @@ export interface FloorPlanImage {
 	name: string
 }
 
+export interface UploadUrlResponse {
+	fileId: string;
+	signedUrl: string;
+}
+export interface FloorPlanFormDto {
+	floorNumber: number;
+	id?: string;
+	imageId?: string;
+	imageName: string;
+	name: string;
+}
+
+export interface FileValidation {
+	file: File,
+	isValidfileType: boolean,
+	isValidFileSize: boolean
+}
+
 export interface VenueCapabilities {
 	apModels: ApModel[]
 	version: string
@@ -147,7 +165,8 @@ export interface VenueExtended {
   disableByMaxReached?: boolean
   mesh: MeshOptions
   dhcp: DhcpOptions
-  id?: string
+	id?: string,
+	country: string
 }
 
 export interface VenueSettings {

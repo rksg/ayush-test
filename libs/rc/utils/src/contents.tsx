@@ -97,6 +97,12 @@ export const WifiNetworkMessages = {
   })
 }
 
+export const WifiTroubleshootingMessages = {
+  Target_Host_IP_TOOLTIP: defineMessage({
+    defaultMessage: 'The target host or IP address must be a valid IP address or domain name'
+  })
+}
+
 export const VenueMessages = {
   MODEL_OVERLAPPING_TOOLTIP: defineMessage({
     defaultMessage: 'You selected CLI profiles with overlapping switch models. Please correct your selection'
@@ -106,6 +112,27 @@ export const VenueMessages = {
       <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li>
       <li>The selected CLI profiles cannot contain overlapping switch models</li>
     </ul>`
+  })
+}
+
+export const ApErrorHandlingMessages = {
+  SERIAL_NUMBER_ALREADY_REGISTERED: defineMessage({
+    defaultMessage: 'Serial number is already registered'
+  }),
+  SERVICE_IS_NOT_SUPPORTED: defineMessage({
+    defaultMessage: 'The service is currently not supported in the country which you entered.<br></br>Please make sure that you entered the correct address.'
+  }),
+  UPGRADE_YOUR_LICENSE: defineMessage({
+    defaultMessage: 'Upgrade your license to add new APs to the system'
+  }),
+  REQUEST_LOCKING: defineMessage({
+    defaultMessage: 'A configuration request is currently being executed and additional requests cannot be performed at this time.<br></br>Try again once the request has completed.'
+  }),
+  CELLULAR_AP_CANNOT_BE_MOVED: defineMessage({
+    defaultMessage: 'The cellular AP cannot be moved to the venue which doesn\'t enable DHCP service'
+  }),
+  ERROR_OCCURRED: defineMessage({
+    defaultMessage: 'Error occurred while {action} AP'
   })
 }
 /* eslint-enable */

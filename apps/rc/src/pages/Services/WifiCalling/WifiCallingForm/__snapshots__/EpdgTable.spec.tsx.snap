@@ -56,9 +56,9 @@ exports[`EpdgTable should render drawer successfully after clicking the Add butt
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg>
-                          SettingsOutlined.svg
-                        </svg>
+                        <svg
+                          data-testid="SettingsOutlined"
+                        />
                       </div>
                     </div>
                   </div>
