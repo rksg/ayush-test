@@ -5,7 +5,7 @@ import NetworkSegmentationForm from './NetworkSegmentationForm'
 
 
 describe( 'NetworkSegmentationForm', () => {
-  let params: { tenantId: string }
+  let params: { tenantId: 'tenant-id' }
 
   it( 'should create form successfully', async () => {
     const { asFragment } = render(
