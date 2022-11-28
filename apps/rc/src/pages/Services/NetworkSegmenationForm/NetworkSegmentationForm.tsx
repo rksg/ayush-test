@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react'
+import { useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -22,10 +22,9 @@ export default function NetworkSegmentationForm () {
 
   const linkToServices = useTenantLink('/services')
 
-  const [saveState, updateSaveState] = useState<NetworkSegmentationSaveData>({
+  const [ saveState, updateSaveState ] = useState<NetworkSegmentationSaveData>({
     name: ''
   })
-
 
   return (
     <>
