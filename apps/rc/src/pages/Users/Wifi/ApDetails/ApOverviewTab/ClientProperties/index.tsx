@@ -170,7 +170,7 @@ export function ClientProperties () {
 
   return <Card>
     <Loader states={[{
-      isLoading: !client?.clientMac
+      isLoading: !Object.keys(client).length
     }]}>
       <UI.Form
         labelCol={{ span: 12 }}

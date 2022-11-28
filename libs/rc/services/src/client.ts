@@ -50,7 +50,7 @@ export const clientApi = baseClientApi.injectEndpoints({
           ...createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
           body: {
             fields: ['networkId', 'venueName', 'apName'],
-            filters: { id: [baseDetails?.data?.[0].id] }
+            filters: { id: [baseDetails?.data?.[0]?.id] }
           }
         }
         const metaListQuery = await fetchWithBQ(metaInfo)
