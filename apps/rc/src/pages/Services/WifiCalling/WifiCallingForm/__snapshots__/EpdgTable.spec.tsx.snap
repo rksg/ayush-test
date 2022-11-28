@@ -602,9 +602,9 @@ exports[`EpdgTable should render drawer successfully after clicking the Edit but
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg>
-                          SettingsOutlined.svg
-                        </svg>
+                        <svg
+                          data-testid="SettingsOutlined"
+                        />
                       </div>
                     </div>
                   </div>
@@ -659,9 +659,9 @@ exports[`EpdgTable should render drawer successfully after clicking the Edit but
                                 title="Clear selection"
                                 type="button"
                               >
-                                <svg>
-                                  CancelCircle.svg
-                                </svg>
+                                <svg
+                                  data-testid="CancelCircle"
+                                />
                               </button>
                             </div>
                           </div>
