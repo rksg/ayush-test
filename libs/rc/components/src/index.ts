@@ -1,5 +1,5 @@
 export { AlarmWidget } from './AlarmWidget'
-export { ApTable } from './ApTable'
+export { ApTable, APStatus } from './ApTable'
 export { ClientsWidget } from './ClientsWidget'
 export { DevicesDashboardWidget } from './DevicesDashboardWidget'
 export { DevicesWidget } from './DevicesWidget'

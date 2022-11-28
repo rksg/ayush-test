@@ -11,7 +11,7 @@ import { Network, RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
 
 import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
-import { Collapse, Panel, StyledPageHeader } from './styledComponents'
+import { Collapse, Panel } from './styledComponents'
 
 
 function useSearchTerm () {
@@ -24,14 +24,12 @@ function SearchHeader ({ count }: { count: number }) {
   const searchVal = useSearchTerm()
   const { $t } = useIntl()
   return (
-    <StyledPageHeader>
-      <PageHeader
-        title={$t(
-          { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
-          { searchVal, count }
-        )}
-      />
-    </StyledPageHeader>
+    <PageHeader
+      title={$t(
+        { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
+        { searchVal, count }
+      )}
+    />
   )
 }
 
@@ -51,7 +49,7 @@ const SearchTableWrapper = ({ children, count, title }
       <Panel
         key={title}
         header={$t({ defaultMessage: '{title} ({count})' }, {
-          title: title.at(0)?.toUpperCase() + title.slice(1),
+          title,
           count
         })}
       >
@@ -62,6 +60,7 @@ const SearchTableWrapper = ({ children, count, title }
 }
 
 function SearchResult () {
+  const { $t } = useIntl()
   const globalSearch = useSearchTerm()
   const [count, setCount] = useState(0)
 
@@ -103,7 +102,7 @@ function SearchResult () {
       <SearchHeader key='search-header' count={count}/>
       <GridRow>
         <SearchTableWrapper
-          title='venue'
+          title={$t({ defaultMessage: 'Venue' })}
           count={venueCount}
         >
           <VenueTable
