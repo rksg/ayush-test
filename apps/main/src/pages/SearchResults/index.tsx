@@ -48,7 +48,7 @@ const SearchTableWrapper = ({ children, count, title }
       <Panel
         key={title}
         header={$t({ defaultMessage: '{title} ({count})' }, {
-          title: title.at(0)?.toUpperCase() + title.slice(1),
+          title,
           count
         })}
       >
@@ -59,6 +59,7 @@ const SearchTableWrapper = ({ children, count, title }
 }
 
 function SearchResult () {
+  const { $t } = useIntl()
   const globalSearch = useSearchTerm()
   const [count, setCount] = useState(0)
 
@@ -88,7 +89,7 @@ function SearchResult () {
       <SearchHeader key='search-header' count={count}/>
       <GridRow>
         <SearchTableWrapper
-          title='venue'
+          title={$t({ defaultMessage: 'Venue' })}
           count={venueCount}
         >
           <VenueTable
