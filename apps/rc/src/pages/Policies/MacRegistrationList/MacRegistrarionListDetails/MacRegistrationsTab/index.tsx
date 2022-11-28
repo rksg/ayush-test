@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps }          from '@acx-ui/components'
@@ -34,10 +35,11 @@ export function MacRegistrationsTab () {
   const rowActions: TableProps<MacRegistration>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
-    onClick: (selectedRows) => {
+    onClick: (selectedRows, clearSelection) => {
       setEditData(selectedRows[0])
       setVisible(true)
       setIsEditMode(true)
+      clearSelection()
     }
   },
   {
@@ -90,7 +92,7 @@ export function MacRegistrationsTab () {
       key: 'mac_addresses',
       dataIndex: 'mac_addresses',
       render: function (data, row) {
-        return `${row.macAddress}`
+        return row.macAddress
       }
     },
     {
@@ -98,8 +100,14 @@ export function MacRegistrationsTab () {
       key: 'status',
       dataIndex: 'status',
       render: function (data, row) {
-        return `${row.revoked ? 'Revoked' :
-          (row.expirationDate < new Date().toISOString() ? 'Expired' : 'Active')}`
+        if (row.revoked) {
+          return 'Revoked'
+        } else {
+          if (row.expirationDate) {
+            return row.expirationDate < new Date().toISOString() ? 'Expired' : 'Active'
+          }
+          return 'unknown'
+        }
       }
     },
     {
@@ -108,7 +116,7 @@ export function MacRegistrationsTab () {
       dataIndex: 'username',
       align: 'center',
       render: function (data, row) {
-        return `${row.username}`
+        return row.username
       }
     },
     {
@@ -116,7 +124,7 @@ export function MacRegistrationsTab () {
       key: 'email',
       dataIndex: 'email',
       render: function (data, row) {
-        return `${row.email ? row.email : ''}`
+        return row.email
       }
     },
     {
@@ -124,7 +132,7 @@ export function MacRegistrationsTab () {
       key: 'registration_date',
       dataIndex: 'registration_date',
       render: function (data, row) {
-        return `${row.expirationDate ? row.expirationDate : ''}`
+        return moment(row.expirationDate).format('MM/DD/YYYY HH:mm A')
       }
     },
     {
@@ -132,7 +140,7 @@ export function MacRegistrationsTab () {
       key: 'expiration_date',
       dataIndex: 'expiration_date',
       render: function (data, row) {
-        return `${row.expirationDate ? row.expirationDate : 'Never expires (Same as list)'}`
+        return moment(row.expirationDate).format('MM/DD/YYYY HH:mm A')
       }
     }
   ]
@@ -146,7 +154,7 @@ export function MacRegistrationsTab () {
         visible={visible}
         setVisible={setVisible}
         isEdit={isEditMode}
-        editData={editData}
+        editData={isEditMode ? editData : undefined}
       />
       <Table
         columns={columns}

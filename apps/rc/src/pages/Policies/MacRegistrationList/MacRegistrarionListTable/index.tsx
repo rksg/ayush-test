@@ -36,7 +36,8 @@ function useColumns () {
       sorter: true,
       align: 'center',
       render: function (data, row) {
-        return row.macAddresses }
+        return row.registrationCount
+      }
     }
     // {
     //   key: 'scope',
@@ -58,7 +59,6 @@ export default function MacRegistrationListsTable () {
   const MacRegistrationListsTable = () => {
     const tableQuery = useMacTableQuery({
       useQuery: useMacRegListsQuery,
-      apiParams: { size: '10', page: '0' },
       defaultPayload: {}
     })
 

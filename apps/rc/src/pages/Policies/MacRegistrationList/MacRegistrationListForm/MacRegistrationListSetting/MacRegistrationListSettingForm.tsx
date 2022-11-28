@@ -1,18 +1,22 @@
-import React, { useContext } from 'react'
+import { Form, Input, Col, Radio, Row, Space, Select, DatePicker, InputNumber, Switch } from 'antd'
+import { useIntl }                                                                      from 'react-intl'
 
-import { Form, Input, Col, Radio, Row, Space, Select, DatePicker, InputNumber } from 'antd'
-import { useIntl }                                                              from 'react-intl'
+import { Button, SelectionControl } from '@acx-ui/components'
 
-import { Button } from '@acx-ui/components'
-
-import MacRegistrationListFormContext from '../MacRegistrationListFormContext'
-import * as UI                        from '../styledComponents'
+import { expirationTimeUnits } from '../../MacRegistrationListUtils'
 
 export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const isExpired = Form.useWatch('listExpiration', form)
-  const { data: saveData } = useContext(MacRegistrationListFormContext)
+
+  const renderExpirationSelect = () => {
+    const rows = []
+    for (let k in expirationTimeUnits) {
+      rows.push(<Select.Option value={k}>{expirationTimeUnits[k]}</Select.Option>)
+    }
+    return <Select children={rows} />
+  }
 
   return (
     <Row>
@@ -31,14 +35,14 @@ export function MacRegistrationListSettingForm () {
               <Space>
                 <Radio value={2}>By date</Radio>
                 {isExpired === 2 &&
-                  <Form.Item name={'expireDate'}
+                  <Form.Item name='expireDate'
                     rules={[
                       {
                         required: true,
                         message: 'Please choose date'
                       }
                     ]}>
-                    <DatePicker placeholder={'Choose date'}/>
+                    <DatePicker name='datepicker' placeholder='Choose date'/>
                   </Form.Item>
                 }
               </Space>
@@ -46,21 +50,15 @@ export function MacRegistrationListSettingForm () {
                 <Radio value={3}>After...</Radio>
                 {isExpired === 3 &&
                   <>
-                    <Form.Item name={'expireAfter'}
+                    <Form.Item name='expireAfter'
                       initialValue={1}
                       rules={[
                         { required: true, message: 'Please enter number' }
                       ]}>
                       <InputNumber/>
                     </Form.Item>
-                    <Form.Item name='expireTimeUnit' initialValue={'HOURS_AFTER_TIME'}>
-                      <Select>
-                        <Select.Option value='HOURS_AFTER_TIME'>Hours</Select.Option>
-                        <Select.Option value='DAYS_AFTER_TIME'>Days</Select.Option>
-                        <Select.Option value='WEEKS_AFTER_TIME'>Weeks</Select.Option>
-                        <Select.Option value='MONTHS_AFTER_TIME'>Months</Select.Option>
-                        <Select.Option value='YEARS_AFTER_TIME'>Years</Select.Option>
-                      </Select>
+                    <Form.Item name='expireTimeUnit' initialValue='HOURS_AFTER_TIME'>
+                      {renderExpirationSelect()}
                     </Form.Item>
                   </>
                 }
@@ -68,26 +66,24 @@ export function MacRegistrationListSettingForm () {
             </Space>
           </Radio.Group>
         </Form.Item>
-        <Space direction='horizontal' size={'middle'}>
-          <Form.Item name={'autoCleanup'}
+        <Space direction='horizontal' size='middle'>
+          <Form.Item name='autoCleanup'
             valuePropName='checked'
             initialValue={true}
             label='Automatically clean expired entries'>
-            <UI.CleanExpiredSwitch checkedChildren='ON'
-              unCheckedChildren='OFF'
-              checked={saveData.autoCleanup}
-            />
+            <Switch/>
           </Form.Item>
         </Space>
-        <Form.Item name='defaultAccess' label='Default Access' initialValue={'accept'}>
-          <Radio.Group>
-            <UI.DefaultAccessRadioButton value='accept'>ACCEPT</UI.DefaultAccessRadioButton>
-            <UI.DefaultAccessRadioButton value='reject'>REJECT</UI.DefaultAccessRadioButton>
-          </Radio.Group>
+        <Form.Item name='defaultAccess' label='Default Access'>
+          <SelectionControl
+            defaultValue='accept'
+            options={[{ value: 'accept', label: 'ACCEPT' },
+              { value: 'reject', label: 'REJECT' }]}
+          />
         </Form.Item>
       </Col>
       <Col span={24}>
-        <Row align={'middle'}>
+        <Row align='middle'>
           <Col span={14}>
             <Form.Item name='access_policy_set'
               label='Access Policy Set'

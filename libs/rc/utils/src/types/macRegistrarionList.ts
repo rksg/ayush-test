@@ -1,52 +1,19 @@
 import { Moment } from 'moment-timezone'
 
-export interface MacRegistration {
-  id: string
-  email: string
-  expirationDate: string
-  location: string
-  macAddress: string
-  revoked: boolean
-  username: string
-  devicename: string
-}
-
 export interface MacRegistrationPool {
-  id: string
-  autoCleanup: boolean
-  description: string
-  enabled: boolean
-  expirationEnabled: boolean
-  name: string
-  priority: number
-  ssidRegex: string
-  macAddresses: number
-  policyId: string
-  expirationType: string
-  expirationOffset: number
-  expirationDate: string
-}
-
-export interface MacRegistrationPoolSaveData {
+  id?: string
   autoCleanup?: boolean
   description?: string
+  enabled?: boolean
+  expirationEnabled?: boolean
   name?: string
+  priority?: number
+  ssidRegex?: string
+  registrationCount?: number
   policyId?: string
   expirationType?: string
   expirationOffset?: number
   expirationDate?: string
-  expirationEnabled?: boolean
-  ssidRegex?: string
-}
-
-export interface MacRegistrationFormFields {
-  expireDate: string
-  expireAfter: number
-  macAddress: string
-  username: string
-  devicename: string,
-  listExpiration: number
-  expireTimeUnit: string
 }
 
 export interface MacRegistrationPoolFormFields {
@@ -58,5 +25,18 @@ export interface MacRegistrationPoolFormFields {
   expireDate: Moment
   expireAfter: number
   expireTimeUnit: string
+  // expireTimeUnit: 'MINUTES_AFTER_TIME' | 'HOURS_AFTER_TIME' | 'DAYS_AFTER_TIME' | 'WEEKS_AFTER_TIME' | 'MONTHS_AFTER_TIME' | 'YEARS_AFTER_TIME'
   defaultAccess: string
+}
+
+export interface MacRegistration {
+  id?: string
+  email?: string
+  expirationDate?: string
+  location?: string
+  macAddress?: string
+  revoked?: boolean
+  username?: string
+  deviceName?: string
+  listExpiration?: number
 }

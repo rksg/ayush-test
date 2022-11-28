@@ -40,8 +40,8 @@ export function MacRegistrationListOverviewTab () {
                 >
                   <Paragraph>{!data?.expirationEnabled ? 'Never expires' :
                     data.expirationType === 'SPECIFIED_DATE' ?
-                      data?.expirationDate : '+' + data.expirationOffset + ' ' +
-                    expirationTimeUnits[data.expirationType ?? '']}</Paragraph>
+                      // eslint-disable-next-line max-len
+                      data?.expirationDate : `+${data.expirationOffset} ${expirationTimeUnits[data.expirationType ?? '']}`}</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -55,14 +55,14 @@ export function MacRegistrationListOverviewTab () {
                 <Form.Item
                   label={$t({ defaultMessage: 'Behavior' })}
                 >
-                  <Paragraph>{'Always redirect to authenticate user'}</Paragraph>
+                  <Paragraph>Always redirect to authenticate user</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item
                   label={$t({ defaultMessage: 'Default Access' })}
                 >
-                  <Paragraph>{'Access'}</Paragraph>
+                  <Paragraph>Access</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={8}>

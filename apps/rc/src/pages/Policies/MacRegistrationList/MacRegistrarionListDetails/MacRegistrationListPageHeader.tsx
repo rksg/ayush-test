@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                    from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Button, PageHeader }    from '@acx-ui/components'
+import { useGetMacRegListQuery } from '@acx-ui/rc/services'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import MacRegistrationListTabs from './MacRegistrationListTabs'
 
@@ -10,26 +11,20 @@ function MacRegistrationListPageHeader () {
   const { $t } = useIntl()
   const { macRegistrationListId } = useParams()
 
-  const navigate = useNavigate()
-  const basePath = useTenantLink(`/policies/mac-registration-lists/${macRegistrationListId}`)
+  const macRegistrationListQuery = useGetMacRegListQuery({ params: { macRegistrationListId } })
 
   return (
     <PageHeader
-      title=''
+      title={macRegistrationListQuery.data?.name || ''}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Policies & Profiles > MAC Registration Lists' }),
           link: 'policies/mac-registration-lists' }
       ]}
       extra={[
-        <Button
-          key='configure'
-          type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/edit`
-            })
-          }>{ $t({ defaultMessage: 'Configure' }) }</Button>
+        // eslint-disable-next-line max-len
+        <TenantLink to={`/policies/mac-registration-lists/${macRegistrationListId}/edit`} key='edit'>
+          <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+        </TenantLink>
       ]}
       footer={<MacRegistrationListTabs />}
     />

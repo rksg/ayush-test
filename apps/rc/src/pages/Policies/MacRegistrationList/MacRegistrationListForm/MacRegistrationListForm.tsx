@@ -4,7 +4,7 @@ import { Col, Row, Typography, Form } from 'antd'
 import moment                         from 'moment-timezone'
 import { useIntl }                    from 'react-intl'
 
-import { PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
   useAddMacRegListMutation,
   useGetMacRegListQuery,
@@ -12,7 +12,7 @@ import {
   useUpdateMacRegListMutation
 } from '@acx-ui/rc/services'
 import {
-  MacRegistrationPoolFormFields, MacRegistrationPoolSaveData, useMacTableQuery
+  MacRegistrationPoolFormFields, MacRegistrationPool, useMacTableQuery
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -29,10 +29,11 @@ export default function MacRegistrationListForm () {
   const linkToList = useTenantLink('/policies/mac-registration-lists')
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<MacRegistrationPoolFormFields>>()
-  const [poolSaveState, setPoolSaveState] = useState<MacRegistrationPoolSaveData>({})
-  const { data } = useGetMacRegListQuery({ params: { macRegistrationListId } })
+  const [poolSaveState, setPoolSaveState] = useState<MacRegistrationPool>({})
+
+  const { data, isLoading } = useGetMacRegListQuery({ params: { macRegistrationListId } })
   const [addMacRegList] = useAddMacRegListMutation()
-  const [updateMacRegList] = useUpdateMacRegListMutation()
+  const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
   const { Paragraph } = Typography
 
   const tableQuery = useMacTableQuery({
@@ -88,7 +89,7 @@ export default function MacRegistrationListForm () {
     }
   }
 
-  const toListExpirationFieldsValue = (data: MacRegistrationPoolSaveData) => {
+  const toListExpirationFieldsValue = (data: MacRegistrationPool) => {
     if (!data.expirationEnabled) {
       return {
         listExpiration: 1
@@ -146,11 +147,16 @@ export default function MacRegistrationListForm () {
   const editContent = () => {
     return (
       <StepsForm.StepForm>
-        <Row>
-          <Col span={14}>
-            <MacRegistrationListSettingForm/>
-          </Col>
-        </Row>
+        <Loader states={[{
+          isLoading: isLoading,
+          isFetching: isUpdating
+        }]}>
+          <Row>
+            <Col span={14}>
+              <MacRegistrationListSettingForm/>
+            </Col>
+          </Row>
+        </Loader>
       </StepsForm.StepForm>
     )
   }
@@ -186,10 +192,9 @@ export default function MacRegistrationListForm () {
                   <Form.Item
                     label={intl.$t({ defaultMessage: 'List Expiration' })}
                   >
-                    {/* eslint-disable-next-line max-len */}
-                    <Paragraph>{!poolSaveState?.expirationEnabled ? 'Never expires' : poolSaveState.expirationType === 'SPECIFIED_DATE' ? poolSaveState?.expirationDate :
+                    <Paragraph>{!poolSaveState?.expirationEnabled ? 'Never expires' :
                       // eslint-disable-next-line max-len
-                      '+' + poolSaveState.expirationOffset + ' ' + expirationTimeUnits[poolSaveState.expirationType ?? '']}</Paragraph>
+                      poolSaveState.expirationType === 'SPECIFIED_DATE' ? data?.expirationDate : `+${poolSaveState.expirationOffset} ${expirationTimeUnits[poolSaveState.expirationType ?? '']}`}</Paragraph>
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -203,21 +208,21 @@ export default function MacRegistrationListForm () {
                   <Form.Item
                     label={intl.$t({ defaultMessage: 'Behavior' })}
                   >
-                    <Paragraph>{'Always redirect to authenticate user'}</Paragraph>
+                    <Paragraph>Always redirect to authenticate user</Paragraph>
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item
                     label={intl.$t({ defaultMessage: 'Redirect URL' })}
                   >
-                    <Paragraph>{'http://www.website.com'}</Paragraph>
+                    <Paragraph>http://www.website.com</Paragraph>
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item
                     label={intl.$t({ defaultMessage: 'Default Access' })}
                   >
-                    <Paragraph>{'Access'}</Paragraph>
+                    <Paragraph>Accept</Paragraph>
                   </Form.Item>
                 </Col>
                 <Col span={8}>

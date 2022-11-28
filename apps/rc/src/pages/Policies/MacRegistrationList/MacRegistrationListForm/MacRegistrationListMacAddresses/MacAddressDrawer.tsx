@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 
-import { Col, DatePicker, Form, Input, InputNumber, Row, Select, Space } from 'antd'
-import { Radio }                                                         from 'antd'
-import { useIntl }                                                       from 'react-intl'
+import { Col, DatePicker, Form, Input, Row, Space } from 'antd'
+import { Radio }                                    from 'antd'
+import moment                                       from 'moment-timezone'
+import { useIntl }                                  from 'react-intl'
 
 import { Drawer, showToast }                                               from '@acx-ui/components'
 import { useAddMacRegistrationMutation, useUpdateMacRegistrationMutation } from '@acx-ui/rc/services'
 import {
-  MacRegistration,
-  MacRegistrationFormFields
+  MacRegistration
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -16,7 +16,7 @@ interface MacAddressDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   isEdit: boolean
-  editData: MacRegistration
+  editData?: MacRegistration
 }
 
 export function MacAddressDrawer (props: MacAddressDrawerProps) {
@@ -31,8 +31,10 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const { macRegistrationListId } = useParams()
 
   useEffect(()=>{
-    if (editData) {
+    if (editData && visible) {
       form.setFieldsValue(editData)
+      form.setFieldValue('expirationDate', moment(editData.expirationDate))
+      form.setFieldValue('listExpiration', 2)
     }
   }, [editData, visible])
 
@@ -46,14 +48,14 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     form.resetFields()
   }
 
-  const onSubmit = async (data: MacRegistrationFormFields) => {
+  const onSubmit = async (data: MacRegistration) => {
     try {
       if (!isEdit) {
         const payload = {
           macAddress: data.macAddress,
           username: data.username,
-          devicename: data.devicename
-          // ...getExpirePayload(data)
+          deviceName: data.deviceName,
+          expirationDate: data.listExpiration === 1 ? null : data.expirationDate
         }
         await addMacRegistration({
           params: { macRegistrationListId },
@@ -62,12 +64,12 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       } else {
         const payload = {
           username: data.username,
-          devicename: data.devicename
-          // ...getExpirePayload(data)
+          deviceName: data.deviceName,
+          expirationDate: data.listExpiration === 1 ? null : data.expirationDate
         }
         await editMacRegistration(
           {
-            params: { macRegistrationListId, registrationId: editData.id },
+            params: { macRegistrationListId, registrationId: editData?.id },
             payload
           }).unwrap()
       }
@@ -90,7 +92,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       <Form.Item name='username' label='Username'>
         <Input/>
       </Form.Item>
-      <Form.Item name='devicename' label='devicename'>
+      <Form.Item name='deviceName' label='DeviceName'>
         <Input/>
       </Form.Item>
       <Form.Item name='listExpiration' label='MAC Address Expiration' initialValue={1}>
@@ -101,33 +103,10 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
               <Radio value={2}>By date</Radio>
               { isExpired === 2 &&
                 <Form.Item
-                  name='expireDate'
+                  name='expirationDate'
                   rules={[{ required: true }]}>
                   <DatePicker placeholder={'Choose date'} />
                 </Form.Item>
-              }
-            </Space>
-            <Space align={'center'}>
-              <Radio value={3}>After...</Radio>
-              {isExpired === 3 &&
-                <>
-                  <Form.Item
-                    name='expireAfter'
-                    rules={[
-                      { required: true, message: 'Please enter number' }
-                    ]}>
-                    <InputNumber/>
-                  </Form.Item>
-                  <Form.Item name='expireTimeUnit' initialValue={'HOURS_AFTER_TIME'}>
-                    <Select>
-                      <Select.Option value='HOURS_AFTER_TIME'>Hours</Select.Option>
-                      <Select.Option value='DAYS_AFTER_TIME'>Days</Select.Option>
-                      <Select.Option value='WEEKS_AFTER_TIME'>Weeks</Select.Option>
-                      <Select.Option value='MONTHS_AFTER_TIME'>Months</Select.Option>
-                      <Select.Option value='YEARS_AFTER_TIME'>Years</Select.Option>
-                    </Select>
-                  </Form.Item>
-                </>
               }
             </Space>
           </Space>
@@ -139,7 +118,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const content = <Form layout='vertical' form={form} onFinish={onSubmit}>
     {isEdit ? addManuallyContent :
       <>
-        <Form.Item name={'importAction'} initialValue={2}>
+        <Form.Item name='importAction' initialValue={2}>
           <Radio.Group>
             <Space direction='vertical'>
               <Radio value={2}>Add manually</Radio>
