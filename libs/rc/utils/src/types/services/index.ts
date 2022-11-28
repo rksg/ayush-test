@@ -4,6 +4,7 @@ import {
 } from '../../constants'
 
 export * from './dhcpService'
+export * from './dpskService'
 
 
 export enum AccessEnum {

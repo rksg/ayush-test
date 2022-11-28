@@ -15,5 +15,6 @@ export { useApActions } from './useApActions'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget } from './VenuesDashboardWidget'
+export * from './ExpirationDateSelector'
 
 export * from './pipes/apGroupPipes'
