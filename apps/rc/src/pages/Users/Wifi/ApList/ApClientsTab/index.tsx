@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import ConnectedClientsTable from './ConnectedClientsTable'
+import { ConnectedClientsTable } from '@acx-ui/rc/components'
 
 export function ApClientsTab () {
   const { $t } = useIntl()
