@@ -2,16 +2,19 @@
 export interface Guest {
     id: string
     userState: string
-    guestUserType: string
+    guestType: string
     networkId: string
-    expiration: GuestExpiration
+    expiration: string
     mobilePhoneNumber: string
-    email: string
+    emailAddress: string
     notes: string
     maxDevices: number
-    deliveryMethods: DelieverType[],
-    expiryDate?: string,
+    deliveryMethods: DelieverType[]
+    expiryDate?: string
     passDurationHours?: number
+    ssid?: string
+    name?: string
+    maxNumberOfClients?: number
 }
 
 export interface GuestExpiration {
@@ -27,4 +30,3 @@ export enum GuestTypesEnum {
     SELF_SIGN_IN = 'SelfSign',
     HOST_GUEST = 'HostGuest'
   }
-  

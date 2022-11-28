@@ -1,24 +1,22 @@
-import { ReactNode, useState } from 'react'
+/* eslint-disable align-import/align-import */
+import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Drawer } from 'antd'
+import moment                    from 'moment-timezone'
+import {defineMessage, useIntl }               from 'react-intl'
 
-import { Alert, Subtitle, Tooltip }                                              from '@acx-ui/components'
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { Alert }                                       from '@acx-ui/components'
+import { Button, Table, TableProps, Loader } from '@acx-ui/components'
 import { useGetGuestsListQuery }                                          from '@acx-ui/rc/services'
 import {
-  NetworkTypeEnum,
   useTableQuery,
-  Network,
-  NetworkType,
   Guest,
-  GuestTypesEnum
+  GuestTypesEnum,
+  transformDisplayText
 }                                                            from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { getIntl }                                           from '@acx-ui/utils'
-import moment        from 'moment-timezone'
-import { Divider, Drawer, Form } from 'antd'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
-const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
+import { GuestsDetail } from '../GuestsDetail'
 
 const defaultPayload = {
   searchString: '',
@@ -42,32 +40,24 @@ const defaultPayload = {
     'ssid',
     'socialLogin',
     'expiryDate',
-    'cog',
+    'cog'
   ]
 }
 
 export default function GuestsTable () {
   const { $t } = useIntl()
   const GuestsTable = () => {
-    const navigate = useNavigate()
-    const linkToEditNetwork = useTenantLink('/networks/')
     const tableQuery = useTableQuery({
       useQuery: useGetGuestsListQuery,
       defaultPayload
     })
-    const { tenantId } = useParams()
 
     const notificationMessage = $t({
       defaultMessage: 'Guests cannot be added since there are no guest networks'
     })
 
     const [visible, setVisible] = useState(false)
-
-    // this.subscriptions.push(this.userProfileService.getUserProfile(false).subscribe(user => {
-    //   if (this.userProfileService.userHasRole(user, 'OFFICE_ADMIN')) {
-    //     this.hasGuestManagerRole = true;
-    //   }
-    // }));
+    const [currentGuest, setCurrentGuest] = useState({} as Guest)
 
     const columns: TableProps<Guest>['columns'] = [
       {
@@ -77,14 +67,15 @@ export default function GuestsTable () {
         sorter: false,
         defaultSortOrder: 'ascend',
         render: (data, row) =>
-        <Button
-        type='link'
-        onClick={() => {
-          setVisible(true)
-        }}
-      >
-        {data}
-      </Button>
+          <Button
+            type='link'
+            onClick={() => {
+              setCurrentGuest(row)
+              setVisible(true)
+            }}
+          >
+            {moment(row.expiryDate).format('DD/MM/YYYY HH:mm')}
+          </Button>
       },
       {
         key: 'name',
@@ -92,91 +83,51 @@ export default function GuestsTable () {
         dataIndex: 'name',
         sorter: true,
         defaultSortOrder: 'ascend',
-        // render: function (data, row) {
-        //   if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
-        //     return data
-        //   }else{
-        //     return (
-        //       <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
-        //     )
-        //   }
-        // }
-      },
-      {
+        render: (data, row) =>
+          <Button
+            type='link'
+            onClick={() => {
+              setCurrentGuest(row)
+              setVisible(true)
+            }}
+          >
+            {data}
+          </Button>
+      }, {
         key: 'mobilePhoneNumber',
         title: $t({ defaultMessage: 'Phone' }),
         dataIndex: 'mobilePhoneNumber',
         sorter: true
-      },
-      {
+      }, {
         key: 'emailAddress',
         title: $t({ defaultMessage: 'E-mail' }),
         dataIndex: 'emailAddress',
-        sorter: true,
-      },
-      {
+        sorter: true
+      }, {
         key: 'guestType',
         title: $t({ defaultMessage: 'Type' }),
         dataIndex: 'guestType',
         sorter: true,
-        render: function (data) {
-          switch (data) {
-            case GuestTypesEnum.MANAGED:
-              return 'Managed'
-            case GuestTypesEnum.SELF_SIGN_IN:
-              return 'Self Sign In';
-            case GuestTypesEnum.HOST_GUEST:
-              return 'Self Sign In'
-            default:
-              return data
-          }
+        render: function (data, row) {
+          return renderGuestType(row.guestType)
         }
-      },
-      {
+      }, {
         key: 'ssid',
         title: $t({ defaultMessage: 'Allowed Network' }),
         dataIndex: 'ssid',
         sorter: true,
         render: function (data, row) {
-          const hasGuestManagerRole = false // from userProfile()
-          if (row.networkId && !hasGuestManagerRole) {
-            return (
-              <TenantLink to={`/networks/${row.networkId}/network-details/aps`}>{data}</TenantLink>
-            )
-          } else if (row.networkId && hasGuestManagerRole) {
-            return data
-          } else {
-            return 'None'
-          }
+          return renderAllowedNetwork(row)
         }
-      },
-      {
+      }, {
         key: 'expiryDate',
         title: $t({ defaultMessage: 'Expires' }),
         dataIndex: 'expiryDate',
         sorter: true,
         render: function (data, row) {
-          if (data && data !== '0') {
-            return moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
-          } else if (!data || data === '0') {
-            let result = ''
-            if (row.passDurationHours) {
-              if (row.passDurationHours > 24) {
-                const days = Math.floor(row.passDurationHours / 24)
-                const hours = row.passDurationHours % 24;
-                const dayText = days > 1 ? ' days' : ' day';
-                const hourText = hours > 1 ? ' hours' : ' hour';
-                result = `${days}${dayText} ${hours}${hourText}`;
-              } else {
-                result = row.passDurationHours + (row.passDurationHours === 1 ? ' hour' : ' hours');
-              }
-            }
-            return `${result} since first login`
-          }
-          return ''
+          return renderExpires(row)
         }
-      },
-      {
+      }, {
         key: 'guestStatus',
         title: $t({ defaultMessage: 'Status' }),
         dataIndex: 'guestStatus',
@@ -192,10 +143,10 @@ export default function GuestsTable () {
       <Loader states={[
         tableQuery
       ]}>
-         {
-        !tableQuery.data?.data?.length &&
+        {
+          !tableQuery.data?.data?.length &&
         <Alert message={notificationMessage} type='info' showIcon closable />
-      }
+        }
         <Table
           columns={columns}
           dataSource={tableQuery.data?.data}
@@ -205,18 +156,17 @@ export default function GuestsTable () {
         />
 
         <Drawer
-          title={$t({ defaultMessage: 'AP Details' })}
+          title={$t({ defaultMessage: 'Guest Details' })}
           visible={visible}
           onClose={onClose}
           mask={false}
-          children={<>  
-           <Divider />
-            <Form.Item
-              label={$t({ defaultMessage: 'Uptime' })}
-            /></>}
-          width={'400px'}
+          children={
+            <GuestsDetail
+              currentGuest={currentGuest}
+            />
+          }
+          width={'477px'}
         />
-       
       </Loader>
     )
   }
@@ -225,3 +175,59 @@ export default function GuestsTable () {
     <GuestsTable />
   )
 }
+
+export const renderGuestType = (value: string) => {
+  let result = ''
+  switch (value) {
+    case GuestTypesEnum.MANAGED:
+      result = 'Managed'
+      break
+    case GuestTypesEnum.SELF_SIGN_IN:
+      result = 'Self Sign In'
+      break
+    case GuestTypesEnum.HOST_GUEST:
+      result = 'Self Sign In'
+      break
+    default:
+      result = transformDisplayText(value)
+      break
+  }
+  return result
+}
+
+export const renderExpires = function(row: Guest) {
+  // const intl = useIntl()
+  if (row.expiryDate && row.expiryDate !== '0') {
+    return moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
+  } else if (!row.expiryDate || row.expiryDate === '0') {
+    let result = ''
+    if (row.passDurationHours) {
+      if (row.passDurationHours > 24) {
+        const days = Math.floor(row.passDurationHours / 24)
+        const hours = row.passDurationHours % 24
+        const dayText = days > 1 ? ' days' : ' day'
+        const hourText = hours > 1 ? ' hours' : ' hour'
+        result = `${days}${dayText} ${hours}${hourText}`
+      } else {
+        result = row.passDurationHours + (row.passDurationHours === 1 ? ' hour' : ' hours')
+      }
+    }
+    return `${result} since first login`
+  }
+  return '--'
+}
+
+export const renderAllowedNetwork = function (currentGuest: Guest) {
+  const hasGuestManagerRole = false   //TOD:  from userProfile()
+  if (currentGuest.networkId && !hasGuestManagerRole) {
+    return (
+      <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
+        {currentGuest.ssid}</TenantLink>
+    )
+  } else if (currentGuest.networkId && hasGuestManagerRole) {
+    return currentGuest.ssid
+  } else {
+    return 'None'
+  }
+}
+
