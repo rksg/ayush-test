@@ -41,7 +41,7 @@ describe('Kpi Section', () => {
   } as AnalyticsFilter
   const healthContext = {
     ...filters,
-    timeWindow: ['2022-04-07T09:30:00.000Z', '2022-04-07T09:45:00.000Z'] as TimeStampRange,
+    timeWindow: [sampleTS.time[0], sampleTS.time[4]] as TimeStampRange,
     setTimeWindow: jest.fn()
   }
 
@@ -74,10 +74,10 @@ describe('Kpi Section', () => {
       <HealthPageContext.Provider
         value={{ ...healthContext, path }}
       >
-        <KpiSection tab={'overview'} filters={{ path } as unknown as AnalyticsFilter} />
+        <KpiSection tab={'overview'} filters={{ ...filters, path }} />
       </HealthPageContext.Provider>
     </Provider></Router>)
-    // eslint-disable-next-line max-len
+
     await screen.findAllByTitle(/^Cannot save threshold at organisation level*/)
   }, 60000)
 
@@ -106,7 +106,8 @@ describe('Kpi Section', () => {
       }
     })
 
-    const path = [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }]
+    const path =
+      [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }] as NetworkPath
     const period = Buffer.from(JSON.stringify(filters)).toString('base64')
     const analyticsNetworkFilter = Buffer.from(JSON.stringify({
       path,
@@ -115,7 +116,7 @@ describe('Kpi Section', () => {
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={{ path } as unknown as AnalyticsFilter} />
+        <KpiSection tab={'overview'} filters={{ ...filters, path: path }} />
       </HealthPageContext.Provider>
     </Provider>, {
       route: {
@@ -127,5 +128,43 @@ describe('Kpi Section', () => {
     // eslint-disable-next-line max-len
     await screen.findAllByTitle(/^You don't have permission to set threshold for selected network node./)
   }, 60000)
+
+  it('should render with smaller timewindow', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 2, 3, 3, 0] } }
+    })
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { timeSeries: sampleTS }
+    })
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: {
+        mutationAllowed: false
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+      data: {
+        timeToConnectThreshold: { value: 30000 }
+      }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: {
+        timeToConnect: {
+          success: true
+        }
+      }
+    })
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    render(<Router><Provider>
+      <HealthPageContext.Provider
+        value={{ ...healthContext, path }}
+      >
+        <KpiSection tab={'overview'}
+          filters={{ ...filters, path, endDate: sampleTS.data[2] as unknown as string }}
+        />
+      </HealthPageContext.Provider>
+    </Provider></Router>)
+
+    expect(await screen.findByText(/Time to Connect/i)).toBeInTheDocument()
+  })
 
 })

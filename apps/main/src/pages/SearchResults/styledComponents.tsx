@@ -15,6 +15,6 @@ export const Panel = styled(AntCollapse.Panel)`
     padding: 13px 10px !important;
   }
   .ant-collapse-header > .ant-collapse-expand-icon > .ant-collapse-arrow {
-    right: 10px !important;
+    right: 18px !important;
   }
 `
