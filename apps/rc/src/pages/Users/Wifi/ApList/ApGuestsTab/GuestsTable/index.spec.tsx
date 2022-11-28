@@ -10,151 +10,18 @@ import {
   within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
+import moment from 'moment-timezone'
+
+
+import { GuestClient } from '../../../__tests__/fixtures'
+
 
 import ConnectedClientsTable from '.'
 import GuestsTable from '.'
 
 jest.mock('socket.io-client')
 
-const list = {
-  totalCount: 10,
-  page: 1,
-  data: [
-    {
-      aps: 1,
-      clients: 0,
-      id: 'c9d5f4c771c34ad2898f7078cebbb191',
-      name: 'network-01',
-      nwSubType: 'psk',
-      ssid: '01',
-      venues: { count: 3, names: ['pingtung', 'My-Venue', '101'] },
-      count: 3,
-      names: ['pingtung', 'My-Venue', '101'],
-      vlan: 1,
-      deepNetwork: {
-        wlan: {
-          wlanSecurity: 'WPA3'
-        }
-      }
-    },
-    {
-      aps: 0,
-      captiveType: 'ClickThrough',
-      clients: 0,
-      id: 'ad850ca8595d4f2f9e7f208664cd8798',
-      name: 'network-02',
-      nwSubType: 'guest',
-      ssid: '02',
-      venues: { count: 0, names: [] },
-      vlan: 1
-    },
-    {
-      aps: 1,
-      clients: 0,
-      id: '373377b0cb6e46ea8982b1c80aabe1fa',
-      name: 'network-03',
-      nwSubType: 'aaa',
-      ssid: '03',
-      venues: { count: 2, names: ['101', 'My-Venue'] },
-      vlan: 1,
-      deepNetwork: {
-        wlan: {
-          wlanSecurity: 'WPA3'
-        }
-      }
-    },
-    {
-      aps: 0,
-      captiveType: 'GuestPass',
-      clients: 0,
-      id: 'ad850ca8595d4f2f9e7f208664cd8898',
-      name: 'network-04',
-      nwSubType: 'guest',
-      ssid: '04',
-      venues: { count: 0, names: [] },
-      vlan: 1
-    },
-    {
-      aps: 1,
-      clients: 0,
-      id: '373377b0cb6e46ea8982b1c80aabe2fa',
-      name: 'network-05',
-      nwSubType: 'dpsk',
-      ssid: '05',
-      venues: { count: 1, names: ['My-Venue'] },
-      vlan: 1,
-      deepNetwork: {
-        wlan: {
-          wlanSecurity: 'WPA3'
-        }
-      }
-    },
-    {
-      aps: 0,
-      captiveType: 'SelfSignIn',
-      clients: 0,
-      id: 'ad850ca8595d4f2f9e7f208664cd8998',
-      name: 'network-06',
-      nwSubType: 'guest',
-      ssid: '06',
-      venues: { count: 0, names: [] },
-      vlan: 1
-    },
-    {
-      aps: 0,
-      captiveType: 'HostApproval',
-      clients: 0,
-      id: 'ad850ca8595d4f2f9e7f208664cd9098',
-      name: 'network-07',
-      nwSubType: 'guest',
-      ssid: '07',
-      venues: { count: 0, names: [] },
-      vlan: 1
-    },
-    {
-      aps: 0,
-      captiveType: 'WISPr',
-      clients: 0,
-      id: 'ad850ca8595d4f2f9e7f208664cd9198',
-      name: 'network-08',
-      nwSubType: 'guest',
-      ssid: '08',
-      venues: { count: 0, names: [] },
-      vlan: 1
-    },
-    {
-      aps: 0,
-      clients: 0,
-      description: '',
-      id: '3c62b3818d194022b8dd35852c66f646',
-      name: 'network-09',
-      nwSubType: 'open',
-      ssid: '09',
-      venues: { count: 0, names: [] },
-      vlan: 2,
-      vlanPool: {}
-    },
-    {
-      aps: 0,
-      captiveType: '',
-      clients: 0,
-      id: 'ad850ca8595d4f2f9e7f208664cd9398',
-      name: 'network-10',
-      nwSubType: 'guest',
-      ssid: '10',
-      venues: { count: 0, names: [] },
-      vlan: 1,
-      deepNetwork: {
-        wlan: {
-          wlanSecurity: ''
-        }
-      },
-      vlanPool: {
-        name: 'test'
-      }
-    }
-  ]
-}
+
 
 describe('Guest Table', () => {
   let params: { tenantId: string }
@@ -162,12 +29,8 @@ describe('Guest Table', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.delete(
-        WifiUrlsInfo.deleteNetwork.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '' }))
+        CommonUrlsInfo.getGuestsList.url,
+        (req, res, ctx) => res(ctx.json(GuestClient))
       )
     )
     params = {
@@ -180,11 +43,75 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/networks' }
+        route: { params, path: '/:tenantId/users/aps/guests' }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
 
+    await screen.findByText('test1')
+
+  })
+
+
+  it('should render detail by click name', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/aps/guests' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click( await screen.findByText('test1'))
+    await screen.findByText('Guest Details')
+
+  })
+
+  it('should render detail by click created time', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/aps/guests' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    fireEvent.click( await screen.findByText('01/01/2000 00:00'))
+    await screen.findByText('Guest Details')
+  })
+
+  it('should render not applicable guest client detail', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/aps/guests' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click( await screen.findByText('test2'))
+    await screen.findByText('Guest Details')
+    
+    const button = screen.getByRole('button', { name: /close/i })
+    fireEvent.click(button)
+  })
+
+  it('should render online guest client detail', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/aps/guests' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click( await screen.findByText('test4'))
+    await screen.findByText('Guest Details')
+    await screen.findByText('testVenue')
   })
 
 })

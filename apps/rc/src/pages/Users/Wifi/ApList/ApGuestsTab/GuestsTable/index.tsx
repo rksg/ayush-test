@@ -163,7 +163,7 @@ export default function GuestsTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='id'
+          rowKey='name'
         />
 
         <Drawer
@@ -189,13 +189,14 @@ export default function GuestsTable () {
 
 export const renderAllowedNetwork = function (currentGuest: Guest) {
   const { $t } = getIntl()
-  const hasGuestManagerRole = false   //TOD:  from userProfile()
-  if (currentGuest.networkId && !hasGuestManagerRole) {
-    return (
-      <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
-        {currentGuest.ssid}</TenantLink>
-    )
-  } else if (currentGuest.networkId && hasGuestManagerRole) {
+  // const hasGuestManagerRole = false   //TODO:  from userProfile()
+  // if (currentGuest.networkId && !hasGuestManagerRole) {
+  //   return (
+  //     <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
+  //       {currentGuest.ssid}</TenantLink>
+  //   )
+  // } else if (currentGuest.networkId && hasGuestManagerRole) {
+  if (currentGuest.networkId) {
     return currentGuest.ssid
   } else {
     return $t({ defaultMessage: 'None' })
@@ -204,8 +205,9 @@ export const renderAllowedNetwork = function (currentGuest: Guest) {
 
 export const renderExpires = function (row: Guest) {
   const { $t } = getIntl()
+  let expiresTime = ''
   if (row.expiryDate && row.expiryDate !== '0') {
-    return moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
+    expiresTime = moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
   } else if (!row.expiryDate || row.expiryDate === '0') {
     let result = ''
     if (row.passDurationHours) {
@@ -219,9 +221,9 @@ export const renderExpires = function (row: Guest) {
         result = row.passDurationHours + (row.passDurationHours === 1 ? ' hour' : ' hours')
       }
     }
-    return `${result} ${$t({ defaultMessage: 'since first login' })}`
+    expiresTime = `${result} ${$t({ defaultMessage: 'since first login' })}`
   }
-  return '--'
+  return expiresTime
 }
 
 export const renderGuestType = (value: string) => {
