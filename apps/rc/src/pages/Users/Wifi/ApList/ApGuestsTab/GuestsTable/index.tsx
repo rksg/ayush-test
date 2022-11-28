@@ -58,9 +58,23 @@ export default function GuestsTable () {
       defaultPayload
     })
 
-    const notificationMessage = $t({
-      defaultMessage: 'Guests cannot be added since there are no guest networks'
-    })
+    const notificationMessage =
+      <span style={{
+        display: 'grid',
+        gridTemplateColumns: '400px 100px'
+      }}>
+        <span>
+          {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
+        </span>
+        <Button type='link'
+          disabled={true}
+          style={{
+            fontSize: cssStr('--acx-body-4-font-size'),
+            height: '17px'
+          }}>
+          {$t({ defaultMessage: 'Add Guest Pass Network' })}
+        </Button>
+      </span>
 
     const [visible, setVisible] = useState(false)
     const [currentGuest, setCurrentGuest] = useState({} as Guest)
@@ -155,7 +169,7 @@ export default function GuestsTable () {
       ]}>
         {
           !tableQuery.data?.data?.length &&
-        <Alert message={notificationMessage} type='info' showIcon closable />
+          <Alert message={notificationMessage} type='info' showIcon closable ></Alert>
         }
         <Table
           columns={columns}
