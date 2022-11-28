@@ -50,6 +50,15 @@ export const KpiTitle = styled.span`
   text-align: left;
 `
 
+export const KpiTopTitle = styled.span`
+  color: var(--acx-primary-black);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  text-align: left;
+`
+
 export const KpiShortText = styled.span`
   display: block;
   font-family: var(--acx-neutral-brand-font);

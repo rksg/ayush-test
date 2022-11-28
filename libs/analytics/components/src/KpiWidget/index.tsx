@@ -115,9 +115,9 @@ export function KpiWidget ({
         <GridRow>
           <GridCol col={{ span: 24 }} >
             <UI.Wrapper>
-              <UI.KpiTitle>
+              <UI.KpiTopTitle>
                 {kpiInfoText[name].title}
-              </UI.KpiTitle>
+              </UI.KpiTopTitle>
             </UI.Wrapper>
             <Tooltip title={kpiInfoText[name].tooltip}>
               <UI.Wrapper>

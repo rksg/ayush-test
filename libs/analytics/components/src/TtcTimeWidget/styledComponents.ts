@@ -16,7 +16,7 @@ export const Title = styled.span`
   font-family: var(--acx-neutral-brand-font);
   font-size: var(--acx-subtitle-5-font-size);
   line-height: var(--acx-subtitle-5-line-height);
-  font-weight: var(--acx-subtitle-5-font-weight);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
   text-align: left;
 `
 
