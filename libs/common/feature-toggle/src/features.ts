@@ -10,5 +10,6 @@ export enum Features {
   GLOBAL_SEARCH = 'acx-ui-global-search-toggle',
   NETWORK_OVERVIEW = 'acx-ui-network-overview-toggle',
   NETWORK_INCIDENTS = 'acx-ui-network-incidents-toggle',
-  DELETE_SOLO = 'ap-delete-with-solo-image-toggle'
+  DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
+  CLIENT_TROUBLESHOOTING = 'acx-ui-users-aps-client-troubleshooting-toggle'
 }

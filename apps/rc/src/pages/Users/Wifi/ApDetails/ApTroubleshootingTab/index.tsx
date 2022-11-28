@@ -37,28 +37,35 @@ export function ApTroubleshootingTab () {
     <Row gutter={[16, 16]}>
       <Col span={historyContentToggle ? 18 : 24}>
         <Row gutter={[16, 16]}>
-          <Col span={historyContentToggle ? 12 : 8} />
-          {ClientTroubleShootingConfig.selection.map((config) => (
-            <Col span={4}>
-              <NetworkFilter
-                multiple
-                defaultValue={
-                  read()?.[
-                    config.selectionType as keyof ClientTroubleShootingSelectionsType
-                  ]
-                    ? read()?.[
+          <Col span={historyContentToggle ? 12 : 10} />
+          <Col span={historyContentToggle ? 12 : 10} style={{ justifyContent: 'end' }}>
+            <Row
+              style={{ justifyContent: 'end' }}
+              gutter={[4, 4]}>
+              {ClientTroubleShootingConfig.selection.map((config) => (
+                <Col span={historyContentToggle ? 8 : 7}>
+                  <NetworkFilter
+                    multiple
+                    defaultValue={
+                      read()?.[
                         config.selectionType as keyof ClientTroubleShootingSelectionsType
-                    ]
-                    : config.defaultValue
-                }
-                placeholder={config.placeHolder}
-                options={config.options}
-                onApply={(value: selectionType) =>
-                  onApply(value, config.selectionType)
-                }
-              />
-            </Col>
-          ))}
+                      ]
+                        ? read()?.[
+                            config.selectionType as keyof ClientTroubleShootingSelectionsType
+                        ]
+                        : config.defaultValue
+                    }
+                    placeholder={config.placeHolder}
+                    options={config.options}
+                    style={{ maxWidth: 132 }}
+                    onApply={(value: selectionType) =>
+                      onApply(value, config.selectionType)
+                    }
+                  />
+                </Col>
+              ))}
+            </Row>
+          </Col>
           {!historyContentToggle && (
             <Col span={4}>
               <Row style={{ justifyContent: 'end' }}>
