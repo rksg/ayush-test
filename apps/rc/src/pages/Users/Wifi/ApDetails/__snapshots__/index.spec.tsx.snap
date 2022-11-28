@@ -1062,14 +1062,18 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-expand-icon"
                 >
                   <svg
-                    class="ant-collapse-arrow"
+                    class="styledComponents__StyledPlusSquareOutlined-sc-d21xu8-7 fnGrtI ant-collapse-arrow"
                     data-testid="PlusSquareOutlined"
                   />
                 </div>
                 <span
                   class="ant-collapse-header-text"
                 >
-                  Connection Events
+                  <span
+                    class="styledComponents__TimelineTitle-sc-d21xu8-9 brnVsP"
+                  >
+                    Connection Events
+                  </span>
                 </span>
               </div>
             </div>
@@ -1086,14 +1090,18 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-expand-icon"
                 >
                   <svg
-                    class="ant-collapse-arrow"
+                    class="styledComponents__StyledPlusSquareOutlined-sc-d21xu8-7 fnGrtI ant-collapse-arrow"
                     data-testid="PlusSquareOutlined"
                   />
                 </div>
                 <span
                   class="ant-collapse-header-text"
                 >
-                  Roaming
+                  <span
+                    class="styledComponents__TimelineTitle-sc-d21xu8-9 brnVsP"
+                  >
+                    Roaming
+                  </span>
                 </span>
               </div>
             </div>
@@ -1110,14 +1118,18 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-expand-icon"
                 >
                   <svg
-                    class="ant-collapse-arrow"
+                    class="styledComponents__StyledPlusSquareOutlined-sc-d21xu8-7 fnGrtI ant-collapse-arrow"
                     data-testid="PlusSquareOutlined"
                   />
                 </div>
                 <span
                   class="ant-collapse-header-text"
                 >
-                  Connection Quality
+                  <span
+                    class="styledComponents__TimelineTitle-sc-d21xu8-9 brnVsP"
+                  >
+                    Connection Quality
+                  </span>
                 </span>
               </div>
             </div>
@@ -1134,14 +1146,18 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-expand-icon"
                 >
                   <svg
-                    class="ant-collapse-arrow"
+                    class="styledComponents__StyledPlusSquareOutlined-sc-d21xu8-7 fnGrtI ant-collapse-arrow"
                     data-testid="PlusSquareOutlined"
                   />
                 </div>
                 <span
                   class="ant-collapse-header-text"
                 >
-                  Network Incidents
+                  <span
+                    class="styledComponents__TimelineTitle-sc-d21xu8-9 brnVsP"
+                  >
+                    Network Incidents
+                  </span>
                 </span>
               </div>
             </div>
@@ -1174,7 +1190,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
           </span>
         </div>
         <div
-          class="styledComponents__HistoryContent-sc-d21xu8-2 dEgEIn"
+          class="styledComponents__HistoryContent-sc-d21xu8-2 fGRjBR"
         >
           <div
             class="ant-list ant-list-split"
@@ -1198,7 +1214,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                         class="ant-list-item-meta-avatar"
                       >
                         <span
-                          class="styledComponents__EventTypeIcon-sc-d21xu8-5 eHnlOO"
+                          class="styledComponents__EventTypeIcon-sc-d21xu8-5 ksKvtB"
                           color="--acx-semantics-green-50"
                         />
                       </div>
@@ -1228,7 +1244,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                         class="ant-list-item-meta-avatar"
                       >
                         <span
-                          class="styledComponents__EventTypeIcon-sc-d21xu8-5 fswVjn"
+                          class="styledComponents__EventTypeIcon-sc-d21xu8-5 hzJVps"
                           color="--acx-neutrals-50"
                         />
                       </div>
@@ -1243,7 +1259,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                         <div
                           class="ant-list-item-meta-description"
                         >
-                          Client assiocated (802.11) @ Home_R860 (AA:BB...
+                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
                         </div>
                       </div>
                     </div>
@@ -1258,9 +1274,11 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                         class="ant-list-item-meta-avatar"
                       >
                         <span
-                          class="styledComponents__EventTypeIcon-sc-d21xu8-5 eHnlOO"
-                          color="--acx-semantics-green-50"
-                        />
+                          class="styledComponents__IncidentEvent-sc-d21xu8-6 kKLEFb"
+                          color="--acx-semantics-red-50"
+                        >
+                          P1
+                        </span>
                       </div>
                       <div
                         class="ant-list-item-meta-content"
@@ -1273,7 +1291,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                         <div
                           class="ant-list-item-meta-description"
                         >
-                          Client assiocated (802.11) @ Home_R860 (AA...
+                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
                         </div>
                       </div>
                     </div>

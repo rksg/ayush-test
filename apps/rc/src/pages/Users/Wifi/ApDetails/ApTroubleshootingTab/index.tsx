@@ -29,7 +29,7 @@ export function ApTroubleshootingTab () {
       'clientTroubleShootingSelections'
     )
 
-  // Todo onApply should trigger new api call and update search params
+  // Todo onApply should trigger new api call
   const onApply = (value: selectionType, selectionType: string) => {
     return write({ ...read(), [selectionType]: value })
   }

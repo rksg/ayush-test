@@ -1,9 +1,9 @@
 import { Collapse } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
 
 import { ClientTroubleShootingConfig } from './config'
+import * as UI                         from './styledComponents'
 
 const { Panel } = Collapse
 
@@ -13,16 +13,18 @@ export function TimeLine (){
     <Collapse
       bordered={false}
       expandIcon={({ isActive }) =>
-        isActive ? <MinusSquareOutlined /> : <PlusSquareOutlined />
+        isActive ? (
+          <UI.StyledMinusSquareOutlined />
+        ) : (
+          <UI.StyledPlusSquareOutlined />
+        )
       }
-      ghost
-    >
-      {ClientTroubleShootingConfig.timeLine.map((config,index)=>
-        <Panel
-          header={$t(config.title)}
-          key={index}>
-          <p>{$t(config.title)}</p>
-        </Panel>)}
+      ghost>
+      {ClientTroubleShootingConfig.timeLine.map((config, index) => (
+        <Panel header={<UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>} key={index}>
+          <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
+        </Panel>
+      ))}
     </Collapse>
   )
 }

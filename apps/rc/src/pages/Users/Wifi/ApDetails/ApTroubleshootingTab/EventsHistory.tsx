@@ -18,13 +18,13 @@ const sampleData = [
   },
   {
     date: '06/07/2022 11:21:48',
-    description: 'Client assiocated (802.11) @ Home_R860 (AA:BB...',
+    description: 'Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)',
     icon: <UI.EventTypeIcon color='--acx-neutrals-50'/>
   },
   {
     date: '06/07/2022 11:21:48',
-    description: 'Client assiocated (802.11) @ Home_R860 (AA...',
-    icon: <UI.EventTypeIcon color='--acx-semantics-green-50'/>
+    description: 'Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)',
+    icon: <UI.IncidentEvent color='--acx-semantics-red-50'>P1</UI.IncidentEvent>
   }
 ]
 export function History (props : HistoryContentProps) {
