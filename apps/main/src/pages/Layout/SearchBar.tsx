@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -62,12 +62,18 @@ function SearchBar () {
       }
     }
   }
-  const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && setSearchUrl()
+
+  const handleSearch = () => {
+    if (searchText.length <= 1) return
+    setSearchUrl()
+  }
+
+  const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && handleSearch()
 
   return (enableSearch
     ? showSearchBar
       ? <UI.SearchBar>
-        <UI.SearchSolid shape='circle' icon={<SearchOutlined />} />
+        <UI.SearchSolid shape='circle' icon={<SearchOutlined />}/>
         <UI.Input
           autoFocus
           value={searchText}
@@ -76,7 +82,7 @@ function SearchBar () {
           data-testid='search-input'
           placeholder={placeholder}
         />
-        <UI.SendSearch onClick={setSearchUrl} data-testid='search-send'/>
+        <UI.SendSearch onClick={handleSearch} data-testid='search-send'/>
         <UI.Divider />
         <UI.Close
           shape='circle'

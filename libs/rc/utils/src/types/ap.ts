@@ -1,6 +1,11 @@
-import { APMeshRole } from '../constants'
-import { ApDeep }     from '../models/ApDeep'
-import { DeviceGps }  from '../models/DeviceGps'
+import { APMeshRole }                       from '../constants'
+import { CapabilitiesApModel, PoeModeEnum } from '../models'
+import { ApDeep }                           from '../models/ApDeep'
+import { ApPacketCaptureStateEnum }         from '../models/ApPacketCaptureEnum'
+import { DeviceGps }                        from '../models/DeviceGps'
+import { DhcpApInfo }                       from '../models/DhcpApInfo'
+import { ExternalAntenna }                  from '../models/ExternalAntenna'
+import { VenueLanPort }                     from '../models/VenueLanPort'
 
 import { ApVenueStatusEnum } from '.'
 
@@ -135,6 +140,21 @@ export interface ApGroup {
   name: string,
   venueId: string
 }
+
+export interface AddApGroup {
+  venueId: string,
+  apSerialNumbers?: unknown[],
+  name: string,
+  id?: string
+}
+
+export interface VenueDefaultApGroup {
+  id: string
+  isDefault: boolean
+  venueId: string,
+  aps?: ApDeep[]
+}
+
 export interface ApDetailHeader {
   title: string,
   headers: {
@@ -241,6 +261,10 @@ export interface ApModel {
 	supportTriRadio: boolean
 }
 
+export interface PingAp {
+  targetHost: string
+}
+
 export interface RadioProperties {
   Rssi: string;
   txPower: string;
@@ -275,4 +299,49 @@ export interface APPhoto {
   imageName: string,
   imageUrl: string,
   updatedDate: string
+}
+export interface DhcpAp {
+  requestId: string,
+  response?: DhcpApInfo[]
+}
+
+export interface PacketCaptureState {
+  status: ApPacketCaptureStateEnum,
+  fileName?: string,
+  fileUrl?: string,
+  sessionId?: string
+}
+
+export interface Capabilities {
+  version?: string,
+  apModels: CapabilitiesApModel[]
+}
+
+export interface ModelLanPorts {
+  lanPorts?: ModelLanPort[],
+  useVenueSettings?: boolean,
+  label?: string,
+  value?: string,
+  poeMode?: PoeModeEnum,
+  poeOut?: boolean,
+  model?: string
+}
+
+export interface PacketCaptureOperationResponse {
+  requestId: string;
+  response?: {
+    sessionId: string;
+  }
+}
+export class ModelLanPort extends VenueLanPort {
+  header?: string
+}
+
+export interface WifiApSetting {
+  useVenueSettings: boolean;
+  externalAntenna?: ExternalAntenna;
+  poeOut?: boolean;
+  poeMode?: string;
+  lanPorts?: LanPort[];
+  lan?: LanPort[];
 }

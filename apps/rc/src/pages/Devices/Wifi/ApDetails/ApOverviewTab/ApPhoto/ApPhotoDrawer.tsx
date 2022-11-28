@@ -77,7 +77,6 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
   const showCroppedImage = useCallback(async () => {
     try {
-      console.log(imageUrl)
       const croppedImage = await getCroppedImg(
         imageUrl,
         croppedAreaPixels
@@ -86,10 +85,10 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
       const formData = new FormData()
       formData.append('file', blob, imageName)
 
-      // await addApPhoto({
-      //   params: { ...params },
-      //   payload: formData
-      // })
+      await addApPhoto({
+        params: { ...params },
+        payload: formData
+      })
 
       setZoom(1)
     } catch (e) {

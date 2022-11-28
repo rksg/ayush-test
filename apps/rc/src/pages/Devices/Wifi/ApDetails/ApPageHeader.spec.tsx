@@ -1,9 +1,15 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { apApi }                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { apApi }           from '@acx-ui/rc/services'
+import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  fireEvent,
+  mockServer,
+  render,
+  screen
+} from '@acx-ui/test-utils'
 
 import { apDetailData } from './__tests__/fixtures'
 import ApPageHeader     from './ApPageHeader'
@@ -30,7 +36,23 @@ describe('ApPageHeader', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
     expect(mockNavigate).toBeCalledWith(expect.objectContaining({
-      pathname: '/t/t1/devices/aps/v1/edit'
+      pathname: '/t/t1/devices/aps/v1/edit/details'
     }))
+  })
+
+  it('click to action button', async () => {
+
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getApDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(apDetailData))
+      )
+    )
+    const params = { tenantId: 't1', serialNumber: 'v1' }
+    render(<ApPageHeader />, { route: { params }, wrapper: Provider })
+
+    await userEvent.click(await screen.findByText('More Actions'))
+
+    await userEvent.click(await screen.findByText('Reboot'))
   })
 })

@@ -54,6 +54,20 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                >
+                  Unknown
+                </span>
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -66,17 +80,10 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -98,9 +105,9 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -163,20 +170,6 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
                     tabindex="0"
                   >
                     AI Analytics
-                  </div>
-                </div>
-                <div
-                  class="ant-tabs-tab"
-                >
-                  <div
-                    aria-controls="rc-tabs-test-panel-troubleshooting"
-                    aria-selected="false"
-                    class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-troubleshooting"
-                    role="tab"
-                    tabindex="0"
-                  >
-                    Troubleshooting
                   </div>
                 </div>
                 <div
@@ -315,15 +308,6 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
               />
               <div
                 aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-troubleshooting"
-                class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-troubleshooting"
-                role="tabpanel"
-                style="display: none;"
-                tabindex="-1"
-              />
-              <div
-                aria-hidden="true"
                 aria-labelledby="rc-tabs-test-tab-reports"
                 class="ant-tabs-tabpane"
                 id="rc-tabs-test-panel-reports"
@@ -376,7 +360,41 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  AI Analytics
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+  >
+    <div
+      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+    >
+      <span
+        aria-label="loader"
+        role="img"
+      >
+        <div
+          aria-busy="true"
+          aria-live="polite"
+          class="ant-spin ant-spin-lg ant-spin-spinning"
+        >
+          <span
+            class="ant-spin-dot ant-spin-dot-spin"
+          >
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
 </DocumentFragment>
 `;
 
@@ -434,6 +452,20 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                >
+                  Unknown
+                </span>
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -446,17 +478,10 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -478,9 +503,9 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -543,20 +568,6 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
                     tabindex="0"
                   >
                     AI Analytics
-                  </div>
-                </div>
-                <div
-                  class="ant-tabs-tab"
-                >
-                  <div
-                    aria-controls="rc-tabs-test-panel-troubleshooting"
-                    aria-selected="false"
-                    class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-troubleshooting"
-                    role="tab"
-                    tabindex="0"
-                  >
-                    Troubleshooting
                   </div>
                 </div>
                 <div
@@ -690,15 +701,6 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
                 aria-labelledby="rc-tabs-test-tab-analytics"
                 class="ant-tabs-tabpane"
                 id="rc-tabs-test-panel-analytics"
-                role="tabpanel"
-                style="display: none;"
-                tabindex="-1"
-              />
-              <div
-                aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-troubleshooting"
-                class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-troubleshooting"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -814,6 +816,20 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                >
+                  Unknown
+                </span>
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -826,17 +842,10 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -858,9 +867,9 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -923,20 +932,6 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
                     tabindex="0"
                   >
                     AI Analytics
-                  </div>
-                </div>
-                <div
-                  class="ant-tabs-tab"
-                >
-                  <div
-                    aria-controls="rc-tabs-test-panel-troubleshooting"
-                    aria-selected="false"
-                    class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-troubleshooting"
-                    role="tab"
-                    tabindex="0"
-                  >
-                    Troubleshooting
                   </div>
                 </div>
                 <div
@@ -1070,15 +1065,6 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
                 aria-labelledby="rc-tabs-test-tab-analytics"
                 class="ant-tabs-tabpane"
                 id="rc-tabs-test-panel-analytics"
-                role="tabpanel"
-                style="display: none;"
-                tabindex="-1"
-              />
-              <div
-                aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-troubleshooting"
-                class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-troubleshooting"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -1136,7 +1122,41 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  Networks
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+  >
+    <div
+      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+    >
+      <span
+        aria-label="loader"
+        role="img"
+      >
+        <div
+          aria-busy="true"
+          aria-live="polite"
+          class="ant-spin ant-spin-lg ant-spin-spinning"
+        >
+          <span
+            class="ant-spin-dot ant-spin-dot-spin"
+          >
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
 </DocumentFragment>
 `;
 
@@ -1194,6 +1214,20 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                >
+                  Unknown
+                </span>
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -1206,17 +1240,10 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -1238,9 +1265,9 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -1303,20 +1330,6 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                     tabindex="0"
                   >
                     AI Analytics
-                  </div>
-                </div>
-                <div
-                  class="ant-tabs-tab"
-                >
-                  <div
-                    aria-controls="rc-tabs-test-panel-troubleshooting"
-                    aria-selected="false"
-                    class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-troubleshooting"
-                    role="tab"
-                    tabindex="0"
-                  >
-                    Troubleshooting
                   </div>
                 </div>
                 <div
@@ -1450,15 +1463,6 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                 aria-labelledby="rc-tabs-test-tab-analytics"
                 class="ant-tabs-tabpane"
                 id="rc-tabs-test-panel-analytics"
-                role="tabpanel"
-                style="display: none;"
-                tabindex="-1"
-              />
-              <div
-                aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-troubleshooting"
-                class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-troubleshooting"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -1574,6 +1578,20 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                >
+                  Unknown
+                </span>
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -1586,17 +1604,10 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -1618,9 +1629,9 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -1683,20 +1694,6 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
                     tabindex="0"
                   >
                     AI Analytics
-                  </div>
-                </div>
-                <div
-                  class="ant-tabs-tab"
-                >
-                  <div
-                    aria-controls="rc-tabs-test-panel-troubleshooting"
-                    aria-selected="false"
-                    class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-troubleshooting"
-                    role="tab"
-                    tabindex="0"
-                  >
-                    Troubleshooting
                   </div>
                 </div>
                 <div
@@ -1830,15 +1827,6 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
                 aria-labelledby="rc-tabs-test-tab-analytics"
                 class="ant-tabs-tabpane"
                 id="rc-tabs-test-panel-analytics"
-                role="tabpanel"
-                style="display: none;"
-                tabindex="-1"
-              />
-              <div
-                aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-troubleshooting"
-                class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-troubleshooting"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -1954,6 +1942,20 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                >
+                  Unknown
+                </span>
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -1966,17 +1968,10 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -1998,9 +1993,9 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -2063,20 +2058,6 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                     tabindex="0"
                   >
                     AI Analytics
-                  </div>
-                </div>
-                <div
-                  class="ant-tabs-tab"
-                >
-                  <div
-                    aria-controls="rc-tabs-test-panel-troubleshooting"
-                    aria-selected="false"
-                    class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-troubleshooting"
-                    role="tab"
-                    tabindex="0"
-                  >
-                    Troubleshooting
                   </div>
                 </div>
                 <div
@@ -2210,15 +2191,6 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                 aria-labelledby="rc-tabs-test-tab-analytics"
                 class="ant-tabs-tabpane"
                 id="rc-tabs-test-panel-analytics"
-                role="tabpanel"
-                style="display: none;"
-                tabindex="-1"
-              />
-              <div
-                aria-hidden="true"
-                aria-labelledby="rc-tabs-test-tab-troubleshooting"
-                class="ant-tabs-tabpane"
-                id="rc-tabs-test-panel-troubleshooting"
                 role="tabpanel"
                 style="display: none;"
                 tabindex="-1"
@@ -2334,6 +2306,20 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                >
+                  Unknown
+                </span>
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -2346,17 +2332,10 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
-              >
-                <svg>
-                  ClockOutlined.svg
-                </svg>
-                <span>
-                  Last 24 Hours
-                </span>
-              </button>
+              <div
+                data-testid="analytics-RangePicker"
+                title="RangePicker"
+              />
             </div>
             <div
               class="ant-space-item"
@@ -2378,9 +2357,9 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   <div
                     class="ant-space-item"
                   >
-                    <svg>
-                      ArrowExpand.svg
-                    </svg>
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
                   </div>
                 </div>
               </button>
@@ -2443,20 +2422,6 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                     tabindex="0"
                   >
                     AI Analytics
-                  </div>
-                </div>
-                <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
-                >
-                  <div
-                    aria-controls="rc-tabs-test-panel-troubleshooting"
-                    aria-selected="true"
-                    class="ant-tabs-tab-btn"
-                    id="rc-tabs-test-tab-troubleshooting"
-                    role="tab"
-                    tabindex="0"
-                  >
-                    Troubleshooting
                   </div>
                 </div>
                 <div
@@ -2595,14 +2560,6 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                 tabindex="-1"
               />
               <div
-                aria-hidden="false"
-                aria-labelledby="rc-tabs-test-tab-troubleshooting"
-                class="ant-tabs-tabpane ant-tabs-tabpane-active"
-                id="rc-tabs-test-panel-troubleshooting"
-                role="tabpanel"
-                tabindex="0"
-              />
-              <div
                 aria-hidden="true"
                 aria-labelledby="rc-tabs-test-tab-reports"
                 class="ant-tabs-tabpane"
@@ -2656,6 +2613,251 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  Troubleshooting
+  <div
+    class="ant-tabs ant-tabs-top ant-tabs-card styledComponents__Tabs-sc-1afcsfc-0 jHmORd"
+  >
+    <div
+      class="ant-tabs-nav"
+      role="tablist"
+    >
+      <div
+        class="ant-tabs-nav-wrap"
+      >
+        <div
+          class="ant-tabs-nav-list"
+          style="transform: translate(0px, 0px);"
+        >
+          <div
+            class="ant-tabs-tab ant-tabs-tab-active"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-ping"
+              aria-selected="true"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-ping"
+              role="tab"
+              tabindex="0"
+            >
+              Ping
+            </div>
+          </div>
+          <div
+            class="ant-tabs-tab"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-traceroute"
+              aria-selected="false"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-traceroute"
+              role="tab"
+              tabindex="0"
+            >
+              Traceroute
+            </div>
+          </div>
+          <div
+            class="ant-tabs-tab"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-packetCapture"
+              aria-selected="false"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-packetCapture"
+              role="tab"
+              tabindex="0"
+            >
+              Packet Capture
+            </div>
+          </div>
+          <div
+            class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+          />
+        </div>
+      </div>
+      <div
+        class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+      >
+        <button
+          aria-controls="rc-tabs-test-more-popup"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-hidden="true"
+          class="ant-tabs-nav-more"
+          id="rc-tabs-test-more"
+          style="visibility: hidden; order: 1;"
+          tabindex="-1"
+          type="button"
+        >
+          <span
+            aria-label="ellipsis"
+            class="anticon anticon-ellipsis"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              data-icon="ellipsis"
+              fill="currentColor"
+              focusable="false"
+              height="1em"
+              viewBox="64 64 896 896"
+              width="1em"
+            >
+              <path
+                d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+              />
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+    <div
+      class="ant-tabs-content-holder"
+    >
+      <div
+        class="ant-tabs-content ant-tabs-content-top"
+      >
+        <div
+          aria-hidden="false"
+          aria-labelledby="rc-tabs-test-tab-ping"
+          class="ant-tabs-tabpane ant-tabs-tabpane-active"
+          id="rc-tabs-test-panel-ping"
+          role="tabpanel"
+          tabindex="0"
+        >
+          <form
+            class="ant-form ant-form-vertical"
+          >
+            <div
+              class="ant-row"
+              style="margin-left: -10px; margin-right: -10px;"
+            >
+              <div
+                class="ant-col ant-col-8"
+                style="padding-left: 10px; padding-right: 10px;"
+              >
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        for="name"
+                        title=""
+                      >
+                        Target host or IP address
+                        <svg
+                          data-testid="QuestionMarkCircleOutlined"
+                        />
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <input
+                            class="ant-input"
+                            id="name"
+                            type="text"
+                            value=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-col-16 ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <button
+                            class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                            disabled=""
+                            type="submit"
+                          >
+                            <span>
+                              Run
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+            >
+              <div
+                class="ant-form-item"
+              >
+                <div
+                  class="ant-row ant-form-item-row"
+                >
+                  <div
+                    class="ant-col ant-form-item-control"
+                  >
+                    <div
+                      class="ant-form-item-control-input"
+                    >
+                      <div
+                        class="ant-form-item-control-input-content"
+                      >
+                        <textarea
+                          class="ant-input"
+                          id="result"
+                          readonly=""
+                          style="resize: none; height: 300px;"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-traceroute"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-traceroute"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-packetCapture"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-packetCapture"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
+      </div>
+    </div>
+  </div>
 </DocumentFragment>
 `;

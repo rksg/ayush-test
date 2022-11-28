@@ -1,6 +1,10 @@
 import { ApiInfo } from '../apiService'
 
 export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
+  GetDefaultDhcpServiceProfileForGuestNetwork: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcp-service-profile/guest-network-default'
+  },
   getVlanPools: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/vlan-pool'
@@ -105,6 +109,22 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap'
   },
+  updateAp: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber'
+  },
+  getVenueDefaultApGroup: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group'
+  },
+  getApGroupsList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/ap-groups'
+  },
+  addApGroup: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap-group'
+  },
   getDhcpAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/dhcp-ap'
@@ -116,6 +136,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   deleteAps: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/ap'
+  },
+  deleteSoloAp: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber?resetFirmware=true'
+  },
+  deleteSoloAps: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/?resetFirmware=true'
   },
   downloadApLog: {
     method: 'get',
@@ -140,5 +168,57 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   deleteApPhoto: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture'
+  },
+  getApRadio: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  updateApRadio: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  deleteApRadio: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  pingAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'
+  },
+  traceRouteAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
+  },
+  startPacketCapture: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start'
+  },
+  stopPacketCapture: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop'
+  },
+  getPacketCaptureState: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture'
+  },
+  blinkLedAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led'
+  },
+  updateApLanPorts: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
+  },
+  getApCapabilities: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
+  },
+  updateApCustomization: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
+  },
+  resetApCustomization: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
   }
 }

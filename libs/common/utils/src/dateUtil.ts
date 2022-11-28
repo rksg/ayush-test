@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { pick }                             from 'lodash'
 import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
@@ -89,78 +88,4 @@ export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
   [DateRange.custom]: defineMessage({
     defaultMessage: 'Custom'
   })
-}
-
-export const getUserDateFormat = (
-  // TODO: userProfile: UserProfile
-  dateStr: string,
-  recivedDateFormat = 'YYYY-MM-DD HH:mm:ss',
-  localTime = false) => {
-  const dateFormat = 'mm/dd/yyyy' //userProfile.dateFormat;
-
-  let date: moment.Moment
-  if (localTime) {
-    date = moment.utc(dateStr).local()
-  } else {
-    date = moment(dateStr, recivedDateFormat)
-  }
-  return date.format(dateFormat.toUpperCase() + ' HH:mm:ss')
-}
-
-export const getShortDurationFormat = (value: number | string) => {
-  const d = moment.duration(value)
-
-  const duration: { [index: string]: number } = {
-    years: d.years(),
-    months: d.months(),
-    days: d.days(),
-    hours: d.hours(),
-    minutes: d.minutes()
-  }
-
-  const result: Array<String> = []
-  for (const unit of Object.keys(duration)) {
-    if (duration[unit]) {
-      result.push(duration[unit] + ' ' + (duration[unit] > 1 ? unit : unit.substr(0, unit.length - 1)))
-    }
-    if (result.length > 1) {
-      break
-    }
-  }
-
-  if (result.length < 1) {
-    result.push('1 minute')
-  }
-
-  return result.join(', ')
-}
-
-export const millisToProperDuration = (ms:number) => {
-  const days = Math.floor(ms / (24 * 60 * 60 * 1000))
-  const daysms = ms % (24 * 60 * 60 * 1000)
-  const hours = Math.floor((daysms) / (60 * 60 * 1000))
-  const hoursms = ms % (60 * 60 * 1000)
-  const minutes = Math.floor((hoursms) / (60 * 1000))
-  const minutesms = ms % (60 * 1000)
-  const seconds = Math.floor((minutesms) / (1000))
-  if (days > 0) {
-    return days + ' ' + (days === 1 ? 'Day' : 'Days') + ' ' + hours + ' ' + (hours <= 1 ? 'Hour' : 'Hours')
-  }
-  if (hours > 0) {
-    return hours + ' ' + (hours === 1 ? 'Hour' : 'Hours') + ' ' + minutes + ' ' + (minutes <= 1 ? 'Minute' : 'Minutes')
-  } else {
-    return minutes + ' ' + (minutes <= 1 ? 'Minute' : 'Minutes') + ' ' + seconds + ' ' + (seconds <= 1 ? 'Second' : 'Seconds')
-  }
-}
-
-export const secondToTime = (value:number) => {
-  if (!value) {
-    return ''
-  }
-
-  return millisToProperDuration(value * 1000)
-    .replace(/\sDay[s]?/, 'd')
-    .replace(/\sHour[s]?/, 'h')
-    .replace(/\sMinute[s]?/, 'm')
-    .replace(/\sSecond[s]?/, 's')
 }
