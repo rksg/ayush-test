@@ -157,6 +157,26 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
   },
+  pingAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'
+  },
+  traceRouteAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
+  },
+  startPacketCapture: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start'
+  },
+  stopPacketCapture: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop'
+  },
+  getPacketCaptureState: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture'
+  },
   blinkLedAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led'

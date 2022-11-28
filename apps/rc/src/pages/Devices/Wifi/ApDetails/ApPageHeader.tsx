@@ -9,6 +9,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { ArrowExpand }                     from '@acx-ui/icons'
+import { APStatus }                        from '@acx-ui/rc/components'
 import { useApActions }                    from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }          from '@acx-ui/rc/services'
 import {
@@ -34,7 +35,8 @@ function ApPageHeader () {
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/aps/${serialNumber}`)
 
-  const currentApOperational = data?.headers.overview === ApDeviceStatusEnum.OPERATIONAL
+  const status = data?.headers.overview as ApDeviceStatusEnum
+  const currentApOperational = status === ApDeviceStatusEnum.OPERATIONAL
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (!serialNumber) return
@@ -70,9 +72,11 @@ function ApPageHeader () {
       }].filter(item => currentApOperational || item.key === 'delete')}
     />
   )
+
   return (
     <PageHeader
       title={data?.title || ''}
+      titleExtra={<APStatus status={status} showText={!currentApOperational} />}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
       ]}
