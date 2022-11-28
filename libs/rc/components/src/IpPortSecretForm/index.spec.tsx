@@ -5,7 +5,7 @@ import { Form } from 'antd'
 
 import { AaaServerTypeEnum, AaaServerOrderEnum } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
-import { render }                                from '@acx-ui/test-utils'
+import { render, screen, fireEvent }             from '@acx-ui/test-utils'
 
 import { IpPortSecretForm } from './index'
 
@@ -40,6 +40,15 @@ describe('IpPortSecretForm', () => {
         route: { params }
       })
 
+
+    const ipTextbox = await screen.findByLabelText('IP Address')
+    fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
+
+    const portTextbox = await screen.findByLabelText('Port')
+    fireEvent.change(portTextbox, { target: { value: '1111' } })
+
+    const secretTextbox = await screen.findByLabelText('Shared secret')
+    fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
     expect(asFragment()).toMatchSnapshot()
   })
 

@@ -8,7 +8,7 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { ApEditContext } from '../..'
 import {
-  apRadio,
+  apDeviceRadio,
   apRadioDetail,
   venuelist,
   venueRadioDetail,
@@ -38,7 +38,7 @@ describe('RadioSettingsTab', () => {
         (_, res, ctx) => res(ctx.json(apRadioDetail))),
       rest.get(
         WifiUrlsInfo.getApRadio.url,
-        (_, res, ctx) => res(ctx.json(apRadio))),
+        (_, res, ctx) => res(ctx.json(apDeviceRadio))),
       rest.get(
         WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
         (_, res, ctx) => res(ctx.json(validRadioChannels))),
