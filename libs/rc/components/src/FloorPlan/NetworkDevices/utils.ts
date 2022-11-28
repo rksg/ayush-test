@@ -1,4 +1,5 @@
 import { ApDeviceStatusEnum, APView, NetworkDevice, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                                                        from '@acx-ui/utils'
 
 export function calculateDeviceColor (device: NetworkDevice): string {
   const deviceStatus = device.deviceStatus
@@ -40,75 +41,85 @@ export function apStatusTransform (value: ApDeviceStatusEnum | SwitchStatusEnum,
   let message = ''
   let icon = ''
   let color = ''
+  const { $t } = getIntl()
   switch (value) {
     case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
-      message = apView === APView.AP_LIST ? 'Never contacted cloud' : 'AP never contacted cloud'
+      message = apView === APView.AP_LIST ? $t({ defaultMessage: 'Never contacted cloud' })
+        : $t({ defaultMessage: 'AP never contacted cloud' })
       icon = 'icon-settings'
       color = 'ap-status-severity-attention'
       break
 
     case ApDeviceStatusEnum.INITIALIZING:
-      message = apView === APView.AP_LIST ? 'Initializing' : 'AP initializing'
+      message = apView === APView.AP_LIST ? $t({ defaultMessage: 'Initializing' })
+        : $t({ defaultMessage: 'AP initializing' })
       icon = 'icon-settings'
       color = 'ap-status-severity-attention'
       break
 
     case ApDeviceStatusEnum.OFFLINE:
-      message = apView === APView.AP_LIST ? 'Offline' : 'AP offline'
+      message = apView === APView.AP_LIST ? $t({ defaultMessage: 'Offline' })
+        : $t({ defaultMessage: 'AP offline' })
       icon = 'icon-offline'
       color = 'ap-status-severity-attention'
       break
 
     case ApDeviceStatusEnum.OPERATIONAL:
-      message = apView === APView.AP_LIST ? 'Operational' : 'AP operational'
+      message = apView === APView.AP_LIST ? $t({ defaultMessage: 'Operational' })
+        : $t({ defaultMessage: 'AP operational' })
       icon = 'icon-ok'
       color = 'ap-status-severity-cleared'
       break
 
     case ApDeviceStatusEnum.APPLYING_FIRMWARE:
       message = apView === APView.AP_LIST ?
-        'Operational - applying firmware' : 'AP operational - applying firmware'
+        $t({ defaultMessage: 'Operational - applying firmware' })
+        : $t({ defaultMessage: 'AP operational - applying firmware' })
       icon = 'icon-ok'
       color = 'ap-status-severity-cleared'
       break
 
     case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
       message = apView === APView.AP_LIST ?
-        'Operational - applying configuration' : 'AP operational - applying configuration'
+        $t({ defaultMessage: 'Operational - applying configuration' })
+        : $t({ defaultMessage: 'AP operational - applying configuration' })
       icon = 'icon-ok'
       color = 'ap-status-severity-cleared'
       break
     case ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED:
-      message = 'Firmware update failed'
+      message = $t({ defaultMessage: 'Firmware update failed' })
       icon = 'icon-error'
       color = 'ap-status-severity-critical'
       break
     case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:
-      message = 'Configuration update failed'
+      message = $t({ defaultMessage: 'Configuration update failed' })
       icon = 'icon-error'
       color = 'ap-status-severity-critical'
       break
     case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
       message = apView === APView.AP_LIST ?
-        'Disconnected from cloud' : 'AP disconnected from cloud'
+        $t({ defaultMessage: 'Disconnected from cloud' })
+        : $t({ defaultMessage: 'AP disconnected from cloud' })
       icon = 'icon-error'
       color = 'ap-status-severity-critical'
       break
 
     case ApDeviceStatusEnum.REBOOTING:
-      message = apView === APView.AP_LIST ? 'Rebooting' : 'AP rebooting'
+      message = apView === APView.AP_LIST ? $t({ defaultMessage: 'Rebooting' })
+        : $t({ defaultMessage: 'AP rebooting' })
       icon = 'icon-warning'
       color = 'ap-status-severity-minor'
       break
 
     case ApDeviceStatusEnum.HEARTBEAT_LOST:
-      message = apView === APView.AP_LIST ? 'Heartbeat lost' : 'AP heartbeat lost'
+      message = apView === APView.AP_LIST ? $t({ defaultMessage: 'Heartbeat lost' })
+        : $t({ defaultMessage: 'AP heartbeat lost' })
       icon = 'icon-warning'
       color = 'ap-status-severity-minor'
       break
 
     default:
-      message = 'Unknown'
+      message = $t({ defaultMessage: 'Unknown' })
       icon = 'icon-help'
       color = 'ap-status-severity-attention'
   }
