@@ -9,25 +9,26 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import AddEdge             from './pages/Devices/Edge/AddEdge'
-import SwitchesTable       from './pages/Devices/Switch/SwitchesTable'
-import ApDetails           from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }          from './pages/Devices/Wifi/ApEdit'
-import { ApForm }          from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }     from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable            from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails      from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm         from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable       from './pages/Networks/NetworksTable'
-import PoliciesTable       from './pages/Policies/PoliciesTable'
-import SelectPolicyForm    from './pages/Policies/SelectPolicyForm'
-import DHCPDetail          from './pages/Services/DHCPDetail'
-import DHCPForm            from './pages/Services/DHCPForm/DHCPForm'
-import MdnsProxyDetail     from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
-import MdnsProxyForm       from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import PortalServiceDetail from './pages/Services/Portal/PortalDetail'
-import PortalForm          from './pages/Services/Portal/PortalForm/PortalForm'
-import SelectServiceForm   from './pages/Services/SelectServiceForm'
+import AddEdge                 from './pages/Devices/Edge/AddEdge'
+import SwitchesTable           from './pages/Devices/Switch/SwitchesTable'
+import ApDetails               from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }              from './pages/Devices/Wifi/ApEdit'
+import { ApForm }              from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }         from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails          from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm             from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable           from './pages/Networks/NetworksTable'
+import PoliciesTable           from './pages/Policies/PoliciesTable'
+import SelectPolicyForm        from './pages/Policies/SelectPolicyForm'
+import DHCPDetail              from './pages/Services/DHCPDetail'
+import DHCPForm                from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyDetail         from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
+import MdnsProxyForm           from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import NetworkSegmentationForm from './pages/Services/NetworkSegmenationForm/NetworkSegmentationForm'
+import PortalServiceDetail     from './pages/Services/Portal/PortalDetail'
+import PortalForm              from './pages/Services/Portal/PortalForm/PortalForm'
+import SelectServiceForm       from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,
@@ -141,6 +142,16 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<DHCPDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.CREATE })}
+        element={<NetworkSegmentationForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.EDIT })}
+        element={<NetworkSegmentationForm/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}

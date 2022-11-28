@@ -143,3 +143,11 @@ export interface DHCPVenue {
   venueId: string
   dhcpId: string
 }
+
+export interface CreateNetworkSegmentationFormFields {
+  name: '',
+}
+
+export interface NetworkSegmentationSaveData extends CreateNetworkSegmentationFormFields{
+  id?: string;
+}
