@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Row, Col } from 'antd'
-import { useIntl }  from 'react-intl'
+import { Row, Col }               from 'antd'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { NetworkFilter, Button } from '@acx-ui/components'
 import { useParams }             from '@acx-ui/react-router-dom'
@@ -38,12 +38,12 @@ export function ApTroubleshootingTab () {
       <Col span={historyContentToggle ? 18 : 24}>
         <Row gutter={[16, 16]}>
           <Col span={historyContentToggle ? 12 : 10} />
-          <Col span={historyContentToggle ? 12 : 10} style={{ justifyContent: 'end' }}>
-            <Row
-              style={{ justifyContent: 'end' }}
-              gutter={[4, 4]}>
+          <Col
+            span={historyContentToggle ? 12 : 10}
+            style={{ justifyContent: 'end' }}>
+            <Row style={{ justifyContent: 'end' }} gutter={[4, 4]}>
               {ClientTroubleShootingConfig.selection.map((config) => (
-                <Col span={historyContentToggle ? 8 : 7}>
+                <Col span={historyContentToggle ? 8 : 7} key={config.selectionType}>
                   <NetworkFilter
                     multiple
                     defaultValue={
@@ -55,8 +55,10 @@ export function ApTroubleshootingTab () {
                         ]
                         : config.defaultValue
                     }
-                    placeholder={config.placeHolder}
-                    options={config.options}
+                    placeholder={$t(config.placeHolder)}
+                    options={config.options.map((option) => {
+                      return { ...option, label: $t(option.label) }
+                    })}
                     style={{ maxWidth: 132 }}
                     onApply={(value: selectionType) =>
                       onApply(value, config.selectionType)
@@ -75,7 +77,7 @@ export function ApTroubleshootingTab () {
                   onClick={() => {
                     setHistoryContentToggle(!historyContentToggle)
                   }}>
-                  {$t({ defaultMessage: 'History' })}
+                  {$t(defineMessage({ defaultMessage: 'History' }))}
                 </Button>
               </Row>
             </Col>

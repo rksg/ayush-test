@@ -1,78 +1,76 @@
-import { getIntl } from '@acx-ui/utils'
-
-const { $t } = getIntl()
+import { defineMessage } from 'react-intl'
 
 export const ClientTroubleShootingConfig = {
   selection: [
     {
       selectionType: 'category',
       defaultValue: [],
-      placeHolder: $t({ defaultMessage: 'All Categories' }),
+      placeHolder: defineMessage({ defaultMessage: 'All Categories' }),
       options: [
         {
           value: 'connection',
-          label: $t({ defaultMessage: 'Client Connection' })
+          label: defineMessage({ defaultMessage: 'Client Connection' })
         },
         {
           value: 'performance',
-          label: $t({ defaultMessage: 'Performance' })
+          label: defineMessage({ defaultMessage: 'Performance' })
         },
         {
           value: 'Infrastructure',
-          label: $t({ defaultMessage: 'Infrastructure' })
+          label: defineMessage({ defaultMessage: 'Infrastructure' })
         }
       ]
     },
     {
       selectionType: 'type',
       defaultValue: [],
-      placeHolder: $t({ defaultMessage: 'All Types' }),
+      placeHolder: defineMessage({ defaultMessage: 'All Types' }),
       options: [
         {
           value: 'info-updated',
-          label: $t({ defaultMessage: 'Client associated' })
+          label: defineMessage({ defaultMessage: 'Client associated' })
         },
         {
           value: 'roamed',
-          label: $t({ defaultMessage: 'Client roamed' })
+          label: defineMessage({ defaultMessage: 'Client roamed' })
         },
         {
           value: 'disconnected',
-          label: $t({ defaultMessage: 'Client disconnected' })
+          label: defineMessage({ defaultMessage: 'Client disconnected' })
         },
         {
           value: 'failure',
-          label: $t({ defaultMessage: 'Connection failure' })
+          label: defineMessage({ defaultMessage: 'Connection failure' })
         },
         {
           value: 'incident',
-          label: $t({ defaultMessage: 'Incident' })
+          label: defineMessage({ defaultMessage: 'Incident' })
         }
       ]
     },
     {
       selectionType: 'radio',
       defaultValue: [],
-      placeHolder: $t({ defaultMessage: 'All Radios' }),
+      placeHolder: defineMessage({ defaultMessage: 'All Radios' }),
       options: [
         {
           value: '2.4',
-          label: $t({ defaultMessage: '2.4 GHz' })
+          label: defineMessage({ defaultMessage: '2.4 GHz' })
         },
         {
           value: '5',
-          label: $t({ defaultMessage: '5 GHz' })
+          label: defineMessage({ defaultMessage: '5 GHz' })
         },
         {
           value: '6(5)',
-          label: $t({ defaultMessage: '6 GHz' })
+          label: defineMessage({ defaultMessage: '6 GHz' })
         }
       ]
     } ],
   timeLine: [
-    { title: $t({ defaultMessage: 'Connection Events' }) },
-    { title: $t({ defaultMessage: 'Roaming' }) },
-    { title: $t({ defaultMessage: 'Connection Quality' }) },
-    { title: $t({ defaultMessage: 'Network Incidents' }) }
+    { title: defineMessage({ defaultMessage: 'Connection Events' }) },
+    { title: defineMessage({ defaultMessage: 'Roaming' }) },
+    { title: defineMessage({ defaultMessage: 'Connection Quality' }) },
+    { title: defineMessage({ defaultMessage: 'Network Incidents' }) }
   ]
 }

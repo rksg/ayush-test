@@ -1,0 +1,137 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApTroubleShooting should render correctly with out search params 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__History-sc-d21xu8-0 bFNQbS"
+  >
+    <div
+      class="styledComponents__HistoryHeader-sc-d21xu8-1 enVlng"
+    >
+      <span
+        class="styledComponents__HistoryContentTitle-sc-d21xu8-3 blbFlC"
+      >
+        History
+      </span>
+      <span
+        class="styledComponents__HistoryIcon-sc-d21xu8-4 fsiBwN"
+      >
+        <svg
+          data-testid="ArrowExpand"
+          style="transform: rotate(180deg); cursor: pointer; line-height: 20px;"
+        />
+      </span>
+    </div>
+    <div
+      class="styledComponents__HistoryContent-sc-d21xu8-2 dEgEIn"
+    >
+      <div
+        class="ant-list ant-list-split"
+      >
+        <div
+          class="ant-spin-nested-loading"
+        >
+          <div
+            class="ant-spin-container"
+          >
+            <ul
+              class="ant-list-items"
+            >
+              <li
+                class="ant-list-item"
+              >
+                <div
+                  class="ant-list-item-meta"
+                >
+                  <div
+                    class="ant-list-item-meta-avatar"
+                  >
+                    <span
+                      class="styledComponents__EventTypeIcon-sc-d21xu8-5 eHnlOO"
+                      color="--acx-semantics-green-50"
+                    />
+                  </div>
+                  <div
+                    class="ant-list-item-meta-content"
+                  >
+                    <h4
+                      class="ant-list-item-meta-title"
+                    >
+                      06/07/2022 11:21:48
+                    </h4>
+                    <div
+                      class="ant-list-item-meta-description"
+                    >
+                      Infrastructure (Service availabilty)
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li
+                class="ant-list-item"
+              >
+                <div
+                  class="ant-list-item-meta"
+                >
+                  <div
+                    class="ant-list-item-meta-avatar"
+                  >
+                    <span
+                      class="styledComponents__EventTypeIcon-sc-d21xu8-5 fswVjn"
+                      color="--acx-neutrals-50"
+                    />
+                  </div>
+                  <div
+                    class="ant-list-item-meta-content"
+                  >
+                    <h4
+                      class="ant-list-item-meta-title"
+                    >
+                      06/07/2022 11:21:48
+                    </h4>
+                    <div
+                      class="ant-list-item-meta-description"
+                    >
+                      Client assiocated (802.11) @ Home_R860 (AA:BB...
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li
+                class="ant-list-item"
+              >
+                <div
+                  class="ant-list-item-meta"
+                >
+                  <div
+                    class="ant-list-item-meta-avatar"
+                  >
+                    <span
+                      class="styledComponents__EventTypeIcon-sc-d21xu8-5 eHnlOO"
+                      color="--acx-semantics-green-50"
+                    />
+                  </div>
+                  <div
+                    class="ant-list-item-meta-content"
+                  >
+                    <h4
+                      class="ant-list-item-meta-title"
+                    >
+                      06/07/2022 11:21:48
+                    </h4>
+                    <div
+                      class="ant-list-item-meta-description"
+                    >
+                      Client assiocated (802.11) @ Home_R860 (AA...
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
