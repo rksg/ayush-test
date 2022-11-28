@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { IntlShape, useIntl } from 'react-intl'
+import { useParams }          from 'react-router-dom'
 
 import { GridRow, GridCol, PageHeader }                  from '@acx-ui/components'
 import { CollapseActive, CollapseInactive }              from '@acx-ui/icons'
@@ -33,30 +33,9 @@ function SearchHeader ({ count }: { count: number }) {
   )
 }
 
-const SearchTableWrapper = ({ children, count, title }
-: { children: React.ReactNode, count: number, title: string }) => {
-  const { $t } = useIntl()
-  return <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
-    <Collapse
-      defaultActiveKey={[title]}
-      expandIconPosition='end'
-      expandIcon={({ isActive }) => (isActive)
-        ? <CollapseActive />
-        : <CollapseInactive />
-      }
-      bordered={false}
-    >
-      <Panel
-        key={title}
-        header={$t({ defaultMessage: '{title} ({count})' }, {
-          title,
-          count
-        })}
-      >
-        {children}
-      </Panel>
-    </Collapse>
-  </GridCol>
+const useGetPanelHeader = ({ count, title, $t }
+  : { count: number, title: string, $t: IntlShape['$t'] }) => {
+  return $t({ defaultMessage: '{title} ({count})' }, { title, count })
 }
 
 function SearchResult () {
@@ -101,28 +80,38 @@ function SearchResult () {
     <Fragment key='search-results'>
       <SearchHeader key='search-header' count={count}/>
       <GridRow>
-        <SearchTableWrapper
-          title={$t({ defaultMessage: 'Venue' })}
-          count={venueCount}
-        >
-          <VenueTable
-            key={`venue-search-${globalSearch}`}
-            globalSearch={globalSearch}
-            tableQuery={venueQuery}
-          />
-        </SearchTableWrapper>
-      </GridRow>
-      <GridRow>
-        <SearchTableWrapper
-          title='networks'
-          count={networkCount}
-        >
-          <NetworkTable
-            key={`network-search-${globalSearch}`}
-            tableQuery={networkQuery}
-            globalSearch={globalSearch}
-          />
-        </SearchTableWrapper>
+        <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
+          <Collapse
+            defaultActiveKey={['1', '2']}
+            expandIconPosition='end'
+            expandIcon={({ isActive }) => (isActive)
+              ? <CollapseActive />
+              : <CollapseInactive />
+            }
+            bordered={false}
+          >
+            <Panel
+              header={useGetPanelHeader({ title: 'Venue', count: venueCount, $t })}
+              key='1'
+            >
+              <VenueTable
+                key={`venue-search-${globalSearch}`}
+                globalSearch={globalSearch}
+                tableQuery={venueQuery}
+              />
+            </Panel>
+            <Panel
+              header={useGetPanelHeader({ title: 'Networks', count: networkCount, $t })}
+              key='2'
+            >
+              <NetworkTable
+                key={`network-search-${globalSearch}`}
+                tableQuery={networkQuery}
+                globalSearch={globalSearch}
+              />
+            </Panel>
+          </Collapse>
+        </GridCol>
       </GridRow>
     </Fragment>
   )
