@@ -35,17 +35,16 @@ export function getFilteredData <RecordType> (
     }
     return true
   }
-
-  return dataSource?.reduce((rows, row) => {
-    const dataRow = row as RecordWithChildren<RecordType>
-    const children = dataRow.children?.filter(isRowMatching)
+  type Record = RecordWithChildren<RecordType>
+  return dataSource?.reduce((rows: Record[], row: Record) => {
+    const children = row.children?.filter(isRowMatching)
     if (children?.length) {
       rows.push({ ...row, children })
     } else if (isRowMatching(row)) {
       rows.push({ ...row, children: undefined })
     }
     return rows
-  }, [] as RecordWithChildren<RecordType>[])
+  }, [] as Record[])
 }
 export function renderSearch <RecordType> (
   intl: IntlShape,
@@ -91,9 +90,8 @@ export function renderFilter <RecordType> (
     style={{ width: 200 }}
   >
     {dataSource
-      ?.reduce((data: string[], datum) => {
-        const typedDatum = datum as RecordWithChildren<RecordType>
-        const { children } = typedDatum
+      ?.reduce((data: string[], datum: RecordWithChildren<RecordType>) => {
+        const { children } = datum
         if (children) {
           for (const child of children) {
             addToFilter(data, child[key] as unknown as string)
