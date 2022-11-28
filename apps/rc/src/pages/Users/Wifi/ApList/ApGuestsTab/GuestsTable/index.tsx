@@ -20,7 +20,6 @@ import {
   transformDisplayText,
   GuestStatusEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
 import { getIntl } from '@acx-ui/utils'
 
 import { GuestsDetail } from '../GuestsDetail'

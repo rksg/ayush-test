@@ -12,23 +12,12 @@ export const baseClientApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'clientApi',
   refetchOnMountOrArgChange: true,
+  tagTypes: ['Client', 'Guest'],
   endpoints: () => ({ })
 })
 
 export const clientApi = baseClientApi.injectEndpoints({
   endpoints: (build) => ({
-    getClientList: build.query<TableResult<any>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          CommonUrlsInfo.getClientList,
-          params
-        )
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -39,11 +28,11 @@ export const clientApi = baseClientApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Guest', id: 'LIST' }]
     })
-  }),
+  })
 })
-export const { 
-  useGetClientListQuery,
+export const {
   useGetGuestsListQuery
 } = clientApi
