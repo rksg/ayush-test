@@ -176,7 +176,7 @@ export default function GuestsTable () {
               currentGuest={currentGuest}
             />
           }
-          width={'477px'}
+          width={'550px'}
         />
       </Loader>
     )
