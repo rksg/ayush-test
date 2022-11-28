@@ -6,8 +6,6 @@ import { useIntl }                            from 'react-intl'
 
 import { Tooltip } from '@acx-ui/components'
 
-import { VenueEditContext } from '../..'
-
 import { Button5G, ButtonDFS, CheckboxGroup } from './styledComponents'
 
 interface RadioChannel {
@@ -37,7 +35,9 @@ export function RadioSettingsChannels (props: {
     dfsChannels: string[],
     lower5GChannels: string[],
     upper5GChannels: string[]
-  }
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editContext: React.Context<any>
 }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -45,7 +45,7 @@ export function RadioSettingsChannels (props: {
   const {
     editContextData,
     setEditContextData
-  } = useContext(VenueEditContext)
+  } = useContext(props.editContext)
 
   // TODO: rbacService
   const isAllowUpdate = true // rbacService.isRoleAllowed('updateVenueRadioCustomization') || rbacService.isRoleAllowed('UpdateApRadioButton')
@@ -86,7 +86,6 @@ export function RadioSettingsChannels (props: {
 
     setEditContextData({
       ...editContextData,
-      unsavedTabKey: 'radio',
       isDirty: true
     })
   }
@@ -109,6 +108,7 @@ export function RadioSettingsChannels (props: {
   return (<>
     {showLowerUpper5GBar && <div>
       {avaliableBarChannels.lower5G?.length > 0 && <Button5G
+        data-testid='lower5GButton'
         disabled={disabled}
         onClick={() => handleClickBarButton(ChannelTypeEnum.lower5G)}
         style={{ width: lower5GBarPosition.width }}
@@ -116,6 +116,7 @@ export function RadioSettingsChannels (props: {
         {$t({ defaultMessage: 'Lower 5G' })}
       </Button5G>}
       {avaliableBarChannels.upper5G?.length > 0 && <Button5G
+        data-testid='upper5GButton'
         disabled={disabled}
         onClick={() => handleClickBarButton(ChannelTypeEnum.upper5G)}
         style={{ width: upper5GBarPosition.width }}
@@ -124,6 +125,7 @@ export function RadioSettingsChannels (props: {
       </Button5G>}
     </div>}
     { showDfsBar && avaliableBarChannels.dfs?.length > 0 && <ButtonDFS
+      data-testid='dfsButton'
       disabled={disabled}
       onClick={() => handleClickBarButton(ChannelTypeEnum.dfs)}
       style={{ width: dfsBarPosition?.width, left: dfsBarPosition?.left }}
