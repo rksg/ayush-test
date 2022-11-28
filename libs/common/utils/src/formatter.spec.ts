@@ -96,6 +96,10 @@ describe('formatter', () => {
       expect(formatter('txFormat')('_MIN')).toBe('Min')
     })
   })
+  it('numberWithCommas', () => testFormat('numberWithCommas', {
+    123: '123',
+    91890620: '91,890,620'
+  }))
   describe('calendarFormat', () => {
     beforeEach(() => {
       jest

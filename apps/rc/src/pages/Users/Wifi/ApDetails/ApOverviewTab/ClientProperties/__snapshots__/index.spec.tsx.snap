@@ -46,7 +46,7 @@ exports[`ClientProperties Normal Client should render client correctly 1`] = `
           class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
         >
           <form
-            class="ant-form ant-form-horizontal styledComponents__Form-sc-wc0gic-0 gxRtcP"
+            class="ant-form ant-form-horizontal styledComponents__Form-sc-wc0gic-0 WErwE"
           >
             <h4
               class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -1021,7 +1021,7 @@ exports[`ClientProperties Normal Client should render client without some data c
           class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
         >
           <form
-            class="ant-form ant-form-horizontal styledComponents__Form-sc-wc0gic-0 gxRtcP"
+            class="ant-form ant-form-horizontal styledComponents__Form-sc-wc0gic-0 WErwE"
           >
             <h4
               class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -1974,7 +1974,7 @@ exports[`ClientProperties Normal Client should render dpsk client correctly 1`] 
           class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
         >
           <form
-            class="ant-form ant-form-horizontal styledComponents__Form-sc-wc0gic-0 gxRtcP"
+            class="ant-form ant-form-horizontal styledComponents__Form-sc-wc0gic-0 WErwE"
           >
             <h4
               class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -3144,7 +3144,7 @@ exports[`ClientProperties Normal Client should render guest client correctly 1`]
           class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
         >
           <form
-            class="ant-form ant-form-horizontal styledComponents__Form-sc-wc0gic-0 gxRtcP"
+            class="ant-form ant-form-horizontal styledComponents__Form-sc-wc0gic-0 WErwE"
           >
             <h4
               class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
