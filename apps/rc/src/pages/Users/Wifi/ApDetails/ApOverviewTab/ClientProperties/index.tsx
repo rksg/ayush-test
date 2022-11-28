@@ -184,6 +184,7 @@ export function ClientProperties () {
 
 function ClientDetails ({ client }: { client: ClientExtended }) {
   const { $t } = getIntl()
+
   return <>
     <Subtitle level={4}>
       {$t({ defaultMessage: 'Client Details' })}

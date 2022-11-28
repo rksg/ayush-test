@@ -27,6 +27,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const params = {
+  tenantId: 'tenant-id',
+  userId: 'user-id'
+}
+
 describe('ClientProperties', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -55,10 +60,6 @@ describe('ClientProperties', () => {
 
   describe('Normal Client', () => {
     it('should render client correctly', async () => {
-      const params = {
-        tenantId: 'tenant-id',
-        userId: 'user-id'
-      }
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
@@ -72,10 +73,6 @@ describe('ClientProperties', () => {
     })
 
     it('should render client without some data correctly', async () => {
-      const params = {
-        tenantId: 'tenant-id',
-        userId: 'user-id'
-      }
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
@@ -141,11 +138,6 @@ describe('ClientProperties', () => {
           }))
         )
       )
-
-      const params = {
-        tenantId: 'tenant-id',
-        userId: 'user-id'
-      }
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
@@ -174,11 +166,6 @@ describe('ClientProperties', () => {
           }))
         )
       )
-
-      const params = {
-        tenantId: 'tenant-id',
-        userId: 'user-id'
-      }
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
@@ -196,10 +183,6 @@ describe('ClientProperties', () => {
   describe('Historical Client', () => {
     it('should render historical client correctly', async () => {
       jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
-      const params = {
-        tenantId: 'tenant-id',
-        userId: 'user-id'
-      }
       render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
@@ -229,11 +212,6 @@ describe('ClientProperties', () => {
         rest.get(CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(null)))
       )
-
-      const params = {
-        tenantId: 'tenant-id',
-        userId: 'user-id'
-      }
       render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
@@ -272,11 +250,6 @@ describe('ClientProperties', () => {
           }))
         )
       )
-
-      const params = {
-        tenantId: 'tenant-id',
-        userId: 'user-id'
-      }
       render(<Provider><ClientProperties /></Provider>, {
         route: {
           params,
@@ -302,10 +275,6 @@ describe('ClientProperties', () => {
           }))
         )
       )
-      const params = {
-        tenantId: 'tenant-id',
-        userId: 'user-id'
-      }
       render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
@@ -323,10 +292,7 @@ describe('ClientProperties', () => {
           (_, res, ctx) => res(ctx.status(404), ctx.json({}))
         )
       )
-      const params = {
-        tenantId: 'tenant-id',
-        userId: 'user-id'
-      }
+
       render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })

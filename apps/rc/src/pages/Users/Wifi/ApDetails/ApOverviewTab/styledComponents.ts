@@ -3,7 +3,11 @@ import styled                     from 'styled-components/macro'
 
 export const Form = styled(AntForm)`
   .ant-form-item {
-    font-size: 12px
+    font-size: var(--acx-body-4-font-size);
+  }
+
+  .ant-form-item-label > label {
+    color: var(--acx-neutrals-70)
   }
 `
 
