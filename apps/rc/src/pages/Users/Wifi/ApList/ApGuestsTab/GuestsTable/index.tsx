@@ -2,19 +2,26 @@
 import { useState } from 'react'
 
 import { Drawer } from 'antd'
-import moment                    from 'moment-timezone'
-import {defineMessage, useIntl }               from 'react-intl'
+import moment from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
-import { Alert }                                       from '@acx-ui/components'
-import { Button, Table, TableProps, Loader } from '@acx-ui/components'
-import { useGetGuestsListQuery }                                          from '@acx-ui/rc/services'
+import { Alert, cssStr } from '@acx-ui/components'
+import {
+  Button,
+  Table,
+  TableProps,
+  Loader
+} from '@acx-ui/components'
+import { useGetGuestsListQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   Guest,
   GuestTypesEnum,
-  transformDisplayText
-}                                                            from '@acx-ui/rc/utils'
+  transformDisplayText,
+  GuestStatusEnum
+} from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import { getIntl } from '@acx-ui/utils'
 
 import { GuestsDetail } from '../GuestsDetail'
 
@@ -131,7 +138,11 @@ export default function GuestsTable () {
         key: 'guestStatus',
         title: $t({ defaultMessage: 'Status' }),
         dataIndex: 'guestStatus',
-        sorter: false
+        sorter: false,
+        render: function (data) {
+          return data === GuestStatusEnum.EXPIRED ?
+            <span style={{ color: cssStr('--acx-semantics-red-50') }}>{data}</span> : data
+        }
       }
     ]
 
@@ -176,27 +187,23 @@ export default function GuestsTable () {
   )
 }
 
-export const renderGuestType = (value: string) => {
-  let result = ''
-  switch (value) {
-    case GuestTypesEnum.MANAGED:
-      result = 'Managed'
-      break
-    case GuestTypesEnum.SELF_SIGN_IN:
-      result = 'Self Sign In'
-      break
-    case GuestTypesEnum.HOST_GUEST:
-      result = 'Self Sign In'
-      break
-    default:
-      result = transformDisplayText(value)
-      break
+export const renderAllowedNetwork = function (currentGuest: Guest) {
+  const { $t } = getIntl()
+  const hasGuestManagerRole = false   //TOD:  from userProfile()
+  if (currentGuest.networkId && !hasGuestManagerRole) {
+    return (
+      <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
+        {currentGuest.ssid}</TenantLink>
+    )
+  } else if (currentGuest.networkId && hasGuestManagerRole) {
+    return currentGuest.ssid
+  } else {
+    return $t({ defaultMessage: 'None' })
   }
-  return result
 }
 
-export const renderExpires = function(row: Guest) {
-  // const intl = useIntl()
+export const renderExpires = function (row: Guest) {
+  const { $t } = getIntl()
   if (row.expiryDate && row.expiryDate !== '0') {
     return moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
   } else if (!row.expiryDate || row.expiryDate === '0') {
@@ -212,22 +219,27 @@ export const renderExpires = function(row: Guest) {
         result = row.passDurationHours + (row.passDurationHours === 1 ? ' hour' : ' hours')
       }
     }
-    return `${result} since first login`
+    return `${result} ${$t({ defaultMessage: 'since first login' })}`
   }
   return '--'
 }
 
-export const renderAllowedNetwork = function (currentGuest: Guest) {
-  const hasGuestManagerRole = false   //TOD:  from userProfile()
-  if (currentGuest.networkId && !hasGuestManagerRole) {
-    return (
-      <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
-        {currentGuest.ssid}</TenantLink>
-    )
-  } else if (currentGuest.networkId && hasGuestManagerRole) {
-    return currentGuest.ssid
-  } else {
-    return 'None'
+export const renderGuestType = (value: string) => {
+  const { $t } = getIntl()
+  let result = ''
+  switch (value) {
+    case GuestTypesEnum.MANAGED:
+      result = $t({ defaultMessage: 'Managed' })
+      break
+    case GuestTypesEnum.SELF_SIGN_IN:
+      result = $t({ defaultMessage: 'Self Sign In' })
+      break
+    case GuestTypesEnum.HOST_GUEST:
+      result = $t({ defaultMessage: 'Self Sign In' })
+      break
+    default:
+      result = transformDisplayText(value)
+      break
   }
+  return result
 }
-

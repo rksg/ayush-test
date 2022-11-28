@@ -14,7 +14,8 @@ export interface Guest {
     passDurationHours?: number
     ssid?: string
     name?: string
-    maxNumberOfClients?: number
+    maxNumberOfClients?: number,
+    guestStatus: GuestStatusEnum
 }
 
 export interface GuestExpiration {
@@ -26,7 +27,15 @@ export interface GuestExpiration {
 export type DelieverType = 'PRINT' | 'SMS' | 'MAIL';
 
 export enum GuestTypesEnum {
-    MANAGED = 'GuestPass',
-    SELF_SIGN_IN = 'SelfSign',
-    HOST_GUEST = 'HostGuest'
-  }
+  MANAGED = 'GuestPass',
+  SELF_SIGN_IN = 'SelfSign',
+  HOST_GUEST = 'HostGuest'
+}
+
+export enum GuestStatusEnum {
+  OFFLINE = 'Offline',
+  EXPIRED = 'Expired',
+  NOT_APPLICABLE = 'Not Applicable',
+  ONLINE = 'Online',
+  DISABLED = 'Disabled'
+}

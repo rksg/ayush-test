@@ -2,10 +2,18 @@ import { Divider, Form } from 'antd'
 import moment            from 'moment-timezone'
 import { useIntl }       from 'react-intl'
 
-import { Guest, transformDisplayText } from '@acx-ui/rc/utils'
-import { TenantLink }                  from '@acx-ui/react-router-dom'
+import { cssStr }        from '@acx-ui/components'
+import {
+  Guest,
+  GuestStatusEnum,
+  transformDisplayText
+} from '@acx-ui/rc/utils'
 
-import { renderExpires, renderGuestType } from '../GuestsTable'
+import {
+  renderAllowedNetwork,
+  renderExpires,
+  renderGuestType
+} from '../GuestsTable'
 
 interface GuestDetailsDrawerProps {
   currentGuest: Guest,
@@ -14,19 +22,17 @@ interface GuestDetailsDrawerProps {
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { currentGuest } = props
-  const hasGuestManagerRole = false   // from userProfile()
 
-  const allowedNetwork = function (currentGuest: Guest) {
-    if (currentGuest.networkId && !hasGuestManagerRole) {
-      return (
-        <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
-          {currentGuest.ssid}</TenantLink>
-      )
-    } else if (currentGuest.networkId && hasGuestManagerRole) {
-      return currentGuest.ssid
-    } else {
-      return 'None'
+  const renderStatus = function (row: Guest) {
+    if (row.maxNumberOfClients !== -1 ||
+      row.guestStatus.indexOf(GuestStatusEnum.NOT_APPLICABLE) === -1) {
+      if (row.guestStatus === GuestStatusEnum.EXPIRED) {
+        return <span style={{ color: cssStr('--acx-semantics-red-50') }}>{row.guestStatus}</span>
+      } else if (row.guestStatus.indexOf(GuestStatusEnum.ONLINE)!== -1) {
+        return <span style={{ color: cssStr('--acx-semantics-green-50') }}>{row.guestStatus}</span>
+      }
     }
+    return row.guestStatus
   }
 
   return (<Form
@@ -59,7 +65,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
     <Form.Item
       label={$t({ defaultMessage: 'Allowed Network:' })}
-      children={allowedNetwork(currentGuest)} />
+      children={renderAllowedNetwork(currentGuest)} />
 
     <Form.Item
       label={$t({ defaultMessage: 'Guest Created:' })}
@@ -73,7 +79,14 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       label={$t({ defaultMessage: 'Max. Number of Clients:' })}
       children={currentGuest.maxNumberOfClients || '0'} />
 
+    <Divider />
+
+    <Form.Item
+      label={$t({ defaultMessage: 'Status:' })}
+      children={renderStatus(currentGuest)} />
+
   </Form>
   )
 }
+
 
