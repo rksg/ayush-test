@@ -2,7 +2,7 @@ export const createImage = (url: string) =>
   new Promise((resolve) => {
     let xhr = new XMLHttpRequest()
     xhr.onload = function () {
-      let url = URL.createObjectURL(this.response)
+      let url = (window.URL || window.webkitURL).createObjectURL(this.response)
       let img = new Image()
       img.onload = function () {
         resolve(img)
@@ -15,7 +15,7 @@ export const createImage = (url: string) =>
     xhr.send()
   })
 
-export default async function getCroppedImg (
+export async function getCroppedImg (
   imageSrc: string,
   pixelCrop: { x: number; y: number; width: number; height: number },
   flip = { horizontal: false, vertical: false }
@@ -63,7 +63,7 @@ export default async function getCroppedImg (
   return new Promise((resolve) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     canvas.toBlob((file: any) => {
-      resolve(URL.createObjectURL(file))
+      resolve((window.URL || window.webkitURL).createObjectURL(file))
     }, 'image/jpeg')
   })
 }

@@ -10,25 +10,13 @@ import {
   useApViewModelQuery,
   useWifiCapabilitiesQuery
 } from '@acx-ui/rc/services'
-import { FileValidation, WifiEntityEnum } from '@acx-ui/rc/utils'
-import { getIntl }                        from '@acx-ui/utils'
+import { WifiEntityEnum } from '@acx-ui/rc/utils'
+import { getIntl }        from '@acx-ui/utils'
 
 import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.jpg'
 
 import { ApPhotoDrawer }                                                          from './ApPhotoDrawer'
 import { StyledSpace, RoundIconDiv, PhotoDiv, ArrowsOutIcon, PhotoIcon, DotsDiv } from './styledComponents'
-
-
-export const getFileExtension = function (fileName: string) {
-  // eslint-disable-next-line max-len
-  const extensionsRegex: RegExp = /(png|jpeg|jpg|gif|svg)$/i
-  const matched = extensionsRegex.exec(fileName)
-  if (matched) {
-    return matched[0]
-  } else {
-    return ''
-  }
-}
 
 export function ApPhoto () {
   const [imageUrl, setImageUrl] = useState('')
@@ -52,12 +40,6 @@ export function ApPhoto () {
   const wifiCapabilitiesQuery = useWifiCapabilitiesQuery({ params })
   const currentAP = apViewModelQuery.data
   const wifiCapabilities = wifiCapabilitiesQuery.data
-
-  const [fileValidation, setFileValidation] = useState<FileValidation>({
-    file: {} as File,
-    isValidfileType: true,
-    isValidFileSize: true
-  })
 
   const [addApPhoto] = useAddApPhotoMutation()
   const apPhoto = useGetApPhotoQuery({ params })
@@ -88,31 +70,23 @@ export function ApPhoto () {
 
   const { $t } = getIntl()
   const beforeUpload = async function (file: File) {
-    setFileValidation({
-      file: {} as File,
-      isValidfileType: true,
-      isValidFileSize: true
-    })
     const acceptedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp']
     const validImage = acceptedImageTypes.includes(file.type)
     if (!validImage) {
       const content = $t({ defaultMessage: 'Invalid Image type!' })
-      openToastAndResetFile({ ...fileValidation, isValidfileType: false }, content)
+      openToastAndResetFile(content)
       return
     }
     const isLt10M = file.size / 1024 / 1024 < 10
     if (!isLt10M) {
       const content = $t({ defaultMessage: 'Image must smaller than 10MB!' })
-      openToastAndResetFile({ ...fileValidation, isValidFileSize: false }, content)
+      openToastAndResetFile(content)
       return
     }
 
-    setFileValidation({ ...fileValidation, file: file })
-    // validateFile({ ...fileValidation, file: file })
     const reader = new FileReader()
-    // reader.readAsDataURL(file)
     reader.onload = () => {
-      setTempUrl(URL.createObjectURL(file))
+      setTempUrl((window.URL || window.webkitURL).createObjectURL(file))
       setImageUrl(reader.result as string)
     }
     const formData = new FormData()
@@ -126,13 +100,11 @@ export function ApPhoto () {
     return false
   }
 
-  const openToastAndResetFile = function (validationAttributes: FileValidation, content: string) {
+  const openToastAndResetFile = function (content: string) {
     showToast({
       type: 'error',
       content
     })
-    setFileValidation(validationAttributes)
-    // validateFile(fileValidation)
     setImageUrl('')
     setTempUrl('')
   }
@@ -142,7 +114,7 @@ export function ApPhoto () {
       <Card>
         <StyledSpace>
           <RoundIconDiv>
-            <ArrowsOutIcon onClick={() => setVisible(true)}/>
+            <ArrowsOutIcon onClick={() => setVisible(true)} data-testid='gallery'/>
           </RoundIconDiv>
           <Upload
             name='apPhoto'

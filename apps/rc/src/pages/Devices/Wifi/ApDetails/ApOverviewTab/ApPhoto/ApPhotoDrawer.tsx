@@ -15,7 +15,7 @@ import {
 import { WifiEntityEnum } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 
-import getCroppedImg               from './cropImage'
+import { getCroppedImg }           from './cropImage'
 import { AppContainer, FooterDiv } from './styledComponents'
 
 interface ApPhotoDrawerProps {
@@ -77,6 +77,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
   const showCroppedImage = useCallback(async () => {
     try {
+      console.log(imageUrl)
       const croppedImage = await getCroppedImg(
         imageUrl,
         croppedAreaPixels
@@ -85,10 +86,10 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
       const formData = new FormData()
       formData.append('file', blob, imageName)
 
-      await addApPhoto({
-        params: { ...params },
-        payload: formData
-      })
+      // await addApPhoto({
+      //   params: { ...params },
+      //   payload: formData
+      // })
 
       setZoom(1)
     } catch (e) {
@@ -132,7 +133,8 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
           onClick={() => {
             deleteApPhoto({ params })
             setVisible(false)
-          }}>
+          }}
+          data-testid='delete'>
           {$t({ defaultMessage: 'Remove' })}
         </Button>
       </Col>
@@ -166,6 +168,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
                 setZoom(parseFloat(e.target.value))
               }}
               className='zoom-range'
+              data-testid='zoomSlider'
             />
             <span>+</span>
           </div>

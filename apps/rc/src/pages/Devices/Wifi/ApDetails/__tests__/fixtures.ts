@@ -414,6 +414,14 @@ export const apPhoto = {
   updatedDate: '2022-11-23T07:51:17.448+0000'
 }
 
+export const apNoPhoto = {
+  imageId: '744e96b2c2a447ef949e7ede25e959c0-001.jpeg',
+  imageName: 'download.jpeg',
+  id: '8fb8fc5afe814a8ca4f6ce5406f86b98',
+  createdDate: '2022-11-17T09:27:56.566+0000',
+  updatedDate: '2022-11-23T07:51:17.448+0000'
+}
+
 export const wifiCapabilities = {
   version: '6.2.0.103.513',
   apModels: [
