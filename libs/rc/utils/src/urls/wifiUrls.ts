@@ -157,6 +157,38 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
   },
+  getApRadio: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  updateApRadio: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  deleteApRadio: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  pingAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'
+  },
+  traceRouteAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
+  },
+  startPacketCapture: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start'
+  },
+  stopPacketCapture: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop'
+  },
+  getPacketCaptureState: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture'
+  },
   blinkLedAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led'
@@ -168,10 +200,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getApCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
-  },
-  getApCustomization: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
   },
   updateApCustomization: {
     method: 'put',
