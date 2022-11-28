@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { expirationTimeUnits } from '../MacRegistrationListUtils'
+import { expirationTimeUnits, toTimeString } from '../MacRegistrationListUtils'
 
 import MacRegistrationListFormContext     from './MacRegistrationListFormContext'
 import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/MacRegistrationListSettingForm'
@@ -194,7 +194,7 @@ export default function MacRegistrationListForm () {
                   >
                     <Paragraph>{!poolSaveState?.expirationEnabled ? 'Never expires' :
                       // eslint-disable-next-line max-len
-                      poolSaveState.expirationType === 'SPECIFIED_DATE' ? data?.expirationDate : `+${poolSaveState.expirationOffset} ${expirationTimeUnits[poolSaveState.expirationType ?? '']}`}</Paragraph>
+                      poolSaveState.expirationType === 'SPECIFIED_DATE' ? toTimeString(poolSaveState.expirationDate) : `+${poolSaveState.expirationOffset} ${expirationTimeUnits[poolSaveState.expirationType ?? '']}`}</Paragraph>
                   </Form.Item>
                 </Col>
                 <Col span={8}>

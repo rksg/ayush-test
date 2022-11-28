@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps }          from '@acx-ui/components'
@@ -12,6 +11,7 @@ import { MacRegistration, useMacTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 
 import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
+import { toTimeString }     from '../../MacRegistrationListUtils'
 
 export function MacRegistrationsTab () {
   const { $t } = useIntl()
@@ -132,7 +132,7 @@ export function MacRegistrationsTab () {
       key: 'registration_date',
       dataIndex: 'registration_date',
       render: function (data, row) {
-        return moment(row.expirationDate).format('MM/DD/YYYY HH:mm A')
+        return toTimeString(row.expirationDate)
       }
     },
     {
@@ -140,7 +140,7 @@ export function MacRegistrationsTab () {
       key: 'expiration_date',
       dataIndex: 'expiration_date',
       render: function (data, row) {
-        return moment(row.expirationDate).format('MM/DD/YYYY HH:mm A')
+        return toTimeString(row.expirationDate)
       }
     }
   ]
