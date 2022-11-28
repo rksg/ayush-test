@@ -232,6 +232,64 @@ describe('Threshold Histogram chart', () => {
     const errorMsgs = await screen.findByText('Error setting threshold, please try again later.')
     expect(errorMsgs).toBeInTheDocument()
   })
+
+  it('should render default scale on null data', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [null, null, null] } }
+    })
+
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: {
+        timeToConnect: {
+          success: true
+        }
+      }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect']}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
+        />
+      </Provider>
+    )
+
+    expect(await screen.findByText('100')).toBeInTheDocument()
+  })
+
+  it('should render % as unit for apServiceUptime', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+    })
+
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: {
+        timeToConnect: {
+          success: true
+        }
+      }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'apServiceUptime'}
+          threshold={thresholdMap['apServiceUptime']}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
+        />
+      </Provider>
+    )
+
+    expect((await screen.findAllByText(/%/i)).length).toBeGreaterThan(1)
+  })
 })
 
 
