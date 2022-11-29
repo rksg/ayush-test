@@ -254,5 +254,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getHistoricalClientList: {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
+  },
+  getClientMeta: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/client/meta'
   }
 }

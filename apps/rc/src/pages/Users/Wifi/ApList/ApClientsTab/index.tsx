@@ -1,6 +1,6 @@
 import { HistoricalClientsTable } from '@acx-ui/rc/components'
 
-import ConnectedClientsTable from './ConnectedClientsTable'
+import { ConnectedClientsTable } from '@acx-ui/rc/components'
 
 export function ApClientsTab () {
   return <>
