@@ -23,6 +23,7 @@ import PoliciesTable       from './pages/Policies/PoliciesTable'
 import SelectPolicyForm    from './pages/Policies/SelectPolicyForm'
 import DHCPDetail          from './pages/Services/DHCPDetail'
 import DHCPForm            from './pages/Services/DHCPForm/DHCPForm'
+import DpskDetails         from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm            from './pages/Services/Dpsk/DpskForm/DpskForm'
 import MdnsProxyDetail     from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm       from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
@@ -155,6 +156,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
         element={<DpskForm editMode={true} />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
+        element={<DpskDetails />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}

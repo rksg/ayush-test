@@ -1,0 +1,90 @@
+import { useIntl }                      from 'react-intl'
+import { Path, useNavigate, useParams } from 'react-router-dom'
+
+import { Button, DisabledButton, PageHeader, Tabs } from '@acx-ui/components'
+import { ClockOutlined }                            from '@acx-ui/icons'
+import { useGetDpskQuery }                          from '@acx-ui/rc/services'
+import { DpskSaveData, ServiceType }                from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                from '@acx-ui/react-router-dom'
+
+import {
+  DpskDetailsTabKey,
+  getServiceDetailsLink,
+  getServiceListRoutePath,
+  ServiceOperation
+} from '../../serviceRouteUtils'
+
+import DpskOverview             from './DpskOverview'
+import DpskPassphraseManagement from './DpskPassphraseManagement'
+
+export default function DpskDetails () {
+  const { tenantId, activeTab, serviceId } = useParams()
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  const { data } = useGetDpskQuery({ params: { tenantId, serviceId } })
+
+  const tabsPathMapping: Record<DpskDetailsTabKey, Path> = {
+    [DpskDetailsTabKey.OVERVIEW]: useTenantLink(getServiceDetailsLink({
+      type: ServiceType.DPSK,
+      oper: ServiceOperation.DETAIL,
+      serviceId: serviceId!,
+      activeTab: DpskDetailsTabKey.OVERVIEW
+    })),
+    [DpskDetailsTabKey.PASSPHRASE_MGMT]: useTenantLink(getServiceDetailsLink({
+      type: ServiceType.DPSK,
+      oper: ServiceOperation.DETAIL,
+      serviceId: serviceId!,
+      activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
+    }))
+  }
+
+  const onTabChange = (tab: string) => {
+    navigate(tabsPathMapping[tab as DpskDetailsTabKey])
+  }
+
+  const getTabComp = (activeTab: DpskDetailsTabKey, data?: DpskSaveData) => {
+    if (activeTab === DpskDetailsTabKey.OVERVIEW) {
+      return data && <DpskOverview data={data} />
+    }
+    return <DpskPassphraseManagement />
+  }
+
+  return (
+    <>
+      <PageHeader
+        title={data?.name}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
+        ]}
+        extra={[
+          <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
+            {$t({ defaultMessage: 'Last 24 hours' })}
+          </DisabledButton>,
+          <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.DPSK,
+              oper: ServiceOperation.EDIT,
+              serviceId: serviceId!
+            })}
+            key='edit'
+          >
+            <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+          </TenantLink>
+        ]}
+        footer={
+          <Tabs onChange={onTabChange} activeKey={activeTab}>
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Overview' })}
+              key={DpskDetailsTabKey.OVERVIEW}
+            />
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Passphrase Management' })}
+              key={DpskDetailsTabKey.PASSPHRASE_MGMT}
+            />
+          </Tabs>
+        }
+      />
+      { getTabComp(activeTab as DpskDetailsTabKey, data) }
+    </>
+  )
+}
