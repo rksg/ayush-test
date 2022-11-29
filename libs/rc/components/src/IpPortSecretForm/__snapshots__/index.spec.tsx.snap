@@ -6,7 +6,7 @@ exports[`IpPortSecretForm should render IP Port Secrect accounting form successf
     class="ant-form ant-form-horizontal"
   >
     <div
-      class="ant-form-item"
+      class="ant-form-item ant-form-item-is-validating"
       style="display: inline-block; width: calc(80%); padding-right: 20px;"
     >
       <div
@@ -33,10 +33,10 @@ exports[`IpPortSecretForm should render IP Port Secrect accounting form successf
               class="ant-form-item-control-input-content"
             >
               <input
-                class="ant-input"
+                class="ant-input ant-input-status-validating"
                 id="accountingRadius_primary_ip"
                 type="text"
-                value=""
+                value="192.168.1.1"
               />
             </div>
           </div>
@@ -44,7 +44,7 @@ exports[`IpPortSecretForm should render IP Port Secrect accounting form successf
       </div>
     </div>
     <div
-      class="ant-form-item"
+      class="ant-form-item ant-form-item-is-validating"
       style="display: inline-block; width: calc(20%);"
     >
       <div
@@ -71,7 +71,7 @@ exports[`IpPortSecretForm should render IP Port Secrect accounting form successf
               class="ant-form-item-control-input-content"
             >
               <div
-                class="ant-input-number ant-input-number-in-form-item"
+                class="ant-input-number ant-input-number-in-form-item ant-input-number-status-validating"
               >
                 <div
                   class="ant-input-number-handler-wrap"
@@ -137,13 +137,13 @@ exports[`IpPortSecretForm should render IP Port Secrect accounting form successf
                   <input
                     aria-valuemax="65535"
                     aria-valuemin="1"
-                    aria-valuenow="1813"
+                    aria-valuenow="1111"
                     autocomplete="off"
                     class="ant-input-number-input"
                     id="accountingRadius_primary_port"
                     role="spinbutton"
                     step="1"
-                    value="1813"
+                    value="1111"
                   />
                 </div>
               </div>
@@ -153,7 +153,7 @@ exports[`IpPortSecretForm should render IP Port Secrect accounting form successf
       </div>
     </div>
     <div
-      class="ant-form-item"
+      class="ant-form-item ant-form-item-is-validating"
     >
       <div
         class="ant-row ant-form-item-row"
@@ -179,14 +179,14 @@ exports[`IpPortSecretForm should render IP Port Secrect accounting form successf
               class="ant-form-item-control-input-content"
             >
               <span
-                class="ant-input-affix-wrapper ant-input-password"
+                class="ant-input-affix-wrapper ant-input-password ant-input-affix-wrapper-status-validating"
               >
                 <input
                   action="click"
                   class="ant-input"
                   id="accountingRadius_primary_sharedSecret"
                   type="password"
-                  value=""
+                  value="secret-1"
                 />
                 <span
                   class="ant-input-suffix"
