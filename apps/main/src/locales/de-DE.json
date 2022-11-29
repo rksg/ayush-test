@@ -94,10 +94,6 @@
   "EWw/tK": {
     "defaultMessage": "DE-Apply"
   },
-  "F3C5Zx": {
-    "defaultMessage": "DE-{key,select,name{{entityName} with that name already exists} other{{entityName} with that value already exists}}",
-    "description": "Validation - duplication checks"
-  },
   "FACmOV": {
     "defaultMessage": "DE-Ports:"
   },
@@ -1896,5 +1892,3231 @@
   },
   "zs74F6": {
     "defaultMessage": "This incident impacted {count} {count, plural, one {operating system} other {operating systems} }"
+  },
+  "+20FW7": {
+    "defaultMessage": "Devices"
+  },
+  "+6yi4P": {
+    "defaultMessage": "Next License Expiration"
+  },
+  "+7PjfV": {
+    "defaultMessage": "1 day"
+  },
+  "+COaOp": {
+    "defaultMessage": "Networks ({networksCount})"
+  },
+  "+MOZEQ": {
+    "defaultMessage": "SAE Passphrase"
+  },
+  "+V1JPZ": {
+    "defaultMessage": "Clone"
+  },
+  "+a1n2f": {
+    "defaultMessage": "AP never contacted cloud"
+  },
+  "+cCc3S": {
+    "defaultMessage": "Accounting port"
+  },
+  "+lDACy": {
+    "defaultMessage": "Device Name"
+  },
+  "+vI1wY": {
+    "defaultMessage": "Packet Capture"
+  },
+  "/0H8fR": {
+    "defaultMessage": "AP Properties"
+  },
+  "/7L+LZ": {
+    "defaultMessage": "Delete AP"
+  },
+  "/8hgbZ": {
+    "defaultMessage": "Show bands for other countries"
+  },
+  "/FEiLZ": {
+    "defaultMessage": "Tri-band radio settings"
+  },
+  "/H12m5": {
+    "defaultMessage": "(As venue)"
+  },
+  "/JlOnM": {
+    "defaultMessage": "3G:"
+  },
+  "/KAQjA": {
+    "defaultMessage": "Data Roaming"
+  },
+  "/YEy66": {
+    "defaultMessage": "Select Type..."
+  },
+  "/b3UL8": {
+    "defaultMessage": "Photo"
+  },
+  "/namqn": {
+    "defaultMessage": "Per AP Group"
+  },
+  "/tczv9": {
+    "defaultMessage": "Regular Profiles"
+  },
+  "/uhiJw": {
+    "defaultMessage": "AP disconnected from cloud"
+  },
+  "/vTLtO": {
+    "defaultMessage": "Add Model"
+  },
+  "/wvHFt": {
+    "defaultMessage": "Policies & Profiles"
+  },
+  "/z73ES": {
+    "defaultMessage": "Address must be in"
+  },
+  "0/CPYf": {
+    "defaultMessage": "Add Wi-Fi Calling Service"
+  },
+  "00EmN7": {
+    "defaultMessage": "WiFi"
+  },
+  "04dPHW": {
+    "defaultMessage": "None",
+    "description": "WLAN security type - None"
+  },
+  "08tui5": {
+    "defaultMessage": "No group (inherit from Venue)"
+  },
+  "0Azlrb": {
+    "defaultMessage": "Manage"
+  },
+  "0BOSOm": {
+    "defaultMessage": "Executive Authorization"
+  },
+  "0K9j9i": {
+    "defaultMessage": "Add another"
+  },
+  "0PZCfQ": {
+    "defaultMessage": "Clients will recieve IP addresses in an isolated {guestDhcpIpSpec} network."
+  },
+  "0Vwmgl": {
+    "defaultMessage": "4G (LTE) only"
+  },
+  "0YH7lb": {
+    "defaultMessage": "Threshold set successfully."
+  },
+  "0a9con": {
+    "defaultMessage": "Airtime Decongestion:"
+  },
+  "0en4ku": {
+    "defaultMessage": "Top 5 Venues/Services with poor experience"
+  },
+  "0ikJdX": {
+    "defaultMessage": "SINR"
+  },
+  "0kmMVs": {
+    "defaultMessage": "Existing configuration will be wiped, AP firmware will be modified to standalone image. AP will be ready to connect to any controller or operate standalone. Please note that this option will download and update your AP firmware, which will take longer."
+  },
+  "0t1qvq": {
+    "defaultMessage": "Add Rule"
+  },
+  "0t4WRs": {
+    "defaultMessage": "Expires on"
+  },
+  "0xwsto": {
+    "defaultMessage": "Use MAC Auth"
+  },
+  "1/+/pa": {
+    "defaultMessage": "Split 5GHz into lower and upper bands"
+  },
+  "11oARw": {
+    "defaultMessage": "Pool"
+  },
+  "12bGxj": {
+    "defaultMessage": "Channel selection:"
+  },
+  "1EYCdR": {
+    "defaultMessage": "Tags"
+  },
+  "1FxV5K": {
+    "defaultMessage": "Server Configuration Conflict"
+  },
+  "1I+2ee": {
+    "defaultMessage": "in this Venue"
+  },
+  "1ItAoW": {
+    "defaultMessage": "DoS Protection:"
+  },
+  "1OEMD7": {
+    "defaultMessage": "Add Portal Service"
+  },
+  "1PUJv9": {
+    "defaultMessage": "Lower 5G"
+  },
+  "1VdwyQ": {
+    "defaultMessage": "Select APs by tag"
+  },
+  "1cI6CZ": {
+    "defaultMessage": "This value should be lower than or equal to 65535",
+    "description": "Validation - This value should be lower than or equal to 65535"
+  },
+  "1exMzJ": {
+    "defaultMessage": "More Services"
+  },
+  "1f7SOL": {
+    "defaultMessage": "Connection status"
+  },
+  "1gk95Q": {
+    "defaultMessage": "Device Inventory"
+  },
+  "1iEPTM": {
+    "defaultMessage": "General"
+  },
+  "1oawH2": {
+    "defaultMessage": "Cellular Options"
+  },
+  "1ugiGW": {
+    "defaultMessage": "Enable 5 GHz:"
+  },
+  "2/2yg+": {
+    "defaultMessage": "Add"
+  },
+  "2/5yiK": {
+    "defaultMessage": "Tenant Id"
+  },
+  "24snoi": {
+    "defaultMessage": "VAR Customers"
+  },
+  "25rEb3": {
+    "defaultMessage": "Shared Secret"
+  },
+  "2CYEJa": {
+    "defaultMessage": "Troubleshooting"
+  },
+  "2HAKVL": {
+    "defaultMessage": "Telnet Authentication requires SSH Authentication also to be turned ON."
+  },
+  "2LuahP": {
+    "defaultMessage": "AP LAN port default image"
+  },
+  "2O2sfp": {
+    "defaultMessage": "Finish"
+  },
+  "2VOXow": {
+    "defaultMessage": "Select the wireless networks where the Portal Service will be applied:"
+  },
+  "2YZPfu": {
+    "defaultMessage": "Download Limit"
+  },
+  "2YaZtB": {
+    "defaultMessage": "Mesh Network"
+  },
+  "2eRO6y": {
+    "defaultMessage": "Device Type"
+  },
+  "2hq3YI": {
+    "defaultMessage": "The following information was reported for the error you encountered"
+  },
+  "2n2eHo": {
+    "defaultMessage": "For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:"
+  },
+  "2qaZeq": {
+    "defaultMessage": "Select the venues and APs where the mDNS Proxy Service will be applied:"
+  },
+  "307CiC": {
+    "defaultMessage": "Cloudpath Captive Portal"
+  },
+  "34xBI0": {
+    "defaultMessage": "APs"
+  },
+  "36pknT": {
+    "defaultMessage": "All Active Venues"
+  },
+  "3Dh+ye": {
+    "defaultMessage": "Connection confirmed"
+  },
+  "3HCg1n": {
+    "defaultMessage": "Configuration update failed"
+  },
+  "3Rh+pv": {
+    "defaultMessage": "Japan"
+  },
+  "3VI9mt": {
+    "defaultMessage": "Save Changes"
+  },
+  "3cb3/Z": {
+    "defaultMessage": "Disable this channel"
+  },
+  "3j670j": {
+    "defaultMessage": "DHCP Configuration"
+  },
+  "3mdxYI": {
+    "defaultMessage": "No Switch Clients"
+  },
+  "3mm94F": {
+    "defaultMessage": "ApReportsTab"
+  },
+  "3qkzJ4": {
+    "defaultMessage": "License Management"
+  },
+  "3rC3Kh": {
+    "defaultMessage": "External Antenna"
+  },
+  "3uGxRc": {
+    "defaultMessage": "Customer Admins"
+  },
+  "3yf2ND": {
+    "defaultMessage": "Operator"
+  },
+  "40a9l1": {
+    "defaultMessage": "Select the APs that the mDNS Proxy Service will be applied to at venue “{venueName}”."
+  },
+  "450Fty": {
+    "defaultMessage": "None"
+  },
+  "47FYwb": {
+    "defaultMessage": "Cancel"
+  },
+  "49IDCw": {
+    "defaultMessage": "RSRQ"
+  },
+  "4BcnhO": {
+    "defaultMessage": "Instances ({count})"
+  },
+  "4EchZi": {
+    "defaultMessage": "Wi-Fi Licenses"
+  },
+  "4M0IEe": {
+    "defaultMessage": "Never contacted cloud"
+  },
+  "4OldR8": {
+    "defaultMessage": "Language Settings"
+  },
+  "4QNqkK": {
+    "defaultMessage": "LAN Port:"
+  },
+  "4VPIXt": {
+    "defaultMessage": "Alarms"
+  },
+  "4ZxpR0": {
+    "defaultMessage": "More than {years} {years, plural, one {Year} other {Years}}"
+  },
+  "4dbI7q": {
+    "defaultMessage": "Generate Usage Report"
+  },
+  "4dk4rO": {
+    "defaultMessage": "Accounting Service"
+  },
+  "4xykWm": {
+    "defaultMessage": "5.0 GHz Radio is disabled"
+  },
+  "56DzI+": {
+    "defaultMessage": "Capacity"
+  },
+  "56gVH8": {
+    "defaultMessage": "Signal from previous hop"
+  },
+  "58hopM": {
+    "defaultMessage": "Invalid Image type!"
+  },
+  "58ybZm": {
+    "defaultMessage": "{nodeA}{newline}> {nodeB}",
+    "description": "FormattedPath: Uses to join path nodes together in a chain"
+  },
+  "5MwFbA": {
+    "defaultMessage": "Network lost count"
+  },
+  "5OPzqo": {
+    "defaultMessage": "Service Expired On"
+  },
+  "5WJxZ/": {
+    "defaultMessage": "APs not assigned to any group"
+  },
+  "5lQx5r": {
+    "defaultMessage": "Scheduling"
+  },
+  "5mHBBz": {
+    "defaultMessage": "Operational - applying configuration"
+  },
+  "5q3qC0": {
+    "defaultMessage": "Download"
+  },
+  "5sg7KC": {
+    "defaultMessage": "Password"
+  },
+  "5wrnrq": {
+    "defaultMessage": "SIM 0"
+  },
+  "5wroMh": {
+    "defaultMessage": "From VLAN and To VLAN must be different"
+  },
+  "6+4gib": {
+    "defaultMessage": "Impacted Switches"
+  },
+  "6+FdTf": {
+    "defaultMessage": "[Tomorrow,] HH:mm"
+  },
+  "60sXC0": {
+    "defaultMessage": "Run background scan every:"
+  },
+  "65eM4S": {
+    "defaultMessage": "No Accounting"
+  },
+  "662y5z": {
+    "defaultMessage": "Add DHCP for Switch Service"
+  },
+  "669iia": {
+    "defaultMessage": "Please enter valid target host or IP address",
+    "description": "Validation - target host checks"
+  },
+  "6B4OxJ": {
+    "defaultMessage": "({hops} hop)"
+  },
+  "6CIm64": {
+    "defaultMessage": "Add AP"
+  },
+  "6HjdRR": {
+    "defaultMessage": "Welcome text"
+  },
+  "6LYw6b": {
+    "defaultMessage": "Upgrade your license to add new APs to the system"
+  },
+  "6M/kaN": {
+    "defaultMessage": "VLAN Pool:"
+  },
+  "6UGqCY": {
+    "defaultMessage": "Terms &amp; Conditions"
+  },
+  "6UiBZi": {
+    "defaultMessage": "WPA3 SAE Passphrase"
+  },
+  "6ZdwfK": {
+    "defaultMessage": "WiFi Users"
+  },
+  "6Zxzo9": {
+    "defaultMessage": "Vlan"
+  },
+  "6dDMJg": {
+    "defaultMessage": "Custom settings"
+  },
+  "6g0glr": {
+    "defaultMessage": "Networking Devices"
+  },
+  "6k/2gL": {
+    "defaultMessage": "My Customers"
+  },
+  "6lmxPg": {
+    "defaultMessage": "Please enter a valid URL",
+    "description": "Validation - Please enter a valid URL"
+  },
+  "6nAe2O": {
+    "defaultMessage": "Select image"
+  },
+  "6o7Qcc": {
+    "defaultMessage": "Total Events"
+  },
+  "6tQ/KS": {
+    "defaultMessage": "Factory reset to Cloud ready"
+  },
+  "6vjF8Q": {
+    "defaultMessage": "Bandwidth"
+  },
+  "6xap9L": {
+    "defaultMessage": "Good"
+  },
+  "7+xUAJ": {
+    "defaultMessage": "{n} of {d} APs online"
+  },
+  "724CrE": {
+    "defaultMessage": "Select..."
+  },
+  "7Erb27": {
+    "defaultMessage": "Add SmartEdge"
+  },
+  "7IoaJU": {
+    "defaultMessage": "The target host or IP address must be a valid IP address or domain name"
+  },
+  "7Kk96z": {
+    "defaultMessage": "Use Cloudpath Server:"
+  },
+  "7ONDU9": {
+    "defaultMessage": "Edit Rule"
+  },
+  "7UOvbT": {
+    "defaultMessage": "Offline"
+  },
+  "7eQeDA": {
+    "defaultMessage": "Cellular (Primary) with ethernet failover"
+  },
+  "7fL2Xm": {
+    "defaultMessage": "Customer'sVenue"
+  },
+  "7gYbG8": {
+    "defaultMessage": "Directed MC/BC Threshold:"
+  },
+  "7iaw3U": {
+    "defaultMessage": "test"
+  },
+  "7ruLSs": {
+    "defaultMessage": "Floor Plan"
+  },
+  "7vTvJh": {
+    "defaultMessage": "WiFi4EU is enabled but not configured!"
+  },
+  "7xgyj8": {
+    "defaultMessage": "Numbers Only"
+  },
+  "8/Df6W": {
+    "defaultMessage": "Add ePDG"
+  },
+  "8/iYO/": {
+    "defaultMessage": "Transmit Power adjustment:"
+  },
+  "8AN/pf": {
+    "defaultMessage": "Executive Accounting"
+  },
+  "8B04tJ": {
+    "defaultMessage": "WPA"
+  },
+  "8BH+xm": {
+    "defaultMessage": "Access Control Policy"
+  },
+  "8HCPWj": {
+    "defaultMessage": "Enable load balancing between all radios"
+  },
+  "8J+OUY": {
+    "defaultMessage": "8 characters minimum"
+  },
+  "8K1Ldm": {
+    "defaultMessage": "Channel selection method:"
+  },
+  "8O9cAb": {
+    "defaultMessage": "Last 24 hours"
+  },
+  "8Ou4hT": {
+    "defaultMessage": "Reset Zoom"
+  },
+  "8SMhm/": {
+    "defaultMessage": "Privilege"
+  },
+  "8TEDlL": {
+    "defaultMessage": "Use MAC Auth:"
+  },
+  "8X85RE": {
+    "defaultMessage": "Selected Profiles"
+  },
+  "8cF6CF": {
+    "defaultMessage": "Error: Can not detect passphrase expiration value"
+  },
+  "8nW+7X": {
+    "defaultMessage": "Impacted APs"
+  },
+  "8rp5p6": {
+    "defaultMessage": "Note: file is limited to the latest 20 MB of captured packets"
+  },
+  "8vkP0f": {
+    "defaultMessage": "Search {searchables}"
+  },
+  "8wm6f9": {
+    "defaultMessage": "Networking"
+  },
+  "8ytZts": {
+    "defaultMessage": "Card removal count"
+  },
+  "9+Ddtu": {
+    "defaultMessage": "Next"
+  },
+  "91pVwu": {
+    "defaultMessage": "Signal"
+  },
+  "94TYGd": {
+    "defaultMessage": "Client Isolation:"
+  },
+  "95qc6M": {
+    "defaultMessage": "Floor Plan Image"
+  },
+  "9620Js": {
+    "defaultMessage": "Wi-Fi License Utilization"
+  },
+  "99tjyG": {
+    "defaultMessage": "IP"
+  },
+  "9DBkVr": {
+    "defaultMessage": "Out Errors"
+  },
+  "9GFJS4": {
+    "defaultMessage": "AP Details"
+  },
+  "9GvlpZ": {
+    "defaultMessage": "Open Settings"
+  },
+  "9IEBd8": {
+    "defaultMessage": "IP address space"
+  },
+  "9MxQUk": {
+    "defaultMessage": "Shared Secret:"
+  },
+  "9O4d/E": {
+    "defaultMessage": "Abandonment Rate"
+  },
+  "9OeqOC": {
+    "defaultMessage": "View as:"
+  },
+  "9Q5dzu": {
+    "defaultMessage": "Telnet Authentication"
+  },
+  "9U7nUR": {
+    "defaultMessage": "Reboot"
+  },
+  "9rWVBF": {
+    "defaultMessage": "Select configuration profile"
+  },
+  "9t1iiv": {
+    "defaultMessage": "Configure"
+  },
+  "9v3vPe": {
+    "defaultMessage": "Enable PoE Out"
+  },
+  "9wD/ZK": {
+    "defaultMessage": "Disconnections"
+  },
+  "9wJSG8": {
+    "defaultMessage": "Map is not enabled"
+  },
+  "9yVN2S": {
+    "defaultMessage": "Signal Strength"
+  },
+  "A4BVBW": {
+    "defaultMessage": "Configuration Profile"
+  },
+  "A7K9Pi": {
+    "defaultMessage": "Search for..."
+  },
+  "A7ugfn": {
+    "defaultMessage": "More Actions"
+  },
+  "ACEaua": {
+    "defaultMessage": "IMEI"
+  },
+  "AJBpR8": {
+    "defaultMessage": "Network Type"
+  },
+  "AN1aoL": {
+    "defaultMessage": "Users connect through a 3rd party captive portal, authenticated by a AAA server",
+    "description": "Description for 3rd Party Captive Portal(WISPr)"
+  },
+  "AQYvl/": {
+    "defaultMessage": "Please enter valid DNS Server IPs"
+  },
+  "AURxhH": {
+    "defaultMessage": "Data Rate Control (2.4 GHz & 5 GHz)"
+  },
+  "AXuW2u": {
+    "defaultMessage": "Available Profiles"
+  },
+  "AcAA5x": {
+    "defaultMessage": "Components"
+  },
+  "AcxDgz": {
+    "defaultMessage": "Activate"
+  },
+  "AetaeJ": {
+    "defaultMessage": "Select venues to activate this network"
+  },
+  "AfUjYu": {
+    "defaultMessage": "Config Change"
+  },
+  "Afqu+e": {
+    "defaultMessage": "Enable OFDM only (disable 802.11b)"
+  },
+  "Ai+g6T": {
+    "defaultMessage": "Add New Venue"
+  },
+  "AkpYoC": {
+    "defaultMessage": "European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam"
+  },
+  "Ao2xin": {
+    "defaultMessage": "Most Secured"
+  },
+  "ArhATs": {
+    "defaultMessage": "Client Experience"
+  },
+  "AszHoG": {
+    "defaultMessage": "Capturing..."
+  },
+  "AudUdt": {
+    "defaultMessage": "AP offline"
+  },
+  "AvMr/E": {
+    "defaultMessage": "Group Details"
+  },
+  "AwuN57": {
+    "defaultMessage": "6 months"
+  },
+  "B2LeOJ": {
+    "defaultMessage": "SSH Authentication"
+  },
+  "BAqvno": {
+    "defaultMessage": "Including any AP that will be added to this venue in the future."
+  },
+  "BBA7Er": {
+    "defaultMessage": "DHCP request rate limit"
+  },
+  "BMa+lq": {
+    "defaultMessage": "Paste the text here..."
+  },
+  "BNHFY1": {
+    "defaultMessage": "Only letters and numbers can be used"
+  },
+  "BO/rhB": {
+    "defaultMessage": "Policy Details"
+  },
+  "BOQjpt": {
+    "defaultMessage": "24/7"
+  },
+  "BQ+5/G": {
+    "defaultMessage": "Log is ready."
+  },
+  "BV3GJo": {
+    "defaultMessage": "Switch count"
+  },
+  "BW+dz5": {
+    "defaultMessage": "5 GHz Antenna gain:"
+  },
+  "BWpuKl": {
+    "defaultMessage": "Update"
+  },
+  "BY343C": {
+    "defaultMessage": "Change"
+  },
+  "BYvdbS": {
+    "defaultMessage": "Leave empty or enter valid MAC address"
+  },
+  "BeT3j9": {
+    "defaultMessage": "WPA3"
+  },
+  "BtcX2v": {
+    "defaultMessage": "Optimized Connectivity Experience (OCE):"
+  },
+  "BvHv17": {
+    "defaultMessage": "Inherit from 5GHz"
+  },
+  "BvrYv4": {
+    "defaultMessage": "Please confirm that..."
+  },
+  "C2zdFr": {
+    "defaultMessage": "Do you want to discard your changes in \"{title}\"?"
+  },
+  "C5VhoH": {
+    "defaultMessage": "Secondary SIM"
+  },
+  "C9eWwX": {
+    "defaultMessage": "DNS Proxy"
+  },
+  "CAaXKK": {
+    "defaultMessage": "Samples"
+  },
+  "CIgJwr": {
+    "defaultMessage": "Users register their details in the portal including their host email - the host needs to approve the request",
+    "description": "Description for Host Approval"
+  },
+  "CLTfqs": {
+    "defaultMessage": "Report SNR Threshold:"
+  },
+  "CM0JAR": {
+    "defaultMessage": "Entire Organization"
+  },
+  "CNTrZU": {
+    "defaultMessage": "2 years"
+  },
+  "CO0HfJ": {
+    "defaultMessage": "MAC Address Filter:"
+  },
+  "CO8css": {
+    "defaultMessage": "No active data"
+  },
+  "CYFags": {
+    "defaultMessage": "Wi-Fi Licenses Utilization"
+  },
+  "CaZvab": {
+    "defaultMessage": "Group Name"
+  },
+  "CasKsA": {
+    "defaultMessage": "Add Secondary Server"
+  },
+  "CgEpzt": {
+    "defaultMessage": "Selected channels will be available for radio broadcasting in this venue. Hover to see overlapping channels"
+  },
+  "Clmz5o": {
+    "defaultMessage": "Top 5 Switches by Error"
+  },
+  "D3BkBR": {
+    "defaultMessage": "{language} ({languageInLocale})"
+  },
+  "D73EmX": {
+    "defaultMessage": "{n} of {d} connections under {threshold}"
+  },
+  "DGsOsb": {
+    "defaultMessage": "Add Floor Plan"
+  },
+  "DNDXNi": {
+    "defaultMessage": "Edit ePDG"
+  },
+  "DUVQwN": {
+    "defaultMessage": "Select profiles"
+  },
+  "DW1gVH": {
+    "defaultMessage": "Please input in as specified in your antenna data sheet"
+  },
+  "DXvbAq": {
+    "defaultMessage": "Show less settings"
+  },
+  "DZX0It": {
+    "defaultMessage": "Number of Pools"
+  },
+  "Di7wzm": {
+    "defaultMessage": "ppm"
+  },
+  "DpMjKF": {
+    "defaultMessage": "Cellular only"
+  },
+  "DqD1yK": {
+    "defaultMessage": "Applications"
+  },
+  "EAiv4D": {
+    "defaultMessage": "custom"
+  },
+  "EKxuZ2": {
+    "defaultMessage": "Add Service"
+  },
+  "ENWiJM": {
+    "defaultMessage": "Historical data is slightly delayed, and not real-time"
+  },
+  "EP8xiD": {
+    "defaultMessage": "AP heartbeat lost"
+  },
+  "ES9cdj": {
+    "defaultMessage": "Managed as"
+  },
+  "ETNaf7": {
+    "defaultMessage": "6 GHz"
+  },
+  "EXlQBN": {
+    "defaultMessage": "Calculating..."
+  },
+  "EYIw2M": {
+    "defaultMessage": "Clear selection"
+  },
+  "EjXr3g": {
+    "defaultMessage": "Active From"
+  },
+  "EnTkxu": {
+    "defaultMessage": "Recommendations"
+  },
+  "ErVD/x": {
+    "defaultMessage": "Primary WAN Recovery Timer must be between 10 and 300"
+  },
+  "EsRolr": {
+    "defaultMessage": "End IP Address"
+  },
+  "Ex+U6K": {
+    "defaultMessage": "# of Un-successful Allocations"
+  },
+  "F3tw3L": {
+    "defaultMessage": "Lower 5 GHz"
+  },
+  "F7JJRF": {
+    "defaultMessage": "Roaming Status"
+  },
+  "FX7pkg": {
+    "defaultMessage": "The service is currently not supported in the country which you entered.<br></br>Please make sure that you entered the correct address."
+  },
+  "FY6igM": {
+    "defaultMessage": "Minutes"
+  },
+  "FZFrre": {
+    "defaultMessage": "Insert WiFi4EU Snippet"
+  },
+  "FbnpZB": {
+    "defaultMessage": "Cluster of {count} Venues"
+  },
+  "FckSlh": {
+    "defaultMessage": "Domain 1 countries"
+  },
+  "Fjlm8K": {
+    "defaultMessage": "Available APs"
+  },
+  "FkTtCJ": {
+    "defaultMessage": "Failed to load Google Maps"
+  },
+  "FnRTEV": {
+    "defaultMessage": "Average"
+  },
+  "FnzYcL": {
+    "defaultMessage": "EC"
+  },
+  "G/yZLu": {
+    "defaultMessage": "Remove"
+  },
+  "G54Mar": {
+    "defaultMessage": "AP external Antenna image"
+  },
+  "GAy1wp": {
+    "defaultMessage": "Currently off. Scheduled to turn on at"
+  },
+  "GK53wj": {
+    "defaultMessage": "Select venue..."
+  },
+  "GKhzqE": {
+    "defaultMessage": "Are you sure you want to delete {count, plural, one {this} other {these} } {formattedEntityName}?"
+  },
+  "GUin5n": {
+    "defaultMessage": "Preparing log ..."
+  },
+  "GW3TA0": {
+    "defaultMessage": "Dropped Packets"
+  },
+  "GWq2QI": {
+    "defaultMessage": "Allowed values are 30-600"
+  },
+  "GbUFoG": {
+    "defaultMessage": "Server 1 IP Address"
+  },
+  "GjrgLY": {
+    "defaultMessage": "Onboarding"
+  },
+  "GkBOpH": {
+    "defaultMessage": "Layer 3"
+  },
+  "Gm+GOA": {
+    "defaultMessage": "Save as AC Profile"
+  },
+  "Gq8n90": {
+    "defaultMessage": "Mgmt Tx Rate:"
+  },
+  "Gr1SAu": {
+    "defaultMessage": "Customer Name"
+  },
+  "GuTAgz": {
+    "defaultMessage": "Host Approval"
+  },
+  "H1V4eP": {
+    "defaultMessage": "Guest network pool details:"
+  },
+  "H3WzvD": {
+    "defaultMessage": "Sefl Sign In"
+  },
+  "H44xvD": {
+    "defaultMessage": "Switch Clients"
+  },
+  "H4yPwC": {
+    "defaultMessage": "Pool Name"
+  },
+  "H8wOLa": {
+    "defaultMessage": "No Authentication"
+  },
+  "HAlOn1": {
+    "defaultMessage": "Name"
+  },
+  "HDSu9X": {
+    "defaultMessage": "Ext. IP Address"
+  },
+  "HJ5lFe": {
+    "defaultMessage": "Blink LEDs"
+  },
+  "HKoyST": {
+    "defaultMessage": "Select separate profiles"
+  },
+  "HUfA9c": {
+    "defaultMessage": "Incident Sub-Category"
+  },
+  "HUu4+K": {
+    "defaultMessage": "MAC Address Format:"
+  },
+  "HeRL5C": {
+    "defaultMessage": "Configure mDNS Proxy Service"
+  },
+  "Hg/gtW": {
+    "defaultMessage": "WiFi4EU UUID"
+  },
+  "HiAhyX": {
+    "defaultMessage": "Make sure to include a city and country in the address"
+  },
+  "HoC8fU": {
+    "defaultMessage": "WiFi4EU Snippet Settings"
+  },
+  "HpoDwk": {
+    "defaultMessage": "Group"
+  },
+  "HuqGcJ": {
+    "defaultMessage": "WPA2 (Recommended)"
+  },
+  "HxrZSJ": {
+    "defaultMessage": "Available Servers"
+  },
+  "I+1HSy": {
+    "defaultMessage": "Trial"
+  },
+  "I/kQ+g": {
+    "defaultMessage": "creating"
+  },
+  "I1ZCPK": {
+    "defaultMessage": "Technology"
+  },
+  "I21S2+": {
+    "defaultMessage": "Root Cause Analysis"
+  },
+  "I3b4hn": {
+    "defaultMessage": "Version"
+  },
+  "I5NMJ8": {
+    "defaultMessage": "More"
+  },
+  "IBNdTs": {
+    "defaultMessage": "VLAN"
+  },
+  "IBbIwV": {
+    "defaultMessage": "Policies & Profiles ({policyCount})"
+  },
+  "IDKI0Y": {
+    "defaultMessage": "{ipAddress}:{port}"
+  },
+  "IDVD4E": {
+    "defaultMessage": "Radio uptime"
+  },
+  "IObDwo": {
+    "defaultMessage": "Primary DNS IP"
+  },
+  "IPcciE": {
+    "defaultMessage": "Activate {count} network(s)"
+  },
+  "IQrRCX": {
+    "defaultMessage": "No data to display"
+  },
+  "IUrYhX": {
+    "defaultMessage": "Add Policy or Profile"
+  },
+  "IcrxPd": {
+    "defaultMessage": "Clients ({count})"
+  },
+  "IdweXY": {
+    "defaultMessage": "Select Columns"
+  },
+  "Ij6myE": {
+    "defaultMessage": "Select the way users gain access to the network through the captive portal"
+  },
+  "Ij89oU": {
+    "defaultMessage": "Enable 2.4 GHz:"
+  },
+  "IkWh5s": {
+    "defaultMessage": "WIFICALLING_PRI_VIDEO"
+  },
+  "Ima+cm": {
+    "defaultMessage": "Account Admins"
+  },
+  "Imc8gS": {
+    "defaultMessage": "Incident Details"
+  },
+  "ItEQ44": {
+    "defaultMessage": "Resend Invitation"
+  },
+  "IuPcxE": {
+    "defaultMessage": "6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation."
+  },
+  "IygFVO": {
+    "defaultMessage": "Please select Layer 2 profile"
+  },
+  "Iyizdh": {
+    "defaultMessage": "You cannot activate this network to this AP Group. A network with the same SSID is already active"
+  },
+  "J+xAaN": {
+    "defaultMessage": "5GHz settings:"
+  },
+  "J2kaW1": {
+    "defaultMessage": "4G:"
+  },
+  "J4gOpG": {
+    "defaultMessage": "Service Name"
+  },
+  "J5Vx07": {
+    "defaultMessage": "Configuration History"
+  },
+  "J7lsnc": {
+    "defaultMessage": "Select profile..."
+  },
+  "J9w68+": {
+    "defaultMessage": "And {total} more"
+  },
+  "JCIgkj": {
+    "defaultMessage": "Username"
+  },
+  "JOnNBb": {
+    "defaultMessage": "Supported formats: PNG, JPEG, GIF, SVG"
+  },
+  "JWDcRP": {
+    "defaultMessage": "Client Rate Limit"
+  },
+  "JWHn/U": {
+    "defaultMessage": "AP"
+  },
+  "Jhsv5I": {
+    "defaultMessage": "Add configuration profile"
+  },
+  "JjEhAQ": {
+    "defaultMessage": "Add AP Group"
+  },
+  "K1uUiB": {
+    "defaultMessage": "Account Type"
+  },
+  "K3kfTi": {
+    "defaultMessage": "Event Start Time"
+  },
+  "K3r6DQ": {
+    "defaultMessage": "Delete"
+  },
+  "K56Dim": {
+    "defaultMessage": "Organization"
+  },
+  "K7AkdL": {
+    "defaultMessage": "Show"
+  },
+  "KCgj9+": {
+    "defaultMessage": "Forwarding Rules:"
+  },
+  "KLRE0U": {
+    "defaultMessage": "Ethernet (Primary) with cellular failover"
+  },
+  "KN7zKn": {
+    "defaultMessage": "Error"
+  },
+  "KZge6k": {
+    "defaultMessage": "Connectivity"
+  },
+  "KeO51o": {
+    "defaultMessage": "Channel"
+  },
+  "KfLzRP": {
+    "defaultMessage": "You can place your devices on floor plans or map to view their geographical distribution"
+  },
+  "KiXNvz": {
+    "defaultMessage": "Run"
+  },
+  "Kkrvpp": {
+    "defaultMessage": "Back to device details"
+  },
+  "KqPbq8": {
+    "defaultMessage": "This value should be higher than or equal to 1",
+    "description": "Validation - This value should be higher than or equal to 1"
+  },
+  "Kv+Tqp": {
+    "defaultMessage": "Recommended size: 1920*1080"
+  },
+  "KzcTy4": {
+    "defaultMessage": "Memory Utilization"
+  },
+  "L+UydQ": {
+    "defaultMessage": "Technical Details"
+  },
+  "L/BmLn": {
+    "defaultMessage": "VLAN-{id}"
+  },
+  "L1cqjp": {
+    "defaultMessage": "GPS Coordinates"
+  },
+  "L5c6Ey": {
+    "defaultMessage": "Hide bands for other countries"
+  },
+  "LEyNkY": {
+    "defaultMessage": "SAE Passphrase:"
+  },
+  "LG+bSR": {
+    "defaultMessage": "Channel Change Frequency:"
+  },
+  "LI3+v4": {
+    "defaultMessage": "Join RSSI Threshold:"
+  },
+  "LNH75V": {
+    "defaultMessage": "You cannot set Mesh off because you have connected Mesh APs"
+  },
+  "LSibcU": {
+    "defaultMessage": "Scheduled to be on until"
+  },
+  "LTNKL8": {
+    "defaultMessage": "1 week"
+  },
+  "LUtYvq": {
+    "defaultMessage": "Enable 802.11k neighbor reports"
+  },
+  "LaRQmP": {
+    "defaultMessage": "IGMP Snooping"
+  },
+  "Ldk2g+": {
+    "defaultMessage": "Local Users"
+  },
+  "LiHQih": {
+    "defaultMessage": "Coming Soon"
+  },
+  "Lu5KZ2": {
+    "defaultMessage": "IP address and Port combinations must be unique"
+  },
+  "Lv0zJu": {
+    "defaultMessage": "Details"
+  },
+  "LxxUDn": {
+    "defaultMessage": "Tx"
+  },
+  "M6phHD": {
+    "defaultMessage": "S/N"
+  },
+  "MDPHxV": {
+    "defaultMessage": "Add Customer"
+  },
+  "MGdMpU": {
+    "defaultMessage": "The wifi calling service with that name already exists"
+  },
+  "MHWaDv": {
+    "defaultMessage": "[Last] dddd[,] HH:mm"
+  },
+  "MHf6hy": {
+    "defaultMessage": "You cannot activate the Mesh Network on this venue because it already has enable DHCP settings"
+  },
+  "MJ2jZQ": {
+    "defaultMessage": "Total"
+  },
+  "MN6Kh7": {
+    "defaultMessage": "Please select Layer 3 profile"
+  },
+  "MUmf9z": {
+    "defaultMessage": "Top 5 Switches by Traffic"
+  },
+  "MWOkOg": {
+    "defaultMessage": "Dynamic VLAN"
+  },
+  "MYuNsQ": {
+    "defaultMessage": "Under {threshold}"
+  },
+  "MftJjW": {
+    "defaultMessage": "Failed to download AP support log."
+  },
+  "MiYx1b": {
+    "defaultMessage": "Wireless Networks"
+  },
+  "MqQ+w8": {
+    "defaultMessage": "Select Model..."
+  },
+  "MsGXc3": {
+    "defaultMessage": "Clear Filters"
+  },
+  "N/8KCC": {
+    "defaultMessage": "Enter the latitude and longitude. e.g. 37.4117499, -122.0193697"
+  },
+  "N01vOB": {
+    "defaultMessage": "License for"
+  },
+  "N4ReBT": {
+    "defaultMessage": "View Details"
+  },
+  "N7EdjU": {
+    "defaultMessage": "Seconds"
+  },
+  "NBfpt8": {
+    "defaultMessage": "Drop It"
+  },
+  "NGOEXC": {
+    "defaultMessage": "Preparing file..."
+  },
+  "NIO6X8": {
+    "defaultMessage": "APs WAN Throughput Impact"
+  },
+  "NK0jqg": {
+    "defaultMessage": "ON now"
+  },
+  "NKPfmm": {
+    "defaultMessage": "{count} selected"
+  },
+  "NM5ZxG": {
+    "defaultMessage": "Failures"
+  },
+  "NO0VM6": {
+    "defaultMessage": "Override the conflicting server configuration"
+  },
+  "NUBQfj": {
+    "defaultMessage": "Management Frame Protection:"
+  },
+  "NUxIws": {
+    "defaultMessage": "Existing configuration will be wiped, AP firmware will remain Cloud-only firmware. AP will be ready to re-connect to the Cloud."
+  },
+  "NV6/gE": {
+    "defaultMessage": "Create New Network"
+  },
+  "NZ9+vv": {
+    "defaultMessage": "Control"
+  },
+  "NfVqC2": {
+    "defaultMessage": "Activated on"
+  },
+  "NmZv2o": {
+    "defaultMessage": "Floor Plan Name"
+  },
+  "NnLddn": {
+    "defaultMessage": "Reboot by System Event"
+  },
+  "Nr2pru": {
+    "defaultMessage": "Network History"
+  },
+  "Nt8DSX": {
+    "defaultMessage": "Authentication Service"
+  },
+  "NwfJ1M": {
+    "defaultMessage": "LAN Port"
+  },
+  "Ny0rQw": {
+    "defaultMessage": "Instance"
+  },
+  "O0h2x8": {
+    "defaultMessage": "Guest Pass Credentials"
+  },
+  "ODTJT0": {
+    "defaultMessage": "Venues to apply"
+  },
+  "ODg339": {
+    "defaultMessage": "Transient Client Management:"
+  },
+  "OFSvR4": {
+    "defaultMessage": "QosPriority"
+  },
+  "OGq7HG": {
+    "defaultMessage": "SIM 1"
+  },
+  "OHgaBG": {
+    "defaultMessage": "ApTimelineTab"
+  },
+  "OKjSEy": {
+    "defaultMessage": "AP LAN port image - {apModel}"
+  },
+  "ONScAg": {
+    "defaultMessage": "Forwarding Rules"
+  },
+  "OOIyTN": {
+    "defaultMessage": "Up:"
+  },
+  "OWOk5N": {
+    "defaultMessage": "Client Impact Count"
+  },
+  "Ok71Hw": {
+    "defaultMessage": "Security Protocol:"
+  },
+  "OruViT": {
+    "defaultMessage": "Selected APs"
+  },
+  "P/GTu2": {
+    "defaultMessage": "Enable 2.4 GHz band:"
+  },
+  "P2PgnZ": {
+    "defaultMessage": "Accounting Port"
+  },
+  "PAgn3K": {
+    "defaultMessage": "Display Language"
+  },
+  "PLUhm9": {
+    "defaultMessage": "VLAN ID"
+  },
+  "PLboZB": {
+    "defaultMessage": "Select Wi-Fi Calling Profiles"
+  },
+  "PNzAyO": {
+    "defaultMessage": "SIM Present"
+  },
+  "PYmHhr": {
+    "defaultMessage": "Venue"
+  },
+  "PZtLWa": {
+    "defaultMessage": "Current RF Band"
+  },
+  "Pc+tM3": {
+    "defaultMessage": "Generate"
+  },
+  "PgM1mM": {
+    "defaultMessage": "DHCP Settings"
+  },
+  "Po66cI": {
+    "defaultMessage": "Number of hosts"
+  },
+  "Ppx673": {
+    "defaultMessage": "Reports"
+  },
+  "PqMTDA": {
+    "defaultMessage": "LTE Bank Lock"
+  },
+  "Ps3Zw0": {
+    "defaultMessage": "This network will be only applied to APs with the tags."
+  },
+  "PsYWdL": {
+    "defaultMessage": "Ap Guests Tab"
+  },
+  "PxQpsu": {
+    "defaultMessage": "Max clients per radio:"
+  },
+  "Py189G": {
+    "defaultMessage": "Security"
+  },
+  "Pz28rk": {
+    "defaultMessage": "Show Expired Licenses"
+  },
+  "Q+Hovx": {
+    "defaultMessage": "Powered By"
+  },
+  "Q1vSy1": {
+    "defaultMessage": "Load Control"
+  },
+  "Q634TH": {
+    "defaultMessage": "Active Incindents"
+  },
+  "Q6F+Bs": {
+    "defaultMessage": "Access Points"
+  },
+  "Q7r9fB": {
+    "defaultMessage": "Enable Mesh"
+  },
+  "Q94rcp": {
+    "defaultMessage": "APN:"
+  },
+  "QH7XOz": {
+    "defaultMessage": "New Clients"
+  },
+  "QO3d1l": {
+    "defaultMessage": "Above {threshold}"
+  },
+  "QPK1am": {
+    "defaultMessage": "Max Rate:"
+  },
+  "QQQKE7": {
+    "defaultMessage": "No active alarms"
+  },
+  "Qa5kz3": {
+    "defaultMessage": "DNS"
+  },
+  "Qb4f56": {
+    "defaultMessage": "ACL Name"
+  },
+  "QbhjI5": {
+    "defaultMessage": "Operational Status"
+  },
+  "QfVD/H": {
+    "defaultMessage": "Use Cloudpath Server"
+  },
+  "Qh71fV": {
+    "defaultMessage": "Please enter the domain name"
+  },
+  "QiN9tn": {
+    "defaultMessage": "Wi-Fi Calling:"
+  },
+  "QmHS60": {
+    "defaultMessage": "Delete {count, plural, one {\"{entityValue}\"} other {{count} APs} }?"
+  },
+  "QxB6z2": {
+    "defaultMessage": "Factory reset to standalone firmware"
+  },
+  "R66tOc": {
+    "defaultMessage": "{title}:"
+  },
+  "RUoi+Y": {
+    "defaultMessage": "Keyboard Friendly"
+  },
+  "RYWzks": {
+    "defaultMessage": "Option Name"
+  },
+  "RZ1YTe": {
+    "defaultMessage": "AP Reboot by System"
+  },
+  "RahCRH": {
+    "defaultMessage": "Expired"
+  },
+  "RfvGpL": {
+    "defaultMessage": "Use 5 and 6 Ghz bands"
+  },
+  "Rih+Vn": {
+    "defaultMessage": "Failed to \"{buttonLabel}\""
+  },
+  "RkTgwV": {
+    "defaultMessage": "Top 5 SSIDs by Clients"
+  },
+  "RlKUNk": {
+    "defaultMessage": "No IP Addresses"
+  },
+  "RmlmiT": {
+    "defaultMessage": "Enable 802.11r Fast BSS Transition"
+  },
+  "RnonLg": {
+    "defaultMessage": "Syslog Server Configuration"
+  },
+  "RpUlXG": {
+    "defaultMessage": "Domain Name"
+  },
+  "RqHopj": {
+    "defaultMessage": "Add Integrator"
+  },
+  "RrCui3": {
+    "defaultMessage": "Summary"
+  },
+  "Rs9fn9": {
+    "defaultMessage": "ApOverviewTab"
+  },
+  "Ru1Owh": {
+    "defaultMessage": "Serial Number"
+  },
+  "RuGYyg": {
+    "defaultMessage": "Per AP"
+  },
+  "Rwtjde": {
+    "defaultMessage": "Enable port"
+  },
+  "RzoePB": {
+    "defaultMessage": "Servers & Users"
+  },
+  "S0vx0o": {
+    "defaultMessage": "Indoor APs"
+  },
+  "S33j4r": {
+    "defaultMessage": "Services ({servicesCount})"
+  },
+  "S5M5Mt": {
+    "defaultMessage": "Active Alarms"
+  },
+  "S9tXPE": {
+    "defaultMessage": "Secondary text"
+  },
+  "SAKAs9": {
+    "defaultMessage": "updating"
+  },
+  "SV49SQ": {
+    "defaultMessage": "Group Member"
+  },
+  "ScFzUg": {
+    "defaultMessage": "Venue Name"
+  },
+  "SgYtSu": {
+    "defaultMessage": "CLI profiles selected"
+  },
+  "SnDvUq": {
+    "defaultMessage": "Add DHCP for Wi-Fi Service"
+  },
+  "T/eFBt": {
+    "defaultMessage": "eMesh AP"
+  },
+  "T/wmhO": {
+    "defaultMessage": "Radius Accounting Service"
+  },
+  "T3UF92": {
+    "defaultMessage": "Authentication Server"
+  },
+  "T6/xG6": {
+    "defaultMessage": "Uplink Bandwidth for LTE"
+  },
+  "TE4fIS": {
+    "defaultMessage": "City"
+  },
+  "TIJjX6": {
+    "defaultMessage": "Wireless Radio"
+  },
+  "TISByd": {
+    "defaultMessage": "DHCP Configuration:"
+  },
+  "TJo5E6": {
+    "defaultMessage": "Preview"
+  },
+  "TKmub+": {
+    "defaultMessage": "This field is required"
+  },
+  "TO3YlU": {
+    "defaultMessage": "Occured Error"
+  },
+  "TPv/Zv": {
+    "defaultMessage": "Demo"
+  },
+  "TSeLp1": {
+    "defaultMessage": "Domain 2 countries"
+  },
+  "TXpOBi": {
+    "defaultMessage": "Customize"
+  },
+  "TY81Tv": {
+    "defaultMessage": "Passphrase Format:"
+  },
+  "Tffbyh": {
+    "defaultMessage": "Guest Pass - Forgot password"
+  },
+  "TjkrkK": {
+    "defaultMessage": "Users can sign in with their social media account or register their details in the portal and get personal password",
+    "description": "Description for Sefl Sign In"
+  },
+  "TkYZBT": {
+    "defaultMessage": "Customers"
+  },
+  "TlvdT2": {
+    "defaultMessage": "Add another pool"
+  },
+  "Tyzlz2": {
+    "defaultMessage": "Please select VLAN Pool profile"
+  },
+  "U+zzqF": {
+    "defaultMessage": "Including any AP that will be added to a selected AP group in the future."
+  },
+  "U7va+7": {
+    "defaultMessage": "Please select Applications profile"
+  },
+  "U8VGv7": {
+    "defaultMessage": "Manage own account"
+  },
+  "U9Z6Iv": {
+    "defaultMessage": "Type the word \"{text}\" to confirm:"
+  },
+  "U9tjJ5": {
+    "defaultMessage": "2 days"
+  },
+  "UB5AkF": {
+    "defaultMessage": "Slow Connections"
+  },
+  "UDFpiZ": {
+    "defaultMessage": "Per radio client count at which an AP will stop converting group addressed data traffic to unicast"
+  },
+  "UF3jdf": {
+    "defaultMessage": "Add DNS Proxy Rule"
+  },
+  "UFGC6+": {
+    "defaultMessage": "Set Priority"
+  },
+  "UG0rT7": {
+    "defaultMessage": "Bands for current country"
+  },
+  "UTUiSZ": {
+    "defaultMessage": "Enable this channel"
+  },
+  "UVQmuB": {
+    "defaultMessage": "2 Mbps"
+  },
+  "UVw7ee": {
+    "defaultMessage": "Serial number is already registered"
+  },
+  "UaCh1c": {
+    "defaultMessage": "Add Server"
+  },
+  "UjplOu": {
+    "defaultMessage": "Integrator"
+  },
+  "V3HPvg": {
+    "defaultMessage": "Floor Number"
+  },
+  "V425wM": {
+    "defaultMessage": "Rogue AP Classification Profile:"
+  },
+  "VI/+Qx": {
+    "defaultMessage": "Manufacturer"
+  },
+  "VLdSEe": {
+    "defaultMessage": "Resend Invitation Email"
+  },
+  "VRcOHM": {
+    "defaultMessage": "CLI Configuration:"
+  },
+  "VSVKlS": {
+    "defaultMessage": "Total Errors"
+  },
+  "VWHJSv": {
+    "defaultMessage": "Ap Clients Tab"
+  },
+  "VfDWQ5": {
+    "defaultMessage": "Available Servers & Users"
+  },
+  "VfJn+B": {
+    "defaultMessage": "Force DHCP"
+  },
+  "Vh3HCl": {
+    "defaultMessage": "+ Add Floor Plan"
+  },
+  "ViS54z": {
+    "defaultMessage": "If you have Mesh-APs, you will not be able to disable this option."
+  },
+  "Vlg571": {
+    "defaultMessage": "{entityName} with that {key, select, name {name} other {value} } already exists{ extra }",
+    "description": "Validation - duplication checks"
+  },
+  "VoKx4v": {
+    "defaultMessage": "A configuration request is currently being executed and additional requests cannot be performed at this time.<br></br>Try again once the request has completed."
+  },
+  "VpxgW7": {
+    "defaultMessage": "Rebooting the AP will disconnect all connected clients. Are you sure you want to reboot?"
+  },
+  "Vs/VPd": {
+    "defaultMessage": "Excluded Range"
+  },
+  "VuTwsh": {
+    "defaultMessage": "9 Mbps"
+  },
+  "W/V6+Y": {
+    "defaultMessage": "Collapse"
+  },
+  "W0+ZGa": {
+    "defaultMessage": "Profile Name"
+  },
+  "W3G6Mz": {
+    "defaultMessage": "You are deleting one or more offline APs. When these offline devices come back online their configuration will be factory reset and they will be removed from Ruckus Cloud."
+  },
+  "WCtGMq": {
+    "defaultMessage": "Upper 5 GHz"
+  },
+  "WEJ7ak": {
+    "defaultMessage": "No APs"
+  },
+  "WH4SDF": {
+    "defaultMessage": "Service Type"
+  },
+  "WYeNY7": {
+    "defaultMessage": "Instances ({instanceCount})"
+  },
+  "WfsT9l": {
+    "defaultMessage": "Cellular Radio"
+  },
+  "WrKsq/": {
+    "defaultMessage": "WAN Connection:"
+  },
+  "WroDTC": {
+    "defaultMessage": "6 Mbps"
+  },
+  "Wsj2fc": {
+    "defaultMessage": "Active Incidents"
+  },
+  "WvU+bE": {
+    "defaultMessage": "Customers Assigned"
+  },
+  "X72sXx": {
+    "defaultMessage": "Unicast"
+  },
+  "X86+n+": {
+    "defaultMessage": "Traffic History"
+  },
+  "X8fWM2": {
+    "defaultMessage": "5.5 Mbps"
+  },
+  "X9MIG9": {
+    "defaultMessage": "# of Ports"
+  },
+  "XCvHUK": {
+    "defaultMessage": "Authentication Port"
+  },
+  "XGJRPa": {
+    "defaultMessage": "You Have Invalid Changes"
+  },
+  "XHHR08": {
+    "defaultMessage": "Data"
+  },
+  "XIcSUF": {
+    "defaultMessage": "WPA2 Passphrase:"
+  },
+  "XT3ib4": {
+    "defaultMessage": "Selected Profile"
+  },
+  "XTdAcD": {
+    "defaultMessage": "Rule"
+  },
+  "XYVgGy": {
+    "defaultMessage": "Alarm Time"
+  },
+  "XlSj6N": {
+    "defaultMessage": "PoE Operating Mode"
+  },
+  "XmLyur": {
+    "defaultMessage": "No Authorization"
+  },
+  "XtTZGc": {
+    "defaultMessage": "LAN"
+  },
+  "XxKaPB": {
+    "defaultMessage": "Unassigned APs"
+  },
+  "XyCalE": {
+    "defaultMessage": "Anti-spoofing:"
+  },
+  "Y2pNUx": {
+    "defaultMessage": "AP operational - applying firmware"
+  },
+  "Y9h/3r": {
+    "defaultMessage": "No active incidents"
+  },
+  "YDMrKK": {
+    "defaultMessage": "Users"
+  },
+  "YMD6en": {
+    "defaultMessage": "Add another ePDG"
+  },
+  "YMqGu8": {
+    "defaultMessage": "Mac Address"
+  },
+  "YNOFVh": {
+    "defaultMessage": "Active Alarm"
+  },
+  "YNci6Q": {
+    "defaultMessage": "More than {months} {months, plural, one {Month} other {Months}}"
+  },
+  "YR3GXj": {
+    "defaultMessage": "Select a configuration profile to apply:"
+  },
+  "YTEoZ0": {
+    "defaultMessage": "{serverType} Server Required"
+  },
+  "YW6xQe": {
+    "defaultMessage": "Radio Band"
+  },
+  "YhT3Ab": {
+    "defaultMessage": "{latitude}, {longitude} {status}"
+  },
+  "YpA2O2": {
+    "defaultMessage": "AP Connection Lost"
+  },
+  "Yppozn": {
+    "defaultMessage": "Routed Interfaces"
+  },
+  "YxWOcg": {
+    "defaultMessage": "Failed to download packet capture."
+  },
+  "Z4WqBL": {
+    "defaultMessage": "Remove Secondary Server"
+  },
+  "Z9Shiu": {
+    "defaultMessage": "Connection Status"
+  },
+  "ZA6UTY": {
+    "defaultMessage": "Types of mDNS Services"
+  },
+  "ZDnQlW": {
+    "defaultMessage": "Allowed values are 2-25"
+  },
+  "ZDpTud": {
+    "defaultMessage": "Traffic"
+  },
+  "ZF2Mdk": {
+    "defaultMessage": "Please enter Serial Number"
+  },
+  "ZOZNDn": {
+    "defaultMessage": "Downlink Bandwidth for LTE"
+  },
+  "ZWd/mu": {
+    "defaultMessage": "Venues & APs ({apCount})"
+  },
+  "ZWz5If": {
+    "defaultMessage": "Network Info"
+  },
+  "ZX+yhN": {
+    "defaultMessage": "BSS Min Rate:"
+  },
+  "ZXUANb": {
+    "defaultMessage": "Automatic support for VRRP/HSRP:"
+  },
+  "Zag45t": {
+    "defaultMessage": "{n} of {d} sessions above {threshold}"
+  },
+  "ZbWc+A": {
+    "defaultMessage": "IP address"
+  },
+  "Zh+5A6": {
+    "defaultMessage": "On"
+  },
+  "ZvJmlk": {
+    "defaultMessage": "WAN Interface"
+  },
+  "ZvKSfJ": {
+    "defaultMessage": "Events"
+  },
+  "ZyfdhP": {
+    "defaultMessage": "Search Results for \"{searchVal}\" ({count})"
+  },
+  "a/mYqc": {
+    "defaultMessage": "Tags:"
+  },
+  "a0Uc0P": {
+    "defaultMessage": "Port {id}"
+  },
+  "a2ACr8": {
+    "defaultMessage": "Same as Venue"
+  },
+  "aAX86Y": {
+    "defaultMessage": "Option ID"
+  },
+  "aB8bp7": {
+    "defaultMessage": "Mesh AP"
+  },
+  "aCdAsI": {
+    "defaultMessage": "Copy to clipboard"
+  },
+  "aI80kg": {
+    "defaultMessage": "Properties"
+  },
+  "acKqTO": {
+    "defaultMessage": "When ground floor is 0"
+  },
+  "ag5e/w": {
+    "defaultMessage": "Download Information"
+  },
+  "aimq5t": {
+    "defaultMessage": "Upload Limit"
+  },
+  "ameTZN": {
+    "defaultMessage": "{type, select, ap {{value, plural, one {AP} other {APs}}} client {{value, plural, one {client} other {clients}}} other {Unknown} }"
+  },
+  "aqtEnj": {
+    "defaultMessage": "LEDs Status"
+  },
+  "arPp4e": {
+    "defaultMessage": "Terms & Conditions"
+  },
+  "awnELK": {
+    "defaultMessage": "Please select DHCP Configuration"
+  },
+  "azzByo": {
+    "defaultMessage": "<p> Currently using radio settings of the venue (<venuelink></venuelink>) </p>"
+  },
+  "b5YpHX": {
+    "defaultMessage": "AP operational"
+  },
+  "b9mNtU": {
+    "defaultMessage": "Deactivate {count} network(s)"
+  },
+  "bCOi8M": {
+    "defaultMessage": "Your GPS coordinates are outside the venue: {venueName}. Are you sure you want to place the device in this new position?\""
+  },
+  "bHHMAb": {
+    "defaultMessage": "Firmware update failed"
+  },
+  "bK2o7Y": {
+    "defaultMessage": "Access Point"
+  },
+  "bP+7cx": {
+    "defaultMessage": "Policies is not enabled"
+  },
+  "bPyOFk": {
+    "defaultMessage": "Terms & conditions"
+  },
+  "bRwQfU": {
+    "defaultMessage": "Copy from your WiFi4EU installation report"
+  },
+  "bS/cRP": {
+    "defaultMessage": "Venues"
+  },
+  "bZrNnv": {
+    "defaultMessage": "dBm"
+  },
+  "bc/VNM": {
+    "defaultMessage": "Error occurred while {action} AP"
+  },
+  "bg1oeI": {
+    "defaultMessage": "Show more settings"
+  },
+  "bh/fRy": {
+    "defaultMessage": "Switch Configuration"
+  },
+  "bhIl+g": {
+    "defaultMessage": "Venue Details"
+  },
+  "bhlT71": {
+    "defaultMessage": "Connection Events"
+  },
+  "birfxK": {
+    "defaultMessage": "Rogue AP Detection:"
+  },
+  "blWvag": {
+    "defaultMessage": "Models"
+  },
+  "bnaSLU": {
+    "defaultMessage": "Connected Clients Over Time"
+  },
+  "brO4kV": {
+    "defaultMessage": "Join Expire Time:"
+  },
+  "bydnK2": {
+    "defaultMessage": "2.4 GHz Radio is disabled"
+  },
+  "bzEaXJ": {
+    "defaultMessage": "What are you looking for?"
+  },
+  "c/gK2n": {
+    "defaultMessage": "Marketing Message"
+  },
+  "c9uA84": {
+    "defaultMessage": "RF Channels"
+  },
+  "cGyHv9": {
+    "defaultMessage": "Spanning Tree"
+  },
+  "cPhKTw": {
+    "defaultMessage": "Not available"
+  },
+  "cPk5H+": {
+    "defaultMessage": "Traceroute"
+  },
+  "cR/5Jp": {
+    "defaultMessage": "Signal strength(RSSI)"
+  },
+  "cRmipE": {
+    "defaultMessage": "Passphrase expiration"
+  },
+  "cTanrr": {
+    "defaultMessage": "Rx Packets/Bytes"
+  },
+  "cVVoGX": {
+    "defaultMessage": "Error: Can not detect passphrase format value"
+  },
+  "cVwwun": {
+    "defaultMessage": "# of Successful Allocations"
+  },
+  "cW0Q6k": {
+    "defaultMessage": "Advanced Settings"
+  },
+  "clZ3Y9": {
+    "defaultMessage": "Top 5 Switch Models"
+  },
+  "cmEYig": {
+    "defaultMessage": "Manage Components"
+  },
+  "cnMdze": {
+    "defaultMessage": "18 Mbps"
+  },
+  "cwzwJR": {
+    "defaultMessage": "Back to venue details"
+  },
+  "cyR7Kh": {
+    "defaultMessage": "Back"
+  },
+  "d0A0aG": {
+    "defaultMessage": "Radius Authentication Service"
+  },
+  "d2JKts": {
+    "defaultMessage": "Switch Id"
+  },
+  "d63gFk": {
+    "defaultMessage": "AI Analytics"
+  },
+  "d8EqQY": {
+    "defaultMessage": "Days"
+  },
+  "dElQAw": {
+    "defaultMessage": "Wi-Fi Clients"
+  },
+  "dFjEMa": {
+    "defaultMessage": "Users sign in with personal password which they need to get in advance from the network administration staff",
+    "description": "Description for Guest Pass"
+  },
+  "dJcHEX": {
+    "defaultMessage": "Customized SLA Threshold"
+  },
+  "dP02B8": {
+    "defaultMessage": "Heartbeat lost"
+  },
+  "dQrGQp": {
+    "defaultMessage": "{count} Impacted {count, plural, one {AP} other {APs}}"
+  },
+  "dUHjMC": {
+    "defaultMessage": "ECIO"
+  },
+  "ddvGQi": {
+    "defaultMessage": "Topology"
+  },
+  "dg6Mrs": {
+    "defaultMessage": "Number of characters in passphrase. Valid range 8-63"
+  },
+  "dl8WIb": {
+    "defaultMessage": "ARP request rate limit"
+  },
+  "dty181": {
+    "defaultMessage": "Traffic by Volume"
+  },
+  "e/WYt2": {
+    "defaultMessage": "Device Model"
+  },
+  "e0kEtS": {
+    "defaultMessage": "Deactivate"
+  },
+  "e4Fp4M": {
+    "defaultMessage": "SSID Name"
+  },
+  "e5mAvq": {
+    "defaultMessage": "Select what should happen to the APs’ configuration:"
+  },
+  "e63Zu2": {
+    "defaultMessage": "RSSI-Based Association Rejection Threshold:"
+  },
+  "e6Ph5+": {
+    "defaultMessage": "Address"
+  },
+  "e7G365": {
+    "defaultMessage": "Tx Packets/Bytes"
+  },
+  "e7ftF5": {
+    "defaultMessage": "Do you want to save your changes in \"{title}\", or discard all changes?"
+  },
+  "e9uDQ/": {
+    "defaultMessage": "Technical details"
+  },
+  "eCHUaE": {
+    "defaultMessage": "Service Name:"
+  },
+  "eIxy5c": {
+    "defaultMessage": "Join Wait Threshold:"
+  },
+  "eOJNIA": {
+    "defaultMessage": "Connected Clients"
+  },
+  "eSgRCS": {
+    "defaultMessage": "{nodeType}: {nodeName}",
+    "description": "Uses to generate incident impacted scope for various incident descriptions"
+  },
+  "eUlsfK": {
+    "defaultMessage": "Server 2 IP Address"
+  },
+  "eWzMDx": {
+    "defaultMessage": "Activated"
+  },
+  "eZfcug": {
+    "defaultMessage": "CLI Profiles"
+  },
+  "ee1cXT": {
+    "defaultMessage": "{years} {years, plural, one {Year} other {Years}}"
+  },
+  "eg+KhG": {
+    "defaultMessage": "ASIA"
+  },
+  "egVuI2": {
+    "defaultMessage": "You cannot enable the DHCP service because the network is activated in a Mesh enabled Venue."
+  },
+  "ehA2tj": {
+    "defaultMessage": "Total Time To Connect"
+  },
+  "eiWFx6": {
+    "defaultMessage": "MSP Licenses"
+  },
+  "ekXood": {
+    "defaultMessage": "Unlimited"
+  },
+  "eoV49s": {
+    "defaultMessage": "Poor"
+  },
+  "ervUAG": {
+    "defaultMessage": "The default user \"admin\" cannot be deleted"
+  },
+  "exhVJF": {
+    "defaultMessage": "ACL Type"
+  },
+  "f+os+R": {
+    "defaultMessage": "LTE Firmware"
+  },
+  "f+sh2j": {
+    "defaultMessage": "Administration"
+  },
+  "f9/Y46": {
+    "defaultMessage": "WIFICALLING_PRI_BG"
+  },
+  "fCkfBx": {
+    "defaultMessage": "APs ({apsCount})"
+  },
+  "fDGasJ": {
+    "defaultMessage": "VLAN untag ID"
+  },
+  "fEYxZ5": {
+    "defaultMessage": "Authentication port"
+  },
+  "fKJjD9": {
+    "defaultMessage": "Initializing"
+  },
+  "fNCCY7": {
+    "defaultMessage": "Basic"
+  },
+  "fO6qJ+": {
+    "defaultMessage": "AP Reboot by User"
+  },
+  "fQg7dl": {
+    "defaultMessage": "This field is invalid"
+  },
+  "fUQLUN": {
+    "defaultMessage": "11 Mbps"
+  },
+  "fUSCNN": {
+    "defaultMessage": "Deployment Type"
+  },
+  "fcFq3u": {
+    "defaultMessage": "Wired"
+  },
+  "fcaqUt": {
+    "defaultMessage": "User-1"
+  },
+  "fiNfmb": {
+    "defaultMessage": "Language:"
+  },
+  "frN4vy": {
+    "defaultMessage": "Last Seen"
+  },
+  "g0F8jM": {
+    "defaultMessage": "Clients per Portal Type"
+  },
+  "g3Yz+8": {
+    "defaultMessage": "Start IP Address"
+  },
+  "g4QFIz": {
+    "defaultMessage": "{formattedPercentage} ({count} {count, plural, one {client} other {clients}})"
+  },
+  "gGNTOa": {
+    "defaultMessage": "Network is ON 24/7"
+  },
+  "gI6szY": {
+    "defaultMessage": "{count} {count, plural, one {AP} other {APs}}"
+  },
+  "gKltCY": {
+    "defaultMessage": "Root AP"
+  },
+  "gMepyh": {
+    "defaultMessage": "24 Mbps"
+  },
+  "gMwomv": {
+    "defaultMessage": "Isolate Packets:"
+  },
+  "gNVVvs": {
+    "defaultMessage": "1 Mbps"
+  },
+  "gXscYU": {
+    "defaultMessage": "AP Impact Count"
+  },
+  "gevCaB": {
+    "defaultMessage": "Passphrase length"
+  },
+  "ghycc5": {
+    "defaultMessage": "Tx (bytes)"
+  },
+  "gmXCZq": {
+    "defaultMessage": "Top 5 Switches by PoE Usage"
+  },
+  "h7F8QS": {
+    "defaultMessage": "Client Inactivity Timeout:"
+  },
+  "h8X9hC": {
+    "defaultMessage": "All APs"
+  },
+  "hCooY2": {
+    "defaultMessage": "Currently using LAN port settings of the venue ({venue})"
+  },
+  "hDJDN/": {
+    "defaultMessage": "More details"
+  },
+  "hNA6lI": {
+    "defaultMessage": "Set address here"
+  },
+  "hRAJsj": {
+    "defaultMessage": "Services ({serviceCount})"
+  },
+  "hSGclh": {
+    "defaultMessage": "Network Name"
+  },
+  "haIwNk": {
+    "defaultMessage": "Enable logging client data to external syslog"
+  },
+  "hiowAO": {
+    "defaultMessage": "Please enter a valid email address",
+    "description": "Validation - email address checks"
+  },
+  "hkENym": {
+    "defaultMessage": "Customer"
+  },
+  "hkIfkj": {
+    "defaultMessage": "disabled"
+  },
+  "hlmkcL": {
+    "defaultMessage": "Health"
+  },
+  "hooWXi": {
+    "defaultMessage": "Client Isolation Allowlist by Venue:"
+  },
+  "hpSf0W": {
+    "defaultMessage": "Delete \"{count, plural, one {{entityValue}} other {{count} {formattedEntityName}} }\"?"
+  },
+  "hr/G8O": {
+    "defaultMessage": "DHCP timeout count"
+  },
+  "hsyP6a": {
+    "defaultMessage": "Once deleted, the AP will factory reset to Cloud ready. The existing configuration will be wiped, AP firmware will remain Cloud-only firmware. AP will be ready to re-connect to the Cloud."
+  },
+  "ht+J5h": {
+    "defaultMessage": "Select venues to activate this DHCP service"
+  },
+  "hzSNj4": {
+    "defaultMessage": "Dashboard"
+  },
+  "hzXHmo": {
+    "defaultMessage": "models"
+  },
+  "i5bVOD": {
+    "defaultMessage": "Network Name:"
+  },
+  "i647fD": {
+    "defaultMessage": "Select Profile"
+  },
+  "iBPNTa": {
+    "defaultMessage": "Add DHCP Pool"
+  },
+  "iBcdCZ": {
+    "defaultMessage": "Users just need to accept Terms and Conditions in order to access the network",
+    "description": "Description for Click-Through"
+  },
+  "iCpuph": {
+    "defaultMessage": "Clients"
+  },
+  "iFh/mp": {
+    "defaultMessage": "Passphrase Generation Parameters"
+  },
+  "iI2oMQ": {
+    "defaultMessage": "Use the DPSK Service"
+  },
+  "iIDu8o": {
+    "defaultMessage": "Number of Clients"
+  },
+  "iM+D06": {
+    "defaultMessage": "Connected clients"
+  },
+  "iSWh+H": {
+    "defaultMessage": "MSP Admins"
+  },
+  "iU0Fa3": {
+    "defaultMessage": "Firmware updating"
+  },
+  "iXlQJL": {
+    "defaultMessage": "Signal to previous hop"
+  },
+  "inXdbQ": {
+    "defaultMessage": "Directed Multicast"
+  },
+  "inZ2fY": {
+    "defaultMessage": "US"
+  },
+  "ioS2ep": {
+    "defaultMessage": "Disconnected from cloud"
+  },
+  "ipGIol": {
+    "defaultMessage": "Device & OS"
+  },
+  "ipM9j0": {
+    "defaultMessage": "Please select Device & OS profile"
+  },
+  "iq0pKr": {
+    "defaultMessage": "Multicast/broadcast"
+  },
+  "irPvxF": {
+    "defaultMessage": "Edit DHCP Service"
+  },
+  "j24fP+": {
+    "defaultMessage": "ACLs"
+  },
+  "j8Ap2j": {
+    "defaultMessage": "VLAN Name"
+  },
+  "j9Y9nu": {
+    "defaultMessage": "Hours"
+  },
+  "jNR5e0": {
+    "defaultMessage": "Network Details"
+  },
+  "jUmhKd": {
+    "defaultMessage": "No Online information"
+  },
+  "jXCNGL": {
+    "defaultMessage": "AAA"
+  },
+  "jYV6My": {
+    "defaultMessage": "Set background color"
+  },
+  "jZ5XsT": {
+    "defaultMessage": "Disconnect Client"
+  },
+  "jcVvsw": {
+    "defaultMessage": "Alternative languages"
+  },
+  "jgaeq0": {
+    "defaultMessage": "[Today,] HH:mm"
+  },
+  "jtBBJ9": {
+    "defaultMessage": "RSS Distribution"
+  },
+  "jvo0vs": {
+    "defaultMessage": "Save"
+  },
+  "jwhET3": {
+    "defaultMessage": "Application"
+  },
+  "k+BdkG": {
+    "defaultMessage": "dBi"
+  },
+  "k1Qd05": {
+    "defaultMessage": "dddd[,] HH:mm"
+  },
+  "k1Xf+m": {
+    "defaultMessage": "Proxy ARP:"
+  },
+  "k3gi94": {
+    "defaultMessage": "Primary WAN Recovery Timer:"
+  },
+  "k4xCwB": {
+    "defaultMessage": "Join Wait Time:"
+  },
+  "k81S1y": {
+    "defaultMessage": "Logo"
+  },
+  "kAEQyV": {
+    "defaultMessage": "OK"
+  },
+  "kB4V15": {
+    "defaultMessage": "MSP Customers"
+  },
+  "kBbkVq": {
+    "defaultMessage": "Enable load balancing between APs"
+  },
+  "kDUPr0": {
+    "defaultMessage": "{formattedCount} of {formattedTotal} {formattedType} ({formattedRatio})",
+    "description": "E.g. 1 of 10 clients (10%)"
+  },
+  "kGOgw/": {
+    "defaultMessage": "Rule with same Type and VLAN IDs already exists"
+  },
+  "kJCLzI": {
+    "defaultMessage": "TACACS+ Servers"
+  },
+  "kKvQx7": {
+    "defaultMessage": "Switch Models"
+  },
+  "kMA1V2": {
+    "defaultMessage": "From VLAN"
+  },
+  "kQAf2d": {
+    "defaultMessage": "Select"
+  },
+  "kSfxuT": {
+    "defaultMessage": "Edit Floor Plan"
+  },
+  "kUkjpS": {
+    "defaultMessage": "Edit Portal Service"
+  },
+  "kXe2bT": {
+    "defaultMessage": "Edit DNS Proxy Rule"
+  },
+  "kbMnL8": {
+    "defaultMessage": "Use Venue Settings"
+  },
+  "keJaJz": {
+    "defaultMessage": "Letters, numbers and symbols can be used"
+  },
+  "khS4NF": {
+    "defaultMessage": "TLS Encryption:"
+  },
+  "kmrE95": {
+    "defaultMessage": "2 weeks"
+  },
+  "kqishl": {
+    "defaultMessage": "APs PoE Impact"
+  },
+  "ktaLzx": {
+    "defaultMessage": "AP operational - applying configuration"
+  },
+  "ktxCvs": {
+    "defaultMessage": "{nodeName} ({nodeType})",
+    "description": "FormattedPath: Uses to show path node name & type"
+  },
+  "l+dCsB": {
+    "defaultMessage": "Custom Settings"
+  },
+  "l513ME": {
+    "defaultMessage": "Radius Shared Secret"
+  },
+  "l8ULH4": {
+    "defaultMessage": "\"{name}\" cannot be saved as first option."
+  },
+  "l95G8t": {
+    "defaultMessage": "DHCP option"
+  },
+  "lBmRD4": {
+    "defaultMessage": "RSCP"
+  },
+  "lPKfjk": {
+    "defaultMessage": "Rebooting"
+  },
+  "lSIFEb": {
+    "defaultMessage": "Server Responses"
+  },
+  "lWDmGO": {
+    "defaultMessage": "{n} of {d} attempts"
+  },
+  "ljYyt3": {
+    "defaultMessage": "VLAN Pooling:"
+  },
+  "lleSjD": {
+    "defaultMessage": "Qos Priority"
+  },
+  "llixxa": {
+    "defaultMessage": "If unchecked, users will reach the page they originally requested"
+  },
+  "lxaJ7B": {
+    "defaultMessage": "3G/4G (LTE) Selection:"
+  },
+  "m0RdHL": {
+    "defaultMessage": "Purpose"
+  },
+  "m6lDC9": {
+    "defaultMessage": "Management"
+  },
+  "m9MVq0": {
+    "defaultMessage": "Selected order"
+  },
+  "mG2Tkh": {
+    "defaultMessage": "Apply Radio"
+  },
+  "mOFG3K": {
+    "defaultMessage": "Start"
+  },
+  "mTDw4Q": {
+    "defaultMessage": "Upper 5G"
+  },
+  "mZctHe": {
+    "defaultMessage": "The AP's firmware does not support resetting them to standalone AP."
+  },
+  "mqq9sX": {
+    "defaultMessage": "MAC Address Format"
+  },
+  "mu/IQL": {
+    "defaultMessage": "Type",
+    "description": "Path node type"
+  },
+  "n7yYXG": {
+    "defaultMessage": "Service"
+  },
+  "nCMnED": {
+    "defaultMessage": "Passphrase Length:"
+  },
+  "nClUuM": {
+    "defaultMessage": "Save AAA"
+  },
+  "nDRMt4": {
+    "defaultMessage": "Radius"
+  },
+  "nEFCX7": {
+    "defaultMessage": "Active SIM"
+  },
+  "nF9Me3": {
+    "defaultMessage": "Redirect users to"
+  },
+  "nJoN2N": {
+    "defaultMessage": "Switch Licenses"
+  },
+  "nKFjcP": {
+    "defaultMessage": "Time left"
+  },
+  "nN3zS7": {
+    "defaultMessage": "Not allow to delete DHCP APs"
+  },
+  "nNBKra": {
+    "defaultMessage": "Secondary DNS IP"
+  },
+  "nPtY37": {
+    "defaultMessage": "Australia, Brazil, Mexico, New Zealand, Taiwan"
+  },
+  "nVdqEC": {
+    "defaultMessage": "No Switches"
+  },
+  "nWeBxO": {
+    "defaultMessage": "3G only"
+  },
+  "nhKqj3": {
+    "defaultMessage": "Only numbers can be used"
+  },
+  "nijCnW": {
+    "defaultMessage": "{isComplexName, select, true {{name} ({nodeName})} other {{nodeName}} }",
+    "description": "Uses to format path node name, when isComplexName = true the nodeName would be something like AP or Switch MAC address"
+  },
+  "nmqTps": {
+    "defaultMessage": "Hop Count"
+  },
+  "npVP+k": {
+    "defaultMessage": "LAN Ports"
+  },
+  "nvX4E4": {
+    "defaultMessage": "Bandwidth:"
+  },
+  "o1vbho": {
+    "defaultMessage": "Policy"
+  },
+  "o43JQW": {
+    "defaultMessage": "Operational - applying firmware"
+  },
+  "o5l+pK": {
+    "defaultMessage": "Proxy Service"
+  },
+  "oAFgOq": {
+    "defaultMessage": "Domain"
+  },
+  "oG97S0": {
+    "defaultMessage": "Show Muted Incidents"
+  },
+  "oHZ6Af": {
+    "defaultMessage": "{title} ({count})"
+  },
+  "oI8Hht": {
+    "defaultMessage": "Allow AP wired clients"
+  },
+  "oJqFFx": {
+    "defaultMessage": "The cellular AP cannot be moved to the venue which doesn't enable DHCP service"
+  },
+  "oLkLww": {
+    "defaultMessage": "Score"
+  },
+  "oNA+iT": {
+    "defaultMessage": "Passphrase:"
+  },
+  "oTabD0": {
+    "defaultMessage": "Ethernet only"
+  },
+  "oWyLWG": {
+    "defaultMessage": "Cannot move AP to another venue in different country",
+    "description": "Validation - Venue Country checks"
+  },
+  "oavy3S": {
+    "defaultMessage": "Wi-Fi Radio Settings"
+  },
+  "ob4aTr": {
+    "defaultMessage": "Command Authorization"
+  },
+  "oscT0g": {
+    "defaultMessage": "Portal Web Page"
+  },
+  "ot6wfY": {
+    "defaultMessage": "Total Failures"
+  },
+  "ouldQo": {
+    "defaultMessage": "Select the wireless networks where the Wi-Fi Calling Service will be applied:"
+  },
+  "ovBfLm": {
+    "defaultMessage": "It is suggested to only enable this service on a single AP per service."
+  },
+  "ox304v": {
+    "defaultMessage": "An error occurred"
+  },
+  "p02DgL": {
+    "defaultMessage": "Access Policy"
+  },
+  "p1dNds": {
+    "defaultMessage": "1 month"
+  },
+  "p4N05H": {
+    "defaultMessage": "Upload"
+  },
+  "p5WNkO": {
+    "defaultMessage": "Temporarily degraded"
+  },
+  "p6nnXh": {
+    "defaultMessage": "Please enter the ip address"
+  },
+  "pJMAFC": {
+    "defaultMessage": "Please enter a valid email address!"
+  },
+  "pLebAW": {
+    "defaultMessage": "No model selected"
+  },
+  "pP1DiE": {
+    "defaultMessage": "QoS Priority"
+  },
+  "pRfbkU": {
+    "defaultMessage": "Multicast Version"
+  },
+  "pUlxda": {
+    "defaultMessage": "Total Incidents"
+  },
+  "pVBJf0": {
+    "defaultMessage": "VLAN member"
+  },
+  "pcUnyI": {
+    "defaultMessage": "Guest Pass - Connect"
+  },
+  "peC2DB": {
+    "defaultMessage": "More Settings"
+  },
+  "poNUJy": {
+    "defaultMessage": "SmartEdge Name"
+  },
+  "pqetoR": {
+    "defaultMessage": "Select specific AP groups"
+  },
+  "pr6SmF": {
+    "defaultMessage": "Import from file"
+  },
+  "pxJSs0": {
+    "defaultMessage": "AP-RUCKUS Cloud Disconnections"
+  },
+  "pxrNYp": {
+    "defaultMessage": "RSS Quality by Clients"
+  },
+  "pyy2lm": {
+    "defaultMessage": "Never contacted Active Switch"
+  },
+  "q/Yu5v": {
+    "defaultMessage": "Subnet Mask"
+  },
+  "q/uwLT": {
+    "defaultMessage": "Stop"
+  },
+  "q15Qnb": {
+    "defaultMessage": "Clients ({clientsCount})"
+  },
+  "q1ga0b": {
+    "defaultMessage": "(dBm)"
+  },
+  "q24q53": {
+    "defaultMessage": "WIFICALLING_PRI_BE"
+  },
+  "qFnkzN": {
+    "defaultMessage": "Update Licenses"
+  },
+  "qFpN4j": {
+    "defaultMessage": "ON"
+  },
+  "qNTMH/": {
+    "defaultMessage": "Capture Interface:"
+  },
+  "qQ6P9N": {
+    "defaultMessage": "Activated in venues"
+  },
+  "qeLeFb": {
+    "defaultMessage": "Option Value"
+  },
+  "qhLVVY": {
+    "defaultMessage": "Service Health"
+  },
+  "qkyUSt": {
+    "defaultMessage": "Reboot Access Point?"
+  },
+  "qmxtis": {
+    "defaultMessage": "You Have Unsaved Changes"
+  },
+  "r+Cfi6": {
+    "defaultMessage": "Down:"
+  },
+  "r0lBNR": {
+    "defaultMessage": "Integrators"
+  },
+  "rAMgEh": {
+    "defaultMessage": "Add option"
+  },
+  "rITqXY": {
+    "defaultMessage": "Broadcast Probe Response Delay:"
+  },
+  "rO0Gus": {
+    "defaultMessage": "Command Accounting"
+  },
+  "rQgpPD": {
+    "defaultMessage": "[Yesterday,] HH:mm"
+  },
+  "rV0gjK": {
+    "defaultMessage": "{count} Impacted {count, plural, one {Client} other {Clients}}"
+  },
+  "rY9YLn": {
+    "defaultMessage": "Image must smaller than 20MB!"
+  },
+  "rhSI1/": {
+    "defaultMessage": "Model"
+  },
+  "rikb48": {
+    "defaultMessage": "5 GHz"
+  },
+  "rntENh": {
+    "defaultMessage": "AP LEDs Blink ..."
+  },
+  "roT9uc": {
+    "defaultMessage": "To VLAN"
+  },
+  "rqhoDi": {
+    "defaultMessage": "VLAN (L2) Profile Details"
+  },
+  "rsSUP3": {
+    "defaultMessage": "Port"
+  },
+  "rsToNV": {
+    "defaultMessage": "Top 5 Applications by Traffic"
+  },
+  "rwIPgH": {
+    "defaultMessage": "1 year"
+  },
+  "rz46vg": {
+    "defaultMessage": "Passphrase format"
+  },
+  "rzI95B": {
+    "defaultMessage": "IMSI"
+  },
+  "s2XFtX": {
+    "defaultMessage": "Are you sure you want to delete {count, plural, one {this AP} other {these APs} } ?"
+  },
+  "s51hiG": {
+    "defaultMessage": "Add {serverType}"
+  },
+  "s8Z+Bf": {
+    "defaultMessage": "Option Format"
+  },
+  "sCE7Sn": {
+    "defaultMessage": "2.4 GHz / 5 GHz"
+  },
+  "sJpKWq": {
+    "defaultMessage": "Subnet mask"
+  },
+  "sLnDOb": {
+    "defaultMessage": "Discard Changes"
+  },
+  "sMnDSO": {
+    "defaultMessage": "Wi-Fi APs"
+  },
+  "sW8y98": {
+    "defaultMessage": "Click Through"
+  },
+  "sZFybj": {
+    "defaultMessage": "Services"
+  },
+  "savb5K": {
+    "defaultMessage": "Top 5 SSIDs by Traffic"
+  },
+  "sgDRXx": {
+    "defaultMessage": "Unplaced Devices (0)"
+  },
+  "skHgaw": {
+    "defaultMessage": "Network Impact"
+  },
+  "slvgtQ": {
+    "defaultMessage": "Devices ({devicesCount})"
+  },
+  "sp6WVm": {
+    "defaultMessage": "Log-in Authentication"
+  },
+  "spjWVz": {
+    "defaultMessage": "Total Traffic"
+  },
+  "ss6kle": {
+    "defaultMessage": "Reset to default"
+  },
+  "stDOc1": {
+    "defaultMessage": "Mesh Role"
+  },
+  "t/5Nxo": {
+    "defaultMessage": "{count} Characters"
+  },
+  "t0DVKb": {
+    "defaultMessage": "VLANs"
+  },
+  "t3qBD9": {
+    "defaultMessage": "2.4 GHz"
+  },
+  "t6OINb": {
+    "defaultMessage": "Model Affected"
+  },
+  "tABiSQ": {
+    "defaultMessage": "Enable:"
+  },
+  "tAYdWP": {
+    "defaultMessage": "Primary SIM"
+  },
+  "tB5At5": {
+    "defaultMessage": "MMM DD HH:mm"
+  },
+  "tBWoTd": {
+    "defaultMessage": "Default gateway"
+  },
+  "tC85Q4": {
+    "defaultMessage": "Select Access Control profile"
+  },
+  "tD3JW/": {
+    "defaultMessage": "Alternative languages:"
+  },
+  "tME5Fe": {
+    "defaultMessage": "You cannot activate this network on this AP Group because it already has 15 active networks"
+  },
+  "tQV8l8": {
+    "defaultMessage": "Unknown Error"
+  },
+  "tT2D9t": {
+    "defaultMessage": "Edit User"
+  },
+  "tToNsb": {
+    "defaultMessage": "Hide SSID"
+  },
+  "tUF+Zj": {
+    "defaultMessage": "2.4 GHz Antenna gain:"
+  },
+  "tVErvc": {
+    "defaultMessage": "External Servers"
+  },
+  "tW5HWY": {
+    "defaultMessage": "No Profile is selected"
+  },
+  "tp9dhw": {
+    "defaultMessage": "Rebooted APs"
+  },
+  "tu9GFW": {
+    "defaultMessage": "{count} {count, plural, one {Switch} other {Switches}}"
+  },
+  "tvOSzO": {
+    "defaultMessage": "Rx"
+  },
+  "tzMNF3": {
+    "defaultMessage": "Status"
+  },
+  "u/AAXr": {
+    "defaultMessage": "SmartEdge"
+  },
+  "u0lL8w": {
+    "defaultMessage": "Services is not enabled"
+  },
+  "u81G9+": {
+    "defaultMessage": "Uptime"
+  },
+  "u9b1zq": {
+    "defaultMessage": "Self Sign In - Connect"
+  },
+  "uDmz7E": {
+    "defaultMessage": "Add DHCP options:"
+  },
+  "uGu5Jg": {
+    "defaultMessage": "Account Email"
+  },
+  "uJV0wU": {
+    "defaultMessage": "IP Address"
+  },
+  "uKatq7": {
+    "defaultMessage": "Edit Network"
+  },
+  "uPDgth": {
+    "defaultMessage": "Hostname"
+  },
+  "uSAdpT": {
+    "defaultMessage": "Add another rule"
+  },
+  "uTnplY": {
+    "defaultMessage": "Description:"
+  },
+  "uUfVAP": {
+    "defaultMessage": "Target host or IP address"
+  },
+  "uWddQs": {
+    "defaultMessage": "OFF now"
+  },
+  "uZfS5N": {
+    "defaultMessage": "Wi-Fi Configuration"
+  },
+  "ub++Ab": {
+    "defaultMessage": "Enable Ruckus DHCP service"
+  },
+  "ubGrOj": {
+    "defaultMessage": "Passphrase Expiration:"
+  },
+  "ubQ1f+": {
+    "defaultMessage": "Shared secret"
+  },
+  "ueL7OS": {
+    "defaultMessage": "WPA3 SAE Passphrase:"
+  },
+  "uepYTv": {
+    "defaultMessage": "Client Queries"
+  },
+  "ukFIyf": {
+    "defaultMessage": "Your Attention is Required"
+  },
+  "umxyzM": {
+    "defaultMessage": "Enter the email of the administrator you need to re-send an invitation to:"
+  },
+  "urouUu": {
+    "defaultMessage": "ApTroubleshootingTab"
+  },
+  "utCJRG": {
+    "defaultMessage": "Proxy Service:"
+  },
+  "v3H4kh": {
+    "defaultMessage": "WiFi4EU:"
+  },
+  "v4kE47": {
+    "defaultMessage": "Custom radio settings"
+  },
+  "v9QAvq": {
+    "defaultMessage": "Ping"
+  },
+  "vJxOux": {
+    "defaultMessage": "e.g. http://www.example.com"
+  },
+  "vKVHCN": {
+    "defaultMessage": "Guest Pass"
+  },
+  "vONi+O": {
+    "defaultMessage": "Country"
+  },
+  "vOesSn": {
+    "defaultMessage": "Set DHCP Pools"
+  },
+  "vTnbeM": {
+    "defaultMessage": "Error setting threshold, please try again later."
+  },
+  "vXVdl3": {
+    "defaultMessage": "Unicast and multicast/broadcast"
+  },
+  "vXfkMH": {
+    "defaultMessage": "Add Wi-Fi Network"
+  },
+  "vYwf3w": {
+    "defaultMessage": "DFS"
+  },
+  "vaUHDg": {
+    "defaultMessage": "4G/3G channel"
+  },
+  "vcTCAn": {
+    "defaultMessage": "OFF"
+  },
+  "vhRKaX": {
+    "defaultMessage": "AP rebooting"
+  },
+  "viofnV": {
+    "defaultMessage": "Select APs"
+  },
+  "vknTf8": {
+    "defaultMessage": "Must be 26 hex characters"
+  },
+  "vmHFSQ": {
+    "defaultMessage": "Outdoor APs"
+  },
+  "vtTf8G": {
+    "defaultMessage": "Welcome Text"
+  },
+  "vwTOQc": {
+    "defaultMessage": "Self Sign In - Register/Confirm"
+  },
+  "vzGrnm": {
+    "defaultMessage": "Scope",
+    "description": "Incident impacted scope"
+  },
+  "w/JlMl": {
+    "defaultMessage": "Lease time"
+  },
+  "w0OUOh": {
+    "defaultMessage": "Health Score"
+  },
+  "w0edPi": {
+    "defaultMessage": "LAN {index}"
+  },
+  "w6rqqn": {
+    "defaultMessage": "Configure Wi-Fi Calling Service"
+  },
+  "w6vmP5": {
+    "defaultMessage": "{apCount} APs"
+  },
+  "wEQDC6": {
+    "defaultMessage": "Edit"
+  },
+  "wHrrdo": {
+    "defaultMessage": "3rd Party Captive Portal(WISPr)"
+  },
+  "wL7VAE": {
+    "defaultMessage": "Actions"
+  },
+  "wZUcfj": {
+    "defaultMessage": "TX Power"
+  },
+  "wkYPjX": {
+    "defaultMessage": "Use existing server configuration"
+  },
+  "wlWd60": {
+    "defaultMessage": ","
+  },
+  "wogVOU": {
+    "defaultMessage": "The cellular AP cannot be moved to the venue which doesn't enable DHCP service",
+    "description": "Validation - Cellular AP Dhcp checks"
+  },
+  "wuSrFv": {
+    "defaultMessage": "WiFi4EU Snippet"
+  },
+  "wyVIOU": {
+    "defaultMessage": "Users connect through an enhanced captive portal experience with Cloudpath",
+    "description": "Description for Cloudpath Captive Portal"
+  },
+  "x+bGoE": {
+    "defaultMessage": "Host Approval - Register/Confirm"
+  },
+  "xBkv0R": {
+    "defaultMessage": "Layer 2"
+  },
+  "xGSuuE": {
+    "defaultMessage": "Security Protocol"
+  },
+  "xK7rmd": {
+    "defaultMessage": "Insights"
+  },
+  "xKYak9": {
+    "defaultMessage": "Hex Key:"
+  },
+  "xLx5Gv": {
+    "defaultMessage": "Management Frame Protection (802.11w)"
+  },
+  "xXDHjy": {
+    "defaultMessage": "Add Venue"
+  },
+  "xeM0ap": {
+    "defaultMessage": "No Profile"
+  },
+  "xjdsWp": {
+    "defaultMessage": "VLAN Pool: {poolName}"
+  },
+  "xoQr3X": {
+    "defaultMessage": "Event End Time"
+  },
+  "xsvEdn": {
+    "defaultMessage": "{count, plural, one {{apGroupName}} other {{count} AP Groups} }"
+  },
+  "xuRIYt": {
+    "defaultMessage": "Add IP Address"
+  },
+  "xukzKg": {
+    "defaultMessage": "Networks"
+  },
+  "xzWp9X": {
+    "defaultMessage": "Switches"
+  },
+  "y1Qr81": {
+    "defaultMessage": "Level"
+  },
+  "y1Z3or": {
+    "defaultMessage": "Language"
+  },
+  "y3Ug49": {
+    "defaultMessage": "AP Heartbeat Lost"
+  },
+  "y4BMC+": {
+    "defaultMessage": "{simCardNumber} {legend}"
+  },
+  "y6JJ3j": {
+    "defaultMessage": "In Errors"
+  },
+  "y7LpQW": {
+    "defaultMessage": "Click-Through"
+  },
+  "yBERKU": {
+    "defaultMessage": "EU"
+  },
+  "yEOq71": {
+    "defaultMessage": "All Bands"
+  },
+  "yF+5T2": {
+    "defaultMessage": "Bad"
+  },
+  "yFFbN3": {
+    "defaultMessage": "Lease Time"
+  },
+  "yJ7+dR": {
+    "defaultMessage": "Cloudpath Server"
+  },
+  "yJKjxl": {
+    "defaultMessage": "USA & Canada"
+  },
+  "yL4n+O": {
+    "defaultMessage": "Port type"
+  },
+  "yMMKAH": {
+    "defaultMessage": "Rx (bytes)"
+  },
+  "yPaca7": {
+    "defaultMessage": "RF"
+  },
+  "yQg16M": {
+    "defaultMessage": "Evolved Packet Data Gateway (ePDG)"
+  },
+  "yRL7VQ": {
+    "defaultMessage": "RSRP"
+  },
+  "yUqKrh": {
+    "defaultMessage": "12 Mbps"
+  },
+  "yV5oYe": {
+    "defaultMessage": "Policies"
+  },
+  "yb2LRB": {
+    "defaultMessage": "The Selected Order must be configured."
+  },
+  "ydLU1G": {
+    "defaultMessage": "Define how this network will be activated on venue \"{venueName}\""
+  },
+  "yeStuE": {
+    "defaultMessage": "Max. image size: 20 MB"
+  },
+  "yjldnC": {
+    "defaultMessage": "Edit {serverType}"
+  },
+  "ykUMzk": {
+    "defaultMessage": "Download Log"
+  },
+  "ysmIeD": {
+    "defaultMessage": "Recommended Action"
+  },
+  "yxlmeE": {
+    "defaultMessage": "Time To Connect (By Stage)"
+  },
+  "yzhlpu": {
+    "defaultMessage": "WIFICALLING_PRI_VOICE"
+  },
+  "z2kpwG": {
+    "defaultMessage": "Drag and drop the marker to the location where this device is placed"
+  },
+  "z3cooI": {
+    "defaultMessage": "SmartEdge Group"
+  },
+  "z5epQF": {
+    "defaultMessage": "Radios"
+  },
+  "z6gTpo": {
+    "defaultMessage": "Add mDNS Proxy Service"
+  },
+  "z7KUHa": {
+    "defaultMessage": "RADIUS Servers"
+  },
+  "zAkzsG": {
+    "defaultMessage": "Admin Password"
+  },
+  "zAlTBD": {
+    "defaultMessage": "These settings apply only to AP models that support tri-band, such as R760 and R560"
+  },
+  "zEAQk8": {
+    "defaultMessage": "ICCID"
+  },
+  "zI1owl": {
+    "defaultMessage": "Venues ({venuesCount})"
+  },
+  "zIq/Ye": {
+    "defaultMessage": "Total Connections"
+  },
+  "zKxpz2": {
+    "defaultMessage": "Floor Plans"
+  },
+  "zLM75r": {
+    "defaultMessage": "No AP Clients"
+  },
+  "zQvVDJ": {
+    "defaultMessage": "All"
+  },
+  "zWkvNO": {
+    "defaultMessage": "Timeline"
+  },
+  "zaqZpB": {
+    "defaultMessage": "IP Addresses"
+  },
+  "zg0sQG": {
+    "defaultMessage": "AP initializing"
+  },
+  "zgJJ4Y": {
+    "defaultMessage": "Delete {formattedEntityName}"
+  },
+  "znlhKm": {
+    "defaultMessage": "DNS Proxy:"
+  },
+  "zsWRsx": {
+    "defaultMessage": "Mobility Domain ID"
+  },
+  "ztrWAy": {
+    "defaultMessage": "Enable 5.0 GHz band:"
+  },
+  "zyo7yY": {
+    "defaultMessage": "Frame Type Filter:"
   }
 }
