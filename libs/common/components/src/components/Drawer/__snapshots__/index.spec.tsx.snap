@@ -13,7 +13,7 @@ exports[`Drawer FormFooter should render form footer 1`] = `
       </span>
     </button>
     <button
-      class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+      class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
       type="button"
     >
       <span>
@@ -45,8 +45,8 @@ Array [
             class="ant-drawer-close"
             type="button"
           >
-            <div
-              data-testid="close-symbol"
+            <svg
+              data-testid="CloseSymbol"
             />
           </button>
           <div
@@ -93,8 +93,8 @@ Array [
             class="ant-drawer-close"
             type="button"
           >
-            <div
-              data-testid="close-symbol"
+            <svg
+              data-testid="CloseSymbol"
             />
           </button>
           <div
@@ -103,16 +103,16 @@ Array [
             <button
               class="sc-gsnTZi jxJcEp"
             >
-              <div
-                data-testid="arrow-back"
+              <svg
+                data-testid="ArrowBack"
               />
               Back
             </button>
             <div
               class="sc-dkzDqf bnYHGr"
             >
-              <div
-                data-testid="icon"
+              <svg
+                data-testid="BulbOutlined"
               />
               Test Drawer
             </div>

@@ -465,9 +465,9 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg>
-                                                      SettingsOutlined.svg
-                                                    </svg>
+                                                    <svg
+                                                      data-testid="SettingsOutlined"
+                                                    />
                                                   </div>
                                                 </div>
                                               </div>
@@ -833,9 +833,9 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg>
-                                                      SettingsOutlined.svg
-                                                    </svg>
+                                                    <svg
+                                                      data-testid="SettingsOutlined"
+                                                    />
                                                   </div>
                                                 </div>
                                               </div>
@@ -1116,7 +1116,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
               >
                 <button
                   ant-click-animating-without-extra-node="true"
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
                   type="button"
                 >
                   <span>

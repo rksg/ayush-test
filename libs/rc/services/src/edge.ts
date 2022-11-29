@@ -1,6 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { createHttpRequest, EdgeUrlsInfo, RequestPayload, TableResult, EdgeViewModel } from '@acx-ui/rc/utils'
+import {
+  EdgeUrlsInfo,
+  TableResult,
+  EdgeViewModel,
+  createHttpRequest,
+  EdgeSaveData,
+  RequestPayload
+} from '@acx-ui/rc/utils'
 
 export const baseEdgeApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -12,6 +19,16 @@ export const baseEdgeApi = createApi({
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
+    addEdge: build.mutation<EdgeSaveData, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.addEdge)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+    }),
     getEdgeList: build.query<TableResult<EdgeViewModel>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
@@ -53,6 +70,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
 })
 
 export const {
+  useAddEdgeMutation,
   useGetEdgeListQuery,
   useLazyGetEdgeListQuery,
   useDeleteEdgeMutation,

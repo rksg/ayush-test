@@ -26,6 +26,7 @@ export * from './services'
 export * from './msp'
 export * from './policy'
 export * from './wifiCallingService'
+export * from './portalService'
 export * from './edge'
 
 export interface CommonResult {
@@ -71,7 +72,7 @@ export interface NetworkDetail {
 
 export interface Venue {
   id: string
-  venueId: string
+  venueId?: string
   name: string
   description: string
   status: string
@@ -99,6 +100,7 @@ export interface Venue {
   deepVenue?: NetworkVenue
   disabledActivation: boolean
   networkId? : string
+  vlanPoolId?: string
   activatedApsId?: string[]
 }
 
@@ -365,4 +367,17 @@ export interface WifiCallingSetting {
 export interface WifiCallingSettingContextType {
   wifiCallingSettingList: WifiCallingSetting[],
   setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
+}
+
+export interface catchErrorDetails {
+  code: string,
+  message: string
+}
+
+export interface catchErrorResponse {
+  data: {
+    errors: catchErrorDetails[],
+    requestId: string
+  },
+  status: number
 }
