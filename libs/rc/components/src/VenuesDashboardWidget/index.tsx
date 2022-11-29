@@ -8,7 +8,7 @@ import {
   Dashboard,
   ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
@@ -46,15 +46,7 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
 
 export function VenuesDashboardWidget () {
   const { $t } = useIntl()
-  const basePath = useTenantLink('/venues/')
-  const navigate = useNavigate()
-
-  const onClick = () => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}`
-    })
-  }
+  const onArrowClick = useNavigateToPath('/venues/')
 
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
@@ -66,13 +58,12 @@ export function VenuesDashboardWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Venues' })}>
+      <Card title={$t({ defaultMessage: 'Venues' })} onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
             <DonutChart
               style={{ width, height }}
-              data={queryResults.data}
-              onClick={onClick} />
+              data={queryResults.data} />
           )}
         </AutoSizer>
       </Card>

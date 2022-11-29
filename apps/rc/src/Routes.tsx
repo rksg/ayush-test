@@ -9,6 +9,7 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
+import AddEdge                    from './pages/Devices/Edge/AddEdge'
 import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
 import ApDetails                  from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
@@ -28,6 +29,8 @@ import DHCPDetail                from './pages/Services/DHCPDetail'
 import DHCPForm                  from './pages/Services/DHCPForm/DHCPForm'
 import MdnsProxyDetail           from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm             from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import PortalServiceDetail       from './pages/Services/Portal/PortalDetail'
+import PortalForm                from './pages/Services/Portal/PortalForm/PortalForm'
 import SelectServiceForm         from './pages/Services/SelectServiceForm'
 import {
   getSelectServiceRoutePath,
@@ -71,8 +74,14 @@ function DeviceRoutes () {
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route
         path='devices/aps/:serialNumber/details/:activeTab'
-        element={<ApDetails />}
-      />
+        element={<ApDetails />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab/:activeSubTab'
+        element={<ApDetails />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+        element={<ApDetails />} />
+      <Route path='devices/edge/add' element={<AddEdge />} />
       <Route path='devices/switches' element={<SwitchesTable />} />
     </Route>
   )
@@ -85,6 +94,10 @@ function NetworkRoutes () {
       <Route path='networks/add' element={<NetworkForm />} />
       <Route
         path='networks/:networkId/network-details/:activeTab'
+        element={<NetworkDetails />}
+      />
+      <Route
+        path='networks/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
       />
       <Route
@@ -137,6 +150,18 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<DHCPDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
+        element={<PortalForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
+        element={<PortalForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
+        element={<PortalServiceDetail/>}
       />
     </Route>
   )

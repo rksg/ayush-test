@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
+import { TableProps } from 'antd'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { TableProps }        from '@acx-ui/components'
-import { useParams, Params } from '@acx-ui/react-router-dom'
-import { UseQuery }          from '@acx-ui/types'
+import { useParams, Params }        from '@acx-ui/react-router-dom'
+import { UseQuery, UseQueryResult } from '@acx-ui/types'
 
-export interface RequestPayload <Payload = unknown> {
+export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
   params?: Params<string>
   payload?: Payload
 }
@@ -33,7 +32,7 @@ export interface TABLE_QUERY <
   sorter?: SORTER
   rowKey?: string
 }
-export interface PAGINATION {
+export type PAGINATION = {
   current: number,
   pageSize: number,
   total: number
@@ -64,39 +63,58 @@ const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
 }
 
+export interface TableQuery<ResultType, Payload, ResultExtra>
+  extends UseQueryResult<TableResult<ResultType, ResultExtra>> {
+  pagination: PAGINATION,
+  sorter: SORTER,
+  setSorter: React.Dispatch<React.SetStateAction<SORTER>>,
+  handleTableChange: TableProps<ResultType>['onChange'],
+  payload: Payload,
+  setPayload: React.Dispatch<React.SetStateAction<Payload>>,
+}
+
 export function useTableQuery <
   ResultType,
-  Payload,
+  Payload extends RequestPayload<unknown>,
   ResultExtra
 > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
-  const [pagination, setPagination] = useState({
+
+  const initialPagination = {
     ...DEFAULT_PAGINATION,
     ...(option?.pagination || {})
-  })
-  const [sorter, setSorter] = useState({
+  }
+
+  const initialSorter = {
     ...DEFAULT_SORTER,
     ...(option?.sorter || {})
-  })
-  const [payload, setPayload] = useState({
-    ...option.defaultPayload,
-    ...(pagination as unknown as Partial<Payload>),
-    ...(sorter as unknown as Partial<Payload>)
-  })
+  }
 
+  const initialPayload = {
+    ...option.defaultPayload,
+    ...(initialPagination as unknown as Partial<Payload>),
+    ...(initialSorter as unknown as Partial<Payload>)
+  } as Payload
+
+  const [pagination, setPagination] = useState<PAGINATION>(initialPagination)
+  const [sorter, setSorter] = useState<SORTER>(initialSorter)
+  const [payload, setPayload] = useState<Payload>(initialPayload)
+
+  const params = useParams()
   // RTKQuery
+
   const api = option.useQuery({
-    params: { ...useParams(), ...option.apiParams },
-    payload: payload as Payload
+    params: { ...params, ...option.apiParams },
+    payload: payload
   })
 
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {
       if (data) {
-        setPagination({
-          ...DEFAULT_PAGINATION,
+        setPagination((prev) => ({
+          ...prev,
           current: data.page,
           total: data.totalCount
-        })
+        }))
       }
     }
     handlePagination(api.data)
@@ -131,5 +149,5 @@ export function useTableQuery <
     payload,
     setPayload,
     ...api
-  }
+  } as TableQuery<ResultType, Payload, ResultExtra>
 }

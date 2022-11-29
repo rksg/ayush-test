@@ -24,8 +24,12 @@ import {
   aplist,
   apGrouplist,
   apDetailsList,
+  apLanPorts,
   dhcpAp,
-  successResponse
+  successResponse,
+  venueData,
+  venueLanPorts,
+  venueSetting
 } from '../../__tests__/fixtures'
 
 import { ApEdit } from './'
@@ -66,7 +70,7 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.getAp.url,
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
         (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
@@ -156,7 +160,7 @@ describe('ApEdit', () => {
       mockServer.use(
         rest.post(WifiUrlsInfo.getDhcpAp.url,
           (_, res, ctx) => res(ctx.json(dhcpAp[1]))),
-        rest.get(WifiUrlsInfo.getAp.url,
+        rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
           (_, res, ctx) => res(ctx.json({
             ...apDetailsList[0],
             meshRole: 'RAP'
@@ -235,6 +239,123 @@ describe('ApEdit', () => {
       await showInvalidChangesModal('AP Details', false)
       await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
       await showInvalidChangesModal('AP Details', true)
+    })
+  })
+
+  describe('Ap Settings - Lan Ports', () => {
+    const params = {
+      tenantId: 'tenant-id',
+      venueId: 'venue-id',
+      serialNumber: 'serial-number',
+      action: 'edit',
+      activeTab: 'settings',
+      activeSubTab: 'lanPort'
+    }
+    beforeEach(() => {
+      mockServer.use(
+        rest.get(WifiUrlsInfo.getAp.url,
+          (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
+        rest.get(WifiUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json(apLanPorts[0]))),
+        rest.get(WifiUrlsInfo.getApCapabilities.url,
+          (_, res, ctx) => res(ctx.json(venueCaps))),
+        rest.get(CommonUrlsInfo.getVenue.url,
+          (_, res, ctx) => res(ctx.json(venueData))),
+        rest.get(CommonUrlsInfo.getVenueSettings.url,
+          (_, res, ctx) => res(ctx.json(venueSetting))),
+        rest.get(CommonUrlsInfo.getVenueLanPorts.url,
+          (_, res, ctx) => res(ctx.json(venueLanPorts)))
+      )
+    })
+    afterEach(() => Modal.destroyAll())
+
+    it('should render correctly', async () => {
+      const { asFragment } = render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      await screen.findByText('test ap')
+      await screen.findByText(/Currently using LAN port settings of the venue/)
+      expect(asFragment()).toMatchSnapshot()
+      await fireEvent.click(await screen.findByRole('button', { name: 'My-Venue' }))
+    })
+
+    it('should handle customized setting updated', async () => {
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await screen.findByText('test ap')
+      await screen.findByText(/Currently using LAN port settings of the venue/)
+      await screen.findByText(/Customize/)
+
+      await userEvent.click(await screen.findByRole('tab', { name: 'LAN 2' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    })
+
+    it('should handle customized setting removed', async () => {
+      mockServer.use(
+        rest.get(WifiUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json({
+            ...apLanPorts[0],
+            useVenueSettings: false
+          })))
+      )
+
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await screen.findByText('test ap')
+      await screen.findByText(/Custom settings/)
+      await screen.findByText(/Use Venue Settings/)
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    })
+
+    it('should open unsaved changes modal', async () => {
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await screen.findByText('test ap')
+      await screen.findByText(/Currently using LAN port settings of the venue/)
+      await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+      await userEvent.click(await screen.findByText('Back to device details'))
+      await showUnsavedChangesModal('LAN Port', false)
+    })
+
+    it('should open invalid changes modal', async () => {
+      mockServer.use(
+        rest.get(WifiUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json({
+            ...apLanPorts[0],
+            useVenueSettings: false
+          })))
+      )
+
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await screen.findByText('test ap')
+      await screen.findByText(/Custom settings/)
+      await screen.findByText(/Use Venue Settings/)
+
+      const tabPanel = screen.getAllByRole('tabpanel', { hidden: false })[2]
+      fireEvent.mouseDown(within(tabPanel).getByLabelText(/Port type/))
+      await userEvent.click(await screen.getAllByText('GENERAL')[1])
+      expect(within(tabPanel).getByLabelText(/VLAN untag ID/)).not.toBeDisabled()
+      expect(within(tabPanel).getByLabelText(/VLAN member/)).not.toBeDisabled()
+
+      fireEvent.change(within(tabPanel).getByLabelText(/VLAN untag ID/), { target: { value: '' } })
+      fireEvent.change(within(tabPanel).getByLabelText(/VLAN member/), { target: { value: '' } })
+      fireEvent.blur(within(tabPanel).getByLabelText(/VLAN member/))
+      await userEvent.click(await screen.findByText('Back to device details'))
+      await showInvalidChangesModal('LAN Port', true)
     })
   })
 })

@@ -1,8 +1,11 @@
+import { useState } from 'react'
+
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
   Button,
+  DisabledButton,
   Loader,
   PageHeader,
   showActionModal,
@@ -14,6 +17,9 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
+  ResendInviteModal
+} from '@acx-ui/msp/components'
+import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery
 } from '@acx-ui/rc/services'
@@ -24,126 +30,7 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-
-function useColumns () {
-  const { $t } = useIntl()
-
-  const columns: TableProps<MspEc>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Customers' }),
-      dataIndex: 'name',
-      key: 'name',
-      sorter: true,
-      defaultSortOrder: 'ascend',
-      render: function (data) {
-        return (
-          <TenantLink to={''}>{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status',
-      key: 'status',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Address' }),
-      dataIndex: 'streetAddress',
-      key: 'streetAddress',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Active Alarm' }),
-      dataIndex: 'alarmCount',
-      key: 'alarmCount',
-      sorter: true,
-      align: 'center',
-      render: function () {
-        return '0'
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incindents' }),
-      dataIndex: 'activeIncindents',
-      key: 'activeIncindents',
-      sorter: true,
-      align: 'center',
-      render: function () {
-        return '0'
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'MSP Admins' }),
-      dataIndex: 'mspAdminCount',
-      key: 'mspAdminCount',
-      sorter: true,
-      align: 'center',
-      render: function (data) {
-        return (
-          <TenantLink to={''}>{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Customer Admins' }),
-      dataIndex: 'mspEcAdminCount',
-      key: 'mspEcAdminCount',
-      sorter: true,
-      align: 'center'
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'wifiLicenses',
-      key: 'wifiLicenses',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return transformApEntitlement(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
-      dataIndex: 'wifiLicensesUtilization',
-      key: 'wifiLicensesUtilization',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return transformApUtilization(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchLicens',
-      key: 'switchLicens',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return transformSwitchEntitlement(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active From' }),
-      dataIndex: 'creationDate',
-      key: 'creationDate',
-      sorter: true,
-      render: function (data, row) {
-        return transformCreationDate(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Service Expired On' }),
-      dataIndex: 'expirationDate',
-      key: 'expirationDate',
-      sorter: true,
-      render: function (data, row) {
-        return transformExpirationDate(row)
-      }
-    }
-  ]
-  return columns
-}
+import { TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
@@ -233,6 +120,121 @@ const defaultPayload = {
 export function MspCustomers () {
   const { $t } = useIntl()
 
+  const [modalVisible, setModalVisible] = useState(false)
+  const [tenantId, setTenantId] = useState('')
+
+  const columns: TableProps<MspEc>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Customers' }),
+      dataIndex: 'name',
+      key: 'name',
+      searchable: true,
+      sorter: true,
+      defaultSortOrder: 'ascend',
+      render: function (data) {
+        return (
+          <TenantLink to={''}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'status',
+      key: 'status',
+      sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Address' }),
+      dataIndex: 'streetAddress',
+      key: 'streetAddress',
+      sorter: true,
+      show: false
+    },
+    {
+      title: $t({ defaultMessage: 'Active Alarm' }),
+      dataIndex: 'alarmCount',
+      key: 'alarmCount',
+      sorter: true,
+      align: 'center',
+      render: function () {
+        return '0'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Active Incindents' }),
+      dataIndex: 'activeIncindents',
+      key: 'activeIncindents',
+      sorter: true,
+      align: 'center',
+      render: function () {
+        return 0
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'MSP Admins' }),
+      dataIndex: 'mspAdminCount',
+      key: 'mspAdminCount',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Customer Admins' }),
+      dataIndex: 'mspEcAdminCount',
+      key: 'mspEcAdminCount',
+      sorter: true,
+      show: false,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+      dataIndex: 'wifiLicenses',
+      key: 'wifiLicenses',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformApEntitlement(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
+      dataIndex: 'wifiLicensesUtilization',
+      key: 'wifiLicensesUtilization',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformApUtilization(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Switch Licenses' }),
+      dataIndex: 'switchLicens',
+      key: 'switchLicens',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformSwitchEntitlement(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Active From' }),
+      dataIndex: 'creationDate',
+      key: 'creationDate',
+      sorter: true,
+      render: function (data, row) {
+        return transformCreationDate(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Service Expired On' }),
+      dataIndex: 'expirationDate',
+      key: 'expirationDate',
+      sorter: true,
+      render: function (data, row) {
+        return transformExpirationDate(row)
+      }
+    }
+  ]
+
   const MspEcTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
@@ -254,7 +256,10 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
-        onClick: () => alert()
+        onClick: (selectedRows) => {
+          setTenantId(selectedRows[0].id)
+          setModalVisible(true)
+        }
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
@@ -264,7 +269,8 @@ export function MspCustomers () {
             customContent: {
               action: 'DELETE',
               entityName: $t({ defaultMessage: 'EC' }),
-              entityValue: name
+              entityValue: name,
+              confirmationText: $t({ defaultMessage: 'Delete' })
             },
             onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
               .then(clearSelection)
@@ -277,7 +283,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
-          columns={useColumns()}
+          columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -297,13 +303,18 @@ export function MspCustomers () {
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <TenantLink to='/mspcustomers/create' key='addMspEc'>
+          <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
-          </TenantLink>,
-          <Button key='download' icon={<DownloadOutlined />} />
+          </MspTenantLink>,
+          <DisabledButton key='download' icon={<DownloadOutlined />} />
         ]}
       />
       <MspEcTable />
+      <ResendInviteModal
+        visible={modalVisible}
+        setVisible={setModalVisible}
+        tenantId={tenantId}
+      />
     </>
   )
 }
