@@ -1,8 +1,11 @@
-import { useIntl } from 'react-intl'
+import { HistoricalClientsTable } from '@acx-ui/rc/components'
 
 import ConnectedClientsTable from './ConnectedClientsTable'
 
 export function ApClientsTab () {
-  const { $t } = useIntl()
-  return <ConnectedClientsTable />
+  return <>
+    <ConnectedClientsTable />
+    {/* TODO: change string from search input */}
+    <HistoricalClientsTable searchString='' />
+  </>
 }

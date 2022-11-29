@@ -381,3 +381,13 @@ export interface catchErrorResponse {
   },
   status: number
 }
+
+export interface EventMeta {
+  apName: string,
+  id: string,
+  isApExists: boolean,
+  isClientExists: boolean,
+  isVenueExists: boolean,
+  networkId: string,
+  venueName: string,
+}

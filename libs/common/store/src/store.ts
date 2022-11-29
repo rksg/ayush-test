@@ -50,7 +50,8 @@ export const store = configureStore({
       serviceApi.middleware,
       mspApi.middleware,
       edgeApi.middleware,
-      policyApi.middleware
+      policyApi.middleware,
+      clientApi.middleware
     ])
   },
 
