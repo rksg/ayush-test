@@ -4,7 +4,7 @@ import { Path, useNavigate, useParams } from 'react-router-dom'
 import { Button, DisabledButton, PageHeader, Tabs } from '@acx-ui/components'
 import { ClockOutlined }                            from '@acx-ui/icons'
 import { useGetDpskQuery }                          from '@acx-ui/rc/services'
-import { DpskSaveData, ServiceType }                from '@acx-ui/rc/utils'
+import { ServiceType }                              from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                from '@acx-ui/react-router-dom'
 
 import {
@@ -14,6 +14,7 @@ import {
   ServiceOperation
 } from '../../serviceRouteUtils'
 
+import { dpskTabNameMapping }   from './contentsMap'
 import DpskOverview             from './DpskOverview'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
@@ -42,10 +43,11 @@ export default function DpskDetails () {
     navigate(tabsPathMapping[tab as DpskDetailsTabKey])
   }
 
-  const getTabComp = (activeTab: DpskDetailsTabKey, data?: DpskSaveData) => {
+  const getTabComp = (activeTab: DpskDetailsTabKey) => {
     if (activeTab === DpskDetailsTabKey.OVERVIEW) {
-      return data && <DpskOverview data={data} />
+      return <DpskOverview data={data} />
     }
+
     return <DpskPassphraseManagement />
   }
 
@@ -74,17 +76,17 @@ export default function DpskDetails () {
         footer={
           <Tabs onChange={onTabChange} activeKey={activeTab}>
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Overview' })}
+              tab={$t(dpskTabNameMapping[DpskDetailsTabKey.OVERVIEW])}
               key={DpskDetailsTabKey.OVERVIEW}
             />
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Passphrase Management' })}
+              tab={$t(dpskTabNameMapping[DpskDetailsTabKey.PASSPHRASE_MGMT])}
               key={DpskDetailsTabKey.PASSPHRASE_MGMT}
             />
           </Tabs>
         }
       />
-      { getTabComp(activeTab as DpskDetailsTabKey, data) }
+      { getTabComp(activeTab as DpskDetailsTabKey) }
     </>
   )
 }

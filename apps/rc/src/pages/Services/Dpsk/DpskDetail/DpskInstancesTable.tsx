@@ -11,6 +11,7 @@ export default function DpskInstancesTable () {
     useQuery: useNetworkListQuery,
     defaultPayload: {
       fields: ['check-all', 'name', 'description', 'nwSubType', 'venues', 'id']
+      // filters: { id: props.networkIds } // TODO: API is not ready
     }
   })
 

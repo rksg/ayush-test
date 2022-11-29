@@ -12,7 +12,7 @@ import {
 import DpskInstancesTable from './DpskInstancesTable'
 
 export interface DpskOverviewProps {
-  data: DpskSaveData
+  data?: DpskSaveData
 }
 
 export default function DpskOverview (props: DpskOverviewProps) {
@@ -27,19 +27,19 @@ export default function DpskOverview (props: DpskOverviewProps) {
             <GridCol col={{ span: 4 }}>
               <Card.Title>{intl.$t({ defaultMessage: 'Passphrase Format' })}</Card.Title>
               <Typography.Paragraph>
-                {transformDpskNetwork(intl, DpskNetworkType.FORMAT, data.passphraseFormat)}
+                {data && transformDpskNetwork(intl, DpskNetworkType.FORMAT, data.passphraseFormat)}
               </Typography.Paragraph>
             </GridCol>
             <GridCol col={{ span: 4 }}>
               <Card.Title>{intl.$t({ defaultMessage: 'Passphrase Length' })}</Card.Title>
               <Typography.Paragraph>
-                {transformDpskNetwork(intl, DpskNetworkType.LENGTH, data.passphraseLength)}
+                {data && transformDpskNetwork(intl, DpskNetworkType.LENGTH, data.passphraseLength)}
               </Typography.Paragraph>
             </GridCol>
             <GridCol col={{ span: 4 }}>
               <Card.Title>{intl.$t({ defaultMessage: 'Passphrase Expiration' })}</Card.Title>
               <Typography.Paragraph>
-                {transformAdvancedDpskExpirationText(
+                {data && transformAdvancedDpskExpirationText(
                   intl,
                   {
                     expirationType: data.expirationType,
