@@ -82,7 +82,7 @@ describe('EditEdge general settings', () => {
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
-      { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
+      { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     const applyButton = screen.getByRole('button', { name: 'Apply' })
     await user.click(applyButton)
@@ -150,7 +150,7 @@ describe('EditEdge general settings api fail', () => {
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
-      { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
+      { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await screen.findAllByText('An error occurred')

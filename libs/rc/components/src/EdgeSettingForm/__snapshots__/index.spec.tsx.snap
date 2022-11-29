@@ -561,7 +561,7 @@ exports[`EdgeSettingForm should create EdgeSettingForm with edit mode successful
           title=""
         >
           Serial Number
-          <div
+          <svg
             data-testid="QuestionMarkCircleOutlined"
           />
         </label>
@@ -893,7 +893,7 @@ exports[`EdgeSettingForm should show OTP message correctly 1`] = `
           title=""
         >
           Serial Number
-          <div
+          <svg
             data-testid="QuestionMarkCircleOutlined"
           />
         </label>
@@ -996,7 +996,8 @@ exports[`EdgeSettingForm should show OTP message correctly 1`] = `
     data-show="true"
     role="alert"
   >
-    <div
+    <svg
+      class="ant-alert-icon"
       data-testid="InformationSolid"
     />
     <div

@@ -316,9 +316,9 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                             title=""
                           >
                             Serial Number
-                            <svg>
-                              QuestionMarkCircleOutlined.svg
-                            </svg>
+                            <svg
+                              data-testid="QuestionMarkCircleOutlined"
+                            />
                           </label>
                         </div>
                         <div
