@@ -61,7 +61,8 @@ function SearchResult () {
     useQuery: useNetworkListQuery,
     defaultPayload: {
       ...NetworkTable.defaultNetworkPayload,
-      searchString: globalSearch
+      searchString: globalSearch,
+      searchTargetFiled: ['name', 'description']
     },
     pagination: {
       pageSize: 5
