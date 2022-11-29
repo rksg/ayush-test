@@ -1,18 +1,12 @@
-import { Input }   from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Tooltip, GridRow, GridCol, cssStr } from '@acx-ui/components'
+import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI
 }                        from '@acx-ui/components'
-import { SplitProvider }    from '@acx-ui/feature-toggle'
-import {
-  SearchOutlined
-  AccountCircleSolid,
-  QuestionMarkCircleSolid
-}                          from '@acx-ui/icons'
+import { SplitProvider }   from '@acx-ui/feature-toggle'
 import { Outlet }          from '@acx-ui/react-router-dom'
 import { notAvailableMsg } from '@acx-ui/utils'
 
@@ -39,7 +33,7 @@ function Layout () {
           </div>
         }
         rightHeaderContent={<>
-			<SearchBar />
+			  <SearchBar />
           <LayoutUI.Divider />
           {/* <AlarmsHeaderButton /> */}
           <AlarmButton/>
