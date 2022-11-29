@@ -54,11 +54,6 @@ describe('EdgeSettingForm', () => {
     await screen.findByText('Mock Venue 1')
     await screen.findByText('Mock Venue 2')
     await screen.findByText('Mock Venue 3')
-    const edgeGroupDropdown = screen.getByRole('combobox', { name: 'SmartEdge Group' })
-    await user.click(edgeGroupDropdown)
-    await screen.findByText('Mock Group 1')
-    await screen.findByText('Mock Group 2')
-    await screen.findByText('Mock Group 3')
   })
 
   it('should show OTP message correctly', async () => {
