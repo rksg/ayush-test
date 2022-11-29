@@ -59,8 +59,7 @@ export default function MacRegistrationListForm () {
     const saveData = {
       name: data.name,
       autoCleanup: data.autoCleanup,
-      priority: (editMode ? undefined :
-        tableQuery.data?.totalElements && tableQuery.data?.totalElements + 1),
+      priority: (editMode ? undefined : tableQuery.data ? tableQuery.data.totalElements + 1 : 0),
       ...toListExpirationPayload(data)
       // defaultAccess
       // policyId
@@ -164,7 +163,7 @@ export default function MacRegistrationListForm () {
   const addContent = () => {
     return (
       <>
-        <StepsForm.StepForm title='Settings'
+        <StepsForm.StepForm title='1. Settings'
           onFinish={async (data: MacRegistrationPoolFormFields) => {
             updatePoolSaveData(data)
             return true
@@ -176,11 +175,14 @@ export default function MacRegistrationListForm () {
             </Col>
           </Row>
         </StepsForm.StepForm>
-        <StepsForm.StepForm title='Summary'>
+        <StepsForm.StepForm title='2. Summary'>
           <Row>
             <Col span={16}>
               <StepsForm.Title children='Summary'/>
               <Row>
+                <Col span={24}>
+                  <h4 style={{ fontWeight: 'bold' }}>Settings</h4>
+                </Col>
                 <Col span={8}>
                   <Form.Item
                     label={intl.$t({ defaultMessage: 'Policy Name' })}

@@ -3,7 +3,7 @@ import { useIntl }                                                              
 
 import { Button, SelectionControl } from '@acx-ui/components'
 
-import { expirationTimeUnits } from '../../MacRegistrationListUtils'
+import { dateValidationRegExp, expirationTimeUnits } from '../../MacRegistrationListUtils'
 
 export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()
@@ -40,7 +40,8 @@ export function MacRegistrationListSettingForm () {
                       {
                         required: true,
                         message: 'Please choose date'
-                      }
+                      },
+                      { validator: (_, value) => dateValidationRegExp(value) }
                     ]}>
                     <DatePicker name='datepicker' placeholder='Choose date'/>
                   </Form.Item>
@@ -53,10 +54,11 @@ export function MacRegistrationListSettingForm () {
                     <Form.Item name='expireAfter'
                       initialValue={1}
                       rules={[
-                        { required: true, message: 'Please enter number' }
-                      ]}>
-                      <InputNumber/>
-                    </Form.Item>
+                        { required: true, message: 'Please enter number' },
+                        { type: 'number', min: 1 }
+                      ]}
+                      children={<InputNumber min={1} />}
+                    />
                     <Form.Item name='expireTimeUnit' initialValue='HOURS_AFTER_TIME'>
                       {renderExpirationSelect()}
                     </Form.Item>

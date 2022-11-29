@@ -10,18 +10,6 @@ import MacRegistrationListFormContext from '../MacRegistrationListFormContext'
 
 import { MacRegistrationListSettingForm } from './MacRegistrationListSettingForm'
 
-// const data = {
-//   id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
-//   name: 'Registration pool',
-//   description: '',
-//   autoCleanup: true,
-//   priority: 1,
-//   ssidRegex: 'cecil-mac-auth',
-//   enabled: true,
-//   expirationEnabled: false,
-//   registrationCount: 5
-// }
-
 describe('MacRegistrationListSettingForm', () => {
 
   it('should render form successfully', async () => {
@@ -48,18 +36,4 @@ describe('MacRegistrationListSettingForm', () => {
     const accessPolicySet = screen.getByRole('combobox', { name: /Access Policy Set/i })
     expect(accessPolicySet).toBeTruthy()
   })
-
-  // it('should render form successfully(edit)', async () => {
-  //   render(
-  //     <MacRegistrationListFormContext.Provider value={{ editMode: true,
-  //       data, setData: jest.fn() }}>
-  //       <Form>
-  //         <MacRegistrationListSettingForm />
-  //       </Form>
-  //     </MacRegistrationListFormContext.Provider>
-  //   )
-  //
-  //   const policyName = await screen.findByRole('textbox', { name: /policy name/i })
-  //   expect(policyName).toHaveValue('Registration pool')
-  // })
 })

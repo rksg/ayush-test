@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { macAddressRegExp } from '../../MacRegistrationListUtils'
+import { dateValidationRegExp, macAddressRegExp } from '../../MacRegistrationListUtils'
 
 interface MacAddressDrawerProps {
   visible: boolean
@@ -109,7 +109,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
               { isExpired === 2 &&
                 <Form.Item
                   name='expirationDate'
-                  rules={[{ required: true }]}>
+                  rules={[{ required: true },
+                    { validator: (_, value) => dateValidationRegExp(value) }]}>
                   <DatePicker placeholder={'Choose date'} />
                 </Form.Item>
               }

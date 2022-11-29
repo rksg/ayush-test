@@ -6,12 +6,20 @@ export function macAddressRegExp (value: string) {
   const HYPHEN_6_GROUPS = new RegExp(/^([0-9A-F]{2}-){5}([0-9A-F]{2})$/)
   const DOTS_3_GROUPS = new RegExp(/^([0-9A-F]{4}[.]){2}([0-9A-F]{4})$/)
   const NO_DELIMITER = new RegExp(/^[0-9A-F]{12}$/)
-  if (value!=='' && !(HYPHEN_2_GROUPS.test(value) ||
+  if (value && !(HYPHEN_2_GROUPS.test(value) ||
     COLON_6_GROUPS.test(value) ||
     HYPHEN_6_GROUPS.test(value) ||
     DOTS_3_GROUPS.test(value) ||
     NO_DELIMITER.test(value))) {
     return Promise.reject('Invalid MAC address format')
+  }
+  return Promise.resolve()
+}
+
+export function dateValidationRegExp (value: string) {
+  const today = new Date()
+  if(value && new Date(value) < today) {
+    return Promise.reject('The expiration date must be in the future')
   }
   return Promise.resolve()
 }
