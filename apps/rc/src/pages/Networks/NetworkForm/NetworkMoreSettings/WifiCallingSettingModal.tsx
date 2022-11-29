@@ -1,5 +1,6 @@
 import React, {
   useContext,
+  useEffect,
   useState
 } from 'react'
 
@@ -77,6 +78,14 @@ export function WifiCallingSettingModal () {
     setVisible(false)
     setTargetKeys(wifiCallingSettingList.map(item => item.id))
   }
+
+  useEffect(() => {
+    const networkIds = form.getFieldValue(['wlan', 'advancedCustomization', 'wifiCallingIds'])
+    if (!wifiCallingSettingList.length && data && networkIds) {
+      setWifiCallingSettingList(data.filter(item => networkIds.indexOf(item.id) !== -1))
+      setTargetKeys(networkIds)
+    }
+  }, [data, wifiCallingSettingList.length])
 
   return (
     <>

@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { GridRow, GridCol, cssStr } from '@acx-ui/components'
 import { Close }                    from '@acx-ui/icons'
+import { Logo }                     from '@acx-ui/icons'
 import { useGetCloudVersionQuery }  from '@acx-ui/rc/services'
 import { useParams }                from '@acx-ui/react-router-dom'
 
@@ -14,8 +15,7 @@ export default function About (props: {
 }) {
   const { $t } = useIntl()
 
-  // eslint-disable-next-line max-len
-  const logoURL = 'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png'
+  // const logoURL = 'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png'
 
   const params = useParams()
   const { data } = useGetCloudVersionQuery({ params })
@@ -34,12 +34,13 @@ export default function About (props: {
     title={''} >
     <GridRow style={{ rowGap: 13 }}>
       <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
-        <img style={{
+        {/* <img style={{
           width: 140
         }}
         src={logoURL}
         alt={$t({ defaultMessage: 'Logo' })}
-        />
+        /> */}
+        <Logo/>
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
         <div style={{ fontWeight: 600,

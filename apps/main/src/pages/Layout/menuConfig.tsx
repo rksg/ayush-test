@@ -104,8 +104,8 @@ export function useMenuConfig () {
       //     path: '/devices/switches',
       //     name: $t({ defaultMessage: 'Switch' })
       //   }
-      // ],
-      disabled: false
+      // ]
+      disabled: true
     },
     {
       path: '/networks',
@@ -132,6 +132,16 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Users' }),
       inactiveIcon: AccountCircleOutlined,
       activeIcon: AccountCircleSolid,
+      // routes: [
+      //   {
+      //     path: '/users/aps',
+      //     name: $t({ defaultMessage: 'WiFi' })
+      //   },
+      //   {
+      //     path: '/users/switches',
+      //     name: $t({ defaultMessage: 'Switch' })
+      //   }
+      // ]
       disabled: true
     },
     genPlaceholder(),

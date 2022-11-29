@@ -80,6 +80,24 @@ export interface FloorPlanImage {
 	name: string
 }
 
+export interface UploadUrlResponse {
+	fileId: string;
+	signedUrl: string;
+}
+export interface FloorPlanFormDto {
+	floorNumber: number;
+	id?: string;
+	imageId?: string;
+	imageName: string;
+	name: string;
+}
+
+export interface FileValidation {
+	file: File,
+	isValidfileType: boolean,
+	isValidFileSize: boolean
+}
+
 export interface VenueCapabilities {
 	apModels: ApModel[]
 	version: string
@@ -147,7 +165,8 @@ export interface VenueExtended {
   disableByMaxReached?: boolean
   mesh: MeshOptions
   dhcp: DhcpOptions
-  id?: string
+	id?: string,
+	country: string
 }
 
 export interface VenueSettings {
@@ -344,6 +363,55 @@ export interface VenueDefaultRegulatoryChannelsForm {
 	  changeInterval: number,
 	  txPower: string
 	}
+}
+
+export interface ApRadioChannelsForm {
+  apRadioParams24G: {
+	allowedChannels: string[],
+	changeInterval: number,
+	channelBandwidth: string,
+	manualChannel: number,
+	method: string,
+	txPower: string
+  },
+  apRadioParams50G: {
+	allowedChannels: string[],
+	changeInterval: number,
+	channelBandwidth: string,
+	manualChannel: number,
+	method: string,
+	txPower: string
+  },
+  apRadioParams6G: {
+	bssMinRate6G: string,
+	changeInterval: number,
+	channelBandwidth: string,
+	manualChannel: number,
+	method: string,
+	mgmtTxRate6G: string,
+	txPower: string
+  },
+  apRadioParamsDual5G: {
+	enabled: boolean,
+	radioParamsLower5G: {
+	  changeInterval: number,
+	  channelBandwidth: string,
+	  manualChannel: number,
+	  method: string,
+	  txPower: string
+	},
+	radioParamsUpper5G: {
+	  changeInterval: number,
+	  channelBandwidth: string,
+	  manualChannel: number,
+	  method: string,
+	  txPower: string
+	}
+  },
+  enable6G: boolean,
+  enable24G: boolean,
+  enable50G: boolean,
+  useVenueSettings: boolean
 }
 
 export interface AvailableLteBands {

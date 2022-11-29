@@ -91,9 +91,9 @@ exports[`Networks Table should click disabled row 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg>
-                            SettingsOutlined.svg
-                          </svg>
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
                         </div>
                       </div>
                     </div>
@@ -1616,7 +1616,7 @@ exports[`Networks Table should click disabled row 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                VLAN Pool: undefined
+                                VLAN Pool: 
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1898,9 +1898,9 @@ exports[`Networks Table should delete selected row 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg>
-                            SettingsOutlined.svg
-                          </svg>
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
                         </div>
                       </div>
                     </div>
@@ -3423,7 +3423,7 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                VLAN Pool: undefined
+                                VLAN Pool: 
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3705,9 +3705,9 @@ exports[`Networks Table should render table 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg>
-                            SettingsOutlined.svg
-                          </svg>
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
                         </div>
                       </div>
                     </div>
@@ -5230,7 +5230,7 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                VLAN Pool: undefined
+                                VLAN Pool: 
                               </td>
                               <td
                                 class="ant-table-cell"

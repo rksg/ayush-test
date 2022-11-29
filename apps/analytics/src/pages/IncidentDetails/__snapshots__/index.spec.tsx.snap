@@ -160,7 +160,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-3 gHqQDa"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
             type="solid-bg"
           >
             <div
@@ -176,8 +176,16 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
-                    />
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                        />
+                      </div>
+                    </div>
                   </div>
                   <div
                     class="ant-card-extra"
@@ -192,7 +200,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                 class="ant-card-body"
               >
                 <section
-                  class="styledComponents__Wrapper-sc-117mefi-3 gnybBH"
+                  class="styledComponents__Wrapper-sc-117mefi-3 ggPtaU"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-start"
@@ -203,9 +211,8 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                     >
                       <svg
                         class="styledComponents__BulbOutlinedIcon-sc-117mefi-0 glgoAW"
-                      >
-                        BulbOutlined.svg
-                      </svg>
+                        data-testid="BulbOutlined"
+                      />
                     </div>
                     <div
                       class="ant-space-item"
@@ -229,7 +236,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                         class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 lgTSMV looZqI"
+                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-117mefi-2 eyxVFQ looZqI"
                         >
                           Root Cause Analysis
                         </div>
@@ -246,7 +253,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                         class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 lgTSMV looZqI"
+                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-117mefi-2 eyxVFQ looZqI"
                         >
                           Recommended Action
                         </div>

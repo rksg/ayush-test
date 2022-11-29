@@ -17,14 +17,6 @@ import { api } from './services'
 
 import { IncidentTable } from './index'
 
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  SearchOutlined: () => <div data-testid='search-outlined' />,
-  CancelCircle: () => <div data-testid='cancel-circle' />,
-  CloseSymbol: () => <div data-testid='close-symbol' />,
-  SettingsOutlined: (props: {}) => <div data-testid='settings-outlined' {...props} />
-}))
-
 const incidentTests = [
   {
     severity: 0.12098536225957168,
@@ -223,27 +215,6 @@ describe('IncidentTable', () => {
     }
   })
 
-  it('should render column header sorting', async () => {
-    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
-      data: { network: { hierarchyNode: { incidents: incidentTests } } }
-    })
-    render(<Provider><IncidentTable filters={filters}/></Provider>, {
-      route: {
-        path: '/t/tenantId/analytics/incidents',
-        wrapRoutes: false,
-        params: {
-          tenantId: '1'
-        }
-      }
-    })
-    for (let i = 0; i < columnHeaders.length; i++) {
-      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1)!)
-      await screen.findAllByRole('img', { hidden: false, name: 'caret-up' })
-      fireEvent.click((await screen.findAllByText(columnHeaders[i].name)).at(-1)!)
-      await screen.findAllByRole('img', { hidden: false, name: 'caret-down' })
-    }
-  })
-
   it('should allow for muting', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
@@ -305,7 +276,7 @@ describe('IncidentTable', () => {
     for (let i = 0; i < hiddenColumnHeaders.length; i++) {
       const header = hiddenColumnHeaders[i]
 
-      const settingsButton = await screen.findByTestId('settings-outlined')
+      const settingsButton = await screen.findByTestId('SettingsOutlined')
       expect(settingsButton).toBeTruthy()
       fireEvent.click(settingsButton)
 
@@ -354,7 +325,7 @@ describe('IncidentTable', () => {
     const before = await screen.findAllByRole('radio', { hidden: true, checked: false })
     expect(before).toHaveLength(2)
 
-    const settingsButton = await screen.findByTestId('settings-outlined')
+    const settingsButton = await screen.findByTestId('SettingsOutlined')
     expect(settingsButton).toBeDefined()
     fireEvent.click(settingsButton)
 
@@ -440,7 +411,7 @@ describe('IncidentTable', () => {
         'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
       )
     )
-    fireEvent.click(await screen.findByTestId('close-symbol'))
+    fireEvent.click(await screen.findByTestId('CloseSymbol'))
     expect(screen.queryByText('Root cause:')).toBeNull()
   })
 })

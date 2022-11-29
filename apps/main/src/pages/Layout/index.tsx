@@ -7,9 +7,11 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 }                        from '@acx-ui/components'
-import { SplitProvider } from '@acx-ui/feature-toggle'
+import { SplitProvider }    from '@acx-ui/feature-toggle'
 import {
   SearchOutlined
+  AccountCircleSolid,
+  QuestionMarkCircleSolid
 }                          from '@acx-ui/icons'
 import { Outlet }          from '@acx-ui/react-router-dom'
 import { notAvailableMsg } from '@acx-ui/utils'
@@ -21,6 +23,7 @@ import LicenseBar        from './Header/LicenseBar'
 import RegionButton      from './Header/RegionButton'
 import UserButton        from './Header/UserButton'
 import { useMenuConfig } from './menuConfig'
+import SearchBar         from './SearchBar'
 
 function Layout () {
 
@@ -36,26 +39,7 @@ function Layout () {
           </div>
         }
         rightHeaderContent={<>
-          <Tooltip title={useIntl().$t(notAvailableMsg)}>
-            <GridRow>
-              <GridCol col={{ span: 19 }}>
-                <Input disabled
-                  placeholder={useIntl().$t(({ defaultMessage: 'What are you looking for?' }))}
-                  style={{
-                    color: cssStr('--acx-primary-white')
-                  }}
-                  bordered={false}/>
-              </GridCol>
-              <GridCol col={{ span: 5 }}>
-                <LayoutUI.ButtonOutlined disabled
-                  shape='circle'
-                  style={{ background: cssStr('--acx-neutrals-70') }}
-                  icon={
-                    <SearchOutlined/>
-                  } />
-              </GridCol>
-            </GridRow>
-          </Tooltip>
+			<SearchBar />
           <LayoutUI.Divider />
           {/* <AlarmsHeaderButton /> */}
           <AlarmButton/>

@@ -1,16 +1,19 @@
 import React from 'react'
 
-import { Badge }   from 'antd'
-import { useIntl } from 'react-intl'
-
+import { Badge, Space } from 'antd'
+import { useIntl }      from 'react-intl'
 
 import {
   Loader,
   Table,
   TableProps,
-  deviceStatusColors
+  deviceStatusColors,
+  StackedBarChart,
+  cssStr
 } from '@acx-ui/components'
-import { useApListQuery } from '@acx-ui/rc/services'
+import {
+  useApListQuery
+} from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
   ApExtraParams,
@@ -23,8 +26,11 @@ import {
   transformDisplayText,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getFilters } from '@acx-ui/rc/utils'
-import { useParams }  from '@acx-ui/react-router-dom'
+import { getFilters }                         from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+
+import { useApActions } from '../useApActions'
+
 
 
 const defaultPayload = {
@@ -66,20 +72,27 @@ const transformMeshRole = (value: APMeshRole) => {
   return transformDisplayText(meshRole)
 }
 
-const APStatus = function ({ status }: { status: ApDeviceStatusEnum }) {
+export const APStatus = (
+  { status, showText = true }: { status: ApDeviceStatusEnum, showText?: boolean }
+) => {
   const intl = useIntl()
   const apStatus = transformApStatus(intl, status, APView.AP_LIST)
   return (
     <span>
       <Badge color={handleStatusColor(apStatus.deviceStatus)}
-        text={apStatus.message}
+        text={showText ? apStatus.message : ''}
       />
     </span>
   )
 }
 
-export function ApTable () {
+interface ApTableProps
+  extends Omit<TableProps<AP>, 'columns'> {
+}
+
+export function ApTable (props?: ApTableProps) {
   const { $t } = useIntl()
+  const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params)
   const tableQuery = useTableQuery({
@@ -89,6 +102,8 @@ export function ApTable () {
       filters
     }
   })
+
+  const apAction = useApActions()
 
   const tableData = tableQuery.data?.data ?? []
 
@@ -105,7 +120,10 @@ export function ApTable () {
       key: 'name',
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
-      sorter: true
+      sorter: true,
+      render: (data, row) => (
+        <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+      )
     }, {
       key: 'deviceStatus',
       title: $t({ defaultMessage: 'Status' }),
@@ -127,14 +145,54 @@ export function ApTable () {
       dataIndex: 'apMac',
       sorter: true
     }, {
+      key: 'incidents',
+      title: () => (
+        <>
+          { $t({ defaultMessage: 'Incidents' }) }
+          <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+        </>
+      ),
+      dataIndex: 'incidents',
+      sorter: false,
+      render: (data, row) => {
+        //TODO: Shows breakdown by severity - with a counter for each severity
+        return (<Space direction='horizontal'>
+          <StackedBarChart
+            style={{ height: 10, width: 40 }}
+            data={[{
+              category: 'emptyStatus',
+              series: [{
+                name: '',
+                value: 1
+              }]
+            }]}
+            showTooltip={false}
+            showLabels={false}
+            showTotal={false}
+            barColors={[cssStr(deviceStatusColors.empty)]}
+          />
+          <TenantLink to={`/devices/aps/${row.serialNumber}/details/incidents`}>
+            {data ? data: 0}
+          </TenantLink>
+        </Space>)
+      }
+    }, {
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
-      sorter: true
+      sorter: true,
+      render: (data, row) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      )
     }, {
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
-      dataIndex: 'switchName'
+      dataIndex: 'switchName',
+      render: (data, row) => {
+        return (
+          <TenantLink to={`/switches/${row.venueId}/details/overview`}>{data}</TenantLink>
+        )
+      }
     }, {
       key: 'meshRole',
       title: $t({ defaultMessage: 'Mesh Role' }),
@@ -143,15 +201,20 @@ export function ApTable () {
       render: transformMeshRole
     }, {
       key: 'clients',
-      title: $t({ defaultMessage: 'Connected Clients' }),
+      title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: transformDisplayNumber
+      render: (data, row) => (
+        <TenantLink to={`/aps/${row.serialNumber}/details/clients`}>
+          {transformDisplayNumber(row.clients)}
+        </TenantLink>
+      )
     }, {
       key: 'deviceGroupName',
       title: $t({ defaultMessage: 'AP Group' }),
       dataIndex: 'deviceGroupName',
       sorter: true
+      //TODO: Click-> Filter by AP group
     }, {
       key: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),
@@ -159,8 +222,9 @@ export function ApTable () {
         .map(([channel, visible]) => visible ? {
           key: channel,
           dataIndex: channel,
-          title: channelTitleMap[channel as keyof ApExtraParams],
+          title: <Table.SubTitle children={channelTitleMap[channel as keyof ApExtraParams]} />,
           align: 'center',
+          ellipsis: true,
           render: transformDisplayText
         } : null)
         .filter(Boolean)
@@ -169,27 +233,73 @@ export function ApTable () {
       title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
       sorter: true
+      //TODO: Click-> Filter by Tag
     }, {
       key: 'serialNumber',
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'serialNumber',
+      show: false,
       sorter: true
     }, {
       key: 'fwVersion',
       title: $t({ defaultMessage: 'Version' }),
       dataIndex: 'fwVersion',
+      show: false,
       sorter: true
     }] as TableProps<AP>['columns']
   }, [$t, tableQuery.data?.extra])
 
+
+  const isActionVisible = (
+    selectedRows: AP[],
+    { selectOne, isOperational }: { selectOne?: boolean, isOperational?: boolean }) => {
+    let visible = true
+    if (isOperational) {
+      visible = selectedRows.every(ap => ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL)
+    }
+    if (selectOne) {
+      visible = visible && selectedRows.length === 1
+    }
+    return visible
+  }
+
+
+
+  const rowActions: TableProps<AP>['rowActions'] = [{
+    label: $t({ defaultMessage: 'Edit' }),
+    visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    onClick: (rows) => {
+      navigate(`${rows[0].serialNumber}/edit/details`, { replace: false })
+    }
+  }, {
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: async (rows, clearSelection) => {
+      apAction.showDeleteAps(rows, params.tenantId, clearSelection)
+    }
+  }, {
+    label: $t({ defaultMessage: 'Reboot' }),
+    visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
+    onClick: (rows, clearSelection) => {
+      apAction.showRebootAp(rows[0].serialNumber, params.tenantId, clearSelection)
+    }
+  }, {
+    label: $t({ defaultMessage: 'Download Log' }),
+    visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
+    onClick: (rows) => {
+      apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
+    }
+  }]
+
   return (
     <Loader states={[tableQuery]}>
       <Table<AP>
+        {...props}
         columns={columns}
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        rowActions={rowActions}
       />
     </Loader>
   )

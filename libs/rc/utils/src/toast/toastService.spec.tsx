@@ -83,12 +83,16 @@ describe('Toast Service: showTxToast', () => {
     const failedTx = {
       ...tx,
       status: TxStatus.FAIL,
-      descriptionTemplate: 'Network "@@networkName" was not added'
+      descriptionTemplate: 'Network "@@networkName" was not added',
+      error: '{"errors":[{"code":"xxx-xxxxx","message":"Operation: ADD, Type: Network, Id: xxx, Err: xxxxxx"}],"requestId":"xxxxxxx"}'
     }
     act(() => {
       showActivityMessage(failedTx, ['AddNetworkDeep'])
     })
     await screen.findByText('Network "open-network" was not added')
+    fireEvent.click(await screen.findByRole('button', { name: 'Technical Details' }))
+    await screen.findByRole('dialog')
+    await screen.findByText(/The following information was reported for the error you encountered/)
   })
 
 })

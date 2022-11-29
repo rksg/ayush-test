@@ -18,7 +18,10 @@ import {
   venueListResponse,
   policyListResponse
 } from './__tests__/fixtures'
+import { types }   from './NetworkDetail/NetworkDetailForm'
 import NetworkForm from './NetworkForm'
+
+types[3].disabled = false
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText(/Network Name/)
@@ -99,11 +102,13 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkResponse))),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [networkResponse] }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(WifiUrlsInfo.updateNetworkDeep.url,
+      rest.put(WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json([]))),

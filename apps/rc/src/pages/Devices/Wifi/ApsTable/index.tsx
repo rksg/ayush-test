@@ -1,8 +1,12 @@
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Dropdown, PageHeader } from '@acx-ui/components'
-// import { ApTable } from '../../../../components/ApTable'
+import {
+  Button,
+  Dropdown,
+  PageHeader
+} from '@acx-ui/components'
+import { ApTable }    from '@acx-ui/rc/components'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 export default function ApsTable () {
@@ -16,7 +20,8 @@ export default function ApsTable () {
       label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Import from file' })}</TenantLink>
     }, {
       key: 'ap-group',
-      label: <TenantLink to='TODO'>{$t({ defaultMessage: 'AP Group' })}</TenantLink> }
+      label: <TenantLink to='devices/apgroups/add'>
+        {$t({ defaultMessage: 'AP Group' })}</TenantLink> }
     ]}
   />
 
@@ -30,13 +35,11 @@ export default function ApsTable () {
           }</Dropdown>
         ]}
       />
-      {/* TODO:  */}
-      {/* <ApTable
+      <ApTable
         rowSelection={{
-          type: 'checkbox',
-          ...rowSelection(useIntl())
+          type: 'checkbox'
         }}
-      /> */}
+      />
     </>
   )
 }

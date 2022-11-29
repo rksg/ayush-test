@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 
 import { Badge, Select, Button, List } from 'antd'
+import { PaginationConfig }            from 'antd/lib/pagination'
 import { useIntl }                     from 'react-intl'
+
 
 import { LayoutUI, GridRow, GridCol, Drawer, Loader, Tooltip } from '@acx-ui/components'
 import { NotificationSolid }                                   from '@acx-ui/icons'
@@ -17,11 +19,14 @@ import { formatter }                            from '@acx-ui/utils'
 import { ListItem, AcknowledgeCircle, WarningCircle, ClearButton } from './styledComponents'
 
 
+
 const defaultArray: Alarm[] = []
+
+
 
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
-  filters: { severity: ['all'] },
+  // filters: { severity: ['all'] },
   fields: [
     'startTime',
     'severity',
@@ -68,7 +73,7 @@ export default function AlarmsHeaderButton () {
     { isLoading: isAllAlarmCleaning }
   ] = useClearAllAlarmMutation()
 
-  let tableQuery = useTableQuery({
+  const tableQuery = useTableQuery({
     useQuery: useAlarmsListQuery,
     defaultPayload,
     sorter: {
@@ -83,9 +88,10 @@ export default function AlarmsHeaderButton () {
     if (tableQuery.data?.data) {
       setTableData(tableQuery.data.data)
     }
+
     tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: severity==='all' ? undefined : { severity: [severity] }
+      ...tableQuery.payload
+      // filters: severity==='all' ? {} : { severity: [severity] }
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableQuery.data, severity])
@@ -124,7 +130,7 @@ export default function AlarmsHeaderButton () {
     ]}>
       <List
         itemLayout='horizontal'
-        pagination={tableQuery.pagination}
+        pagination={tableQuery.pagination as PaginationConfig}
         dataSource={tableData}
         renderItem={(item) => (
 
