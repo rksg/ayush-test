@@ -3,12 +3,11 @@ import { AnalyticsFilter }         from '@acx-ui/analytics/utils'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { Provider, store }         from '@acx-ui/store'
 import {
-  fireEvent,
+  cleanup,
   mockGraphqlMutation,
   mockGraphqlQuery,
   render,
-  screen,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 import { TimeStampRange }         from '@acx-ui/types'
 import { DateRange, NetworkPath } from '@acx-ui/utils'
@@ -17,15 +16,13 @@ import { HealthPageContext } from '../HealthPageContext'
 
 import KpiSection from '.'
 
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  InformationOutlined: () => <div data-testid='information-outlined'/>
-}))
-
 describe('Kpi Section', () => {
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
   })
+
+  afterEach(() => cleanup())
+
   const sampleTS = {
     time: [
       '2022-04-07T09:15:00.000Z',
@@ -44,64 +41,9 @@ describe('Kpi Section', () => {
   } as AnalyticsFilter
   const healthContext = {
     ...filters,
-    timeWindow: ['2022-04-07T09:30:00.000Z', '2022-04-07T09:45:00.000Z'] as TimeStampRange,
+    timeWindow: [sampleTS.time[0], sampleTS.time[4]] as TimeStampRange,
     setTimeWindow: jest.fn()
   }
-
-  it('should render kpis for tab with valid thresholds', async () => {
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 2, 3, 3, 0] } }
-    })
-    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
-    })
-    mockGraphqlQuery(dataApiURL, 'KPI', {
-      data: {
-        mutationAllowed: true
-      }
-    })
-    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
-      data: {
-        timeToConnectThreshold: { value: 2000 }
-      }
-    })
-    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
-      data: {
-        timeToConnect: {
-          success: true
-        }
-      }
-    })
-    render(<Router><Provider>
-      <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={filters}/>
-      </HealthPageContext.Provider>
-    </Provider></Router>)
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
-    await screen.findByText('Time To Connect')
-    expect(await screen.findByText('20% meets goal')).toBeVisible()
-
-    const resetBtns = await screen.findAllByRole('button', { name: 'Reset' })
-    expect(resetBtns).toHaveLength(4)
-    const resetBtn = resetBtns[0]
-    expect(resetBtn).toBeDefined()
-    fireEvent.click(resetBtn)
-
-    const sliders = await screen.findAllByRole('slider')
-    expect(sliders).toHaveLength(4)
-    const values = sliders.map(slider => slider.style.left)
-    expect(values.find((val) => val === '50%')).toMatch('50%')
-
-    const applyBtns = await screen.findAllByRole('button', { name: 'Apply' })
-    expect(applyBtns).toHaveLength(4)
-    const applyBtn = applyBtns[0]
-    expect(applyBtn).toBeDefined()
-    fireEvent.click(applyBtn)
-    expect(await screen.findByText('Threshold set successfully.')).toBeInTheDocument()
-  }, 60000)
-
-
 
   it('should render disabled tooltip with network path', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
@@ -132,10 +74,10 @@ describe('Kpi Section', () => {
       <HealthPageContext.Provider
         value={{ ...healthContext, path }}
       >
-        <KpiSection tab={'overview'} filters={{ path } as unknown as AnalyticsFilter} />
+        <KpiSection tab={'overview'} filters={{ ...filters, path }} />
       </HealthPageContext.Provider>
     </Provider></Router>)
-    // eslint-disable-next-line max-len
+
     await screen.findAllByTitle(/^Cannot save threshold at organisation level*/)
   }, 60000)
 
@@ -164,7 +106,8 @@ describe('Kpi Section', () => {
       }
     })
 
-    const path = [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }]
+    const path =
+      [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }] as NetworkPath
     const period = Buffer.from(JSON.stringify(filters)).toString('base64')
     const analyticsNetworkFilter = Buffer.from(JSON.stringify({
       path,
@@ -173,7 +116,7 @@ describe('Kpi Section', () => {
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={{ path } as unknown as AnalyticsFilter} />
+        <KpiSection tab={'overview'} filters={{ ...filters, path: path }} />
       </HealthPageContext.Provider>
     </Provider>, {
       route: {
@@ -185,5 +128,43 @@ describe('Kpi Section', () => {
     // eslint-disable-next-line max-len
     await screen.findAllByTitle(/^You don't have permission to set threshold for selected network node./)
   }, 60000)
+
+  it('should render with smaller timewindow', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { histogram: { data: [0, 2, 2, 3, 3, 0] } }
+    })
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { timeSeries: sampleTS }
+    })
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: {
+        mutationAllowed: false
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+      data: {
+        timeToConnectThreshold: { value: 30000 }
+      }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: {
+        timeToConnect: {
+          success: true
+        }
+      }
+    })
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    render(<Router><Provider>
+      <HealthPageContext.Provider
+        value={{ ...healthContext, path }}
+      >
+        <KpiSection tab={'overview'}
+          filters={{ ...filters, path, endDate: sampleTS.data[2] as unknown as string }}
+        />
+      </HealthPageContext.Provider>
+    </Provider></Router>)
+
+    expect(await screen.findByText(/Time to Connect/i)).toBeInTheDocument()
+  })
 
 })

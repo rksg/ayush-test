@@ -21,12 +21,32 @@ export function serverIpAddressRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function networkWifiPortRegExp (value: number) {
+  const { $t } = getIntl()
+  if (value && value <= 0){
+    return Promise.reject($t(validationMessages.validateEqualOne))
+  } else if (value && value > 65535) {
+    return Promise.reject($t(validationMessages.validateLowerThan65535))
+  }
+  return Promise.resolve()
+}
+
 export function networkWifiSecretRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp('^[\\x21-\\x7E]+([\\x20-\\x7E]*[\\x21-\\x7E]+)*$')
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
+export function URLRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.validateURL))
   }
   return Promise.resolve()
 }
@@ -269,6 +289,26 @@ export function serialNumberRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function targetHostRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(\\b((?=[a-z0-9-]{1,63}\\.)(xn--)?[a-z0-9]+(-[a-z0-9]+)*\\.)+[a-z]{2,63}\\b)$)')
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.targetHost))
+  }
+  return Promise.resolve()
+}
+
+export function MacAddressFilterRegExp (value: string){
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^(?:[0-9A-Fa-f]{2}([-:]?))(?:[0-9A-Fa-f]{2}\1){4}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function emailRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
@@ -279,3 +319,5 @@ export function emailRegExp (value: string) {
   }
   return Promise.resolve()
 }
+
+

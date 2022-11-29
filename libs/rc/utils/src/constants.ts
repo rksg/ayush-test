@@ -25,7 +25,8 @@ export enum WlanSecurityEnum {
   OpenCaptivePortal = 'OpenCaptivePortal',
   WEP = 'WEP',
   WPA23Mixed = 'WPA23Mixed',
-  WPA3 = 'WPA3'
+  WPA3 = 'WPA3',
+  None = 'None'
 }
 
 export enum PassphraseFormatEnum {
@@ -445,4 +446,45 @@ export const CountryIsoDisctionary = {
   'Zambia': 'zm',
   'Zimbabwe': 'zw',
   'Åland Islands': 'ax'
+}
+export enum PortalViewEnum{
+  ClickThrough = 'ClickThrough',
+  GuestPassConnect = 'GuestPassConnect',
+  GuestPassForgot = 'GuestPassForgot',
+  SelfSignIn = 'SelfSignIn',
+  SelfSignInRegister = 'SelfSignInRegister',
+  HostApproval = 'HostApproval',
+  ConnectionConfirmed = 'ConnectionConfirmed',
+  TermCondition = 'TermCondition'
+}
+export enum PortalLanguageEnum{
+  ChineseTraditional = 'zh-hant',
+  Czech = 'ces',
+  English = 'en',
+  Finnish = 'fin',
+  French = 'fr',
+  German = 'de',
+  Greek = 'gre',
+  Hungarian = 'hun',
+  Italian = 'it',
+  Japanese = 'ja',
+  Norwegian = 'nor',
+  Polish = 'pol',
+  PortuguesePortugal = 'pt',
+  PortugueseBrazil = 'pt-BR',
+  Romanian = 'ro',
+  Slovak = 'sk',
+  Spanish = 'es',
+  Swedish = 'swe',
+  Turkish = 'tr'
+}
+
+export enum PortalComponentsEnum{
+  Logo = 'Logo',
+  WelcomeText = 'WelcomeText',
+  Photo = 'Photo',
+  SecondaryText = 'SecondaryText',
+  TermsConditions = 'TermsConditions',
+  PoweredBy = 'PoweredBy',
+  WiFi4EU = 'WiFi4EU'
 }

@@ -14,7 +14,7 @@ import {
 }                                     from '@acx-ui/analytics/utils'
 import {
   BarChart,
-  Card,
+  HistoricalCard,
   cssNumber,
   Loader,
   cssStr,
@@ -90,7 +90,7 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 Switches by Traffic' })} >
+      <HistoricalCard title={$t({ defaultMessage: 'Top 5 Switches by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
             data && data.source?.length
@@ -108,7 +108,7 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
               <NoData/>
           )}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }
