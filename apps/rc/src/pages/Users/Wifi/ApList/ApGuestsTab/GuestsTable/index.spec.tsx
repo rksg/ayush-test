@@ -41,10 +41,14 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/aps/guests' }
       })
 
+
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('test1')
+    jest.useRealTimers()
 
   })
 

@@ -92,15 +92,24 @@ exports[`Guest Table should render table 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                />
                                 Created
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                />
                               </th>
                               <th
                                 aria-sort="ascending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -156,11 +165,17 @@ exports[`Guest Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -216,11 +231,17 @@ exports[`Guest Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -276,11 +297,17 @@ exports[`Guest Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -336,11 +363,17 @@ exports[`Guest Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -396,11 +429,17 @@ exports[`Guest Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -456,16 +495,32 @@ exports[`Guest Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                />
                                 Status
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                 style="position: sticky; right: 0px;"
-                              />
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                />
+                              </th>
                             </tr>
                           </thead>
                           <tbody
@@ -761,7 +816,7 @@ exports[`Guest Table should render table 1`] = `
                                   type="button"
                                 >
                                   <span>
-                                    29/11/2022 02:05
+                                    03/08/2022 15:20
                                   </span>
                                 </button>
                               </td>
@@ -867,13 +922,46 @@ exports[`Guest Table should render table 1`] = `
                       </a>
                     </li>
                     <li
-                      aria-disabled="true"
-                      class="ant-pagination-next ant-pagination-disabled"
+                      class="ant-pagination-item ant-pagination-item-2"
+                      tabindex="0"
+                      title="2"
+                    >
+                      <a
+                        rel="nofollow"
+                      >
+                        2
+                      </a>
+                    </li>
+                    <li
+                      class="ant-pagination-item ant-pagination-item-3"
+                      tabindex="0"
+                      title="3"
+                    >
+                      <a
+                        rel="nofollow"
+                      >
+                        3
+                      </a>
+                    </li>
+                    <li
+                      class="ant-pagination-item ant-pagination-item-4"
+                      tabindex="0"
+                      title="4"
+                    >
+                      <a
+                        rel="nofollow"
+                      >
+                        4
+                      </a>
+                    </li>
+                    <li
+                      aria-disabled="false"
+                      class="ant-pagination-next"
+                      tabindex="0"
                       title="Next Page"
                     >
                       <button
                         class="ant-pagination-item-link"
-                        disabled=""
                         tabindex="-1"
                         type="button"
                       >

@@ -33,7 +33,10 @@ describe('AP Guest Tab', () => {
 
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><ApGuestsTab /></Provider>, { route: { params } })
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
     expect(asFragment()).toMatchSnapshot()
+    jest.useRealTimers()
   })
 
 })
