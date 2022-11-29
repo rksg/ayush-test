@@ -13,6 +13,7 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   DhcpAp,
+  ApRadioChannelsForm,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
@@ -272,7 +273,34 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-
+    getApRadio: build.query<ApRadioChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApRadio, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    updateApRadio: build.mutation<ApRadioChannelsForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApRadio, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    deleteApRadio: build.mutation<ApRadioChannelsForm, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApRadio, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
@@ -399,6 +427,9 @@ export const {
   useBlinkLedApMutation,
   useFactoryResetApMutation,
   useLazyGetDhcpApQuery,
+  useGetApRadioQuery,
+  useUpdateApRadioMutation,
+  useDeleteApRadioMutation,
   useGetPacketCaptureStateQuery,
   useGetApRadioCustomizationQuery,
   useStopPacketCaptureMutation,

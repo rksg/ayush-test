@@ -157,6 +157,18 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
   },
+  getApRadio: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  updateApRadio: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  deleteApRadio: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
   pingAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'
