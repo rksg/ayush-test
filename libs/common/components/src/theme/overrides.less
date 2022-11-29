@@ -63,8 +63,18 @@
         font-family: var(--acx-neutral-brand-font);
       }
       & .ant-collapse-arrow {
-        right: 10px;
-        top: 65%;
+        right: 5px;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .ant-collapse-borderless {
+    .ant-collapse-item {
+      .ant-collapse-content {
+        .ant-collapse-content-box {
+          padding-top: 0px;
+        }
       }
     }
   }
@@ -765,6 +775,10 @@
         }
       }
     }
+  }
+
+  .ant-popover-inner-content {
+    line-height: var(--acx-body-3-line-height);
   }
 
   // Gmap Close Icon and Info windows overrides

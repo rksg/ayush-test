@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
-import FileSaver from 'file-saver'
 import { rest }  from 'msw'
 
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -17,12 +16,6 @@ import {
 
 import { ApTable } from '.'
 
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  CancelCircle: () => <div data-testid='cancel-circle' />,
-  SettingsOutlined: () => <div data-testid='SettingsOutlined'/>
-}))
-
 const list = {
   totalCount: 1,
   page: 1,
@@ -31,7 +24,7 @@ const list = {
       serialNumber: '000000000001',
       name: 'mock-ap-1',
       model: 'R510',
-      fwVersion: '6.2.0.103.261',
+      fwVersion: '6.2.0.103.486', // valid Ap Fw version for reset
       venueId: '01d74a2c947346a1a963a310ee8c9f6f',
       venueName: 'Mock-Venue',
       deviceStatus: '2_00_Operational',
@@ -192,6 +185,8 @@ const list = {
 }
 
 describe('Aps', () => {
+  afterEach(() => jest.restoreAllMocks())
+
   it('should render correctly', async () => {
     mockServer.use(
       rest.post(
@@ -210,14 +205,14 @@ describe('Aps', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // eslint-disable-next-line testing-library/no-node-access
-    const tbody = screen.getByRole('table').querySelector('tbody')!
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
 
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(list.data.length)
-    list.data.forEach((item, index) => {
-      expect(within(rows[index]).getByText(item.name)).toBeVisible()
-    })
+    for (const [index, item] of Object.entries(list.data)) {
+      expect(await within(rows[Number(index)]).findByText(item.name)).toBeVisible()
+    }
 
     // expect(asFragment()).toMatchSnapshot() //TODO: <StackedBarChart
   })
@@ -242,7 +237,6 @@ describe('Aps', () => {
     })
 
     const fakeDownloadUrl = '/api/abc'
-    const downloadSpy = jest.spyOn(FileSaver, 'saveAs')
     const rebootSpy = jest.fn()
     rebootSpy.mockReturnValueOnce(true)
 
@@ -259,10 +253,10 @@ describe('Aps', () => {
 
     const row1 = await screen.findByRole('row', { name: /10.00.000.101/i })
     expect(row1).toHaveTextContent('mock-ap-1')
-    expect(within(row1).getByRole('checkbox')).not.toBeChecked()
+    expect(await within(row1).findByRole('checkbox')).not.toBeChecked()
 
     await userEvent.click(await within(row1).findByText('10.00.000.101'))
-    expect(within(row1).getByRole('checkbox')).toBeChecked()
+    expect(await within(row1).findByRole('checkbox')).toBeChecked()
 
     const downloadButton = await screen.findByRole('button', { name: 'Download Log' })
     await userEvent.click(downloadButton)
@@ -272,14 +266,10 @@ describe('Aps', () => {
 
     expect(await screen.findByText('Log is ready.', { exact: false })).toBeVisible()
 
-    expect(downloadSpy).toHaveBeenCalled()
-
     await userEvent.click(await screen.findByRole('button', { name: 'Reboot' }))
     const rebootDialog = await waitFor(async () => screen.findByRole('dialog'))
-    await userEvent.click(within(rebootDialog).getByRole('button', { name: 'Reboot' }))
+    await userEvent.click(await within(rebootDialog).findByRole('button', { name: 'Reboot' }))
     expect(rebootSpy).toHaveBeenCalled()
-
-    jest.restoreAllMocks()
   })
 
   it('Table action bar Delete', async () => {
@@ -324,16 +314,16 @@ describe('Aps', () => {
     const row1 = await screen.findByRole('row', { name: /mock-ap-1/i }) // select ap 1: operational
     await userEvent.click(row1)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
     const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByRole('button', { name: 'Delete AP' })).toBeDisabled()
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    expect(await within(dialog).findByRole('button', { name: 'Delete' })).toBeDisabled()
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
 
     await waitFor(async () => expect(dialog).not.toBeVisible())
 
     await userEvent.click(row1) // unselect ap 1
-    expect(within(row1).getByRole('checkbox')).not.toBeChecked()
+    expect(await within(row1).findByRole('checkbox')).not.toBeChecked()
 
     const row2 = await screen.findByRole('row', { name: /mock-ap-2/i })
     await userEvent.click(row2) // select ap 2: DisconnectedFromCloud
@@ -343,11 +333,11 @@ describe('Aps', () => {
     const rows = await within(tbody).findAllByRole('checkbox', { checked: true })
     expect(rows).toHaveLength(1)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     const dialog2 = await screen.findByRole('dialog')
-    expect(within(dialog2).getByRole('button', { name: 'Delete AP' })).not.toBeDisabled()
+    expect(await within(dialog2).findByRole('button', { name: 'Delete' })).not.toBeDisabled()
 
-    await userEvent.click(within(dialog2).getByRole('button', { name: 'Delete AP' }))
+    await userEvent.click(await within(dialog2).findByRole('button', { name: 'Delete' }))
 
     expect(deleteSpy).toHaveBeenCalled()
 
@@ -356,6 +346,6 @@ describe('Aps', () => {
     await userEvent.click(await within(tbody).findByRole('row', { name: /mock-ap-1/i }))
 
     const toolbar = await screen.findByRole('alert')
-    await userEvent.click(within(toolbar).getByRole('button', { name: 'Edit' }))
-  })
+    await userEvent.click(await within(toolbar).findByRole('button', { name: 'Edit' }))
+  }, 60000)
 })
