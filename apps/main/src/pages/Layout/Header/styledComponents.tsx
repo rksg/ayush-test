@@ -9,8 +9,7 @@ import { Popover as AntPopover,
 import styled from 'styled-components/macro'
 
 import { LayoutUI, GridRow, GridCol } from '@acx-ui/components'
-import { WarningCircleSolid }         from '@acx-ui/icons'
-
+import { WarningCircleSolid, LogOut as AntdLogOut } from '@acx-ui/icons'
 
 
 type CopyableTextProps = {
@@ -155,4 +154,18 @@ export const VersionContainer = styled.div`
 
 export const ClearButton = styled(Button)`
   border: none;
+`
+
+export const Meta = styled(List.Item.Meta)`
+  .ant-list-item-meta-avatar{
+    margin-right: 10px;
+  }
+`
+export const DeviceLink = styled.span`
+  color: var(--acx-accents-blue-50)
+`
+export const LogOut = styled(AntdLogOut)`
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
 `

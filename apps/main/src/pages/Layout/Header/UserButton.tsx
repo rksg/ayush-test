@@ -1,19 +1,15 @@
 import React from 'react'
 
-import { LogoutOutlined } from '@ant-design/icons'
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
-
 
 import { useGetUserProfileQuery } from '@acx-ui/rc/services'
 import { useParams }              from '@acx-ui/react-router-dom'
 
-import { UserNameButton } from './styledComponents'
+import { UserNameButton, LogOut } from './styledComponents'
 
 const UserButton = () => {
   const { $t } = useIntl()
-
-
 
   const params = useParams()
   const { data } = useGetUserProfileQuery({ params })
@@ -36,8 +32,10 @@ const UserButton = () => {
       <Menu.Divider />
 
       <Menu.Item key='logout'>
-        <LogoutOutlined />
-        {$t({ defaultMessage: 'Log out' })}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <LogOut/>
+          <span>{$t({ defaultMessage: 'Log out' })}  </span>
+        </div>
       </Menu.Item>
     </Menu>
   )

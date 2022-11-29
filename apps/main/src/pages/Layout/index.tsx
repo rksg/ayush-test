@@ -10,11 +10,11 @@ import { SplitProvider }   from '@acx-ui/feature-toggle'
 import { Outlet }          from '@acx-ui/react-router-dom'
 import { notAvailableMsg } from '@acx-ui/utils'
 
-import ActivityButton    from './Header/ActivityButton'
-import AlarmButton       from './Header/AlarmButton'
-import HelpButton        from './Header/HelpButton'
-import LicenseBar        from './Header/LicenseBar'
-import RegionButton      from './Header/RegionButton'
+import ActivityButton from './Header/ActivityButton'
+import AlarmButton    from './Header/AlarmButton'
+import HelpButton     from './Header/HelpButton'
+// import LicenseBar        from './Header/LicenseBar'
+// import RegionButton      from './Header/RegionButton'
 import UserButton        from './Header/UserButton'
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
@@ -28,14 +28,13 @@ function Layout () {
         content={<Outlet />}
         leftHeaderContent={
           <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
-            <RegionButton/>
-            <LicenseBar/>
+            {/* <RegionButton/>
+            <LicenseBar/> */}
           </div>
         }
         rightHeaderContent={<>
 			  <SearchBar />
           <LayoutUI.Divider />
-          {/* <AlarmsHeaderButton /> */}
           <AlarmButton/>
           <ActivityButton/>
           <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>

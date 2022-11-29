@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import { useEffect, useState } from 'react'
 
 import { Badge, Select, Button, List } from 'antd'
@@ -13,36 +14,39 @@ import {
   useClearAlarmMutation,
   useClearAllAlarmMutation }  from '@acx-ui/rc/services'
 import { Alarm, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                from '@acx-ui/react-router-dom'
+import { useParams }                            from '@acx-ui/react-router-dom'
 import { formatter }                            from '@acx-ui/utils'
 
-import { ListItem, AcknowledgeCircle, WarningCircle, ClearButton } from './styledComponents'
-
+import { ListItem, AcknowledgeCircle, WarningCircle, ClearButton, Meta, DeviceLink } from './styledComponents'
 
 
 const defaultArray: Alarm[] = []
 
-
-
-const defaultPayload = {
-  url: CommonUrlsInfo.getAlarmsList.url,
-  // filters: { severity: ['all'] },
-  fields: [
-    'startTime',
-    'severity',
-    'message',
-    'entity_id',
-    'id',
-    'serialNumber',
-    'entityType',
-    'entityId',
-    'entity_type',
-    'venueName',
-    'apName',
-    'switchName',
-    'sourceType'
-  ]
-}
+const defaultPayload: {
+    url: string
+    fields: string[]
+    filters?: {
+      severity?: string[]
+    }
+  } = {
+    url: CommonUrlsInfo.getAlarmsList.url,
+    filters: { severity: ['all'] },
+    fields: [
+      'startTime',
+      'severity',
+      'message',
+      'entity_id',
+      'id',
+      'serialNumber',
+      'entityType',
+      'entityId',
+      'entity_type',
+      'venueName',
+      'apName',
+      'switchName',
+      'sourceType'
+    ]
+  }
 
 export default function AlarmsHeaderButton () {
   const params = useParams()
@@ -62,7 +66,6 @@ export default function AlarmsHeaderButton () {
   const [severity, setSeverity] = useState('all')
 
   const [
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clearAlarm,
     { isLoading: isAlarmCleaning }
   ] = useClearAlarmMutation()
@@ -90,9 +93,10 @@ export default function AlarmsHeaderButton () {
     }
 
     tableQuery.setPayload({
-      ...tableQuery.payload
-      // filters: severity==='all' ? {} : { severity: [severity] }
+      ...tableQuery.payload,
+      filters: severity==='all' ? {} : { severity: [severity] }
     })
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableQuery.data, severity])
 
@@ -119,7 +123,7 @@ export default function AlarmsHeaderButton () {
           disabled={tableQuery.data?.totalCount===0}
           style={{ height: 20, fontWeight: 700 }}
           onClick={()=>{
-            // clearAllAlarm({ params: { ...params } })
+            clearAllAlarm({ params: { ...params } })
           }}>
           {$t({ defaultMessage: 'Clear all alarms' })}
         </Button>
@@ -142,21 +146,18 @@ export default function AlarmsHeaderButton () {
                 ghost={true}
                 icon={<AcknowledgeCircle/>}
                 onClick={()=>{
-                  // clearAlarm({ params: { ...params, alarmId: item.id } })
+                  clearAlarm({ params: { ...params, alarmId: item.id } })
                 }}
               />
             </Tooltip>
           ]}>
-            <List.Item.Meta
+            <Meta
               avatar={<WarningCircle />}
               title={item.message}
               description={
                 <GridRow>
                   <GridCol col={{ span: 5 }}>
-                    <TenantLink onClick={()=>{setModalOpen(false)}}
-                      to={`/devices/${item.apName}/devices-details/aps`}>
-                      {item.apName}
-                    </TenantLink>
+                    <DeviceLink>{item.apName}</DeviceLink>
                   </GridCol>
                   <GridCol col={{ span: 9, offset: 10 }}>
                     {formatter('calendarFormat')(item.startTime)}
