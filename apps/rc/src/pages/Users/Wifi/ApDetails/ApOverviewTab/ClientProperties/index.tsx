@@ -437,7 +437,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
   const { $t } = getIntl()
   const durationFormatter = formatter('durationFormat')
   const getTimeFormat = (data: number) =>
-    moment(data *1000).format('DD/MM/YYYY HH:mm')
+    moment(data * 1000).format('DD/MM/YYYY hh:mm A')
 
   return <>
     <Subtitle level={4}>
