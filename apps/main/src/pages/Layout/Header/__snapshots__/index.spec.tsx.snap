@@ -34,9 +34,9 @@ exports[`Header Component should render <About/> component correctly 1`] = `
           <span
             class="ant-modal-close-x"
           >
-            <svg>
-              Close.svg
-            </svg>
+            <svg
+              data-testid="Close"
+            />
           </span>
         </button>
         <div
@@ -54,10 +54,8 @@ exports[`Header Component should render <About/> component correctly 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
                 style="align-items: center;"
               >
-                <img
-                  alt="Logo"
-                  src="https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png"
-                  style="width: 140px;"
+                <svg
+                  data-testid="Logo"
                 />
               </div>
             </div>
@@ -682,9 +680,9 @@ exports[`Header Component should render Alarm component correctly 1`] = `
       class="ant-btn ant-btn-primary ant-btn-icon-only styledComponents__Button-sc-iwostn-11 styledComponents__ButtonSolid-sc-iwostn-15 gMoQSx fIlVXa"
       type="button"
     >
-      <svg>
-        NotificationSolid.svg
-      </svg>
+      <svg
+        data-testid="NotificationSolid"
+      />
     </button>
     <sup
       class="ant-scroll-number ant-badge-count"
