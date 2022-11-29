@@ -41,7 +41,11 @@ const GeneralSettings = () => {
       // TODO when Tags component ready remove this
       const payload = { ...data, tags: [] as string[] }
       if(data.tags) {
-        payload.tags = data.tags.split(',').map(item => item.trim())
+        if(typeof data.tags === 'string') {
+          payload.tags = data.tags.split(',').map(item => item.trim())
+        } else {
+          payload.tags = data.tags
+        }
       }
       delete payload.serialNumber // serial number can not be sent in update API's payload
       await upadteEdge({ params: params, payload: payload }).unwrap()
