@@ -6,10 +6,11 @@ import {
   checkItemNotIncluded,
   hasGraveAccentAndDollarSign,
   checkVlanMember,
-  checkValuesNotEqual,
+  checkValues,
   apNameRegExp,
   gpsRegExp,
-  serialNumberRegExp
+  serialNumberRegExp,
+  targetHostRegExp
 } from './validator'
 
 describe('validator', () => {
@@ -108,14 +109,18 @@ describe('validator', () => {
     })
   })
 
-  describe('checkValuesNotEqual', () => {
+  describe('checkValues', () => {
     it('Should not display error if values are not equal', async () => {
-      const result = checkValuesNotEqual('name', 'test')
+      const result = checkValues('name', 'test')
       await expect(result).resolves.toEqual(undefined)
     })
     it('Should return false when values are equal', async () => {
-      const result1 = checkValuesNotEqual('test', 'test')
-      await expect(result1).rejects.toEqual('This field is invalid')
+      const result = checkValues('test', 'test')
+      await expect(result).rejects.toEqual('This field is invalid')
+    })
+    it('Should not display error when values are equal', async () => {
+      const result = checkValues('test', 'test', true)
+      await expect(result).resolves.toEqual(undefined)
     })
   })
 
@@ -149,6 +154,17 @@ describe('validator', () => {
     it('Should display error message if Serial Number values incorrectly', async () => {
       const result1 = serialNumberRegExp('1234567890000')
       await expect(result1).rejects.toEqual('This field is invalid')
+    })
+  })
+
+  describe('targetHostRegExpExp', () => {
+    it('Should take care of Serial Number values correctly', async () => {
+      const result = targetHostRegExp('1.1.1.1')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if Serial Number values incorrectly', async () => {
+      const result1 = targetHostRegExp('1.1.1.1.1')
+      await expect(result1).rejects.toEqual('Please enter valid target host or IP address')
     })
   })
 })

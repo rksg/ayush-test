@@ -1,49 +1,21 @@
-import { useIntl } from 'react-intl'
-
-import { IncidentTabContent, HealthPage }      from '@acx-ui/analytics/components'
-import { useAnalyticsFilter, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Tabs }                                from '@acx-ui/components'
-import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { defaultNetworkPath }                  from '@acx-ui/utils'
-import { generateVenueFilter }                 from '@acx-ui/utils'
+import { AnalyticsTabs }       from '@acx-ui/analytics/components'
+import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
+import { useParams }           from '@acx-ui/react-router-dom'
+import { defaultNetworkPath }  from '@acx-ui/utils'
+import { generateVenueFilter } from '@acx-ui/utils'
 
 export function VenueAnalyticsTab () {
-  const { $t } = useIntl()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { activeSubTab, venueId } = useParams()
-  const { filters } = useAnalyticsFilter()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { venueId } = useParams()
   const healthFilter = {
-    ...filters,
     path: [{ type: 'zone', name: venueId }]
   } as AnalyticsFilter
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const incidentFilter = {
-    ...filters,
     filter: generateVenueFilter([venueId as string]),
     path: defaultNetworkPath
   } as AnalyticsFilter
-  const onTabChange = (tab: string) => {
-    navigate({
-      ...location,
-      pathname: location.pathname.replace(activeSubTab as string, tab)
-    })
-  }
-  return <Tabs
-    onChange={onTabChange}
-    activeKey={activeSubTab}
-    defaultActiveKey='incidents'
-    type='card'
-  >
-    <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents'>
-      <IncidentTabContent filters={incidentFilter} />
-    </Tabs.TabPane>
-    <Tabs.TabPane tab={$t({ defaultMessage: 'Health' })} key='health'>
-      <HealthPage
-        filters={healthFilter}
-        path={`venues/${venueId}/venue-details/analytics/health`}
-      />
-    </Tabs.TabPane>
-  </Tabs>
+  return <AnalyticsTabs
+    incidentFilter={incidentFilter}
+    healthFilter={healthFilter}
+    healthPath={`venues/${venueId}/venue-details/analytics/health`}
+  />
 }

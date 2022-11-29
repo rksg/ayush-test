@@ -5,6 +5,7 @@ import { isEqual, replace }                     from 'lodash'
 import { useIntl }                              from 'react-intl'
 
 import { Loader, showToast, Tabs } from '@acx-ui/components'
+import { LanPortSettings }         from '@acx-ui/rc/components'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueSettingsQuery,
@@ -23,7 +24,6 @@ import {
 import DefaultApModelDiagram from '../../../../../../assets/images/aps/ap-model-placeholder.png'
 import { VenueEditContext }  from '../../../index'
 
-import { LanPortSettings } from './LanPortSettings'
 
 const { useWatch } = Form
 

@@ -1,11 +1,6 @@
 import React from 'react'
 
-import {
-  Loading3QuartersOutlined
-} from '@ant-design/icons'
 import { Badge, Space } from 'antd'
-import { saveAs }       from 'file-saver'
-import moment           from 'moment'
 import { useIntl }      from 'react-intl'
 
 import {
@@ -13,21 +8,14 @@ import {
   Table,
   TableProps,
   deviceStatusColors,
-  showActionModal,
-  showToast,
   StackedBarChart,
   cssStr
 } from '@acx-ui/components'
 import {
-  useApListQuery,
-  useDeleteApMutation,
-  useDownloadApLogMutation,
-  useLazyGetDhcpApQuery,
-  useRebootApMutation
+  useApListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
-  ApDhcpRoleEnum,
   ApExtraParams,
   AP,
   APMeshRole,
@@ -40,6 +28,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { getFilters }                         from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+
+import { useApActions } from '../useApActions'
+
 
 
 const defaultPayload = {
@@ -81,19 +72,21 @@ const transformMeshRole = (value: APMeshRole) => {
   return transformDisplayText(meshRole)
 }
 
-const APStatus = function ({ status }: { status: ApDeviceStatusEnum }) {
+export const APStatus = (
+  { status, showText = true }: { status: ApDeviceStatusEnum, showText?: boolean }
+) => {
   const intl = useIntl()
   const apStatus = transformApStatus(intl, status, APView.AP_LIST)
   return (
     <span>
       <Badge color={handleStatusColor(apStatus.deviceStatus)}
-        text={apStatus.message}
+        text={showText ? apStatus.message : ''}
       />
     </span>
   )
 }
 
-export interface ApTableProps
+interface ApTableProps
   extends Omit<TableProps<AP>, 'columns'> {
 }
 
@@ -110,10 +103,7 @@ export function ApTable (props?: ApTableProps) {
     }
   })
 
-  const [ downloadApLog ] = useDownloadApLogMutation()
-  const [ getDhcpAp ] = useLazyGetDhcpApQuery()
-  const [ rebootAp ] = useRebootApMutation()
-  const [ deleteAp ] = useDeleteApMutation()
+  const apAction = useApActions()
 
   const tableData = tableQuery.data?.data ?? []
 
@@ -273,133 +263,30 @@ export function ApTable (props?: ApTableProps) {
     return visible
   }
 
-  const shouldShowConfirmation = (selectedRows: AP[]) => {
-    return !selectedRows.every(selectedAp =>
-      selectedAp.deviceStatus === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
-      selectedAp.deviceStatus === ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD)
-  }
 
-
-  type DhcpApInfo = {
-    serialNumber: string,
-    dhcpApRole: ApDhcpRoleEnum,
-    venueDhcpEnabled?: boolean
-  }
 
   const rowActions: TableProps<AP>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
-      navigate(`/aps/${rows[0].serialNumber}/edit/details`, { replace: false })
+      navigate(`${rows[0].serialNumber}/edit/details`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: async (rows, clearSelection) => {
-
-      const dhcpAps = await getDhcpAp({
-        params: { tenantId: params.tenantId },
-        payload: rows.map(row => row.serialNumber)
-      }, true).unwrap()
-
-      if (dhcpAps && dhcpAps.response) {
-        const res: DhcpApInfo[] = Array.isArray(dhcpAps.response)? dhcpAps.response : []
-        const dhcpApMap = res.filter(dhcpAp =>
-          dhcpAp.venueDhcpEnabled === true &&
-          (dhcpAp.dhcpApRole === ApDhcpRoleEnum.PrimaryServer ||
-            dhcpAp.dhcpApRole === ApDhcpRoleEnum.BackupServer))
-
-        if (dhcpApMap.length > 0) {
-          showActionModal({
-            type: 'warning',
-            content: $t({ defaultMessage: 'Not allow to delete DHCP APs' })
-          })
-          return
-        }
-      }
-
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'AP' }),
-          entityValue: rows.length === 1 ? rows[0].name : undefined,
-          numOfEntities: rows.length,
-          confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
-        },
-        onOk: () => {
-          rows.length === 1 ?
-            deleteAp({ params: { tenantId: params.tenantId, serialNumber: rows[0].serialNumber } })
-              .then(clearSelection) :
-            deleteAp({
-              params: { tenantId: params.tenantId },
-              payload: rows.map(row => row.serialNumber)
-            }).then(clearSelection)
-        }
-      })
+      apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
   }, {
     label: $t({ defaultMessage: 'Reboot' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
     onClick: (rows, clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'CUSTOM_BUTTONS',
-          buttons: [{
-            text: $t({ defaultMessage: 'Cancel' }),
-            type: 'default',
-            key: 'cancel'
-          }, {
-            text: $t({ defaultMessage: 'Reboot' }),
-            type: 'primary',
-            key: 'ok',
-            closeAfterAction: true,
-            handler: () => {
-              const serialNumber = rows[0].serialNumber
-              rebootAp({ params: { tenantId: params.tenantId, serialNumber } })
-              clearSelection()
-            }
-          }]
-        },
-        title: $t({ defaultMessage: 'Reboot Access Point?' }),
-        content: $t({ defaultMessage: `Rebooting the AP will disconnect all connected clients.
-          Are you sure you want to reboot?` })
-      })
+      apAction.showRebootAp(rows[0].serialNumber, params.tenantId, clearSelection)
     }
   }, {
     label: $t({ defaultMessage: 'Download Log' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
     onClick: (rows) => {
-      const toastKey = showToast({
-        type: 'info',
-        closable: false,
-        extraContent: <div style={{ width: '60px' }}>
-          <Loading3QuartersOutlined spin
-            style={{ margin: 0, fontSize: '18px', color: cssStr('--acx-primary-white') }}/>
-        </div>,
-        content: $t({ defaultMessage: 'Preparing log...' })
-      })
-
-      const serialNumber = rows[0].serialNumber
-
-      downloadApLog({ params: { tenantId: params.tenantId, serialNumber } })
-        .unwrap().then((result) => {
-          showToast({
-            key: toastKey,
-            type: 'success',
-            content: $t({ defaultMessage: 'Log is ready.' })
-          })
-
-          const timeString = moment().format('DDMMYYYY-HHmm')
-          saveAs(result.fileURL, `SupportLog_${serialNumber}_${timeString}.log.gz`) //TODO: CORS policy
-        })
-        .catch(() => {
-          showToast({
-            key: toastKey,
-            type: 'error',
-            content: $t({ defaultMessage: 'Failed to download AP support log.' })
-          })
-        })
+      apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
   }]
 

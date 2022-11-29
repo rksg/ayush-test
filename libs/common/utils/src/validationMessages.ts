@@ -31,7 +31,7 @@ export const validationMessages = {
       {entityName} with that {key, select,
         name {name}
         other {value}
-      } already exists
+      } already exists{ extra }
     `,
     description: 'Validation - duplication checks'
   }),
@@ -95,9 +95,38 @@ export const validationMessages = {
     defaultMessage: 'VLAN ID must be between 1 and 4094',
     description: 'Validation - VLAN range checks'
   }),
+  validateURL: defineMessage({
+    defaultMessage: 'Please enter a valid URL',
+    description: 'Validation - Please enter a valid URL'
+  }),
+  validateEqualOne: defineMessage({
+    defaultMessage: 'This value should be higher than or equal to 1',
+    description: 'Validation - This value should be higher than or equal to 1'
+  }),
+  validateLowerThan65535: defineMessage({
+    defaultMessage: 'This value should be lower than or equal to 65535',
+    description: 'Validation - This value should be lower than or equal to 65535'
+  }),
   gpsCoordinates: defineMessage({
     defaultMessage: 'Please enter valid GPS coordinates',
     description: 'Validation - GPS coordinates checks'
+  }),
+  targetHost: defineMessage({
+    defaultMessage: 'Please enter valid target host or IP address',
+    description: 'Validation - target host checks'
+  }),
+  diffVenueCountry: defineMessage({
+    defaultMessage: 'Cannot move AP to another venue in different country',
+    description: 'Validation - Venue Country checks'
+  }),
+  cellularApDhcpLimitation: defineMessage({
+    defaultMessage: `The cellular AP cannot
+      be moved to the venue which doesn\'t enable DHCP service`,
+    description: 'Validation - Cellular AP Dhcp checks'
+  }),
+  emailAddress: defineMessage({
+    defaultMessage: 'Please enter a valid email address',
+    description: 'Validation - email address checks'
   })
 }
 
