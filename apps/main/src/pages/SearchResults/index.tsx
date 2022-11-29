@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
@@ -14,24 +14,6 @@ import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 import { Collapse, Panel } from './styledComponents'
 
 
-function useSearchTerm () {
-  const { searchVal } = useParams()
-  return searchVal
-}
-
-function SearchHeader ({ count }: { count: number }) {
-  const searchVal = useSearchTerm()
-  const { $t } = useIntl()
-  return (
-    <PageHeader
-      title={$t(
-        { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
-        { searchVal, count }
-      )}
-    />
-  )
-}
-
 const useGetPanelHeader = ({ count, title, $t }
   : { count: number, title: string, $t: IntlShape['$t'] }) => {
   return $t({ defaultMessage: '{title} ({count})' }, { title, count })
@@ -39,12 +21,12 @@ const useGetPanelHeader = ({ count, title, $t }
 
 function SearchResult () {
   const { $t } = useIntl()
-  const globalSearch = useSearchTerm()
+  const { searchVal } = useParams()
   const [count, setCount] = useState(0)
 
   const searchVenuePayload = {
     ...defaultVenuePayload,
-    searchString: globalSearch,
+    searchString: searchVal,
     searchTargetFields: ['name', 'description']
   }
 
@@ -60,7 +42,7 @@ function SearchResult () {
     useQuery: useNetworkListQuery,
     defaultPayload: {
       ...NetworkTable.defaultNetworkPayload,
-      searchString: globalSearch,
+      searchString: searchVal,
       searchTargetFiled: ['name', 'description']
     },
     pagination: {
@@ -74,11 +56,16 @@ function SearchResult () {
   useEffect(() => {
     // sum all table queries here
     setCount(() => venueCount + networkCount)
-  }, [globalSearch, networkCount, venueCount])
+  }, [searchVal, networkCount, venueCount])
 
   return (
     <Fragment key='search-results'>
-      <SearchHeader key='search-header' count={count}/>
+      <PageHeader
+        title={$t(
+          { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
+          { searchVal, count }
+        )}
+      />
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
           <Collapse
@@ -95,8 +82,8 @@ function SearchResult () {
               key='1'
             >
               <VenueTable
-                key={`venue-search-${globalSearch}`}
-                globalSearch={globalSearch}
+                key={`venue-search-${searchVal}`}
+                globalSearch={searchVal}
                 tableQuery={venueQuery}
               />
             </Panel>
@@ -105,9 +92,9 @@ function SearchResult () {
               key='2'
             >
               <NetworkTable
-                key={`network-search-${globalSearch}`}
+                key={`network-search-${searchVal}`}
                 tableQuery={networkQuery}
-                globalSearch={globalSearch}
+                globalSearch={searchVal}
               />
             </Panel>
           </Collapse>
