@@ -40,13 +40,13 @@ export const mockGraphqlMutation = (
 export const mockRestApiQuery = (
   url: string,
   type: 'get' | 'post' | 'delete',
-  result: { status?: number, data?: any, error?: any } // eslint-disable-line @typescript-eslint/no-explicit-any
+  result: { status?: number, data?: any, error?: any, totalCount?: number } // eslint-disable-line @typescript-eslint/no-explicit-any
 ) => {
   mockServer.use(
     rest[type](url, (req, res, ctx)=>{
       return result.error
         ? res(ctx.status(result.status||500), ctx.json({ error: result.error }))
-        : res(ctx.status(result.status||200), ctx.json({ data: result.data }))
+        : res(ctx.status(result.status||200), ctx.json(result))
     })
   )
 }
