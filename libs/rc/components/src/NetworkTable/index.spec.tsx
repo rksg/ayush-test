@@ -3,7 +3,7 @@ import { CommonUrlsInfo, Network, RequestPayload, TABLE_QUERY, useTableQuery, Wi
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { fireEvent, mockRestApiQuery, render, screen }                                       from '@acx-ui/test-utils'
 
-import { NetworkTable } from '.'
+import { NetworkTable, defaultNetworkPayload  } from '.'
 
 const mockedUseNavigate = jest.fn()
 
@@ -181,7 +181,7 @@ describe('NetworkTable', () => {
 
     await store.dispatch(
       networkApi.endpoints.networkList.initiate({
-        ...NetworkTable.defaultNetworkPayload,
+        ...defaultNetworkPayload,
         params
       })
     )
@@ -191,7 +191,7 @@ describe('NetworkTable', () => {
         <NetworkTableWrapper
           option={{
             useQuery: useNetworkListQuery,
-            defaultPayload: NetworkTable.defaultNetworkPayload }}
+            defaultPayload: defaultNetworkPayload }}
         />
       </Provider>, {
         route: { params, path: '/:tenantId/networks' }
@@ -206,7 +206,7 @@ describe('NetworkTable', () => {
 
     await store.dispatch(
       networkApi.endpoints.networkList.initiate({
-        ...NetworkTable.defaultNetworkPayload,
+        ...defaultNetworkPayload,
         params
       })
     )
@@ -216,7 +216,7 @@ describe('NetworkTable', () => {
         <NetworkTableWrapper
           option={{
             useQuery: useNetworkListQuery,
-            defaultPayload: NetworkTable.defaultNetworkPayload }}
+            defaultPayload: defaultNetworkPayload }}
           globalSearch={'network-01'}
         />
       </Provider>, {
@@ -232,7 +232,7 @@ describe('NetworkTable', () => {
 
     await store.dispatch(
       networkApi.endpoints.networkList.initiate({
-        ...NetworkTable.defaultNetworkPayload,
+        ...defaultNetworkPayload,
         params
       })
     )
@@ -242,7 +242,7 @@ describe('NetworkTable', () => {
         <NetworkTableWrapper
           option={{
             useQuery: useNetworkListQuery,
-            defaultPayload: NetworkTable.defaultNetworkPayload }}
+            defaultPayload: defaultNetworkPayload }}
         />
       </Provider>, {
         route: { params, path: '/:tenantId/networks' }
@@ -268,7 +268,7 @@ describe('NetworkTable', () => {
 
     await store.dispatch(
       networkApi.endpoints.networkList.initiate({
-        ...NetworkTable.defaultNetworkPayload,
+        ...defaultNetworkPayload,
         params
       })
     )
@@ -278,7 +278,7 @@ describe('NetworkTable', () => {
         <NetworkTableWrapper
           option={{
             useQuery: useNetworkListQuery,
-            defaultPayload: NetworkTable.defaultNetworkPayload }}
+            defaultPayload: defaultNetworkPayload }}
         />
       </Provider>, {
         route: { params, path: '/:tenantId/networks' }

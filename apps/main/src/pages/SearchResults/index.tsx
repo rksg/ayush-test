@@ -3,7 +3,7 @@ import { useParams }          from 'react-router-dom'
 
 import { PageHeader, Loader }                            from '@acx-ui/components'
 import { CollapseActive, CollapseInactive }              from '@acx-ui/icons'
-import { NetworkTable }                                  from '@acx-ui/rc/components'
+import { NetworkTable, defaultNetworkPayload }           from '@acx-ui/rc/components'
 import { useNetworkListQuery, useVenuesListQuery }       from '@acx-ui/rc/services'
 import { Network, RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
 
@@ -34,7 +34,7 @@ const searches = [
     const result = useTableQuery<Network, RequestPayload<unknown>, unknown>({
       useQuery: useNetworkListQuery,
       defaultPayload: {
-        ...NetworkTable.defaultNetworkPayload,
+        ...defaultNetworkPayload,
         searchString,
         searchTargetFiled: ['name', 'description']
       },

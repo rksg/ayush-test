@@ -130,7 +130,7 @@ const transformVLAN = (row: Network) => {
   return $t({ defaultMessage: 'VLAN-{id}' }, { id: row.vlan })
 }
 
-const defaultNetworkPayload = {
+export const defaultNetworkPayload = {
   searchString: '',
   fields: [
     'check-all',
@@ -233,5 +233,3 @@ export function NetworkTable ({ tableQuery, globalSearch }: NetworkTableProps) {
     </Loader>
   )
 }
-
-NetworkTable.defaultNetworkPayload = defaultNetworkPayload
