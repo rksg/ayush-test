@@ -1,8 +1,7 @@
-/* eslint-disable align-import/align-import */
 import { useState } from 'react'
 
-import { Drawer } from 'antd'
-import moment from 'moment-timezone'
+import { Drawer }  from 'antd'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Alert, cssStr } from '@acx-ui/components'
@@ -20,7 +19,8 @@ import {
   transformDisplayText,
   GuestStatusEnum
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }    from '@acx-ui/utils'
 
 import { GuestsDetail } from '../GuestsDetail'
 
@@ -202,15 +202,19 @@ export default function GuestsTable () {
 
 export const renderAllowedNetwork = function (currentGuest: Guest) {
   const { $t } = getIntl()
-  // const hasGuestManagerRole = false   //TODO:  from userProfile()
+  // const hasGuestManagerRole = false   //TODO: Wait for userProfile()
   // if (currentGuest.networkId && !hasGuestManagerRole) {
   //   return (
   //     <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
   //       {currentGuest.ssid}</TenantLink>
   //   )
   // } else if (currentGuest.networkId && hasGuestManagerRole) {
+  // return currentGuest.ssid
   if (currentGuest.networkId) {
-    return currentGuest.ssid
+    return (
+      <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
+        {currentGuest.ssid}</TenantLink>
+    )
   } else {
     return $t({ defaultMessage: 'None' })
   }

@@ -665,7 +665,11 @@ exports[`Guest Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                guest pass wlan
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/3f04e252a9d04180855813131d007aca/network-details/aps"
+                                >
+                                  guest pass wlan
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -724,7 +728,11 @@ exports[`Guest Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                guest pass wlan
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/3f04e252a9d04180855813131d007aca/network-details/aps"
+                                >
+                                  guest pass wlan
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -753,7 +761,7 @@ exports[`Guest Table should render table 1`] = `
                                   type="button"
                                 >
                                   <span>
-                                    28/11/2022 16:24
+                                    29/11/2022 02:05
                                   </span>
                                 </button>
                               </td>
@@ -785,7 +793,11 @@ exports[`Guest Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                guest pass wlan
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/3f04e252a9d04180855813131d007aca/network-details/aps"
+                                >
+                                  guest pass wlan
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"

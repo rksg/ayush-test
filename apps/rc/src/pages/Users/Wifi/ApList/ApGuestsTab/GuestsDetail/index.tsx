@@ -46,12 +46,14 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       dataIndex: 'osType',
       sorter: false,
       defaultSortOrder: 'ascend'
+      // render: function (data, row) {} //TODO: Wait for connected clients
     }, {
       key: 'healthCheckStatus',
       title: $t({ defaultMessage: 'Health' }),
       dataIndex: 'healthCheckStatus',
       sorter: false,
       defaultSortOrder: 'ascend'
+      // render: function (data, row) {} //TODO: Wait for connected clients
     }, {
       key: 'clientMac',
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -103,8 +105,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
   return (<Form
     labelCol={{ span: 10 }}
-    labelAlign='left'
-  >
+    labelAlign='left' >
 
     <Form.Item
       style={{ paddingLeft: '14px' }}
@@ -154,7 +155,6 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       children={currentGuest.maxNumberOfClients || '0'} />
 
     <Divider />
-
 
     <Form.Item
       style={{ paddingLeft: '14px' }}
