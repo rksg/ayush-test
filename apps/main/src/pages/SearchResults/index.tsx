@@ -1,48 +1,108 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
-import { useParams }  from 'react-router-dom'
+import React, { Fragment, useEffect, useState } from 'react'
 
-import { GridRow, GridCol, PageHeader } from '@acx-ui/components'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-export default function SearchResults () {
-  return (
-    <>
-      <SearchHeader />
-      <SearchWidgets />
-    </>
-  )
+import { GridRow, GridCol, PageHeader }         from '@acx-ui/components'
+import { CollapseActive, CollapseInactive }     from '@acx-ui/icons'
+import { useVenuesListQuery }                   from '@acx-ui/rc/services'
+import { RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
+
+import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
+
+import { Collapse, Panel } from './styledComponents'
+
+
+function useSearchTerm () {
+  const { searchVal } = useParams()
+  return searchVal
 }
 
-function SearchHeader () {
-  const { searchVal } = useParams()
-  const decodedSearchVal = decodeURIComponent(searchVal as string)
+function SearchHeader ({ count }: { count: number }) {
+  const searchVal = useSearchTerm()
   const { $t } = useIntl()
-  const count = 1
   return (
     <PageHeader
       title={$t(
-        { defaultMessage: 'Search Results for "{decodedSearchVal}" ({count})' },
-        { decodedSearchVal, count }
+        { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
+        { searchVal, count }
       )}
     />
   )
 }
-function SearchWidgets () {
+
+const SearchTableWrapper = ({ children, count, title }
+: { children: React.ReactNode, count: number, title: string }) => {
   const { $t } = useIntl()
+  return <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
+    <Collapse
+      defaultActiveKey={[title]}
+      expandIconPosition='end'
+      expandIcon={({ isActive }) => (isActive)
+        ? <CollapseActive />
+        : <CollapseInactive />
+      }
+      bordered={false}
+    >
+      <Panel
+        key={title}
+        header={$t({ defaultMessage: '{title} ({count})' }, {
+          title,
+          count
+        })}
+      >
+        {children}
+      </Panel>
+    </Collapse>
+  </GridCol>
+}
+
+function SearchResult () {
+  const { $t } = useIntl()
+  const globalSearch = useSearchTerm()
+  const [count, setCount] = useState(0)
+
+  const searchPayload = {
+    ...defaultVenuePayload,
+    searchString: globalSearch,
+    searchTargetFields: ['name', 'description']
+  }
+
+  const tableQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
+    useQuery: useVenuesListQuery,
+    defaultPayload: searchPayload,
+    pagination: {
+      pageSize: 5
+    }
+  })
+
+  const venueCount = tableQuery.data?.totalCount ?? 0
+
+  useEffect(() => {
+    // sum all table queries here
+    setCount(() => venueCount)
+  }, [globalSearch, venueCount])
+
   return (
-    <GridRow>
-      <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
-        <Typography.Text>{$t({ defaultMessage: 'Widget 1' })}</Typography.Text>
-      </GridCol>
-      <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
-        <Typography.Text>{$t({ defaultMessage: 'Widget 2' })}</Typography.Text>
-      </GridCol>
-      <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
-        <Typography.Text>{$t({ defaultMessage: 'Widget 3' })}</Typography.Text>
-      </GridCol>
-      <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
-        <Typography.Text>{$t({ defaultMessage: 'Widget 4' })}</Typography.Text>
-      </GridCol>
-    </GridRow>
+    <Fragment key='search-results'>
+      <SearchHeader key='search-header' count={count}/>
+      <GridRow>
+        <SearchTableWrapper
+          title={$t({ defaultMessage: 'Venue' })}
+          count={venueCount}
+        >
+          <VenueTable
+            key={`venue-search-${globalSearch}`}
+            globalSearch={globalSearch}
+            tableQuery={tableQuery}
+          />
+        </SearchTableWrapper>
+      </GridRow>
+    </Fragment>
   )
+}
+
+export default function SearchResults () {
+  const { searchVal } = useParams()
+  return <SearchResult key={searchVal}/>
 }

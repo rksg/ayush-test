@@ -347,5 +347,5 @@ describe('Aps', () => {
 
     const toolbar = await screen.findByRole('alert')
     await userEvent.click(await within(toolbar).findByRole('button', { name: 'Edit' }))
-  })
+  }, 60000)
 })
