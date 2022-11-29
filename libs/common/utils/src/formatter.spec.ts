@@ -311,7 +311,7 @@ describe('formatter', () => {
     describe('convertEpochToRelativeTime', () => {
       it('Should return relative time', () => {
         expect(typeof formatter('longDurationFormat')(convertEpochToRelativeTime(1669693917)))
-        .toBe('string')
+          .toBe('string')
       })
     })
   })
