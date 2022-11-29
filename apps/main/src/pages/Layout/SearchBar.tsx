@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -12,22 +12,9 @@ import {
   Close
 }                          from '@acx-ui/icons'
 import { useNavigate, useParams, useTenantLink , useLocation } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                                     from '@acx-ui/utils'
+import { notAvailableMsg, fixedEncodeURIComponent }            from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
-/*
-taken from
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
-to address special characters
-*/
-function fixedEncodeURIComponent (str: string) {
-  return encodeURIComponent(str).replace(
-    /[~!'()*_%]/g,
-    (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
-  )
-}
-
 
 function SearchBar () {
   const enableSearch = useIsSplitOn(Features.GLOBAL_SEARCH)
@@ -35,7 +22,7 @@ function SearchBar () {
   const placeholder = useIntl().$t({ defaultMessage: 'What are you looking for?' })
   const params = useParams()
   const { pathname, key } = useLocation()
-  const searchFromUrl = decodeURIComponent(params.searchVal || '')
+  const searchFromUrl = params.searchVal || ''
   const [ showSearchBar, setShowSearchBar ] = useState(searchFromUrl !== '')
   const [ searchText, setSearchText ] = useState(searchFromUrl)
   const navigate = useNavigate()
@@ -62,12 +49,18 @@ function SearchBar () {
       }
     }
   }
-  const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && setSearchUrl()
+
+  const handleSearch = () => {
+    if (searchText.length <= 1) return
+    setSearchUrl()
+  }
+
+  const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && handleSearch()
 
   return (enableSearch
     ? showSearchBar
       ? <UI.SearchBar>
-        <UI.SearchSolid shape='circle' icon={<SearchOutlined />} />
+        <UI.SearchSolid shape='circle' icon={<SearchOutlined />}/>
         <UI.Input
           autoFocus
           value={searchText}
@@ -76,7 +69,7 @@ function SearchBar () {
           data-testid='search-input'
           placeholder={placeholder}
         />
-        <UI.SendSearch onClick={setSearchUrl} data-testid='search-send'/>
+        <UI.SendSearch onClick={handleSearch} data-testid='search-send'/>
         <UI.Divider />
         <UI.Close
           shape='circle'
