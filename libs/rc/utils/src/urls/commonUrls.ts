@@ -243,7 +243,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   },
-  getHistoricalClientDetails: {
+  getHistoricalClientList: {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
   },

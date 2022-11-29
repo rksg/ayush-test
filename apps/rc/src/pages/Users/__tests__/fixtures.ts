@@ -116,7 +116,7 @@ export const clientNetworkList = [{
 export const eventMetaList = {
   data: [{
     apName: 'UI team ONLY',
-    id: '3c7542acb84449918c176ce15ffb4c52',
+    id: 'd47626f6206040c8925822acf4253bc9',
     isApExists: true,
     isClientExists: false,
     isVenueExists: true,

@@ -5,15 +5,12 @@ import { ClientProperties } from './ClientProperties'
 
 export function ApOverviewTab () {
   const { $t } = useIntl()
-  return <>
-    {$t({ defaultMessage: 'ApOverviewTab' })}
-    <Row gutter={24}>
-      <Col span={18}>
-        widget
-      </Col>
-      <Col span={6}>
-        <ClientProperties />
-      </Col>
-    </Row>
-  </>
+  return <Row gutter={24}>
+    <Col span={18}>
+      {$t({ defaultMessage: 'ApOverviewTab' })}
+    </Col>
+    <Col span={6}>
+      <ClientProperties />
+    </Col>
+  </Row>
 }

@@ -31,7 +31,7 @@ describe('ApDetails', () => {
       (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
     rest.get(CommonUrlsInfo.getVenue.url,
       (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
-    rest.post(CommonUrlsInfo.getHistoricalClientDetails.url,
+    rest.post(CommonUrlsInfo.getHistoricalClientList.url,
       (_, res, ctx) => res(ctx.json(histClientList ))),
     rest.post(CommonUrlsInfo.getEventListMeta.url,
       (_, res, ctx) => res(ctx.json(eventMetaList)))

@@ -48,7 +48,7 @@ describe('ClientProperties', () => {
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
       rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
-      rest.post(CommonUrlsInfo.getHistoricalClientDetails.url,
+      rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList ))),
       rest.post(CommonUrlsInfo.getEventListMeta.url,
         (_, res, ctx) => res(ctx.json(eventMetaList)))
@@ -183,19 +183,20 @@ describe('ClientProperties', () => {
   describe('Historical Client', () => {
     it('should render historical client correctly', async () => {
       jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
-      render(<Provider><ClientProperties /></Provider>, {
+      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
+      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render historical client without some data correctly', async () => {
       jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
       mockServer.use(
-        rest.post(CommonUrlsInfo.getHistoricalClientDetails.url,
+        rest.post(CommonUrlsInfo.getHistoricalClientList.url,
           (_, res, ctx) => res(ctx.json({
             ...histClientList,
             data: [{
@@ -212,19 +213,20 @@ describe('ClientProperties', () => {
         rest.get(CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(null)))
       )
-      render(<Provider><ClientProperties /></Provider>, {
+      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
+      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render historical client (guest) correctly', async () => {
       jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
       mockServer.use(
-        rest.post(CommonUrlsInfo.getHistoricalClientDetails.url,
+        rest.post(CommonUrlsInfo.getHistoricalClientList.url,
           (_, res, ctx) => res(ctx.json({
             ...histClientList,
             data: [{
@@ -250,7 +252,7 @@ describe('ClientProperties', () => {
           }))
         )
       )
-      render(<Provider><ClientProperties /></Provider>, {
+      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: {
           params,
           path: '/:tenantId/users/aps/:userId/details/overview',
@@ -263,6 +265,7 @@ describe('ClientProperties', () => {
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('Guest Details')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
+      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render historical client (dpsk) correctly', async () => {
@@ -275,7 +278,7 @@ describe('ClientProperties', () => {
           }))
         )
       )
-      render(<Provider><ClientProperties /></Provider>, {
+      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -283,6 +286,7 @@ describe('ClientProperties', () => {
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('DPSK Passphrase Details')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
+      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render correctly when search parameters is disappeared', async () => {
@@ -293,13 +297,14 @@ describe('ClientProperties', () => {
         )
       )
 
-      render(<Provider><ClientProperties /></Provider>, {
+      const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()
       expect(await screen.findByText('Last Session')).toBeVisible()
       expect(await screen.findByText('WiFi Calling Details')).toBeVisible()
+      expect(asFragment()).toMatchSnapshot()
     })
   })
 })

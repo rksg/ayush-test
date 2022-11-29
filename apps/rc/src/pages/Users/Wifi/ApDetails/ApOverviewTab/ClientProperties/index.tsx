@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Divider, Form, Space } from 'antd'
+import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
 import { Card, Loader, Subtitle, Tooltip } from '@acx-ui/components'
@@ -12,7 +13,7 @@ import {
   useLazyGetVenueQuery,
   // TODO:
   // useLazyGetDpskPassphraseByQueryQuery,
-  useLazyGetHistoricalClientDetailsQuery
+  useLazyGetHistoricalClientListQuery
 } from '@acx-ui/rc/services'
 import {
   Client,
@@ -58,7 +59,7 @@ export function ClientProperties () {
   const [getAp] = useLazyGetApQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
-  const [getHistoricalClientDetails] = useLazyGetHistoricalClientDetailsQuery()
+  const [getHistoricalClientList] = useLazyGetHistoricalClientListQuery()
 
   // TODO: dpsk
   // const [getDpskPassphraseByQuery] = useLazyGetDpskPassphraseByQueryQuery()
@@ -77,14 +78,15 @@ export function ClientProperties () {
     }
 
     const getHistoricalClientData = async () => {
-      const historicalisData = await getHistoricalClientDetails({
+      const historicalisData = await getHistoricalClientList({
         params: { tenantId },
         payload: {
           ...historicalPayload,
           searchString: clientId
         }
       }, true)?.unwrap()
-      setClientDetails(historicalisData as ClientExtended)
+
+      setClientDetails((historicalisData?.data?.[0] ?? {}) as ClientExtended)
     }
 
     clientStatus === ClientStatusEnum.CONNECTED
@@ -161,10 +163,10 @@ export function ClientProperties () {
     const divider = <Divider style={{ margin: '12px 0' }} />
     const objLength = obj ? obj?.filter(item => item)?.length - 1 : 0
     return obj?.filter(item => item)?.map((item, index) => (
-      <>
+      <Space key={`detail_${index}`} style={{ display: 'block' }}>
         { item }
         { index !== objLength && divider }
-      </>
+      </Space>
     ))
   }
 
@@ -434,7 +436,8 @@ function WiFiCallingDetails ({ client }: { client: ClientExtended }) {
 function LastSession ({ client }: { client: ClientExtended }) {
   const { $t } = getIntl()
   const durationFormatter = formatter('durationFormat')
-  const calendarFormatter = formatter('calendarFormat')
+  const getTimeFormat = (data: number) =>
+    moment(data *1000).format('DD/MM/YYYY HH:mm')
 
   return <>
     <Subtitle level={4}>
@@ -444,7 +447,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
       label={$t({ defaultMessage: 'Start Time' })}
       children={
         client?.disconnectTime && client?.sessionDuration
-          ? calendarFormatter(client.disconnectTime * 1000 - client.sessionDuration * 1000)
+          ? getTimeFormat(client.disconnectTime - client.sessionDuration)
           : '--'
       }
     />
@@ -452,7 +455,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
       label={$t({ defaultMessage: 'End Time' })}
       children={
         client.disconnectTime
-          ? calendarFormatter(client.disconnectTime * 1000)
+          ? getTimeFormat(client.disconnectTime)
           : '--'
       }
     />

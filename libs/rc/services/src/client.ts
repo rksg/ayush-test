@@ -8,6 +8,7 @@ import {
   DpskPassphrase,
   EventMeta,
   RequestPayload,
+  TableResult,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 
@@ -37,20 +38,20 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
-    getHistoricalClientDetails: build.query<Client, RequestPayload>({
+    getHistoricalClientList: build.query<TableResult<Client>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const clientDetails = {
-          ...createHttpRequest(CommonUrlsInfo.getHistoricalClientDetails, arg.params),
+          ...createHttpRequest(CommonUrlsInfo.getHistoricalClientList, arg.params),
           body: arg.payload
         }
         const baseDetailsQuery = await fetchWithBQ(clientDetails)
-        const baseDetails = baseDetailsQuery.data as { data: Client[] }
+        const baseDetails = baseDetailsQuery.data as TableResult<Client>
 
         const metaInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
           body: {
             fields: ['networkId', 'venueName', 'apName'],
-            filters: { id: [baseDetails?.data?.[0]?.id] }
+            filters: { id: baseDetails?.data?.map(d => d.id) }
           }
         }
         const metaListQuery = await fetchWithBQ(metaInfo)
@@ -58,8 +59,13 @@ export const clientApi = baseClientApi.injectEndpoints({
 
         return {
           data: {
-            ...baseDetails?.data?.[0],
-            ...metaList?.data?.[0]
+            ...baseDetails,
+            data: baseDetails?.data?.map((item) => {
+              return {
+                ...item,
+                ...metaList?.data?.filter(data => data.id === item.id)?.[0]
+              }
+            })
           }
         }
       }
@@ -71,6 +77,6 @@ export const {
   useLazyGetClientDetailsQuery,
   useGetDpskPassphraseByQueryQuery,
   useLazyGetDpskPassphraseByQueryQuery,
-  useGetHistoricalClientDetailsQuery,
-  useLazyGetHistoricalClientDetailsQuery
+  useGetHistoricalClientListQuery,
+  useLazyGetHistoricalClientListQuery
 } = clientApi
