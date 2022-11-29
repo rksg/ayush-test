@@ -117,7 +117,7 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
     data
   }
 }
-export const { 
+export const {
   useGetClientListQuery,
   useGetHistoricalClientListQuery
 } = clientApi

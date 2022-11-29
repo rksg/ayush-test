@@ -203,8 +203,8 @@ export function formatter (
   }
 }
 
-export function convertEpochToRelativeTime(timestamp: number) {
-  return moment(new Date().getTime()).diff(moment.unix(timestamp));
+export function convertEpochToRelativeTime (timestamp: number) {
+  return moment(new Date().getTime()).diff(moment.unix(timestamp))
 }
 
 function isIntlFormat (name: string): name is keyof typeof intlFormats {

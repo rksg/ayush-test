@@ -1,14 +1,15 @@
 import { useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                                              from '@acx-ui/components'
-import { Table, TableProps, Loader } from '@acx-ui/components'
-import { useGetClientListQuery}                                          from '@acx-ui/rc/services'
-import { getOsTypeIcon, useTableQuery }                                                            from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip }                                 from '@acx-ui/components'
+import { Table, TableProps, Loader }                         from '@acx-ui/components'
+import { Microsoft }                                         from '@acx-ui/icons'
+import { useGetClientListQuery }                             from '@acx-ui/rc/services'
+import { getOsTypeIcon, useTableQuery }                      from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
-const hasGuestManagerRole = false
 import { HealthIcon } from './styledComponents'
-import { Microsoft } from '@acx-ui/icons'
+
+const hasGuestManagerRole = false
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<any>['columns'] = [
@@ -115,10 +116,10 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'ssid',
       sorter: true,
-      render: (data, row) => 
-      (
-        <TenantLink to={`/networks/${row.networkId}/network-details/aps`}>{data}</TenantLink>
-      )
+      render: (data, row) =>
+        (
+          <TenantLink to={`/networks/${row.networkId}/network-details/aps`}>{data}</TenantLink>
+        )
     },
     {
       key: 'sessStartTime',
@@ -225,11 +226,11 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       show: false,
       render: (data) => <>
-      { data ? intl.$t({ defaultMessage: 'Authorized' }) : 
-        intl.$t({ defaultMessage: 'Unauthorized' })
-      }
+        { data ? intl.$t({ defaultMessage: 'Authorized' }) :
+          intl.$t({ defaultMessage: 'Unauthorized' })
+        }
       </>
-      
+
     },
     {
       key: 'encryptMethod',

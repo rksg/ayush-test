@@ -36,11 +36,11 @@ export const getDeviceTypeIcon = (deviceType: string) => {
 }
 
 export const getOsTypeIcon = (osType: string) => {
-  let icon = '';
+  let icon = ''
   // for backward compatible
   type Type = keyof typeof osIconMap
-  const type = convertClientOsType(osType);
-  const iconPrefix = 'client-icon';
+  const type = convertClientOsType(osType)
+  const iconPrefix = 'client-icon'
   const defaultIcon = <GenericOs />
   const osIconMap = {
     apple: <Apple />,
@@ -106,50 +106,50 @@ export const getOsTypeIcon = (osType: string) => {
     case 'windows':
     case 'xbox':
     case 'xerox':
-      icon = `${iconPrefix}-${type}`;
-      break;
+      icon = `${iconPrefix}-${type}`
+      break
     case 'wifi smart plug':
-      icon = `${iconPrefix}-wifi-smart-plug`;
-      break;
+      icon = `${iconPrefix}-wifi-smart-plug`
+      break
     default:
-      icon = `${iconPrefix}-clients`;
+      icon = `${iconPrefix}-clients`
   }
-  return icon;
+  return icon
 }
 
-export const getClientHealthClass = (healthStatus: string) =>  {
+export const getClientHealthClass = (healthStatus: string) => {
   switch (healthStatus) {
     case 'Good':
-      return 'good';
+      return 'good'
     case 'Average':
-      return 'average';
+      return 'average'
     case 'Poor':
-      return 'poor';
+      return 'poor'
     default:
       return 'default'
   }
 }
 
 const convertClientOsType = (origOsType: string) => {
-  const osType = origOsType ? origOsType.toLowerCase() : '';
+  const osType = origOsType ? origOsType.toLowerCase() : ''
 
   // for backward compatible
   if (osType.includes('ios') || osType.includes('mac') || osType.includes('apple')) {
-    return 'apple';
+    return 'apple'
   } else if (osType.includes('android')) {
-    return 'android';
+    return 'android'
   } else if (osType.includes('windows')) {
-    return 'windows';
+    return 'windows'
   } else if (osType.includes('linux')) {
-    return 'linux';
+    return 'linux'
   } else if (osType.includes('kindle')) {
-    return 'kindle';
+    return 'kindle'
   } else if (osType.includes('chrome')) {
-    return 'chrome';
+    return 'chrome'
   } else if (osType.includes('blackberry')) {
-    return 'blackberry';
+    return 'blackberry'
   }
 
-  return osType;
+  return osType
 }
 

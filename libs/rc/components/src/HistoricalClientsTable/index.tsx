@@ -5,7 +5,7 @@ import { cssStr, Subtitle }                from '@acx-ui/components'
 import { Table, TableProps, Loader }       from '@acx-ui/components'
 import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
 import {
-  Client,
+  ClientList,
   useTableQuery
 }                                                            from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
@@ -13,7 +13,7 @@ import { formatter }  from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter('dateTimeFormat')
-  const columns: TableProps<Client>['columns'] = [{
+  const columns: TableProps<ClientList>['columns'] = [{
     key: 'hostname',
     title: intl.$t({ defaultMessage: 'Hostname' }),
     dataIndex: 'hostname',
@@ -112,14 +112,14 @@ export function HistoricalClientsTable ({ searchString } : { searchString: strin
         onChange={tableQuery.handleTableChange}
         rowKey='id'
       />
-      <Typography.Text style={{
+      {!!tableQuery.data?.data.length && <Typography.Text style={{
         fontSize: '10px',
         color: cssStr('--acx-neutrals-60')
       }}>{
           $t({ defaultMessage: `* There are more historical clients than can be displayed. 
         If you don’t see the client you are looking for, 
         narrow the list by entering a more specific text in the search box.` })
-        }</Typography.Text>
+        }</Typography.Text>}
     </Loader>
   )
 }
