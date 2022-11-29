@@ -9,7 +9,7 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { useDeleteMacRegListMutation, useMacRegListsQuery } from '@acx-ui/rc/services'
-import { MacRegistrationPool, useMacTableQuery }            from '@acx-ui/rc/utils'
+import { MacRegistrationPool, useMacRegListTableQuery }     from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate }                          from '@acx-ui/react-router-dom'
 
 
@@ -57,7 +57,7 @@ export default function MacRegistrationListsTable () {
   const navigate = useNavigate()
 
   const MacRegistrationListsTable = () => {
-    const tableQuery = useMacTableQuery({
+    const tableQuery = useMacRegListTableQuery({
       useQuery: useMacRegListsQuery,
       defaultPayload: {}
     })

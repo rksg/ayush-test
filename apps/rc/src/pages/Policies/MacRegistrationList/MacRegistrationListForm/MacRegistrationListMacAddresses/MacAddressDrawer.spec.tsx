@@ -18,8 +18,6 @@ const macAddress = {
 }
 
 describe('MacAddressDrawer', () => {
-  // const [visible, setVisible] = useState(true)
-
   it('should render table with the giving data', async () => {
     const { asFragment } = render(
       <Provider>

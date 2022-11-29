@@ -12,6 +12,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { macAddressRegExp } from '../../MacRegistrationListUtils'
+
 interface MacAddressDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
@@ -86,7 +88,10 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     <Col span={16}>
       <Form.Item name='macAddress'
         label='MAC Address'
-        rules={[{ required: true, message: 'Please enter MAC Address' }]}>
+        rules={[
+          { required: true, message: 'Please enter MAC Address' },
+          { validator: (_, value) => macAddressRegExp(value) }
+        ]}>
         <Input disabled={isEdit}/>
       </Form.Item>
       <Form.Item name='username' label='Username'>

@@ -41,7 +41,7 @@ export function MacRegistrationListOverviewTab () {
                   <Paragraph>{!data?.expirationEnabled ? 'Never expires' :
                     data.expirationType === 'SPECIFIED_DATE' ?
                       // eslint-disable-next-line max-len
-                      toTimeString(data?.expirationDate) : `+${data.expirationOffset} ${expirationTimeUnits[data.expirationType ?? '']}`}</Paragraph>
+                      toTimeString(data?.expirationDate) : `After ${data.expirationOffset} ${expirationTimeUnits[data.expirationType ?? '']}`}</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={8}>

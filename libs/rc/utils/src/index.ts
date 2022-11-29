@@ -24,4 +24,4 @@ export * from './pipes/commonPipes'
 
 export * from './features'
 
-export * from './useMacTableQuery'
+export * from './useMacRegListTableQuery'

@@ -12,7 +12,7 @@ import {
   useUpdateMacRegListMutation
 } from '@acx-ui/rc/services'
 import {
-  MacRegistrationPoolFormFields, MacRegistrationPool, useMacTableQuery
+  MacRegistrationPoolFormFields, MacRegistrationPool, useMacRegListTableQuery
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -36,7 +36,7 @@ export default function MacRegistrationListForm () {
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
   const { Paragraph } = Typography
 
-  const tableQuery = useMacTableQuery({
+  const tableQuery = useMacRegListTableQuery({
     useQuery: useMacRegListsQuery,
     apiParams: { size: '10', page: '0' },
     defaultPayload: {}
@@ -194,7 +194,7 @@ export default function MacRegistrationListForm () {
                   >
                     <Paragraph>{!poolSaveState?.expirationEnabled ? 'Never expires' :
                       // eslint-disable-next-line max-len
-                      poolSaveState.expirationType === 'SPECIFIED_DATE' ? toTimeString(poolSaveState.expirationDate) : `+${poolSaveState.expirationOffset} ${expirationTimeUnits[poolSaveState.expirationType ?? '']}`}</Paragraph>
+                      poolSaveState.expirationType === 'SPECIFIED_DATE' ? toTimeString(poolSaveState.expirationDate) : `After ${poolSaveState.expirationOffset} ${expirationTimeUnits[poolSaveState.expirationType ?? '']}`}</Paragraph>
                   </Form.Item>
                 </Col>
                 <Col span={8}>

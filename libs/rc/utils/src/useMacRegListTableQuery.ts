@@ -63,7 +63,7 @@ const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
 }
 
-export function useMacTableQuery <
+export function useMacRegListTableQuery <
   ResultType,
   Payload,
   ResultExtra

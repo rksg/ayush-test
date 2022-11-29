@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { Provider }                           from '@acx-ui/store'
-import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { Provider }                  from '@acx-ui/store'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import MacRegistrationListTabs from './MacRegistrationListTabs'
 
@@ -25,7 +25,6 @@ describe('MacRegistrationListTab', () =>{
 
   it('should handle tab changes', async () => {
     render(<Provider><MacRegistrationListTabs /></Provider>, { route: { params } })
-    await waitFor(() => screen.findByText('MAC Registrations'))
     fireEvent.click(await screen.findByText('MAC Registrations'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
