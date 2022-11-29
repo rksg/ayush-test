@@ -21,10 +21,10 @@ export interface EdgeViewModel {
 }
 
 export enum EdgeStatusEnum {
-  REQUIRES_ATTENTION = 'Requires Attention',
-  TEMPORARILY_DEGRADED = 'Temporarily degraded',
-  IN_SETUP_PHASE = '1_07_Initializing',
-  OFFLINE = '1_09_Offline',
+  NEVER_CONTACTED_CLOUD = '1_01_NeverContactedCloud',
+  INITIALIZING = '1_07_Initializing',
+  NEEDS_CONFIG = '1_10_NeedsConfig',
   OPERATIONAL = '2_00_Operational',
-  NEVER_CONTACTED_CLOUD = '1_01_NeverContactedCloud'
+  APPLYING_CONFIGURATION = '2_02_ApplyingConfiguration',
+  DISCONNECTED_FROM_CLOUD = '3_04_DisconnectedFromCloud'
 }
