@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Form, Input, Select, Tooltip } from 'antd'
 import TextArea                         from 'antd/lib/input/TextArea'
@@ -8,12 +8,6 @@ import { Alert }                      from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useVenuesListQuery }         from '@acx-ui/rc/services'
 import { useParams }                  from '@acx-ui/react-router-dom'
-
-// will remove when api is ready
-interface Option {
-  label: string
-  value: string
-}
 
 interface EdgeSettingFormProps {
   isEdit?: boolean
@@ -27,26 +21,9 @@ const defaultPayload = {
   ]
 }
 
-const defaultEdgeGroupOption: Option[] = [
-  { label: 'Mock Group 1', value: 'mock_group_1' },
-  { label: 'Mock Group 2', value: 'mock_group_2' },
-  { label: 'Mock Group 3', value: 'mock_group_3' }
-]
-function useEdgeGroupOptions () {
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => setIsLoading(false), [])
-
-  return {
-    isLoading,
-    data: isLoading ? undefined : defaultEdgeGroupOption
-  }
-}
-
 export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
 
   const { $t } = useIntl()
-  const { data: edgeGroupOptions = [] } = useEdgeGroupOptions()
   const params = useParams()
   const [showOtpMessage, setShowOtpMessage] = useState(false)
   const { venueOptions } = useVenuesListQuery({ params:
@@ -72,12 +49,6 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         }]}
       >
         <Select options={venueOptions} />
-      </Form.Item>
-      <Form.Item
-        name='edgeGroupId'
-        label={$t({ defaultMessage: 'SmartEdge Group' })}
-      >
-        <Select options={edgeGroupOptions} loading />
       </Form.Item>
       <Form.Item
         name='name'

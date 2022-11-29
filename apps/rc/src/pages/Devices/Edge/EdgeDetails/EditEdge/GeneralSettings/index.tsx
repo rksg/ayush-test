@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
@@ -23,14 +23,18 @@ const GeneralSettings = () => {
   const { data: edgeInfoData } = useGetEdgeQuery({ params: { serialNumber: params.serialNumber } })
   const [upadteEdge] = useUpdateEdgeMutation()
 
-  formRef.current?.setFieldsValue({
-    venueId: edgeInfoData?.venueId || '',
-    edgeGroupId: edgeInfoData?.edgeGroupId || '',
-    name: edgeInfoData?.name || '',
-    serialNumber: edgeInfoData?.serialNumber || '',
-    description: edgeInfoData?.description || '',
-    tags: edgeInfoData?.tags || ''
-  })
+  useEffect(() => {
+    if(edgeInfoData) {
+      formRef.current?.setFieldsValue({
+        venueId: edgeInfoData?.venueId || '',
+        edgeGroupId: edgeInfoData?.edgeGroupId || '',
+        name: edgeInfoData?.name || '',
+        serialNumber: edgeInfoData?.serialNumber || '',
+        description: edgeInfoData?.description || '',
+        tags: edgeInfoData?.tags || ''
+      })
+    }
+  }, [edgeInfoData])
 
   const handleUpdateEdge = async (data: EdgeSaveData) => {
     try {
