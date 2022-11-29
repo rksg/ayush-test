@@ -1,180 +1,78 @@
 import { useState } from 'react'
 
-import { Typography, Input, Divider } from 'antd'
-import { useIntl }                    from 'react-intl'
+import { Menu, Dropdown } from 'antd'
+import { useIntl }        from 'react-intl'
 
-import { LayoutUI, GridRow, GridCol, Button }      from '@acx-ui/components'
-import { QuestionMarkCircleSolid, SearchOutlined } from '@acx-ui/icons'
+import { LayoutUI }                from '@acx-ui/components'
+import { QuestionMarkCircleSolid } from '@acx-ui/icons'
 
 import About    from './About'
 import Firewall from './Firewall'
-import {
-  RowWrapper,
-  StyledPopover,
-  Description,
-  MenuLink,
-  MenuRowContainer,
-  LinkItem,
-  SearchRow,
-  LinkCol,
-  MenuIcon } from './styledComponents'
 
-
-
-
-export default function HelpHeaderButton () {
+const UserButton = () => {
   const { $t } = useIntl()
-
   const [aboutModalState, setAboutModalOpen] = useState(false)
   const [firewallModalState, setFirewallModalOpen] = useState(false)
 
-
-  const content = (<div style={{ width: 500, paddingBottom: 20 }}>
-    <GridRow style={{ padding: 25 }}>
-      <GridCol col={{ span: 24 }}>
-        <Typography.Title level={3}>
-          {$t({ defaultMessage: 'Hellp & Support' })}
-        </Typography.Title>
-      </GridCol>
-    </GridRow>
-    <RowWrapper>
-      <SearchRow>
-        <SearchOutlined/>
-        <Input
-          style={{ width: '90%' }}
-          placeholder={$t(({ defaultMessage: 'Search...' }))}
-          bordered={false}
-        />
-      </SearchRow>
-    </RowWrapper>
-    <MenuRowContainer>
-      <GridCol col={{ span: 24 }} style={{ paddingLeft: 0 }}>
-        <Typography.Title level={4} style={{ fontWeight: 600, marginBottom: 0 }}>
-          {$t({ defaultMessage: 'Help For This Page' })}
-        </Typography.Title>
-        <Description>{$t({ defaultMessage: 'Contextual Help specific to this page' })}</Description>
-      </GridCol>
-      <Divider style={{ margin: 0 }}/>
-    </MenuRowContainer>
-    <MenuRowContainer>
-      <GridCol col={{ span: 24 }}>
-        <Typography.Title level={4} style={{ fontWeight: 600, marginBottom: 0 }}>
-          {$t({ defaultMessage: 'Get Started Tour' })}
-        </Typography.Title>
-        <Description>{$t({ defaultMessage: 'Walk through the key functionalities' })}</Description>
-      </GridCol>
-      <Divider style={{ margin: 0 }}/>
-    </MenuRowContainer>
-    <MenuRowContainer>
-      <GridCol col={{ span: 24 }}>
-        <Typography.Title level={4} style={{ fontWeight: 600, marginBottom: 0 }}>
-          {$t({ defaultMessage: 'Contact Support' })}
-        </Typography.Title>
-        <Description>{$t({ defaultMessage: 'We are here to help you' })}</Description>
-      </GridCol>
-      <Divider style={{ margin: 0 }}/>
-    </MenuRowContainer>
-
-
-    <LinkItem paddingTop={'25'}>
-      <GridCol col={{ span: 5 }} >
-        <Button type='link' onClick={() => { }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'How to Videos' })}</MenuLink>
-        </Button>
-      </GridCol>
-    </LinkItem>
-    <LinkItem>
-      <LinkCol>
-        <Button type='link' onClick={() => { }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'Dictionary' })}</MenuLink>
-        </Button>
-      </LinkCol>
-    </LinkItem>
-    <LinkItem>
-      <LinkCol>
-        <Button type='link' onClick={() => { }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'Documentation' })}</MenuLink>
-        </Button>
-      </LinkCol>
-    </LinkItem>
-
-    <LinkItem>
-      <LinkCol>
-        <Button type='link' onClick={() => { }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'Knowledge Articles' })}</MenuLink>
-        </Button>
-      </LinkCol>
-    </LinkItem>
-    <LinkItem>
-      <LinkCol>
-        <Button type='link' onClick={() => { }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'Forums' })}</MenuLink>
-        </Button>
-      </LinkCol>
-    </LinkItem>
-    <LinkItem>
-      <Divider style={{ margin: 0 }}/>
-      <LinkCol>
-        <Button type='link' onClick={() => { }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'My Open Case' })}</MenuLink>
-        </Button>
-      </LinkCol>
-      <Divider style={{ margin: 0 }}/>
-    </LinkItem>
-    <LinkItem>
-      <Divider style={{ margin: 0 }}/>
-      <LinkCol>
-        <Button type='link' onClick={() => { }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'Privacy' })}</MenuLink>
-        </Button>
-      </LinkCol>
-    </LinkItem>
-    <LinkItem>
-      <LinkCol>
-        <Button type='link' onClick={() => { }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'New Features' })}</MenuLink>
-        </Button>
-      </LinkCol>
-    </LinkItem>
-    <LinkItem>
-      <LinkCol>
-        <Button type='link' onClick={() => { setAboutModalOpen(true) }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'About RUCKUS One' })}</MenuLink>
-        </Button>
-      </LinkCol>
-    </LinkItem>
-    <LinkItem>
-      <LinkCol>
-        <Button type='link'
-          onClick={() => {
+  const menuHeaderDropdown = (
+    <Menu selectedKeys={[]}
+      onClick={(menuInfo)=>{
+        switch(menuInfo.key)
+        {
+          case 'about':
+            setAboutModalOpen(true)
+            break
+          case 'firewallACL':
             setFirewallModalOpen(true)
-          }}>
-          <MenuIcon/>
-          <MenuLink>{$t({ defaultMessage: 'Firewall ACL Inputs' })}</MenuLink>
-        </Button>
-      </LinkCol>
-    </LinkItem>
-  </div>
+            break
+        }
+      }}>
+      <Menu.Item disabled key='documentation'>
+        {$t({ defaultMessage: 'Documentation Center' })}
+      </Menu.Item>
+
+      <Menu.Item disabled key='videos'>
+        {$t({ defaultMessage: 'How-To Videos' })}
+      </Menu.Item>
+
+      <Menu.Item disabled key='help'>
+        {$t({ defaultMessage: 'Help for this page' })}
+      </Menu.Item>
+
+      <Menu.Item disabled key='models'>
+        {$t({ defaultMessage: 'Supported Device Models' })}
+      </Menu.Item>
+
+      <Menu.Item key='firewallACL'>
+        {$t({ defaultMessage: 'Firewall ACL Inputs' })}
+      </Menu.Item>
+
+      <Menu.Divider />
+
+      <Menu.Item disabled key='openCases'>
+        {$t({ defaultMessage: 'My Open Cases' })}
+      </Menu.Item>
+
+      <Menu.Divider />
+
+      <Menu.Item disabled key='privacy'>
+        {$t({ defaultMessage: 'Privacy' })}
+      </Menu.Item>
+
+      <Menu.Item key='about'>
+        {$t({ defaultMessage: 'About RUCKUS One' })}
+      </Menu.Item>
+    </Menu>
   )
 
-  const HelpHeaderButton = () => {
-    return <>
-      <StyledPopover placement='topRight' content={content} trigger='click'>
-        <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
-      </StyledPopover>
-      <About modalState={aboutModalState} setIsModalOpen={setAboutModalOpen}/>
-      <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/>
-    </>
-  }
-
-  return <HelpHeaderButton />
+  return (<>
+    <Dropdown overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
+      <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
+    </Dropdown>
+    <About modalState={aboutModalState} setIsModalOpen={setAboutModalOpen}/>
+    <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/>
+  </>
+  )
 }
+
+export default UserButton

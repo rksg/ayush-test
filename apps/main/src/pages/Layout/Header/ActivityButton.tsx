@@ -1,41 +1,23 @@
 
 import { ClockCircleFilled } from '@ant-design/icons'
-import { Badge, Popover }    from 'antd'
+import { useIntl }           from 'react-intl'
 
-import { LayoutUI }                  from '@acx-ui/components'
-import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
-import { useParams }                 from '@acx-ui/react-router-dom'
-
+import { LayoutUI, cssStr, Tooltip } from '@acx-ui/components'
+import { notAvailableMsg }           from '@acx-ui/utils'
 
 
 export default function ActivityHeaderButton () {
-  const params = useParams()
-  const { data } = useDashboardOverviewQuery({ params })
 
-  const getCount = function () {
-    if (data?.summary?.alarms?.totalCount) {
-      const clearedAlarms = data.summary.alarms.summary?.clear || 0
-      return data.summary.alarms.totalCount - clearedAlarms
-    } else {
-      return 0
-    }
-  }
-
-  const content = (
-    <div>content here...</div>
-  )
 
   const ActivityHeaderButton = () => {
-    return <Popover arrowPointAtCenter
-      content={content}
-      trigger='click'>
-      <Badge
-        count={getCount()}
-        overflowCount={9}
-        offset={[-3, 0]}
-        children={<LayoutUI.ButtonSolid icon={<ClockCircleFilled />} />}
-      />
-    </Popover>
+    return <Tooltip title={useIntl().$t(notAvailableMsg)}>
+      <LayoutUI.ButtonSolid style={{
+        background: cssStr('--acx-neutrals-80'),
+        color: cssStr('--acx-neutrals-60')
+      }}
+      disabled
+      icon={<ClockCircleFilled />} />
+    </Tooltip>
   }
 
   return <ActivityHeaderButton />
