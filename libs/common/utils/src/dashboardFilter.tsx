@@ -1,10 +1,7 @@
 import { useMemo } from 'react'
 
-import { Buffer } from 'buffer'
-
-import { useSearchParams } from 'react-router-dom'
-
 import { DateFilter, useDateFilter } from './dateFilter'
+import { useEncodedParameter }       from './encodedParameter'
 import { generateVenueFilter }       from './filters'
 import { NetworkPath, pathFilter }   from './types/networkFilter'
 
@@ -13,14 +10,10 @@ export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Networ
 export type DashboardFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
 
 export function useDashboardFilter () {
-  const [search, setSearch] = useSearchParams()
+  const { read, write } = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
   const { dateFilter } = useDateFilter()
   return useMemo(() => {
-    const { nodes } = search.has('dashboardVenueFilter')
-      ? JSON.parse(
-        Buffer.from(search.get('dashboardVenueFilter') as string, 'base64').toString('ascii')
-      )
-      : { nodes: [] }
+    const { nodes } = read() || { nodes: [] }
     return {
       filters: {
         path: defaultNetworkPath,
@@ -30,11 +23,8 @@ export function useDashboardFilter () {
           : {}
       },
       setNodeFilter: (nodes: string[][]) => {
-        search.set(
-          'dashboardVenueFilter',
-          Buffer.from(JSON.stringify({ nodes: nodes.length ? nodes : [] })).toString('base64'))
-        setSearch(search, { replace: true })
+        write({ nodes: nodes.length ? nodes : [] })
       }
     }
-  }, [dateFilter, search, setSearch])
+  }, [dateFilter, read, write])
 }
