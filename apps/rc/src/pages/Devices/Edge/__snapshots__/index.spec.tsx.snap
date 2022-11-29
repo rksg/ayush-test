@@ -91,9 +91,9 @@ exports[`EdgeList should create EdgeList successfully 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg>
-                            SettingsOutlined.svg
-                          </svg>
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
                         </div>
                       </div>
                     </div>
@@ -185,9 +185,8 @@ exports[`EdgeList should create EdgeList successfully 1`] = `
                                       SmartEdge
                                       <svg
                                         class="styledComponents__InformationTooltip-sc-1abm7iv-0"
-                                      >
-                                        InformationOutlined.svg
-                                      </svg>
+                                        data-testid="InformationOutlined"
+                                      />
                                     </span>
                                   </span>
                                   <span
