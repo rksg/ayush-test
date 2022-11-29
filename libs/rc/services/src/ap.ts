@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import _                             from 'lodash'
+import { generatePath }              from 'react-router-dom'
 
 import {
   ApExtraParams,
@@ -321,7 +322,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-
     getPacketCaptureState: build.query<PacketCaptureState, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
@@ -330,7 +330,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-
     blinkLedAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.blinkLedAp, params)
@@ -351,8 +350,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     addApPhoto: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
+        const url = generatePath(`${WifiUrlsInfo.addApPhoto.url}`, params)
         return{
-          url: `/api/tenant/${params?.tenantId}/wifi/ap/${params?.serialNumber}/picture/deep`,
+          url: `${window.location.origin}${url}`,
           method: 'POST',
           body: payload
         }

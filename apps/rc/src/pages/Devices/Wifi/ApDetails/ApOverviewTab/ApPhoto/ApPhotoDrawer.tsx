@@ -12,7 +12,7 @@ import {
   useWifiCapabilitiesQuery,
   useApViewModelQuery
 } from '@acx-ui/rc/services'
-import { WifiEntityEnum } from '@acx-ui/rc/utils'
+import { generateHexKey } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 
 import { getCroppedImg }           from './cropImage'
@@ -45,6 +45,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
   const [imageName, setImageName] = useState('')
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
+  const [key, setKey] = useState('')
 
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<cropImageType>({
     x: 0,
@@ -54,7 +55,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
   })
 
   const apViewModelPayload = {
-    entityType: WifiEntityEnum.apsTree,
+    entityType: 'aps',
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
       'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
@@ -69,6 +70,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
     if (!apPhoto.isLoading && apPhoto?.data) {
       setImageUrl(apPhoto?.data.imageUrl)
       setImageName(apPhoto?.data.imageName)
+      setKey(generateHexKey(10))
     }
   }, [apPhoto, wifiCapabilities, apViewModelQuery])
   const onCropComplete = useCallback(
@@ -192,6 +194,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
   return (
     <Drawer
+      key={key}
       title={$t({ defaultMessage: 'AP Photo' })}
       visible={visible}
       onClose={onClose}

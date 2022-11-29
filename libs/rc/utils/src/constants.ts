@@ -488,25 +488,3 @@ export enum PortalComponentsEnum{
   PoweredBy = 'PoweredBy',
   WiFi4EU = 'WiFi4EU'
 }
-
-export enum WifiEntityEnum {
-  apNetworkList = 'apNetworkList',
-  apList = 'aplist',
-  apsTree = 'aps',
-  apsMesh = 'apsMesh',
-  apGroupslist = 'apGroupslist',
-  apGroupApList = 'apGroupApList',
-  apGroupNetworkList = 'apGroupNetworkList',
-  dpskList = 'dpskList',
-  accessControlProfileList = 'accessControlProfileList',
-  devicePolicyList = 'devicePolicyList',
-  trafficControlPolicyList = 'trafficControlPolicyList',
-  deviceConnectionPolicyList = 'deviceConnectionPolicyList',
-  applicationPolicyList = 'applicationPolicyList',
-  urlFilteringPolicyList = 'urlFilteringPolicyList',
-  clientIsolationAllowlist = 'clientIsolationAllowlist',
-  clientlist = 'clientlist',
-  vlanPoolList = 'vlanPoolList',
-  rogueApList = 'rogueApList',
-  roguePolicyList = 'roguePolicyList'
-}

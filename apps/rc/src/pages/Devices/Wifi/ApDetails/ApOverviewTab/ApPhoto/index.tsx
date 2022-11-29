@@ -10,8 +10,7 @@ import {
   useApViewModelQuery,
   useWifiCapabilitiesQuery
 } from '@acx-ui/rc/services'
-import { WifiEntityEnum } from '@acx-ui/rc/utils'
-import { getIntl }        from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.jpg'
 
@@ -28,7 +27,7 @@ export function ApPhoto () {
   const params = useParams()
 
   const apViewModelPayload = {
-    entityType: WifiEntityEnum.apsTree,
+    entityType: 'aps',
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
       'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
