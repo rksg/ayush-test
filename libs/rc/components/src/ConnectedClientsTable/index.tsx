@@ -12,7 +12,7 @@ import * as UI from './styledComponents'
 
 const hasGuestManagerRole = false
 
-function getCols (intl: ReturnType<typeof useIntl>) {
+function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const columns: TableProps<ClientList>['columns'] = [
     {
       key: 'hostname',
@@ -150,7 +150,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'VLAN' }),
       dataIndex: 'clientVlan',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -158,7 +158,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Device Type' }),
       dataIndex: 'deviceTypeStr',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => {
         return <UI.IconContainer>
           <Tooltip title={data}>
@@ -172,7 +172,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Model Name' }),
       dataIndex: 'modelName',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -180,7 +180,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Traffic (Session)' }),
       dataIndex: 'totalTraffic',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -188,7 +188,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Traffic To Client' }),
       dataIndex: 'trafficToClient',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -196,7 +196,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Traffic From Client' }),
       dataIndex: 'trafficFromClient',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -204,7 +204,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'RSSI' }),
       dataIndex: 'receiveSignalStrength',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -212,7 +212,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'SNR' }),
       dataIndex: 'rssi',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -220,7 +220,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Radio Type' }),
       dataIndex: ['radio', 'mode'],
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -228,7 +228,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'CPE MAC Address' }),
       dataIndex: 'cpeMac',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -236,7 +236,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Auth Method' }),
       dataIndex: 'authmethod',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -244,7 +244,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Auth Status' }),
       dataIndex: 'status',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => <>
         { data ? intl.$t({ defaultMessage: 'Authorized' }) :
           intl.$t({ defaultMessage: 'Unauthorized' })
@@ -257,7 +257,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Encryption' }),
       dataIndex: 'encryptMethod',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -265,7 +265,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Packets To Client' }),
       dataIndex: 'packetsToClient',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -273,7 +273,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Packets From Client' }),
       dataIndex: 'packetsFromClient',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -281,7 +281,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Packets Dropped' }),
       dataIndex: 'packetsDropFrom',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -289,7 +289,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'RF Channel' }),
       dataIndex: ['radio', 'channel'],
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -297,7 +297,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Noise Floor' }),
       dataIndex: 'noiseFloor',
       sorter: true,
-      show: false,
+      show: !!showAllColumns,
       render: (data) => data || '--'
     },
     {
@@ -321,8 +321,9 @@ const defaultPayload = {
     'apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
 }
 
-export const ConnectedClientsTable = () => {
+export const ConnectedClientsTable = (props:{ showAllColumns?: boolean }) => {
   const { $t } = useIntl()
+  const { showAllColumns } = props
   const ConnectedClientsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetClientListQuery,
@@ -336,7 +337,7 @@ export const ConnectedClientsTable = () => {
           {$t({ defaultMessage: 'Connected Clients' })}
         </Subtitle>
         <Table
-          columns={getCols(useIntl())}
+          columns={getCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

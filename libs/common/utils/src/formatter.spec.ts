@@ -1,6 +1,6 @@
 import moment from 'moment-timezone'
 
-import { formatter, formats } from './formatter'
+import { formatter, formats, convertEpochToRelativeTime } from './formatter'
 
 function testFormat (
   format: keyof typeof formats,
@@ -307,6 +307,12 @@ describe('formatter', () => {
         [0.12, '12%'],
         [0.123, '12%']
       ])
+    })
+    describe('convertEpochToRelativeTime', () => {
+      it('Should return relative time', () => {
+        expect(typeof formatter('longDurationFormat')(convertEpochToRelativeTime(1669693917)))
+        .toBe('string')
+      })
     })
   })
 })
