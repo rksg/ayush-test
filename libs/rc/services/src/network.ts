@@ -21,6 +21,10 @@ import {
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 
+const RKS_NEW_UI = {
+  'x-rks-new-ui': true
+}
+
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'networkApi',
@@ -62,7 +66,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     addNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
-        const createNetworkReq = createHttpRequest(WifiUrlsInfo.addNetworkDeep, params)
+        const createNetworkReq = createHttpRequest(WifiUrlsInfo.addNetworkDeep, params, RKS_NEW_UI)
         return {
           ...createNetworkReq,
           body: payload
@@ -72,7 +76,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     updateNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateNetworkDeep, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkDeep, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -125,7 +129,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
-        const networkQuery = await fetchWithBQ(createHttpRequest(WifiUrlsInfo.getNetwork, params))
+        const networkQuery = await fetchWithBQ(
+          createHttpRequest(WifiUrlsInfo.getNetwork, params, RKS_NEW_UI)
+        )
         return networkQuery as QueryReturnValue<NetworkSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
@@ -148,6 +154,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             })
         })
       }
+    }),
+    apNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApNetworkList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'LIST' }]
     }),
     networkVenueList: build.query<TableResult<Venue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -351,6 +367,7 @@ export const {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
+  useApNetworkListQuery,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
   useValidateRadiusQuery,

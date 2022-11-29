@@ -70,12 +70,13 @@ function DeviceRoutes () {
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route
         path='devices/aps/:serialNumber/details/:activeTab'
-        element={<ApDetails />}
-      />
+        element={<ApDetails />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab/:activeSubTab'
+        element={<ApDetails />} />
       <Route
         path='devices/aps/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
-        element={<ApDetails />}
-      />
+        element={<ApDetails />} />
       <Route path='devices/edge/add' element={<AddEdge />} />
       <Route path='devices/switches' element={<SwitchesTable />} />
     </Route>
@@ -89,6 +90,10 @@ function NetworkRoutes () {
       <Route path='networks/add' element={<NetworkForm />} />
       <Route
         path='networks/:networkId/network-details/:activeTab'
+        element={<NetworkDetails />}
+      />
+      <Route
+        path='networks/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
       />
       <Route
