@@ -4,6 +4,7 @@ import {
 } from '../../constants'
 
 export * from './dhcpService'
+export * from './networkSegmentationService'
 
 
 export enum AccessEnum {
@@ -142,12 +143,4 @@ export interface DHCPVenue {
   }
   venueId: string
   dhcpId: string
-}
-
-export interface CreateNetworkSegmentationFormFields {
-  name: '',
-}
-
-export interface NetworkSegmentationSaveData extends CreateNetworkSegmentationFormFields{
-  id?: string;
 }
