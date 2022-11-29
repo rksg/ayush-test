@@ -1,7 +1,7 @@
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { PageHeader }                                    from '@acx-ui/components'
+import { PageHeader, Loader }                            from '@acx-ui/components'
 import { CollapseActive, CollapseInactive }              from '@acx-ui/icons'
 import { NetworkTable }                                  from '@acx-ui/rc/components'
 import { useNetworkListQuery, useVenuesListQuery }       from '@acx-ui/rc/services'
@@ -53,7 +53,7 @@ function SearchResult () {
   const { searchVal } = useParams()
   const results = searches.map(search => search(searchVal || '', $t))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
-  return <>
+  return <Loader states={results.map(({ result }) => result)}>
     <PageHeader title={$t(
       { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
       { searchVal, count }
@@ -67,13 +67,15 @@ function SearchResult () {
       }
       bordered={false}
     >
-      {results.map(({ component, title, result }, index) =>
-        <Panel key={index} header={`${title} (${result.data?.totalCount})`}>
-          {component}
-        </Panel>
-      )}
+      {count
+        ? results.map(({ component, title, result: { data } }, index) => data?.totalCount
+          ? <Panel key={index} header={`${title} (${data?.totalCount})`}>{component}</Panel>
+          : null
+        )
+        : <div>todo: empty search result</div>
+      }
     </Collapse>
-  </>
+  </Loader>
 }
 
 export default function SearchResults () {
