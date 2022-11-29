@@ -6,7 +6,7 @@ import { TableProps }        from '@acx-ui/components'
 import { useParams, Params } from '@acx-ui/react-router-dom'
 import { UseQuery }          from '@acx-ui/types'
 
-import { PAGINATION, RequestPayload, SORTER } from './useTableQuery'
+import { PAGINATION, SORTER } from './useTableQuery'
 
 
 export interface MacTableResult <ResultItemType, ResultExtra = unknown> {
@@ -15,6 +15,11 @@ export interface MacTableResult <ResultItemType, ResultExtra = unknown> {
   totalElements: number
   extra?: ResultExtra
   size: number
+}
+
+interface RequestPayload <Payload = unknown> {
+  params?: Params<string>
+  payload?: Payload
 }
 
 export interface MAC_TABLE_QUERY <
