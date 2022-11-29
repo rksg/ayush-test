@@ -8,7 +8,7 @@ import { notAvailableMsg }                       from '@acx-ui/utils'
 function ApDetailTabs () {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink(`/users/aps/${params.userId}/details/`)
+  const basePath = useTenantLink(`/users/wifi/clients/${params.clientId}/details/`)
   const navigate = useNavigate()
   const onTabChange = (tab: string) =>
     navigate({

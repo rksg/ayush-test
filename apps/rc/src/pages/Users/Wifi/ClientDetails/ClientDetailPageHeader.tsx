@@ -7,7 +7,7 @@ import { Features, useIsSplitOn }                          from '@acx-ui/feature
 import { ArrowExpand, ClockOutlined }                      from '@acx-ui/icons'
 import { dateRangeForLast, useDateFilter }                 from '@acx-ui/utils'
 
-import ApDetailTabs from './ApDetailTabs'
+import ClientDetailTabs from './ClientDetailTabs'
 
 function DatePicker () {
   const { $t } = useIntl()
@@ -28,7 +28,7 @@ function DatePicker () {
 }
 
 
-function ApDetailPageHeader () {
+function ClientDetailPageHeader () {
   const { $t } = useIntl()
   const menu = (
     <Menu
@@ -63,9 +63,9 @@ function ApDetailPageHeader () {
           </Button>
         </Dropdown>
       ]}
-      footer={<ApDetailTabs />}
+      footer={<ClientDetailTabs />}
     />
   )
 }
 
-export default ApDetailPageHeader
+export default ClientDetailPageHeader

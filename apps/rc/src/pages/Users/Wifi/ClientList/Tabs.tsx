@@ -3,10 +3,10 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-function ApTabs () {
+function WifiTabs () {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink('/users/aps/')
+  const basePath = useTenantLink('/users/wifi/')
   const navigate = useNavigate()
   const onTabChange = (tab: string) =>
     navigate({
@@ -27,4 +27,4 @@ function ApTabs () {
   )
 }
 
-export default ApTabs
+export default WifiTabs

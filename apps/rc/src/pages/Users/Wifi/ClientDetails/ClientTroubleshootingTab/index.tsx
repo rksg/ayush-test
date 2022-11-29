@@ -18,7 +18,7 @@ type ClientTroubleShootingSelectionsType = {
 }
 type SingleValueType = (string | number)[]
 type selectionType = SingleValueType | SingleValueType[] | undefined
-export function ApTroubleshootingTab () {
+export function ClientTroubleshootingTab () {
   // Todo use clientId to get timeline and history
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { userId: clientId } = useParams()
