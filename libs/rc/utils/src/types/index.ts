@@ -24,10 +24,10 @@ export * from './network'
 export * from './user'
 export * from './services'
 export * from './msp'
+export * from './edge'
 export * from './policy'
 export * from './wifiCallingService'
 export * from './portalService'
-export * from './edge'
 
 export interface CommonResult {
   requestId: string
