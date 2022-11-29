@@ -39,8 +39,6 @@ export interface ClientList {
   lastUpdateTime: string
   switchSerialNumber?: string
   switchName?: string
-  deviceTypeIcon: string
-  osTypeIcon: string
   healthClass: string
   sessStartTimeParssed: boolean
 }

@@ -6,8 +6,6 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   getClientHealthClass,
-  getDeviceTypeIcon,
-  getOsTypeIcon,
   RequestPayload,
   TableResult,
   transformByte
@@ -65,15 +63,14 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
     const tmp = {
       ...client,
       ...meta,
-      deviceTypeIcon: getDeviceTypeIcon(client.deviceTypeStr),
-      // osTypeIcon: getOsTypeIcon(client.osType),
       healthClass: getClientHealthClass(client.healthCheckStatus),
       totalTraffic: transformByte(client.totalTraffic),
       trafficToClient: transformByte(client.trafficToClient),
       trafficFromClient: transformByte(client.trafficFromClient)
     }
     if (tmp.sessStartTime && tmp.sessStartTime > 0 && !tmp.sessStartTimeParssed) {
-      tmp.sessStartTimeString = formatter('longDurationFormat')(convertEpochToRelativeTime(client.sessStartTime))
+      tmp.sessStartTimeString =
+      formatter('longDurationFormat')(convertEpochToRelativeTime(client.sessStartTime))
       tmp.sessStartTimeParssed = true
     }
     data.push(tmp)
@@ -84,6 +81,6 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
     data
   }
 }
-export const { 
+export const {
   useGetClientListQuery
 } = clientApi

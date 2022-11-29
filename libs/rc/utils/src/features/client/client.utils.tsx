@@ -1,56 +1,58 @@
 import {
+  Amazon,
+  Android,
   Apple,
+  Blackberry,
+  Chrome,
+  GamingOutlined,
+  GenericDeviceOutlined,
   GenericOs,
-  Microsoft
+  HomeAvOutlined,
+  IotOutlined,
+  LaptopOutlined,
+  Linux,
+  Microsoft,
+  MobilePhoneOutlined,
+  PrinterOutlined,
+  TabletOutlined,
+  Ubuntu,
+  VoIpOutlined,
+  WdsOutlined
 } from '@acx-ui/icons'
 
 export const getDeviceTypeIcon = (deviceType: string) => {
-  let icon = ''
+  type Type = keyof typeof deviceIconMap
   const type = deviceType ? deviceType.toLowerCase() : ''
-  const iconPrefix = 'client-icon'
-
-  switch (type) {
-    case 'laptop':
-    case 'smartphone':
-    case 'tablet':
-    case 'voip':
-    case 'gaming':
-    case 'printer':
-    case 'iot':
-    case 'wds':
-      icon = `${iconPrefix}-${type}`
-      break
-    case 'iot device':
-      icon = `${iconPrefix}-iot`
-      break
-    case 'home av equipment':
-      icon = `${iconPrefix}-home-entertainment`
-      break
-    case 'wds device':
-      icon = `${iconPrefix}-wds`
-      break
-    default:
-      icon = `${iconPrefix}-generic-device`
+  const defaultIcon = <GenericDeviceOutlined />
+  const deviceIconMap = {
+    'laptop': <LaptopOutlined />,
+    'smartphone': <MobilePhoneOutlined />,
+    'tablet': <TabletOutlined />,
+    'voip': <VoIpOutlined />,
+    'gaming': <GamingOutlined />,
+    'printer': <PrinterOutlined />,
+    'iot': <IotOutlined />,
+    'wds': <WdsOutlined />,
+    'iot device': <IotOutlined />,
+    'home av equipment': <HomeAvOutlined />,
+    'wds device': <WdsOutlined />
   }
-  return icon
+  return deviceIconMap[type as Type] || defaultIcon
 }
 
 export const getOsTypeIcon = (osType: string) => {
-  let icon = '';
-  // for backward compatible
   type Type = keyof typeof osIconMap
-  const type = convertClientOsType(osType);
-  const iconPrefix = 'client-icon';
+  const type = convertClientOsType(osType)
   const defaultIcon = <GenericOs />
-  const osIconMap = {
+  const osIconMap = { // TODO: Add icons (Waiting for designer)
     apple: <Apple />,
     // avaya:
-    // android:
-    // blackberry:
+    android: <Android />,
+    blackberry: <Blackberry />,
     // bose:
     // brother:
     // canon:
-    // chrome:
+    chrome: <Chrome />,
     // cisco:
     // dell:
     // epson:
@@ -58,98 +60,63 @@ export const getOsTypeIcon = (osType: string) => {
     // nortel:
     // nintendo:
     // nest:
-    // linux:
+    linux: <Linux />,
     // linksys:
     // libratone:
-    // kindle:
+    kindle: <Amazon />,
     // hp:
     // playstation:
     // roku:
     // samsung:
     // sonos:
     // sony:
-    // ubuntu:
+    ubuntu: <Ubuntu />,
     // wemo:
     windows: <Microsoft />
     // xbox:
     // xerox:
+    // 'wifi smart plug':
   }
   return osIconMap[type as Type] || defaultIcon
-  switch (type) {
-    case 'apple':
-    case 'avaya':
-    case 'android':
-    case 'blackberry':
-    case 'bose':
-    case 'brother':
-    case 'canon':
-    case 'chrome':
-    case 'cisco':
-    case 'dell':
-    case 'epson':
-    case 'panasonic':
-    case 'nortel':
-    case 'nintendo':
-    case 'nest':
-    case 'linux':
-    case 'linksys':
-    case 'libratone':
-    case 'kindle':
-    case 'hp':
-    case 'playstation':
-    case 'roku':
-    case 'samsung':
-    case 'sonos':
-    case 'sony':
-    case 'ubuntu':
-    case 'wemo':
-    case 'windows':
-    case 'xbox':
-    case 'xerox':
-      icon = `${iconPrefix}-${type}`;
-      break;
-    case 'wifi smart plug':
-      icon = `${iconPrefix}-wifi-smart-plug`;
-      break;
-    default:
-      icon = `${iconPrefix}-clients`;
-  }
-  return icon;
 }
 
-export const getClientHealthClass = (healthStatus: string) =>  {
+export const getClientHealthClass = (healthStatus: string) => {
   switch (healthStatus) {
     case 'Good':
-      return 'good';
+      return 'good'
     case 'Average':
-      return 'average';
+      return 'average'
     case 'Poor':
-      return 'poor';
+      return 'poor'
     default:
       return 'default'
   }
 }
 
+export const deviceTypeString = {
+
+}
+
 const convertClientOsType = (origOsType: string) => {
-  const osType = origOsType ? origOsType.toLowerCase() : '';
+  const osType = origOsType ? origOsType.toLowerCase() : ''
 
   // for backward compatible
   if (osType.includes('ios') || osType.includes('mac') || osType.includes('apple')) {
-    return 'apple';
+    return 'apple'
   } else if (osType.includes('android')) {
-    return 'android';
+    return 'android'
   } else if (osType.includes('windows')) {
-    return 'windows';
+    return 'windows'
   } else if (osType.includes('linux')) {
-    return 'linux';
+    return 'linux'
   } else if (osType.includes('kindle')) {
-    return 'kindle';
+    return 'kindle'
   } else if (osType.includes('chrome')) {
-    return 'chrome';
+    return 'chrome'
   } else if (osType.includes('blackberry')) {
-    return 'blackberry';
+    return 'blackberry'
   }
 
-  return osType;
+  return osType
 }
 

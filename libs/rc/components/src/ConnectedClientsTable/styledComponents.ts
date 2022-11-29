@@ -1,8 +1,7 @@
-import styled     from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import {
-  HealthSolid,
-  HealthOutline
+  HealthSolid
 } from '@acx-ui/icons'
 
 type Type = keyof typeof healthColors
@@ -15,8 +14,15 @@ const healthColors = {
 }
 
 export const HealthIcon = styled(HealthSolid)<{ $type: string }>`
+  height: 20px;
   path:first-child {
     stroke: var(${props => healthColors[props.$type as Type]});
     fill: var(${props => healthColors[props.$type as Type]});
+  }
+`
+
+export const IconContainer = styled.div`
+  svg {
+    height: 24px
   }
 `

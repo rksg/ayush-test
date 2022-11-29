@@ -1,17 +1,19 @@
-import { useIntl } from 'react-intl'
+/* eslint-disable max-len */
+import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                                              from '@acx-ui/components'
-import { Table, TableProps, Loader } from '@acx-ui/components'
-import { useGetClientListQuery}                                          from '@acx-ui/rc/services'
-import { getOsTypeIcon, useTableQuery }                                                            from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { Subtitle, Tooltip }                                           from '@acx-ui/components'
+import { Table, TableProps, Loader }                                   from '@acx-ui/components'
+import { useGetClientListQuery }                                       from '@acx-ui/rc/services'
+import { ClientList, getDeviceTypeIcon, getOsTypeIcon, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                  from '@acx-ui/react-router-dom'
+import { formatter }                                                   from '@acx-ui/utils'
+
+import * as UI from './styledComponents'
 
 const hasGuestManagerRole = false
-import { HealthIcon } from './styledComponents'
-import { Microsoft } from '@acx-ui/icons'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
-  const columns: TableProps<any>['columns'] = [
+  const columns: TableProps<ClientList>['columns'] = [
     {
       key: 'hostname',
       title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -19,16 +21,19 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (data, row) =>
-        <TenantLink to={`users/aps/${row.clientMac}/details/overview`}>{data}</TenantLink>
+        <TenantLink to={`users/aps/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
     },
     {
       key: 'osType',
       title: intl.$t({ defaultMessage: 'OS' }),
       dataIndex: 'osType',
       sorter: true,
-      render: (data, row) => {
-        // TODO: ICON
-        return getOsTypeIcon(data as string)
+      render: (data) => {
+        return <UI.IconContainer>
+          <Tooltip title={data}>
+            { getOsTypeIcon(data as string) }
+          </Tooltip>
+        </UI.IconContainer>
       }
     },
     {
@@ -36,9 +41,22 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Health' }),
       dataIndex: 'healthCheckStatus',
       sorter: true,
-      align: 'center',
       render: (data, row) => {
-        return <HealthIcon $type={row.healthClass} />
+        return <Tooltip title={<FormattedMessage
+          defaultMessage={`
+              Client Health: {healthCheckStatus}<br></br>
+              Reason: {healthStatusReason}<br></br>
+              Since: {lastUpdateTime}
+            `}
+          values={{
+            healthCheckStatus: row.healthCheckStatus,
+            healthStatusReason: row.healthStatusReason,
+            lastUpdateTime: formatter('dateTimeFormat')(row.lastUpdateTime),
+            br: () => <br />
+          }}
+        />}>
+          <UI.HealthIcon $type={row.healthClass} />
+        </Tooltip>
       }
     },
     {
@@ -115,10 +133,10 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'ssid',
       sorter: true,
-      render: (data, row) => 
-      (
-        <TenantLink to={`/networks/${row.networkId}/network-details/aps`}>{data}</TenantLink>
-      )
+      render: (data, row) =>
+        (
+          <TenantLink to={`/networks/${row.networkId}/network-details/aps`}>{data}</TenantLink>
+        )
     },
     {
       key: 'sessStartTime',
@@ -140,10 +158,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Device Type' }),
       dataIndex: 'deviceTypeStr',
       sorter: true,
-      // show: false,
-      render: (data, row) => {
-        // TODO: ICON
-        return data
+      show: false,
+      render: (data) => {
+        return <UI.IconContainer>
+          <Tooltip title={data}>
+            {getDeviceTypeIcon(data as string)}
+          </Tooltip>
+        </UI.IconContainer>
       }
     },
     {
@@ -225,11 +246,11 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       show: false,
       render: (data) => <>
-      { data ? intl.$t({ defaultMessage: 'Authorized' }) : 
-        intl.$t({ defaultMessage: 'Unauthorized' })
-      }
+        { data ? intl.$t({ defaultMessage: 'Authorized' }) :
+          intl.$t({ defaultMessage: 'Unauthorized' })
+        }
       </>
-      
+
     },
     {
       key: 'encryptMethod',
@@ -303,14 +324,10 @@ const defaultPayload = {
 export const ConnectedClientsTable = () => {
   const { $t } = useIntl()
   const ConnectedClientsTable = () => {
-    const navigate = useNavigate()
-    const linkToEditNetwork = useTenantLink('/networks/')
     const tableQuery = useTableQuery({
       useQuery: useGetClientListQuery,
       defaultPayload
     })
-    const { tenantId } = useParams()
-
     return (
       <Loader states={[
         tableQuery

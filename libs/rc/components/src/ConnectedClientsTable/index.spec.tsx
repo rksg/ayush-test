@@ -3,15 +3,13 @@ import { rest } from 'msw'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
-  within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import ConnectedClientsTable from '.'
+import { ConnectedClientsTable } from '.'
 
 jest.mock('socket.io-client')
 
