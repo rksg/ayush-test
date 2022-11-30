@@ -16,8 +16,7 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { EPDG } from './wifiCallingService'
-
+import { EPDG } from './services'
 
 export * from './ap'
 export * from './venue'
@@ -27,9 +26,7 @@ export * from './services'
 export * from './msp'
 export * from './edge'
 export * from './policies'
-export * from './wifiCallingService'
 export * from './portalService'
-export * from './policies/rogueApDetectionPolicy'
 
 export interface CommonResult {
   requestId: string
