@@ -92,7 +92,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
       {showOtpMessage ?
         <Alert message={
           $t({ defaultMessage: `The one-time-password (OTP) will be automatically sent to
-          your email addressor via SMS for verification when you add a virtual SmartEdge.
+          your email address or via SMS for verification when you add a virtual SmartEdge.
           The password will expire in 10 minutes and you must complete the authentication
           process before using it.` })
         }

@@ -33,37 +33,40 @@ describe('EditEdge settings', () => {
     }
   })
 
-  it('Render ports tab successfully', async () => {
+  it('Active ports tab successfully', async () => {
     params.activeSubTab = 'ports'
-    const { asFragment } = render(
+    render(
       <Settings />, {
         route: {
           params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    expect(asFragment()).toMatchSnapshot()
+    const portsTab = screen.getByRole('tab', { name: 'Ports' })
+    expect(portsTab.getAttribute('aria-selected')).toBeTruthy()
   })
 
-  it('Render dns tab successfully', async () => {
+  it('Active dns tab successfully', async () => {
     params.activeSubTab = 'dns'
-    const { asFragment } = render(
+    render(
       <Settings />, {
         route: {
           params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    expect(asFragment()).toMatchSnapshot()
+    const dnsTab = screen.getByRole('tab', { name: 'DNS Server' })
+    expect(dnsTab.getAttribute('aria-selected')).toBeTruthy()
   })
 
-  it('Render routes tab successfully', async () => {
+  it('Active routes tab successfully', async () => {
     params.activeSubTab = 'routes'
-    const { asFragment } = render(
+    render(
       <Settings />, {
         route: {
           params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    expect(asFragment()).toMatchSnapshot()
+    const routesTab = screen.getByRole('tab', { name: 'Static Routes' })
+    expect(routesTab.getAttribute('aria-selected')).toBeTruthy()
   })
 
   it('Tab Change', async () => {

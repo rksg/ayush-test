@@ -29,14 +29,6 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('./GeneralSettings', () => () => {
-  return <div data-testid='general-settings' />
-})
-
-jest.mock('./Settings', () => () => {
-  return <div data-testid='settings' />
-})
-
 describe('EditEdge', () => {
 
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -53,15 +45,28 @@ describe('EditEdge', () => {
     )
   })
 
-  it('should create EditEdge successfully', async () => {
+  it('Active General Settings tab successfully', async () => {
     params.activeTab = 'general-settings'
-    const { asFragment } = render(
+    render(
       <Provider>
         <EditEdge />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    expect(asFragment()).toMatchSnapshot()
+    const generalSettingsTab = screen.getByRole('tab', { name: 'General Settings' })
+    expect(generalSettingsTab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('Active Settings tab successfully', async () => {
+    params.activeTab = 'settings'
+    render(
+      <Provider>
+        <EditEdge />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+      })
+    const settingsTab = screen.getByRole('tab', { name: 'Settings' })
+    expect(settingsTab.getAttribute('aria-selected')).toBeTruthy()
   })
 
   it('switch tab', async () => {
