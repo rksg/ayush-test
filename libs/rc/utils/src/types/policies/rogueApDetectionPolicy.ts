@@ -2,6 +2,7 @@ import { ApDeviceStatusEnum } from '../../constants'
 
 export interface RogueAPDetectionContextType {
   policyName: string,
+  name?: string,
   tags: string[],
   description: string,
   rules: RogueAPRule[],
@@ -10,7 +11,9 @@ export interface RogueAPDetectionContextType {
 
 export interface RogueAPDetailContextType {
   filtersId: string[],
+  policyName: string,
   setFiltersId: (filtersId: string[]) => void
+  setPolicyName: (policyName: string) => void
 }
 
 export interface RogueOldApResponseType {

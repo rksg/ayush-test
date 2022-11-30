@@ -1,12 +1,13 @@
 import React from 'react'
 
 import { act, fireEvent, within } from '@testing-library/react'
+import userEvent                  from '@testing-library/user-event'
 import { rest }                   from 'msw'
 
-import { policyApi }                                                                  from '@acx-ui/rc/services'
-import { RogueAPDetectionContextType, RogueAPDetectionUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
-import { Provider, store }                                                            from '@acx-ui/store'
-import { mockServer, render, screen }                                                 from '@acx-ui/test-utils'
+import { policyApi }                                                         from '@acx-ui/rc/services'
+import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
+import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -81,7 +82,7 @@ describe('RuleTable', () => {
 
   it('should render RuleTable successfully', async () => {
     mockServer.use(rest.get(
-      RogueAPDetectionUrls.getRoguePolicy.url,
+      RogueApUrls.getRoguePolicy.url,
       (_, res, ctx) => res(
         ctx.json(detailContent)
       )
@@ -109,7 +110,7 @@ describe('RuleTable', () => {
       name: /rule name/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
-      name: /ruletype/i
+      name: /rule type/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
       name: /category/i
@@ -118,7 +119,7 @@ describe('RuleTable', () => {
 
   it('should render RuleTable with editMode successfully', async () => {
     mockServer.use(rest.get(
-      RogueAPDetectionUrls.getRoguePolicy.url,
+      RogueApUrls.getRoguePolicy.url,
       (_, res, ctx) => res(
         ctx.json(detailContent)
       )
@@ -146,30 +147,27 @@ describe('RuleTable', () => {
       name: /rule name/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
-      name: /ruletype/i
+      name: /rule type/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
       name: /category/i
     })).toBeTruthy()
 
-    await screen.findByText('SameNetworkRuleName2')
+    await screen.findByText(/sameNetworkRuleName2/i)
 
     screen.getByText('SameNetworkRuleName1')
 
-    fireEvent.click(screen.getByText('SameNetworkRuleName1'))
+    await userEvent.click(screen.getByText(/sameNetworkRuleName1/i))
 
-    fireEvent.click(screen.getByText('SameNetworkRuleName2'))
-
-    fireEvent.click(screen.getByRole('button', {
-      name: /edit/i
-    }))
-
-    fireEvent.click(screen.getByRole('button', {
-      name: /delete/i
-    }))
-
-    // cancel click
-    fireEvent.click(screen.getByText('SameNetworkRuleName1'))
+    // await screen.findByRole('button', {
+    //   name: /edit/i
+    // })
+    // fireEvent.click(screen.getByRole('button', {
+    //   name: /delete/i
+    // }))
+    //
+    // // cancel click
+    // fireEvent.click(screen.getByText('SameNetworkRuleName1'))
 
     fireEvent.click(screen.getByRole('button', {
       name: /edit/i
@@ -179,13 +177,19 @@ describe('RuleTable', () => {
 
     fireEvent.click(within(dialog).getByText(/cancel/i))
 
+    await userEvent.click(screen.getByText(/sameNetworkRuleName2/i))
+
     fireEvent.click(screen.getByRole('button', {
       name: /move up/i
     }))
 
+    await userEvent.click(screen.getByText(/sameNetworkRuleName2/i))
+
     fireEvent.click(screen.getByRole('button', {
       name: /move down/i
     }))
+
+    await userEvent.click(screen.getByText(/sameNetworkRuleName2/i))
 
     fireEvent.click(screen.getByRole('button', {
       name: /delete/i

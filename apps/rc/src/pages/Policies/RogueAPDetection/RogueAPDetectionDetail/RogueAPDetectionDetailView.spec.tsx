@@ -4,7 +4,7 @@ import { act }  from '@testing-library/react'
 import { rest } from 'msw'
 
 import { policyApi }                  from '@acx-ui/rc/services'
-import { RogueAPDetectionUrls }       from '@acx-ui/rc/utils'
+import { RogueApUrls }                from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -91,12 +91,12 @@ describe('RogueAPDetectionDetailView', () => {
 
   it('should render RogueAPDetectionDetailView successfully', async () => {
     mockServer.use(rest.get(
-      RogueAPDetectionUrls.getRoguePolicy.url,
+      RogueApUrls.getRoguePolicy.url,
       (_, res, ctx) => res(
         ctx.json(detailContent)
       )
     ), rest.post(
-      RogueAPDetectionUrls.getVenueRoguePolicy.url,
+      RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
         ctx.json(venueDetailContent)
       )

@@ -1,7 +1,7 @@
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 
 import { Form, Col, Row, Typography } from 'antd'
-import { useIntl }                    from 'react-intl'
+import { FormattedList, useIntl }     from 'react-intl'
 
 import { StepsForm, Subtitle } from '@acx-ui/components'
 
@@ -37,7 +37,9 @@ const RogueAPDetectionSummaryForm = () => {
               name='tags'
               label={$t({ defaultMessage: 'Tags' })}
             >
-              <Paragraph>{state.tags?.join(', ')}</Paragraph>
+              <Paragraph>
+                <FormattedList type='conjunction' value={state.tags} />
+              </Paragraph>
             </Form.Item>
           </Col>
           <Col span={6}>
@@ -52,7 +54,7 @@ const RogueAPDetectionSummaryForm = () => {
         <Row>
           <Col span={24}>
             <Subtitle level={4}>{
-              $t({ defaultMessage: 'Venues' }) + ` (${state.venues.length})`
+              $t({ defaultMessage: 'Venues ({count})' }, { count: state.venues.length })
             }</Subtitle>
           </Col>
           <Col span={6}>

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react'
 
-import { Row, Typography } from 'antd'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Row, Typography }        from 'antd'
+import { FormattedList, useIntl } from 'react-intl'
+import { useParams }              from 'react-router-dom'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 import { useRoguePolicyQuery }    from '@acx-ui/rc/services'
@@ -17,12 +17,13 @@ const RogueAPDetectionDetailContent = () => {
     params: useParams()
   })
 
-  const { setFiltersId } = useContext(RogueAPDetailContext)
+  const { setFiltersId, setPolicyName } = useContext(RogueAPDetailContext)
 
   useEffect(() => {
     if (data){
       const filtersIdList = data.venues ? data.venues.map(venue => venue.id) : ['UNDEFINED']
       setFiltersId(filtersIdList)
+      setPolicyName(data.name ?? '')
     }
   }, [data])
 
@@ -33,7 +34,9 @@ const RogueAPDetectionDetailContent = () => {
           <Card.Title>
             {$t({ defaultMessage: 'Tags' })}
           </Card.Title>
-          <Paragraph>{[].join(', ')}</Paragraph>
+          <Paragraph>
+            <FormattedList type='conjunction' value={[]} />
+          </Paragraph>
         </GridCol>
 
         <GridCol col={{ span: 4 }}>

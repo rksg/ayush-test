@@ -1,46 +1,41 @@
 import React from 'react'
 
 import { act }  from '@testing-library/react'
+import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { policyApi }                                                                  from '@acx-ui/rc/services'
-import { RogueAPDetectionContextType, RogueAPDetectionUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
-import { Provider, store }                                                            from '@acx-ui/store'
-import { mockServer, render, screen }                                                 from '@acx-ui/test-utils'
+import { policyApi }                                                         from '@acx-ui/rc/services'
+import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
+import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueAPDetectionSettingForm from './RogueAPDetectionSettingForm'
 
 
-const policyListContent = {
-  fields: null,
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: 'policyId',
-      name: 'policyName1',
-      description: '',
-      numOfRules: 1,
-      lastModifier: 'FisrtName 1649 LastName 1649',
-      lastUpdTime: 1664790827392,
-      numOfActiveVenues: 0,
-      activeVenues: []
-    },
-    {
-      id: 'be62604f39aa4bb8a9f9a0733ac07add',
-      name: 'test6',
-      description: '',
-      numOfRules: 1,
-      lastModifier: 'FisrtName 1649 LastName 1649',
-      lastUpdTime: 1667215711375,
-      numOfActiveVenues: 0,
-      activeVenues: []
-    }
-  ]
-}
-
+const policyListContent = [
+  {
+    id: 'policyId1',
+    name: 'policyName1',
+    description: '',
+    numOfRules: 1,
+    lastModifier: 'FisrtName 1649 LastName 1649',
+    lastUpdTime: 1664790827392,
+    numOfActiveVenues: 0,
+    activeVenues: []
+  },
+  {
+    id: 'be62604f39aa4bb8a9f9a0733ac07add',
+    name: 'test6',
+    description: '',
+    numOfRules: 1,
+    lastModifier: 'FisrtName 1649 LastName 1649',
+    lastUpdTime: 1667215711375,
+    numOfActiveVenues: 0,
+    activeVenues: []
+  }
+]
 const detailContent = {
   venues: [
     {
@@ -48,7 +43,7 @@ const detailContent = {
       name: 'test-venue'
     }
   ],
-  name: 'Default profile',
+  name: 'policyName1',
   rules: [
     {
       name: 'SameNetworkRuleName',
@@ -93,9 +88,9 @@ describe('RogueAPDetectionSettingForm', () => {
 
   it('should render RogueAPDetectionSettingForm successfully', async () => {
     mockServer.use(rest.get(
-      RogueAPDetectionUrls.getRoguePolicy.url,
+      RogueApUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
-        ctx.json(detailContent)
+        ctx.json(policyListContent)
       )
     ))
 
@@ -104,7 +99,9 @@ describe('RogueAPDetectionSettingForm', () => {
         state: initState,
         dispatch: setRogueAPConfigure
       }}>
-        <RogueAPDetectionSettingForm edit={false}/>
+        <Form>
+          <RogueAPDetectionSettingForm edit={false}/>
+        </Form>
       </RogueAPDetectionContext.Provider>
       , {
         wrapper: wrapper,
@@ -121,7 +118,7 @@ describe('RogueAPDetectionSettingForm', () => {
       name: /rule name/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
-      name: /ruletype/i
+      name: /rule type/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
       name: /category/i
@@ -130,7 +127,12 @@ describe('RogueAPDetectionSettingForm', () => {
 
   it('should render RogueAPDetectionSettingForm with editMode successfully', async () => {
     mockServer.use(rest.get(
-      RogueAPDetectionUrls.getRoguePolicyList.url,
+      RogueApUrls.getRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(detailContent)
+      )
+    ), rest.get(
+      RogueApUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)
       )
@@ -141,7 +143,9 @@ describe('RogueAPDetectionSettingForm', () => {
         state: initStateEditMode,
         dispatch: setRogueAPConfigure
       }}>
-        <RogueAPDetectionSettingForm edit={true}/>
+        <Form>
+          <RogueAPDetectionSettingForm edit={true}/>
+        </Form>
       </RogueAPDetectionContext.Provider>
       , {
         wrapper: wrapper,
@@ -158,7 +162,7 @@ describe('RogueAPDetectionSettingForm', () => {
       name: /rule name/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
-      name: /ruletype/i
+      name: /rule type/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
       name: /category/i

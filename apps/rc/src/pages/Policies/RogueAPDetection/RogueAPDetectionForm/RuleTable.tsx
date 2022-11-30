@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom'
 import { showActionModal, Table, TableProps }       from '@acx-ui/components'
 import { useRoguePolicyQuery }                      from '@acx-ui/rc/services'
 import { RogueAPDetectionActionTypes, RogueAPRule } from '@acx-ui/rc/utils'
+import { RogueRuleTypeEnum }                        from '@acx-ui/rc/utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -23,17 +24,30 @@ const RuleTable = (props: RuleTableProps) => {
 
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
-  const { data } = useRoguePolicyQuery({
-    params: edit ? params : {
-      ...params, policyId: 'none'
-    }
-  })
+  const { data } = useRoguePolicyQuery({ params: params }, { skip: !edit })
 
   const [ruleName, setRuleName] = useState('')
   const [visibleAdd, setVisibleAdd] = useState(false)
   const [visibleEdit, setVisibleEdit] = useState(false)
 
-  const basicColumns = [
+  const renderRuleType = (ruleType: string) => {
+    const ruleTypes = {
+      SameNetworkRule: $t({ defaultMessage: 'Same Network Rule' }),
+      MacSpoofingRule: $t({ defaultMessage: 'Mac Spoofing Rule' }),
+      SsidSpoofingRule: $t({ defaultMessage: 'SSID Spoofing Rule' }),
+      RTSAbuseRule: $t({ defaultMessage: 'RTS Abuse Rule' }),
+      CTSAbuseRule: $t({ defaultMessage: 'CTS Abuse Rule' }),
+      DeauthFloodRule: $t({ defaultMessage: 'Deauth Flood Rule' }),
+      DisassocFloodRule: $t({ defaultMessage: 'Disassoc Flood Rule' }),
+      ExcessivePowerRule: $t({ defaultMessage: 'Excessive Power Rule' }),
+      NullSSIDRule: $t({ defaultMessage: 'Null SSID Rule' }),
+      AdhocRule: $t({ defaultMessage: 'Adhoc' })
+    } as { [key in RogueRuleTypeEnum]: string }
+
+    return ruleTypes[ruleType as RogueRuleTypeEnum]
+  }
+
+  const basicColumns: TableProps<RogueAPRule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Priority' }),
       dataIndex: 'priority',
@@ -45,9 +59,12 @@ const RuleTable = (props: RuleTableProps) => {
       key: 'name'
     },
     {
-      title: $t({ defaultMessage: 'RuleType' }),
+      title: $t({ defaultMessage: 'Rule Type' }),
       dataIndex: 'type',
-      key: 'type'
+      key: 'type',
+      render: (data, row: RogueAPRule) => {
+        return renderRuleType(row.type)
+      }
     },
     {
       title: $t({ defaultMessage: 'Category' }),
@@ -86,7 +103,7 @@ const RuleTable = (props: RuleTableProps) => {
     onClick: handleAddAction
   }]
 
-  const editAction = (rows: RogueAPRule[]) => {
+  const editAction = (rows: RogueAPRule[], clearSelection: () => void) => {
     if (rows.length > 1) {
       showActionModal({
         type: 'error',
@@ -97,9 +114,10 @@ const RuleTable = (props: RuleTableProps) => {
       setVisibleEdit(true)
       setVisibleAdd(false)
     }
+    clearSelection()
   }
 
-  const moveUpAction = (rows: RogueAPRule[]) => {
+  const moveUpAction = (rows: RogueAPRule[], clearSelection: () => void) => {
     dispatch({
       type: RogueAPDetectionActionTypes.MOVE_UP,
       payload: {
@@ -107,9 +125,10 @@ const RuleTable = (props: RuleTableProps) => {
         priority: rows[0].priority
       }
     })
+    clearSelection()
   }
 
-  const moveDownAction = (rows: RogueAPRule[]) => {
+  const moveDownAction = (rows: RogueAPRule[], clearSelection: () => void) => {
     dispatch({
       type: RogueAPDetectionActionTypes.MOVE_DOWN,
       payload: {
@@ -117,9 +136,10 @@ const RuleTable = (props: RuleTableProps) => {
         priority: rows[0].priority
       }
     })
+    clearSelection()
   }
 
-  const delAction = (rows: RogueAPRule[]) => {
+  const delAction = (rows: RogueAPRule[], clearSelection: () => void) => {
     if (rows.length > 1) {
       showActionModal({
         type: 'error',
@@ -140,23 +160,23 @@ const RuleTable = (props: RuleTableProps) => {
               name: rows[0].name
             }
           })
-          const clearButton = document?.querySelector('button[title="Clear selection"]')
-          // @ts-ignore
-          clearButton.click()
         }
       })
     }
-
+    clearSelection()
   }
 
   const rowActions: TableProps<RogueAPRule>['actions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    visible: (row: RogueAPRule[]) => row.length <= 1,
     onClick: editAction
   },{
     label: $t({ defaultMessage: 'Move up' }),
+    visible: (row: RogueAPRule[]) => row.length <= 1,
     onClick: moveUpAction
   },{
     label: $t({ defaultMessage: 'Move down' }),
+    visible: (row: RogueAPRule[]) => row.length <= 1,
     onClick: moveDownAction
   },{
     label: $t({ defaultMessage: 'Delete' }),

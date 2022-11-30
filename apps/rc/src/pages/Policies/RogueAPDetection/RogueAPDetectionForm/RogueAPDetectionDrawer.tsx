@@ -141,21 +141,19 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
     </div>
   )
 
-  const content = <Form layout='vertical'>
+  const content = <Form layout='vertical' form={form}>
     <Form.Item
       name='ruleName'
       label={$t({ defaultMessage: 'Rule Name' })}
       rules={[
         { required: true },
-        { validator: async (rule, value) => {
-          return new Promise<void>((resolve, reject) => {
-            if (!isEditMode && value && state.rules.findIndex(e => e.name === value) !== -1) {
-              return reject(
-                $t({ defaultMessage: 'A Rule with that name already exists in the Policy' })
-              )
-            }
-            return resolve()
-          })
+        { validator: (rule, value) => {
+          if (!isEditMode && value && state.rules.findIndex(e => e.name === value) !== -1) {
+            return Promise.reject(
+              $t({ defaultMessage: 'A Rule with that name already exists in the Policy' })
+            )
+          }
+          return Promise.resolve()
         } }
       ]}
       initialValue={isEditMode ? ruleObj.name : queryRuleName}

@@ -29,11 +29,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
     state, dispatch
   } = useContext(RogueAPDetectionContext)
 
-  const { data } = useGetRoguePolicyListQuery({
-    params: edit ? params : {
-      ...params, policyId: 'none'
-    }
-  })
+  const { data } = useGetRoguePolicyListQuery({ params: params })
 
   const handlePolicyName = (policyName: string) => {
     dispatch({
@@ -54,7 +50,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
   }
 
   useEffect(() => {
-    if (edit && data && state.policyName === '') {
+    if (edit && data) {
       let policyData = data.filter(d => d.id === params.policyId)[0]
       dispatch({
         type: RogueAPDetectionActionTypes.UPDATE_STATE,
@@ -62,7 +58,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
           state: {
             ...state,
             policyName: policyData.name ?? '',
-            venues: policyData.venues
+            venues: policyData.venues ?? []
           }
         }
       })

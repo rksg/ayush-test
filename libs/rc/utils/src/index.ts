@@ -30,6 +30,7 @@ export * from './models/GuestWlan'
 export * from './models/DhcpServiceProfile'
 export * from './models/GuestWlanAdvancedCustomization'
 export * from './models/NetworkVenue'
+export * from './models/RogueRuleTypeEnum'
 export * from './msp.utils'
 
 export * from './models'

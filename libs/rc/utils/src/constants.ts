@@ -75,13 +75,6 @@ export enum DeviceConnectionStatus {
   ALERTING = 'alerting'
 }
 
-export enum DeviceCategory {
-  Malicious = 'Malicious',
-  Ignored = 'Ignored',
-  Unclassified = 'Unclassified',
-  Known = 'Known'
-}
-
 export enum ApRadioBands {
   band24 = '2.4G',
   band50 = '5G',

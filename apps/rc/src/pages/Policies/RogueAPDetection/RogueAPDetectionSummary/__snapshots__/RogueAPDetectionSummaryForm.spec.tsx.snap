@@ -101,7 +101,7 @@ exports[`RogueAPDetectionSummaryForm should render form successfully 1`] = `
                       class="ant-typography"
                       id="tags"
                     >
-                      tag1, tag2, tag3
+                      tag1, tag2, and tag3
                     </div>
                   </div>
                 </div>

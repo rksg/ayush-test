@@ -2,45 +2,41 @@ import React from 'react'
 
 import { act, fireEvent } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
+import { Form }           from 'antd'
 import { rest }           from 'msw'
 
-import { policyApi }                                                                  from '@acx-ui/rc/services'
-import { RogueAPDetectionContextType, RogueAPDetectionUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
-import { Provider, store }                                                            from '@acx-ui/store'
-import { mockServer, render, screen }                                                 from '@acx-ui/test-utils'
+import { policyApi }                                                         from '@acx-ui/rc/services'
+import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
+import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueAPDetectionForm from './RogueAPDetectionForm'
 
 
-const policyListContent = {
-  fields: null,
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: 'policyId1',
-      name: 'test',
-      description: '',
-      numOfRules: 1,
-      lastModifier: 'FisrtName 1649 LastName 1649',
-      lastUpdTime: 1664790827392,
-      numOfActiveVenues: 0,
-      activeVenues: []
-    },
-    {
-      id: 'be62604f39aa4bb8a9f9a0733ac07add',
-      name: 'test6',
-      description: '',
-      numOfRules: 1,
-      lastModifier: 'FisrtName 1649 LastName 1649',
-      lastUpdTime: 1667215711375,
-      numOfActiveVenues: 0,
-      activeVenues: []
-    }
-  ]
-}
+const policyListContent = [
+  {
+    id: 'policyId1',
+    name: 'test',
+    description: '',
+    numOfRules: 1,
+    lastModifier: 'FisrtName 1649 LastName 1649',
+    lastUpdTime: 1664790827392,
+    numOfActiveVenues: 0,
+    activeVenues: []
+  },
+  {
+    id: 'be62604f39aa4bb8a9f9a0733ac07add',
+    name: 'test6',
+    description: '',
+    numOfRules: 1,
+    lastModifier: 'FisrtName 1649 LastName 1649',
+    lastUpdTime: 1667215711375,
+    numOfActiveVenues: 0,
+    activeVenues: []
+  }
+]
 
 const detailContent = {
   venues: [
@@ -136,6 +132,25 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: jest.fn()
 }))
 
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) =>
+    <select
+      role='combobox'
+      onChange={e => onChange(e.target.value)}
+      {...otherProps}>
+      {children}
+    </select>
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
+
+  return { ...antd, Select }
+})
+
 describe('RogueAPDetectionForm', () => {
   beforeEach(() => {
     act(() => {
@@ -145,12 +160,12 @@ describe('RogueAPDetectionForm', () => {
 
   it('should render RogueAPDetectionForm successfully', async () => {
     mockServer.use(rest.post(
-      RogueAPDetectionUrls.getVenueRoguePolicy.url,
+      RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
       )
     ), rest.get(
-      RogueAPDetectionUrls.getRoguePolicyList.url,
+      RogueApUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)
       )
@@ -161,12 +176,14 @@ describe('RogueAPDetectionForm', () => {
         state: initState,
         dispatch: setRogueAPConfigure
       }}>
-        <RogueAPDetectionForm edit={false}/>
+        <Form>
+          <RogueAPDetectionForm edit={false}/>
+        </Form>
       </RogueAPDetectionContext.Provider>
       , {
         wrapper: wrapper,
         route: {
-          path: '/policies/rogueAPDetection/create',
+          path: '/policies/rogueAp/create',
           params: { tenantId: 'tenantId1' }
         }
       }
@@ -194,6 +211,14 @@ describe('RogueAPDetectionForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /rule name/i }),
       { target: { value: 'rule1' } })
 
+    fireEvent.change(screen.getByTestId('selectRogueRule'), {
+      target: { value: 'CTSAbuseRule' }
+    })
+
+    fireEvent.change(screen.getByTestId('selectRogueCategory'), {
+      target: { value: 'Unclassified' }
+    })
+
     await userEvent.click(screen.getByText('Add'))
 
     await screen.findByText('rule1')
@@ -213,17 +238,17 @@ describe('RogueAPDetectionForm', () => {
 
   it('should render RogueAPDetectionForm with editMode successfully', async () => {
     mockServer.use(rest.get(
-      RogueAPDetectionUrls.getRoguePolicy.url,
+      RogueApUrls.getRoguePolicy.url,
       (_, res, ctx) => res(
         ctx.json(detailContent)
       )
     ), rest.post(
-      RogueAPDetectionUrls.getVenueRoguePolicy.url,
+      RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
       )
     ), rest.get(
-      RogueAPDetectionUrls.getRoguePolicyList.url,
+      RogueApUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)
       )
@@ -234,7 +259,9 @@ describe('RogueAPDetectionForm', () => {
         state: initState,
         dispatch: setRogueAPConfigure
       }}>
-        <RogueAPDetectionForm edit={true}/>
+        <Form>
+          <RogueAPDetectionForm edit={true}/>
+        </Form>
       </RogueAPDetectionContext.Provider>
       , {
         wrapper: wrapper,

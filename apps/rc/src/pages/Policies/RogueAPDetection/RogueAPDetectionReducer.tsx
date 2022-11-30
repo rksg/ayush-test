@@ -72,15 +72,16 @@ export const rogueAPDetectionReducer = (
       const moveUpIdx = state.rules.findIndex((rule) =>
         rule.name === action.payload.name && rule.priority === action.payload.priority
       )
+      const moveUpRules = [...state.rules]
       if (moveUpIdx - 1 > -1
-        && moveUpIdx + 1 === state.rules[moveUpIdx].priority) {
-        [state.rules[moveUpIdx], state.rules[moveUpIdx - 1]] = [
-          state.rules[moveUpIdx - 1], state.rules[moveUpIdx]
+        && moveUpIdx + 1 === moveUpRules[moveUpIdx].priority) {
+        [moveUpRules[moveUpIdx], moveUpRules[moveUpIdx - 1]] = [
+          moveUpRules[moveUpIdx - 1], moveUpRules[moveUpIdx]
         ]
       }
       return {
         ...state,
-        rules: state.rules.map((rule, i) => {
+        rules: moveUpRules.map((rule, i) => {
           return {
             ...rule,
             priority: i + 1
@@ -91,15 +92,16 @@ export const rogueAPDetectionReducer = (
       const moveDownIdx = state.rules.findIndex((rule) =>
         rule.name === action.payload.name && rule.priority === action.payload.priority
       )
+      const moveDownRules = [...state.rules]
       if (moveDownIdx + 1 < state.rules.length
-        && moveDownIdx + 1 === state.rules[moveDownIdx].priority) {
-        [state.rules[moveDownIdx], state.rules[moveDownIdx + 1]] = [
-          state.rules[moveDownIdx + 1], state.rules[moveDownIdx]
+        && moveDownIdx + 1 === moveDownRules[moveDownIdx].priority) {
+        [moveDownRules[moveDownIdx], moveDownRules[moveDownIdx + 1]] = [
+          moveDownRules[moveDownIdx + 1], moveDownRules[moveDownIdx]
         ]
       }
       return {
         ...state,
-        rules: state.rules.map((rule, i) => {
+        rules: moveDownRules.map((rule, i) => {
           return {
             ...rule,
             priority: i + 1

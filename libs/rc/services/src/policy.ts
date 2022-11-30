@@ -9,7 +9,7 @@ import {
   CommonUrlsInfo,
   RequestPayload,
   Policy,
-  RogueAPDetectionUrls,
+  RogueApUrls,
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
@@ -32,7 +32,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
     addRoguePolicy: build.mutation<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueAPDetectionUrls.addRoguePolicy, params)
+        const req = createHttpRequest(RogueApUrls.addRoguePolicy, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -42,7 +42,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueAPDetectionUrls.getRoguePolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.getRoguePolicyList, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -51,7 +51,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueAPDetectionUrls.getRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.getRoguePolicy, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -60,7 +60,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueAPDetectionUrls.updateRoguePolicy, params)
+        const req = createHttpRequest(RogueApUrls.updateRoguePolicy, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -70,7 +70,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     venueRoguePolicy: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueAPDetectionUrls.getVenueRoguePolicy, params)
+        const req = createHttpRequest(RogueApUrls.getVenueRoguePolicy, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -80,7 +80,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     policyList: build.query<TableResult<Policy>, RequestPayload>({
       query: ({ params, payload }) => {
-        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params)
+        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params, RKS_NEW_UI)
         return {
           ...policyListReq,
           body: payload

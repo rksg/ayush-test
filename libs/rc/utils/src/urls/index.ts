@@ -1,6 +1,5 @@
 export * from './services/mdnsProxyUrls'
 export * from './services/wifiCallingUrls'
-export * from './policies/rogueAPDetectionUrls'
 export * from './commonUrls'
 export * from './wifiUrls'
 export * from './switchUrls'

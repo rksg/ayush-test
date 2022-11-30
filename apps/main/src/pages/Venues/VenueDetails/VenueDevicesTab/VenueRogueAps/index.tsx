@@ -11,8 +11,8 @@ import {
   VenueMarkerGrey,
   VenueMarkerRed
 } from '@acx-ui/icons'
-import { useGetOldVenueRogueApQuery }                            from '@acx-ui/rc/services'
-import { DeviceCategory, RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
+import { useGetOldVenueRogueApQuery }                                 from '@acx-ui/rc/services'
+import { RogueDeviceCategory, RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue/{venueId}/rogue/ap',
@@ -38,7 +38,10 @@ const defaultPayload = {
   sortField: 'lastUpdTime',
   sortOrder: 'DESC',
   page: 1,
-  pageSize: 25
+  pageSize: 10,
+  pagination: {
+    pageSize: 10
+  }
 }
 
 const renderSignal = (snr: number) => {
@@ -58,11 +61,27 @@ const renderSignal = (snr: number) => {
   return <SignalBad height={21} />
 }
 
-const handleCategoryColor = (status: DeviceCategory) => {
+const handleCategoryColor = (status: RogueDeviceCategory) => {
   return `var(${deviceCategoryColors[status]})`
 }
 
 export function VenueRogueAps () {
+  const formatDate = (date: Date) => {
+    return (
+      [
+        date.getFullYear(),
+        date.getMonth() + 1,
+        date.getDate()
+      ].join('/') +
+      ' ' +
+      [
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds()
+      ].join(':')
+    )
+  }
+
   const getCols = (intl: ReturnType<typeof useIntl>) => {
     const columns: TableProps<RogueOldApResponseType>['columns'] = [
       {
@@ -81,7 +100,7 @@ export function VenueRogueAps () {
         render: (data, row) => {
           return <span>
             <Badge
-              color={handleCategoryColor(row.category as DeviceCategory)}
+              color={handleCategoryColor(row.category as RogueDeviceCategory)}
               text={row.category}
             />
           </span>
@@ -118,7 +137,7 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'SNR' }),
         dataIndex: 'closestAp_snr',
         sorter: true,
-        align: 'left',
+        align: 'center',
         render: (data, row) => {
           return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
             <span>{row.closestAp_snr}</span>
@@ -128,11 +147,11 @@ export function VenueRogueAps () {
       },
       {
         key: 'closestAp_apName',
-        title: intl.$t({ defaultMessage: 'ClosestAp' }),
+        title: intl.$t({ defaultMessage: 'Closest Ap' }),
         dataIndex: 'closestAp_apName',
         filterable: true,
         sorter: true,
-        align: 'center'
+        align: 'left'
       },
       {
         key: 'detectingAps',
@@ -149,9 +168,9 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Last Seen' }),
         dataIndex: 'lastUpdTime',
         sorter: true,
-        align: 'center',
+        align: 'left',
         render: (data, row) => {
-          return row.lastUpdTime
+          return formatDate(new Date(Number(row.lastUpdTime)))
         }
       },
       {

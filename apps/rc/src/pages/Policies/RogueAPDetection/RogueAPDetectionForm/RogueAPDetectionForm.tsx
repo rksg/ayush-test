@@ -9,6 +9,7 @@ import {
 } from '@acx-ui/components'
 import { useAddRoguePolicyMutation, useUpdateRoguePolicyMutation } from '@acx-ui/rc/services'
 import {
+  getPolicyListRoutePath,
   RogueAPDetectionContextType,
   RogueAPRule,
   RogueVenue
@@ -28,7 +29,7 @@ type RogueAPDetectionFormProps = {
 const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink('/policies')
+  const linkToPolicies = useTenantLink(getPolicyListRoutePath())
   const params = useParams()
   const { edit } = props
 
@@ -61,32 +62,24 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     }
   }
 
-  const handleAddRogueAPDetectionPolicy = async () => {
+  const handleRogueAPDetectionPolicy = async (edit: boolean) => {
     try {
-      await createRoguePolicy({
-        params,
-        payload: transformPayload(state, false)
-      }).unwrap()
+      if (!edit) {
+        await createRoguePolicy({
+          params,
+          payload: transformPayload(state, false)
+        }).unwrap()
+      } else {
+        await updateRoguePolicy({
+          params,
+          payload: transformPayload(state, true)
+        }).unwrap()
+      }
       navigate(linkToPolicies, { replace: true })
     } catch(error) {
       showToast({
         type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
-    }
-  }
-
-  const handleUpdateRogueAPDetectionPolicy = async () => {
-    try {
-      await updateRoguePolicy({
-        params,
-        payload: transformPayload(state, true)
-      }).unwrap()
-      navigate(linkToPolicies, { replace: true })
-    } catch(error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
+        content: $t({ defaultMessage: 'An error occurred: ' })
       })
     }
   }
@@ -98,16 +91,13 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
           ? $t({ defaultMessage: 'Edit Rogue AP Detection Policy' })
           : $t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: '/policies' }
+          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
       />
       <StepsForm<RogueAPDetectionContextType>
         formRef={formRef}
         onCancel={() => navigate(linkToPolicies)}
-        onFinish={edit
-          ? handleUpdateRogueAPDetectionPolicy
-          : handleAddRogueAPDetectionPolicy
-        }
+        onFinish={() => handleRogueAPDetectionPolicy(edit)}
       >
         <StepsForm.StepForm<RogueAPDetectionContextType>
           name='settings'

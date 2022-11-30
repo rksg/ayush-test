@@ -3,10 +3,10 @@ import React from 'react'
 import { act, fireEvent, within } from '@testing-library/react'
 import { rest }                   from 'msw'
 
-import { policyApi }                                                                  from '@acx-ui/rc/services'
-import { RogueAPDetectionContextType, RogueAPDetectionUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
-import { Provider, store }                                                            from '@acx-ui/store'
-import { mockServer, render, screen }                                                 from '@acx-ui/test-utils'
+import { policyApi }                                                         from '@acx-ui/rc/services'
+import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
+import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -88,7 +88,7 @@ describe('RogueVenueTable', () => {
 
   it('should render RogueVenueTable successfully', async () => {
     mockServer.use(rest.post(
-      RogueAPDetectionUrls.getVenueRoguePolicy.url,
+      RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
       )

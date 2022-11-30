@@ -9,9 +9,9 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { PolicyType, RogueAPDetailContextType }  from '@acx-ui/rc/utils'
-import { getPolicyDetailsLink, PolicyOperation } from '@acx-ui/rc/utils'
-import { TenantLink }                            from '@acx-ui/react-router-dom'
+import { getPolicyListRoutePath, PolicyType, RogueAPDetailContextType } from '@acx-ui/rc/utils'
+import { getPolicyDetailsLink, PolicyOperation }                        from '@acx-ui/rc/utils'
+import { TenantLink }                                                   from '@acx-ui/react-router-dom'
 
 
 import RogueAPDetectionDetailContent from './RogueAPDetectionDetailContent'
@@ -23,13 +23,14 @@ const RogueAPDetectionDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [filtersId, setFiltersId] = useState([] as string[])
+  const [policyName, setPolicyName] = useState('' as string)
 
   return (
-    <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId }}>
+    <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
-        title={`${$t({ defaultMessage: 'Rogue AP Detection policy' })}`}
+        title={policyName ?? `${$t({ defaultMessage: 'Rogue AP Detection policy' })}`}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: '/policies' }
+          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
         extra={[
           <TenantLink to={getPolicyDetailsLink({

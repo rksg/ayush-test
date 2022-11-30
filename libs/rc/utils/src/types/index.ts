@@ -26,10 +26,10 @@ export * from './user'
 export * from './services'
 export * from './msp'
 export * from './edge'
-export * from './policy'
+export * from './policies'
 export * from './wifiCallingService'
 export * from './portalService'
-export * from './rougeAPDetectionPolicy'
+export * from './policies/rogueApDetectionPolicy'
 
 export interface CommonResult {
   requestId: string
