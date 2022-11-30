@@ -9,7 +9,7 @@ import {
   getSelectServiceRoutePath,
   ServiceOperation,
   getServiceRoutePath
-}           from '@acx-ui/rc/utils'
+} from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
