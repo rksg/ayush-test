@@ -11,10 +11,10 @@ import ClientDetailTabs from './ClientDetailTabs'
 
 function DatePicker () {
   const { $t } = useIntl()
-  const enableVenueAnalytics = useIsSplitOn(Features.VENUE_ANALYTICS)
+  const enableAnalytics = useIsSplitOn(Features.CLIENT_TROUBLESHOOTING)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
-  return (enableVenueAnalytics)
+  return enableAnalytics
     ? <RangePicker
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
       enableDates={dateRangeForLast(3,'months')}
