@@ -4,7 +4,6 @@ import { Row, Col }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { NetworkFilter, Button } from '@acx-ui/components'
-import { useParams }             from '@acx-ui/react-router-dom'
 import { useEncodedParameter }   from '@acx-ui/utils'
 
 import { ClientTroubleShootingConfig } from './config'
@@ -18,11 +17,9 @@ type ClientTroubleShootingSelectionsType = {
 }
 type SingleValueType = (string | number)[]
 type selectionType = SingleValueType | SingleValueType[] | undefined
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
-  // Todo use clientId to get timeline and history
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  console.log(clientMac)
-  const { userId: clientId } = useParams()
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
   const { $t } = useIntl()
   const { read, write } =

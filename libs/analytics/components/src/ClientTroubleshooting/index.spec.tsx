@@ -3,29 +3,35 @@ import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { ClientTroubleshootingTab } from './index'
+import { ClientTroubleshooting } from './index'
 
 describe('ClientTroubleshootingTab', () => {
   it('should render correctly with out search params', async () => {
     const params = {
       tenantId: 'tenant-id',
-      userId: 'user-id',
-      activeTab: 'troubleshooting'
+      activeTab: 'troubleshooting',
+      clientId: 'mac'
     }
-    const { asFragment } = render(<Provider><ClientTroubleshootingTab /></Provider>, {
-      route: { params, path: '/:tenantId/users/aps/:userId/details/:activeTab' }
-    })
+    const { asFragment } = render(
+      <Provider><ClientTroubleshooting clientMac='mac' /></Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
     expect(await screen.findByTestId('ArrowExpand')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render correctly with search params', async () => {
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
-        pathname: '/:tenantId/users/aps/user-Id/details/troubleshooting',
+        pathname: '/:tenantId/users/wifi/user-Id/details/troubleshooting',
         // eslint-disable-next-line max-len
         search: '?clientTroubleShootingSelections=%257B%2522category%2522%253A%255B%255B%2522performance%2522%255D%252C%255B%2522Infrastructure%2522%255D%255D%257D'
       }]}>
-        <ClientTroubleshootingTab />
+        <ClientTroubleshooting clientMac='mac' />
       </MemoryRouter>
     )
     expect(await screen.findByTestId('ArrowExpand')).toBeVisible()
@@ -34,11 +40,11 @@ describe('ClientTroubleshootingTab', () => {
   it('should handle history button toggle', async () => {
     render(
       <MemoryRouter initialEntries={[{
-        pathname: '/:tenantId/users/aps/user-Id/details/troubleshooting',
+        pathname: '/:tenantId/users/wifi/user-Id/details/troubleshooting',
         // eslint-disable-next-line max-len
         search: '?clientTroubleShootingSelections=%257B%2522category%2522%253A%255B%255B%2522performance%2522%255D%252C%255B%2522Infrastructure%2522%255D%255D%257D'
       }]}>
-        <ClientTroubleshootingTab />
+        <ClientTroubleshooting clientMac='mac' />
       </MemoryRouter>
     )
     fireEvent.click(await screen.findByTestId('ArrowExpand'))
@@ -56,7 +62,7 @@ describe('ClientTroubleshootingTab', () => {
     })
     const { asFragment } = render(
       <BrowserRouter window={window}>
-        <ClientTroubleshootingTab />
+        <ClientTroubleshooting clientMac='mac' />
       </BrowserRouter>
     )
     await screen.findByText('All Categories')
