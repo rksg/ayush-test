@@ -9,12 +9,6 @@ import { render }                                                               
 import NetworkDevices from '.'
 
 
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  SignalUp: () => <div data-testid='SignalUp'/>,
-  DeviceOutlined: () => <div data-testid='DeviceOutlined'/>
-}))
-
 const networkDeviceType = Object.values(NetworkDeviceType)
 
 const deviceData = [{
@@ -59,9 +53,9 @@ const floorplan: FloorPlanDto = {
     '/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg'
 }
 
-describe('Floor Plans', () => {
+describe('Floor Plans Nework Devices', () => {
 
-  it('Floor Plans should render correctly', async () => {
+  it('should render correctly', async () => {
 
     const { asFragment } = await render(<NetworkDevices
       imageLoaded={true}
@@ -73,8 +67,6 @@ describe('Floor Plans', () => {
       context='Ap'/>)
 
     expect(await screen.findByTestId('SignalUp')).toBeVisible()
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
 })

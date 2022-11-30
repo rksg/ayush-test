@@ -94,28 +94,28 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 >
                   <div>
                     <div
-                      class="sc-jSMfEi iZtMRb device-container gallery"
+                      class="sc-jSMfEi bMgpfk device-container gallery"
                       style="top: 9.839357%; left: 65.20548%;"
                     >
                       <div
                         class="marker ap-status-severity-attention"
                         style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                       >
-                        <div
+                        <svg
                           data-testid="SignalUp"
                         />
                          
                       </div>
                     </div>
                     <div
-                      class="sc-jSMfEi iZtMRb device-container gallery"
+                      class="sc-jSMfEi bMgpfk device-container gallery"
                       style="top: 7.056452%; left: 52.739727%;"
                     >
                       <div
                         class="marker switch-status-never-contacted-cloud"
                         style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                       >
-                        <div
+                        <svg
                           data-testid="DeviceOutlined"
                         />
                          
@@ -328,7 +328,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         class="sc-crXcEl iISlpP"
       >
         <div
-          class="sc-evZas dyOvjN"
+          class="sc-evZas khzpeU"
           data-testid="image-container"
         >
           <div />
@@ -391,7 +391,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
             data-testid="image-zoom-in"
             type="button"
           >
-            <div
+            <svg
               data-testid="MagnifyingGlassPlusOutlined"
             />
           </button>
@@ -415,7 +415,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
             data-testid="image-zoom-out"
             type="button"
           >
-            <div
+            <svg
               data-testid="MagnifyingGlassMinusOutlined"
             />
           </button>
@@ -439,7 +439,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
             data-testid="image-zoom-original"
             type="button"
           >
-            <div
+            <svg
               data-testid="SearchFullOutlined"
             />
           </button>
@@ -462,7 +462,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
             data-testid="image-zoom-fit"
             type="button"
           >
-            <div
+            <svg
               data-testid="SearchFitOutlined"
             />
           </button>
@@ -482,7 +482,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
               data-testid="galleryIcon"
               type="button"
             >
-              <div
+              <svg
                 data-testid="ApplicationsSolid"
               />
             </button>
@@ -508,7 +508,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                 >
                   <div>
                     <div
-                      class="sc-jSMfEi iZtMRb device-container context-Album"
+                      class="sc-jSMfEi bMgpfk device-container context-Album"
                       style="top: 9.839357%; left: 65.20548%;"
                     >
                       <div
@@ -519,7 +519,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                       </div>
                     </div>
                     <div
-                      class="sc-jSMfEi iZtMRb device-container context-Album"
+                      class="sc-jSMfEi bMgpfk device-container context-Album"
                       style="top: 7.056452%; left: 52.739727%;"
                     >
                       <div

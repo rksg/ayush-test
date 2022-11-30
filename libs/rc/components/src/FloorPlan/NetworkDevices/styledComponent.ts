@@ -7,6 +7,9 @@ export const DeviceContainer = styled('div')`
   width: 36px;
   height: 36px;
   position: absolute;
+  &:not(.context-Unplaced) {
+    margin: -21px 0 0 -21px;
+  }
 
   svg {
     transform: rotate(45deg);

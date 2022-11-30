@@ -202,8 +202,6 @@ describe('Floor Plan Plain View', () => {
     const zoomedWidth = window.getComputedStyle(floorPlanContainer).width
     await waitFor(() => expect(zoomedWidth).toBe('calc(26%)'))
     fireEvent.click(component)
-    const zoomedHeight = window.getComputedStyle(floorPlanContainer).height
-    await waitFor(() => expect(zoomedHeight).toBe('100%'))
     expect(asFragment()).toMatchSnapshot()
   })
 
