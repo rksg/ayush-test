@@ -9,7 +9,7 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
-import { TimeStampRange }         from '@acx-ui/types'
+import { TimeStampRange }                                  from '@acx-ui/types'
 import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
