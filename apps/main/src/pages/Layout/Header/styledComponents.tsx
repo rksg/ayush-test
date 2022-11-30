@@ -8,7 +8,7 @@ import { Popover as AntPopover,
 } from 'antd'
 import styled from 'styled-components/macro'
 
-import { LayoutUI, GridRow, GridCol } from '@acx-ui/components'
+import { LayoutUI, GridRow, GridCol }               from '@acx-ui/components'
 import { WarningCircleSolid, LogOut as AntdLogOut } from '@acx-ui/icons'
 
 
