@@ -13,26 +13,31 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import Edges                      from './pages/Devices/Edge'
-import AddEdge                    from './pages/Devices/Edge/AddEdge'
-import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
-import { StackForm }              from './pages/Devices/Switch/StackForm'
-import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
-import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
-import { AddSwitchForm }          from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
-import ApDetails                  from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
-import { ApForm }                 from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }            from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                   from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable              from './pages/Networks/NetworksTable'
+import Edges                                        from './pages/Devices/Edge'
+import AddEdge                                      from './pages/Devices/Edge/AddEdge'
+import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }                                from './pages/Devices/Switch/StackForm'
+import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
+import SwitchesTable                                from './pages/Devices/Switch/SwitchesTable'
+import { AddSwitchForm }                            from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
+import ApDetails                                    from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }                              from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                                     from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails                               from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm                                  from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable                                from './pages/Networks/NetworksTable'
+import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MacRegistrationListForm    from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
 import PoliciesTable              from './pages/Policies/PoliciesTable'
+import RadiusAttributeGroupDetail
+  from './pages/Policies/RadiusAttributeGroup/RadiusAttributeGroupDetail/RadiusAttributeGroupDetail'
+import RadiusAttributeGroupForm
+  from './pages/Policies/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm'
 import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
@@ -250,6 +255,25 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
         element={<MacRegistrationListForm editMode={true} />}
       />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
+        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
+        element={<RadiusAttributeGroupForm />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
+        element={<RadiusAttributeGroupForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
+        element={<RadiusAttributeGroupDetail />} />
     </Route>
   )
 }

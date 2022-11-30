@@ -1,5 +1,6 @@
 export * from './macRegistrarionList'
 export * from './rogueApDetectionPolicy'
+export * from './radiusAttributeGroup'
 
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
@@ -8,7 +9,10 @@ export enum PolicyType {
   SYSLOG = 'Syslog',
   AAA = 'AAA',
   CLIENT_ISOLATION = 'Client Isolation',
-  MAC_REGISTRATION_LIST = 'MAC Registration List'
+  MAC_REGISTRATION_LIST = 'MAC Registration List',
+  ADAPTIVE_POLICY = 'Adaptive Policy',
+  RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
+  ADAPTIVE_POLICY_SET = 'Adaptive Policy Set'
 }
 
 export enum PolicyTechnology {

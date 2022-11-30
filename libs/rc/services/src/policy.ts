@@ -17,15 +17,17 @@ import {
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
   TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferTableResult
+  NewTableResult, transferTableResult,
+  RadiusAttributeGroupUrlsInfo, RadiusAttributeGroup, RadiusAttribute
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'policyApi',
-  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration'],
+  // eslint-disable-next-line max-len
+  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'RadiusAttributeGroup', 'RadiusAttribute'],
   refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
+  endpoints: () => ({})
 })
 
 const RKS_NEW_UI = {
@@ -199,7 +201,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getMacRegList: build.query<MacRegistrationPool, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MacRegListUrlsInfo.getMacRegistrationPool, params)
-        return{
+        return {
           ...req
         }
       },
@@ -216,14 +218,78 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     updateMacRegistration: build.mutation<MacRegistration, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistration, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    radiusAttributeGroupList: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const groupReq = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroups, params, RKS_NEW_UI)
+        return {
+          ...groupReq
+        }
+      },
+      transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
+        return transferTableResult<RadiusAttributeGroup>(result)
+      },
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const groupReq = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroups, params, RKS_NEW_UI)
+        return {
+          ...groupReq,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<RadiusAttribute>) {
+        return transferTableResult<RadiusAttribute>(result)
+      },
+      providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
+    }),
+    deleteRadiusAttributeGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.deleteAttributeGroup, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    addRadiusAttributeGroup: build.mutation<RadiusAttributeGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.createAttributeGroup, params)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+      invalidatesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    updateRadiusAttributeGroup: build.mutation<RadiusAttributeGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.updateAttributeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    getRadiusAttributeGroup: build.query<RadiusAttributeGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroup, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'DETAIL' }]
     })
   })
 })
@@ -248,5 +314,12 @@ export const {
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
-  useLazyMacRegistrationsQuery
+  useLazyMacRegistrationsQuery,
+  useRadiusAttributeGroupListQuery,
+  useGetRadiusAttributeGroupQuery,
+  useRadiusAttributeListQuery,
+  useDeleteRadiusAttributeGroupMutation,
+  useLazyRadiusAttributeGroupListQuery,
+  useUpdateRadiusAttributeGroupMutation,
+  useAddRadiusAttributeGroupMutation
 } = policyApi
