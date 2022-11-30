@@ -4,19 +4,20 @@ import { Col, Form, Input, InputNumber, Radio, RadioChangeEvent, Row, Select, Sl
 import _                                                                               from 'lodash'
 import { useIntl }                                                                     from 'react-intl'
 
+import { RadioSettingsChannels }           from '@acx-ui/rc/components'
 import {
   useGetVenueRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { VenueEditContext }  from '../../..'
 import {
   ChannelBars,
   channelSelectionMethodsOptions,
   split5GChannels,
   txPowerAdjustmentOptions
 } from '../contents'
-import { RadioSettingsChannels } from '../RadioSettingsChannels'
 
 const { useWatch } = Form
 
@@ -244,6 +245,7 @@ export function RadioLower5GHz () {
             displayBarSettings={['5G', 'DFS']}
             channelBars={indoorChannelBars}
             disabled={inheritSettings}
+            editContext={VenueEditContext}
           />
             }
           </div>
@@ -261,6 +263,7 @@ export function RadioLower5GHz () {
             displayBarSettings={['5G', 'DFS']}
             channelBars={outdoorChannelBars}
             disabled={inheritSettings}
+            editContext={VenueEditContext}
           />
             }
             <Form.Item

@@ -20,8 +20,8 @@ import {
   InformationSolid,
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useExternalProvidersQuery }                                                                                                                                                                                                                                           from '@acx-ui/rc/services'
-import { generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLRegExp, walledGardensRegExp, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { useExternalProvidersQuery }                                                                                                                                                                                                                                                   from '@acx-ui/rc/services'
+import { generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, walledGardensRegExp, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
@@ -212,7 +212,7 @@ export function WISPrForm () {
           name={['guestPortal','wisprPage','captivePortalUrl']}
           rules={
             [{ required: true },
-              { validator: (_, value) => URLRegExp(value) }]
+              { validator: (_, value) => URLProtocolRegExp(value) }]
           }
           label={<>
             {$t({ defaultMessage: 'Captive Portal URL' })}

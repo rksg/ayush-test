@@ -111,6 +111,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter valid GPS coordinates',
     description: 'Validation - GPS coordinates checks'
   }),
+  targetHost: defineMessage({
+    defaultMessage: 'Please enter valid target host or IP address',
+    description: 'Validation - target host checks'
+  }),
   diffVenueCountry: defineMessage({
     defaultMessage: 'Cannot move AP to another venue in different country',
     description: 'Validation - Venue Country checks'
