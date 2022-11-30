@@ -1,5 +1,6 @@
-import { ServiceType }  from '@acx-ui/rc/utils'
 import { generatePath } from '@acx-ui/react-router-dom'
+
+import { ServiceType } from '../../constants'
 
 export enum ServiceOperation {
   CREATE,
@@ -7,12 +8,12 @@ export enum ServiceOperation {
   DETAIL
 }
 
-export interface ServiceRoutePathProps {
+interface ServiceRoutePathProps {
   type: ServiceType;
   oper: ServiceOperation;
 }
 
-export interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
+interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
   oper: Exclude<ServiceOperation, ServiceOperation.CREATE>;
   serviceId: string;
 }

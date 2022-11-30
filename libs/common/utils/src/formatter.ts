@@ -173,12 +173,16 @@ const percentFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::percent .##}'
 })
 const percentFormatRound: MessageDescriptor = defineMessage({
-  defaultMessage: '{value, number, ::percent}'
+  defaultMessage: '{value, number, ::percent }'
+})
+const scaleFormatRound: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, number, ::scale/100 . }'
 })
 export const intlFormats = {
   countFormat,
   percentFormat,
-  percentFormatRound
+  percentFormatRound,
+  scaleFormatRound
 } as const
 
 export function formatter (
