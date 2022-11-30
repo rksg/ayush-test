@@ -9,6 +9,7 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
+import { RadiusServerTab } from './pages/Administration/RadiusServerTab'
 import AddEdge             from './pages/Devices/Edge/AddEdge'
 import SwitchesTable       from './pages/Devices/Switch/SwitchesTable'
 import ApDetails           from './pages/Devices/Wifi/ApDetails'
@@ -49,6 +50,7 @@ export default function RcRoutes () {
       <Route path='services/*' element={<ServiceRoutes />} />
       <Route path='policies/*' element={<PolicyRoutes />} />
       <Route path='users/*' element={<UserRoutes />} />
+      <Route path='administration/*' element={<AdministrationRoutes />} />
     </Route>
   )
   return (
@@ -195,6 +197,14 @@ function UserRoutes () {
       <Route path='users/aps/:activeTab' element={<UserApList />} />
       <Route path='users/aps/:userId/details/' element={<UserApDetails />} />
       <Route path='users/aps/:userId/details/:activeTab' element={<UserApDetails />} />
+    </Route>
+  )
+}
+
+function AdministrationRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='administration' element={<RadiusServerTab/>} />
     </Route>
   )
 }
