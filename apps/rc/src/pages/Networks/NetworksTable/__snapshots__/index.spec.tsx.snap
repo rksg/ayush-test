@@ -3,45 +3,52 @@
 exports[`Networks Table should click disabled row 1`] = `
 <DocumentFragment>
   <div
-    class="ant-page-header ant-page-header-ghost"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
-      class="ant-page-header-heading"
+      class="ant-page-header ant-page-header-ghost"
     >
       <div
-        class="ant-page-header-heading-left"
-      >
-        <span
-          class="ant-page-header-heading-title"
-          title="Networks"
-        >
-          Networks
-        </span>
-      </div>
-      <span
-        class="ant-page-header-heading-extra"
+        class="ant-page-header-heading"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Networks
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
         >
           <div
-            class="ant-space-item"
+            class="ant-space ant-space-horizontal ant-space-align-center"
           >
-            <a
-              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/add"
+            <div
+              class="ant-space-item"
             >
-              <button
-                class="ant-btn ant-btn-primary"
-                type="button"
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/add"
               >
-                <span>
-                  Add Wi-Fi Network
-                </span>
-              </button>
-            </a>
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  type="button"
+                >
+                  <span>
+                    Add Wi-Fi Network
+                  </span>
+                </button>
+              </a>
+            </div>
           </div>
-        </div>
-      </span>
+        </span>
+      </div>
     </div>
   </div>
   <div
@@ -1803,45 +1810,52 @@ exports[`Networks Table should click disabled row 1`] = `
 exports[`Networks Table should delete selected row 1`] = `
 <DocumentFragment>
   <div
-    class="ant-page-header ant-page-header-ghost"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
-      class="ant-page-header-heading"
+      class="ant-page-header ant-page-header-ghost"
     >
       <div
-        class="ant-page-header-heading-left"
-      >
-        <span
-          class="ant-page-header-heading-title"
-          title="Networks"
-        >
-          Networks
-        </span>
-      </div>
-      <span
-        class="ant-page-header-heading-extra"
+        class="ant-page-header-heading"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Networks
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
         >
           <div
-            class="ant-space-item"
+            class="ant-space ant-space-horizontal ant-space-align-center"
           >
-            <a
-              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/add"
+            <div
+              class="ant-space-item"
             >
-              <button
-                class="ant-btn ant-btn-primary"
-                type="button"
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/add"
               >
-                <span>
-                  Add Wi-Fi Network
-                </span>
-              </button>
-            </a>
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  type="button"
+                >
+                  <span>
+                    Add Wi-Fi Network
+                  </span>
+                </button>
+              </a>
+            </div>
           </div>
-        </div>
-      </span>
+        </span>
+      </div>
     </div>
   </div>
   <div
@@ -3603,45 +3617,52 @@ exports[`Networks Table should delete selected row 1`] = `
 exports[`Networks Table should render table 1`] = `
 <DocumentFragment>
   <div
-    class="ant-page-header ant-page-header-ghost"
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
   >
     <div
-      class="ant-page-header-heading"
+      class="ant-page-header ant-page-header-ghost"
     >
       <div
-        class="ant-page-header-heading-left"
-      >
-        <span
-          class="ant-page-header-heading-title"
-          title="Networks"
-        >
-          Networks
-        </span>
-      </div>
-      <span
-        class="ant-page-header-heading-extra"
+        class="ant-page-header-heading"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Networks
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
         >
           <div
-            class="ant-space-item"
+            class="ant-space ant-space-horizontal ant-space-align-center"
           >
-            <a
-              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/add"
+            <div
+              class="ant-space-item"
             >
-              <button
-                class="ant-btn ant-btn-primary"
-                type="button"
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/add"
               >
-                <span>
-                  Add Wi-Fi Network
-                </span>
-              </button>
-            </a>
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  type="button"
+                >
+                  <span>
+                    Add Wi-Fi Network
+                  </span>
+                </button>
+              </a>
+            </div>
           </div>
-        </div>
-      </span>
+        </span>
+      </div>
     </div>
   </div>
   <div
