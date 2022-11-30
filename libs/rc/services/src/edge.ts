@@ -24,10 +24,31 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+    }),
+    getEdge: build.query<EdgeSaveData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdge, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
+    }),
+    updateEdge: build.mutation<EdgeSaveData, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateEdge, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     })
   })
 })
 
 export const {
-  useAddEdgeMutation
+  useAddEdgeMutation,
+  useGetEdgeQuery,
+  useUpdateEdgeMutation
 } = edgeApi
