@@ -281,7 +281,7 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  ApReportsTab
+  ClientReportsTab
 </DocumentFragment>
 `;
 
@@ -566,7 +566,7 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  ApTimelineTab
+  ClientTimelineTab
 </DocumentFragment>
 `;
 
@@ -1062,7 +1062,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-expand-icon"
                 >
                   <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-d21xu8-7 fnGrtI ant-collapse-arrow"
+                    class="styledComponents__StyledPlusSquareOutlined-sc-19v1jp2-7 TvQAt ant-collapse-arrow"
                     data-testid="PlusSquareOutlined"
                   />
                 </div>
@@ -1070,7 +1070,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-header-text"
                 >
                   <span
-                    class="styledComponents__TimelineTitle-sc-d21xu8-9 brnVsP"
+                    class="styledComponents__TimelineTitle-sc-19v1jp2-9 hnWuly"
                   >
                     Connection Events
                   </span>
@@ -1090,7 +1090,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-expand-icon"
                 >
                   <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-d21xu8-7 fnGrtI ant-collapse-arrow"
+                    class="styledComponents__StyledPlusSquareOutlined-sc-19v1jp2-7 TvQAt ant-collapse-arrow"
                     data-testid="PlusSquareOutlined"
                   />
                 </div>
@@ -1098,7 +1098,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-header-text"
                 >
                   <span
-                    class="styledComponents__TimelineTitle-sc-d21xu8-9 brnVsP"
+                    class="styledComponents__TimelineTitle-sc-19v1jp2-9 hnWuly"
                   >
                     Roaming
                   </span>
@@ -1118,7 +1118,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-expand-icon"
                 >
                   <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-d21xu8-7 fnGrtI ant-collapse-arrow"
+                    class="styledComponents__StyledPlusSquareOutlined-sc-19v1jp2-7 TvQAt ant-collapse-arrow"
                     data-testid="PlusSquareOutlined"
                   />
                 </div>
@@ -1126,7 +1126,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-header-text"
                 >
                   <span
-                    class="styledComponents__TimelineTitle-sc-d21xu8-9 brnVsP"
+                    class="styledComponents__TimelineTitle-sc-19v1jp2-9 hnWuly"
                   >
                     Connection Quality
                   </span>
@@ -1146,7 +1146,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-expand-icon"
                 >
                   <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-d21xu8-7 fnGrtI ant-collapse-arrow"
+                    class="styledComponents__StyledPlusSquareOutlined-sc-19v1jp2-7 TvQAt ant-collapse-arrow"
                     data-testid="PlusSquareOutlined"
                   />
                 </div>
@@ -1154,7 +1154,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   class="ant-collapse-header-text"
                 >
                   <span
-                    class="styledComponents__TimelineTitle-sc-d21xu8-9 brnVsP"
+                    class="styledComponents__TimelineTitle-sc-19v1jp2-9 hnWuly"
                   >
                     Network Incidents
                   </span>
@@ -1170,18 +1170,18 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
       style="padding: 8px 8px 8px 8px;"
     >
       <div
-        class="styledComponents__History-sc-d21xu8-0 bFNQbS"
+        class="styledComponents__History-sc-19v1jp2-0 heDYrQ"
       >
         <div
-          class="styledComponents__HistoryHeader-sc-d21xu8-1 enVlng"
+          class="styledComponents__HistoryHeader-sc-19v1jp2-1 vMPEN"
         >
           <span
-            class="styledComponents__HistoryContentTitle-sc-d21xu8-3 blbFlC"
+            class="styledComponents__HistoryContentTitle-sc-19v1jp2-3 RRBeR"
           >
             History
           </span>
           <span
-            class="styledComponents__HistoryIcon-sc-d21xu8-4 fsiBwN"
+            class="styledComponents__HistoryIcon-sc-19v1jp2-4 hUXloY"
           >
             <svg
               data-testid="ArrowExpand"
@@ -1190,7 +1190,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
           </span>
         </div>
         <div
-          class="styledComponents__HistoryContent-sc-d21xu8-2 fGRjBR"
+          class="styledComponents__HistoryContent-sc-19v1jp2-2 lkacjU"
         >
           <div
             class="ant-list ant-list-split"
@@ -1214,7 +1214,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                         class="ant-list-item-meta-avatar"
                       >
                         <span
-                          class="styledComponents__EventTypeIcon-sc-d21xu8-5 ksKvtB"
+                          class="styledComponents__EventTypeIcon-sc-19v1jp2-5 ddmeRw"
                           color="--acx-semantics-green-50"
                         />
                       </div>
@@ -1244,7 +1244,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                         class="ant-list-item-meta-avatar"
                       >
                         <span
-                          class="styledComponents__EventTypeIcon-sc-d21xu8-5 hzJVps"
+                          class="styledComponents__EventTypeIcon-sc-19v1jp2-5 lijlsJ"
                           color="--acx-neutrals-50"
                         />
                       </div>
@@ -1274,7 +1274,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                         class="ant-list-item-meta-avatar"
                       >
                         <span
-                          class="styledComponents__IncidentEvent-sc-d21xu8-6 kKLEFb"
+                          class="styledComponents__IncidentEvent-sc-19v1jp2-6 iuUQmO"
                           color="--acx-semantics-red-50"
                         >
                           P1
@@ -1588,6 +1588,6 @@ exports[`ApDetails should render correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  ApOverviewTab
+  ClientOverviewTab
 </DocumentFragment>
 `;
