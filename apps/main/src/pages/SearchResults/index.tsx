@@ -51,7 +51,7 @@ const searches = [
 function SearchResult () {
   const { $t } = useIntl()
   const { searchVal } = useParams()
-  const results = searches.map(search => search(searchVal || '', $t))
+  const results = searches.map(search => search(searchVal as string, $t))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
   return <Loader states={results.map(({ result }) => result)}>
     <PageHeader title={$t(
