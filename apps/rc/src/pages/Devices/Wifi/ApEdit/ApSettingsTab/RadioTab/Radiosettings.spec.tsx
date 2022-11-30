@@ -69,7 +69,6 @@ describe('RadioSettingsTab', () => {
         </ApEditContext.Provider>
       </Provider>, { route: { params } })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
