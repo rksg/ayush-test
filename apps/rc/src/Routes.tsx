@@ -29,6 +29,7 @@ import DHCPDetail               from './pages/Services/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCPForm/DHCPForm'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import NetworkSegmentationForm  from './pages/Services/NetworkSegmenationForm/NetworkSegmentationForm'
 import PortalServiceDetail      from './pages/Services/Portal/PortalDetail'
 import PortalForm               from './pages/Services/Portal/PortalForm/PortalForm'
 import SelectServiceForm        from './pages/Services/SelectServiceForm'
@@ -144,6 +145,16 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<DHCPDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.CREATE })}
+        element={<NetworkSegmentationForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.EDIT })}
+        element={<NetworkSegmentationForm/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}

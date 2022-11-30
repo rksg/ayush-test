@@ -5,4 +5,5 @@ export const StyledImageWrapper = styled('div')`
     display: flex;
     margin: 5px auto;
     cursor: pointer;
+    transform: scale(1);
 `
