@@ -9,7 +9,7 @@ import {
   screen, within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData } from './__tests__/fixtures'
+import { mockEdgeList } from './__tests__/fixtures'
 
 
 import EdgeList from './index'
@@ -31,7 +31,7 @@ describe('EdgeList', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
       ),
       rest.delete(
         EdgeUrlsInfo.deleteEdge.url,

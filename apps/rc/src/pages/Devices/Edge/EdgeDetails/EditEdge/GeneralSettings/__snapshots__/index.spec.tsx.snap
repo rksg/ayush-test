@@ -1,66 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AddEdge should create AddEdge successfully 1`] = `
+exports[`EditEdge general settings should create GeneralSettings successfully 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
-  >
-    <div
-      class="ant-page-header has-breadcrumb ant-page-header-ghost"
-    >
-      <nav
-        class="ant-breadcrumb"
-      >
-        <ol>
-          <li>
-            <span
-              class="ant-breadcrumb-link"
-            >
-              <a
-                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/edge/list"
-              >
-                SmartEdge
-              </a>
-            </span>
-            <span
-              class="ant-breadcrumb-separator"
-            >
-              /
-            </span>
-          </li>
-          <li>
-            <span
-              class="ant-breadcrumb-link"
-            >
-               
-            </span>
-            <span
-              class="ant-breadcrumb-separator"
-            >
-              /
-            </span>
-          </li>
-        </ol>
-      </nav>
-      <div
-        class="ant-page-header-heading"
-      >
-        <div
-          class="ant-page-header-heading-left"
-        >
-          <span
-            class="ant-page-header-heading-title"
-          >
-            <h1
-              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
-            >
-              Add SmartEdge
-            </h1>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
   <section
     class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
   >
@@ -300,7 +241,8 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                               class="ant-form-item-control-input-content"
                             >
                               <input
-                                class="ant-input"
+                                class="ant-input ant-input-disabled"
+                                disabled=""
                                 id="0_serialNumber"
                                 type="text"
                                 value=""
@@ -405,7 +347,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
               type="button"
             >
               <span>
-                Add
+                Apply
               </span>
             </button>
           </div>
