@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 
-import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ApEditContext } from '../..'
 import {
@@ -69,8 +69,7 @@ describe('RadioSettingsTab', () => {
         </ApEditContext.Provider>
       </Provider>, { route: { params } })
 
-    expect(asFragment()).toMatchSnapshot()
-
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
@@ -79,6 +78,8 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(transmitSelect)
     fireEvent.click((await screen.findAllByTitle('Auto'))[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+
+    expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   it('should render correctly with Auto bandwidth', async () => {
@@ -101,8 +102,7 @@ describe('RadioSettingsTab', () => {
         </ApEditContext.Provider>
       </Provider>, { route: { params } })
 
-    expect(asFragment()).toMatchSnapshot()
-
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
@@ -111,6 +111,8 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(transmitSelect)
     fireEvent.click((await screen.findAllByTitle('Auto'))[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+
+    expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
 })
