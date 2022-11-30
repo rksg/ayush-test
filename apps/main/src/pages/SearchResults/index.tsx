@@ -15,8 +15,7 @@ import { Collapse, Panel } from './styledComponents'
 
 function useSearchTerm () {
   const { searchVal } = useParams()
-  const decodedVal = decodeURIComponent(searchVal as string)
-  return decodedVal
+  return searchVal
 }
 
 function SearchHeader ({ count }: { count: number }) {

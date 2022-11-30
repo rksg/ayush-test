@@ -297,43 +297,6 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                         >
                           <label
                             class=""
-                            for="settings_tags"
-                            title="Tags"
-                          >
-                            Tags
-                          </label>
-                        </div>
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <input
-                                class="ant-input ant-input-status-success"
-                                id="settings_tags"
-                                type="text"
-                                value="a,b,c"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-form-item ant-form-item-has-success"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-label"
-                        >
-                          <label
-                            class="ant-form-item-required"
                             for="settings_description"
                             title="Description"
                           >
@@ -390,27 +353,29 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                               <select
                                 data-testid="selectQosPriorityId"
                                 id="settings_qosPriority"
+                                name="Video"
+                                role="combobox"
                                 style="width: 100%;"
                               >
                                 <option
                                   value="WIFICALLING_PRI_VOICE"
                                 >
-                                  WIFICALLING_PRI_VOICE
+                                  Voice
                                 </option>
                                 <option
                                   value="WIFICALLING_PRI_VIDEO"
                                 >
-                                  WIFICALLING_PRI_VIDEO
+                                  Video
                                 </option>
                                 <option
                                   value="WIFICALLING_PRI_BE"
                                 >
-                                  WIFICALLING_PRI_BE
+                                  Best Effort
                                 </option>
                                 <option
                                   value="WIFICALLING_PRI_BG"
                                 >
-                                  WIFICALLING_PRI_BG
+                                  Background
                                 </option>
                               </select>
                             </div>
@@ -428,7 +393,7 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                           class="ant-col ant-form-item-label"
                         >
                           <label
-                            class=""
+                            class="ant-form-item-required"
                             for="settings_dataGateway"
                             title="Evolved Packet Data Gateway (ePDG)"
                           >
@@ -518,7 +483,7 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                                             class="ant-spin-container"
                                           >
                                             <div
-                                              class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                                              class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                                             >
                                               <div
                                                 class="ant-table-container"
@@ -635,23 +600,129 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                                                         </td>
                                                       </tr>
                                                       <tr
-                                                        class="ant-table-placeholder"
+                                                        class="ant-table-row ant-table-row-level-0"
+                                                        data-row-key="aaa.bbb.com"
                                                       >
                                                         <td
-                                                          class="ant-table-cell"
-                                                          colspan="4"
+                                                          class="ant-table-cell ant-table-selection-column"
                                                         >
-                                                          <div
-                                                            class="ant-table-expanded-row-fixed"
-                                                            style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
-                                                          />
+                                                          <label
+                                                            class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                          >
+                                                            <span
+                                                              class="ant-radio"
+                                                            >
+                                                              <input
+                                                                class="ant-radio-input"
+                                                                type="radio"
+                                                                value=""
+                                                              />
+                                                              <span
+                                                                class="ant-radio-inner"
+                                                              />
+                                                            </span>
+                                                          </label>
                                                         </td>
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        >
+                                                          aaa.bbb.com
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        >
+                                                          10.10.10.10
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                          style="position: sticky; right: 0px;"
+                                                        />
                                                       </tr>
                                                     </tbody>
                                                   </table>
                                                 </div>
                                               </div>
                                             </div>
+                                            <ul
+                                              class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
+                                              unselectable="unselectable"
+                                            >
+                                              <li
+                                                aria-disabled="true"
+                                                class="ant-pagination-prev ant-pagination-disabled"
+                                                title="Previous Page"
+                                              >
+                                                <button
+                                                  class="ant-pagination-item-link"
+                                                  disabled=""
+                                                  tabindex="-1"
+                                                  type="button"
+                                                >
+                                                  <span
+                                                    aria-label="left"
+                                                    class="anticon anticon-left"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="left"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="64 64 896 896"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                </button>
+                                              </li>
+                                              <li
+                                                class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
+                                                tabindex="0"
+                                                title="1"
+                                              >
+                                                <a
+                                                  rel="nofollow"
+                                                >
+                                                  1
+                                                </a>
+                                              </li>
+                                              <li
+                                                aria-disabled="true"
+                                                class="ant-pagination-next ant-pagination-disabled"
+                                                title="Next Page"
+                                              >
+                                                <button
+                                                  class="ant-pagination-item-link"
+                                                  disabled=""
+                                                  tabindex="-1"
+                                                  type="button"
+                                                >
+                                                  <span
+                                                    aria-label="right"
+                                                    class="anticon anticon-right"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="right"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="64 64 896 896"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                </button>
+                                              </li>
+                                            </ul>
                                           </div>
                                         </div>
                                       </div>
@@ -1098,9 +1169,7 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                                   <div
                                     class="ant-typography"
                                     id="summary_tags"
-                                  >
-                                    a, b, c
-                                  </div>
+                                  />
                                 </div>
                               </div>
                             </div>
@@ -1179,7 +1248,7 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                                 class="ant-typography"
                                 id="summary_qosPriority"
                               >
-                                [object Object]
+                                WIFICALLING_PRI_VIDEO
                               </div>
                             </div>
                           </div>
@@ -1211,7 +1280,11 @@ exports[`WifiCallingForm should render wifiCallingForm successfully 1`] = `
                           >
                             <div
                               class="ant-form-item-control-input-content"
-                            />
+                            >
+                              <div>
+                                aaa.bbb.com (10.10.10.10)
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>

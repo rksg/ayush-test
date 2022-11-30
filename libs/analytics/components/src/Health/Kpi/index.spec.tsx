@@ -10,7 +10,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 import { TimeStampRange }         from '@acx-ui/types'
-import { DateRange, NetworkPath } from '@acx-ui/utils'
+import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -108,8 +108,8 @@ describe('Kpi Section', () => {
 
     const path =
       [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }] as NetworkPath
-    const period = Buffer.from(JSON.stringify(filters)).toString('base64')
-    const analyticsNetworkFilter = Buffer.from(JSON.stringify({
+    const period = fixedEncodeURIComponent(JSON.stringify(filters))
+    const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
       path,
       raw: []
     }))
