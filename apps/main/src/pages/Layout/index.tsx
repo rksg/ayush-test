@@ -19,23 +19,28 @@ import SearchBar         from './SearchBar'
 
 function Layout () {
   return (
-    <SplitProvider>
-      <LayoutComponent
-        menuConfig={useMenuConfig()}
-        content={<Outlet />}
-        rightHeaderContent={<>
-          <SearchBar />
-          <LayoutUI.Divider />
-          <AlarmsHeaderButton />
-          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-            <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
-          </Tooltip>
-          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-            <LayoutUI.ButtonSolid disabled icon={<AccountCircleSolid />} />
-          </Tooltip>
-        </>}
-      />
-    </SplitProvider>
+    <LayoutComponent
+      menuConfig={useMenuConfig()}
+      content={<Outlet />}
+      rightHeaderContent={<>
+        <SearchBar />
+        <LayoutUI.Divider />
+        <AlarmsHeaderButton />
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
+        </Tooltip>
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <LayoutUI.ButtonSolid disabled icon={<AccountCircleSolid />} />
+        </Tooltip>
+      </>}
+    />
   )
 }
-export default Layout
+
+function LayoutWithSplitProvider () {
+  return <SplitProvider>
+    <Layout />
+  </SplitProvider>
+}
+
+export default LayoutWithSplitProvider
