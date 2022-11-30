@@ -47,17 +47,16 @@ describe('WifiCallingDetailContent', () => {
     ))
 
     render(
-      <WifiCallingDetailContent tenantId={'tenantId'}/>
+      <WifiCallingDetailContent />
       , {
         wrapper: wrapper,
         route: {
-          path: '/services/wifiCalling/:serviceId/details',
           params: { serviceId: 'wifiCallingServiceId1', tenantId: 'tenantId1' }
         }
       }
     )
 
-    await screen.findByText('des1')
+    await screen.findByText('carrierName1')
 
     expect(screen.getByText(/description/i)).toBeTruthy()
     expect(screen.getByText(/service name/i)).toBeTruthy()
@@ -74,7 +73,7 @@ describe('WifiCallingDetailContent', () => {
     ))
 
     render(
-      <WifiCallingDetailContent tenantId={'tenantId'}/>, {
+      <WifiCallingDetailContent />, {
         wrapper: wrapper,
         route: {
           path: '/services/wifiCalling/:serviceId/details',
