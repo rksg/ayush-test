@@ -2,10 +2,10 @@ import {
   DpskSaveData,
   ExpirationType,
   PassphraseFormatEnum,
-  ServiceType
+  ServiceType,
+  getServiceRoutePath,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
-
-import { getServiceRoutePath, ServiceOperation } from '../../../serviceRouteUtils'
 
 export const mockedTenantId = '__Tenant_ID__'
 
