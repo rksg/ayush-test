@@ -1,5 +1,6 @@
-import { ServiceType }  from '@acx-ui/rc/utils'
 import { generatePath } from '@acx-ui/react-router-dom'
+
+import { ServiceType } from '../../constants'
 
 export enum ServiceOperation {
   CREATE,
@@ -7,12 +8,12 @@ export enum ServiceOperation {
   DETAIL
 }
 
-export interface ServiceRoutePathProps {
+interface ServiceRoutePathProps {
   type: ServiceType;
   oper: ServiceOperation;
 }
 
-export interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
+interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
   oper: Exclude<ServiceOperation, ServiceOperation.CREATE>;
   serviceId: string;
 }
@@ -28,7 +29,8 @@ const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.DHCP]: 'dhcp',
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
-  [ServiceType.DPSK]: 'dpsk'
+  [ServiceType.DPSK]: 'dpsk',
+  [ServiceType.NETWORK_SEGMENTATION]: 'networkSegmentation'
 }
 
 export function getServiceRoutePath ({ type, oper }: ServiceRoutePathProps): string {

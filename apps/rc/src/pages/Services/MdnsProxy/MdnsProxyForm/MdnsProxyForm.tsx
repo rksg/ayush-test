@@ -6,12 +6,11 @@ import { Path, useParams } from 'react-router-dom'
 
 import { PageHeader, showToast, StepsForm }              from '@acx-ui/components'
 import { useAddMdnsProxyMutation, useGetMdnsProxyQuery } from '@acx-ui/rc/services'
-import { MdnsProxyFormData }                             from '@acx-ui/rc/utils'
+import { MdnsProxyFormData, getServiceListRoutePath }    from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                    from '@acx-ui/react-router-dom'
 
-import { getServiceListRoutePath } from '../../serviceRouteUtils'
-import { MdnsProxyScope }          from '../MdnsProxyScope/MdnsProxyScope'
-import { MdnsProxySummary }        from '../MdnsProxySummary/MdnsProxySummary'
+import { MdnsProxyScope }   from '../MdnsProxyScope/MdnsProxyScope'
+import { MdnsProxySummary } from '../MdnsProxySummary/MdnsProxySummary'
 
 import MdnsProxyFormContext      from './MdnsProxyFormContext'
 import { MdnsProxySettingsForm } from './MdnsProxySettingsForm'
