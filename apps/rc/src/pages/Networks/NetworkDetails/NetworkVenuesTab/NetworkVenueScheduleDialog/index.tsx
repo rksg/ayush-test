@@ -312,6 +312,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
               }
             }
           }
+          return null
         })
       }
     },
