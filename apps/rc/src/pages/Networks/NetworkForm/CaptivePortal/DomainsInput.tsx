@@ -8,7 +8,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { URLRegExp }                  from '@acx-ui/rc/utils'
+import { domainsNameRegExp }          from '@acx-ui/rc/utils'
 
 export function DomainsInput (props:{
   label?:string,
@@ -17,9 +17,10 @@ export function DomainsInput (props:{
   toolTip?:string
 }) {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
   return (
     <Form.Item
-      name={['hostGuestConfig', props.name||'hostDomains']}
+      name={['guestPortal','hostGuestConfig', props.name||'hostDomains']}
       label={<>
         {$t({ defaultMessage: '{labelValue}' },{ labelValue: props.label || 'Host Domains' })}
         <Tooltip title={$t({ defaultMessage: '{toolTip}' },{ toolTip: props.toolTip ||
@@ -30,13 +31,14 @@ export function DomainsInput (props:{
       </>}
       rules={[
         { required: props.required },
-        { validator: (_, value) => URLRegExp(value) }]
+        { validator: (_, value) => domainsNameRegExp(value, true) }]
       }
       validateFirst
       hasFeedback
       children={
-        <Input
-          placeholder={$t({ defaultMessage: 'Enter domain(s) separated by comma' })}
+        <Input onChange={(e)=>form.setFieldValue(['guestPortal','hostGuestConfig',
+          props.name||'hostDomains'],e.target.value.split(','))}
+        placeholder={$t({ defaultMessage: 'Enter domain(s) separated by comma' })}
         />
       }
     />

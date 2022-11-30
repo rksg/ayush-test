@@ -1,4 +1,4 @@
-import { Demo, PortalViewEnum } from '@acx-ui/rc/utils'
+import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import Wifi4eu                   from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
@@ -13,11 +13,13 @@ import PortalViewSelfSignConnect  from './PortalViewSelfSignConnect'
 import PortalViewSelfSignRegister from './PortalViewSelfSignRegister'
 import PortalViewTerms            from './PortalViewTerms'
 export default function PortalViewContentPreview (props:{
+  networkSocial?: { [key:string]:boolean },
+  networkViewType?: GuestNetworkTypeEnum,
   view: PortalViewEnum,
   demoValue: Demo,
   isPreview?:boolean
 }) {
-  const { view, demoValue } = props
+  const { view, demoValue, networkViewType,networkSocial } = props
   const componentDisplay = demoValue?.componentDisplay
   const isbg = demoValue?.backgroundImage ? 'true' : 'false'
   return (
@@ -50,11 +52,13 @@ export default function PortalViewContentPreview (props:{
         fontSize: (demoValue.secondarySize||PortalDemoDefaultSize.secondarySize) }}
       >{demoValue.secondaryText}
       </UI.FieldText>}
-      {view === PortalViewEnum.ClickThrough && <PortalViewGoThrough
+      {(view === PortalViewEnum.ClickThrough ||
+        networkViewType === GuestNetworkTypeEnum.ClickThrough) && <PortalViewGoThrough
         demoValue={demoValue}
         isPreview={true}
       />}
-      {view === PortalViewEnum.GuestPassConnect && <PortalViewGuestConnect
+      {(view === PortalViewEnum.GuestPassConnect ||
+        networkViewType === GuestNetworkTypeEnum.GuestPass) && <PortalViewGuestConnect
         demoValue={demoValue}
         isPreview={true}
       />}
@@ -62,14 +66,16 @@ export default function PortalViewContentPreview (props:{
         demoValue={demoValue}
         isPreview={true}
       />}
-      {view === PortalViewEnum.SelfSignIn &&
-      <PortalViewSelfSignConnect/>}
+      {(view === PortalViewEnum.SelfSignIn ||
+        networkViewType === GuestNetworkTypeEnum.SelfSignIn) &&
+      <PortalViewSelfSignConnect networkSocial={networkSocial}/>}
       {view === PortalViewEnum.SelfSignInRegister &&
       <PortalViewSelfSignRegister
         demoValue={demoValue}
         isPreview={true}
       />}
-      {view === PortalViewEnum.HostApproval &&
+      {(view === PortalViewEnum.HostApproval ||
+        networkViewType === GuestNetworkTypeEnum.HostApproval) &&
       <PortalViewHostApproval
         demoValue={demoValue}
         isPreview={true}

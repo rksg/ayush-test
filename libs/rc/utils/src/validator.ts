@@ -60,7 +60,35 @@ export function domainNameRegExp (value: string) {
   }
   return Promise.resolve()
 }
+export function domainsNameRegExp (value: string[], required: boolean) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
+  let checkPromise = Promise.resolve()
+  value&&value?.map(domain => {
+    if (required && !re.test(domain)) {
+      checkPromise = Promise.reject($t(validationMessages.invalid))
+    }
+  })
 
+  return checkPromise
+}
+
+export function walledGardensRegExp (value:string) {
+  const { $t } = getIntl()
+  if (!value) {
+    return Promise.resolve()
+  }
+  let checkPromise = Promise.resolve()
+  const walledGardens = value.split('\n')
+  const walledGardenRegex = new RegExp(/^(((\*\.){0,1})(([a-zA-Z0-9*]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.){1,})([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]){1,}(((\/[0-9]{1,2}){0,1}|(\s+(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){2,}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))))$/)
+  walledGardens.map(walledGarden=>{
+    if (walledGarden.trim()&&!walledGardenRegex.test(walledGarden.trim())) {
+      checkPromise = Promise.reject($t(validationMessages.walledGarden))
+    }
+  })
+  return checkPromise
+}
 export function syslogServerRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len

@@ -91,7 +91,7 @@ export function DhcpCheckbox () {
     <Form.Item>
       <Form.Item
         noStyle
-        name='dhcpCheckbox'
+        name='enableDhcp'
         valuePropName='checked'
         initialValue={false}
         children={<Checkbox>{intl.$t({ defaultMessage: 'Enable Ruckus DHCP service' })}</Checkbox>}

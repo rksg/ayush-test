@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { Modal } from '@acx-ui/components'
 
-import appPhoto from '../../../../assets/images/network-wizard-diagrams/google-sample-customised.png'
-import * as UI  from '../styledComponents'
+import appPhoto           from '../../../../assets/images/network-wizard-diagrams/google-sample-customised.png'
+import NetworkFormContext from '../NetworkFormContext'
+import * as UI            from '../styledComponents'
 
 import PreviewApp    from './PreviewApp'
 import SocialAuthURL from './SocialAuthURL'
@@ -16,18 +17,46 @@ type DataType = {
   googleSecret: string
 }
 export default function GoogleSetting () {
+  const {
+    data,
+    editMode,
+    cloneMode
+  } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [form] = Form.useForm<DataType>()
+  const formParent = Form.useFormInstance()
   const [visible, setVisible]=useState(false)
   const [appIDValue, setAppIDValue]=useState('')
   const [appSecretValue, setAppSecretValue]=useState('')
   const description='-The selected Google app will affect the popup '+
   'that users see on their first sign in to the network'
+  useEffect(()=>{
+    if((editMode || cloneMode) && data){
+      form.setFieldValue(['guestPortal','socialIdentities',
+        'google','config','appId'],
+      data.guestPortal?.socialIdentities?.google?.config?.appId)
+      form.setFieldValue(['guestPortal','socialIdentities',
+        'google','config','appSecret'],
+      data.guestPortal?.socialIdentities?.google?.config?.appSecret)
+      setAppIDValue(data.guestPortal?.socialIdentities?.google?.config?.appId||'')
+      setAppSecretValue(data.guestPortal?.socialIdentities?.google?.config?.appSecret||'')
+      formParent.setFieldValue(['guestPortal','socialIdentities',
+        'google','config','appId'],
+      data.guestPortal?.socialIdentities?.google?.config?.appId)
+      formParent.setFieldValue(['guestPortal','socialIdentities',
+        'google','config','appSecret'],
+      data.guestPortal?.socialIdentities?.google?.config?.appSecret)
+    }
+  }, [data])
   const getContent = <Form layout='vertical'
     form={form}
     onFinish={()=>{
-      setAppIDValue(form.getFieldValue(['socialIdentities','google','config','appId']))
-      setAppSecretValue(form.getFieldValue(['socialIdentities','google','config','appSecret']))
+      setAppIDValue(form.getFieldValue(['guestPortal','socialIdentities',
+        'google','config','appId']))
+      setAppSecretValue(form.getFieldValue(['guestPortal','socialIdentities',
+        'google','config','appSecret']))
+      formParent.setFieldValue(['guestPortal','socialIdentities','google','source'], 'CUSTOM')
+      formParent.setFieldsValue({ ...form.getFieldsValue() })
       setVisible(false)
     }}
   >
@@ -37,7 +66,7 @@ export default function GoogleSetting () {
       <PreviewApp appDescription={description} appPhoto={appPhoto}/>
     </>}/>
     <Form.Item
-      name={['socialIdentities','google','config','appId']}
+      name={['guestPortal','socialIdentities','google','config','appId']}
       rules={[
         { required: true }
       ]}
@@ -47,7 +76,7 @@ export default function GoogleSetting () {
       }
     />
     <Form.Item
-      name={['socialIdentities','google','config','appSecret']}
+      name={['guestPortal','socialIdentities','google','config','appSecret']}
       rules={[
         { required: true }
       ]}
@@ -79,8 +108,10 @@ export default function GoogleSetting () {
         width={600}
         okText={$t({ defaultMessage: 'Save' })}
         onCancel={()=>{
-          form.setFieldValue(['socialIdentities','google','config','appId'], appIDValue)
-          form.setFieldValue(['socialIdentities','google','config','appSecret'], appSecretValue)
+          form.setFieldValue(['guestPortal','socialIdentities',
+            'google','config','appId'], appIDValue)
+          form.setFieldValue(['guestPortal','socialIdentities',
+            'google','config','appSecret'], appSecretValue)
           setVisible(false)
         }}
         onOk={()=>{

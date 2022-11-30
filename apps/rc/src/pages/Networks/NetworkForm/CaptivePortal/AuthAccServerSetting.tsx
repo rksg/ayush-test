@@ -6,8 +6,10 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Subtitle }                              from '@acx-ui/components'
-import { IpPortSecretForm, ToggleButton }        from '@acx-ui/rc/components'
+import { ToggleButton }                          from '@acx-ui/rc/components'
 import { AaaServerOrderEnum, AaaServerTypeEnum } from '@acx-ui/rc/utils'
+
+import { IpPortSecretForm } from './IpPortSecretForm'
 export function AuthAccServerSetting () {
   const intl = useIntl()
   const { useWatch } = Form

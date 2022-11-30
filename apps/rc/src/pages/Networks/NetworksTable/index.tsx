@@ -14,7 +14,7 @@ import {
 import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl, notAvailableMsg }                          from '@acx-ui/utils'
 
-const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
+const disabledType = [NetworkTypeEnum.DPSK]
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [

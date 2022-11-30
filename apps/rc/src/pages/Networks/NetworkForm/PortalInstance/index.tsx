@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Form, Row, Select } from 'antd'
 import _                          from 'lodash'
@@ -9,21 +9,38 @@ import { StepsForm }                    from '@acx-ui/components'
 import { useGetPortalProfileListQuery } from '@acx-ui/rc/services'
 import { Demo, Portal }                 from '@acx-ui/rc/utils'
 
-import Photo      from '../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered    from '../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo       from '../../../../assets/images/portal-demo/RuckusCloud.svg'
-import WiFi4eu    from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
-import PortalDemo from '../../../Services/Portal/PortalDemo'
+import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
+import WiFi4eu            from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
+import PortalDemo         from '../../../Services/Portal/PortalDemo'
+import NetworkFormContext from '../NetworkFormContext'
 
 import PortalServiceModal from './PortalServiceModal'
 
 
-const PortalInstance = () => {
+
+const PortalInstance = (props:{
+  updatePortalData:(value:Demo)=>void
+}) => {
   const { $t } = useIntl()
   const params = useParams()
   const { useWatch } = Form
   const form = Form.useFormInstance()
-  const portalServiceID = useWatch('portalServiceID')
+  const networkData = useContext(NetworkFormContext).data
+  const socialIdentities = networkData?.guestPortal?.socialIdentities
+  const socials={ facebookEnabled: false, googleEnabled: false,
+    twitterEnabled: false, linkedInEnabled: false, smsEnabled: false }
+  if(networkData?.guestPortal?.enableSmsLogin){
+    socials.smsEnabled = true
+  }
+  if(socialIdentities){
+    socials.facebookEnabled = socialIdentities.facebook ? true : false
+    socials.googleEnabled = socialIdentities.google ? true : false
+    socials.twitterEnabled = socialIdentities.twitter ? true : false
+    socials.linkedInEnabled = socialIdentities.linkedin ? true : false
+  }
+  const portalServiceID = useWatch(['guestPortal','serviceId'])
   const { data } = useGetPortalProfileListQuery({ params })
   const [demoValue, setDemoValue]= useState({} as Demo)
   const portalServices = data?.map(m => ({ label: m.serviceName, value: m.id })) ?? []
@@ -31,11 +48,13 @@ const PortalInstance = () => {
   const [portalData, setPortalData]= useState([] as Portal[])
   const setPortal = (value:string)=>{
     const currentPortal = _.find(portalData,{ id: value })
-    setDemoValue({ ...currentPortal?.demo as Demo,
+    const tempValue={ ...currentPortal?.demo as Demo,
       poweredImg: currentPortal?.demo.poweredImg || Powered,
       logo: currentPortal?.demo.logo || Logo,
       photo: currentPortal?.demo.photo || Photo,
-      wifi4EU: currentPortal?.demo.wifi4EU || WiFi4eu })
+      wifi4EU: currentPortal?.demo.wifi4EU || WiFi4eu }
+    setDemoValue(tempValue)
+    props.updatePortalData(tempValue)
   }
   useEffect(()=>{
     if(data){
@@ -49,32 +68,42 @@ const PortalInstance = () => {
         <Col span={10}>
           <StepsForm.Title>{$t({ defaultMessage: 'Portal Web Page' })}</StepsForm.Title>
           <Form.Item
-            name='portalServiceDes'
             label={$t({ defaultMessage: 'Define the captive portal web page.' })}
           />
           <Form.Item
-            name='portalServiceID'
+            name={['guestPortal','serviceId']}
             label={$t({ defaultMessage: 'Guest Portal Service' })}
+            rules={[
+              { required: true }
+            ]}
             children={<Select
               options={[
                 ...portalList
               ]}
-              onChange={(v)=>setPortal(v)}
+              onChange={(v)=>{
+                setPortal(v)
+              }}
             />}
           />
           <PortalServiceModal updateInstance={(data)=>{
-            portalData.push({ ...data, id: data.id || Date.now()+'' })
+            const idNow = Date.now()
+            portalData.push({ ...data, id: data.id || idNow+'' })
             portalList.push({
-              label: data.serviceName, value: data.id || Date.now()+'' })
+              label: data.serviceName, value: data.id || idNow+'' })
             setPortalList([...portalList])
             setPortalData([...portalData])
-            form.setFieldValue('portalServiceID', data.id || Date.now()+'')
+            form.setFieldValue(['guestPortal','serviceId'], data.id || idNow+'')
             setDemoValue(data.demo)
           }}/>
         </Col>
       </Row>
       {portalServiceID&&<Row>
-        <PortalDemo value={demoValue} isPreview={true} fromNetwork={true}/>
+        <PortalDemo value={demoValue}
+          isPreview={true}
+          fromNetwork={true}
+          networkViewType={networkData?.guestPortal?.guestNetworkType}
+          networkSocial={socials}
+        />
       </Row>}
     </>
   )

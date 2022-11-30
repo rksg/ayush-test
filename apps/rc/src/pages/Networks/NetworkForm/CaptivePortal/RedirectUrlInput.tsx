@@ -27,16 +27,16 @@ export function RedirectUrlInput () {
     redirectUrl
   ] = [
     useWatch('redirectCheckbox'),
-    useWatch('redirectUrl')
+    useWatch(['guestPortal','redirectUrl'])
   ]
   const [redirectUrlValue, setRedirectUrlValue] = useState('')
 
   const redirectCheckboxChange = (e: CheckboxChangeEvent) => {
     if (e.target.checked) {
-      form.setFieldsValue({ redirectUrl: redirectUrlValue })
+      form.setFieldValue(['guestPortal','redirectUrl'], redirectUrlValue)
     } else {
       setRedirectUrlValue(redirectUrl)
-      form.setFieldsValue({ redirectUrl: '' })
+      form.setFieldValue(['guestPortal','redirectUrl'], '')
     }
   }
 
@@ -57,7 +57,7 @@ export function RedirectUrlInput () {
         <QuestionCircleOutlined />
       </Tooltip>
       <Form.Item
-        name='redirectUrl'
+        name={['guestPortal','redirectUrl']}
         initialValue=''
         rules={[
           { required: redirectCheckbox },

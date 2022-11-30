@@ -27,7 +27,7 @@ export const popoverClassName = 'portal-demo-popover'
 
 export const PopoverStyle = createGlobalStyle`
   .${popoverClassName} {
-    z-index: 0;
+    z-index: 7;
     padding-top: 0px;
     .ant-popover-arrow { display: none; }
     .ant-popover-inner {

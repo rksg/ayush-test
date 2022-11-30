@@ -23,7 +23,8 @@ import {
   RadiusErrorsType,
   RadiusValidate,
   RadiusValidateErrors,
-  GuestNetworkTypeEnum
+  GuestNetworkTypeEnum,
+  Demo
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -94,7 +95,7 @@ export default function NetworkForm () {
     isCloudpathEnabled: false,
     venues: []
   })
-
+  const [portalDemo, setPortalDemo]=useState<Demo>()
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(saveState.isCloudpathEnabled){
       delete saveState.authRadius
@@ -122,11 +123,23 @@ export default function NetworkForm () {
 
   const handlePortalWebPage = async (data: NetworkSaveData) => {
     const tmpGuestPageState = {
+      enableDhcp: data.enableDhcp||saveState.enableDhcp,
       guestPortal: {
         ...saveState?.guestPortal,
-        guestPage: {
-          ...data
-        }
+        ...data.guestPortal,
+        //other properties value
+        enableSelfService: true,
+        endOfDayReauthDelay: false,
+        lockoutPeriod: 120,
+        lockoutPeriodEnabled: false,
+        macCredentialsDuration: 240,
+        maxDevices: 1,
+        userSessionGracePeriod: 60,
+        userSessionTimeout: 1440
+      },
+      wlan: {
+        ...saveState.wlan,
+        ...data.wlan
       }
     }
     updateSaveData({ ...saveState, ...tmpGuestPageState } as NetworkSaveData)
@@ -284,6 +297,7 @@ export default function NetworkForm () {
             name='settings'
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
+              if(saveState.type === NetworkTypeEnum.CAPTIVEPORTAL && editMode)return true
               const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
                           || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
               const radiusValidate = !data.cloudpathServerId && radiusChanged
@@ -313,7 +327,7 @@ export default function NetworkForm () {
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
 
           </StepsForm.StepForm>
-          {editMode &&
+          {editMode &&saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL&&
             <StepsForm.StepForm
               name='moreSettings'
               title={intl.$t({ defaultMessage: 'More Settings' })}
@@ -331,7 +345,8 @@ export default function NetworkForm () {
               <StepsForm.StepForm
                 name='onboarding'
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
-                onFinish={async () => {
+                onFinish={async (data) => {
+                  handlePortalWebPage(data)
                   return true
                 }}
               >
@@ -350,13 +365,18 @@ export default function NetworkForm () {
               </StepsForm.StepForm>
           }
 
-          { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-              <StepsForm.StepForm
+          { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&(
+            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.ClickThrough||
+            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn||
+            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass||
+            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.HostApproval
+          )
+              &&<StepsForm.StepForm
                 name='portalweb'
                 title={intl.$t({ defaultMessage: 'Portal Web Page' })}
                 onFinish={handlePortalWebPage}
               >
-                <PortalInstance />
+                <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
               </StepsForm.StepForm>
           }
           <StepsForm.StepForm
@@ -371,7 +391,7 @@ export default function NetworkForm () {
           </StepsForm.StepForm>
           {!editMode &&
             <StepsForm.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
-              <SummaryForm summaryData={saveState} />
+              <SummaryForm summaryData={saveState} portalData={portalDemo}/>
             </StepsForm.StepForm>
           }
         </StepsForm>

@@ -116,13 +116,18 @@ export const validationMessages = {
     description: 'Validation - Venue Country checks'
   }),
   cellularApDhcpLimitation: defineMessage({
-    defaultMessage: `The cellular AP cannot 
+    defaultMessage: `The cellular AP cannot
       be moved to the venue which doesn\'t enable DHCP service`,
     description: 'Validation - Cellular AP Dhcp checks'
   }),
   emailAddress: defineMessage({
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
+  }),
+  walledGarden: defineMessage({
+    defaultMessage: `Please make sure that all destinations comply to
+      allowed formats. For more information see the help information`,
+    description: 'Validation - walled garden checks'
   })
 }
 

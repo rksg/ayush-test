@@ -1,5 +1,5 @@
 
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 
 import {
   Checkbox,
@@ -19,9 +19,11 @@ import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
 import {
-  GuestNetworkTypeEnum, NetworkTypeEnum, URLRegExp } from '@acx-ui/rc/utils'
+  domainsNameRegExp,
+  GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext from '../NetworkFormContext'
 import * as UI            from '../styledComponents'
 
 import { DhcpCheckbox }     from './DhcpCheckbox'
@@ -33,6 +35,11 @@ import TwitterSetting       from './TwitterSetting'
 
 
 export function SelfSignInForm () {
+  const {
+    data,
+    editMode,
+    cloneMode
+  } = useContext(NetworkFormContext)
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const [
@@ -42,15 +49,15 @@ export function SelfSignInForm () {
     facebook,
     google,
     twitter,
-    linkedIn
+    linkedin
   ] = [
     useWatch('allowedDomainsCheckbox'),
-    useWatch('socialDomains'),
-    useWatch('enableSmsLogin'),
-    useWatch(['socialIdentities','facebook']),
-    useWatch(['socialIdentities','google']),
-    useWatch(['socialIdentities','twitter']),
-    useWatch(['socialIdentities','linkedIn'])
+    useWatch(['guestPortal','socialDomains']),
+    useWatch(['guestPortal','enableSmsLogin']),
+    useWatch(['guestPortal','socialIdentities','facebook']),
+    useWatch(['guestPortal','socialIdentities','google']),
+    useWatch(['guestPortal','socialIdentities','twitter']),
+    useWatch(['guestPortal','socialIdentities','linkedin'])
   ]
   const [allowedDomainsValue, setAllowedDomainsValue] = useState('')
   const [allowedSignValue, setAllowedSignValue] = useState([] as Array<string>)
@@ -59,32 +66,91 @@ export function SelfSignInForm () {
   const domainToolTip='Only clients registering with email addresses '+
     'from these domains will be allowed to connect to the network. '+
     'Not applicable for SMS registration (if enabled)'
-  const isSocial = facebook||google||twitter||linkedIn
+  const isSocial = facebook||google||twitter||linkedin
   const collectEmail=$t({
     defaultMessage:
       'Collect email addresses of users who connect to this network'
   })
   const updateAllowSign=(checked:boolean, name:Array<string>)=>{
     form.setFieldValue(name, checked)
+    if(!checked){
+      delete form.getFieldValue([name[0],name[1]])[name[2]]
+    }
     const allowedSignValueTemp = [...allowedSignValue]
     if(checked){
-      allowedSignValueTemp.push(name[1]||name[0])
+      allowedSignValueTemp.push(name[2]||name[1])
     }else{
       allowedSignValueTemp.map((val, i)=>{
-        if(val===(name[1]||name[0])){
+        if(val===(name[2]||name[1])){
           return allowedSignValueTemp.splice(i,1)
         }
         return true
       })
     }
-    if(allowedSignValueTemp.length<1){
+    if(allowedSignValueTemp.length<1 ||
+       (allowedSignValueTemp.length===1&&allowedSignValueTemp[0]==='enableSmsLogin')){
       form.setFieldValue('allowedDomainsCheckbox', false)
-      form.setFieldValue('socialEmails', false)
-      form.setFieldValue('socialDomains', '')
+      form.setFieldValue(['guestPortal','socialEmails'], false)
+      form.setFieldValue(['guestPortal','socialDomains'], [])
     }
     form.setFieldValue('allowSign', allowedSignValueTemp)
     setAllowedSignValue(allowedSignValueTemp)
   }
+  const checkSocial=(value: string | string[])=>{
+    if (!value||value.length<1) {
+      return Promise.reject($t({ defaultMessage: 'Please configure sign-in option' }))
+    }
+    if(facebook&&!form.getFieldValue(['guestPortal','socialIdentities',
+      'facebook','config','appId']))
+    {
+      return Promise.reject($t({ defaultMessage: 'Please configure facebook' }))
+    }
+    if(google&&!form.getFieldValue(['guestPortal','socialIdentities',
+      'google','config','appId']))
+    {
+      return Promise.reject($t({ defaultMessage: 'Please configure google' }))
+    }
+    if(twitter&&!form.getFieldValue(['guestPortal','socialIdentities',
+      'twitter','config','appId']))
+    {
+      return Promise.reject($t({ defaultMessage: 'Please configure twitter' }))
+    }
+    if(linkedin&&!form.getFieldValue(['guestPortal','socialIdentities',
+      'linkedin','config','appId']))
+    {
+      return Promise.reject($t({ defaultMessage: 'Please configure linkedin' }))
+    }
+    return Promise.resolve()
+  }
+  useEffect(()=>{
+    if((editMode || cloneMode) && data){
+      form.setFieldsValue({ ...data })
+      if(data.guestPortal?.socialDomains?.[0]){
+        form.setFieldValue('allowedDomainsCheckbox',true)
+      }
+      if(data.guestPortal?.redirectUrl){
+        form.setFieldValue('redirectCheckbox',true)
+      }
+      const allowedSignValueTemp = []
+      if(data.guestPortal?.enableSmsLogin){
+        allowedSignValueTemp.push('enableSmsLogin')
+      }
+      if(data.guestPortal?.socialIdentities?.facebook){
+        allowedSignValueTemp.push('facebook')
+      }
+      if(data.guestPortal?.socialIdentities?.google){
+        allowedSignValueTemp.push('google')
+      }
+      if(data.guestPortal?.socialIdentities?.twitter){
+        allowedSignValueTemp.push('twitter')
+      }
+      if(data.guestPortal?.socialIdentities?.linkedin){
+        allowedSignValueTemp.push('linkedin')
+      }
+      form.setFieldValue('allowSign', allowedSignValueTemp)
+      setAllowedSignValue(allowedSignValueTemp)
+    }
+  }, [data])
   return (
     <Row gutter={20}>
       <Col span={12}>
@@ -92,35 +158,16 @@ export function SelfSignInForm () {
         <Form.Item
           name='allowSign'
           rules={[
-            { validator: (_, value) => {
-              if (value.length<1) {
-                return Promise.reject($t({ defaultMessage: 'Please configure sign-in option' }))
-              }
-              if(facebook&&!form.getFieldValue(['socialIdentities','facebook','config','appId']))
-              {
-                return Promise.reject($t({ defaultMessage: 'Please configure facebook' }))
-              }
-              if(google&&!form.getFieldValue(['socialIdentities','google','config','appId']))
-              {
-                return Promise.reject($t({ defaultMessage: 'Please configure google' }))
-              }
-              if(twitter&&!form.getFieldValue(['socialIdentities','twitter','config','appId']))
-              {
-                return Promise.reject($t({ defaultMessage: 'Please configure twitter' }))
-              }
-              if(linkedIn&&!form.getFieldValue(['socialIdentities','linkedIn','config','appId']))
-              {
-                return Promise.reject($t({ defaultMessage: 'Please configure linkedIn' }))
-              }
-              return Promise.resolve()
-            } }
+            { validator: (_, value) => checkSocial(value) }
           ]}
           label={<>
             {$t({ defaultMessage: 'Allow Sign-In Using:(At least one option must be selected)' })}
           </>}
         >
-          <Form.Item name='enableSmsLogin'>
-            <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,['enableSmsLogin'])}>
+          <Form.Item name={['guestPortal','enableSmsLogin']}>
+            <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
+              ['guestPortal','enableSmsLogin'])}
+            checked={enableSmsLogin}>
               <UI.SMSToken/>
               {$t({ defaultMessage: 'SMS Token' })}
             </UI.Checkbox>
@@ -130,9 +177,10 @@ export function SelfSignInForm () {
               <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
             </Tooltip>
           </Form.Item>
-          <Form.Item name={['socialIdentities','facebook']}>
+          <Form.Item name={['guestPortal','socialIdentities','facebook']}>
             <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
-              ['socialIdentities','facebook'])}>
+              ['guestPortal','socialIdentities','facebook'])}
+            checked={facebook}>
               <UI.Facebook/>
               {$t({ defaultMessage: 'Facebook' })}
             </UI.Checkbox>
@@ -141,9 +189,10 @@ export function SelfSignInForm () {
               {facebook&&<FacebookSetting/>}
             </Tooltip>
           </Form.Item>
-          <Form.Item name={['socialIdentities','google']}>
+          <Form.Item name={['guestPortal','socialIdentities','google']}>
             <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
-              ['socialIdentities','google'])}>
+              ['guestPortal','socialIdentities','google'])}
+            checked={google}>
               <UI.Google/>
               {$t({ defaultMessage: 'Google' })}
             </UI.Checkbox>
@@ -152,9 +201,10 @@ export function SelfSignInForm () {
               {google&&<GoogleSetting/>}
             </Tooltip>
           </Form.Item>
-          <Form.Item name={['socialIdentities','twitter']}>
+          <Form.Item name={['guestPortal','socialIdentities','twitter']}>
             <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
-              ['socialIdentities','twitter'])}>
+              ['guestPortal','socialIdentities','twitter'])}
+            checked={twitter}>
               <UI.Twitter/>
               {$t({ defaultMessage: 'Twitter' })}
             </UI.Checkbox>
@@ -163,15 +213,16 @@ export function SelfSignInForm () {
               {twitter&&<TwitterSetting/>}
             </Tooltip>
           </Form.Item>
-          <Form.Item name={['socialIdentities','linkedIn']}>
+          <Form.Item name={['guestPortal','socialIdentities','linkedin']}>
             <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
-              ['socialIdentities','linkedIn'])}>
+              ['guestPortal','socialIdentities','linkedin'])}
+            checked={linkedin}>
               <UI.LinkedIn/>
               {$t({ defaultMessage: 'LinkedIn' })}
             </UI.Checkbox>
             <Tooltip title={$t({ defaultMessage: 'Edit LinkedIn app' })}
               placement='bottom'>
-              {linkedIn&&<LinkedInSetting/>}
+              {linkedin&&<LinkedInSetting/>}
             </Tooltip>
           </Form.Item>
         </Form.Item>
@@ -194,10 +245,10 @@ export function SelfSignInForm () {
               <Checkbox disabled={!isSocial}
                 onChange={(e)=>{
                   if (e.target.checked) {
-                    form.setFieldValue('socialDomains', allowedDomainsValue)
+                    form.setFieldValue(['guestPortal','socialDomains'], allowedDomainsValue)
                   } else {
                     setAllowedDomainsValue(socialDomains)
-                    form.setFieldValue('socialDomains', '')
+                    form.setFieldValue(['guestPortal','socialDomains'], '')
                   }
                 }}>
                 {$t({ defaultMessage: 'Allowed Domains' })}
@@ -210,17 +261,19 @@ export function SelfSignInForm () {
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip>
           <Form.Item
-            name='socialDomains'
-            initialValue=''
+            name={['guestPortal','socialDomains']}
+            initialValue={[]}
             rules={[
               { required: allowedDomainsCheckbox },
-              { validator: (_, value) => URLRegExp(value) }]
+              { validator: (_, value) => domainsNameRegExp(value,allowedDomainsCheckbox) }]
             }
             children={
               <Input
                 style={{ marginTop: '5px' }}
                 placeholder={$t({ defaultMessage: 'Enter domain(s) separated by comma' })}
                 disabled={!allowedDomainsCheckbox}
+                onChange={(e)=>form.setFieldValue(['guestPortal','socialDomains'],
+                  e.target.value.split(','))}
               />
             }
           />
@@ -229,11 +282,10 @@ export function SelfSignInForm () {
         <Form.Item>
           <Form.Item
             noStyle
-            name='socialEmails'
+            name={['guestPortal','socialEmails']}
             valuePropName='checked'
             initialValue={false}
             children={
-
               <Checkbox disabled={!isSocial}>
                 {!isSocial&&<Tooltip title={$t({
                   defaultMessage: 'This option applies only when signing ' +
@@ -258,12 +310,14 @@ export function SelfSignInForm () {
           <Space align='start'>
             <Form.Item
               noStyle
-              name={['smsPasswordDuration', 'duration']}
+              name={['guestPortal','smsPasswordDuration', 'duration']}
               initialValue={12}
             >
               <InputNumber data-testid='expireTime' min={1} max={2147483647} />
             </Form.Item>
-            <Form.Item noStyle name={['smsPasswordDuration', 'unit']} initialValue={'HOUR'}>
+            <Form.Item noStyle
+              name={['guestPortal','smsPasswordDuration', 'unit']}
+              initialValue={'HOUR'}>
               <Select data-testid='expireUnit'>
                 <Option value={'HOUR'}>{$t({ defaultMessage: 'Hours' })}</Option>
                 <Option value={'DAY'}>{$t({ defaultMessage: 'Days' })}</Option>

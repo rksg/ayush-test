@@ -1,21 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { Modal } from '@acx-ui/components'
 
-import appPhoto from '../../../../assets/images/network-wizard-diagrams/facebook-sample-customised.png'
-import * as UI  from '../styledComponents'
+import appPhoto           from '../../../../assets/images/network-wizard-diagrams/facebook-sample-customised.png'
+import NetworkFormContext from '../NetworkFormContext'
+import * as UI            from '../styledComponents'
 
 import PreviewApp    from './PreviewApp'
 import SocialAuthURL from './SocialAuthURL'
-
 type DataType = {
   facebookID: string,
   facebookSecret: string
 }
 export default function FacebookSetting () {
+  const {
+    data,
+    editMode,
+    cloneMode
+  } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [form] = Form.useForm<DataType>()
   const formParent = Form.useFormInstance()
@@ -24,12 +29,33 @@ export default function FacebookSetting () {
   const [appSecretValue, setAppSecretValue]=useState('')
   const description='-The selected Facebook app will '+
   'affect the popup that users see on their first sign in to the network'
+  useEffect(()=>{
+    if((editMode || cloneMode) && data){
+      form.setFieldValue(['guestPortal','socialIdentities',
+        'facebook','config','appId'],
+      data.guestPortal?.socialIdentities?.facebook?.config?.appId)
+      form.setFieldValue(['guestPortal','socialIdentities',
+        'facebook','config','appSecret'],
+      data.guestPortal?.socialIdentities?.facebook?.config?.appSecret)
+      setAppIDValue(data.guestPortal?.socialIdentities?.facebook?.config?.appId||'')
+      setAppSecretValue(data.guestPortal?.socialIdentities?.facebook?.config?.appSecret||'')
+      formParent.setFieldValue(['guestPortal','socialIdentities',
+        'facebook','config','appId'],
+      data.guestPortal?.socialIdentities?.facebook?.config?.appId)
+      formParent.setFieldValue(['guestPortal','socialIdentities',
+        'facebook','config','appSecret'],
+      data.guestPortal?.socialIdentities?.facebook?.config?.appSecret)
+    }
+  }, [data])
   const getContent = <Form layout='vertical'
     form={form}
     onFinish={()=>{
-      setAppIDValue(form.getFieldValue(['socialIdentities','facebook','config','appId']))
-      setAppSecretValue(form.getFieldValue(['socialIdentities','facebook','config','appSecret']))
-      formParent.setFieldValue(['socialIdentities','facebook','source'], 'CUSTOM')
+      setAppIDValue(form.getFieldValue(['guestPortal','socialIdentities',
+        'facebook','config','appId']))
+      setAppSecretValue(form.getFieldValue(['guestPortal','socialIdentities',
+        'facebook','config','appSecret']))
+      formParent.setFieldValue(['guestPortal','socialIdentities',
+        'facebook','source'], 'CUSTOM')
       formParent.setFieldsValue({ ...form.getFieldsValue() })
       setVisible(false)
     }}
@@ -40,7 +66,7 @@ export default function FacebookSetting () {
       <PreviewApp appDescription={description} appPhoto={appPhoto}/>
     </>}/>
     <Form.Item
-      name={['socialIdentities','facebook','config','appId']}
+      name={['guestPortal','socialIdentities','facebook','config','appId']}
       rules={[
         { required: true }
       ]}
@@ -50,7 +76,7 @@ export default function FacebookSetting () {
       }
     />
     <Form.Item
-      name={['socialIdentities','facebook','config','appSecret']}
+      name={['guestPortal','socialIdentities','facebook','config','appSecret']}
       rules={[
         { required: true }
       ]}
@@ -82,8 +108,10 @@ export default function FacebookSetting () {
         width={600}
         okText={$t({ defaultMessage: 'Save' })}
         onCancel={()=>{
-          form.setFieldValue(['socialIdentities','facebook','config','appId'], appIDValue)
-          form.setFieldValue(['socialIdentities','facebook','config','appSecret'], appSecretValue)
+          form.setFieldValue(['guestPortal','socialIdentities',
+            'facebook','config','appId'], appIDValue)
+          form.setFieldValue(['guestPortal','socialIdentities',
+            'facebook','config','appSecret'], appSecretValue)
           setVisible(false)
         }}
         onOk={()=>{

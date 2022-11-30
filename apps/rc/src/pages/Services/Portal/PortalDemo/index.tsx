@@ -22,6 +22,8 @@ import PortalViewContentPreview from './PortalViewContentPreview'
 
 
 type PortalDemoProps = {
+  networkSocial?: { [key:string]:boolean },
+  networkViewType?: GuestNetworkTypeEnum,
   fromNetwork?: boolean,
   isPreview?: boolean,
   value?: Demo,
@@ -29,6 +31,8 @@ type PortalDemoProps = {
   onChange?: (data: Demo) => void
 }
 export default function PortalDemo ({
+  networkSocial,
+  networkViewType,
   fromNetwork,
   isPreview,
   value,
@@ -56,7 +60,8 @@ export default function PortalDemo ({
     updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
   />
   const networkPreview = (isPreview && fromNetwork)
-  const [networkDisplayLang, setNetworkDisplayLang] = useState(demoValue.displayLang)
+  const displayLang = getLanguage(demoValue.displayLang as keyof typeof PortalLanguageEnum)
+  const [networkDisplayLang, setNetworkDisplayLang] = useState(displayLang)
   const type= view === PortalViewEnum.ClickThrough? GuestNetworkTypeEnum.ClickThrough :
     (view === PortalViewEnum.GuestPassConnect || view ===PortalViewEnum.GuestPassForgot)?
       GuestNetworkTypeEnum.GuestPass:
@@ -66,12 +71,11 @@ export default function PortalDemo ({
           GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
   useEffect(()=>{
     if(networkPreview){
-      setNetworkDisplayLang(demoValue.displayLang)
+      setNetworkDisplayLang(getLanguage(demoValue.displayLang as keyof typeof PortalLanguageEnum))
     }
   },[demoValue])
   const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
   const alternativeLang = demoValue.alternativeLang
-  const displayLang = getLanguage(demoValue.displayLang as keyof typeof PortalLanguageEnum)
   let langs = [] as string[]
   const langKeys = Object.keys(alternativeLang || {}) as Array<keyof typeof PortalLanguageEnum>
   langKeys.map((key) =>{
@@ -168,7 +172,9 @@ export default function PortalDemo ({
           </div>}
           {(isPreview||networkPreview)&&<div
             style={{ flex: 'auto', textAlign: 'right', paddingRight: 40 }}>
-            <UI.Select defaultValue={displayLang} style={{ width: 250, textAlign: 'left' }}>
+            <UI.Select value={networkDisplayLang}
+              style={{ width: 250, textAlign: 'left' }}
+              onChange={(value)=>setNetworkDisplayLang(value as string)}>
               <Option key={displayLang}>
                 {displayLang}
               </Option>
@@ -191,6 +197,8 @@ export default function PortalDemo ({
           style={{ backgroundImage: 'url("'+(isPreview?value:demoValue)?.backgroundImage+'")',
             backgroundColor: (isPreview?value:demoValue)?.backgroundColor }}>
           {isPreview?<PortalViewContentPreview view={view}
+            networkSocial={networkSocial}
+            networkViewType={networkViewType}
             demoValue={value as Demo}/>:
             <PortalViewContent view={view}
               demoValue={demoValue}

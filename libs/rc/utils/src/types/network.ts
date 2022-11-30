@@ -85,6 +85,7 @@ export interface NetworkSaveData {
   venues?: NetworkVenue[];
   redirectUrl?: string;
   guestPortal?: GuestPortal;
+  enableDhcp?: boolean;
   wlan?: {
     ssid?: string;
     vlanId?: number;
@@ -116,40 +117,6 @@ export interface NetworkSaveData {
     length?: number;
     format?: PassphraseFormatEnum;
     expiration?: PassphraseExpirationEnum;
-  }
-}
-export interface ExternalProviders{
-  providers: Providers[]
-}
-export interface Providers{
-  customExternalProvider: boolean,
-  name: string,
-  regions: Regions[]
-}
-export interface Regions{
-  name: string,
-  showAnalyticsData: boolean,
-  captivePortalUrl: string,
-  redirectUrl: string,
-  authRadius?: {
-    primary: {
-      ip: string;
-      port: string;
-    };
-    secondary: {
-      ip: string;
-      port: string;
-    };
-  },
-  accountingRadius?: {
-    primary: {
-      ip: string;
-      port: string;
-    };
-    secondary: {
-      ip: string;
-      port: string;
-    };
   }
 }
 export interface ExternalProviders{

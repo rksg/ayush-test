@@ -2,12 +2,13 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { Card, GridCol, GridRow } from '@acx-ui/components'
-import { Demo }                   from '@acx-ui/rc/utils'
+import { Card, GridCol, GridRow }   from '@acx-ui/components'
+import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
 
 import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
 import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
+import { getLanguage }    from '../../commonUtils'
 import PortalPreviewModal from '../PortalSummary/PortalPreviewModal'
 export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
@@ -21,7 +22,8 @@ export default function PortalOverview (props: { demoValue: Demo }) {
           <Card.Title>
             {$t({ defaultMessage: 'Language' })}
           </Card.Title>
-          <Typography.Text>{newDemo?.displayLang}</Typography.Text>
+          <Typography.Text>{
+            getLanguage(newDemo.displayLang as keyof typeof PortalLanguageEnum)}</Typography.Text>
         </GridCol>
         <GridCol col={{ span: 12 }}>
           <Card.Title>

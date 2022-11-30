@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { Modal } from '@acx-ui/components'
 
-import appPhoto from '../../../../assets/images/network-wizard-diagrams/twitter-sample-customised.png'
-import * as UI  from '../styledComponents'
+import appPhoto           from '../../../../assets/images/network-wizard-diagrams/twitter-sample-customised.png'
+import NetworkFormContext from '../NetworkFormContext'
+import * as UI            from '../styledComponents'
 
 import PreviewApp    from './PreviewApp'
 import SocialAuthURL from './SocialAuthURL'
@@ -15,18 +16,46 @@ type DataType = {
   twitterSecret: string
 }
 export default function TwitterSetting () {
+  const {
+    data,
+    editMode,
+    cloneMode
+  } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [form] = Form.useForm<DataType>()
+  const formParent = Form.useFormInstance()
   const [visible, setVisible]=useState(false)
   const [appIDValue, setAppIDValue]=useState('')
   const [appSecretValue, setAppSecretValue]=useState('')
   const description='-The selected Twitter app will affect the popup '+
   'that users see on their first sign in to the network'
+  useEffect(()=>{
+    if((editMode || cloneMode) && data){
+      form.setFieldValue(['guestPortal','socialIdentities',
+        'twitter','config','appId'],
+      data.guestPortal?.socialIdentities?.twitter?.config?.appId)
+      form.setFieldValue(['guestPortal','socialIdentities',
+        'twitter','config','appSecret'],
+      data.guestPortal?.socialIdentities?.twitter?.config?.appSecret)
+      setAppIDValue(data.guestPortal?.socialIdentities?.twitter?.config?.appId||'')
+      setAppSecretValue(data.guestPortal?.socialIdentities?.twitter?.config?.appSecret||'')
+      formParent.setFieldValue(['guestPortal','socialIdentities',
+        'twitter','config','appId'],
+      data.guestPortal?.socialIdentities?.twitter?.config?.appId)
+      formParent.setFieldValue(['guestPortal','socialIdentities',
+        'twitter','config','appSecret'],
+      data.guestPortal?.socialIdentities?.twitter?.config?.appSecret)
+    }
+  }, [data])
   const getContent = <Form layout='vertical'
     form={form}
     onFinish={()=>{
-      setAppIDValue(form.getFieldValue(['socialIdentities','twitter','config','appId']))
-      setAppSecretValue(form.getFieldValue(['socialIdentities','twitter','config','appSecret']))
+      setAppIDValue(form.getFieldValue(['guestPortal','socialIdentities',
+        'twitter','config','appId']))
+      setAppSecretValue(form.getFieldValue(['guestPortal','socialIdentities',
+        'twitter','config','appSecret']))
+      formParent.setFieldValue(['guestPortal','socialIdentities','twitter','source'], 'CUSTOM')
+      formParent.setFieldsValue({ ...form.getFieldsValue() })
       setVisible(false)
     }}
   >
@@ -36,7 +65,7 @@ export default function TwitterSetting () {
       <PreviewApp appDescription={description} appPhoto={appPhoto}/>
     </>}/>
     <Form.Item
-      name={['socialIdentities','twitter','config','appId']}
+      name={['guestPortal','socialIdentities','twitter','config','appId']}
       rules={[
         { required: true }
       ]}
@@ -46,7 +75,7 @@ export default function TwitterSetting () {
       }
     />
     <Form.Item
-      name={['socialIdentities','twitter','config','appSecret']}
+      name={['guestPortal','socialIdentities','twitter','config','appSecret']}
       rules={[
         { required: true }
       ]}
@@ -77,8 +106,10 @@ export default function TwitterSetting () {
         width={600}
         okText={$t({ defaultMessage: 'Save' })}
         onCancel={()=>{
-          form.setFieldValue(['socialIdentities','twitter','config','appId'], appIDValue)
-          form.setFieldValue(['socialIdentities','twitter','config','appSecret'], appSecretValue)
+          form.setFieldValue(['guestPortal','socialIdentities',
+            'twitter','config','appId'], appIDValue)
+          form.setFieldValue(['guestPortal','socialIdentities',
+            'twitter','config','appSecret'], appSecretValue)
           setVisible(false)
         }}
         onOk={()=>{

@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { Modal } from '@acx-ui/components'
 
-import appPhoto from '../../../../assets/images/network-wizard-diagrams/linkedin-sample-customised.png'
-import * as UI  from '../styledComponents'
+import appPhoto           from '../../../../assets/images/network-wizard-diagrams/linkedin-sample-customised.png'
+import NetworkFormContext from '../NetworkFormContext'
+import * as UI            from '../styledComponents'
 
 import PreviewApp    from './PreviewApp'
 import SocialAuthURL from './SocialAuthURL'
@@ -15,18 +16,47 @@ type DataType = {
   linkedinSecret: string
 }
 export default function LinkedInSetting () {
+  const {
+    data,
+    editMode,
+    cloneMode
+  } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [form] = Form.useForm<DataType>()
+  const formParent = Form.useFormInstance()
   const [visible, setVisible]=useState(false)
   const [appIDValue, setAppIDValue]=useState('')
   const [appSecretValue, setAppSecretValue]=useState('')
   const description='-The selected LinkedIn app will affect the popup that '+
   'users see on their first sign in to the network'
+  useEffect(()=>{
+    if((editMode || cloneMode) && data){
+      form.setFieldValue(['guestPortal','socialIdentities',
+        'linkedin','config','appId'],
+      data.guestPortal?.socialIdentities?.linkedin?.config?.appId)
+      form.setFieldValue(['guestPortal','socialIdentities',
+        'linkedin','config','appSecret'],
+      data.guestPortal?.socialIdentities?.linkedin?.config?.appSecret)
+      setAppIDValue(data.guestPortal?.socialIdentities?.linkedin?.config?.appId||'')
+      setAppSecretValue(data.guestPortal?.socialIdentities?.linkedin?.config?.appSecret||'')
+      formParent.setFieldValue(['guestPortal','socialIdentities','linkedin','source'], 'CUSTOM')
+      formParent.setFieldValue(['guestPortal','socialIdentities',
+        'linkedin','config','appId'],
+      data.guestPortal?.socialIdentities?.linkedin?.config?.appId)
+      formParent.setFieldValue(['guestPortal','socialIdentities',
+        'linkedin','config','appSecret'],
+      data.guestPortal?.socialIdentities?.linkedin?.config?.appSecret)
+    }
+  }, [data])
   const getContent = <Form layout='vertical'
     form={form}
     onFinish={()=>{
-      setAppIDValue(form.getFieldValue(['socialIdentities','linkedIn','config','appId']))
-      setAppSecretValue(form.getFieldValue(['socialIdentities','linkedIn','config','appSecret']))
+      setAppIDValue(form.getFieldValue(['guestPortal','socialIdentities',
+        'linkedin','config','appId']))
+      setAppSecretValue(form.getFieldValue(['guestPortal','socialIdentities',
+        'linkedin','config','appSecret']))
+      formParent.setFieldValue(['guestPortal','socialIdentities','linkedin','source'], 'CUSTOM')
+      formParent.setFieldsValue({ ...form.getFieldsValue() })
       setVisible(false)
     }}
   >
@@ -36,7 +66,7 @@ export default function LinkedInSetting () {
       <PreviewApp appDescription={description} appPhoto={appPhoto}/>
     </>}/>
     <Form.Item
-      name={['socialIdentities','linkedIn','config','appId']}
+      name={['guestPortal','socialIdentities','linkedin','config','appId']}
       rules={[
         { required: true }
       ]}
@@ -46,7 +76,7 @@ export default function LinkedInSetting () {
       }
     />
     <Form.Item
-      name={['socialIdentities','linkedIn','config','appSecret']}
+      name={['guestPortal','socialIdentities','linkedin','config','appSecret']}
       rules={[
         { required: true }
       ]}
@@ -78,8 +108,10 @@ export default function LinkedInSetting () {
         width={600}
         okText={$t({ defaultMessage: 'Save' })}
         onCancel={()=>{
-          form.setFieldValue(['socialIdentities','linkedIn','config','appId'], appIDValue)
-          form.setFieldValue(['socialIdentities','linkedIn','config','appSecret'], appSecretValue)
+          form.setFieldValue(['guestPortal','socialIdentities',
+            'linkedin','config','appId'], appIDValue)
+          form.setFieldValue(['guestPortal','socialIdentities',
+            'linkedin','config','appSecret'], appSecretValue)
           setVisible(false)
         }}
         onOk={()=>{

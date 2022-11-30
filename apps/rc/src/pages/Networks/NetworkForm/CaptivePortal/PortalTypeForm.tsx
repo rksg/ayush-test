@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import {
   Col,
@@ -41,13 +41,21 @@ export function PortalTypeForm () {
 function TypesForm () {
   const {
     data,
-    setData
+    setData,
+    editMode,
+    cloneMode
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, guestPortal:
        { ...data?.guestPortal, guestNetworkType: e.target.value as GuestNetworkTypeEnum } })
   }
   const intl = useIntl()
+  const form = Form.useFormInstance()
+  useEffect(()=>{
+    if((editMode || cloneMode) && data){
+      form.setFieldsValue({ ...data })
+    }
+  }, [data])
   return (
     <>
       <StepsForm.Title>Portal Type</StepsForm.Title>
@@ -57,7 +65,7 @@ function TypesForm () {
           'Select the way users gain access to the network through the captive portal' })}
         rules={[{ required: true }]}
       >
-        <Radio.Group onChange={onChange}>
+        <Radio.Group onChange={onChange} disabled={editMode}>
           <Space direction='vertical'>
             <Radio value={GuestNetworkTypeEnum.ClickThrough}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.ClickThrough]}
