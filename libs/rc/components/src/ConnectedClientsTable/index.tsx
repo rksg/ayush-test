@@ -9,8 +9,10 @@ import { TenantLink }                                                  from '@ac
 import { formatter }                                                   from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+import { ClientHealthIcon } from '../ClientHealthIcon'
 
-const hasGuestManagerRole = false
+// TODO: userProfileService.userHasRole(user, 'OFFICE_ADMIN')
+const hasGuestManagerRole = false 
 
 function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const columns: TableProps<ClientList>['columns'] = [
@@ -55,7 +57,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
             br: () => <br />
           }}
         />}>
-          <UI.HealthIcon $type={row.healthClass} />
+          <ClientHealthIcon type={row.healthClass} />
         </Tooltip>
       }
     },

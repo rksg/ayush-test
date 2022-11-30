@@ -93,10 +93,6 @@ export const getClientHealthClass = (healthStatus: string) => {
   }
 }
 
-export const deviceTypeString = {
-
-}
-
 const convertClientOsType = (origOsType: string) => {
   const osType = origOsType ? origOsType.toLowerCase() : ''
 
