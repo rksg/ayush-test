@@ -88,6 +88,7 @@ export default function RcRoutes () {
       <Route path='policies/*' element={<PolicyRoutes />} />
       <Route path='users/*' element={<UserRoutes />} />
       <Route path='timeline/*' element={<TimelineRoutes />} />
+      <Route path='administration/*' element={<AdministrationRoutes />} />
     </Route>
   )
   return (
@@ -422,6 +423,14 @@ function TimelineRoutes () {
     <Route path='t/:tenantId'>
       <Route path='timeline' element={<TenantNavigate replace to='/timeline/activities' />} />
       <Route path='timeline/:activeTab' element={<Timeline />} />
+    </Route>
+  )
+}
+
+function AdministrationRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='administration' element={<RadiusServerTab/>} />
     </Route>
   )
 }
