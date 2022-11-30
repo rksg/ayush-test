@@ -68,12 +68,12 @@ jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
 
-jest.mock('./pages/Users/Wifi/ApList', () => () => {
-  return <div data-testid='UserApList' />
+jest.mock('./pages/Users/Wifi/ClientList', () => () => {
+  return <div data-testid='UserClientList' />
 })
 
-jest.mock('./pages/Users/Wifi/ApDetails', () => () => {
-  return <div data-testid='UserApDetails' />
+jest.mock('./pages/Users/Wifi/ClientDetails', () => () => {
+  return <div data-testid='UserClientDetails' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -320,49 +320,49 @@ describe('RcRoutes: Services', () => {
 })
 
 describe('RcRoutes: User', () => {
-  test('should redirect user to user/aps/clients', async () => {
+  test('should redirect user to user/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/users/',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApList')).toBeVisible()
+    expect(screen.getByTestId('UserClientList')).toBeVisible()
   })
-  test('should redirect user/aps to user/aps/clients', async () => {
+  test('should redirect user/wifi to user/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/aps',
+        path: '/t/tenantId/users/wifi',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApList')).toBeVisible()
+    expect(screen.getByTestId('UserClientList')).toBeVisible()
   })
-  test('should redirect to user/aps/clients correctly', async () => {
+  test('should redirect to user/wifi/clients correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/aps/clients',
+        path: '/t/tenantId/users/wifi/clients',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApList')).toBeVisible()
+    expect(screen.getByTestId('UserClientList')).toBeVisible()
   })
   test('should redirect details to details/overview', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/aps/userId/details/',
+        path: '/t/tenantId/users/wifi/clients/clientId/details/',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApDetails')).toBeVisible()
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
   })
   test('should redirect to details/overview correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/aps/userId/details/overview',
+        path: '/t/tenantId/users/wifi/clients/clientId/details/overview',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApDetails')).toBeVisible()
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
   })
 })
