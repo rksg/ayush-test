@@ -76,9 +76,7 @@ export const ImageContainer = styled('div')< { currentZoom: number, imageMode: I
   width: calc(${props => 100 * props.currentZoom}%);
   position: relative;
   margin: 0 auto;
-  height: ${props => props.imageMode === ImageMode.FIT ? '100%' : 'auto'};
   padding: 30px auto;
-  max-height: 100%;
 `
 export const ImageLoaderContainer = styled('div')`
   position: absolute;
