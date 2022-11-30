@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Collapse should render start icon collapse correctly 1`] = `
+exports[`Collapse should render start icon & bordered collapse correctly 1`] = `
 <DocumentFragment>
   <div
     class="ant-collapse ant-collapse-icon-position-start"
