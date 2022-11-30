@@ -16,6 +16,8 @@ import {
   renderExpires,
   renderGuestType
 } from '../GuestsTable'
+import { DrawerFormItem } from '../styledComponents'
+
 
 interface GuestDetailsDrawerProps {
   currentGuest: Guest,
@@ -107,57 +109,47 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     labelCol={{ span: 10 }}
     labelAlign='left' >
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Guest Type:' })}
       children={renderGuestType(currentGuest.guestType)} />
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Guest Name:' })}
       children={currentGuest.name} />
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Mobile Phone:' })}
       children={transformDisplayText(currentGuest.mobilePhoneNumber)} />
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Email:' })}
       children={transformDisplayText(currentGuest.emailAddress)} />
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Notes:' })}
       children={transformDisplayText(currentGuest.notes)} />
 
     <Divider />
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Allowed Network:' })}
       children={renderAllowedNetwork(currentGuest)} />
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Guest Created:' })}
       children={moment(currentGuest.expiryDate).format('DD/MM/YYYY HH:mm')} />
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Access Expires:' })}
       children={renderExpires(currentGuest)} />
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Max. Number of Clients:' })}
       children={currentGuest.maxNumberOfClients || '0'} />
 
     <Divider />
 
-    <Form.Item
-      style={{ paddingLeft: '14px' }}
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Status:' })}
       children={renderStatus(currentGuest)} />
 

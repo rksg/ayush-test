@@ -61,16 +61,17 @@ export default function GuestsTable () {
     const notificationMessage =
       <span style={{
         display: 'grid',
-        gridTemplateColumns: '400px 100px'
+        gridTemplateColumns: '400px 100px',
+        paddingTop: '2px'
       }}>
         <span>
           {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
         </span>
         <Button type='link'
-          disabled={true}
+          disabled={true} //TODO: Need guest service support
           style={{
             fontSize: cssStr('--acx-body-4-font-size'),
-            height: '17px'
+            height: '16px'
           }}>
           {$t({ defaultMessage: 'Add Guest Pass Network' })}
         </Button>
@@ -89,6 +90,7 @@ export default function GuestsTable () {
         render: (data, row) =>
           <Button
             type='link'
+            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
             onClick={() => {
               setCurrentGuest(row)
               setVisible(true)
@@ -106,6 +108,7 @@ export default function GuestsTable () {
         render: (data, row) =>
           <Button
             type='link'
+            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
             onClick={() => {
               setCurrentGuest(row)
               setVisible(true)
@@ -169,7 +172,7 @@ export default function GuestsTable () {
       ]}>
         {
           !tableQuery.data?.data?.length &&
-          <Alert message={notificationMessage} type='info' showIcon closable ></Alert>
+          <Alert message={notificationMessage} type='info' showIcon ></Alert>
         }
         <Table
           columns={columns}
@@ -231,11 +234,15 @@ export const renderExpires = function (row: Guest) {
       if (row.passDurationHours > 24) {
         const days = Math.floor(row.passDurationHours / 24)
         const hours = row.passDurationHours % 24
-        const dayText = days > 1 ? ' days' : ' day'
-        const hourText = hours > 1 ? ' hours' : ' hour'
-        result = `${days}${dayText} ${hours}${hourText}`
+        const dayText = days > 1 ?
+          $t({ defaultMessage: 'days' }) : $t({ defaultMessage: 'day' })
+        const hourText = hours > 1 ?
+          $t({ defaultMessage: 'hours' }) : $t({ defaultMessage: 'hour' })
+        result = `${days} ${dayText} ${hours} ${hourText}`
       } else {
-        result = row.passDurationHours + (row.passDurationHours === 1 ? ' hour' : ' hours')
+        result = row.passDurationHours +
+          (row.passDurationHours === 1 ?
+            $t({ defaultMessage: 'hour' }) : $t({ defaultMessage: 'hours' }))
       }
     }
     expiresTime = `${result} ${$t({ defaultMessage: 'since first login' })}`
