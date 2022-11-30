@@ -8,14 +8,12 @@ import { useParams }       from 'react-router-dom'
 import { Card, GridCol, GridRow }        from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 
-const WifiCallingDetailContent = (props: { tenantId: string }) => {
+const WifiCallingDetailContent = () => {
   const params = useParams()
   const { Paragraph } = Typography
   const { $t } = useIntl()
 
-  const { data } = useGetWifiCallingServiceQuery({
-    params: { ...params, tenantId: props.tenantId }
-  })
+  const { data } = useGetWifiCallingServiceQuery({ params: params })
 
   if (data) {
     return <Card>

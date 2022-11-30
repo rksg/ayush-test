@@ -86,18 +86,12 @@ describe('WifiCallingSettingForm', () => {
     )
     let serviceName = screen.getByRole('textbox', { name: /service name/i })
     expect(serviceName).toBeEmptyDOMElement()
-    let tags = screen.getByRole('textbox', { name: /tags/i })
-    expect(tags).toBeEmptyDOMElement()
     let desc = screen.getByRole('textbox', { name: /description/i })
     expect(desc).toBeEmptyDOMElement()
 
     fireEvent.change(serviceName,
       { target: { value: 'serviceName1' } })
     expect(serviceName).toHaveValue('serviceName1')
-
-    fireEvent.change(tags,
-      { target: { value: 'tag1,tag2,tag3' } })
-    expect(tags).toHaveValue('tag1,tag2,tag3')
 
     fireEvent.change(desc,
       { target: { value: 'desc1' } })
