@@ -38,8 +38,8 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
-import WifiClientList           from './pages/Users/Wifi/ClientList'
 import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
+import WifiClientList           from './pages/Users/Wifi/ClientList'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -197,11 +197,11 @@ function UserRoutes () {
         path='users/wifi/:activeTab/:clientId/details/'
         element={
           <TenantNavigate replace to='/users/wifi/:activeTab/:clientId/details/overview' />
-        } 
+        }
       />
       <Route
         path='users/wifi/:activeTab/:clientId/details/:activeTab'
-        element={<WifiClientDetails />} 
+        element={<WifiClientDetails />}
       />
     </Route>
   )
