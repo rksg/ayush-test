@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { QosPriorityEnum } from '../constants'
+import { QosPriorityEnum } from '../../constants'
 
 export interface WifiCallingScope {
   id: string,
@@ -10,6 +10,11 @@ export interface WifiCallingScope {
   activate?: React.ReactElement
   voiceQualityScore?: string
   serviceHealth?: React.ReactElement
+}
+
+export interface WifiCallingDetailContextType {
+  networkIds: string[],
+  setNetworkIds: (networkIds: string[]) => void
 }
 
 export interface WifiCallingFormContextType {

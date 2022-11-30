@@ -77,10 +77,12 @@ export { ReactComponent as CloseSymbol } from './icons/CloseSymbol.svg'
 export { ReactComponent as Close } from './icons/Close.svg'
 export { ReactComponent as ClockOutlined } from './icons/ClockOutlined.svg'
 export { ReactComponent as ClockSolid } from './icons/ClockSolid.svg'
+export { ReactComponent as CollapseActive } from './icons/CollapseActive.svg'
 export { ReactComponent as CollapseAllCircleArrowsCollapseAllCircleOutlined }
   from './icons/CollapseAllCircleArrowsCollapseAllCircleOutlined.svg'
 export { ReactComponent as CollapseAllCircleArrowsCollapseAllCircleSolid }
   from './icons/CollapseAllCircleArrowsCollapseAllCircleSolid.svg'
+export { ReactComponent as CollapseInactive } from './icons/CollapseInactive.svg'
 export { ReactComponent as CollapseCircleOutlined } from './icons/CollapseCircleOutlined.svg'
 export { ReactComponent as CollapseCircleSolid } from './icons/CollapseCircleSolid.svg'
 export { ReactComponent as CollapseSquareOutlined } from './icons/CollapseSquareOutlined.svg'

@@ -4,18 +4,19 @@ import { Col, Form, Input, InputNumber, Row, Select, Slider } from 'antd'
 import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
+import { RadioSettingsChannels }           from '@acx-ui/rc/components'
 import {
   useGetVenueRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { VenueEditContext }  from '../../..'
 import {
   channelSelectionMethodsOptions,
   txPowerAdjustmentOptions
 } from '../contents'
 import { ChannelBars, split5GChannels } from '../contents'
-import { RadioSettingsChannels }        from '../RadioSettingsChannels'
 
 const { useWatch } = Form
 
@@ -211,6 +212,7 @@ export function Radio5GHz () {
             displayBarSettings={['5G', 'DFS']}
             channelBars={indoorChannelBars}
             disabled={false}
+            editContext={VenueEditContext}
           />
             }
           </div>
@@ -228,6 +230,7 @@ export function Radio5GHz () {
             displayBarSettings={['5G', 'DFS']}
             channelBars={outdoorChannelBars}
             disabled={false}
+            editContext={VenueEditContext}
           />
             }
             <Form.Item
