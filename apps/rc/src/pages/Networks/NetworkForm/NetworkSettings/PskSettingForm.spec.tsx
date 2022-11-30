@@ -154,8 +154,18 @@ describe('NetworkForm', () => {
 
     fireEvent.mouseDown(securityProtocols)
 
-    const mixOption = await screen.findByText('WPA3/WPA2 mixed mode')
-    await userEvent.click(mixOption)
+    const mixOption1 = await screen.findByText('WPA')
+    await userEvent.click(mixOption1)
+
+    fireEvent.mouseDown(securityProtocols)
+
+    const mixOption2 = await screen.findByText('WPA2 (Recommended)')
+    await userEvent.click(mixOption2)
+
+    fireEvent.mouseDown(securityProtocols)
+
+    const mixOption3 = await screen.findByText('WPA3/WPA2 mixed mode')
+    await userEvent.click(mixOption3)
 
     fireEvent.mouseDown(securityProtocols)
     const option = await screen.findByText('WEP')
