@@ -115,9 +115,11 @@ export default function MacRegistrationListsTable () {
   return (
     <>
       <PageHeader
-        breadcrumb={[
-          { text: 'Policies & Profiles', link: '/policies' }
-        ]}
+        breadcrumb={
+          [
+            { text: $t({ defaultMessage: 'Policies & Profiles' }),
+              link: '/policies' }
+          ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
         extra={[
           <TenantLink to='/policies/mac-registration-lists/add' key='add'>

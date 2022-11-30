@@ -1,6 +1,9 @@
 import moment from 'moment-timezone'
 
+import { getIntl } from '@acx-ui/utils'
+
 export function macAddressRegExp (value: string) {
+  const { $t } = getIntl()
   const HYPHEN_2_GROUPS = new RegExp(/^([0-9A-F]{6})-([0-9A-F]{6})$/)
   const COLON_6_GROUPS = new RegExp(/^([0-9A-F]{2}:){5}([0-9A-F]{2})$/)
   const HYPHEN_6_GROUPS = new RegExp(/^([0-9A-F]{2}-){5}([0-9A-F]{2})$/)
@@ -11,15 +14,16 @@ export function macAddressRegExp (value: string) {
     HYPHEN_6_GROUPS.test(value) ||
     DOTS_3_GROUPS.test(value) ||
     NO_DELIMITER.test(value))) {
-    return Promise.reject('Invalid MAC address format')
+    return Promise.reject($t({ defaultMessage: 'Invalid MAC address format' }))
   }
   return Promise.resolve()
 }
 
 export function dateValidationRegExp (value: string) {
+  const { $t } = getIntl()
   const today = new Date()
   if(value && new Date(value) < today) {
-    return Promise.reject('The expiration date must be in the future')
+    return Promise.reject($t({ defaultMessage: 'The expiration date must be in the future' }))
   }
   return Promise.resolve()
 }

@@ -87,31 +87,35 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const addManuallyContent = <Row>
     <Col span={16}>
       <Form.Item name='macAddress'
-        label='MAC Address'
+        label={intl.$t({ defaultMessage: 'MAC Address' })}
         rules={[
-          { required: true, message: 'Please enter MAC Address' },
+          { required: true, message: intl.$t({ defaultMessage: 'Please enter MAC Address' }) },
           { validator: (_, value) => macAddressRegExp(value) }
         ]}>
         <Input disabled={isEdit}/>
       </Form.Item>
-      <Form.Item name='username' label='Username'>
+      <Form.Item name='username' label={intl.$t({ defaultMessage: 'Username' })}>
         <Input/>
       </Form.Item>
-      <Form.Item name='deviceName' label='DeviceName'>
+      <Form.Item name='deviceName' label={intl.$t({ defaultMessage: 'DeviceName' })}>
         <Input/>
       </Form.Item>
-      <Form.Item name='listExpiration' label='MAC Address Expiration' initialValue={1}>
+      <Form.Item name='listExpiration'
+        label={intl.$t({ defaultMessage: 'MAC Address Expiration' })}
+        initialValue={1}>
         <Radio.Group>
           <Space direction='vertical'>
-            <Radio value={1}>Never expires (Same as list)</Radio>
+            <Radio value={1}>{intl.$t({ defaultMessage: 'Never expires (Same as list)' })}</Radio>
             <Space>
-              <Radio value={2}>By date</Radio>
+              <Radio value={2}>{intl.$t({ defaultMessage: 'By date' })}</Radio>
               { isExpired === 2 &&
                 <Form.Item
                   name='expirationDate'
-                  rules={[{ required: true },
+                  rules={[
+                    { required: true,
+                      message: intl.$t({ defaultMessage: 'Please choose expiration date' }) },
                     { validator: (_, value) => dateValidationRegExp(value) }]}>
-                  <DatePicker placeholder={'Choose date'} />
+                  <DatePicker placeholder={intl.$t({ defaultMessage: 'Choose date' })} />
                 </Form.Item>
               }
             </Space>
@@ -127,7 +131,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         <Form.Item name='importAction' initialValue={2}>
           <Radio.Group>
             <Space direction='vertical'>
-              <Radio value={2}>Add manually</Radio>
+              <Radio value={2}>{intl.$t({ defaultMessage: 'Add manually' })}</Radio>
             </Space>
           </Radio.Group>
         </Form.Item>
@@ -146,7 +150,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
 
   return (
     <Drawer
-      title={isEdit ? 'Edit Mac Address' : 'Add Mac Address'}
+      //eslint-disable-next-line max-len
+      title={isEdit ? intl.$t({ defaultMessage: 'Edit Mac Address' }) : intl.$t({ defaultMessage: 'Add Mac Address' })}
       visible={visible}
       onClose={onClose}
       children={content}

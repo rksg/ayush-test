@@ -22,13 +22,15 @@ export function MacRegistrationListSettingForm () {
     <Row>
       <Col span={14}>
         <Form.Item name='name'
-          label='Policy Name'
+          label={$t({ defaultMessage: 'Policy Name' })}
           rules={[
             { required: true }
           ]}
           children={<Input/>}
         />
-        <Form.Item name='listExpiration' label='List Expiration' initialValue={1}>
+        <Form.Item name='listExpiration'
+          label={$t({ defaultMessage: 'List Expiration' })}
+          initialValue={1}>
           <Radio.Group>
             <Space direction='vertical'>
               <Radio value={1}>Never expires</Radio>
@@ -39,11 +41,12 @@ export function MacRegistrationListSettingForm () {
                     rules={[
                       {
                         required: true,
-                        message: 'Please choose date'
+                        message: $t({ defaultMessage: 'Please enter Expiration Date' })
                       },
                       { validator: (_, value) => dateValidationRegExp(value) }
                     ]}>
-                    <DatePicker name='datepicker' placeholder='Choose date'/>
+                    <DatePicker name='datepicker'
+                      placeholder={$t({ defaultMessage: 'Choose date' })}/>
                   </Form.Item>
                 }
               </Space>
@@ -54,7 +57,7 @@ export function MacRegistrationListSettingForm () {
                     <Form.Item name='expireAfter'
                       initialValue={1}
                       rules={[
-                        { required: true, message: 'Please enter number' },
+                        { required: true, message: $t({ defaultMessage: 'Please enter number' }) },
                         { type: 'number', min: 1 }
                       ]}
                       children={<InputNumber min={1} />}
@@ -72,11 +75,11 @@ export function MacRegistrationListSettingForm () {
           <Form.Item name='autoCleanup'
             valuePropName='checked'
             initialValue={true}
-            label='Automatically clean expired entries'>
+            label={$t({ defaultMessage: 'Automatically clean expired entries' })}>
             <Switch/>
           </Form.Item>
         </Space>
-        <Form.Item name='defaultAccess' label='Default Access'>
+        <Form.Item name='defaultAccess' label={$t({ defaultMessage: 'Default Access' })}>
           <SelectionControl
             defaultValue='accept'
             options={[{ value: 'accept', label: 'ACCEPT' },
@@ -88,11 +91,12 @@ export function MacRegistrationListSettingForm () {
         <Row align='middle'>
           <Col span={14}>
             <Form.Item name='access_policy_set'
-              label='Access Policy Set'
+              label={$t({ defaultMessage: 'Access Policy Set' })}
               rules={[
-                { required: false, message: 'Please choose Access Policy Set' }
+                { required: false,
+                  message: $t({ defaultMessage: 'Please choose Access Policy Set' }) }
               ]}>
-              <Select placeholder='Select...'>
+              <Select placeholder={$t({ defaultMessage: 'Select...' })}>
               </Select>
             </Form.Item>
           </Col>

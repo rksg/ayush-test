@@ -163,25 +163,25 @@ export default function MacRegistrationListForm () {
   const addContent = () => {
     return (
       <>
-        <StepsForm.StepForm title='1. Settings'
+        <StepsForm.StepForm title={intl.$t({ defaultMessage: '1. Settings' })}
           onFinish={async (data: MacRegistrationPoolFormFields) => {
             updatePoolSaveData(data)
             return true
           }}>
           <Row>
             <Col span={14}>
-              <StepsForm.Title children='Settings'/>
+              <StepsForm.Title children={intl.$t({ defaultMessage: 'Settings' })}/>
               <MacRegistrationListSettingForm/>
             </Col>
           </Row>
         </StepsForm.StepForm>
-        <StepsForm.StepForm title='2. Summary'>
+        <StepsForm.StepForm title={intl.$t({ defaultMessage: '2. Summary' })} >
           <Row>
             <Col span={16}>
-              <StepsForm.Title children='Summary'/>
+              <StepsForm.Title children={intl.$t({ defaultMessage: 'Summary' })}/>
               <Row>
                 <Col span={24}>
-                  <h4 style={{ fontWeight: 'bold' }}>Settings</h4>
+                  <h4 style={{ fontWeight: 'bold' }}>{intl.$t({ defaultMessage: 'Settings' })}</h4>
                 </Col>
                 <Col span={8}>
                   <Form.Item
@@ -210,7 +210,9 @@ export default function MacRegistrationListForm () {
                   <Form.Item
                     label={intl.$t({ defaultMessage: 'Behavior' })}
                   >
-                    <Paragraph>Always redirect to authenticate user</Paragraph>
+                    <Paragraph>
+                      {intl.$t({ defaultMessage: 'Always redirect to authenticate user' })}
+                    </Paragraph>
                   </Form.Item>
                 </Col>
                 <Col span={8}>
