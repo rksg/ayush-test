@@ -2,7 +2,6 @@ import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
 import { PageHeader, Loader }                            from '@acx-ui/components'
-import { CollapseActive, CollapseInactive }              from '@acx-ui/icons'
 import { NetworkTable, defaultNetworkPayload }           from '@acx-ui/rc/components'
 import { useNetworkListQuery, useVenuesListQuery }       from '@acx-ui/rc/services'
 import { Network, RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
@@ -60,12 +59,6 @@ function SearchResult () {
     )} />
     <Collapse
       defaultActiveKey={Object.keys(results)}
-      expandIconPosition='end'
-      expandIcon={({ isActive }) => (isActive)
-        ? <CollapseActive />
-        : <CollapseInactive />
-      }
-      bordered={false}
     >
       {count
         ? results.map(({ component, title, result: { data } }, index) => data?.totalCount
