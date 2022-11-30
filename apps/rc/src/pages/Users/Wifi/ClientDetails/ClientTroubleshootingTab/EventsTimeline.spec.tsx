@@ -4,7 +4,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import  { TimeLine } from './EventsTimeline'
 
-describe('ApTroubleShooting', () => {
+describe('EventsTimeLine', () => {
   it('should render correctly with out search params', async () => {
     const params = {
       tenantId: 'tenant-id',

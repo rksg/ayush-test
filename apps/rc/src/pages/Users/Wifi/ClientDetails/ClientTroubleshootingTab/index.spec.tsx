@@ -3,16 +3,16 @@ import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { ApTroubleshootingTab } from './index'
+import { ClientTroubleshootingTab } from './index'
 
-describe('ApTroubleShooting', () => {
+describe('ClientTroubleshootingTab', () => {
   it('should render correctly with out search params', async () => {
     const params = {
       tenantId: 'tenant-id',
       userId: 'user-id',
       activeTab: 'troubleshooting'
     }
-    const { asFragment } = render(<Provider><ApTroubleshootingTab /></Provider>, {
+    const { asFragment } = render(<Provider><ClientTroubleshootingTab /></Provider>, {
       route: { params, path: '/:tenantId/users/aps/:userId/details/:activeTab' }
     })
     expect(await screen.findByTestId('ArrowExpand')).toBeVisible()
@@ -25,7 +25,7 @@ describe('ApTroubleShooting', () => {
         // eslint-disable-next-line max-len
         search: '?clientTroubleShootingSelections=%257B%2522category%2522%253A%255B%255B%2522performance%2522%255D%252C%255B%2522Infrastructure%2522%255D%255D%257D'
       }]}>
-        <ApTroubleshootingTab />
+        <ClientTroubleshootingTab />
       </MemoryRouter>
     )
     expect(await screen.findByTestId('ArrowExpand')).toBeVisible()
@@ -38,7 +38,7 @@ describe('ApTroubleShooting', () => {
         // eslint-disable-next-line max-len
         search: '?clientTroubleShootingSelections=%257B%2522category%2522%253A%255B%255B%2522performance%2522%255D%252C%255B%2522Infrastructure%2522%255D%255D%257D'
       }]}>
-        <ApTroubleshootingTab />
+        <ClientTroubleshootingTab />
       </MemoryRouter>
     )
     fireEvent.click(await screen.findByTestId('ArrowExpand'))
@@ -56,7 +56,7 @@ describe('ApTroubleShooting', () => {
     })
     const { asFragment } = render(
       <BrowserRouter window={window}>
-        <ApTroubleshootingTab />
+        <ClientTroubleshootingTab />
       </BrowserRouter>
     )
     await screen.findByText('All Categories')

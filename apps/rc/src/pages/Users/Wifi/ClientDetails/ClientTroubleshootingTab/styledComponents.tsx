@@ -16,7 +16,7 @@ const eventIconStyle = css`
 `
 export const History = styled.div`
   border-radius: 4px;
-  border: 1px solid #E3E4E5;
+  border: 1px solid var(--acx-neutrals-25);
   min-height: 480px;
 `
 export const HistoryHeader = styled.div`
@@ -47,7 +47,7 @@ export const HistoryContentTitle = styled.span`
   font-weight: 600;
   font-size: 14px;
   line-height: 20px;
-  color: #333333;
+  color: var(--acx-primary-black);
 `
 export const HistoryIcon = styled.span`
   margin-left : auto;
