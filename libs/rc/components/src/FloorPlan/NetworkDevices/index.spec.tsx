@@ -57,7 +57,7 @@ describe('Floor Plans Nework Devices', () => {
 
   it('should render correctly', async () => {
 
-    const { asFragment } = await render(<NetworkDevices
+    await render(<NetworkDevices
       imageLoaded={true}
       networkDevicesVisibility={networkDeviceType}
       selectedFloorPlan={floorplan}
