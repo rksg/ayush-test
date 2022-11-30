@@ -1,6 +1,6 @@
-import { PageHeader, Button } from 'antd'
-import { useIntl }            from 'react-intl'
+import { useIntl } from 'react-intl'
 
+import { PageHeader, Button }                     from '@acx-ui/components'
 import { NetworkTable, defaultNetworkPayload }    from '@acx-ui/rc/components'
 import { useNetworkListQuery }                    from '@acx-ui/rc/services'
 import { useTableQuery, Network, RequestPayload } from '@acx-ui/rc/utils'
