@@ -1,12 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo }                       from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }     from '@acx-ui/store'
 import {
   mockServer, render,
-  screen, waitForElementToBeRemoved, within
+  screen, within
 } from '@acx-ui/test-utils'
 
 import { mockEdgeData } from './__tests__/fixtures'
@@ -60,14 +60,14 @@ describe('EdgeList', () => {
   })
 
   it('should create EdgeList successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <EdgeList />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+    const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    expect(row.length).toBe(5)
   })
 
   it('edge detail page link should be correct', async () => {
@@ -103,8 +103,7 @@ describe('EdgeList', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const row = screen.getByRole('row', { name: /Smart Edge 1/i })
+    const row = await screen.findByRole('row', { name: /Smart Edge 1/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -122,8 +121,7 @@ describe('EdgeList', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const row = screen.getAllByRole('row', { name: /Smart Edge/i })
+    const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     await user.click(within(row[0]).getByRole('checkbox'))
     await user.click(within(row[1]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
@@ -137,15 +135,11 @@ describe('EdgeList', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row = screen.getByRole('row', { name: /Smart Edge 1/i })
+    const row = await screen.findByRole('row', { name: /Smart Edge 1/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "Smart Edge 1"?')
     await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   })
 
   it('should delete selected row(multiple)', async () => {
@@ -156,17 +150,13 @@ describe('EdgeList', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row1 = screen.getByRole('row', { name: /Smart Edge 1/i })
-    const row2 = screen.getByRole('row', { name: /Smart Edge 2/i })
+    const row1 = await screen.findByRole('row', { name: /Smart Edge 1/i })
+    const row2 = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row1).getByRole('checkbox'))
     await user.click(within(row2).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Edges"?')
     await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   })
 
   it('should send OTP sucessfully', async () => {
@@ -177,9 +167,7 @@ describe('EdgeList', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row = screen.getByRole('row', { name: /Smart Edge 5/i })
+    const row = await screen.findByRole('row', { name: /Smart Edge 5/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Send OTP' }))
     await screen.findByText('Are you sure you want to send OTP?')

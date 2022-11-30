@@ -2,35 +2,65 @@
 
 exports[`StatusLight should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="sc-jSMfEi kFMyYX"
-    color="--acx-semantics-red-50"
+  <span
+    class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
   >
-    Requires Attention
-  </div>
-  <div
-    class="sc-jSMfEi aVyJJ"
-    color="--acx-semantics-yellow-50"
+    <span
+      class="ant-badge-status-dot"
+    />
+    <span
+      class="ant-badge-status-text"
+    >
+      Requires Attention
+    </span>
+  </span>
+  <span
+    class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
   >
-    Temporarily Degraded
-  </div>
-  <div
-    class="sc-jSMfEi detrgW"
-    color="--acx-neutrals-50"
+    <span
+      class="ant-badge-status-dot"
+    />
+    <span
+      class="ant-badge-status-text"
+    >
+      Temporarily Degraded
+    </span>
+  </span>
+  <span
+    class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
   >
-    In Setup Phase
-  </div>
-  <div
-    class="sc-jSMfEi detrgW"
-    color="--acx-neutrals-50"
+    <span
+      class="ant-badge-status-dot"
+    />
+    <span
+      class="ant-badge-status-text"
+    >
+      In Setup Phase
+    </span>
+  </span>
+  <span
+    class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
   >
-    Offline
-  </div>
-  <div
-    class="sc-jSMfEi llauLN"
-    color="--acx-semantics-green-50"
+    <span
+      class="ant-badge-status-dot"
+    />
+    <span
+      class="ant-badge-status-text"
+    >
+      Offline
+    </span>
+  </span>
+  <span
+    class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
   >
-    Operational
-  </div>
+    <span
+      class="ant-badge-status-dot"
+    />
+    <span
+      class="ant-badge-status-text"
+    >
+      Operational
+    </span>
+  </span>
 </DocumentFragment>
 `;

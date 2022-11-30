@@ -14,27 +14,27 @@ export const EdgeStatusLight = (props: EdgeStatusLightProps) => {
 
   const EdgeStatusLightConfig = {
     [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]: {
-      color: '--acx-neutrals-50',
+      color: 'var(--acx-neutrals-50)',
       text: $t({ defaultMessage: 'Never Contacted Cloud' })
     },
     [EdgeStatusEnum.INITIALIZING]: {
-      color: '--acx-neutrals-50',
+      color: 'var(--acx-neutrals-50)',
       text: $t({ defaultMessage: 'Initializing' })
     },
     [EdgeStatusEnum.NEEDS_CONFIG]: {
-      color: '--acx-neutrals-50',
+      color: 'var(--acx-neutrals-50)',
       text: $t({ defaultMessage: 'Needs Config' })
     },
     [EdgeStatusEnum.OPERATIONAL]: {
-      color: '--acx-semantics-green-50',
+      color: 'var(--acx-semantics-green-50)',
       text: $t({ defaultMessage: 'Operational' })
     },
     [EdgeStatusEnum.APPLYING_CONFIGURATION]: {
-      color: '--acx-semantics-green-50',
+      color: 'var(--acx-semantics-green-50)',
       text: $t({ defaultMessage: 'Applying Configuration' })
     },
     [EdgeStatusEnum.DISCONNECTED_FROM_CLOUD]: {
-      color: '--acx-semantics-red-50',
+      color: 'var(--acx-semantics-red-50)',
       text: $t({ defaultMessage: 'Disconnected From Cloud' })
     }
   }

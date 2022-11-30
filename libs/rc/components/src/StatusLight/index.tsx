@@ -1,6 +1,4 @@
-import styled from 'styled-components'
-
-import { cssStr } from '@acx-ui/components'
+import { Badge } from 'antd'
 
 type StatusLightProps = {
   config: {
@@ -14,26 +12,11 @@ type StatusLightConfig = {
   text: string
 }
 
-type DotProps = {
-  color: string
-}
-
-const Dot = styled.div.attrs((props: DotProps) => props)`
-  &:before {
-    background-color: ${(props) => cssStr(props.color)};
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin: 10px 4px 0 0;
-    content: "";
-    display:inline-block;
-  }
-`
-
 export function StatusLight (props: StatusLightProps) {
   return (
-    <Dot color={props.config[props.data]?.color}>
-      {props.config[props.data]?.text || props.data}
-    </Dot>
+    <Badge
+      color={props.config[props.data]?.color}
+      text={props.config[props.data]?.text || props.data}
+    />
   )
 }
