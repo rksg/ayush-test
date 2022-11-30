@@ -1,7 +1,7 @@
 
 
 export interface CreateNetworkSegmentationFormFields {
-  name: '',
+  name: string
 }
 
 export interface NetworkSegmentationSaveData extends CreateNetworkSegmentationFormFields{
