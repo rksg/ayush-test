@@ -80,10 +80,12 @@ export const AppContainer = styled.div`
     align-items: center;
   }
 
-  .controls span{
-    font-size: 24px;
-    padding-left: 5px;
-    padding-right: 5px;
+  .description {
+    position: absolute;
+    left: 5%;
+    bottom: 100px;
+    padding: 20px;
+    height: 40px;
   }
   
   .slider {
@@ -125,6 +127,7 @@ export const AppContainer = styled.div`
   .controls:hover input[type='range']::-webkit-slider-thumb {
     box-shadow: 0px 0px 0px 8px rgba(63, 81, 181, 0.16);
     border-radius: 50%;
+    cursor: pointer;
   }
   
   .controls:hover input[type='range']::-moz-range-thumb {

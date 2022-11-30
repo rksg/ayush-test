@@ -6,6 +6,10 @@ import { useIntl }          from 'react-intl'
 
 import { Button, Drawer } from '@acx-ui/components'
 import {
+  Plus,
+  Minus
+} from '@acx-ui/icons'
+import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
   useDeleteApPhotoMutation,
@@ -108,12 +112,12 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
   const content = <>
     <Row>
-      <Col span={12}>
+      <Col span={14}>
         <span style={{ marginTop: '10px', display: 'inline-flex' }}>
           {$t({ defaultMessage: 'Drag to reposition' })}
         </span>
       </Col>
-      <Col span={12}>
+      <Col span={10}>
         <Upload
           name='apPhoto'
           listType='picture'
@@ -125,7 +129,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
           <Button type='link'
             key='view'
             onClick={() => {}}
-            style={{ paddingRight: '10px' }}>
+            style={{ paddingRight: '10px', fontSize: '12px' }}>
             {$t({ defaultMessage: 'Change Photo' })}
           </Button>
         </Upload>
@@ -135,7 +139,8 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
             deleteApPhoto({ params })
             setVisible(false)
           }}
-          data-testid='delete'>
+          data-testid='delete'
+          style={{ fontSize: '12px' }}>
           {$t({ defaultMessage: 'Remove' })}
         </Button>
       </Col>
@@ -157,7 +162,13 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
             />
           </div>
           <div className='controls'>
-            <span>-</span>
+            <Button
+              data-testid='image-zoom-out'
+              type='link'
+              size='middle'
+              onClick={() => zoom > 1 && setZoom(zoom - 0.1)}
+              icon={<Minus />}
+            />
             <input
               type='range'
               value={zoom}
@@ -171,7 +182,19 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
               className='zoom-range'
               data-testid='zoomSlider'
             />
-            <span>+</span>
+            <Button
+              data-testid='image-zoom-in'
+              type='link'
+              size='middle'
+              onClick={() => zoom < 3 && setZoom(zoom + 0.1)}
+              icon={<Plus />}
+            />
+          </div>
+          <div className='description' style={{ top: '550px' }}>
+            {
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'The thumbnail will be displayed on the AP details view. The full photo can be viewed by double clicking the thumbnail.' })
+            }
           </div>
         </AppContainer>
       </Col>
