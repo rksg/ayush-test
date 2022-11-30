@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useContext, useEffect } from 'react'
+import React, { MutableRefObject, useContext, useEffect, useState } from 'react'
 
 import { ProFormInstance }       from '@ant-design/pro-form'
 import { Col, Form, Input, Row } from 'antd'
@@ -24,6 +24,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
   const { $t } = useIntl()
   const { edit, formRef } = props
   const params = useParams()
+  const [originalName, setOriginalName] = useState('')
 
   const {
     state, dispatch
@@ -62,9 +63,10 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
           }
         }
       })
+      setOriginalName(policyData.name)
       formRef?.current?.setFieldValue('policyName', policyData.name ? policyData.name : '')
     }
-  }, [data, state.policyName])
+  }, [data])
 
 
   return (
@@ -82,6 +84,13 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
               return new Promise<void>((resolve, reject) => {
                 if (!edit && value
                   && data && data?.findIndex((policy) => policy.name === value) !== -1) {
+                  return reject(
+                    $t({ defaultMessage: 'The rogue policy with that name already exists' })
+                  )
+                }
+                if (edit && value && value !== originalName
+                  && data?.filter((policy) => policy.name !== originalName)
+                    .findIndex((policy) => policy.name === value) !== -1) {
                   return reject(
                     $t({ defaultMessage: 'The rogue policy with that name already exists' })
                   )

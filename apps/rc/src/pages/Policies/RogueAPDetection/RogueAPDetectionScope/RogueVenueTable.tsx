@@ -130,6 +130,7 @@ const RogueVenueTable = () => {
       if (state.venues.length + selectRows.length >= 64) {
         showToast({
           type: 'info',
+          duration: 10,
           content: 'The max-number of venues in a rogue ap policy profile is 64.'
         })
       } else {
@@ -145,6 +146,7 @@ const RogueVenueTable = () => {
 
         showToast({
           type: 'info',
+          duration: 10,
           content: $t({
             defaultMessage: 'Activate {count} {count, plural, one {venue} other {venues}}'
           }, { count: selectRows.length })
@@ -168,6 +170,7 @@ const RogueVenueTable = () => {
 
       showToast({
         type: 'info',
+        duration: 10,
         content: $t({
           defaultMessage: 'Deactivate {count} {count, plural, one {venue} other {venues}}'
         }, { count: selectRows.length })

@@ -79,7 +79,8 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     } catch(error) {
       showToast({
         type: 'error',
-        content: $t({ defaultMessage: 'An error occurred: ' })
+        duration: 10,
+        content: $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
