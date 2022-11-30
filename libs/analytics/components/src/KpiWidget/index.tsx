@@ -74,7 +74,7 @@ export function KpiWidget ({
   name: KpiNames;
   threshold?: number | null;
   filters: AnalyticsFilter;
-  type?: string;
+  type?: 'no-chart-style' | 'with-chart-style'
 }){
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const queryResults= useKpiTimeseriesQuery({

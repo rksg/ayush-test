@@ -23,11 +23,15 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
             >
               <div
                 class="ant-space-item"
+                style="margin-right: 4px;"
               >
                 <div
                   class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
                 />
               </div>
+              <div
+                class="ant-space-item"
+              />
             </div>
           </div>
           <div
@@ -47,7 +51,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
           style="margin: -10px -10px -10px -10px; flex-grow: 1;"
         >
           <div
-            class="ant-col ant-col-2 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            class="ant-col ant-col-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
             style="padding: 10px 10px 10px 10px;"
           >
             <div
@@ -159,7 +163,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
             </div>
           </div>
           <div
-            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
             style="padding: 10px 10px 10px 10px;"
           >
             <div

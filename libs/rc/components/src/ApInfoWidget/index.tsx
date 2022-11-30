@@ -38,19 +38,19 @@ const defaultPayload = {
   ]
 }
 
-const seriesMapping = [
-  { key: EventSeverityEnum.CRITICAL,
-    name: 'Critical',
-    color: cssStr('--acx-semantics-red-50') },
-  { key: EventSeverityEnum.MAJOR,
-    name: 'Major',
-    color: cssStr('--acx-accents-orange-30') }
-] as Array<{ key: string, name: string, color: string }>
-
 type ReduceReturnType = Record<string, number>
 
 export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
+  const seriesMapping = [
+    { key: EventSeverityEnum.CRITICAL,
+      name: 'Critical',
+      color: cssStr('--acx-semantics-red-50') },
+    { key: EventSeverityEnum.MAJOR,
+      name: 'Major',
+      color: cssStr('--acx-accents-orange-30') }
+  ] as Array<{ key: string, name: string, color: string }>
   const chartData: DonutChartData[] = []
+
   if (alarms && alarms.length > 0) {
     const alarmsSummary = alarms.reduce<ReduceReturnType>((acc, { severity }) => {
       acc[severity] = (acc[severity] || 0) + 1
@@ -103,7 +103,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
   return (
     <Card title={currentAP?.model} type='solid-bg'>
       <GridRow style={{ flexGrow: '1' }}>
-        <GridCol col={{ span: 2 }} />
+        <GridCol col={{ span: 1 }} />
         <GridCol col={{ span: 4 }}>
           <UI.Wrapper>
             <Loader states={[alarmQuery]}>
@@ -133,7 +133,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
             <TtcTimeWidget filters={filters}/>
           </UI.Wrapper>
         </GridCol>
-        <GridCol col={{ span: 4 }}>
+        <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
             <KpiWidget
               type='no-chart-style'
