@@ -136,10 +136,21 @@ function calendarFormat (number: number, intl: IntlShape) {
   })
 }
 
+function alarmFormat (number: number, intl: IntlShape) {
+  const { $t } = intl
+  moment.locale(intl.locale)
+  return moment(number).calendar({
+    lastDay: $t({ defaultMessage: '[Yesterday,] HH:mm' }),
+    sameDay: $t({ defaultMessage: '[Today,] HH:mm' }),
+    sameElse: $t({ defaultMessage: 'MM/DD/YYYY' })
+  })
+}
+
 export const formats = {
   durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
   longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
   calendarFormat: (number: number, intl: IntlShape) => calendarFormat(number, intl),
+  alarmFormat: (number: number, intl: IntlShape) => alarmFormat(number, intl),
   decibelFormat: (number: number) => Math.round(number) + ' dB',
   decibelMilliWattsFormat: (number: number) => Math.round(number) + ' dBm',
   milliWattsFormat: (number:number) => numberFormat(1000, watts, number),

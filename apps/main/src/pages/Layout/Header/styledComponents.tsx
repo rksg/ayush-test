@@ -8,8 +8,8 @@ import { Popover as AntPopover,
 } from 'antd'
 import styled from 'styled-components/macro'
 
-import { LayoutUI, GridRow, GridCol }               from '@acx-ui/components'
-import { WarningCircleSolid, LogOut as AntdLogOut } from '@acx-ui/icons'
+import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer } from '@acx-ui/components'
+import { WarningCircleSolid, LogOut as AntdLogOut }         from '@acx-ui/icons'
 
 
 type CopyableTextProps = {
@@ -132,6 +132,11 @@ export const WarningCircle = styled(WarningCircleSolid)`
     stroke: var(--acx-semantics-red-50);
   }
 `
+export const ListTable = styled(List)`
+  .ant-list-pagination {
+    text-align: center;
+  }
+`
 export const ListItem = styled(List.Item)`
     .ant-list-item-action {
       margin-left: 10px;
@@ -154,6 +159,9 @@ export const VersionContainer = styled.div`
 
 export const ClearButton = styled(Button)`
   border: none;
+  .anticon{
+    font-size: 18px;
+  }
 `
 
 export const Meta = styled(List.Item.Meta)`
@@ -168,4 +176,10 @@ export const LogOut = styled(AntdLogOut)`
   width: 16px;
   height: 16px;
   margin-right: 5px;
+`
+export const Drawer = styled(AntdDrawer)`
+  .ant-drawer-body{
+    overflow-x: hidden;
+  }
+
 `

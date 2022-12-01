@@ -10,7 +10,8 @@ import {
   CommonUrlsInfo,
   TableResult,
   RequestPayload,
-  CommonResult
+  CommonResult,
+  Dashboard
 } from '@acx-ui/rc/utils'
 
 export const baseEventAlarmApi = createApi({
@@ -43,7 +44,8 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
         return metaListQuery.data
           ? { data: aggregatedList }
           : { error: metaListQuery.error as FetchBaseQueryError }
-      }
+      },
+      providesTags: [{ type: 'Alarms', id: 'LIST' }]
     }),
     clearAlarm: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -52,7 +54,7 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Alarms' }]
+      invalidatesTags: [{ type: 'Alarms', id: 'LIST' }, { type: 'Alarms', id: 'OVERVIEW' }]
     }),
     clearAllAlarm: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -61,14 +63,24 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Alarms' }]
+      invalidatesTags: [{ type: 'Alarms', id: 'LIST' }, { type: 'Alarms', id: 'OVERVIEW' }]
+    }),
+    getAlarmCount: build.query<Dashboard, RequestPayload>({
+      query: ({ params }) => {
+        const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
+        return {
+          ...dashboardOverviewReq
+        }
+      },
+      providesTags: [{ type: 'Alarms', id: 'OVERVIEW' }]
     })
   })
 })
 export const {
   useAlarmsListQuery,
   useClearAlarmMutation,
-  useClearAllAlarmMutation
+  useClearAllAlarmMutation,
+  useGetAlarmCountQuery
 } = eventAlarmApi
 
 
