@@ -12,11 +12,11 @@ export const TextHeader = styled.div`
   grid-template-columns: auto 25% 26% 25%;
   text-align: center;
   align-items: center;
-  font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-6-line-height);
   > span, label {
-    padding: 5px 0px;
+    padding-bottom: 5px;
     > span {
+      font-size: var(--acx-body-5-font-size);
       display: block;
     }
   }
@@ -28,11 +28,16 @@ export const TextNumber = styled.div`
   border-top: 1px solid var(--acx-neutrals-30);
   > span {
     text-align: center;
-    padding-top: 7px;
-    padding-bottom: 7px;
+    padding: 6px 0;
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
   }
   > label {
-    padding: 7px;
+    padding: 6px;
+    .ant-typography {
+      font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+      margin-bottom: 0;
+    }
   }
 `
 

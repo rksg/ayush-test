@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-
-
-import { TablePaginationConfig, TableProps } from 'antd'
+import { TableProps } from 'antd'
 
 import { useParams, Params }        from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult } from '@acx-ui/types'
@@ -38,7 +36,11 @@ export interface TABLE_QUERY <
   sorter?: SORTER
   rowKey?: string
 }
-export type PAGINATION = TablePaginationConfig
+export type PAGINATION = {
+  current: number,
+  pageSize: number,
+  total: number
+}
 
 const DEFAULT_PAGINATION = {
   current: 1,

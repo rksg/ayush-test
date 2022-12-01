@@ -6,12 +6,14 @@ import {
   ServiceType,
   useTableQuery,
   Service,
-  ServiceTechnology
+  ServiceTechnology,
+  getSelectServiceRoutePath,
+  getServiceDetailsLink,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { serviceTypeLabelMapping, serviceTechnologyLabelMapping }             from '../contentsMap'
-import { getSelectServiceRoutePath, getServiceDetailsLink, ServiceOperation } from '../serviceRouteUtils'
+import { serviceTypeLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
 
 
 function useColumns () {
@@ -131,7 +133,8 @@ export default function ServicesTable () {
     [ServiceType.DPSK]: [], // TODO: API not ready
     [ServiceType.MDNS_PROXY]: [], // TODO: API not ready
     [ServiceType.PORTAL]: [], // TODO: API not ready
-    [ServiceType.WIFI_CALLING]: useDeleteWifiCallingServiceMutation()
+    [ServiceType.WIFI_CALLING]: useDeleteWifiCallingServiceMutation(),
+    [ServiceType.NETWORK_SEGMENTATION]: [] // TODO: API not ready
   }
 
   const rowActions: TableProps<Service>['rowActions'] = [
