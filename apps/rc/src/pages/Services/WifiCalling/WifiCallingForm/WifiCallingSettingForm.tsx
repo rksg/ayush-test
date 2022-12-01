@@ -1,10 +1,10 @@
 import React, { MutableRefObject, useContext, useEffect } from 'react'
 
-import { ProFormInstance }       from '@ant-design/pro-form'
-import { Col, Form, Input, Row } from 'antd'
-import TextArea                  from 'antd/lib/input/TextArea'
-import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
+import { ProFormInstance }               from '@ant-design/pro-form'
+import { Col, Form, Input, Row, Select } from 'antd'
+import TextArea                          from 'antd/lib/input/TextArea'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
 
 import { StepsForm }                                                        from '@acx-ui/components'
 import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
@@ -48,15 +48,6 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
     })
   }
 
-  const handleTags = (tags: string[]) => {
-    dispatch({
-      type: WifiCallingActionTypes.TAGS,
-      payload: {
-        tags: tags
-      }
-    })
-  }
-
   const handleQosPriority = (qosPriority:QosPriorityEnum) => {
     dispatch({
       type: WifiCallingActionTypes.QOSPRIORITY,
@@ -67,23 +58,23 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   }
 
   const selectQosPriority = (
-    <select
+    <Select
       style={{ width: '100%' }}
       data-testid='selectQosPriorityId'
       onChange={(options) => handleQosPriority(options.toString() as QosPriorityEnum)}>
       <option value='WIFICALLING_PRI_VOICE'>
-        {$t({ defaultMessage: 'WIFICALLING_PRI_VOICE' })}
+        {$t({ defaultMessage: 'Voice' })}
       </option>
       <option value='WIFICALLING_PRI_VIDEO'>
-        {$t({ defaultMessage: 'WIFICALLING_PRI_VIDEO' })}
+        {$t({ defaultMessage: 'Video' })}
       </option>
       <option value='WIFICALLING_PRI_BE'>
-        {$t({ defaultMessage: 'WIFICALLING_PRI_BE' })}
+        {$t({ defaultMessage: 'Best Effort' })}
       </option>
       <option value='WIFICALLING_PRI_BG'>
-        {$t({ defaultMessage: 'WIFICALLING_PRI_BG' })}
+        {$t({ defaultMessage: 'Background' })}
       </option>
-    </select>
+    </Select>
   )
 
   useEffect(() => {
@@ -103,12 +94,10 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
     }
     if (data && formRef) {
       formRef.current?.setFieldValue('serviceName', data.serviceName)
-      formRef.current?.setFieldValue('tags', data.tags?.join(','))
       formRef.current?.setFieldValue('description', data.description)
       formRef.current?.setFieldValue('qosPriority', data.qosPriority)
     }
-  }, [data])
-
+  }, [data, state.ePDG.length])
 
   return (
     <Row gutter={20}>
@@ -141,19 +130,8 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
             onChange={(event => {handleServiceName(event.target.value)})}/>}
         />
         <Form.Item
-          name='tags'
-          label={$t({ defaultMessage: 'Tags' })}
-          initialValue={state.tags?.join(',')}
-          children={<Input
-            onChange={(event => handleTags(event.target.value.split(',')))}/>}
-        />
-        <Form.Item
           name='description'
           label={$t({ defaultMessage: 'Description' })}
-          rules={[
-            { required: true },
-            { min: 2 }
-          ]}
           initialValue={state.description}
           children={<TextArea
             rows={4}
@@ -170,6 +148,14 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
         <Form.Item
           name='dataGateway'
           label={$t({ defaultMessage: 'Evolved Packet Data Gateway (ePDG)' })}
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: () => {
+              if (state.ePDG.length) return Promise.resolve()
+              return Promise.reject($t({ defaultMessage: 'ePDG must contain at least one rule' }))
+            } }
+          ]}
         >
           <EpdgTable edit={edit} />
         </Form.Item>

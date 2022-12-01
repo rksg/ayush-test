@@ -1,6 +1,5 @@
 import { useIntl } from 'react-intl'
 
-
 import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
@@ -48,4 +47,11 @@ function Layout () {
     </SplitProvider>
   )
 }
-export default Layout
+
+function LayoutWithSplitProvider () {
+  return <SplitProvider>
+    <Layout />
+  </SplitProvider>
+}
+
+export default LayoutWithSplitProvider
