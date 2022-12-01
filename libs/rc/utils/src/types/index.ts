@@ -26,7 +26,7 @@ export * from './msp'
 export * from './edge'
 export * from './policy'
 export * from './portalService'
-
+export * from './client'
 export interface CommonResult {
   requestId: string
   response?:{}
