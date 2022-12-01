@@ -10,7 +10,10 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from
 
 import { apDetails, apRadio, apViewModel, apPhoto, apNoPhoto, apSampleImage, wifiCapabilities } from '../../__tests__/fixtures'
 
+import * as CropImage from './cropImage'
+
 import { ApPhoto } from '.'
+
 
 const params = {
   venueId: 'venue-id',
@@ -114,12 +117,13 @@ describe('ApPhoto', () => {
     const { asFragment } = render(<Provider><ApPhoto /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' })
-
+    jest.spyOn(CropImage, 'createImage')
+      .mockImplementationOnce(() => apSampleImage)
     render(<Upload
       name='apPhoto'
       listType='picture'
       showUploadList={false}
-      action={(window.URL || window.webkitURL).createObjectURL(file)}
+      action={''}
       beforeUpload={jest.fn()}
       accept='image/*'
       style={{
@@ -129,13 +133,13 @@ describe('ApPhoto', () => {
 
     // eslint-disable-next-line testing-library/no-node-access
     fireEvent.change(document.querySelector('input')!, {
-      target: { files: [{ file: '/app/sample.png' }] }
+      target: { files: [{ file: apSampleImage }] }
     })
 
     Object.setPrototypeOf(file.size, { value: 100000000 })
     // eslint-disable-next-line testing-library/no-node-access
     fireEvent.change(document.querySelector('input')!, {
-      target: { files: [{ file: '/app/sample.png', type: 'image/png' }] }
+      target: { files: [{ file: apSampleImage, type: 'image/jpg' }] }
     })
 
     expect(asFragment()).toMatchSnapshot()
