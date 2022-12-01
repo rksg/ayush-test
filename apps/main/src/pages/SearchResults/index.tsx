@@ -35,7 +35,7 @@ const searches = [
       defaultPayload: {
         ...defaultNetworkPayload,
         searchString,
-        searchTargetFiled: ['name', 'description']
+        searchTargetFields: ['name', 'description']
       },
       pagination
     })
@@ -52,7 +52,7 @@ function SearchResult () {
   const { searchVal } = useParams()
   const results = searches.map(search => search(searchVal as string, $t))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
-  return <Loader states={results.map(({ result }) => result)}>
+  return <Loader states={results.map(({ result }) => ({ ...result, isFetching: false }))}>
     <PageHeader title={$t(
       { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
       { searchVal, count }
