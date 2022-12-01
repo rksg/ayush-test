@@ -12,5 +12,6 @@ export enum Features {
   NETWORK_INCIDENTS = 'acx-ui-network-incidents-toggle',
   DEVICES = 'acx-ui-devices',
   USERS = 'acx-ui-users',
-  DELETE_SOLO = 'ap-delete-with-solo-image-toggle'
+  DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
+  EDGES = 'acx-ui-edges-toggle'
 }

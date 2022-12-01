@@ -1,3 +1,4 @@
+import { Typography }         from 'antd'
 import { useIntl, IntlShape } from 'react-intl'
 
 import { healthApi }                                           from '@acx-ui/analytics/services'
@@ -67,11 +68,13 @@ export const getKpiInfoText = (numerator:number,
 export function KpiWidget ({
   name,
   threshold,
-  filters
+  filters,
+  type
 }: {
   name: KpiNames;
   threshold?: number | null;
   filters: AnalyticsFilter;
+  type?: 'no-chart-style' | 'with-chart-style'
 }){
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const queryResults= useKpiTimeseriesQuery({
@@ -108,33 +111,55 @@ export function KpiWidget ({
 
   return(
     <Loader states={[queryResults]}>
-      <GridRow>
-        <GridCol col={{ span: 7 }}>
-          <UI.Wrapper>
-            <UI.KpiTitle>
-              {kpiInfoText[name].title}
-            </UI.KpiTitle>
-          </UI.Wrapper>
-          <UI.KpiShortText>
-            {kpiInfoText[name].shortText}
-          </UI.KpiShortText>
-        </GridCol>
-        <GridCol col={{ span: 6 }}>
-          <Tooltip title={kpiInfoText[name].tooltip}>
+      {type === 'no-chart-style' ?
+        <GridRow>
+          <GridCol col={{ span: 24 }} >
             <UI.Wrapper>
-              {percentIcon}
-              <UI.Percent>
-                {intl.$t(intlFormats.percentFormatRound, { value: percent })}
-              </UI.Percent>
+              <UI.KpiTopTitle>
+                {kpiInfoText[name].title}
+              </UI.KpiTopTitle>
             </UI.Wrapper>
-          </Tooltip>
-        </GridCol>
-        <GridCol col={{ span: 11 }}>
-          {data && <SparklineChart data={sparklineData}
-            style={sparklineChartStyle}
-            isTrendLine={true} />}
-        </GridCol>
-      </GridRow>
+            <Tooltip title={kpiInfoText[name].tooltip}>
+              <UI.Wrapper>
+                <UI.LargePercent>
+                  {intl.$t(intlFormats.scaleFormatRound, { value: percent })}
+                  <Typography.Title level={3}>
+                  %
+                  </Typography.Title>
+                </UI.LargePercent>
+              </UI.Wrapper>
+            </Tooltip>
+          </GridCol>
+        </GridRow>
+        :
+        <GridRow>
+          <GridCol col={{ span: 7 }}>
+            <UI.Wrapper>
+              <UI.KpiTitle>
+                {kpiInfoText[name].title}
+              </UI.KpiTitle>
+            </UI.Wrapper>
+            <UI.KpiShortText>
+              {kpiInfoText[name].shortText}
+            </UI.KpiShortText>
+          </GridCol>
+          <GridCol col={{ span: 6 }}>
+            <Tooltip title={kpiInfoText[name].tooltip}>
+              <UI.Wrapper>
+                {percentIcon}
+                <UI.Percent>
+                  {intl.$t(intlFormats.percentFormatRound, { value: percent })}
+                </UI.Percent>
+              </UI.Wrapper>
+            </Tooltip>
+          </GridCol>
+          <GridCol col={{ span: 11 }}>
+            {data && <SparklineChart data={sparklineData}
+              style={sparklineChartStyle}
+              isTrendLine={true} />}
+          </GridCol>
+        </GridRow>
+      }
     </Loader>
   )
 }
