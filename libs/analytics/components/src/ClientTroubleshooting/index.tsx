@@ -10,7 +10,7 @@ import { ClientTroubleShootingConfig } from './config'
 import { History }                     from './EventsHistory'
 import { TimeLine }                    from './EventsTimeline'
 
-type ClientTroubleShootingSelectionsType = {
+type Filters = {
   category?: [];
   type?: [];
   radio?: [];
@@ -22,15 +22,7 @@ type selectionType = SingleValueType | SingleValueType[] | undefined
 export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
   const { $t } = useIntl()
-  const { read, write } =
-    useEncodedParameter<ClientTroubleShootingSelectionsType>(
-      'clientTroubleShootingSelections'
-    )
-
-  // Todo onApply should trigger new api call
-  const onApply = (value: selectionType, selectionType: string) => {
-    return write({ ...read(), [selectionType]: value })
-  }
+  const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
   return (
     <Row gutter={[16, 16]}>
       <Col span={historyContentToggle ? 18 : 24}>
@@ -46,10 +38,10 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     multiple
                     defaultValue={
                       read()?.[
-                        config.selectionType as keyof ClientTroubleShootingSelectionsType
+                        config.selectionType as keyof Filters
                       ]
                         ? read()?.[
-                            config.selectionType as keyof ClientTroubleShootingSelectionsType
+                            config.selectionType as keyof Filters
                         ]
                         : config.defaultValue
                     }
@@ -59,7 +51,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     })}
                     style={{ maxWidth: 132 }}
                     onApply={(value: selectionType) =>
-                      onApply(value, config.selectionType)
+                      write({ ...read(), [config.selectionType]: value })
                     }
                   />
                 </Col>

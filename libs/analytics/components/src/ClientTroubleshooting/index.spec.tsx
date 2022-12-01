@@ -6,7 +6,7 @@ import { render, screen, fireEvent } from '@acx-ui/test-utils'
 import { ClientTroubleshooting } from './index'
 
 describe('ClientTroubleshootingTab', () => {
-  it('should render correctly with out search params', async () => {
+  it('should render correctly without search params', async () => {
     const params = {
       tenantId: 'tenant-id',
       activeTab: 'troubleshooting',

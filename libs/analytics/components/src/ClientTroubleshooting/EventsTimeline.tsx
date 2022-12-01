@@ -1,7 +1,6 @@
 import { Collapse } from 'antd'
 import { useIntl }  from 'react-intl'
 
-
 import { ClientTroubleShootingConfig } from './config'
 import * as UI                         from './styledComponents'
 
