@@ -78,7 +78,7 @@ const buttonStyle= css`
 `
 export const Button = styled(UIButton)`
   ${buttonStyle}
-  margin-right:10px;
+  padding-top:0px;
 `
 export const PopoverButton = styled(UIButton)`
   ${buttonStyle}
@@ -95,7 +95,7 @@ export const LayoutContent = styled(AntLayout)`
   background-position: center;
   background-repeat: no-repeat;
   align-items: center;
-  min-width:900px;
+  min-width:1100px;
   height:auto;
   margin-bottom:10px;
 `
@@ -142,7 +142,7 @@ export const LayoutHeader = styled.div`
   padding: 10px 0 0 10px;
   border: 1px solid var(--acx-neutrals-50);
   border-bottom:0px;
-  min-width:900px;
+  min-width:1100px;
 `
 
 export const FieldExtraTooltip = styled.div`

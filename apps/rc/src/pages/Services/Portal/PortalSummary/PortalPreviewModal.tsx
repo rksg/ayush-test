@@ -20,7 +20,7 @@ export default function PortalPreviewModal (props:{
       content: getContent,
       okCancel: false,
       title: $t({ defaultMessage: 'Preview' }),
-      width: '1000px',
+      width: '1200px',
       bodyStyle: { marginLeft: 25, paddingRight: 50 }
     })
   }

@@ -297,7 +297,8 @@ export default function NetworkForm () {
             name='settings'
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
-              if(saveState.type === NetworkTypeEnum.CAPTIVEPORTAL && editMode)return true
+              if(saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+                 (editMode||cloneMode))return true
               const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
                           || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
               const radiusValidate = !data.cloudpathServerId && radiusChanged

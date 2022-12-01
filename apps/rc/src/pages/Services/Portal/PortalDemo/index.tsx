@@ -162,20 +162,6 @@ export default function PortalDemo ({
                 resetDemo?.()
               }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
           </div>}
-          {(isPreview||networkPreview)&&<div
-            style={{ flex: 'auto', textAlign: 'right', paddingRight: 40 }}>
-            <UI.Select value={networkDisplayLang}
-              style={{ width: 250, textAlign: 'left' }}
-              onChange={(value)=>setNetworkDisplayLang(value as string)}>
-              <Option key={displayLang}>
-                {displayLang}
-              </Option>
-              {langs.map(
-                key =><Option key={key}>{key}</Option>
-              )}
-            </UI.Select>
-          </div>
-          }
         </div>
       </UI.LayoutHeader>
       <UI.LayoutContent id={networkPreview?'noid':'democontent'}>

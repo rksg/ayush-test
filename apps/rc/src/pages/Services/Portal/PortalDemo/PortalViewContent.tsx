@@ -74,7 +74,7 @@ export default function PortalViewContent (props:{
         updateWelcome={(data)=>{
           updateViewContent({ ...demoValue, welcomeSize: data.size||demoValue.welcomeSize,
             componentDisplay: { ...demoValue.componentDisplay, WelcomeText: data.show as boolean },
-            welcomeText: data.text||demoValue.welcomeText,
+            welcomeText: data.text||'',
             welcomeColor: data.color||demoValue.welcomeColor })}}
       />}
       {componentDisplay.Photo &&

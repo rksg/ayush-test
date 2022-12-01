@@ -52,12 +52,12 @@ export default function PortalViewContentPreview (props:{
         fontSize: (demoValue.secondarySize||PortalDemoDefaultSize.secondarySize) }}
       >{demoValue.secondaryText}
       </UI.FieldText>}
-      {(view === PortalViewEnum.ClickThrough ||
+      {((view === PortalViewEnum.ClickThrough && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.ClickThrough) && <PortalViewGoThrough
         demoValue={demoValue}
         isPreview={true}
       />}
-      {(view === PortalViewEnum.GuestPassConnect ||
+      {((view === PortalViewEnum.GuestPassConnect && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.GuestPass) && <PortalViewGuestConnect
         demoValue={demoValue}
         isPreview={true}
@@ -66,7 +66,7 @@ export default function PortalViewContentPreview (props:{
         demoValue={demoValue}
         isPreview={true}
       />}
-      {(view === PortalViewEnum.SelfSignIn ||
+      {((view === PortalViewEnum.SelfSignIn && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.SelfSignIn) &&
       <PortalViewSelfSignConnect networkSocial={networkSocial}/>}
       {view === PortalViewEnum.SelfSignInRegister &&
@@ -74,7 +74,7 @@ export default function PortalViewContentPreview (props:{
         demoValue={demoValue}
         isPreview={true}
       />}
-      {(view === PortalViewEnum.HostApproval ||
+      {((view === PortalViewEnum.HostApproval && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.HostApproval) &&
       <PortalViewHostApproval
         demoValue={demoValue}

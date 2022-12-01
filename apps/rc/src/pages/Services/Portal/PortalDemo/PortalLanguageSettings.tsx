@@ -18,6 +18,7 @@ export default function PortalLanguageSettings (props:{
       {$t({ defaultMessage: 'Language:' })}
     </UI.Label>
     <UI.Select value={demoValue.displayLang}
+      style={{ textAlign: 'left', width: 230 }}
       onChange={(value) => {
         updateViewContent({
           ...demoValue, displayLang: value as string, alternativeLang:

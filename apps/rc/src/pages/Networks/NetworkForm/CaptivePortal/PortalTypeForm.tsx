@@ -65,7 +65,7 @@ function TypesForm () {
           'Select the way users gain access to the network through the captive portal' })}
         rules={[{ required: true }]}
       >
-        <Radio.Group onChange={onChange} disabled={editMode}>
+        <Radio.Group onChange={onChange} disabled={editMode || cloneMode}>
           <Space direction='vertical'>
             <Radio value={GuestNetworkTypeEnum.ClickThrough}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.ClickThrough]}
