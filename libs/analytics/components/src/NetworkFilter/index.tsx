@@ -220,24 +220,18 @@ function ConnectedNetworkFilter (
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
-        <div style={{ position: 'relative' }} id='area'>
-          <NetworkFilter
-            placeholder={$t({ defaultMessage: 'Entire Organization' })}
-            multiple={false}
-            defaultValue={raw}
-            value={raw}
-            options={queryResults.data}
-            onApply={(value) => onApply(value, setNetworkPath)}
-            placement='bottomLeft'
-            displayRender={displayRender}
-            showSearch={{ filter: search }}
-            allowClear
-            dropdownAlign={{
-              points: ['tl', 'bl'],
-              useCssTransform: true
-            }}
-          />
-        </div>
+        <NetworkFilter
+          placeholder={$t({ defaultMessage: 'Entire Organization' })}
+          multiple={false}
+          defaultValue={raw}
+          value={raw}
+          options={queryResults.data}
+          onApply={(value) => onApply(value, setNetworkPath)}
+          placement='bottomLeft'
+          displayRender={displayRender}
+          showSearch={{ filter: search }}
+          allowClear
+        />
       </Loader>
     </UI.Container>
   )
