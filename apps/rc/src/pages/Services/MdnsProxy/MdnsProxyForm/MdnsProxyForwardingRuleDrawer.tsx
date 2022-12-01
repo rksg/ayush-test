@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { Drawer }                                                   from '@acx-ui/components'
-import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                       from '@acx-ui/utils'
+import { Drawer }                                     from '@acx-ui/components'
+import { MdnsProxyForwardingRule, BridgeServiceEnum } from '@acx-ui/rc/utils'
+import { validationMessages }                         from '@acx-ui/utils'
 
 import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
@@ -40,10 +40,8 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
   }
 
   const ruleDuplicationValidator = async () => {
-    const values: MdnsProxyForwardingRule = form.getFieldsValue()
-    return isRuleUnique(values)
+    return isRuleUnique(form.getFieldsValue())
       ? Promise.resolve()
-      // eslint-disable-next-line max-len
       : Promise.reject($t({ defaultMessage: 'Rule with same Type and VLAN IDs already exists' }))
   }
 
@@ -66,7 +64,7 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
     </Form.Item>
     <Form.Item
       label={$t({ defaultMessage: 'Type' })}
-      name='bridgeService'
+      name='service'
       dependencies={['toVlan', 'fromVlan']}
       rules={[
         {
@@ -82,8 +80,8 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
         children={
           Object.keys(ruleTypeLabelMapping).map((key) => {
             return (
-              <Option key={key}>
-                {$t(ruleTypeLabelMapping[key as MdnsProxyForwardingRuleTypeEnum])}
+              <Option key={key} value={key}>
+                {$t(ruleTypeLabelMapping[key as BridgeServiceEnum])}
               </Option>
             )
           })

@@ -2,8 +2,8 @@ import userEvent   from '@testing-library/user-event'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
-import { render, renderHook, screen, within }                       from '@acx-ui/test-utils'
+import { MdnsProxyForwardingRule, BridgeServiceEnum } from '@acx-ui/rc/utils'
+import { render, renderHook, screen, within }         from '@acx-ui/test-utils'
 
 import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
@@ -21,13 +21,13 @@ describe('MdnsProxySettingsForm', () => {
 
   it('should create forwarding rule', async () => {
     const ruleToAdd: MdnsProxyForwardingRule = {
-      bridgeService: MdnsProxyForwardingRuleTypeEnum.AIRPLAY,
+      service: BridgeServiceEnum.AIRPLAY,
       fromVlan: 1,
       toVlan: 2
     }
 
     const { result: fakeRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.bridgeService])
+      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.service])
     })
 
     render(
@@ -58,12 +58,12 @@ describe('MdnsProxySettingsForm', () => {
 
   it('should edit forwarding rule', async () => {
     const ruleAfterEdit: MdnsProxyForwardingRule = {
-      bridgeService: MdnsProxyForwardingRuleTypeEnum.AIRPORT_MANAGEMENT,
+      service: BridgeServiceEnum.AIRPORT_MANAGEMENT,
       fromVlan: 77,
       toVlan: 88
     }
     const { result: ruleAfterEditTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[ruleAfterEdit.bridgeService])
+      return useIntl().$t(ruleTypeLabelMapping[ruleAfterEdit.service])
     })
 
     const dataSource = mockedForwardingRules.slice(0, 1)
@@ -85,7 +85,7 @@ describe('MdnsProxySettingsForm', () => {
 
     const targetRule: MdnsProxyForwardingRule = dataSource[0]
     const { result: targetRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[targetRule.bridgeService])
+      return useIntl().$t(ruleTypeLabelMapping[targetRule.service])
     })
 
     // eslint-disable-next-line max-len
@@ -130,7 +130,7 @@ describe('MdnsProxySettingsForm', () => {
 
     const targetRule: MdnsProxyForwardingRule = mockedForwardingRules[1]
     const { result: targetRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[targetRule.bridgeService])
+      return useIntl().$t(ruleTypeLabelMapping[targetRule.service])
     })
 
     // eslint-disable-next-line max-len

@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { showActionModal, Table, TableProps }                       from '@acx-ui/components'
-import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
+import { showActionModal, Table, TableProps }         from '@acx-ui/components'
+import { MdnsProxyForwardingRule, BridgeServiceEnum } from '@acx-ui/rc/utils'
 
 import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
@@ -46,11 +46,11 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
   const columns: TableProps<MdnsProxyForwardingRule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'bridgeService',
-      key: 'bridgeService',
+      dataIndex: 'service',
+      key: 'service',
       sorter: true,
       render: (data) => {
-        return $t(ruleTypeLabelMapping[data as MdnsProxyForwardingRuleTypeEnum])
+        return $t(ruleTypeLabelMapping[data as BridgeServiceEnum])
       }
     },
     {
@@ -82,7 +82,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'Rule' }),
-          entityValue: $t(ruleTypeLabelMapping[selectedRows[0].bridgeService])
+          entityValue: $t(ruleTypeLabelMapping[selectedRows[0].service])
         },
         onOk: () => {
           const newRules = rules.filter((r: MdnsProxyForwardingRule) => {
@@ -106,14 +106,12 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
           setVisible={setDrawerVisible}
           setRule={handleSetRule}
           isRuleUnique={(comingRule: MdnsProxyForwardingRule) => {
-            // eslint-disable-next-line max-len
             const hasDuplicationRule = rules.some((rule: MdnsProxyForwardingRule) => {
-              return comingRule.bridgeService === rule.bridgeService
+              return comingRule.service === rule.service
                 && comingRule.fromVlan === rule.fromVlan
                 && comingRule.toVlan === rule.toVlan
                 && comingRule.id !== rule.id
             })
-
             return !hasDuplicationRule
           }} />
       }

@@ -1,7 +1,7 @@
 import {
   MdnsProxyFormData,
   MdnsProxyForwardingRule,
-  MdnsProxyForwardingRuleTypeEnum,
+  BridgeServiceEnum,
   MdnsProxyGetApiResponse,
   MdnsProxyScopeData
 } from '@acx-ui/rc/utils'
@@ -13,13 +13,13 @@ export const mockedServiceId = 'ef1122345abbwfewf'
 export const mockedForwardingRules: MdnsProxyForwardingRule[] = [
   {
     id: '__UUID__rule1',
-    bridgeService: MdnsProxyForwardingRuleTypeEnum.AIRPLAY,
+    service: BridgeServiceEnum.AIRPLAY,
     fromVlan: 10,
     toVlan: 20
   },
   {
     id: '__UUID__rule2',
-    bridgeService: MdnsProxyForwardingRuleTypeEnum.AIRDISK,
+    service: BridgeServiceEnum.APPLETV,
     fromVlan: 21,
     toVlan: 30
   }

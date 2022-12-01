@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import {
   MdnsProxyForwardingRule,
-  MdnsProxyForwardingRuleTypeEnum
+  BridgeServiceEnum
 } from '@acx-ui/rc/utils'
 import { logRoles, render, renderHook, screen, within } from '@acx-ui/test-utils'
 
@@ -14,7 +14,28 @@ import { mockedForwardingRules }         from './__tests__/fixtures'
 import { MdnsProxyForwardingRulesTable } from './MdnsProxyForwardingRulesTable'
 
 
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
 
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) => {
+    return (
+      <select
+        role='combobox'
+        onChange={e => onChange(e.target.value)}
+        {...otherProps}>
+        {children}
+      </select>
+    )
+  }
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) => {
+    return <option {...otherProps}>{children}</option>
+  }
+
+  return { ...antd, Select }
+})
 
 
 describe('MdnsProxyForwardingRulesTable', () => {
@@ -25,7 +46,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
     const { result: targetTypeLabel } = renderHook(() => {
       const { $t } = useIntl()
-      return $t(ruleTypeLabelMapping[mockedForwardingRules[0].bridgeService])
+      return $t(ruleTypeLabelMapping[mockedForwardingRules[0].service])
     })
 
     await screen.findByRole('row', { name: new RegExp(targetTypeLabel.current) })
@@ -43,7 +64,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
     const { result: targetTypeLabel } = renderHook(() => {
       const { $t } = useIntl()
-      return $t(ruleTypeLabelMapping[mockedForwardingRules[0].bridgeService])
+      return $t(ruleTypeLabelMapping[mockedForwardingRules[0].service])
     })
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetTypeLabel.current) })
@@ -55,13 +76,13 @@ describe('MdnsProxyForwardingRulesTable', () => {
   it('should be invalid when creating the duplicated rule', async () => {
     const ruleToAdd: MdnsProxyForwardingRule = {
       id: '__RULE_ID__',
-      bridgeService: MdnsProxyForwardingRuleTypeEnum.AIRPLAY,
+      service: BridgeServiceEnum.AIRPLAY,
       fromVlan: 1,
       toVlan: 2
     }
 
     const { result: fakeRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.bridgeService])
+      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.service])
     })
 
     const { result: formRef } = renderHook(() => {
@@ -70,28 +91,25 @@ describe('MdnsProxyForwardingRulesTable', () => {
     })
 
     render(
-      <Form form={formRef.current}>
-        <MdnsProxyForwardingRulesTable rules={[ruleToAdd]} />
-      </Form>
+      <MdnsProxyForwardingRulesTable rules={[ruleToAdd]} />
     )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
 
-    const drawer = await screen.findByRole('dialog')
-    await userEvent.click(await within(drawer).findByRole('combobox', { name: 'Type' }))
-    // await userEvent.click(await within(drawer).findByText(fakeRuleTypeLabel.current))
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Type' }),
+      await screen.findByRole('option', { name: fakeRuleTypeLabel.current })
+    )
+    await userEvent.type(
+      screen.getByRole('spinbutton', { name: /From VLAN/i }),
+      ruleToAdd.fromVlan.toString()
+    )
+    await userEvent.type(
+      screen.getByRole('spinbutton', { name: /To VLAN/i }),
+      ruleToAdd.toVlan.toString()
+    )
 
-    // await userEvent.type(
-    //   within(drawer).getByRole('spinbutton', { name: /From VLAN/i }),
-    //   ruleToAdd.fromVlan.toString()
-    // )
-    // await userEvent.type(
-    //   within(drawer).getByRole('spinbutton', { name: /To VLAN/i }),
-    //   ruleToAdd.toVlan.toString()
-    // )
-
-    // // eslint-disable-next-line max-len
-    // const errorMessageElem = await within(drawer).findByText('Rule with same Type and VLAN IDs already exists')
-    // expect(errorMessageElem).toBeInTheDocument()
+    const errorMessageElem = await screen.findByRole('alert')
+    expect(errorMessageElem.textContent).toBe('Rule with same Type and VLAN IDs already exists')
   })
 })

@@ -4,8 +4,8 @@ import userEvent   from '@testing-library/user-event'
 import { act }     from 'react-dom/test-utils'
 import { useIntl } from 'react-intl'
 
-import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }                               from '@acx-ui/test-utils'
+import { MdnsProxyForwardingRule, BridgeServiceEnum } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }                 from '@acx-ui/test-utils'
 
 
 import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
@@ -54,7 +54,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     })
 
     const ruleToAdd: MdnsProxyForwardingRule = {
-      bridgeService: MdnsProxyForwardingRuleTypeEnum.AIRPLAY,
+      service: BridgeServiceEnum.AIRPLAY,
       fromVlan: 1,
       toVlan: 2
     }
@@ -62,7 +62,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     const setRule = jest.fn()
 
     const { result: fakeRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.bridgeService])
+      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.service])
     })
 
     render(
@@ -88,7 +88,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     await act(async () => {
       await userEvent.click(screen.getByRole('button', { name: 'Add' }))
       expect(setRule).toHaveBeenCalledWith({
-        bridgeService: ruleToAdd.bridgeService,
+        service: ruleToAdd.service,
         fromVlan: ruleToAdd.fromVlan,
         toVlan: ruleToAdd.toVlan
       })

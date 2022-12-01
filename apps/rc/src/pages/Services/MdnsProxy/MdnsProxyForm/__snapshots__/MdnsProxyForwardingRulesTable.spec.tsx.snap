@@ -370,7 +370,7 @@ exports[`MdnsProxyForwardingRulesTable should render the readonly table 1`] = `
                             <td
                               class="ant-table-cell"
                             >
-                              AirDisk
+                              Apple TV
                             </td>
                             <td
                               class="ant-table-cell"
@@ -931,7 +931,7 @@ exports[`MdnsProxyForwardingRulesTable should render the table with the given da
                             <td
                               class="ant-table-cell"
                             >
-                              AirDisk
+                              Apple TV
                             </td>
                             <td
                               class="ant-table-cell"

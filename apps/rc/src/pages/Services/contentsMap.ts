@@ -1,7 +1,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
-  MdnsProxyForwardingRuleTypeEnum,
+  BridgeServiceEnum,
   ServiceAdminState,
   ServiceStatus,
   ServiceTechnology,
@@ -41,36 +41,36 @@ export const serviceAdminStateLabelMapping: Record<ServiceAdminState, MessageDes
 }
 
 // eslint-disable-next-line max-len
-export const mdnsProxyForwardingRuleTypeLabelMapping: Record<MdnsProxyForwardingRuleTypeEnum, MessageDescriptor> = {
-  [MdnsProxyForwardingRuleTypeEnum.AIRDISK]: defineMessage({ defaultMessage: 'AirDisk' }),
-  [MdnsProxyForwardingRuleTypeEnum.AIRPLAY]: defineMessage({ defaultMessage: 'AirPlay' }),
+export const mdnsProxyForwardingRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDescriptor> = {
+  [BridgeServiceEnum.AIRDISK]: defineMessage({ defaultMessage: 'AirDisk' }),
+  [BridgeServiceEnum.AIRPLAY]: defineMessage({ defaultMessage: 'AirPlay' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.AIRPORT_MANAGEMENT]: defineMessage({ defaultMessage: 'Airport Management' }),
-  [MdnsProxyForwardingRuleTypeEnum.AIRPRINT]: defineMessage({ defaultMessage: 'AirPrint' }),
-  [MdnsProxyForwardingRuleTypeEnum.AIRTUNES]: defineMessage({ defaultMessage: 'AirTunes' }),
-  [MdnsProxyForwardingRuleTypeEnum.APPLETV]: defineMessage({ defaultMessage: 'Apple TV' }),
+  [BridgeServiceEnum.AIRPORT_MANAGEMENT]: defineMessage({ defaultMessage: 'Airport Management' }),
+  [BridgeServiceEnum.AIRPRINT]: defineMessage({ defaultMessage: 'AirPrint' }),
+  [BridgeServiceEnum.AIRTUNES]: defineMessage({ defaultMessage: 'AirTunes' }),
+  [BridgeServiceEnum.APPLETV]: defineMessage({ defaultMessage: 'Apple TV' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.APPLE_FILE_SHARING]: defineMessage({ defaultMessage: 'Apple File Sharing' }),
+  [BridgeServiceEnum.APPLE_FILE_SHARING]: defineMessage({ defaultMessage: 'Apple File Sharing' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.APPLE_MOBILE_DEVICES]: defineMessage({ defaultMessage: 'Apple Mobile Devices' }),
+  [BridgeServiceEnum.APPLE_MOBILE_DEVICES]: defineMessage({ defaultMessage: 'Apple Mobile Devices' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.GOOGLE_CHROMECAST]: defineMessage({ defaultMessage: 'Google Chromecast' }),
-  [MdnsProxyForwardingRuleTypeEnum.ICLOUD_SYNC]: defineMessage({ defaultMessage: 'iCloud Sync' }),
+  [BridgeServiceEnum.GOOGLE_CHROMECAST]: defineMessage({ defaultMessage: 'Google Chromecast' }),
+  [BridgeServiceEnum.ICLOUD_SYNC]: defineMessage({ defaultMessage: 'iCloud Sync' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.ITUNES_REMOTE]: defineMessage({ defaultMessage: 'iTunes Remote' }),
+  [BridgeServiceEnum.ITUNES_REMOTE]: defineMessage({ defaultMessage: 'iTunes Remote' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.ITUNES_SHARING]: defineMessage({ defaultMessage: 'iTunes Sharing' }),
+  [BridgeServiceEnum.ITUNES_SHARING]: defineMessage({ defaultMessage: 'iTunes Sharing' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
+  [BridgeServiceEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
-  [MdnsProxyForwardingRuleTypeEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
+  [BridgeServiceEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
+  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
+  [BridgeServiceEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
   // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.SECURE_FILE_SHARING]: defineMessage({ defaultMessage: 'Secure File Sharing' }),
-  [MdnsProxyForwardingRuleTypeEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
-  [MdnsProxyForwardingRuleTypeEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
-  [MdnsProxyForwardingRuleTypeEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
-  [MdnsProxyForwardingRuleTypeEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
+  [BridgeServiceEnum.SECURE_FILE_SHARING]: defineMessage({ defaultMessage: 'Secure File Sharing' }),
+  [BridgeServiceEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
+  [BridgeServiceEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
+  [BridgeServiceEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
+  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
 }
