@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { useIntl }                                            from 'react-intl'
-import { useParams }                                          from 'react-router-dom'
+import { useIntl }                                                                                          from 'react-intl'
+import { useParams }                                                                                        from 'react-router-dom'
 import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
 
 import { showActionModal, Table, TableProps }                          from '@acx-ui/components'
