@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -11,21 +11,33 @@ import {
 } from '@acx-ui/components'
 import { ClockOutlined }                 from '@acx-ui/icons'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
+import { WifiCallingDetailContextType }  from '@acx-ui/rc/utils'
 import { TenantLink }                    from '@acx-ui/react-router-dom'
 
 import WifiCallingDetailContent from './WifiCallingDetailContent'
 // import WifiCallingNetworks       from './WifiCallingNetworks'
 import WifiCallingNetworksDetail from './WifiCallingNetworksDetail'
 
+export const WifiCallingDetailContext = createContext({} as WifiCallingDetailContextType)
+
 const WifiCallingDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [networkIds, setNetworkIds] = useState([] as string[])
   const { data } = useGetWifiCallingServiceQuery({
     params: params
   })
 
+  useEffect(() => {
+    if (data && data.hasOwnProperty('networkIds')) {
+      setNetworkIds(data.networkIds)
+    }
+  }, [data, networkIds])
+
   return (
-    <>
+    <WifiCallingDetailContext.Provider value={{
+      networkIds, setNetworkIds
+    }}>
       <PageHeader
         title={data?.serviceName}
         breadcrumb={[
@@ -45,17 +57,13 @@ const WifiCallingDetailView = () => {
 
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <WifiCallingDetailContent tenantId={params.tenantId as string}/>
+          <WifiCallingDetailContent />
         </GridCol>
-        {/*TODO: Temporarily hidden this component until Health api is ready*/}
-        {/*<GridCol col={{ span: 24 }}>*/}
-        {/*  <WifiCallingNetworks tenantId={params.tenantId as string} />*/}
-        {/*</GridCol>*/}
         <GridCol col={{ span: 24 }}>
-          <WifiCallingNetworksDetail tenantId={params.tenantId as string}/>
+          <WifiCallingNetworksDetail />
         </GridCol>
       </GridRow>
-    </>
+    </WifiCallingDetailContext.Provider>
   )
 }
 

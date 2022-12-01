@@ -6,7 +6,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 hVWzqv"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
       type="no-border"
     >
       <div
@@ -22,9 +22,17 @@ exports[`NetworkImpact should match snapshot 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
-                Network Impact
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  >
+                    Network Impact
+                  </div>
+                </div>
               </div>
             </div>
             <div

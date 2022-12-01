@@ -1,5 +1,57 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`NoActiveContent should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <svg
+        class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+        data-testid="CheckMarkCircleSolid"
+      />
+    </div>
+  </div>
+  <div
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+  >
+    <div
+      class="ant-space-item"
+    >
+      No active data
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NoActiveContent should render correctly with the prop 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <svg
+        class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+        data-testid="CheckMarkCircleSolid"
+      />
+    </div>
+  </div>
+  <div
+    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+  >
+    <div
+      class="ant-space-item"
+    >
+      No data available
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`NoActiveData should render correctly 1`] = `
 <DocumentFragment>
   <div
@@ -11,13 +63,14 @@ exports[`NoActiveData should render correctly 1`] = `
       <div
         class="ant-space-item"
       >
-        <div
+        <svg
+          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoActiveTextWrapper-sc-m7jeli-3 iRdLpd kuAEvr"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
     >
       <div
         class="ant-space-item"
@@ -40,13 +93,14 @@ exports[`NoActiveData should render correctly with the prop 1`] = `
       <div
         class="ant-space-item"
       >
-        <div
+        <svg
+          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoActiveTextWrapper-sc-m7jeli-3 iRdLpd kuAEvr"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
     >
       <div
         class="ant-space-item"
@@ -64,7 +118,7 @@ exports[`NoData should render correctly 1`] = `
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
     >
       <div
         class="ant-space-item"
@@ -82,7 +136,7 @@ exports[`NoData should render correctly with the prop 1`] = `
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
     >
       <div
         class="ant-space-item"
@@ -100,7 +154,7 @@ exports[`NotAvailable should render correctly 1`] = `
     class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
     >
       <div
         class="ant-space-item"

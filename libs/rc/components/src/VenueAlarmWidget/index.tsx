@@ -31,19 +31,19 @@ const defaultPayload = {
   ]
 }
 
-const seriesMapping = [
-  { key: EventSeverityEnum.CRITICAL,
-    name: 'Critical',
-    color: cssStr('--acx-semantics-red-50') },
-  { key: EventSeverityEnum.MAJOR,
-    name: 'Major',
-    color: cssStr('--acx-accents-orange-30') }
-] as Array<{ key: string, name: string, color: string }>
-
 type ReduceReturnType = Record<string, number>
 
 export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
+  const seriesMapping = [
+    { key: EventSeverityEnum.CRITICAL,
+      name: 'Critical',
+      color: cssStr('--acx-semantics-red-50') },
+    { key: EventSeverityEnum.MAJOR,
+      name: 'Major',
+      color: cssStr('--acx-accents-orange-30') }
+  ] as Array<{ key: string, name: string, color: string }>
   const chartData: DonutChartData[] = []
+
   if (alarms && alarms.length > 0) {
     const alarmsSummary = alarms.reduce<ReduceReturnType>((acc, { severity }) => {
       acc[severity] = (acc[severity] || 0) + 1

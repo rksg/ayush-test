@@ -3,11 +3,15 @@ import '@testing-library/jest-dom'
 import { renderHook } from '@testing-library/react'
 import userEvent      from '@testing-library/user-event'
 
-import { ServiceType }             from '@acx-ui/rc/utils'
+import {
+  ServiceType,
+  getSelectServiceRoutePath,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation
+} from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { render, screen }          from '@acx-ui/test-utils'
-
-import { getSelectServiceRoutePath, getServiceListRoutePath, getServiceRoutePath, ServiceOperation } from '../serviceRouteUtils'
 
 import SelectServiceForm from '.'
 

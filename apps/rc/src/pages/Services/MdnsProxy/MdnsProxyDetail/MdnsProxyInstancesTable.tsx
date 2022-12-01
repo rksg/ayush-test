@@ -71,37 +71,37 @@ export function MdnsProxyInstancesTable () {
           </>
         )
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Client Queries' }),
-      dataIndex: 'clientQueries',
-      key: 'clientQueries',
-      sorter: true,
-      render: () => {
-        // TODO: API is not ready, this is mocked data for display
-        return 0
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Server Responses' }),
-      dataIndex: 'serverResponses',
-      key: 'serverResponses',
-      sorter: true,
-      render: () => {
-        // TODO: API is not ready, this is mocked data for display
-        return 0
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Types of mDNS Services' }),
-      dataIndex: 'typesCount',
-      key: 'typesCount',
-      sorter: true,
-      render: () => {
-        // TODO: API is not ready, this is mocked data for display
-        return 0
-      }
     }
+    // {
+    //   title: $t({ defaultMessage: 'Client Queries' }),
+    //   dataIndex: 'clientQueries',
+    //   key: 'clientQueries',
+    //   sorter: true,
+    //   render: () => {
+    //     // TODO: API is not ready, this is mocked data for display
+    //     return 0
+    //   }
+    // },
+    // {
+    //   title: $t({ defaultMessage: 'Server Responses' }),
+    //   dataIndex: 'serverResponses',
+    //   key: 'serverResponses',
+    //   sorter: true,
+    //   render: () => {
+    //     // TODO: API is not ready, this is mocked data for display
+    //     return 0
+    //   }
+    // },
+    // {
+    //   title: $t({ defaultMessage: 'Types of mDNS Services' }),
+    //   dataIndex: 'typesCount',
+    //   key: 'typesCount',
+    //   sorter: true,
+    //   render: () => {
+    //     // TODO: API is not ready, this is mocked data for display
+    //     return 0
+    //   }
+    // }
   ]
 
   return (
