@@ -1,5 +1,5 @@
 import { ConnectedClientsTable } from '@acx-ui/rc/components'
 
-export function ApClientsTab () {
+export function ClientsTab () {
   return <ConnectedClientsTable />
 }
