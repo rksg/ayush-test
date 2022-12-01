@@ -25,9 +25,9 @@ export default function PortalPreviewModal (props:{
     })
   }
   return (
-    <UI.FieldTextLink onClick={()=>openModal()}>
+    <UI.Button onClick={()=>openModal()} type='default' size='small'>
       {$t({ defaultMessage: 'Preview' })}
-    </UI.FieldTextLink>
+    </UI.Button>
   )
 }
 

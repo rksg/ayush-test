@@ -11,6 +11,7 @@ import { Demo, GuestNetworkTypeEnum, PortalLanguageEnum, PortalViewEnum } from '
 import { captiveTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
 import { getLanguage }             from '../../commonUtils'
 import { portalViewTypes }         from '../contentsMap'
+import PortalPreviewModal          from '../PortalSummary/PortalPreviewModal'
 import * as UI                     from '../styledComponents'
 
 import PortalBackground         from './PortalBackground'
@@ -120,7 +121,7 @@ export default function PortalDemo ({
               />
             </UI.FieldExtraTooltip>}
           </div>
-          <div style={{ flex: '0 0 190px', marginTop: -5 }}>
+          <div style={{ flex: '0 0 190px' }}>
             <UI.DesktopOutlined $marked={marked.desk}
               title='deskicon'
               onClick={()=>{
@@ -142,17 +143,7 @@ export default function PortalDemo ({
           </div>
           {!isPreview&&<div
             style={{ flex: 'auto', textAlign: 'right', paddingRight: 5 }}>
-            <UI.Popover
-              overlayClassName={UI.popoverClassName}
-              overlayInnerStyle={{ maxHeight: 500 , overflowY: 'auto' }}
-              getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
-              content={langContent}
-              trigger='click'
-              placement='bottomLeft'
-              visible={showLanguage}
-              onVisibleChange={(data)=>setShowLanguage(data)}
-            ><UI.Button type='default' size='small'>
-                {$t({ defaultMessage: 'Language Settings' })}</UI.Button></UI.Popover>
+            {langContent}
             <UI.Popover
               overlayClassName={UI.popoverClassName}
               overlayInnerStyle={{ minWidth: 260 }}
@@ -164,6 +155,7 @@ export default function PortalDemo ({
               onVisibleChange={(data)=>setShowComponent(data)}
             ><UI.Button type='default' size='small'>{$t({ defaultMessage: 'Components' })}
               </UI.Button></UI.Popover>
+            <PortalPreviewModal demoValue={demoValue}/>
             <UI.Button type='default'
               size='small'
               onClick={()=>{
