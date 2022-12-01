@@ -13,6 +13,13 @@ export const Cascader = styled(AntCascader)`
       color: var(--acx-neutrals-50);
     }
   }
+  .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+    border: none;
+    background: var(--acx-primary-white);
+    min-width: 110px;
+    padding-right: 0px;
+    margin-right: 0px;
+}
 `
 
 export const ButtonDiv = styled.div`
@@ -33,4 +40,7 @@ export const Span = styled.span`
   margin-top: 2px;
   margin-bottom: 2px;
   margin-left: 2px;
+`
+export const Selected = styled.div`
+  min-width: 110px
 `

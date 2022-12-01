@@ -7,13 +7,13 @@ import { act }   from 'react-dom/test-utils'
 
 import { fireEvent, render, screen, cleanup } from '@acx-ui/test-utils'
 
-import { NetworkFilter, CascaderProps, Option } from './index'
+import { Select, CascaderProps, Option } from './index'
 
 afterEach(cleanup)
 
 describe('NetworkFilter', () => {
   const CustomCascader: React.FC<CascaderProps> = (props: CascaderProps) => (
-    <NetworkFilter {...props} />
+    <Select {...props} />
   )
 
   it('renders empty list & placeholder', async () => {

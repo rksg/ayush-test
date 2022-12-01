@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Row, Col }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { NetworkFilter, Button } from '@acx-ui/components'
-import { useEncodedParameter }   from '@acx-ui/utils'
+import { Select, Button }      from '@acx-ui/components'
+import { useEncodedParameter } from '@acx-ui/utils'
 
 import { ClientTroubleShootingConfig } from './config'
 import { History }                     from './EventsHistory'
@@ -27,14 +27,14 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
     <Row gutter={[16, 16]}>
       <Col span={historyContentToggle ? 18 : 24}>
         <Row gutter={[16, 16]}>
-          <Col span={historyContentToggle ? 12 : 10} />
+          <Col span={10} />
           <Col
-            span={historyContentToggle ? 12 : 10}
+            span={historyContentToggle ? 14 : 10}
             style={{ justifyContent: 'end' }}>
-            <Row style={{ justifyContent: 'end' }} gutter={[4, 4]}>
+            <Row style={{ justifyContent: 'end' }} gutter={[6, 6]}>
               {ClientTroubleShootingConfig.selection.map((config) => (
-                <Col span={historyContentToggle ? 8 : 7} key={config.selectionType}>
-                  <NetworkFilter
+                <Col span={historyContentToggle ? 8 : 8} key={config.selectionType}>
+                  <Select
                     multiple
                     defaultValue={
                       read()?.[
@@ -49,7 +49,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     options={config.options.map((option) => {
                       return { ...option, label: $t(option.label) }
                     })}
-                    style={{ maxWidth: 132 }}
+                    style={{ minWidth: 150 }}
                     onApply={(value: selectionType) =>
                       write({ ...read(), [config.selectionType]: value })
                     }

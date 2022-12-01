@@ -2,7 +2,7 @@ import React from 'react'
 
 import { DefaultOptionType } from 'antd/es/cascader'
 
-import { NetworkFilter, Option } from '..'
+import { Select, Option } from '..'
 
 import { onApply } from './utils'
 
@@ -50,7 +50,7 @@ export function LazyNestedSingle () {
   }
 
   return <div style={{ width: 200 }}>
-    <NetworkFilter
+    <Select
       placeholder='Entire Organization'
       options={options as Option[]}
       onApply={onApply}
