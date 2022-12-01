@@ -36,7 +36,6 @@ export default function Thumbnail (props: {
       active={active}
       data-testid='thumbnailBg'>
       <NetworkDevices
-        imageLoaded={true}
         networkDevicesVisibility={networkDevicesVisibility}
         selectedFloorPlan={floorPlan}
         networkDevices={networkDevices}

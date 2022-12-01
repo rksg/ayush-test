@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 import { Col, Divider, Row, Space, Typography } from 'antd'
+import { DropTargetMonitor, useDrop, XYCoord }  from 'react-dnd'
 import { useIntl }                              from 'react-intl'
 
 import { Button, Loader } from '@acx-ui/components'
@@ -11,13 +12,14 @@ import {
   SearchFitOutlined,
   SearchFullOutlined
 } from '@acx-ui/icons'
-import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
 import AddEditFloorplanModal from '../FloorPlanModal'
 import NetworkDevices        from '../NetworkDevices'
 
 import * as UI   from './styledComponents'
 import Thumbnail from './Thumbnail'
+
 
 
 export enum ImageMode {
@@ -62,14 +64,16 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   networkDevices: {
     [key: string]: TypeWiseNetworkDevices
   },
-  networkDevicesVisibility: NetworkDeviceType[] }) {
+  networkDevicesVisibility: NetworkDeviceType[],
+  setCoordinates: Function }) {
   const { floorPlans,
     toggleGalleryView,
     defaultFloorPlan,
     deleteFloorPlan,
     onAddEditFloorPlan,
     networkDevices,
-    networkDevicesVisibility } = props
+    networkDevicesVisibility,
+    setCoordinates } = props
   const { $t } = useIntl()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
@@ -90,6 +94,62 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   useEffect(() => {
     prepareImageTofit(defaultFloorPlan)
   },[floorPlans, defaultFloorPlan, prepareImageTofit])
+
+  const [{ isActive }, drop] = useDrop(
+    () => ({
+      accept: 'device',
+      drop: (item: { device: NetworkDevice, markerRef: RefObject<HTMLDivElement> },
+        monitor: DropTargetMonitor<{
+          device: NetworkDevice;
+          markerRef: RefObject<HTMLDivElement>;
+      }, unknown>) => {
+
+        const marker = item.markerRef.current?.children[0] as HTMLDivElement
+
+        const newCoords = monitor.getDifferenceFromInitialOffset() as XYCoord
+
+        const markerCoords: {
+          x: number,
+          y: number
+        } = {
+          x: marker && marker?.offsetLeft || 0,
+          y: marker && marker?.offsetTop || 0
+        }
+
+        const placementCoords: {
+          x: number,
+          y: number
+        } = {
+          x: newCoords.x + markerCoords.x + 36,
+          y: newCoords.y + markerCoords.y + 36
+        }
+
+        setUpdatedLocation(item.device, placementCoords)
+      },
+      collect: (monitor) => ({
+        isActive: monitor.canDrop() && monitor.isOver()
+      })
+    })
+  )
+
+  function setUpdatedLocation (device: NetworkDevice,
+    placementCoords: XYCoord) {
+
+    const imageCoords = {
+      x: imageRef?.current?.offsetWidth || 0,
+      y: imageRef?.current?.offsetHeight || 0
+    }
+    if (placementCoords.x <= imageCoords.x && placementCoords.y <= imageCoords.y) {
+      Object.assign(device.position, {
+        floorplanId: selectedFloorPlan?.id,
+        x: placementCoords.x,
+        y: placementCoords.y,
+        xPercent: (placementCoords.x / imageCoords.x) * 100,
+        yPercent: (placementCoords.y / imageCoords.y) * 100
+      })
+    }
+    setCoordinates(device)
+  }
 
   function onFloorPlanSelectionHandler (floorPlan: FloorPlanDto) {
     if (floorPlan.imageId !== selectedFloorPlan.imageId)
@@ -200,25 +260,33 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           ref={imageContainerRef}
           currentZoom={currentZoom}
           data-testid='image-container'>
-          <NetworkDevices
-            imageLoaded={imageLoaded}
+          <div ref={drop}
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%'
+            }}></div>
+          { imageLoaded && <NetworkDevices
             networkDevicesVisibility={networkDevicesVisibility}
             selectedFloorPlan={selectedFloorPlan}
             networkDevices={networkDevices}
             contextAlbum={false}
             context={FloorplanContext['ap']}
             galleryMode={false}/>
+          }
           <img
             data-testid='floorPlanImage'
             onLoad={() => onImageLoad()}
-            style={{ maxHeight: '100%', width: '100%' }}
+            style={{ maxHeight: '100%',
+              width: '100%',
+              border: isActive ? '2px solid var(--acx-accents-orange-50)' : 'none' }}
             ref={imageRef}
             alt={selectedFloorPlan?.name}
             src={selectedFloorPlan?.imageUrl} />
         </UI.ImageContainer>
-        <UI.ImageLoaderContainer>
+        { !imageLoaded && <UI.ImageLoaderContainer>
           <Loader states={[{ isLoading: !imageLoaded }]}></Loader>
-        </UI.ImageLoaderContainer>
+        </UI.ImageLoaderContainer> }
       </UI.ImageContainerWrapper>
       <UI.ImageButtonsContainer>
         <Button
