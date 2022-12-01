@@ -29,7 +29,7 @@ const RogueAPDetectionDetailContent = () => {
 
   if (data) {
     return <Card>
-      <GridRow style={{ width: '100%' }}>
+      <GridRow>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Tags' })}

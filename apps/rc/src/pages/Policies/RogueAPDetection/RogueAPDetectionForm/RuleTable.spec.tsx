@@ -159,16 +159,6 @@ describe('RuleTable', () => {
 
     await userEvent.click(screen.getByText(/sameNetworkRuleName1/i))
 
-    // await screen.findByRole('button', {
-    //   name: /edit/i
-    // })
-    // fireEvent.click(screen.getByRole('button', {
-    //   name: /delete/i
-    // }))
-    //
-    // // cancel click
-    // fireEvent.click(screen.getByText('SameNetworkRuleName1'))
-
     fireEvent.click(screen.getByRole('button', {
       name: /edit/i
     }))
@@ -176,18 +166,6 @@ describe('RuleTable', () => {
     const dialog = screen.getByRole('dialog')
 
     fireEvent.click(within(dialog).getByText(/cancel/i))
-
-    await userEvent.click(screen.getByText(/sameNetworkRuleName2/i))
-
-    fireEvent.click(screen.getByRole('button', {
-      name: /move up/i
-    }))
-
-    await userEvent.click(screen.getByText(/sameNetworkRuleName2/i))
-
-    fireEvent.click(screen.getByRole('button', {
-      name: /move down/i
-    }))
 
     await userEvent.click(screen.getByText(/sameNetworkRuleName2/i))
 

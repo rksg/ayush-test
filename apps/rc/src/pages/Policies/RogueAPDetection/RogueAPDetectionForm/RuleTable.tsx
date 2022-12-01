@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl }                                            from 'react-intl'
+import { useParams }                                          from 'react-router-dom'
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc'
 
-import { showActionModal, Table, TableProps }       from '@acx-ui/components'
-import { useRoguePolicyQuery }                      from '@acx-ui/rc/services'
-import { RogueAPDetectionActionTypes, RogueAPRule } from '@acx-ui/rc/utils'
-import { RogueRuleTypeEnum }                        from '@acx-ui/rc/utils'
+import { showActionModal, Table, TableProps }                          from '@acx-ui/components'
+import { ListSolid }                                                   from '@acx-ui/icons'
+import { useRoguePolicyQuery }                                         from '@acx-ui/rc/services'
+import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleTypeEnum } from '@acx-ui/rc/utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -47,6 +48,10 @@ const RuleTable = (props: RuleTableProps) => {
     return ruleTypes[ruleType as RogueRuleTypeEnum]
   }
 
+  const DragHandle = SortableHandle(() =>
+    <ListSolid style={{ cursor: 'grab', color: '#6e6e6e' }} />
+  )
+
   const basicColumns: TableProps<RogueAPRule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Priority' }),
@@ -70,6 +75,12 @@ const RuleTable = (props: RuleTableProps) => {
       title: $t({ defaultMessage: 'Category' }),
       dataIndex: 'classification',
       key: 'classification'
+    },
+    {
+      dataIndex: 'sort',
+      key: 'sort',
+      width: 60,
+      render: () => <DragHandle/>
     }
   ]
 
@@ -103,39 +114,35 @@ const RuleTable = (props: RuleTableProps) => {
     onClick: handleAddAction
   }]
 
+  const SortableItem = SortableElement((props: any) => <tr {...props} />)
+  const SortContainer = SortableContainer((props: any) => <tbody {...props} />)
+
+  const DraggableContainer = (props: any) => {
+    return <SortContainer
+      useDragHandle
+      disableAutoscroll
+      onSortEnd={({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+        dispatch({
+          type: RogueAPDetectionActionTypes.DRAG_AND_DROP,
+          payload: {
+            oldIndex, newIndex
+          }
+        })
+      }}
+      {...props}
+    />
+  }
+
+  const DraggableBodyRow = (props: any) => {
+    const { className, style, ...restProps } = props
+    const index = state.rules.findIndex((x) => x.name === restProps['data-row-key'])
+    return <SortableItem index={index} {...restProps} />
+  }
+
   const editAction = (rows: RogueAPRule[], clearSelection: () => void) => {
-    if (rows.length > 1) {
-      showActionModal({
-        type: 'error',
-        content: $t({ defaultMessage: 'Not support multiple operations.' })
-      })
-    } else {
-      setRuleName(rows[0].name)
-      setVisibleEdit(true)
-      setVisibleAdd(false)
-    }
-    clearSelection()
-  }
-
-  const moveUpAction = (rows: RogueAPRule[], clearSelection: () => void) => {
-    dispatch({
-      type: RogueAPDetectionActionTypes.MOVE_UP,
-      payload: {
-        name: rows[0].name,
-        priority: rows[0].priority
-      }
-    })
-    clearSelection()
-  }
-
-  const moveDownAction = (rows: RogueAPRule[], clearSelection: () => void) => {
-    dispatch({
-      type: RogueAPDetectionActionTypes.MOVE_DOWN,
-      payload: {
-        name: rows[0].name,
-        priority: rows[0].priority
-      }
-    })
+    setRuleName(rows[0].name)
+    setVisibleEdit(true)
+    setVisibleAdd(false)
     clearSelection()
   }
 
@@ -171,14 +178,6 @@ const RuleTable = (props: RuleTableProps) => {
     visible: (row: RogueAPRule[]) => row.length <= 1,
     onClick: editAction
   },{
-    label: $t({ defaultMessage: 'Move up' }),
-    visible: (row: RogueAPRule[]) => row.length <= 1,
-    onClick: moveUpAction
-  },{
-    label: $t({ defaultMessage: 'Move down' }),
-    visible: (row: RogueAPRule[]) => row.length <= 1,
-    onClick: moveDownAction
-  },{
     label: $t({ defaultMessage: 'Delete' }),
     onClick: delAction
   }] as { label: string, onClick: () => void }[]
@@ -206,6 +205,12 @@ const RuleTable = (props: RuleTableProps) => {
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
+        components={{
+          body: {
+            wrapper: DraggableContainer,
+            row: DraggableBodyRow
+          }
+        }}
       />
     </>
   )

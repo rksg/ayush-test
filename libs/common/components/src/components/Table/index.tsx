@@ -99,7 +99,7 @@ function Table <RecordType extends Record<string, any>> (
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
   const [searchValue, setSearchValue] = useState<string>('')
-  const { dataSource } = props
+  const { dataSource, components } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
 
@@ -303,7 +303,10 @@ function Table <RecordType extends Record<string, any>> (
         ...getResizeProps(col),
         children: col.children?.map(getResizeProps)
       })): columns) as typeof columns}
-      components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
+      components={type === 'tall' && !type
+        ? { header: { cell: ResizableColumn } }
+        : components
+      }
       options={{ setting, reload: false, density: false }}
       columnsState={{
         ...columnsState,

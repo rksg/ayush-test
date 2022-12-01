@@ -755,6 +755,7 @@ exports[`Networks Table should click disabled row 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                definedwidth="32"
                                 style="position: sticky; right: 0px;"
                               />
                             </tr>
@@ -2562,6 +2563,7 @@ exports[`Networks Table should delete selected row 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                definedwidth="32"
                                 style="position: sticky; right: 0px;"
                               />
                             </tr>
@@ -4369,6 +4371,7 @@ exports[`Networks Table should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                definedwidth="32"
                                 style="position: sticky; right: 0px;"
                               />
                             </tr>

@@ -1,7 +1,7 @@
 import {
   RogueAPDetectionActionPayload,
   RogueAPDetectionActionTypes,
-  RogueAPDetectionContextType
+  RogueAPDetectionContextType, RogueAPRule
 } from '@acx-ui/rc/utils'
 
 export const rogueAPDetectionReducer = (
@@ -68,40 +68,14 @@ export const rogueAPDetectionReducer = (
         ...state,
         rules: nRules
       }
-    case RogueAPDetectionActionTypes.MOVE_UP:
-      const moveUpIdx = state.rules.findIndex((rule) =>
-        rule.name === action.payload.name && rule.priority === action.payload.priority
-      )
-      const moveUpRules = [...state.rules]
-      if (moveUpIdx - 1 > -1
-        && moveUpIdx + 1 === moveUpRules[moveUpIdx].priority) {
-        [moveUpRules[moveUpIdx], moveUpRules[moveUpIdx - 1]] = [
-          moveUpRules[moveUpIdx - 1], moveUpRules[moveUpIdx]
-        ]
-      }
+    case RogueAPDetectionActionTypes.DRAG_AND_DROP:
+      const { oldIndex, newIndex } = action.payload
+      const dragAndDropRules = [...state.rules] as RogueAPRule[]
+      [dragAndDropRules[oldIndex], dragAndDropRules[newIndex]] =
+        [dragAndDropRules[newIndex], dragAndDropRules[oldIndex]]
       return {
         ...state,
-        rules: moveUpRules.map((rule, i) => {
-          return {
-            ...rule,
-            priority: i + 1
-          }
-        })
-      }
-    case RogueAPDetectionActionTypes.MOVE_DOWN:
-      const moveDownIdx = state.rules.findIndex((rule) =>
-        rule.name === action.payload.name && rule.priority === action.payload.priority
-      )
-      const moveDownRules = [...state.rules]
-      if (moveDownIdx + 1 < state.rules.length
-        && moveDownIdx + 1 === moveDownRules[moveDownIdx].priority) {
-        [moveDownRules[moveDownIdx], moveDownRules[moveDownIdx + 1]] = [
-          moveDownRules[moveDownIdx + 1], moveDownRules[moveDownIdx]
-        ]
-      }
-      return {
-        ...state,
-        rules: moveDownRules.map((rule, i) => {
+        rules: dragAndDropRules.map((rule, i) => {
           return {
             ...rule,
             priority: i + 1

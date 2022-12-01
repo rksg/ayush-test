@@ -76,15 +76,6 @@ export interface RogueVenue {
   name: string
 }
 
-export interface RogueVenueData {
-  id: string,
-  venue: string,
-  aps: number,
-  switches: number,
-  rogueDetection: string,
-  activate: React.ReactElement
-}
-
 export enum RogueCategory {
   MALICIOUS = 'Malicious',
   IGNORED = 'Ignored',
@@ -119,6 +110,7 @@ export enum RogueAPDetectionActionTypes {
   DEL_RULE = 'DEL_RULE',
   MOVE_UP = 'MOVE_UP',
   MOVE_DOWN = 'MOVE_DOWN',
+  DRAG_AND_DROP = 'DRAG_AND_DROP',
   ADD_VENUES = 'ADD_VENUES',
   REMOVE_VENUES = 'REMOVE_VENUES'
 }
@@ -189,4 +181,10 @@ export type RogueAPDetectionActionPayload = {
     name: string,
     id: string
   }[]
+} | {
+  type: RogueAPDetectionActionTypes.DRAG_AND_DROP,
+  payload: {
+    oldIndex: number,
+    newIndex: number
+  }
 }

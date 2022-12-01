@@ -127,10 +127,10 @@ describe('RogueAPDetectionReducer test', () => {
     })
 
     const updateMoveUpAction = {
-      type: RogueAPDetectionActionTypes.MOVE_UP,
+      type: RogueAPDetectionActionTypes.DRAG_AND_DROP,
       payload: {
-        name: 'rule2-modify',
-        priority: 2
+        newIndex: 0,
+        oldIndex: 1
       }
     }
 
@@ -153,10 +153,10 @@ describe('RogueAPDetectionReducer test', () => {
     })
 
     const updateMoveDownAction = {
-      type: RogueAPDetectionActionTypes.MOVE_DOWN,
+      type: RogueAPDetectionActionTypes.DRAG_AND_DROP,
       payload: {
-        name: 'rule2-modify',
-        priority: 1
+        oldIndex: 0,
+        newIndex: 1
       }
     }
 
