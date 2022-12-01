@@ -1,12 +1,11 @@
 import userEvent   from '@testing-library/user-event'
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum
 } from '@acx-ui/rc/utils'
-import { logRoles, render, renderHook, screen, within } from '@acx-ui/test-utils'
+import { render, renderHook, screen, within } from '@acx-ui/test-utils'
 
 import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
@@ -83,11 +82,6 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
     const { result: fakeRuleTypeLabel } = renderHook(() => {
       return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.service])
-    })
-
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
     })
 
     render(
