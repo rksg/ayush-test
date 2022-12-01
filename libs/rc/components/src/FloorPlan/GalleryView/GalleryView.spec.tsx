@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { FloorPlanDto }              from '@acx-ui/rc/utils'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { fireEvent, render, screen }                                                                     from '@acx-ui/test-utils'
 
 import GalleryView from './GalleryView'
 
@@ -34,11 +34,49 @@ const list: FloorPlanDto[] = [
     '/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
   }]
 
+const networkDevices: {
+    [key: string]: TypeWiseNetworkDevices
+} = {
+  '94bed28abef24175ab58a3800d01e24a': {
+    ap: [{
+      deviceStatus: ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
+      floorplanId: '94bed28abef24175ab58a3800d01e24a',
+      id: '302002015732',
+      name: '3 02002015736',
+      serialNumber: '302002015732',
+      xPercent: 65.20548,
+      yPercent: 9.839357,
+      networkDeviceType: NetworkDeviceType.ap
+    }],
+    switches: [{
+      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+      floorplanId: '94bed28abef24175ab58a3800d01e24a',
+      id: 'FEK3224R72N',
+      name: 'FEK3224R232N',
+      serialNumber: 'FEK3224R72N',
+      xPercent: 52.739727,
+      yPercent: 7.056452,
+      networkDeviceType: NetworkDeviceType.switch
+    }],
+    LTEAP: [],
+    RogueAP: [],
+    cloudpath: [],
+    DP: []
+  }
+}
+
+const networkDeviceType: NetworkDeviceType[] = []
+
+
 describe('Floor Plan Gallery View', () => {
 
   it('should render correctly Gallery View', async () => {
 
-    const { asFragment } = render(<GalleryView floorPlans={list} onFloorPlanClick={jest.fn()}/>)
+    const { asFragment } = render(<GalleryView
+      floorPlans={list}
+      onFloorPlanClick={jest.fn()}
+      networkDevices={networkDevices}
+      networkDevicesVisibility={networkDeviceType}/>)
     const component = await screen.findAllByTestId('fpImage')
     expect(component.length).toEqual(list.length)
     expect(asFragment()).toMatchSnapshot()
@@ -50,6 +88,8 @@ describe('Floor Plan Gallery View', () => {
     render(<GalleryView
       floorPlans={list}
       onFloorPlanClick={onFloorPlanClick}
+      networkDevices={networkDevices}
+      networkDevicesVisibility={networkDeviceType}
     />)
 
     const images = screen.getAllByTestId('fpImage')

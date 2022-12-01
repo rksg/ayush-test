@@ -143,6 +143,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/file/tenant/:tenantId/upload-url'
   },
+  getAllDevices: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/devices'
+  },
   getVenueCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
