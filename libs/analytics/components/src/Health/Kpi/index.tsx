@@ -9,13 +9,13 @@ import {
   healthApi
 } from '@acx-ui/analytics/services'
 import {
+  CategoryTab,
   kpisForTab,
   AnalyticsFilter,
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
 
-import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
 
 import BarChart      from './BarChart'
@@ -33,7 +33,7 @@ export const defaultThreshold: KpiThresholdType = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
-export default function KpiSections (props: { tab: HealthTab, filters: AnalyticsFilter }) {
+export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { kpis } = kpisForTab[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
