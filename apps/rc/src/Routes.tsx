@@ -13,6 +13,7 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
+import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
 import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
 import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
@@ -89,6 +90,7 @@ function DeviceRoutes () {
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         element={<EditEdge />} />
       <Route path='devices/switches' element={<SwitchesTable />} />
+      <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )
 }
