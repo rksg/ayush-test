@@ -47,9 +47,8 @@ const searches = [
   }
 ]
 
-function SearchResult () {
+function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
-  const { searchVal } = useParams()
   const results = searches.map(search => search(searchVal as string, $t))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
   return <Loader states={results.map(({ result }) => ({ ...result, isFetching: false }))}>
@@ -73,5 +72,5 @@ function SearchResult () {
 
 export default function SearchResults () {
   const { searchVal } = useParams()
-  return <SearchResult key={searchVal}/>
+  return <SearchResult key={searchVal} searchVal={searchVal} />
 }
