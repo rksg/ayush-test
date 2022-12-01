@@ -1,8 +1,8 @@
-import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter, useAnalyticsFilter, categoryNames } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Tabs }                             from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink }              from '@acx-ui/react-router-dom'
+import { AnalyticsFilter, useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Tabs }                                         from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink }                          from '@acx-ui/react-router-dom'
 
 import { Header } from '../Header'
 
@@ -12,29 +12,11 @@ import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
 
-const healthTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
-export type HealthTab = 'overview' | 'connection' | 'performance' | 'infrastructure'
-
-const tabsMap : Record<HealthTab, MessageDescriptor> = {
-  overview: defineMessage({
-    defaultMessage: 'Overview'
-  }),
-  connection: defineMessage({
-    defaultMessage: 'Connection'
-  }),
-  performance: defineMessage({
-    defaultMessage: 'Performance'
-  }),
-  infrastructure: defineMessage({
-    defaultMessage: 'Infrastructure'
-  })
-}
-
 const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
   const { filters: widgetFilters } = props
   const params = useParams()
-  const selectedTab = params['categoryTab'] ?? healthTabs[0].value
+  const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
   const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
   const { filters } = useAnalyticsFilter()
@@ -64,11 +46,8 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
           </GridCol>
           <GridCol col={{ span: 16 }} >
             <Tabs activeKey={selectedTab} onChange={onTabChange}>
-              {healthTabs.map((tab) => (
-                <Tabs.TabPane
-                  tab={$t(tabsMap[tab.value as HealthTab])}
-                  key={tab.value}
-                />
+              {categoryTabs.map(({ value, label }) => (
+                <Tabs.TabPane tab={$t(label)} key={value} />
               ))}
             </Tabs>
           </GridCol>
@@ -78,7 +57,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
             </UI.ThresholdTitle>
           </GridCol>
           <GridCol col={{ span: 24 }}>
-            <Kpis tab={selectedTab as HealthTab} filters={healthPageFilters}/>
+            <Kpis tab={selectedTab as CategoryTab} filters={healthPageFilters}/>
           </GridCol>
         </HealthPageContextProvider>
       </GridRow>

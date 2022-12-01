@@ -1,5 +1,5 @@
 import GuestsTable from './GuestsTable'
 
-export function ApGuestsTab () {
+export function GuestsTab () {
   return <GuestsTable />
 }

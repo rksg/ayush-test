@@ -7,7 +7,7 @@ import { mockServer, render } from '@acx-ui/test-utils'
 
 import { GuestClient } from '../../__tests__/fixtures'
 
-import { ApGuestsTab } from '.'
+import { GuestsTab } from '.'
 
 const mockedUsedNavigate = jest.fn()
 
@@ -32,7 +32,7 @@ describe('AP Guest Tab', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ApGuestsTab /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><GuestsTab /></Provider>, { route: { params } })
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
     expect(asFragment()).toMatchSnapshot()
