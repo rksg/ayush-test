@@ -76,6 +76,14 @@ jest.mock('./pages/Users/Wifi/ApDetails', () => () => {
   return <div data-testid='UserApDetails' />
 })
 
+jest.mock('./pages/Devices/Edge/AddEdge', () => () => {
+  return <div data-testid='AddEdge' />
+})
+
+jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
+  return <div data-testid='EditEdge' />
+})
+
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/aps', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -115,6 +123,36 @@ describe('RcRoutes: Devices', () => {
       }
     })
     expect(screen.getByTestId('SwitchesTable')).toBeVisible()
+  })
+
+  test('should navigate to devices AddEdge', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/devices/edge/add',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AddEdge')).toBeVisible()
+  })
+
+  test('should navigate to devices EditEdge', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/devices/edge/serialNumber/edit/activeTab',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EditEdge')).toBeVisible()
+  })
+
+  test('should navigate to devices EditEdge with subTab', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/devices/edge/serialNumber/edit/activeTab/activeSubTab',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EditEdge')).toBeVisible()
   })
 
 })
