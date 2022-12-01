@@ -31,6 +31,6 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortalProfileList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/portalServiceProfiles111'
+    url: '/api/tenant/:tenantId/wifi/portalServiceProfiles'
   }
 }
