@@ -5,7 +5,7 @@ const macRegApiBaseUrl = '/api/macRegistrationPools'
 export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   getMacRegistrationPools: {
     method: 'get',
-    url: macRegApiBaseUrl + '?size=:size&page=:page'
+    url: macRegApiBaseUrl
   },
   createMacRegistrationPool: {
     method: 'post',

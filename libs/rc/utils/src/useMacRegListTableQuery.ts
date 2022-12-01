@@ -9,17 +9,18 @@ import { UseQuery }          from '@acx-ui/types'
 import { PAGINATION, SORTER } from './useTableQuery'
 
 
-export interface MacTableResult <ResultItemType, ResultExtra = unknown> {
-  content: ResultItemType[]
-  number: number
-  totalElements: number
-  extra?: ResultExtra
-  size: number
-}
-
 interface RequestPayload <Payload = unknown> {
   params?: Params<string>
   payload?: Payload
+}
+
+export interface MacTableResult <ResultItemType, ResultExtra = unknown> {
+  content: ResultItemType[]
+  number: number,
+  totalElements: number,
+  totalPages: number,
+  extra?: ResultExtra
+  size: number
 }
 
 export interface MAC_TABLE_QUERY <
@@ -40,7 +41,8 @@ export interface MAC_TABLE_QUERY <
 
 interface PARAMS {
   page: string,
-  size: string
+  size: string,
+  sort?: string
 }
 
 const DEFAULT_PARAMS: PARAMS = {
@@ -103,7 +105,7 @@ export function useMacRegListTableQuery <
       if (data) {
         setPagination({
           ...DEFAULT_PAGINATION,
-          current: data.number+1,
+          current: data.number + 1,
           total: data.totalElements,
           pageSize: data.size
         })
@@ -118,10 +120,6 @@ export function useMacRegListTableQuery <
     sorters
   ) => {
     const currentPage = pagination?.current ? pagination.current - 1 : 0
-    setApiParams({
-      page: `${currentPage}`,
-      size: `${pagination.pageSize}`
-    })
     // Implementation expect there will only be 1 sortable column
     const sorter = Array.isArray(sorters)
       ? sorters[0]
@@ -135,6 +133,13 @@ export function useMacRegListTableQuery <
       page: pagination.current,
       pageSize: pagination.pageSize
     }
+
+    setApiParams({
+      page: `${currentPage}`,
+      size: `${pagination.pageSize}`,
+      sort: `${sorterKey},${sorter.order ? transferSorter(sorter.order) : DEFAULT_SORTER.sortOrder}`
+    })
+
     setPayload({ ...payload, ...tableProps })
   }
 

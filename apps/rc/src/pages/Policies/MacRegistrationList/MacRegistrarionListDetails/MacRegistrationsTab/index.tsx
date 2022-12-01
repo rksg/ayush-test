@@ -89,8 +89,9 @@ export function MacRegistrationsTab () {
   const columns: TableProps<MacRegistration>['columns'] = [
     {
       title: $t({ defaultMessage: 'Mac Address' }),
-      key: 'mac_addresses',
-      dataIndex: 'mac_addresses',
+      key: 'macAddress',
+      dataIndex: 'macAddress',
+      sorter: true,
       render: function (data, row) {
         return row.macAddress
       }
@@ -114,7 +115,7 @@ export function MacRegistrationsTab () {
       title: $t({ defaultMessage: 'Username' }),
       key: 'username',
       dataIndex: 'username',
-      align: 'center',
+      sorter: true,
       render: function (data, row) {
         return row.username
       }
@@ -137,8 +138,9 @@ export function MacRegistrationsTab () {
     },
     {
       title: $t({ defaultMessage: 'Expiration Date' }),
-      key: 'expiration_date',
-      dataIndex: 'expiration_date',
+      key: 'expirationDate',
+      dataIndex: 'expirationDate',
+      sorter: true,
       render: function (data, row) {
         return toTimeString(row.expirationDate)
       }

@@ -31,9 +31,8 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Mac Addresses' }),
-      key: 'mac_addresses',
-      dataIndex: 'mac_addresses',
-      sorter: true,
+      key: 'registrationCount',
+      dataIndex: 'registrationCount',
       align: 'center',
       render: function (data, row) {
         return row.registrationCount
