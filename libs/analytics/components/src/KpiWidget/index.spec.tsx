@@ -55,6 +55,15 @@ describe('KpiWidget', () => {
     expect(asFragment().querySelector('svg')).toMatchSnapshot('svg')
   })
 
+  it('should render component properly with sparkline with no chart style', async () => {
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { timeSeries: { data: connectionSuccessFixture } }
+    })
+    render( <Provider>
+      <KpiWidget name='connectionSuccess' filters={filters} type='no-chart-style'/></Provider>)
+    await screen.findByText('Connection Success')
+  })
+
   it('should render component having healthy icon', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { timeSeries: { data: clientThroughputFixture } }
