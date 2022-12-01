@@ -6,6 +6,7 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   getClientHealthClass,
+  Guest,
   RequestPayload,
   TableResult,
   transformByte
@@ -16,6 +17,7 @@ export const baseClientApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'clientApi',
   refetchOnMountOrArgChange: true,
+  tagTypes: ['Client', 'Guest'],
   endpoints: () => ({ })
 })
 
@@ -48,6 +50,19 @@ export const clientApi = baseClientApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: clientListQuery.error as FetchBaseQueryError }
       }
+    }),
+    getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getGuestsList,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Guest', id: 'LIST' }]
     })
 
   })
@@ -82,5 +97,6 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   }
 }
 export const {
-  useGetClientListQuery
+  useGetClientListQuery,
+  useGetGuestsListQuery
 } = clientApi
