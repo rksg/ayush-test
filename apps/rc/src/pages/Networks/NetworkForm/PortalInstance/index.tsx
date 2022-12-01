@@ -21,7 +21,7 @@ import PortalServiceModal from './PortalServiceModal'
 
 
 const PortalInstance = (props:{
-  updatePortalData:(value:Demo)=>void
+  updatePortalData?:(value:Demo)=>void
 }) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -54,7 +54,7 @@ const PortalInstance = (props:{
       photo: currentPortal?.demo.photo || Photo,
       wifi4EU: currentPortal?.demo.wifi4EU || WiFi4eu }
     setDemoValue(tempValue)
-    props.updatePortalData(tempValue)
+    props.updatePortalData?.(tempValue)
   }
   useEffect(()=>{
     if(data){

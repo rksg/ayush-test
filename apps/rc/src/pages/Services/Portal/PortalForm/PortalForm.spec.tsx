@@ -34,13 +34,10 @@ describe('PortalForm', () => {
     expect(asFragment()).toMatchSnapshot()
 
     //step 1 setting form
-    await userEvent.type(screen.getByRole('textbox', { name: 'Service Name' }),'create Portal test')
-    await userEvent.click(screen.getByText('Reset'))
-    await userEvent.click(screen.getByText('Next'))
-
-    //summary
-    await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Service Name' }),'create Portal test')
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByText('Finish'))
 
 
   })

@@ -87,7 +87,6 @@ export const PopoverButton = styled(UIButton)`
 `
 export const LayoutContent = styled(AntLayout)`
   border: 1px solid var(--acx-neutrals-50);
-  width: 95%;
   background-color: var(--acx-primary-black) !important;
   .ant-layout{
     background-color: var(--acx-primary-black);
@@ -95,7 +94,6 @@ export const LayoutContent = styled(AntLayout)`
   background-position: center;
   background-repeat: no-repeat;
   align-items: center;
-  min-width:1100px;
   height:auto;
   margin-bottom:10px;
 `
@@ -137,12 +135,10 @@ export const Select = styled(AntSelect)`
 `
 export const LayoutHeader = styled.div`
   background-color: var(--acx-primary-white);
-  width: 95%;
   height: 50px;
   padding: 10px 0 0 10px;
   border: 1px solid var(--acx-neutrals-50);
   border-bottom:0px;
-  min-width:1100px;
 `
 
 export const FieldExtraTooltip = styled.div`

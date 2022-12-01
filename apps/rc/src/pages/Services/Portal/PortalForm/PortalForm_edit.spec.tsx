@@ -42,13 +42,13 @@ const portalResponse: Portal = {
     componentDisplay: defaultComDisplay ,
     displayLang: 'English',
     alternativeLang: {
-      Czech: true,
+      Czech: false,
       ChineseTraditional: false,
-      Finnish: true,
-      French: true,
-      German: true,
-      Greek: true,
-      Hungarian: true,
+      Finnish: false,
+      French: false,
+      German: false,
+      Greek: false,
+      Hungarian: false,
       Italian: false
     }
   }
@@ -88,7 +88,7 @@ describe('PortalForm', () => {
     fillInBeforeSettings('open portal edit test')
 
     await screen.findByRole('heading', { level: 3, name: 'Settings' })
-    await userEvent.click(screen.getByText('Reset'))
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 })

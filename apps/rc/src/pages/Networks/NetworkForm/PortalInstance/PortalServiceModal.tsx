@@ -19,7 +19,7 @@ export default function PortalServiceModal (props:{
   const [visible, setVisible]=useState(false)
   const getContent = <PortalForm networkView={true}
     backToNetwork={(data)=>{
-      setVisible(false)
+      onClose()
       if(data)updateInstance(data)
     }}/>
 
