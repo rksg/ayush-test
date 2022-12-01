@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 
 import { useIntl }                                            from 'react-intl'
 import { useParams }                                          from 'react-router-dom'
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc'
+import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
 
 import { showActionModal, Table, TableProps }                          from '@acx-ui/components'
 import { ListSolid }                                                   from '@acx-ui/icons'
@@ -114,9 +114,12 @@ const RuleTable = (props: RuleTableProps) => {
     onClick: handleAddAction
   }]
 
-  const SortableItem = SortableElement((props: any) => <tr {...props} />)
-  const SortContainer = SortableContainer((props: any) => <tbody {...props} />)
+  // @ts-ignore
+  const SortableItem = SortableElement((props: SortableElementProps) => <tr {...props} />)
+  // @ts-ignore
+  const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const DraggableContainer = (props: any) => {
     return <SortContainer
       useDragHandle
@@ -133,6 +136,7 @@ const RuleTable = (props: RuleTableProps) => {
     />
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const DraggableBodyRow = (props: any) => {
     const { className, style, ...restProps } = props
     const index = state.rules.findIndex((x) => x.name === restProps['data-row-key'])
