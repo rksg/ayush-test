@@ -4,7 +4,9 @@ import styled    from 'styled-components/macro'
 
 import {
   ArrowsOut,
-  PhotoSolid
+  PhotoSolid,
+  Plus,
+  Minus
 } from '@acx-ui/icons'
 
 export const StyledSpace = styled(Space)`
@@ -54,6 +56,20 @@ path{
 }
 `
 
+export const PlusIcon = styled(Plus)`
+  path {
+    stroke: #333333;
+    fill: #333333;
+  }
+`
+
+export const MinusIcon = styled(Minus)`
+  path {
+    stroke: #333333;
+    fill: #333333;
+  }
+`
+
 export const AppContainer = styled.div`
   position: absolute;
   top: 0;
@@ -96,16 +112,14 @@ export const AppContainer = styled.div`
     -webkit-appearance: none;
     -moz-appearance: none;
     height: 2px;
-    border-top: 1px solid var(--acx-neutrals-25);
-    border-bottom: 1px solid var(--acx-neutrals-25);
     background: var(--acx-accents-blue-50);
     width: 100%;
+    accent-color: #F55050;
   }
   
   .zoom-range::-moz-range-thumb {
     -webkit-appearance: none;
     -moz-appearance: none;
-    border: 1px solid var(--acx-accents-blue-50);
     background: var(--acx-accents-blue-50);
     border-radius: 50%;
     width: 12px;
@@ -116,18 +130,11 @@ export const AppContainer = styled.div`
   .zoom-range::-webkit-slider-thumb {
     -webkit-appearance: none;
     -moz-appearance: none;
-    border: 1px solid var(--acx-accents-blue-50);
     background: var(--acx-accents-blue-50);
     border-radius: 50%;
     width: 12px;
     height: 12px;
     transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  }
-  
-  .controls:hover input[type='range']::-webkit-slider-thumb {
-    box-shadow: 0px 0px 0px 8px rgba(63, 81, 181, 0.16);
-    border-radius: 50%;
-    cursor: pointer;
   }
   
   .controls:hover input[type='range']::-moz-range-thumb {

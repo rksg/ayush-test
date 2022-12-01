@@ -6,10 +6,6 @@ import { useIntl }          from 'react-intl'
 
 import { Button, Drawer } from '@acx-ui/components'
 import {
-  Plus,
-  Minus
-} from '@acx-ui/icons'
-import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
   useDeleteApPhotoMutation,
@@ -19,8 +15,8 @@ import {
 import { generateHexKey } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 
-import { getCroppedImg }           from './cropImage'
-import { AppContainer, FooterDiv } from './styledComponents'
+import { getCroppedImg }                                from './cropImage'
+import { AppContainer, FooterDiv, PlusIcon, MinusIcon } from './styledComponents'
 
 interface ApPhotoDrawerProps {
   visible: boolean
@@ -167,7 +163,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
               type='link'
               size='middle'
               onClick={() => zoom > 1 && setZoom(zoom - 0.1)}
-              icon={<Minus />}
+              icon={<MinusIcon />}
             />
             <input
               type='range'
@@ -187,7 +183,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
               type='link'
               size='middle'
               onClick={() => zoom < 3 && setZoom(zoom + 0.1)}
-              icon={<Plus />}
+              icon={<PlusIcon />}
             />
           </div>
           <div className='description' style={{ top: '550px' }}>

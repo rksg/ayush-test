@@ -133,15 +133,7 @@ export function ApPhoto () {
         </StyledSpace>
         <PhotoDiv></PhotoDiv>
         <PhotoDiv>
-          {defaultImageUrl !== '' && activeImage[0] &&
-            <Image
-              preview={{ visible: false, mask: null }}
-              src={defaultImageUrl}
-              style={{ cursor: 'pointer' }}
-              data-testid='image1'
-            />
-          }
-          {imageUrl !== '' && activeImage[1] &&
+          {imageUrl !== '' && activeImage[0] &&
             <Image
               preview={{ visible: false, mask: null }}
               src={imageUrl}
@@ -150,20 +142,28 @@ export function ApPhoto () {
               data-testid='image2'
             />
           }
+          {defaultImageUrl !== '' && activeImage[1] &&
+            <Image
+              preview={{ visible: false, mask: null }}
+              src={defaultImageUrl}
+              style={{ cursor: 'pointer' }}
+              data-testid='image1'
+            />
+          }
           <DotsDiv>
-            {defaultImageUrl !== '' &&
-              <div
-                className={`dot ${activeImage[0] ? 'active-dot' : ''}`}
-                onClick={() => imageUrl !== '' ?
-                  setActiveImage([true, false]) : setActiveImage([true])}
-                data-testid='dot1'>
-              </div>
-            }
             {imageUrl !== '' &&
               <div
-                className={`dot ${activeImage[1] ? 'active-dot' : ''}`}
-                onClick={() => setActiveImage([false, true])}
+                className={`dot ${activeImage[0] ? 'active-dot' : ''}`}
+                onClick={() => setActiveImage([true, false])}
                 data-testid='dot2'>
+              </div>
+            }
+            {defaultImageUrl !== '' &&
+              <div
+                className={`dot ${activeImage[1] ? 'active-dot' : ''}`}
+                onClick={() => imageUrl !== '' ?
+                  setActiveImage([false, true]) : setActiveImage([true])}
+                data-testid='dot1'>
               </div>
             }
           </DotsDiv>

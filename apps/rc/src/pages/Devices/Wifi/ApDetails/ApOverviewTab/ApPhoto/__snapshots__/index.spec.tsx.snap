@@ -100,20 +100,10 @@ exports[`ApPhoto should upload photo correctly 1`] = `
             class="styledComponents__PhotoDiv-sc-43e4ge-1 dAKIJA"
           >
             <div
-              class="ant-image"
-              data-testid="image1"
-            >
-              <img
-                class="ant-image-img"
-                src="/ap/sample.png"
-                style="cursor: pointer;"
-              />
-            </div>
-            <div
-              class="styledComponents__DotsDiv-sc-43e4ge-6 eXxbzO"
+              class="styledComponents__DotsDiv-sc-43e4ge-8 gxhvFM"
             >
               <div
-                class="dot active-dot"
+                class="dot "
                 data-testid="dot1"
               />
             </div>
