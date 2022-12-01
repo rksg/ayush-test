@@ -15,7 +15,6 @@ import Photo                     from '../../../../assets/images/portal-demo/Por
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
 import Logo                      from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
-import { PortalSummaryForm }     from '../PortalSummary/PortalSummaryForm'
 
 import PortalFormContext from './PortalFormContext'
 import PortalSettingForm from './PortalSettingForm'
@@ -122,13 +121,6 @@ export const PortalForm = (props:{
               formRef.current?.setFieldsValue({ demo: { ...portalData.demo } })
             }}/>
           </StepsForm.StepForm>
-
-          {!editMode&&<StepsForm.StepForm
-            name='summary'
-            title={$t({ defaultMessage: 'Summary' })}
-          >
-            <PortalSummaryForm summaryData={portalData}/>
-          </StepsForm.StepForm>}
         </StepsForm>
       </PortalFormContext.Provider>
     </>
