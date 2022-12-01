@@ -66,7 +66,7 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
     </Form.Item>
     <Form.Item
       label={$t({ defaultMessage: 'Type' })}
-      name='type'
+      name='bridgeService'
       dependencies={['toVlan', 'fromVlan']}
       rules={[
         {

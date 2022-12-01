@@ -24,7 +24,7 @@ export default function MdnsProxyInstances () {
     useQuery: useApListQuery,
     defaultPayload: {
       // TODO: API is not ready to return these fields
-      // fields: ['name', 'serialNumber', 'mdnsProxyServiceId', 'mdnsProxyServiceName', 'forwardingRules'],
+      // fields: ['name', 'serialNumber', 'mdnsProxyServiceId', 'mdnsProxyServiceName', 'rules'],
       fields: ['name', 'serialNumber'],
       filters: { venueId: [params.venueId] }
     }
@@ -65,8 +65,8 @@ export default function MdnsProxyInstances () {
     },
     {
       title: $t({ defaultMessage: 'Forwarding rules' }),
-      dataIndex: 'forwardingRules',
-      key: 'forwardingRules',
+      dataIndex: 'rules',
+      key: 'rules',
       sorter: true,
       render: () => {
         // TODO: API is not ready, this is mocked data for display

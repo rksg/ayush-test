@@ -10,14 +10,14 @@ import {
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockedFormData } from '../MdnsProxyForm/__tests__/fixtures'
+import { mockedGetApiResponse } from '../MdnsProxyForm/__tests__/fixtures'
 
 import MdnsProxyDetail from './MdnsProxyDetail'
 
 mockServer.use(
   rest.get(
     MdnsProxyUrls.getMdnsProxy.url,
-    (req, res, ctx) => res(ctx.json({ ...mockedFormData }))
+    (req, res, ctx) => res(ctx.json({ ...mockedGetApiResponse }))
   )
 )
 

@@ -49,11 +49,6 @@ export function MdnsProxySettingsForm () {
           children={<Input />}
         />
         <Form.Item
-          name='tags'
-          label={$t({ defaultMessage: 'Tags' })}
-          children={<Input />}
-        />
-        <Form.Item
           name='forwardingRules'
           label={$t({ defaultMessage: 'Forwarding Rules' })}
         >

@@ -24,7 +24,11 @@ import {
   PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
-  WifiCallingFormContextType, WifiCallingSetting
+  WifiCallingFormContextType,
+  WifiCallingSetting,
+  convertMdnsProxyFormDataToApiPayload,
+  MdnsProxyGetApiResponse,
+  convertApiPayloadToMdnsProxyFormData
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -158,7 +162,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: MdnsProxyFormData) {
+      transformResponse (response: MdnsProxyGetApiResponse) {
+        const result = convertApiPayloadToMdnsProxyFormData(response)
+
         if (!result.forwardingRules) {
           return result
         }
@@ -176,9 +182,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MdnsProxyUrls.updateMdnsProxy, params)
+        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
         return {
           ...req,
-          body: payload
+          body: convertedPayload
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
@@ -209,9 +216,11 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           payload.forwardingRules = payload.forwardingRules.map(r => _.omit(r, 'id'))
         }
 
+        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
+
         return {
           ...req,
-          body: payload
+          body: convertedPayload
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]

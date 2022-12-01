@@ -54,7 +54,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     })
 
     const ruleToAdd: MdnsProxyForwardingRule = {
-      type: MdnsProxyForwardingRuleTypeEnum.AIRPLAY,
+      bridgeService: MdnsProxyForwardingRuleTypeEnum.AIRPLAY,
       fromVlan: 1,
       toVlan: 2
     }
@@ -62,7 +62,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     const setRule = jest.fn()
 
     const { result: fakeRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.type])
+      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.bridgeService])
     })
 
     render(
@@ -88,7 +88,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     await act(async () => {
       await userEvent.click(screen.getByRole('button', { name: 'Add' }))
       expect(setRule).toHaveBeenCalledWith({
-        type: ruleToAdd.type,
+        bridgeService: ruleToAdd.bridgeService,
         fromVlan: ruleToAdd.fromVlan,
         toVlan: ruleToAdd.toVlan
       })

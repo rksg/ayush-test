@@ -26,19 +26,13 @@ export function MdnsProxySummary () {
           <Col span={24}>
             <Subtitle level={4}>{ $t({ defaultMessage: 'Settings' }) }</Subtitle>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <Form.Item
               label={$t({ defaultMessage: 'Service Name:' })}
               children={currentData.name}
             />
           </Col>
-          <Col span={8}>
-            <Form.Item
-              label={$t({ defaultMessage: 'Tags:' })}
-              children={currentData.tags}
-            />
-          </Col>
-          <Col span={16}>
+          <Col span={20}>
             <Form.Item
               label={$t({ defaultMessage: 'Forwarding Rules:' })}
             >
@@ -55,7 +49,7 @@ export function MdnsProxySummary () {
               { $t({ defaultMessage: 'Venues & APs ({apCount})' }, { apCount: totalApCount }) }
             </Subtitle>
           </Col>
-          <Col span={10}>
+          <Col span={14}>
             <MdnsProxySummaryVenues scope={currentData.scope ?? []} />
           </Col>
         </Row>

@@ -6,6 +6,7 @@ import {
 export * from './dhcpService'
 export * from './wifiCallingService'
 export * from './networkSegmentationService'
+export * from './mdnsProxyService'
 
 
 export enum AccessEnum {

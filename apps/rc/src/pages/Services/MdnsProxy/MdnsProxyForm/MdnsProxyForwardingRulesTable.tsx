@@ -46,8 +46,8 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
   const columns: TableProps<MdnsProxyForwardingRule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'bridgeService',
+      key: 'bridgeService',
       sorter: true,
       render: (data) => {
         return $t(ruleTypeLabelMapping[data as MdnsProxyForwardingRuleTypeEnum])
@@ -82,7 +82,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'Rule' }),
-          entityValue: $t(ruleTypeLabelMapping[selectedRows[0].type])
+          entityValue: $t(ruleTypeLabelMapping[selectedRows[0].bridgeService])
         },
         onOk: () => {
           const newRules = rules.filter((r: MdnsProxyForwardingRule) => {
@@ -108,7 +108,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
           isRuleUnique={(comingRule: MdnsProxyForwardingRule) => {
             // eslint-disable-next-line max-len
             const hasDuplicationRule = rules.some((rule: MdnsProxyForwardingRule) => {
-              return comingRule.type === rule.type
+              return comingRule.bridgeService === rule.bridgeService
                 && comingRule.fromVlan === rule.fromVlan
                 && comingRule.toVlan === rule.toVlan
                 && comingRule.id !== rule.id

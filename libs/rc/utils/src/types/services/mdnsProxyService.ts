@@ -24,9 +24,11 @@ export enum MdnsProxyForwardingRuleTypeEnum {
 
 export interface MdnsProxyForwardingRule {
   id?: string;
-  type: MdnsProxyForwardingRuleTypeEnum;
+  bridgeService: MdnsProxyForwardingRuleTypeEnum;
   fromVlan: number;
   toVlan: number;
+  mDnsName?: string;
+  mDnsProtocol?: string;
 }
 
 export interface MdnsProxyScopeData {
@@ -38,7 +40,19 @@ export interface MdnsProxyScopeData {
 export interface MdnsProxyFormData {
   id?: string;
   name: string;
-  tags?: string;
   forwardingRules?: MdnsProxyForwardingRule[];
   scope?: MdnsProxyScopeData[];
+}
+
+export interface MdnsProxyCreateApiPayload {
+  serviceName: string;
+  rules?: MdnsProxyForwardingRule[];
+  aps?: string[]
+}
+
+export interface MdnsProxyGetApiResponse {
+  id: string;
+  serviceName: string;
+  rules?: MdnsProxyForwardingRule[];
+  aps?: { ap: string, venue: string }[]
 }
