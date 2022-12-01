@@ -1064,7 +1064,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                               class="ant-cascader-menu-item"
                               data-path-key="connection"
                               role="menuitemcheckbox"
-                              title="Client Connection"
+                              title="Connection"
                             >
                               <span
                                 class="ant-cascader-checkbox"
@@ -1076,7 +1076,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                               <div
                                 class="ant-cascader-menu-item-content"
                               >
-                                Client Connection
+                                Connection
                               </div>
                             </li>
                             <li
@@ -1102,7 +1102,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                             <li
                               aria-checked="false"
                               class="ant-cascader-menu-item"
-                              data-path-key="Infrastructure"
+                              data-path-key="infrastructure"
                               role="menuitemcheckbox"
                               title="Infrastructure"
                             >

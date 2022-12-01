@@ -1,25 +1,14 @@
 import { defineMessage } from 'react-intl'
 
+import { categoryOptions } from '@acx-ui/analytics/utils'
+
 export const ClientTroubleShootingConfig = {
   selection: [
     {
       selectionType: 'category',
       defaultValue: [],
       placeHolder: defineMessage({ defaultMessage: 'All Categories' }),
-      options: [
-        {
-          value: 'connection',
-          label: defineMessage({ defaultMessage: 'Client Connection' })
-        },
-        {
-          value: 'performance',
-          label: defineMessage({ defaultMessage: 'Performance' })
-        },
-        {
-          value: 'Infrastructure',
-          label: defineMessage({ defaultMessage: 'Infrastructure' })
-        }
-      ]
+      options: categoryOptions
     },
     {
       selectionType: 'type',
