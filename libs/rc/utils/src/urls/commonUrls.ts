@@ -235,6 +235,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'
   },
+  updateUserProfile: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/user-profile'
+  },
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'

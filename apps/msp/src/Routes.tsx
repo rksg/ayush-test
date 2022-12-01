@@ -7,6 +7,7 @@ import { Integrators }     from './pages/Integrators'
 import Layout              from './pages/Layout'
 import { LicensesTab }     from './pages/LicensesTab'
 import { MspCustomers }    from './pages/MspCustomers'
+import { UserProfile }     from './pages/UserProfile'
 import { VarCustomers }    from './pages/VarCustomers'
 
 export default function MspRoutes () {
@@ -25,6 +26,7 @@ export default function MspRoutes () {
       <Route path='deviceinventory' element={<DeviceInventory />} />
       <Route path='msplicenses' element={<LicensesTab />} />
       <Route path='portalSetting' element={<div>Portal Setting</div>} />
+      <Route path='userprofile' element={<UserProfile />} />
     </Route>
   )
   return (

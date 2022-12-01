@@ -3,7 +3,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  ProfileDataToUpdate,
   RequestPayload,
+  UserProfile,
   UserSettings
 } from '@acx-ui/rc/utils'
 
@@ -33,7 +35,31 @@ export const userApi = baseUserApi.injectEndpoints({
         })
         return result
       }
+    }),
+    getUserProfile: build.query<UserProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getUserProfile,
+          params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    updateUserProfile: build.mutation<ProfileDataToUpdate, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateUserProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
-export const { useGetAllUserSettingsQuery } = userApi
+export const {
+  useGetAllUserSettingsQuery,
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation
+} = userApi
