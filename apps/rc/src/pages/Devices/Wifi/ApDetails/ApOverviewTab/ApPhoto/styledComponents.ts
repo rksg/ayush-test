@@ -94,6 +94,16 @@ export const AppContainer = styled.div`
     height: 40px;
     display: flex;
     align-items: center;
+
+    .ant-slider-handle:before{
+      content: ''
+    }
+
+    svg:hover{
+      path {
+        stroke-width: 2px; /*Between 1px and 2px*/
+      }
+    }
   }
 
   .description {
@@ -106,39 +116,6 @@ export const AppContainer = styled.div`
   
   .slider {
     padding: 22px 0px;
-  }
-  
-  .zoom-range {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    height: 2px;
-    background: var(--acx-accents-blue-50);
-    width: 100%;
-    accent-color: #F55050;
-  }
-  
-  .zoom-range::-moz-range-thumb {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background: var(--acx-accents-blue-50);
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  }
-  
-  .zoom-range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background: var(--acx-accents-blue-50);
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  }
-  
-  .controls:hover input[type='range']::-moz-range-thumb {
-    box-shadow: 0px 0px 0px 8px rgba(63, 81, 181, 0.16);
   }
 `
 

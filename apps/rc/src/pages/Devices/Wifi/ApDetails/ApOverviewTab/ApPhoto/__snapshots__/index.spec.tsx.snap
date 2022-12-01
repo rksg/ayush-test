@@ -104,7 +104,7 @@ exports[`ApPhoto should upload photo correctly 1`] = `
             >
               <div
                 class="dot "
-                data-testid="dot1"
+                data-testid="dot2"
               />
             </div>
             <div

@@ -1,8 +1,8 @@
 import { useCallback, useState, useEffect } from 'react'
 
-import { Row, Col, Upload } from 'antd'
-import Cropper              from 'react-easy-crop'
-import { useIntl }          from 'react-intl'
+import { Row, Col, Upload, Slider } from 'antd'
+import Cropper                      from 'react-easy-crop'
+import { useIntl }                  from 'react-intl'
 
 import { Button, Drawer } from '@acx-ui/components'
 import {
@@ -165,18 +165,18 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
               onClick={() => zoom > 1 && setZoom(zoom - 0.1)}
               icon={<MinusIcon />}
             />
-            <input
-              type='range'
+            <Slider
+              data-testid='zoomSlider'
+              style={{ width: '180px' }}
+              defaultValue={1}
               value={zoom}
               min={1}
               max={3}
               step={0.1}
-              aria-labelledby='Zoom'
-              onChange={(e) => {
-                setZoom(parseFloat(e.target.value))
+              tooltipVisible={false}
+              onChange={(value: number) => {
+                setZoom(value)
               }}
-              className='zoom-range'
-              data-testid='zoomSlider'
             />
             <Button
               data-testid='image-zoom-in'

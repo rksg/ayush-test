@@ -139,7 +139,7 @@ export function ApPhoto () {
               src={imageUrl}
               style={{ cursor: 'pointer' }}
               onDoubleClick={() => setDrawerVisible(true)}
-              data-testid='image2'
+              data-testid='image1'
             />
           }
           {defaultImageUrl !== '' && activeImage[1] &&
@@ -147,7 +147,7 @@ export function ApPhoto () {
               preview={{ visible: false, mask: null }}
               src={defaultImageUrl}
               style={{ cursor: 'pointer' }}
-              data-testid='image1'
+              data-testid='image2'
             />
           }
           <DotsDiv>
@@ -155,7 +155,7 @@ export function ApPhoto () {
               <div
                 className={`dot ${activeImage[0] ? 'active-dot' : ''}`}
                 onClick={() => setActiveImage([true, false])}
-                data-testid='dot2'>
+                data-testid='dot1'>
               </div>
             }
             {defaultImageUrl !== '' &&
@@ -163,7 +163,7 @@ export function ApPhoto () {
                 className={`dot ${activeImage[1] ? 'active-dot' : ''}`}
                 onClick={() => imageUrl !== '' ?
                   setActiveImage([false, true]) : setActiveImage([true])}
-                data-testid='dot1'>
+                data-testid='dot2'>
               </div>
             }
           </DotsDiv>
