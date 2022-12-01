@@ -1,4 +1,5 @@
 import { ConfigProvider }                    from '@acx-ui/components'
+import { UserProfile }                       from '@acx-ui/msp/components'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
@@ -7,7 +8,6 @@ import { Integrators }     from './pages/Integrators'
 import Layout              from './pages/Layout'
 import { LicensesTab }     from './pages/LicensesTab'
 import { MspCustomers }    from './pages/MspCustomers'
-import { UserProfile }     from './pages/UserProfile'
 import { VarCustomers }    from './pages/VarCustomers'
 
 export default function MspRoutes () {

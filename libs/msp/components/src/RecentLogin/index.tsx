@@ -2,22 +2,31 @@ import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
 import {
-  Loader,
+  // Loader,
   Table,
   TableProps
 } from '@acx-ui/components'
-import {
-  useInviteCustomerListQuery
-} from '@acx-ui/rc/services'
-import {
-  VarCustomer,
-  useTableQuery
-} from '@acx-ui/rc/utils'
+// import {
+//   useEventListQuery
+// } from '@acx-ui/rc/services'
+// import {
+//   useTableQuery
+// } from '@acx-ui/rc/utils'
+
+export interface EventList {
+  adminName: string;
+  entity_id: string;
+  entity_type: string;
+  id: string;
+  message: string;
+  raw_event: string;
+  severity: string;
+}
 
 export function RecentLogin () {
   const { $t } = useIntl()
 
-  const columnsRecentLogin: TableProps<VarCustomer>['columns'] = [
+  const columnsRecentLogin: TableProps<EventList>['columns'] = [
     {
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'tenantName',
@@ -51,38 +60,38 @@ export function RecentLogin () {
     }
   ]
 
-  const invitationPayload = {
-    searchString: '',
-    fields: ['tenantName', 'tenantEmail'],
-    filters: {
-      status: ['DELEGATION_STATUS_INVITED'],
-      delegationType: ['DELEGATION_TYPE_VAR'],
-      isValid: [true]
-    }
-  }
+  // const eventListPayload = {
+  //   searchString: '',
+  //   fields: ['tenantName', 'tenantEmail'],
+  //   filters: {
+  //     status: ['DELEGATION_STATUS_INVITED'],
+  //     delegationType: ['DELEGATION_TYPE_VAR'],
+  //     isValid: [true]
+  //   }
+  // }
 
-  const PendingInvitaion = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useInviteCustomerListQuery,
-      defaultPayload: invitationPayload
-    })
+  const EventListTable = () => {
+    // const tableQuery = useTableQuery({
+    //   useQuery: useEventListQuery,
+    //   defaultPayload: eventListPayload
+    // })
 
     return (
-      <Loader states={[tableQuery]}>
-        <Table
-          columns={columnsRecentLogin}
-          dataSource={tableQuery.data?.data}
-          style={{ width: '600px' }}
-          rowKey='id'
-          type={'form'}
-        />
-      </Loader>
+      // <Loader states={[tableQuery]}>
+      <Table
+        columns={columnsRecentLogin}
+        // dataSource={tableQuery.data?.data}
+        style={{ width: '600px' }}
+        rowKey='id'
+        type={'form'}
+      />
+      // </Loader>
     )
   }
 
   return (
-    <div style={{ marginTop: '20px' }}>
-      <PendingInvitaion />
+    <div style={{ marginTop: '15px' }}>
+      <EventListTable />
     </div>
 
   )

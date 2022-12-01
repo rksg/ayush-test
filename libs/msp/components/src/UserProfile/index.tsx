@@ -10,9 +10,6 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import {
-  RecentLogin
-} from '@acx-ui/msp/components'
-import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation
 } from '@acx-ui/rc/services'
@@ -23,6 +20,10 @@ import {
 import {
   useParams
 } from '@acx-ui/react-router-dom'
+
+import {
+  RecentLogin
+} from '../RecentLogin'
 
 interface Map {
   [key: string]: string
@@ -115,7 +116,7 @@ export function UserProfile () {
       <StepsForm
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
       >
-        <StepsForm.StepForm style={{ marginTop: '20px' }}>
+        <StepsForm.StepForm style={{ marginTop: '15px' }}>
           <Row gutter={20}>
             <Col span={8}>
               <label>{$t({ defaultMessage: 'Receive notifications through:' })}</label>
@@ -184,7 +185,7 @@ export function UserProfile () {
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         onFinish={async () => handleUpdate()}
       >
-        <StepsForm.StepForm style={{ marginTop: '20px' }}>
+        <StepsForm.StepForm style={{ marginTop: '15px' }}>
           <Row gutter={20}>
             <Col span={8}>
               <Form.Item
@@ -250,6 +251,37 @@ export function UserProfile () {
     )
   }
 
+  const SecurityTab = () => {
+    return (
+      <StepsForm
+        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+      >
+        <StepsForm.StepForm style={{ marginTop: '15px' }}>
+          <Row gutter={20}>
+            <Col span={8}>
+              <h4 ><b>{$t({ defaultMessage: 'Multi-Factor Authentication' })}</b></h4>
+
+              <Form.Item style={{ marginTop: '15px' }}
+                name='mfa_status'
+                label={$t({ defaultMessage: 'Multi-Factor Authentication' })}
+                tooltip={$t({ defaultMessage:
+                  'This option is controlled by the Prime-Administrator(s) of this account.' +
+                  'If they turn it on, you will be able to manage here your authentication ' +
+                  'settings' })}
+                rules={[{
+                  required: false
+                }]}
+                children={
+                  <h4>Off</h4>
+                }
+              />
+            </Col>
+          </Row>
+        </StepsForm.StepForm>
+      </StepsForm>
+    )
+  }
+
   return (
     <>
       <PageHeader
@@ -258,7 +290,6 @@ export function UserProfile () {
       <UserData/>
 
       <Tabs style={{ marginTop: '25px' }}>
-        {/* <Tabs style={{ marginTop: '25px', display: 'flex', justifyContent: 'space-between' }}> */}
         <Tabs.TabPane tab={$t({ defaultMessage: 'Notfications' })} key='Notfications'>
           <NotificationTab />
         </Tabs.TabPane>
@@ -268,6 +299,7 @@ export function UserProfile () {
         </Tabs.TabPane>
 
         <Tabs.TabPane tab={$t({ defaultMessage: 'Security' })} key='Security'>
+          <SecurityTab />
         </Tabs.TabPane>
 
         <Tabs.TabPane tab={$t({ defaultMessage: 'Recent Logins' })} key='RecentLogins'>

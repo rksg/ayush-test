@@ -1,9 +1,11 @@
+import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
-  LayoutUI
+  LayoutUI,
+  Dropdown
 }                        from '@acx-ui/components'
 import { SplitProvider }    from '@acx-ui/feature-toggle'
 import {
@@ -11,13 +13,32 @@ import {
   QuestionMarkCircleSolid
 }                          from '@acx-ui/icons'
 import { AlarmsHeaderButton } from '@acx-ui/main/components'
-import { Outlet }             from '@acx-ui/react-router-dom'
+import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
 import { notAvailableMsg }    from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 
 function Layout () {
+  const userMenu = <Menu
+    items={[
+      { key: 'user-profile',
+        label: <TenantLink to='/userprofile/'>{useIntl().$t({ defaultMessage: 'User Profile' })}
+        </TenantLink>
+      },
+      { key: 'change-password',
+        disabled: true,
+        label: <TenantLink to='TODO'>{useIntl().$t({ defaultMessage: 'Change Password' })}
+        </TenantLink>
+      },
+      { type: 'divider' },
+      { key: 'logout',
+        disabled: true,
+        label: <TenantLink to='TODO'>{useIntl().$t({ defaultMessage: 'Log out' })}</TenantLink>
+      }
+    ]}
+  />
+
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
@@ -29,9 +50,13 @@ function Layout () {
         <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
           <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
         </Tooltip>
-        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+        {/* <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
           <LayoutUI.ButtonSolid disabled icon={<AccountCircleSolid />} />
-        </Tooltip>
+        </Tooltip> */}
+        <Dropdown overlay={userMenu}>{() =>
+          <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+        }</Dropdown>
+
       </>}
     />
   )

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { UserProfile }                       from '@acx-ui/msp/components'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import AnalyticsBase    from './pages/Analytics'
@@ -26,6 +27,7 @@ function AllRoutes () {
       <Route path='t/:tenantId' element={<Layout />}>
         <Route index element={<TenantNavigate replace to='/dashboard' />} />
         <Route path='dashboard' element={<Dashboard />} />
+        <Route path='userprofile' element={<UserProfile />} />
         <Route path='analytics/*' element={<AnalyticsBase />}>
           <Route path='*' element={<AnalyticsRoutes />} />
         </Route>
