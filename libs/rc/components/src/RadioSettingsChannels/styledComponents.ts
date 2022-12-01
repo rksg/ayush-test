@@ -132,7 +132,7 @@ const BarButton = styled(Button)`
   margin: 0 4px 3px 0;
 `
 
-export const Button5G = styled(BarButton)`
+export const BarButton5G = styled(BarButton)`
   border: 1px solid var(--acx-accents-orange-25);
   background: var(--acx-accents-orange-25);
   &[disabled] {
@@ -145,7 +145,7 @@ export const Button5G = styled(BarButton)`
     background: var(--acx-accents-orange-25);
   }
 `
-export const ButtonDFS = styled(BarButton)`
+export const BarButtonDFS = styled(BarButton)`
   border: 1px solid var(--acx-accents-orange-10);
   background: var(--acx-accents-orange-10);
   &[disabled] {

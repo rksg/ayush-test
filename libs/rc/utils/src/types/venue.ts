@@ -349,43 +349,43 @@ export interface TriBandSettings {
 }
 export interface VenueDefaultRegulatoryChannels {
   '2.4GChannels': {
-	[key: string]: string[]
+    [key: string]: string[]
   },
   '5GChannels': {
-	dfs: {
-	  [key: string]: string[]
-	},
-	indoor: {
-	  [key: string]: string[]
-	},
-	outdoor: {
-	  [key: string]: string[]
-	}
+    dfs: {
+      [key: string]: string[]
+    },
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   '5GLowerChannels': {
-	dfs: {
-	  [key: string]: string[]
-	},
-	indoor: {
-	  [key: string]: string[]
-	},
-	outdoor: {
-	  [key: string]: string[]
-	}
+    dfs: {
+      [key: string]: string[]
+    },
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   '5GUpperChannels': {
-	dfs: {
-	  [key: string]: string[]
-	},
-	indoor: {
-	  [key: string]: string[]
-	},
-	outdoor: {
-	  [key: string]: string[]
-	}
+    dfs: {
+      [key: string]: string[]
+    },
+    indoor: {
+      [key: string]: string[]
+		},
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   '6GChannels': {
-	[key: string]: string[]
+    [key: string]: string[]
   }
 }
 
@@ -408,10 +408,10 @@ export interface VenueDefaultRegulatoryChannelsForm {
 		scanInterval: number,
 		txPower: string
   },
-  radioParamsDual5G: {
+  radioParamsDual5G?: {
 		enabled: boolean,
-		inheritParamsLower5G: boolean,
-		radioParamsLower5G: {
+		inheritParamsLower5G?: boolean,
+		radioParamsLower5G?: {
 			combineChannels: boolean,
 			allowedIndoorChannels: string[],
 			allowedOutdoorChannels: string[],
@@ -421,8 +421,8 @@ export interface VenueDefaultRegulatoryChannelsForm {
 			scanInterval: number,
 			txPower: string
 		},
-		inheritParamsUpper5G: boolean,
-		radioParamsUpper5G: {
+		inheritParamsUpper5G?: boolean,
+		radioParamsUpper5G?: {
 			combineChannels: boolean,
 			allowedIndoorChannels: string[],
 			allowedOutdoorChannels: string[],
@@ -433,7 +433,7 @@ export interface VenueDefaultRegulatoryChannelsForm {
 			txPower: string
 		}
   },
-	radioParams6G: {
+	radioParams6G?: {
 	  method: string,
 	  scanInterval: number,
 	  allowedChannels: string[],
