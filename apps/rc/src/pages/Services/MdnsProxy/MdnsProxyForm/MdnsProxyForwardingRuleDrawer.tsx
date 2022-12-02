@@ -1,11 +1,16 @@
 import { useEffect } from 'react'
 
-import { Form, Input, InputNumber, Select } from 'antd'
-import { useIntl }                          from 'react-intl'
+import { Form, FormInstance, Input, InputNumber, Select } from 'antd'
+import { FormattedMessage, useIntl }                      from 'react-intl'
 
-import { Drawer }                                     from '@acx-ui/components'
-import { MdnsProxyForwardingRule, BridgeServiceEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                         from '@acx-ui/utils'
+import { Drawer, Tooltip }            from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import {
+  MdnsProxyForwardingRule,
+  BridgeServiceEnum,
+  BridgeServiceProtocolEnum
+} from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
@@ -21,114 +26,18 @@ export interface MdnsProxyForwardingRuleDrawerProps {
 export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDrawerProps) {
   const { $t } = useIntl()
   const {
-    rule = {},
+    rule,
     setRule,
     visible,
     setVisible,
     editMode,
-    isRuleUnique = () => true
+    isRuleUnique
   } = props
   const [ form ] = Form.useForm<MdnsProxyForwardingRule>()
-  const { Option } = Select
-
-  useEffect(() => {
-    form.setFieldsValue(rule)
-  }, [form, rule])
 
   const onClose = () => {
     setVisible(false)
   }
-
-  const ruleDuplicationValidator = async () => {
-    return isRuleUnique(form.getFieldsValue())
-      ? Promise.resolve()
-      : Promise.reject($t({ defaultMessage: 'Rule with same Type and VLAN IDs already exists' }))
-  }
-
-  const vlanDuplicationValidator = async () => {
-    const toVlan = form.getFieldValue('toVlan')
-    const fromVlan = form.getFieldValue('fromVlan')
-    return (toVlan && toVlan === fromVlan)
-      ? Promise.reject($t({ defaultMessage: 'From VLAN and To VLAN must be different' }))
-      : Promise.resolve()
-  }
-
-  const content = <Form layout='vertical'
-    form={form}
-    onFinish={(data: MdnsProxyForwardingRule) => {
-      setRule(data)
-      form.resetFields()
-    }}>
-    <Form.Item name='id' noStyle>
-      <Input type='hidden' />
-    </Form.Item>
-    <Form.Item
-      label={$t({ defaultMessage: 'Type' })}
-      name='service'
-      dependencies={['toVlan', 'fromVlan']}
-      rules={[
-        {
-          required: true
-        },
-        {
-          validator: () => ruleDuplicationValidator()
-        }
-      ]}
-    >
-      <Select
-        placeholder={$t({ defaultMessage: 'Select Type...' })}
-        children={
-          Object.keys(ruleTypeLabelMapping).map((key) => {
-            return (
-              <Option key={key} value={key}>
-                {$t(ruleTypeLabelMapping[key as BridgeServiceEnum])}
-              </Option>
-            )
-          })
-        }
-      />
-    </Form.Item>
-    <Form.Item
-      name='fromVlan'
-      label={$t({ defaultMessage: 'From VLAN' })}
-      dependencies={['toVlan']}
-      rules={[
-        {
-          required: true
-        },
-        {
-          type: 'number',
-          min: 1,
-          max: 4094,
-          message: $t(validationMessages.vlanRange)
-        },
-        {
-          validator: () => vlanDuplicationValidator()
-        }
-      ]}
-      children={<InputNumber />}
-    />
-    <Form.Item
-      name='toVlan'
-      label={$t({ defaultMessage: 'To VLAN' })}
-      dependencies={['fromVlan']}
-      rules={[
-        {
-          required: true
-        },
-        {
-          type: 'number',
-          min: 1,
-          max: 4094,
-          message: $t(validationMessages.vlanRange)
-        },
-        {
-          validator: () => vlanDuplicationValidator()
-        }
-      ]}
-      children={<InputNumber />}
-    />
-  </Form>
 
   return (
     <Drawer
@@ -139,7 +48,14 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}
-      children={content}
+      children={
+        <ForwardingRuleForm
+          form={form}
+          rule={rule}
+          setRule={setRule}
+          isRuleUnique={isRuleUnique}
+        />
+      }
       footer={
         <Drawer.FormFooter
           showAddAnother={!editMode}
@@ -164,5 +80,154 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
       }
       width={'400px'}
     />
+  )
+}
+
+
+interface ForwardingRuleFormProps {
+  form: FormInstance<MdnsProxyForwardingRule>;
+  rule?: MdnsProxyForwardingRule;
+  setRule: (r: MdnsProxyForwardingRule) => void;
+  isRuleUnique?: (r: MdnsProxyForwardingRule) => boolean
+}
+
+function ForwardingRuleForm (props: ForwardingRuleFormProps) {
+  const { $t } = useIntl()
+  const {
+    form,
+    rule = {},
+    setRule,
+    isRuleUnique = () => true
+  } = props
+  const { Option } = Select
+  const serviceType = Form.useWatch('service', form)
+
+  useEffect(() => {
+    form.setFieldsValue(rule)
+  }, [form, rule])
+
+  const ruleDuplicationValidator = async () => {
+    return isRuleUnique(form.getFieldsValue())
+      ? Promise.resolve()
+      : Promise.reject($t({ defaultMessage: 'Rule with same Type and VLAN IDs already exists' }))
+  }
+
+  const vlanDuplicationValidator = async () => {
+    const toVlan = form.getFieldValue('toVlan')
+    const fromVlan = form.getFieldValue('fromVlan')
+    return (toVlan && toVlan === fromVlan)
+      ? Promise.reject($t({ defaultMessage: 'From VLAN and To VLAN must be different' }))
+      : Promise.resolve()
+  }
+
+  return (
+    <Form layout='vertical'
+      form={form}
+      onFinish={(data: MdnsProxyForwardingRule) => {
+        setRule(data)
+        form.resetFields()
+      }}>
+      <Form.Item name='id' noStyle>
+        <Input type='hidden' />
+      </Form.Item>
+      <Form.Item
+        label={$t({ defaultMessage: 'Type' })}
+        name='service'
+        dependencies={['toVlan', 'fromVlan']}
+        rules={[
+          { required: true },
+          { validator: () => ruleDuplicationValidator() }
+        ]}
+      >
+        <Select
+          placeholder={$t({ defaultMessage: 'Select Type...' })}
+          children={
+            Object.keys(ruleTypeLabelMapping).map((key) => {
+              return (
+                <Option key={key} value={key}>
+                  {$t(ruleTypeLabelMapping[key as BridgeServiceEnum])}
+                </Option>
+              )
+            })
+          }
+        />
+      </Form.Item>
+      {serviceType === BridgeServiceEnum.OTHER &&
+        <Form.Item
+          name='mdnsName'
+          label={
+            <>
+              {$t({ defaultMessage: 'Service Name' })}
+              <Tooltip
+                placement='bottom'
+                title={<FormattedMessage
+                  defaultMessage={`The name can only contain between 2 and 64 characters.
+                    Only the following characters are allowed: 'a-z', 'A-Z', '0-9',
+                    space and other special characters ({specialChars})
+                  `}
+                  values={{
+                    specialChars: '!";#$%\'()*+,-./:;<=>?@[]^_{|}~*&\\`'
+                  }}
+                />}
+              >
+                <QuestionMarkCircleOutlined />
+              </Tooltip>
+            </>
+          }
+          rules={[
+            { required: true },
+            { min: 2 },
+            { max: 64 }
+          ]}
+          children={<Input />}
+        />
+      }
+      {serviceType === BridgeServiceEnum.OTHER &&
+        <Form.Item
+          label={$t({ defaultMessage: 'Transport Protocol' })}
+          name='mdnsProtocol'
+          rules={[
+            { required: true }
+          ]}
+        >
+          <Select>
+            <Option key={BridgeServiceProtocolEnum.TCP}>{$t({ defaultMessage: 'TCP' })}</Option>
+            <Option key={BridgeServiceProtocolEnum.UDP}>{$t({ defaultMessage: 'UDP' })}</Option>
+          </Select>
+        </Form.Item>
+      }
+      <Form.Item
+        name='fromVlan'
+        label={$t({ defaultMessage: 'From VLAN' })}
+        dependencies={['toVlan']}
+        rules={[
+          { required: true },
+          {
+            type: 'number',
+            min: 1,
+            max: 4094,
+            message: $t(validationMessages.vlanRange)
+          },
+          { validator: () => vlanDuplicationValidator() }
+        ]}
+        children={<InputNumber />}
+      />
+      <Form.Item
+        name='toVlan'
+        label={$t({ defaultMessage: 'To VLAN' })}
+        dependencies={['fromVlan']}
+        rules={[
+          { required: true },
+          {
+            type: 'number',
+            min: 1,
+            max: 4094,
+            message: $t(validationMessages.vlanRange)
+          },
+          { validator: () => vlanDuplicationValidator() }
+        ]}
+        children={<InputNumber />}
+      />
+    </Form>
   )
 }

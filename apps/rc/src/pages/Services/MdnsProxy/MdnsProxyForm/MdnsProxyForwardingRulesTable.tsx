@@ -43,14 +43,22 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     setRules(newRules)
   }
 
+  const getRuleTypeLabel = (rule: MdnsProxyForwardingRule): string => {
+    if (rule.service === BridgeServiceEnum.OTHER) {
+      // eslint-disable-next-line max-len
+      return `_${rule.mdnsName}._${rule.mdnsProtocol?.toLowerCase()} (${$t(ruleTypeLabelMapping[rule.service])})`
+    }
+    return $t(ruleTypeLabelMapping[rule.service])
+  }
+
   const columns: TableProps<MdnsProxyForwardingRule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'service',
       key: 'service',
       sorter: true,
-      render: (data) => {
-        return $t(ruleTypeLabelMapping[data as BridgeServiceEnum])
+      render: (data, row) => {
+        return getRuleTypeLabel(row)
       }
     },
     {
@@ -82,7 +90,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'Rule' }),
-          entityValue: $t(ruleTypeLabelMapping[selectedRows[0].service])
+          entityValue: getRuleTypeLabel(selectedRows[0])
         },
         onOk: () => {
           const newRules = rules.filter((r: MdnsProxyForwardingRule) => {

@@ -12,6 +12,28 @@ import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from 
 
 import { MdnsProxyForwardingRuleDrawer } from './MdnsProxyForwardingRuleDrawer'
 
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) => {
+    return (
+      <select
+        role='combobox'
+        onChange={e => onChange(e.target.value)}
+        {...otherProps}>
+        {children}
+      </select>
+    )
+  }
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) => {
+    return <option {...otherProps}>{children}</option>
+  }
+
+  return { ...antd, Select }
+})
 
 describe('MdnsProxyForwardingRuleDrawer', () => {
   it('should render the form', () => {
@@ -76,8 +98,10 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
 
     await userEvent.click(await screen.findByRole('checkbox', { name: /Add another rule/i }))
 
-    await userEvent.click(await screen.findByRole('combobox', { name: 'Type' }))
-    await userEvent.click(screen.getByText(fakeRuleTypeLabel.current))
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Type' }),
+      await screen.findByRole('option', { name: fakeRuleTypeLabel.current })
+    )
 
     // eslint-disable-next-line max-len
     await userEvent.type(screen.getByRole('spinbutton', { name: /From VLAN/i }), ruleToAdd.fromVlan.toString())
@@ -95,5 +119,31 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     })
 
     expect(drawerVisible.current.visible).toEqual(true)
+  })
+
+  it('should render the related fields when rule type is OTHER', async () => {
+    const { result: fakeRuleTypeLabel } = renderHook(() => {
+      return useIntl().$t(ruleTypeLabelMapping[BridgeServiceEnum.OTHER])
+    })
+
+    render(
+      <MdnsProxyForwardingRuleDrawer
+        editMode={false}
+        visible={true}
+        setVisible={jest.fn()}
+        setRule={jest.fn()}
+      />
+    )
+
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Type' }),
+      await screen.findByRole('option', { name: fakeRuleTypeLabel.current })
+    )
+
+    const serviceNameElem = await screen.findByRole('textbox', { name: /Service Name/i })
+    expect(serviceNameElem).toBeInTheDocument()
+
+    const protocolElem = await screen.findByRole('combobox', { name: /Transport Protocol/i })
+    expect(protocolElem).toBeInTheDocument()
   })
 })
