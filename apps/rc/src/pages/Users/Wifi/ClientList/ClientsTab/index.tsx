@@ -1,8 +1,5 @@
-import { useIntl } from 'react-intl'
+import GuestsTable from '../GuestsTab/GuestsTable'
 
 export function ClientsTab () {
-  const { $t } = useIntl()
-  return <>
-    { $t({ defaultMessage: 'Clients Tab' })}
-  </>
+  return <GuestsTable />
 }
