@@ -247,6 +247,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/client/clientlist'
   },
+  getClientMeta: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/client/meta'
+  },
   getGuestsList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/guests'
