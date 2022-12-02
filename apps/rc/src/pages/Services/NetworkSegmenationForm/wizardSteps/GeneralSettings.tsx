@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { CheckOutlined }                 from '@ant-design/icons'
+import { CheckMarkCircleSolid }                 from '@acx-ui/icons'
 import { Form, Input, Row, Col, Select } from 'antd'
 import { DefaultOptionType }             from 'antd/lib/select'
 import { defineMessage, useIntl }        from 'react-intl'
@@ -40,9 +40,10 @@ export function GeneralSettings () {
     defaultMessage: 'Please make sure you\'re done the following preparations before creating a Network Segmentation:' +
       '{br}' +
       // eslint-disable-next-line max-len
-      '{CheckOutlined} Already enabled the Property Management service for the venue where you want to apply' +
+      '{CheckMarkCircleSolid} Already enabled the Property Management service for the venue where you want to apply' +
       '{br}' +
-      '{CheckOutlined} Already had an SmartEdge deployed in the venue where you want to apply'
+      // eslint-disable-next-line max-len
+      '{CheckMarkCircleSolid} Already had an SmartEdge deployed in the venue where you want to apply'
   })
 
   return (
@@ -76,7 +77,7 @@ export function GeneralSettings () {
           <Alert message={intl.formatMessage(waringMsg, {
             p: (...chunks) => <p>{chunks}</p>,
             br: <br />,
-            CheckOutlined: <CheckOutlined style={{ color: 'green' }}/>
+            CheckMarkCircleSolid: <CheckMarkCircleSolid style={{ color: 'green' }}/>
           })}
           type='info' />
 
