@@ -9,6 +9,7 @@ import {
   StepsForm,
   Subtitle
 } from '@acx-ui/components'
+import { EmailSolidXsmall }      from '@acx-ui/icons'
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation
@@ -118,6 +119,7 @@ export function UserProfile () {
           <Subtitle style={{ marginBottom: '0px' }} level={2}>{ userName }</Subtitle>
           <label style={{ color: 'var(--acx-neutrals-50)' }}>{userRole}</label>
           <Row style={{ marginTop: '10px' }}>
+            <Col><EmailSolidXsmall style={{ fontSize: '10px' }} /></Col>
             <Col><h4>{ userEmail }</h4></Col>
             {/* <Col style={{ marginLeft: '25px' }}><h4>+1 408-234-9811</h4></Col> */}
             <Col style={{ marginLeft: '25px' }}><b>Tenant ID</b></Col>

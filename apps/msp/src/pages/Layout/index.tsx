@@ -12,6 +12,7 @@ import {
   WorldSolid,
   ArrowExpand,
   AccountCircleSolid,
+  Logout,
   NotificationSolid,
   QuestionMarkCircleSolid
 } from '@acx-ui/icons'
@@ -46,6 +47,7 @@ function Layout () {
       { type: 'divider' },
       { key: 'logout',
         disabled: true,
+        icon: <Logout/>,
         label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Log out' })}</TenantLink>
       }
     ]}
