@@ -40,11 +40,15 @@ export function PortalSummaryForm (props: {
         <Form.Item
           label={$t({ defaultMessage: 'Password Expiration Options' })}
           children={summaryData.guestPortal?.hostGuestConfig?.hostDurationChoices.map(choice=>{
-            if(choice+'' === '1') return <div>{$t({ defaultMessage: '1 Hour' })}</div>
-            else if(choice+'' === '4') return <div>{$t({ defaultMessage: '4 Hours' })}</div>
-            else if(choice+'' === '24') return <div>{$t({ defaultMessage: '1 Day' })}</div>
-            else if(choice+'' === '168') return <div>{$t({ defaultMessage: '7 Days' })}</div>
-            else return <div>{$t({ defaultMessage: '1 Month' })}</div>
+            if(choice+'' === '1') return <div key={choice+'hour'}>
+              {$t({ defaultMessage: '1 Hour' })}</div>
+            else if(choice+'' === '4') return <div key={choice+'hour'}>
+              {$t({ defaultMessage: '4 Hours' })}</div>
+            else if(choice+'' === '24') return <div key={choice+'hour'}>
+              {$t({ defaultMessage: '1 Day' })}</div>
+            else if(choice+'' === '168') return <div key={choice+'hour'}>
+              {$t({ defaultMessage: '7 Days' })}</div>
+            else return <div key={choice+'hour'}>{$t({ defaultMessage: '1 Month' })}</div>
           })}
         />
       </>

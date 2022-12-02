@@ -1,3 +1,5 @@
+import { GuestNetworkTypeEnum, SocialIdentitySource, TimeUnitEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+
 export const networksResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
@@ -235,3 +237,123 @@ export const policyListResponse = {
   totalPages: 0,
   page: 1
 }
+export const hostapprovalData={
+  guestPortal: {
+    guestNetworkType: GuestNetworkTypeEnum.HostApproval,
+    hostGuestConfig: {
+      hostDomains: ['aa.com'],
+      hostDurationChoices: [1,4,24,168,730]
+    }
+  }
+}
+
+export const wisprDataNone={
+  guestPortal: {
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'WifiSocial'
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+	  wlanSecurity: WlanSecurityEnum.None
+  }
+}
+export const wisprDataWep={
+  guestPortal: {
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'WifiSocial'
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+	  wlanSecurity: WlanSecurityEnum.WEP,
+	  wepHexKey: 'aaaaaaaaaa'
+  }
+}
+export const wisprDataWPA23={
+  guestPortal: {
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'WifiSocial'
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+	  wlanSecurity: WlanSecurityEnum.WPA23Mixed,
+	  passphrase: 'aaaaaaaaaa',
+    saePassphrase: 'bbbbbbbbb'
+  }
+}
+export const selfsignData={
+  guestPortal: {
+    guestNetworkType: GuestNetworkTypeEnum.SelfSignIn,
+    enableSmsLogin: true,
+    socialIdentities: {
+      facebook: { source: SocialIdentitySource.CUSTOM },
+      google: { source: SocialIdentitySource.CUSTOM },
+      twitter: { source: SocialIdentitySource.CUSTOM },
+      linkedin: { source: SocialIdentitySource.CUSTOM }
+    },
+    socialEmails: true,
+    smsPasswordDuration: {
+      duration: 12,
+      unit: TimeUnitEnum.HOUR
+    }
+  }
+}
+export const guestpassData={
+  enableDhcp: true,
+  guestPortal: {
+    redirectUrl: 'dbaidu.com'
+  }
+}
+export const portalList =[{
+  id: 2,
+  serviceName: 'test2',
+  demo: {
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: '#333333',
+    backgroundImage: '',
+    backgroundColor: '#FFFFFF',
+    welcomeSize: 14,
+
+    photoSize: 170,
+
+    logoSize: 105,
+    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+    ' elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: '#333333',
+    secondarySize: 14,
+    buttonColor: '#EC7100',
+    poweredBackgroundColor: '#FFFFFF',
+    poweredColor: '#333333',
+    poweredSize: 14,
+    poweredImgSize: 50,
+    poweredImg: '',
+    wifi4EU: '',
+    termsCondition: '',
+    componentDisplay: {
+      Logo: true,
+      WelcomeText: true,
+      Photo: true,
+      SecondaryText: true,
+      TermsConditions: false,
+      PoweredBy: true,
+      WiFi4EU: false
+    },
+    displayLang: 'English',
+
+    alternativeLang:
+
+    { Czech: false, ChineseTraditional: false, French: false }
+  }
+}
+]

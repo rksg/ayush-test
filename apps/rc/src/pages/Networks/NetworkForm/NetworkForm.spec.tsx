@@ -159,6 +159,11 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
+    await userEvent.click(await screen.findByText('Add Guest Portal Service'))
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Service Name' }),'create Portal test')
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByText('Finish'))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
@@ -196,6 +201,11 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
+    await userEvent.click(await screen.findByText('Add Guest Portal Service'))
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Service Name' }),'create Portal test2')
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByText('Finish'))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
