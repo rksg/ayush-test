@@ -2,12 +2,15 @@
 import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { ArrowExpand } from '@acx-ui/icons'
+import { CollapseInactive } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
+import { ClientInfoData } from './services'
+
 type HistoryContentProps = {
     historyContentToggle : boolean,
-    setHistoryContentToggle : CallableFunction
+    setHistoryContentToggle : CallableFunction,
+    data?: ClientInfoData
   }
 
 const sampleData = [
@@ -29,7 +32,8 @@ const sampleData = [
 ]
 export function History (props : HistoryContentProps) {
   const { $t } = useIntl()
-  const { setHistoryContentToggle, historyContentToggle } = props
+  const { setHistoryContentToggle, historyContentToggle, data } = props
+  console.log(data)
   return (
     <UI.History>
       <UI.HistoryHeader>
@@ -37,12 +41,7 @@ export function History (props : HistoryContentProps) {
           {$t({ defaultMessage: 'History' })}
         </UI.HistoryContentTitle>
         <UI.HistoryIcon>
-          <ArrowExpand
-            style={{
-              transform: 'rotate(180deg)',
-              cursor: 'pointer',
-              lineHeight: '20px'
-            }}
+          <CollapseInactive
             onClick={() => {
               setHistoryContentToggle(!historyContentToggle)
             }}

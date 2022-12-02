@@ -51,7 +51,8 @@ export const HistoryContentTitle = styled.span`
 `
 export const HistoryIcon = styled.span`
   margin-left : auto;
-  padding-right: 16px;
+  margin-right: 16px;
+  cursor: pointer;
 `
 export const EventTypeIcon = styled.span`
   ${eventIconStyle}
