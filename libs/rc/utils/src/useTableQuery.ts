@@ -37,6 +37,7 @@ export interface TABLE_QUERY <
 export type PAGINATION = TablePaginationConfig
 
 const DEFAULT_PAGINATION = {
+  page: 1,
   current: 1,
   pageSize: 10,
   total: 0

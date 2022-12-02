@@ -1,0 +1,164 @@
+import { useState } from 'react'
+
+import { defineMessage, useIntl } from 'react-intl'
+
+import { Loader, Table, TableProps }               from '@acx-ui/components'
+import { useActivitiesQuery }                      from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { formatter }                               from '@acx-ui/utils'
+
+import { productMapping, severityMapping, statusMapping } from './mapping'
+import { TimelineDrawer }                                 from './TimelineDrawer'
+
+const Activities = () => {
+  const { $t } = useIntl()
+  const [visible, setVisible] = useState(false)
+  const [current, setCurrent] = useState<Activity>()
+
+  const tableQuery = useTableQuery({
+    useQuery: useActivitiesQuery,
+    defaultPayload: {
+      url: CommonUrlsInfo.getActivityList.url,
+      fields: [
+        'startDatetime',
+        'endDatetime',
+        'status',
+        'product',
+        'admin',
+        'descriptionTemplate',
+        'descriptionData',
+        'severity'
+      ]
+    },
+    sorter: {
+      sortField: 'startDatetime',
+      sortOrder: 'DESC'
+    }
+  })
+
+  const getDescription = (
+    descriptionTemplate: Activity['descriptionTemplate'],
+    descriptionData: Activity['descriptionData']
+  ) => {
+    const values = descriptionData?.reduce((agg, data) =>
+      ({ ...agg, [data.name]: data.value })
+    , {} as Record<string, string>)
+    let message = descriptionTemplate
+    message && message.match(new RegExp(/@@\w+/, 'g'))?.forEach(match => {
+      message = message.replace(match, values[match.replace('@@','')])
+    })
+    return message
+  }
+
+  const columns: TableProps<Activity>['columns'] = [
+    {
+      key: 'startDatetime',
+      title: $t({ defaultMessage: 'Date' }),
+      dataIndex: 'startDatetime',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      render: function (data, row) {
+        return <span onClick={()=>{
+          setVisible(true)
+          setCurrent(row as Activity)
+        }}>{
+            formatter('dateTimeFormatWithSeconds')(row.startDatetime)
+          }</span>
+      }
+    },
+    {
+      key: 'status',
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'status',
+      sorter: true,
+      render: function (data, row) {
+        const msg = statusMapping[row.status as keyof typeof statusMapping]
+        return msg ? $t(msg) : row.status
+      }
+    },
+    {
+      key: 'product',
+      title: $t({ defaultMessage: 'Product' }),
+      dataIndex: 'product',
+      sorter: true,
+      render: function (data, row) {
+        const msg = productMapping[row.product as keyof typeof productMapping]
+        return msg ? $t(msg) : row.product
+      }
+    },
+    {
+      key: 'source',
+      title: $t({ defaultMessage: 'Source' }),
+      dataIndex: 'source',
+      sorter: true,
+      render: function (data, row) {
+        return row.admin.name
+      }
+    },
+    {
+      key: 'description',
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description',
+      sorter: true,
+      render: function (data, row) {
+        return getDescription(row.descriptionTemplate, row.descriptionData)
+      }
+    }
+  ]
+
+  const getDrawerData = (data: Activity) => [
+    {
+      title: defineMessage({ defaultMessage: 'Start Time' }),
+      value: formatter('dateTimeFormatWithSeconds')(data.startDatetime)
+    },
+    {
+      title: defineMessage({ defaultMessage: 'End Time' }),
+      value: formatter('dateTimeFormatWithSeconds')(data.endDatetime)
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Severity' }),
+      value: (() => {
+        const severityMsg = severityMapping[data.severity as keyof typeof severityMapping]
+        return severityMsg? $t(severityMsg) : data.severity
+      })()
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Event Type' }),
+      value: 'Admin activity'
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Source' }),
+      value: data.admin.name
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Admin IP' }),
+      value: data.admin.ip
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Admin Interface' }),
+      value: data.admin.interface
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Description' }),
+      value: (() => getDescription(data.descriptionTemplate, data.descriptionData))()
+    }
+  ]
+
+  return <Loader states={[tableQuery]}>
+    <Table
+      rowKey='startDatetime'
+      columns={columns}
+      dataSource={tableQuery.data?.data}
+      pagination={tableQuery.pagination}
+      onChange={tableQuery.handleTableChange}
+    />
+    {visible && <TimelineDrawer
+      title={defineMessage({ defaultMessage: 'Activity Details' })}
+      visible={visible}
+      onClose={()=>setVisible(false)}
+      data={current ? getDrawerData(current) : []}
+    /> }
+  </Loader>
+}
+
+export { Activities }

@@ -10,6 +10,7 @@ import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
+import TimelineBase     from './pages/Timeline'
 import UsersBase        from './pages/Users'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
@@ -28,6 +29,9 @@ function AllRoutes () {
         <Route path='dashboard' element={<Dashboard />} />
         <Route path='analytics/*' element={<AnalyticsBase />}>
           <Route path='*' element={<AnalyticsRoutes />} />
+        </Route>
+        <Route path='timeline/*' element={<TimelineBase />}>
+          <Route path='*' element={<RcRoutes />} />
         </Route>
         <Route path='devices/*' element={<DevicesBase />}>
           <Route path='*' element={<RcRoutes />} />
