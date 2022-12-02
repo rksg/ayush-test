@@ -15,6 +15,7 @@ import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
 import { ApDetails, ApViewModel }                 from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
 
+import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
 
 export function ApOverviewTab () {
@@ -50,8 +51,8 @@ export function ApOverviewTab () {
       <GridCol col={{ span: 18 }} style={{ height: '152px' }}>
         { apFilter && <ApInfoWidget currentAP={currentAP as ApViewModel} filters={apFilter} /> }
       </GridCol>
-      <GridCol col={{ span: 6 }} style={{ height: '152px', background: '#F7F7F7' }}>
-        AP Photo
+      <GridCol col={{ span: 6 }} style={{ height: '152px' }}>
+        <ApPhoto />
       </GridCol>
       <GridCol col={{ span: 18 }} style={{ background: '#F7F7F7' }}>
         Floor Plan
