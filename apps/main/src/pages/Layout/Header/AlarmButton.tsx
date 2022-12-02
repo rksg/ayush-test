@@ -69,7 +69,6 @@ export default function AlarmsHeaderButton () {
   ] = useClearAlarmMutation()
 
   const [
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clearAllAlarm,
     { isLoading: isAllAlarmCleaning }
   ] = useClearAllAlarmMutation()

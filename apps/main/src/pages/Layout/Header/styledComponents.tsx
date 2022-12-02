@@ -1,15 +1,12 @@
-import { ExportOutlined, CheckCircleFilled } from '@ant-design/icons'
-import { Popover as AntPopover,
-  PopoverProps,
-  Modal,
+import { Modal,
   List,
   Button,
   Typography
 } from 'antd'
 import styled from 'styled-components/macro'
 
-import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer } from '@acx-ui/components'
-import { WarningCircleSolid, LogOut as AntdLogOut }         from '@acx-ui/icons'
+import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer }               from '@acx-ui/components'
+import { WarningCircleSolid, CheckMarkCircleSolid, LogOut as AntdLogOut } from '@acx-ui/icons'
 
 
 type CopyableTextProps = {
@@ -23,35 +20,6 @@ export const UserNameButton = styled(LayoutUI.ButtonSolid)`
     justify-content: center;
     font-family: 'Roboto';
     font-size: 14px;
-`
-
-export const Popover = styled(AntPopover)`
-  &.ant-popover
-  > .ant-popover-content
-    > .ant-popover-arrow {
-      display: none;
-    }
-    > .ant-popover-inner-content {
-      padding: 0px;
-    }
-  }
-`
-
-const CustomPopover = ( props:PopoverProps ) => (
-  <Popover overlayClassName={props.className}
-    getPopupContainer={triggerNode => triggerNode.parentNode as HTMLElement}
-    {...props} >
-    {props.children}
-  </Popover>
-)
-
-export const StyledPopover = styled(CustomPopover)`
-  .ant-popover-arrow {
-    display: none;
-  }
-  .ant-popover-inner-content {
-    padding: 0px;
-  }
 `
 
 export const RowWrapper = styled.div`
@@ -83,16 +51,6 @@ export const MenuRowContainer = styled(GridRow)`
 export const LinkCol = styled(GridCol).attrs({ col: { span: 5 } })`
   align-items: flex-start;
   `
-export const LinkItem = styled(GridRow)<{ paddingTop?: string }>`
-  padding: ${props => `${props.paddingTop||0}px 25px 0px 25px`};
-  display: flex;
-  margin-left: 0px !important;
-  margin-right: 0px !important;
-  align-items: end;
-  :hover {
-    background-color: var(--acx-accents-orange-10);
-  }
-`
 
 export const SearchRow = styled(GridRow)`
   width: 100%;
@@ -102,11 +60,6 @@ export const SearchRow = styled(GridRow)`
   padding-right: 10px;
   border-radius: 6px;
   background: var(--acx-neutrals-10);
-`
-
-export const MenuIcon = styled(ExportOutlined)`
-  font-size: 17px;
-  color: var(--acx-primary-black)
 `
 
 export const AboutModal = styled(Modal)`
@@ -142,13 +95,23 @@ export const ListItem = styled(List.Item)`
       margin-left: 10px;
     }
 `
-export const AcknowledgeCircle = styled(CheckCircleFilled)`
-  color: var(--acx-neutrals-30);
+export const AcknowledgeCircle = styled(CheckMarkCircleSolid)`
+  path:nth-child(1) {
+    fill: var(--acx-neutrals-30);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-neutrals-30);
+  }
   :hover {
-    color: var(--acx-semantics-green-60);
-    border: none;
+    path:nth-child(1) {
+      fill: var(--acx-semantics-green-60);
+    }
+    path:nth-child(3) {
+      stroke: var(--acx-semantics-green-60);
+    }
   }
 `
+
 export const VersionContainer = styled.div`
   font-weight: 400;
   font-family: Source Sans Pro;
@@ -181,5 +144,21 @@ export const Drawer = styled(AntdDrawer)`
   .ant-drawer-body{
     overflow-x: hidden;
   }
+`
 
+export const ContactContainer = styled.div`
+  font-weight: 400;
+  font-family: Open Sans;
+  font-style: normal;
+  font-size: 10px;
+  color: var(--acx-primary-white)
+`
+export const VersionNameContainer = styled.div`
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--acx-primary-white);
+`
+export const ActiveButton = styled(LayoutUI.ButtonSolid)`
+  background: var(--acx-neutrals-80) !important;
+  color: var(--acx-neutrals-60) !important;
 `

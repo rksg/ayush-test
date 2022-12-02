@@ -1,12 +1,14 @@
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { GridRow, GridCol, cssStr } from '@acx-ui/components'
-import { Close }                    from '@acx-ui/icons'
-import { Logo }                     from '@acx-ui/icons'
-import { useGetCloudVersionQuery }  from '@acx-ui/rc/services'
-import { useParams }                from '@acx-ui/react-router-dom'
+import { GridRow, GridCol }        from '@acx-ui/components'
+import { Close }                   from '@acx-ui/icons'
+import { Logo }                    from '@acx-ui/icons'
+import { useGetCloudVersionQuery } from '@acx-ui/rc/services'
+import { useParams }               from '@acx-ui/react-router-dom'
+import { formatter }               from '@acx-ui/utils'
 
-import { AboutModal, VersionContainer } from './styledComponents'
+import { AboutModal, VersionContainer, ContactContainer, VersionNameContainer } from './styledComponents'
 
 
 export default function About (props: {
@@ -43,10 +45,9 @@ export default function About (props: {
         <Logo/>
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
-        <div style={{ fontWeight: 600,
-          fontSize: 16, color: cssStr('--acx-primary-white') }}>
-          {data?.currentVersion.name}
-        </div>
+        <VersionNameContainer>
+          {formatter('yearMonthFormat')(moment())}
+        </VersionNameContainer>
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
         <VersionContainer>
@@ -57,9 +58,9 @@ export default function About (props: {
         </VersionContainer>
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
-        <VersionContainer style={{ fontFamily: 'Open Sans', color: cssStr('--acx-primary-white') }}>
+        <ContactContainer>
           {$t(({ defaultMessage: 'Contact Support' }))}
-        </VersionContainer>
+        </ContactContainer>
       </GridCol>
     </GridRow>
   </AboutModal>
