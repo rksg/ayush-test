@@ -111,7 +111,8 @@ export enum ServiceType {
   DHCP = 'DHCP',
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'MDNS_PROXY',
-  DPSK = 'DPSK'
+  DPSK = 'DPSK',
+  NETWORK_SEGMENTATION = 'Network Segmentation'
 }
 export enum ServiceTechnology {
   WIFI = 'WI-FI',
