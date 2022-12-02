@@ -12,18 +12,21 @@ import {
   AccountCircleSolid,
   QuestionMarkCircleSolid
 }                          from '@acx-ui/icons'
-import { AlarmsHeaderButton } from '@acx-ui/main/components'
-import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }    from '@acx-ui/utils'
+import { AlarmsHeaderButton }              from '@acx-ui/main/components'
+import { Outlet, TenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                 from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 
 function Layout () {
+  const location = useLocation()
   const userMenu = <Menu
     items={[
       { key: 'user-profile',
-        label: <TenantLink to='/userprofile/'>{useIntl().$t({ defaultMessage: 'User Profile' })}
+        label: <TenantLink
+          state={{ from: location.pathname }}
+          to='/userprofile/'>{useIntl().$t({ defaultMessage: 'User Profile' })}
         </TenantLink>
       },
       { key: 'change-password',
@@ -50,9 +53,6 @@ function Layout () {
         <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
           <LayoutUI.ButtonSolid disabled icon={<QuestionMarkCircleSolid />} />
         </Tooltip>
-        {/* <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-          <LayoutUI.ButtonSolid disabled icon={<AccountCircleSolid />} />
-        </Tooltip> */}
         <Dropdown overlay={userMenu}>{() =>
           <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
         }</Dropdown>

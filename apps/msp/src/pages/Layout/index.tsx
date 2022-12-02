@@ -15,7 +15,7 @@ import {
   NotificationSolid,
   QuestionMarkCircleSolid
 } from '@acx-ui/icons'
-import { Outlet, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { Outlet, TenantLink, MspTenantLink, useLocation } from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 
@@ -30,10 +30,13 @@ function Layout () {
       { key: 'Asia', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'ASIA' })}</TenantLink> }
     ]}
   />
+  const location = useLocation()
   const userMenu = <Menu
     items={[
       { key: 'user-profile',
-        label: <MspTenantLink to='/userprofile/'>{$t({ defaultMessage: 'User Profile' })}
+        label: <MspTenantLink
+          state={{ from: location.pathname }}
+          to='/userprofile/'>{$t({ defaultMessage: 'User Profile' })}
         </MspTenantLink>
       },
       { key: 'change-password',

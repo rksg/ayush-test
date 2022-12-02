@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Row, Col, Form, Select, Switch, Tabs, Checkbox, Typography } from 'antd'
-import { useIntl }                                                    from 'react-intl'
-import styled                                                         from 'styled-components/macro'
+import { Row, Col, Form, Select, Switch, Tabs, Typography } from 'antd'
+import { useIntl }                                          from 'react-intl'
+import styled                                               from 'styled-components/macro'
 
 import {
   PageHeader,
@@ -18,6 +18,8 @@ import {
   ProfileDataToUpdate
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
+  useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
 
@@ -28,6 +30,10 @@ import {
 interface Map {
   [key: string]: string
 }
+interface fromLoc {
+  from: string
+}
+
 const RoleString: Map = {
   PRIME_ADMIN: 'Prime Admin',
   ADMIN: 'Administrator',
@@ -40,6 +46,7 @@ export function UserProfile () {
   const { Option } = Select
   const { Paragraph } = Typography
   const { tenantId } = useParams()
+  const navigate = useNavigate()
   const [userInitial, setInitial] = useState('')
   const [userName, setUserName] = useState('')
   const [userRole, setRole] = useState('')
@@ -48,6 +55,7 @@ export function UserProfile () {
   const [detailLevel, setDetailLevel] = useState('')
 
   const { data } = useGetUserProfileQuery({ params: { tenantId } })
+  const location = useLocation().state as fromLoc
 
   useEffect(() => {
     if (data) {
@@ -80,13 +88,22 @@ export function UserProfile () {
 
   const handleUpdate = () => {
     const payload: ProfileDataToUpdate = {
-      detailLevel: DetailLevel.BASIC_USER,
-      dateFormat: 'dd/mm/yyyy'
+      detailLevel: detailLevel as DetailLevel,
+      dateFormat: dateFormat
     }
 
     updateUserProfile({ payload, params: { tenantId } })
       .then(() => {
+        navigate({
+          pathname: location.from
+        }, { replace: true })
       })
+  }
+
+  const handleCancel = () => {
+    navigate({
+      pathname: location.from
+    }, { replace: true })
   }
 
   const UserData = () => {
@@ -115,47 +132,44 @@ export function UserProfile () {
     return (
       <StepsForm
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+        onFinish={async () => handleCancel()}
+        onCancel={async () => handleCancel()}
       >
-        <StepsForm.StepForm style={{ marginTop: '15px' }}>
-          <Row gutter={20}>
+        <StepsForm.StepForm
+          layout='horizontal'
+          labelAlign='left'
+          labelCol={{ span: 12 }}
+          wrapperCol={{ span: 24 }}
+          style={{ marginTop: '15px' }}>
+          <label>{$t({ defaultMessage: 'Receive notifications through:' })}</label>
+          <Row>
             <Col span={8}>
-              <label>{$t({ defaultMessage: 'Receive notifications through:' })}</label>
-              <div>
-                <Form.Item
-                  name='email_format'
-                  label={$t({ defaultMessage: 'Email' })}
-                  style={{ display: 'inline-block', width: 'calc(50%)',
-                    marginTop: '15px' }}
-                  rules={[{
-                    required: false
-                  }]}
-                  // children={<Subtitle level={5}>eleu1658@yahoo.com</Subtitle>}
-                />
-                <Form.Item
-                  name='email_format'
-                  children={<Switch />}
-                  style={{ display: 'inline-block', width: 'calc(50%)',
-                    marginTop: '7px' }}
-                />
-              </div>
-              <div>
-                <Form.Item
-                  name='email_format'
-                  label={$t({ defaultMessage: 'SMS' })}
-                  style={{ display: 'inline-block', width: 'calc(50%)' }}
-                  rules={[{
-                    required: false
-                  }]}
-                />
-                <Form.Item
-                  name='email_format'
-                  children={<Switch />}
-                  style={{ display: 'inline-block', width: 'calc(50%)',
-                    marginTop: '-8px' }}
-                />
-              </div>
+              <Form.Item
+                name='email_format'
+                label={$t({ defaultMessage: 'Email' })}
+                style={{ marginTop: '10px' }}
+                rules={[{
+                  required: false
+                }]}
+                children={<Switch></Switch>}
+              />
+              <label
+                style={{ display: 'flex', marginTop: '-24px',
+                  color: 'var(--acx-neutrals-60)', fontSize: '10px' }}
+              >{userEmail}</label>
+              <Form.Item
+                name='phone_format'
+                label={$t({ defaultMessage: 'SMS' })}
+                style={{ marginTop: '10px' }}
+                rules={[{
+                  required: false
+                }]}
+                children={<Switch></Switch>}
+              />
+            </Col>
+          </Row>
 
-              <label>{$t({ defaultMessage: 'Select the notifications you wish to receive::' })}
+          {/* <label>{$t({ defaultMessage: 'Select the notifications you wish to receive::' })}
               </label>
               <Subtitle level={4} style={{ marginTop: '17px' }}>
                 { $t({ defaultMessage: 'Incidents' }) }</Subtitle>
@@ -171,12 +185,18 @@ export function UserProfile () {
               </div>
               <div>
                 <Checkbox>{$t({ defaultMessage: 'P4 Incidents' })}</Checkbox>
-              </div>
-            </Col>
-          </Row>
+              </div> */}
         </StepsForm.StepForm>
       </StepsForm>
     )
+  }
+
+  const onEventDetailChange = function (value: string) {
+    setDetailLevel(value)
+  }
+
+  const onDateFormatChange = function (value: string) {
+    setDateFormat(value)
   }
 
   const SettingsTab = () => {
@@ -184,6 +204,7 @@ export function UserProfile () {
       <StepsForm
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         onFinish={async () => handleUpdate()}
+        onCancel={async () => handleCancel()}
       >
         <StepsForm.StepForm style={{ marginTop: '15px' }}>
           <Row gutter={20}>
@@ -195,7 +216,8 @@ export function UserProfile () {
                   required: false
                 }]}
                 children={
-                  <Select defaultValue={dateFormat} >
+                  <Select defaultValue={dateFormat}
+                    onChange={onDateFormatChange}>
                     <Option value={'mm/dd/yyyy'}>
                       {$t({ defaultMessage: 'MM/DD/YYYY' })}</Option>
                     <Option value={'dd/mm/yyyy'}>
@@ -212,7 +234,8 @@ export function UserProfile () {
                   required: false
                 }]}
                 children={
-                  <Select defaultValue={detailLevel} >
+                  <Select defaultValue={detailLevel}
+                    onChange={onEventDetailChange}>
                     <Option value={DetailLevel.BASIC_USER}>
                       {$t({ defaultMessage: 'Basic User' })}</Option>
                     <Option value={DetailLevel.IT_PROFESSIONAL}>
@@ -255,6 +278,8 @@ export function UserProfile () {
     return (
       <StepsForm
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+        onFinish={async () => handleCancel()}
+        onCancel={async () => handleCancel()}
       >
         <StepsForm.StepForm style={{ marginTop: '15px' }}>
           <Row gutter={20}>
