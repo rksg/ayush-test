@@ -97,7 +97,7 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                         >
                           venue-dhcp-ui
                         </a>
-                        )
+                        ) 
                       </p>
                     </div>
                     <div
@@ -1578,7 +1578,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                         >
                           venue-dhcp-ui
                         </a>
-                        )
+                        ) 
                       </p>
                     </div>
                     <div
