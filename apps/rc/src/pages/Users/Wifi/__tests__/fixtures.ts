@@ -1,0 +1,79 @@
+export const GuestClient = {
+  totalCount: 34,
+  page: 1,
+  data: [
+    {
+      name: 'test1',
+      id: '865c88e0-7bae-47a1-9247-508a027a9500',
+      creationDate: '2022-11-14T08:51:36.499Z',
+      expiryDate: '0',
+      emailAddress: '',
+      guestType: 'type',
+      ssid: 'guest pass wlan',
+      networkId: '',
+      passDurationHours: 1,
+      guestStatus: 'Expired',
+      notes: '',
+      maxNumberOfClients: -1
+    }, {
+      name: 'test2',
+      id: '16bcc049-6f38-47b9-8ad1-daf803c4e8b9',
+      creationDate: '2022-11-15T08:57:50.392Z',
+      expiryDate: '',
+      mobilePhoneNumber: '+12015550123',
+      emailAddress: '',
+      guestType: 'SelfSign',
+      ssid: 'guest pass wlan',
+      networkId: '3f04e252a9d04180855813131d007aca',
+      passDurationHours: '',
+      guestStatus: 'Not Applicable',
+      notes: '',
+      maxNumberOfClients: ''
+    }, {
+      name: 'test3',
+      id: '37a626e9-5d97-4349-b7a5-8822c62d3bf3',
+      creationDate: '2022-11-28T08:15:14.690Z',
+      expiryDate: '2022-12-28T08:15:14.695Z',
+      emailAddress: '',
+      guestType: 'HostGuest',
+      ssid: 'guest pass wlan',
+      networkId: '3f04e252a9d04180855813131d007aca',
+      passDurationHours: 720,
+      guestStatus: 'Offline',
+      notes: '',
+      maxNumberOfClients: 3
+    }, {
+      name: 'test4',
+      id: '99fbe8f0-bc9c-4f95-ac07-54146cf5c117',
+      creationDate: '2022-11-20T08:57:12.338Z',
+      mobilePhoneNumber: '+886933222333',
+      emailAddress: '',
+      guestType: 'GuestPass',
+      ssid: 'guest pass wlan',
+      networkId: '3f04e252a9d04180855813131d007aca',
+      passDurationHours: 168,
+      guestStatus: 'Online (1)',
+      notes: '',
+      maxNumberOfClients: 2,
+      clients: [{
+        osType: 'ios',
+        healthCheckStatus: 'good',
+        clientMac: 'AA:AA:AA:AA:AA:AA',
+        ipAddress: '1.1.1.1',
+        username: 'user',
+        hostname: 'host',
+        venueId: '0004e252a9d04180855813131d007aca',
+        venueName: 'testVenue',
+        apMac: 'BB:BB:BB:BB:BB:BB',
+        apSerialNumber: '422039000038',
+        apName: 'testAp',
+        switchSerialNumber: '',
+        switchName: '',
+        networkId: '3f04e252a9d04180855813131d007aca',
+        networkName: 'guest pass wlan',
+        networkSsid: 'guest pass wlan',
+        connectSince: '2022-11-28T14:55:15.924Z'
+      }]
+    }
+  ]
+}
