@@ -338,23 +338,48 @@ exports[`WifiCallingSettingForm should render WifiCallingSettingForm successfull
                                       >
                                         <tr>
                                           <th
-                                            class="ant-table-cell ant-table-selection-column"
-                                          />
-                                          <th
-                                            class="ant-table-cell"
+                                            class="ant-table-cell ant-table-selection-column react-resizable"
                                           >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
+                                          </th>
+                                          <th
+                                            class="ant-table-cell react-resizable"
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
                                             Domain
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
                                           </th>
                                           <th
-                                            class="ant-table-cell"
+                                            class="ant-table-cell react-resizable"
                                           >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
                                             IP Address
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
                                           </th>
                                           <th
-                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                            definedwidth="32"
+                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                             style="position: sticky; right: 0px;"
-                                          />
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
+                                          </th>
                                         </tr>
                                       </thead>
                                       <tbody

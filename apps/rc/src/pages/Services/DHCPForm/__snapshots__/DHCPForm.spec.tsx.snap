@@ -661,8 +661,11 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                     >
                                                       <tr>
                                                         <th
-                                                          class="ant-table-cell ant-table-selection-column"
+                                                          class="ant-table-cell ant-table-selection-column react-resizable"
                                                         >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          />
                                                           <div
                                                             class="ant-table-selection"
                                                           >
@@ -684,11 +687,17 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                               </span>
                                                             </label>
                                                           </div>
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          />
                                                         </th>
                                                         <th
-                                                          class="ant-table-cell ant-table-column-has-sorters"
+                                                          class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                                           tabindex="0"
                                                         >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          />
                                                           <div
                                                             class="ant-table-column-sorters"
                                                           >
@@ -744,11 +753,17 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                               </span>
                                                             </span>
                                                           </div>
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          />
                                                         </th>
                                                         <th
-                                                          class="ant-table-cell ant-table-column-has-sorters"
+                                                          class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                                           tabindex="0"
                                                         >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          />
                                                           <div
                                                             class="ant-table-column-sorters"
                                                           >
@@ -804,11 +819,17 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                               </span>
                                                             </span>
                                                           </div>
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          />
                                                         </th>
                                                         <th
-                                                          class="ant-table-cell ant-table-column-has-sorters"
+                                                          class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                                           tabindex="0"
                                                         >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          />
                                                           <div
                                                             class="ant-table-column-sorters"
                                                           >
@@ -864,27 +885,54 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                               </span>
                                                             </span>
                                                           </div>
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          />
                                                         </th>
                                                         <th
-                                                          class="ant-table-cell"
+                                                          class="ant-table-cell react-resizable"
                                                         >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          />
                                                           Lease Time
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          />
                                                         </th>
                                                         <th
-                                                          class="ant-table-cell"
+                                                          class="ant-table-cell react-resizable"
                                                         >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          />
                                                           Vlan
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          />
                                                         </th>
                                                         <th
-                                                          class="ant-table-cell"
+                                                          class="ant-table-cell react-resizable"
                                                         >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          />
                                                           Number of hosts
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          />
                                                         </th>
                                                         <th
-                                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                                          definedwidth="32"
+                                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                                           style="position: sticky; right: 0px;"
-                                                        />
+                                                        >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          />
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          />
+                                                        </th>
                                                       </tr>
                                                     </thead>
                                                     <tbody
@@ -1321,9 +1369,12 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                       >
                                         <tr>
                                           <th
-                                            class="ant-table-cell ant-table-column-has-sorters"
+                                            class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                             tabindex="0"
                                           >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
                                             <div
                                               class="ant-table-column-sorters"
                                             >
@@ -1379,11 +1430,17 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                 </span>
                                               </span>
                                             </div>
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
                                           </th>
                                           <th
-                                            class="ant-table-cell ant-table-column-has-sorters"
+                                            class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                             tabindex="0"
                                           >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
                                             <div
                                               class="ant-table-column-sorters"
                                             >
@@ -1439,11 +1496,17 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                 </span>
                                               </span>
                                             </div>
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
                                           </th>
                                           <th
-                                            class="ant-table-cell ant-table-column-has-sorters"
+                                            class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                             tabindex="0"
                                           >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
                                             <div
                                               class="ant-table-column-sorters"
                                             >
@@ -1499,27 +1562,54 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                 </span>
                                               </span>
                                             </div>
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
                                           </th>
                                           <th
-                                            class="ant-table-cell"
+                                            class="ant-table-cell react-resizable"
                                           >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
                                             Lease Time
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
                                           </th>
                                           <th
-                                            class="ant-table-cell"
+                                            class="ant-table-cell react-resizable"
                                           >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
                                             Vlan
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
                                           </th>
                                           <th
-                                            class="ant-table-cell"
+                                            class="ant-table-cell react-resizable"
                                           >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
                                             Number of hosts
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
                                           </th>
                                           <th
-                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                            definedwidth="32"
+                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                             style="position: sticky; right: 0px;"
-                                          />
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                            />
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                            />
+                                          </th>
                                         </tr>
                                       </thead>
                                       <tbody

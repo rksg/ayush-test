@@ -346,13 +346,11 @@ exports[`Create DHCP: Venues Step should render correctly 1`] = `
                                           </th>
                                           <th
                                             class="ant-table-cell"
-                                            definedwidth="80"
                                           >
                                             APs
                                           </th>
                                           <th
                                             class="ant-table-cell"
-                                            definedwidth="140"
                                           >
                                             Radios
                                           </th>
@@ -363,7 +361,6 @@ exports[`Create DHCP: Venues Step should render correctly 1`] = `
                                           </th>
                                           <th
                                             class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                            definedwidth="32"
                                             style="position: sticky; right: 0px;"
                                           />
                                         </tr>

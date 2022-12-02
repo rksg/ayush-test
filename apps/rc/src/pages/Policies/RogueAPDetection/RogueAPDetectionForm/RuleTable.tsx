@@ -80,7 +80,11 @@ const RuleTable = (props: RuleTableProps) => {
       dataIndex: 'sort',
       key: 'sort',
       width: 60,
-      render: () => <DragHandle/>
+      render: (data, row) => {
+        return <div data-testid={`${row.name}_Icon`} style={{ textAlign: 'center' }}>
+          <DragHandle/>
+        </div>
+      }
     }
   ]
 
@@ -151,29 +155,22 @@ const RuleTable = (props: RuleTableProps) => {
   }
 
   const delAction = (rows: RogueAPRule[], clearSelection: () => void) => {
-    if (rows.length > 1) {
-      showActionModal({
-        type: 'error',
-        content: $t({ defaultMessage: 'Not support multiple operations.' })
-      })
-    } else {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Rule' }),
-          entityValue: rows[0].name
-        },
-        onOk: () => {
-          rows[0].priority && dispatch({
-            type: RogueAPDetectionActionTypes.DEL_RULE,
-            payload: {
-              name: rows[0].name
-            }
-          })
-        }
-      })
-    }
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: $t({ defaultMessage: 'Rule' }),
+        entityValue: rows[0].name
+      },
+      onOk: () => {
+        rows[0].priority && dispatch({
+          type: RogueAPDetectionActionTypes.DEL_RULE,
+          payload: {
+            name: rows[0].name
+          }
+        })
+      }
+    })
     clearSelection()
   }
 
@@ -183,8 +180,9 @@ const RuleTable = (props: RuleTableProps) => {
     onClick: editAction
   },{
     label: $t({ defaultMessage: 'Delete' }),
+    visible: (row: RogueAPRule[]) => row.length <= 1,
     onClick: delAction
-  }] as { label: string, onClick: () => void }[]
+  }] as { label: string, visible: () => boolean, onClick: () => void }[]
 
   return (
     <>

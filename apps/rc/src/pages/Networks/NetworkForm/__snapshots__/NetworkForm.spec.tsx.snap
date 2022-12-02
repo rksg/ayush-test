@@ -1181,8 +1181,11 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                   >
                                                     <tr>
                                                       <th
-                                                        class="ant-table-cell ant-table-selection-column"
+                                                        class="ant-table-cell ant-table-selection-column react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         <div
                                                           class="ant-table-selection"
                                                         >
@@ -1203,11 +1206,17 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                             </span>
                                                           </label>
                                                         </div>
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell ant-table-column-has-sorters"
+                                                        class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                                         tabindex="0"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         <div
                                                           class="ant-table-column-sorters"
                                                         >
@@ -1263,11 +1272,17 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                             </span>
                                                           </span>
                                                         </div>
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell ant-table-column-has-sorters"
+                                                        class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                                         tabindex="0"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         <div
                                                           class="ant-table-column-sorters"
                                                         >
@@ -1323,11 +1338,17 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                             </span>
                                                           </span>
                                                         </div>
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell ant-table-column-has-sorters"
+                                                        class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                                         tabindex="0"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         <div
                                                           class="ant-table-column-sorters"
                                                         >
@@ -1383,44 +1404,87 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                                             </span>
                                                           </span>
                                                         </div>
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Networks
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Wi-Fi APs
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Activated
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
-                                                        definedwidth="80"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         APs
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
-                                                        definedwidth="140"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Radios
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Scheduling
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                                        definedwidth="32"
+                                                        class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                                         style="position: sticky; right: 0px;"
-                                                      />
+                                                      >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
+                                                      </th>
                                                     </tr>
                                                   </thead>
                                                   <tbody
@@ -3256,8 +3320,11 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                   >
                                                     <tr>
                                                       <th
-                                                        class="ant-table-cell ant-table-selection-column"
+                                                        class="ant-table-cell ant-table-selection-column react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         <div
                                                           class="ant-table-selection"
                                                         >
@@ -3278,11 +3345,17 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                             </span>
                                                           </label>
                                                         </div>
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell ant-table-column-has-sorters"
+                                                        class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                                         tabindex="0"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         <div
                                                           class="ant-table-column-sorters"
                                                         >
@@ -3338,11 +3411,17 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                             </span>
                                                           </span>
                                                         </div>
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell ant-table-column-has-sorters"
+                                                        class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                                         tabindex="0"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         <div
                                                           class="ant-table-column-sorters"
                                                         >
@@ -3398,11 +3477,17 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                             </span>
                                                           </span>
                                                         </div>
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell ant-table-column-has-sorters"
+                                                        class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                                         tabindex="0"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         <div
                                                           class="ant-table-column-sorters"
                                                         >
@@ -3458,44 +3543,87 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                                             </span>
                                                           </span>
                                                         </div>
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Networks
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Wi-Fi APs
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Activated
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
-                                                        definedwidth="80"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         APs
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
-                                                        definedwidth="140"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Radios
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell"
+                                                        class="ant-table-cell react-resizable"
                                                       >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
                                                         Scheduling
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
                                                       </th>
                                                       <th
-                                                        class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                                        definedwidth="32"
+                                                        class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                                         style="position: sticky; right: 0px;"
-                                                      />
+                                                      >
+                                                        <div
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                        />
+                                                        <div
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                        />
+                                                      </th>
                                                     </tr>
                                                   </thead>
                                                   <tbody

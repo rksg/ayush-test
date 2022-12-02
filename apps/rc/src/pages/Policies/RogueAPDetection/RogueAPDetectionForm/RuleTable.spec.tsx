@@ -159,6 +159,8 @@ describe('RuleTable', () => {
 
     await userEvent.click(screen.getByText(/sameNetworkRuleName1/i))
 
+
+
     fireEvent.click(screen.getByRole('button', {
       name: /edit/i
     }))
@@ -167,7 +169,9 @@ describe('RuleTable', () => {
 
     fireEvent.click(within(dialog).getByText(/cancel/i))
 
-    await userEvent.click(screen.getByText(/sameNetworkRuleName2/i))
+    await userEvent.click(screen.getByText(/sameNetworkRuleName1/i))
+
+    await screen.findByText(/1 selected/i)
 
     fireEvent.click(screen.getByRole('button', {
       name: /delete/i
