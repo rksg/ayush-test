@@ -1,15 +1,15 @@
 /* eslint-disable max-len */
-import { ServiceType }    from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
-
 import {
+  ServiceType,
   getSelectServiceRoutePath,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation
-} from './pages/Services/serviceRouteUtils'
+}    from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
+
 import RcRoutes from './Routes'
 
 jest.mock('./pages/Devices/Wifi/ApsTable', () => () => {

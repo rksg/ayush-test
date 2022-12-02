@@ -58,7 +58,7 @@ export function Layout ({
       ...item,
       path: `${base.pathname}${item.path}`,
       uri: item.path,
-      routes: item.routes?.map(sub=>({
+      routes: item.disabled ? [] : item.routes?.map(sub=>({
         ...sub,
         path: `${base.pathname}${sub.path}`,
         uri: sub.path

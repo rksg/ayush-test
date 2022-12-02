@@ -14,15 +14,14 @@ import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@
 import {
   CreateDpskFormFields,
   DpskSaveData,
-  PassphraseFormatEnum
+  PassphraseFormatEnum,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-
-import { getServiceListRoutePath } from '../../serviceRouteUtils'
 
 import DpskSettingsForm                 from './DpskSettingsForm'
 import { transferFormFieldsToSaveData } from './parser'

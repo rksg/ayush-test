@@ -53,6 +53,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
   }, [data, form])
 
   const nameValidator = async (value: string) => {
+    // TODO: API is not ready for name validation
     return Promise.resolve(value)
   }
 
@@ -107,7 +108,10 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
         </Form.Item>
         <Form.Item
           name='passphraseLength'
-          rules={[{ required: true }]}
+          rules={[{
+            required: true,
+            message: intl.$t({ defaultMessage: 'Please enter Passphrase Length' })
+          }]}
           label={
             <>
               { intl.$t({ defaultMessage: 'Passphrase Length' }) }
