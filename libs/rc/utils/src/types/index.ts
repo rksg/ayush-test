@@ -416,7 +416,7 @@ export class ExpirationDateEntity {
 
   setToByDate (date: string) {
     this.mode = ExpirationMode.BY_DATE
-    this.type = undefined
+    this.type = ExpirationType.SPECIFIED_DATE
     this.offset = undefined
     this.date = date
   }
