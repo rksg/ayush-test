@@ -1,0 +1,1593 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApDetails should navigate to reports tab correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+  >
+    <div
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/tenant-id/users"
+              >
+                WiFi Users
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              User-1
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 8px;"
+            >
+              <span
+                style="cursor: not-allowed;"
+              >
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG ant-dropdown-trigger"
+                type="button"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                >
+                  <div
+                    class="ant-space-item"
+                    style="margin-right: 8px;"
+                  >
+                    Actions
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+      <div
+        class="ant-page-header-footer"
+      >
+        <div
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-overview"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-overview"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Overview
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-troubleshooting"
+                    aria-disabled="true"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-troubleshooting"
+                    role="tab"
+                  >
+                    <span>
+                      Troubleshooting
+                    </span>
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-active"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-reports"
+                    aria-selected="true"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-reports"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Reports
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-timeline"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-timeline"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Timeline
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            >
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-overview"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-overview"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-troubleshooting"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-troubleshooting"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="false"
+                aria-labelledby="rc-tabs-test-tab-reports"
+                class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                id="rc-tabs-test-panel-reports"
+                role="tabpanel"
+                tabindex="0"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-timeline"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-timeline"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
+  />
+  ClientReportsTab
+</DocumentFragment>
+`;
+
+exports[`ApDetails should navigate to timeline tab correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+  >
+    <div
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/tenant-id/users"
+              >
+                WiFi Users
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              User-1
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 8px;"
+            >
+              <span
+                style="cursor: not-allowed;"
+              >
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG ant-dropdown-trigger"
+                type="button"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                >
+                  <div
+                    class="ant-space-item"
+                    style="margin-right: 8px;"
+                  >
+                    Actions
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+      <div
+        class="ant-page-header-footer"
+      >
+        <div
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-overview"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-overview"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Overview
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-troubleshooting"
+                    aria-disabled="true"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-troubleshooting"
+                    role="tab"
+                  >
+                    <span>
+                      Troubleshooting
+                    </span>
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-reports"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-reports"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Reports
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-active"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-timeline"
+                    aria-selected="true"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-timeline"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Timeline
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            >
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-overview"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-overview"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-troubleshooting"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-troubleshooting"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-reports"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-reports"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="false"
+                aria-labelledby="rc-tabs-test-tab-timeline"
+                class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                id="rc-tabs-test-panel-timeline"
+                role="tabpanel"
+                tabindex="0"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
+  />
+  ClientTimelineTab
+</DocumentFragment>
+`;
+
+exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+  >
+    <div
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/tenant-id/users"
+              >
+                WiFi Users
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              User-1
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 8px;"
+            >
+              <span
+                style="cursor: not-allowed;"
+              >
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG ant-dropdown-trigger"
+                type="button"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                >
+                  <div
+                    class="ant-space-item"
+                    style="margin-right: 8px;"
+                  >
+                    Actions
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+      <div
+        class="ant-page-header-footer"
+      >
+        <div
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-overview"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-overview"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Overview
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-troubleshooting"
+                    aria-disabled="true"
+                    aria-selected="true"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-troubleshooting"
+                    role="tab"
+                  >
+                    <span>
+                      Troubleshooting
+                    </span>
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-reports"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-reports"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Reports
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-timeline"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-timeline"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Timeline
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            >
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-overview"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-overview"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="false"
+                aria-labelledby="rc-tabs-test-tab-troubleshooting"
+                class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                id="rc-tabs-test-panel-troubleshooting"
+                role="tabpanel"
+                tabindex="0"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-reports"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-reports"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-timeline"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-timeline"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
+  />
+  <div
+    class="ant-row"
+    style="margin: -8px -8px -8px -8px;"
+  >
+    <div
+      class="ant-col ant-col-18"
+      style="padding: 8px 8px 8px 8px;"
+    >
+      <div
+        class="ant-row"
+        style="margin: -8px -8px -8px -8px;"
+      >
+        <div
+          class="ant-col ant-col-12"
+          style="padding: 8px 8px 8px 8px;"
+        />
+        <div
+          class="ant-col ant-col-12"
+          style="padding: 8px 8px 8px 8px; justify-content: end;"
+        >
+          <div
+            class="ant-row"
+            style="margin: -2px -2px -2px -2px; justify-content: end;"
+          >
+            <div
+              class="ant-col ant-col-8"
+              style="padding: 2px 2px 2px 2px;"
+            >
+              <div
+                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
+                style="max-width: 132px;"
+              >
+                <div
+                  class="ant-select-selector"
+                >
+                  <div
+                    class="ant-select-selection-overflow"
+                  >
+                    <div
+                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
+                      style="opacity: 1; order: 0;"
+                    >
+                      <div
+                        class="ant-select-selection-search"
+                        style="width: 0px;"
+                      >
+                        <input
+                          aria-autocomplete="list"
+                          aria-controls="rc_select_TEST_OR_SSR_list"
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-owns="rc_select_TEST_OR_SSR_list"
+                          autocomplete="off"
+                          class="ant-select-selection-search-input"
+                          id="rc_select_TEST_OR_SSR"
+                          readonly=""
+                          role="combobox"
+                          style="opacity: 0;"
+                          type="search"
+                          unselectable="on"
+                          value=""
+                        />
+                        <span
+                          aria-hidden="true"
+                          class="ant-select-selection-search-mirror"
+                        >
+                           
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    class="ant-select-selection-placeholder"
+                  >
+                    All Categories
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-8"
+              style="padding: 2px 2px 2px 2px;"
+            >
+              <div
+                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
+                style="max-width: 132px;"
+              >
+                <div
+                  class="ant-select-selector"
+                >
+                  <div
+                    class="ant-select-selection-overflow"
+                  >
+                    <div
+                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
+                      style="opacity: 1; order: 0;"
+                    >
+                      <div
+                        class="ant-select-selection-search"
+                        style="width: 0px;"
+                      >
+                        <input
+                          aria-autocomplete="list"
+                          aria-controls="rc_select_TEST_OR_SSR_list"
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-owns="rc_select_TEST_OR_SSR_list"
+                          autocomplete="off"
+                          class="ant-select-selection-search-input"
+                          id="rc_select_TEST_OR_SSR"
+                          readonly=""
+                          role="combobox"
+                          style="opacity: 0;"
+                          type="search"
+                          unselectable="on"
+                          value=""
+                        />
+                        <span
+                          aria-hidden="true"
+                          class="ant-select-selection-search-mirror"
+                        >
+                           
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    class="ant-select-selection-placeholder"
+                  >
+                    All Types
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-8"
+              style="padding: 2px 2px 2px 2px;"
+            >
+              <div
+                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
+                style="max-width: 132px;"
+              >
+                <div
+                  class="ant-select-selector"
+                >
+                  <div
+                    class="ant-select-selection-overflow"
+                  >
+                    <div
+                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
+                      style="opacity: 1; order: 0;"
+                    >
+                      <div
+                        class="ant-select-selection-search"
+                        style="width: 0px;"
+                      >
+                        <input
+                          aria-autocomplete="list"
+                          aria-controls="rc_select_TEST_OR_SSR_list"
+                          aria-expanded="false"
+                          aria-haspopup="listbox"
+                          aria-owns="rc_select_TEST_OR_SSR_list"
+                          autocomplete="off"
+                          class="ant-select-selection-search-input"
+                          id="rc_select_TEST_OR_SSR"
+                          readonly=""
+                          role="combobox"
+                          style="opacity: 0;"
+                          type="search"
+                          unselectable="on"
+                          value=""
+                        />
+                        <span
+                          aria-hidden="true"
+                          class="ant-select-selection-search-mirror"
+                        >
+                           
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    class="ant-select-selection-placeholder"
+                  >
+                    All Radios
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 8px 8px 8px 8px;"
+        >
+          <div
+            class="ant-collapse ant-collapse-icon-position-start ant-collapse-borderless ant-collapse-ghost"
+          >
+            <div
+              class="ant-collapse-item"
+            >
+              <div
+                aria-expanded="false"
+                class="ant-collapse-header"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-collapse-expand-icon"
+                >
+                  <svg
+                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
+                    data-testid="PlusSquareOutlined"
+                  />
+                </div>
+                <span
+                  class="ant-collapse-header-text"
+                >
+                  <span
+                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  >
+                    Connection Events
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div
+              class="ant-collapse-item"
+            >
+              <div
+                aria-expanded="false"
+                class="ant-collapse-header"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-collapse-expand-icon"
+                >
+                  <svg
+                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
+                    data-testid="PlusSquareOutlined"
+                  />
+                </div>
+                <span
+                  class="ant-collapse-header-text"
+                >
+                  <span
+                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  >
+                    Roaming
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div
+              class="ant-collapse-item"
+            >
+              <div
+                aria-expanded="false"
+                class="ant-collapse-header"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-collapse-expand-icon"
+                >
+                  <svg
+                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
+                    data-testid="PlusSquareOutlined"
+                  />
+                </div>
+                <span
+                  class="ant-collapse-header-text"
+                >
+                  <span
+                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  >
+                    Connection Quality
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div
+              class="ant-collapse-item"
+            >
+              <div
+                aria-expanded="false"
+                class="ant-collapse-header"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-collapse-expand-icon"
+                >
+                  <svg
+                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
+                    data-testid="PlusSquareOutlined"
+                  />
+                </div>
+                <span
+                  class="ant-collapse-header-text"
+                >
+                  <span
+                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  >
+                    Network Incidents
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-6"
+      style="padding: 8px 8px 8px 8px;"
+    >
+      <div
+        class="styledComponents__History-sc-hmshlr-0 fbrcHL"
+      >
+        <div
+          class="styledComponents__HistoryHeader-sc-hmshlr-1 gxxomy"
+        >
+          <span
+            class="styledComponents__HistoryContentTitle-sc-hmshlr-3 kdrcWS"
+          >
+            History
+          </span>
+          <span
+            class="styledComponents__HistoryIcon-sc-hmshlr-4 bpPEdb"
+          >
+            <svg
+              data-testid="ArrowExpand"
+              style="transform: rotate(180deg); cursor: pointer; line-height: 20px;"
+            />
+          </span>
+        </div>
+        <div
+          class="styledComponents__HistoryContent-sc-hmshlr-2 cUGlmL"
+        >
+          <div
+            class="ant-list ant-list-split"
+          >
+            <div
+              class="ant-spin-nested-loading"
+            >
+              <div
+                class="ant-spin-container"
+              >
+                <ul
+                  class="ant-list-items"
+                >
+                  <li
+                    class="ant-list-item"
+                  >
+                    <div
+                      class="ant-list-item-meta"
+                    >
+                      <div
+                        class="ant-list-item-meta-avatar"
+                      >
+                        <span
+                          class="styledComponents__EventTypeIcon-sc-hmshlr-5 haoSVP"
+                          color="--acx-semantics-green-50"
+                        />
+                      </div>
+                      <div
+                        class="ant-list-item-meta-content"
+                      >
+                        <h4
+                          class="ant-list-item-meta-title"
+                        >
+                          06/07/2022 11:21:48
+                        </h4>
+                        <div
+                          class="ant-list-item-meta-description"
+                        >
+                          Infrastructure (Service availabilty)
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li
+                    class="ant-list-item"
+                  >
+                    <div
+                      class="ant-list-item-meta"
+                    >
+                      <div
+                        class="ant-list-item-meta-avatar"
+                      >
+                        <span
+                          class="styledComponents__EventTypeIcon-sc-hmshlr-5 wBlry"
+                          color="--acx-neutrals-50"
+                        />
+                      </div>
+                      <div
+                        class="ant-list-item-meta-content"
+                      >
+                        <h4
+                          class="ant-list-item-meta-title"
+                        >
+                          06/07/2022 11:21:48
+                        </h4>
+                        <div
+                          class="ant-list-item-meta-description"
+                        >
+                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li
+                    class="ant-list-item"
+                  >
+                    <div
+                      class="ant-list-item-meta"
+                    >
+                      <div
+                        class="ant-list-item-meta-avatar"
+                      >
+                        <span
+                          class="styledComponents__IncidentEvent-sc-hmshlr-6 hEsQOF"
+                          color="--acx-semantics-red-50"
+                        >
+                          P1
+                        </span>
+                      </div>
+                      <div
+                        class="ant-list-item-meta-content"
+                      >
+                        <h4
+                          class="ant-list-item-meta-title"
+                        >
+                          06/07/2022 11:21:48
+                        </h4>
+                        <div
+                          class="ant-list-item-meta-description"
+                        >
+                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ApDetails should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+  >
+    <div
+      class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/tenant-id/users"
+              >
+                WiFi Users
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              User-1
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 8px;"
+            >
+              <span
+                style="cursor: not-allowed;"
+              >
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
+                >
+                  <svg
+                    data-testid="ClockOutlined"
+                  />
+                  <span>
+                    Last 24 Hours
+                  </span>
+                </button>
+              </span>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG ant-dropdown-trigger"
+                type="button"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                >
+                  <div
+                    class="ant-space-item"
+                    style="margin-right: 8px;"
+                  >
+                    Actions
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <svg
+                      data-testid="ArrowExpand"
+                    />
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+      <div
+        class="ant-page-header-footer"
+      >
+        <div
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
+        >
+          <div
+            class="ant-tabs-nav"
+            role="tablist"
+          >
+            <div
+              class="ant-tabs-nav-wrap"
+            >
+              <div
+                class="ant-tabs-nav-list"
+                style="transform: translate(0px, 0px);"
+              >
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-active"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-overview"
+                    aria-selected="true"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-overview"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Overview
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-troubleshooting"
+                    aria-disabled="true"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-troubleshooting"
+                    role="tab"
+                  >
+                    <span>
+                      Troubleshooting
+                    </span>
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-reports"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-reports"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Reports
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-tab"
+                >
+                  <div
+                    aria-controls="rc-tabs-test-panel-timeline"
+                    aria-selected="false"
+                    class="ant-tabs-tab-btn"
+                    id="rc-tabs-test-tab-timeline"
+                    role="tab"
+                    tabindex="0"
+                  >
+                    Timeline
+                  </div>
+                </div>
+                <div
+                  class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+            >
+              <button
+                aria-controls="rc-tabs-test-more-popup"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-hidden="true"
+                class="ant-tabs-nav-more"
+                id="rc-tabs-test-more"
+                style="visibility: hidden; order: 1;"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  aria-label="ellipsis"
+                  class="anticon anticon-ellipsis"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="ellipsis"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-tabs-content-holder"
+          >
+            <div
+              class="ant-tabs-content ant-tabs-content-top"
+            >
+              <div
+                aria-hidden="false"
+                aria-labelledby="rc-tabs-test-tab-overview"
+                class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                id="rc-tabs-test-panel-overview"
+                role="tabpanel"
+                tabindex="0"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-troubleshooting"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-troubleshooting"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-reports"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-reports"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+              <div
+                aria-hidden="true"
+                aria-labelledby="rc-tabs-test-tab-timeline"
+                class="ant-tabs-tabpane"
+                id="rc-tabs-test-panel-timeline"
+                role="tabpanel"
+                style="display: none;"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
+  />
+  ClientOverviewTab
+</DocumentFragment>
+`;
