@@ -7,6 +7,7 @@ import { NetworkSegmentationSaveData }              from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
 
 import NetworkSegmentationFormContext from './NetworkSegmentationFormContext'
+import { GeneralSettings }            from './wizardSteps/GeneralSettings'
 
 
 export default function NetworkSegmentationForm () {
@@ -45,7 +46,7 @@ export default function NetworkSegmentationForm () {
             name='generalSettings'
             title={$t({ defaultMessage: 'General Settings' })}
           >
-
+            <GeneralSettings/>
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
