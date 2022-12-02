@@ -98,8 +98,8 @@ export default function TwitterSetting () {
   </Form>
   return (
     <>
-      <UI.ConfigurationSolid onClick={() => {
-        setVisible(true)}}/>
+      <UI.ConfigurationSolid title='settingicon'
+        onClick={() => {setVisible(true)}}/>
       <Modal
         title={$t({ defaultMessage: 'Edit Twitter App' })}
         visible={visible}

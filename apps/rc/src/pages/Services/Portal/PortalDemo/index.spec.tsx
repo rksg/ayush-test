@@ -137,11 +137,8 @@ describe('PortalDemo', () => {
     await userEvent.click((await screen.findAllByTitle('colorpick'))[1])
     await userEvent.click(await screen.findByTitle('#F5A623'))
 
-    await userEvent.click(await screen.findByText('Language Settings'))
-    await userEvent.click((await screen.findAllByTitle('English'))[1])
+    await userEvent.click((await screen.findAllByTitle('English'))[0])
     await userEvent.click((await screen.findAllByTitle('Czech (čeština)'))[0])
-    await userEvent.click((await screen.findAllByRole('combobox'))[2])
-    await userEvent.click((await screen.findAllByText('Finnish (suomi)'))[0])
 
     await userEvent.click(await screen.findByText('Components'))
     const rows = await screen.findAllByRole('switch')
@@ -202,6 +199,7 @@ describe('PortalDemo', () => {
     fireEvent.mouseLeave(await screen.findByPlaceholderText('poweredbackground'))
 
     fireEvent.click(await screen.findByText('Reset'))
+    fireEvent.click(await screen.findByText('Preview'))
   })
 
   it('should render portal demo preview successfully', async () => {

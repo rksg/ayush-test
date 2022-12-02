@@ -48,13 +48,13 @@ export function WISPrForm () {
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const enablePreShared = useWatch('enablePreShared')
   const externalProviderRegion = useWatch(['guestPortal','wisprPage','externalProviderRegion'])
-  const providerData = useExternalProvidersQuery({ params }).data
+  const providerData = useExternalProvidersQuery({ params })
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
   const [regionOption, setRegionOption]=useState<Regions[]>()
   const [isOtherProvider, setIsOtherProvider]=useState(false)
   useEffect(()=>{
-    if(providerData){
-      const providers = providerData.providers
+    if(providerData.data){
+      const providers = providerData.data.providers
       setExternalProviders(providers)
       form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
     }
@@ -89,7 +89,7 @@ export function WISPrForm () {
         }
       }
     }
-  },[providerData,data])
+  },[providerData.data,data])
   const onGenerateHexKey = () => {
     let hexKey = generateHexKey(26)
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
@@ -244,7 +244,7 @@ export function WISPrForm () {
               <Button onClick={() => {
                 inputKey?.current?.focus()
                 inputKey?.current?.select()
-                navigator.clipboard.writeText(
+                navigator?.clipboard?.writeText(
                   form.getFieldValue(['guestPortal','wisprPage','integrationKey']))
               }}
               type='link'>

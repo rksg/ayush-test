@@ -100,8 +100,8 @@ export default function LinkedInSetting () {
   </Form>
   return (
     <>
-      <UI.ConfigurationSolid onClick={() => {
-        setVisible(true)}}/>
+      <UI.ConfigurationSolid title='settingicon'
+        onClick={() => {setVisible(true)}}/>
       <Modal
         title={$t({ defaultMessage: 'Edit LinkedIn App' })}
         visible={visible}

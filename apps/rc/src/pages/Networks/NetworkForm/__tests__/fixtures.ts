@@ -237,6 +237,19 @@ export const policyListResponse = {
   totalPages: 0,
   page: 1
 }
+export const dhcpResponse = {
+  fields: [
+    'name','vlanId','subnetAddress','subnetMask','startIpAddress','endIpAddress',
+    'primaryDnsIp','secondaryDnsIp','leaseTimeHours','leaseTimeMinutes','id'
+  ],
+  data:
+    {
+      id: '6cf550cdb67641d798d804793aaa82db',name: 'My-DHCP',
+      vlanId: 0,subnetAddress: '2.2.2.3',subnetMask: '255.255.255.0',
+      startIpAddress: '10.2.2.2',endIpAddress: '10.2.2.20',primaryDnsIp: '10.1.1.1',
+      secondaryDnsIp: '10.2.3.3',leaseTimeHours: 2, leaseTimeMinutes: 2
+    }
+}
 export const hostapprovalData={
   guestPortal: {
     guestNetworkType: GuestNetworkTypeEnum.HostApproval,
@@ -357,3 +370,203 @@ export const portalList =[{
   }
 }
 ]
+export const externalProviders={
+  providers: [
+    {
+      regions: [
+        {
+          name: 'Global',
+          authRadius: {
+            primary: {
+              ip: '158.106.110.94',
+              port: 1812
+            },
+            secondary: {
+              ip: '206.25.74.94',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '158.106.110.94',
+              port: 1813
+            },
+            secondary: {
+              ip: '206.25.74.94',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'Middle East',
+          authRadius: {
+            primary: {
+              ip: '150.129.118.29',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '150.129.118.29',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'Aislelabs',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Global',
+          captivePortalUrl: 'http://333.cc.com',
+          redirectUrl: 'baibai.com.cn',
+          authRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'SkyWifiRadSec',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Australia & New Zealand',
+          authRadius: {
+            primary: {
+              ip: '52.64.33.144',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.62.73.96',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.64.33.144',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.62.73.96',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'Asia',
+          authRadius: {
+            primary: {
+              ip: '52.74.81.42',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.220.47.94',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.74.81.42',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.220.47.94',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'Europe',
+          authRadius: {
+            primary: {
+              ip: '52.18.184.156',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.50.161.230',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.18.184.156',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.50.161.230',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'North America',
+          authRadius: {
+            primary: {
+              ip: '52.52.68.90',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.8.61.119',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.52.68.90',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.8.61.119',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'South America',
+          authRadius: {
+            primary: {
+              ip: '54.94.181.249',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.67.103.30',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '54.94.181.249',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.67.103.30',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'Skyfii',
+      customExternalProvider: false
+    }
+  ]
+}

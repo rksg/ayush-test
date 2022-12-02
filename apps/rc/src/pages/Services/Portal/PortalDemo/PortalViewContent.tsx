@@ -7,7 +7,6 @@ import Wifi4eu                   from '../../../../assets/images/portal-demo/WiF
 import { PortalDemoDefaultSize } from '../../commonUtils'
 import * as UI                   from '../styledComponents'
 
-import PortalAlternativeLanguage  from './PortalAlternativeLanguage'
 import PortalPhotoContent         from './PortalContent/PortalPhotoContent'
 import PortalPoweredByContent     from './PortalContent/PortalPoweredByContent'
 import PortalSecondaryTextContent from './PortalContent/PortalSecondaryTextContent'
@@ -50,7 +49,6 @@ export default function PortalViewContent (props:{
       {componentDisplay.WiFi4EU && <UI.Img src={Wifi4eu}
         alt={'Wifi4eu'}
         height={120} />}
-      <PortalAlternativeLanguage demoValue={demoValue}/>
       {componentDisplay.Logo &&<PortalPopover
         content={logoTools}
         visible={clicked}

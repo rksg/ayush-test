@@ -18,7 +18,7 @@ export default function SocialAuthURL () {
       <Button onClick={()=>{
         inputKey?.current?.focus()
         inputKey?.current?.select()
-        navigator.clipboard.writeText('https://devalto.ruckuswireless.com/g/ui/social')
+        navigator?.clipboard?.writeText('https://devalto.ruckuswireless.com/g/ui/social')
       }}
       type='secondary'
       >{$t({ defaultMessage: 'Copy to clipboard' })}</Button>

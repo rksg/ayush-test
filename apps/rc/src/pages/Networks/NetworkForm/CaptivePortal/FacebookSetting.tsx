@@ -100,8 +100,8 @@ export default function FacebookSetting () {
   </Form>
   return (
     <>
-      <UI.ConfigurationSolid onClick={() => {
-        setVisible(true)}}/>
+      <UI.ConfigurationSolid title='settingicon'
+        onClick={() => {setVisible(true)}}/>
       <Modal
         title={$t({ defaultMessage: 'Edit Facebook App' })}
         visible={visible}
