@@ -1,8 +1,8 @@
-import { Space }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Space, List } from 'antd'
+import { useIntl }     from 'react-intl'
 
-import { GridRow, GridCol }   from '@acx-ui/components'
-import { SearchResultNoData } from '@acx-ui/icons'
+import { GridRow, GridCol }                       from '@acx-ui/components'
+import { CaretRightOutlined, SearchResultNoData } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -17,9 +17,12 @@ function NoData () {
         </UI.List>
       </GridCol>
       <UI.StyledGridCol col={{ span: 12 }}>
-        {$t({ defaultMessage: 'Suggestions' })}
-        {/** some form of matching list for links */}
-        <li>{$t({ defaultMessage: 'APs' })}</li>
+        <UI.StyledSubTitle>{$t({ defaultMessage: 'Suggestions' })}</UI.StyledSubTitle>
+        <List
+          bordered={false}
+          dataSource={[$t({ defaultMessage: 'APs' })]}
+          renderItem={(item) => <List.Item><CaretRightOutlined />{item}</List.Item>}
+        />
       </UI.StyledGridCol>
       <GridCol col={{ span: 12 }}>
         <SearchResultNoData />
