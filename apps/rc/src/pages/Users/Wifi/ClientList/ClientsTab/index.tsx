@@ -1,8 +1,5 @@
-import { useIntl } from 'react-intl'
+import { ConnectedClientsTable } from '@acx-ui/rc/components'
 
 export function ClientsTab () {
-  const { $t } = useIntl()
-  return <>
-    { $t({ defaultMessage: 'Clients Tab' })}
-  </>
+  return <ConnectedClientsTable />
 }
