@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 
+import { CheckOutlined }                 from '@ant-design/icons'
 import { Form, Input, Row, Col, Select } from 'antd'
 import { DefaultOptionType }             from 'antd/lib/select'
-import { TiTick }                        from 'react-icons/ti'
 import { defineMessage, useIntl }        from 'react-intl'
 
 import { Alert, StepsForm }   from '@acx-ui/components'
@@ -40,9 +40,9 @@ export function GeneralSettings () {
     defaultMessage: 'Please make sure you\'re done the following preparations before creating a Network Segmentation:' +
       '{br}' +
       // eslint-disable-next-line max-len
-      '{TiTick} Already enabled the Property Management service for the venue where you want to apply' +
+      '{CheckOutlined} Already enabled the Property Management service for the venue where you want to apply' +
       '{br}' +
-      '{TiTick} Already had an SmartEdge deployed in the venue where you want to apply'
+      '{CheckOutlined} Already had an SmartEdge deployed in the venue where you want to apply'
   })
 
   return (
@@ -76,7 +76,7 @@ export function GeneralSettings () {
           <Alert message={intl.formatMessage(waringMsg, {
             p: (...chunks) => <p>{chunks}</p>,
             br: <br />,
-            TiTick: <TiTick color='green'/>
+            CheckOutlined: <CheckOutlined style={{ color: 'green' }}/>
           })}
           type='info' />
 
