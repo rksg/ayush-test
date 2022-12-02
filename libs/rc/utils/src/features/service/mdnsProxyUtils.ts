@@ -29,14 +29,14 @@ function extractApSerialNumberFromScope (scope: MdnsProxyScopeData[] = []): stri
 }
 
 // eslint-disable-next-line max-len
-function extractScopeFromApiPayload (aps: { ap: string, venue: string }[] = []): MdnsProxyScopeData[] {
+function extractScopeFromApiPayload (aps: { serialNumber: string, venueId: string }[] = []): MdnsProxyScopeData[] {
   let venueMap: { [key: string]: { serialNumber: string }[] } = {}
 
   aps.forEach(item => {
-    if (venueMap.hasOwnProperty(item.venue)) {
-      venueMap[item.venue].push({ serialNumber: item.ap })
+    if (venueMap.hasOwnProperty(item.venueId)) {
+      venueMap[item.venueId].push({ serialNumber: item.serialNumber })
     } else {
-      venueMap[item.venue] = [{ serialNumber: item.ap }]
+      venueMap[item.venueId] = [{ serialNumber: item.serialNumber }]
     }
   })
 

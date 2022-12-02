@@ -27,5 +27,5 @@ export interface MdnsProxyGetApiResponse {
   id: string;
   serviceName: string;
   rules?: MdnsProxyForwardingRule[];
-  aps?: { ap: string, venue: string }[]
+  aps?: { serialNumber: string, venueId: string }[]
 }

@@ -209,12 +209,12 @@ export const mockedGetApiResponse: MdnsProxyGetApiResponse = {
   rules: mockedForwardingRules,
   aps: [
     {
-      ap: '__AP_ID_1__',
-      venue: '__VENUE_ID_1__'
+      serialNumber: '__AP_ID_1__',
+      venueId: '__VENUE_ID_1__'
     },
     {
-      ap: '__AP_ID_2__',
-      venue: '__VENUE_ID_2__'
+      serialNumber: '__AP_ID_2__',
+      venueId: '__VENUE_ID_2__'
     }
   ]
 }
