@@ -8,34 +8,23 @@ import {
   Card,
   Subtitle
 } from '@acx-ui/components'
-import { useApDetailsQuery, useApViewModelQuery }    from '@acx-ui/rc/services'
 import { ApDetails, ApVenueStatusEnum, ApViewModel } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                     from '@acx-ui/react-router-dom'
+import { TenantLink }                                from '@acx-ui/react-router-dom'
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
 
-export function ApProperties () {
+export function ApProperties (props:{
+  currentAP: ApViewModel, apDetails: ApDetails, isLoading: boolean
+}) {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const params = useParams()
-  const apViewModelPayload = {
-    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
-    filters: { serialNumber: [params.serialNumber] }
-  }
-  const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const apDetailsQuery = useApDetailsQuery({ params })
-  const currentAP = apViewModelQuery.data
-  const apDetails = apDetailsQuery.data
+  const { currentAP, apDetails, isLoading } = props
   const onMoreAction = () => {
     setVisible(true)
   }
   return (
-    <Loader states={[apViewModelQuery, apDetailsQuery]}>
+    <Loader states={[{ isLoading }]}>
       <Card title={$t({ defaultMessage: 'AP Properties' })}
         action={{
           actionName: $t({ defaultMessage: 'More' }),
