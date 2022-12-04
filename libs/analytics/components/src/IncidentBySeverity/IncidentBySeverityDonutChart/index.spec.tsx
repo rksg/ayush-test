@@ -51,6 +51,19 @@ describe('IncidentBySeverityDonutChart', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
+  it('should render no card style chart', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+      data: { network: { hierarchyNode: { ...sample } } }
+    })
+    const { asFragment } = render(
+      <Provider>
+        <IncidentBySeverityDonutChart type='no-card-style' filters={filters} />
+      </Provider>
+    )
+    await screen.findByText('Incidents')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
   it('should render error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
     mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {

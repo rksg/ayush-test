@@ -6,14 +6,15 @@ import {
   PolicyType,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
-  PolicyOperation
+  PolicyOperation,
+  getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
-import { Path }           from '@acx-ui/react-router-dom'
-import { render, screen } from '@acx-ui/test-utils'
+import { Path, useTenantLink }        from '@acx-ui/react-router-dom'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
 
 import SelectPolicyForm from '.'
 
-const mockedUsedNavigate = jest.fn()
+const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: 't/__tenantId__',
   search: '',
@@ -22,7 +23,7 @@ const mockedTenantPath: Path = {
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate,
+  useNavigate: () => mockedUseNavigate,
   useTenantLink: (): Path => mockedTenantPath
 }))
 
@@ -31,10 +32,12 @@ describe('SelectPolicyForm', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
 
+  const selectPolicyPath = '/:tenantId/' + getSelectPolicyRoutePath()
+
   it('should render form', async () => {
     const { asFragment } = render(
       <SelectPolicyForm />, {
-        route: { params, path: '/:tenantId/' + getSelectPolicyRoutePath() }
+        route: { params, path: selectPolicyPath }
       }
     )
 
@@ -56,9 +59,22 @@ describe('SelectPolicyForm', () => {
       oper: PolicyOperation.CREATE
     })
 
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+    expect(mockedUseNavigate).toHaveBeenCalledWith({
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${policyCreatePath}`
     })
+  })
+
+  it('should navigate to the policies list when cancel the form', async () => {
+    const { result } = renderHook(() => useTenantLink(getPolicyListRoutePath(true)))
+
+    render(
+      <SelectPolicyForm />, {
+        route: { params, path: selectPolicyPath }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockedUseNavigate).toHaveBeenCalledWith(result.current)
   })
 })

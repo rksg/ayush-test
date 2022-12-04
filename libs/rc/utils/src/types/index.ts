@@ -16,7 +16,7 @@ import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomiz
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
 import { ApModel } from './ap'
-import { EPDG }    from './wifiCallingService'
+import { EPDG } from './services'
 
 export * from './ap'
 export * from './venue'
@@ -26,9 +26,8 @@ export * from './services'
 export * from './msp'
 export * from './edge'
 export * from './policy'
-export * from './wifiCallingService'
 export * from './portalService'
-
+export * from './client'
 export interface CommonResult {
   requestId: string
   response?:{}

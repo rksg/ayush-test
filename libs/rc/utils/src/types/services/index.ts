@@ -4,6 +4,8 @@ import {
 } from '../../constants'
 
 export * from './dhcpService'
+export * from './wifiCallingService'
+export * from './networkSegmentationService'
 
 
 export enum AccessEnum {

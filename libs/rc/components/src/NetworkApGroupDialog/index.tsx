@@ -250,9 +250,9 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       title={$t({ defaultMessage: 'Select APs' })}
       subTitle={$t({ defaultMessage: 'Define how this network will be activated on venue "{venueName}"' }, { venueName: venueName })}
       okText={$t({ defaultMessage: 'Apply' })}
-      maskClosable={false}
+      maskClosable={true}
       keyboard={false}
-      closable={false}
+      closable={true}
       width={840}
       onOk={onOk}
       okButtonProps={{ disabled: loading }}
