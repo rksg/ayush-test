@@ -26,14 +26,11 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   return (
     <Row gutter={[16, 16]}>
       <Col span={historyContentToggle ? 18 : 24}>
-        <Row gutter={[16, 16]}>
-          <Col span={10} />
-          <Col
-            span={historyContentToggle ? 14 : 10}
-            style={{ justifyContent: 'end' }}>
+        <Row style={{ justifyContent: 'end' }} gutter={[16, 16]}>
+          <Col span={historyContentToggle ? 15 : 11}>
             <Row style={{ justifyContent: 'end' }} gutter={[6, 6]}>
               {ClientTroubleShootingConfig.selection.map((config) => (
-                <Col span={historyContentToggle ? 8 : 8} key={config.selectionType}>
+                <Col span={8} key={config.selectionType}>
                   <Select
                     multiple
                     defaultValue={

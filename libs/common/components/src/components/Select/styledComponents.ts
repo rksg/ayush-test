@@ -13,6 +13,11 @@ export const Cascader = styled(AntCascader)`
       color: var(--acx-neutrals-50);
     }
   }
+  .ant-cascader-menu {
+    overflow: auto;
+    height: auto;
+    max-height: 228px;
+  }
   .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
     border: none;
     background: var(--acx-primary-white);
@@ -21,7 +26,6 @@ export const Cascader = styled(AntCascader)`
     margin-right: 0px;
 }
 `
-
 export const ButtonDiv = styled.div`
   margin-top: 4px;
   margin-bottom: -4px;
@@ -34,13 +38,9 @@ export const ButtonDiv = styled.div`
   padding: var(--acx-modal-footer-small-padding);
   gap: var(--acx-modal-footer-small-button-space);
 `
-
 export const Span = styled.span`
   margin-right: 10px;
   margin-top: 2px;
   margin-bottom: 2px;
   margin-left: 2px;
-`
-export const Selected = styled.div`
-  min-width: 110px
 `

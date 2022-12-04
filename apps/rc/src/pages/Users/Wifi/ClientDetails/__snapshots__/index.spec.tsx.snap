@@ -861,27 +861,23 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
     >
       <div
         class="ant-row"
-        style="margin: -8px -8px -8px -8px;"
+        style="margin: -8px -8px -8px -8px; justify-content: end;"
       >
         <div
-          class="ant-col ant-col-12"
+          class="ant-col ant-col-15"
           style="padding: 8px 8px 8px 8px;"
-        />
-        <div
-          class="ant-col ant-col-12"
-          style="padding: 8px 8px 8px 8px; justify-content: end;"
         >
           <div
             class="ant-row"
-            style="margin: -2px -2px -2px -2px; justify-content: end;"
+            style="margin: -3px -3px -3px -3px; justify-content: end;"
           >
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-search"
+                style="max-width: 165px;"
               >
                 <div
                   class="ant-select-selector"
@@ -932,11 +928,11 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
             </div>
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-search"
+                style="max-width: 165px;"
               >
                 <div
                   class="ant-select-selector"
@@ -987,11 +983,11 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
             </div>
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-search"
+                style="max-width: 165px;"
               >
                 <div
                   class="ant-select-selector"

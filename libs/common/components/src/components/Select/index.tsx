@@ -104,9 +104,9 @@ export function Select (props: CascaderProps) {
         onClear={antProps.allowClear ? onClearMultiple : undefined}
         removeIcon={open ? undefined : null}
         maxTagPlaceholder={
-          <UI.Selected title={currentLabels?.toString()}>
+          <div title={currentLabels?.toString()}>
             {$t(selectedItemsDesc,{ selectedItemsCount: currentValues.length })}
-          </UI.Selected>
+          </div>
         }
       />
     )
