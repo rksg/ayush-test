@@ -3,10 +3,9 @@ import React from 'react'
 import {
   CascaderProps as AntCascaderProps
 } from 'antd'
-import { DefaultOptionType } from 'antd/es/cascader'
-import { SingleValueType }   from 'rc-cascader/lib/Cascader'
-import { useIntl }           from 'react-intl'
-import { defineMessage }     from 'react-intl'
+import { DefaultOptionType }      from 'antd/es/cascader'
+import { SingleValueType }        from 'rc-cascader/lib/Cascader'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { Button } from '../Button'
 
@@ -91,6 +90,7 @@ export function Select (props: CascaderProps) {
       <UI.Cascader
         {...antProps}
         style={{ maxWidth: 165 }}
+        showArrow={true}
         value={currentValues}
         multiple
         onChange={setCurrentValues}
