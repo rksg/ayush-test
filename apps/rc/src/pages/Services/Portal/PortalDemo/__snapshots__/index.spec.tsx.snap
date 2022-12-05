@@ -6,7 +6,7 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
     class="ant-form ant-form-horizontal"
   >
     <div
-      style="width: 95%; min-width: 1100px;"
+      style="width: 100%; min-width: 1100px;"
     >
       <div
         class="ant-alert ant-alert-error styledComponents__AlertStyle-sc-1c2evo5-0 lfjPoV"

@@ -85,7 +85,7 @@ export default function PortalDemo ({
   }
   )
   return (
-    <div style={{ width: '95%', minWidth: 1100 }}>
+    <div style={{ width: isPreview? '100%':'95%', minWidth: 1100 }}>
       <UI.PopoverStyle />
       {demoValue.componentDisplay.WiFi4EU && !demoValue.wifi4EU
         && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}

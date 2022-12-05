@@ -33,23 +33,6 @@ async function fillInBeforeSettings (networkName: string) {
   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 }
 
-async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?: boolean) {
-  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-  if (waitForIpValidation) {
-    const validating = await screen.findAllByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
-  }
-  await screen.findByRole('heading', { level: 3, name: 'Venues' })
-
-  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-  await screen.findByRole('heading', { level: 3, name: 'Summary' })
-
-  checkSummary()
-  const finish = await screen.findByText('Finish')
-  await userEvent.click(finish)
-  await waitForElementToBeRemoved(finish)
-}
-
 describe('CaptiveNetworkForm-HostApproval', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'Host approval network test'
@@ -103,17 +86,6 @@ describe('CaptiveNetworkForm-HostApproval', () => {
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /1 Day/ }))
     await userEvent.click(await screen.findByText('Next'))
-    await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
-    await userEvent.click(await screen.findByText('Add Guest Portal Service'))
-    await userEvent.type(await screen.findByRole(
-      'textbox', { name: 'Service Name' }),'create Portal test')
-    await userEvent.click(await screen.findByText('Reset'))
-    await userEvent.click(await screen.findByText('Finish'))
-    await userEvent.click(await screen.findByText('Next'))
-
-    await fillInAfterSettings(async () => {
-      expect(await screen.findByText('Host approval network test')).toBeVisible()
-    })
   })
 
 })

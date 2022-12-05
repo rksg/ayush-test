@@ -456,10 +456,6 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                       class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-10 fcheRJ"
                                       isbg="false"
                                     >
-                                      <div
-                                        class="styledComponents__FieldTextLink-sc-cby53p-23 eNBZnc"
-                                        style="margin-top: 10px;"
-                                      />
                                       <img
                                         alt="Logo"
                                         class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"

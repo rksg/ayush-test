@@ -30,7 +30,12 @@ export const Drawer = styled(UIDrawer)`
     top:-20px;
   }
   [class*="styledComponents__ActionsContainer"]{
-    width:1200px;
+    width:calc( 100% - var(--acx-sider-width) + 20px);
+    margin-left:-20px;
+    padding-left:20px;
+  }
+  [class*="styledComponents__ActionsContainer"]::before{
+    width:0px;
   }
 `
 export const Checkbox = styled(UICheckbox)`

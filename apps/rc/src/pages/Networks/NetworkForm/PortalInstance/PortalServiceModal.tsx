@@ -35,7 +35,7 @@ export default function PortalServiceModal (props:{
         mask={true}
         children={getContent}
         destroyOnClose={true}
-        width={'100%'}
+        width={'calc( 100% - var(--acx-sider-width))'}
       />
     </>
   )
