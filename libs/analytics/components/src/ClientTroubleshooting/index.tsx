@@ -3,14 +3,15 @@ import { useState } from 'react'
 import { Row, Col }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { NetworkFilter, Button } from '@acx-ui/components'
-import { useEncodedParameter }   from '@acx-ui/utils'
+import { NetworkFilter, Button, Loader } from '@acx-ui/components'
+import { useEncodedParameter, useDateFilter }   from '@acx-ui/utils'
 
 import { ClientTroubleShootingConfig } from './config'
 import { History }                     from './EventsHistory'
 import { TimeLine }                    from './EventsTimeline'
+import { useClientInfoQuery }          from './services'
 
-type Filters = {
+export type Filters = {
   category?: [];
   type?: [];
   radio?: [];
@@ -23,6 +24,9 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
   const { $t } = useIntl()
   const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
+  const { startDate, endDate, range } = useDateFilter()
+  const results = useClientInfoQuery({ startDate, endDate, range, clientMac })
+  const filters = read()
   return (
     <Row gutter={[16, 16]}>
       <Col span={historyContentToggle ? 18 : 24}>
@@ -37,10 +41,10 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                   <NetworkFilter
                     multiple
                     defaultValue={
-                      read()?.[
+                      filters?.[
                         config.selectionType as keyof Filters
                       ]
-                        ? read()?.[
+                        ? filters?.[
                             config.selectionType as keyof Filters
                         ]
                         : config.defaultValue
@@ -51,7 +55,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     })}
                     style={{ maxWidth: 132 }}
                     onApply={(value: selectionType) =>
-                      write({ ...read(), [config.selectionType]: value })
+                      write({ ...filters, [config.selectionType]: value })
                     }
                   />
                 </Col>
@@ -79,10 +83,14 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
       </Col>
       {historyContentToggle && (
         <Col span={6}>
-          <History
-            setHistoryContentToggle={setHistoryContentToggle}
-            historyContentToggle
-          />
+          <Loader states={[results]}>
+            <History
+              setHistoryContentToggle={setHistoryContentToggle}
+              historyContentToggle
+              data={results.data}
+              filters={filters}
+            />
+          </Loader>
         </Col>
       )}
     </Row>
