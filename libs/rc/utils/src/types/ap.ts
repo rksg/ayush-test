@@ -290,6 +290,16 @@ export interface ApRadio {
   enable50G: boolean
   useVenueSettings: boolean
 }
+
+
+export interface APPhoto {
+  createdDate: string,
+  id: string,
+  imageId: string,
+  imageName: string,
+  imageUrl: string,
+  updatedDate: string
+}
 export interface DhcpAp {
   requestId: string,
   response?: DhcpApInfo[]
