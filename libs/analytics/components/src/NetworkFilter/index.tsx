@@ -5,7 +5,7 @@ import { useIntl }                   from 'react-intl'
 
 import { useAnalyticsFilter, defaultNetworkPath, Incident } from '@acx-ui/analytics/utils'
 import { calculateSeverity }                                from '@acx-ui/analytics/utils'
-import { NetworkFilter, Option, Loader }                    from '@acx-ui/components'
+import { Select, Option, Loader }                           from '@acx-ui/components'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
@@ -220,7 +220,7 @@ function ConnectedNetworkFilter (
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
-        <NetworkFilter
+        <Select
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple={false}
           defaultValue={raw}

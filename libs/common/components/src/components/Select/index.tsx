@@ -3,9 +3,9 @@ import React from 'react'
 import {
   CascaderProps as AntCascaderProps
 } from 'antd'
-import { DefaultOptionType } from 'antd/es/cascader'
-import { SingleValueType }   from 'rc-cascader/lib/Cascader'
-import { useIntl }           from 'react-intl'
+import { DefaultOptionType }      from 'antd/es/cascader'
+import { SingleValueType }        from 'rc-cascader/lib/Cascader'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { Button } from '../Button'
 
@@ -29,8 +29,10 @@ export type CascaderProps = AntCascaderProps<Option> & {
   ) => void
 }
 
-
-export function NetworkFilter (props: CascaderProps) {
+const selectedItemsDesc = defineMessage({
+  defaultMessage: '{selectedItemsCount} items selected'
+})
+export function Select (props: CascaderProps) {
   const { onApply, ...antProps } = props
   const { $t } = useIntl()
   const initialValues = props.defaultValue || []
@@ -76,22 +78,38 @@ export function NetworkFilter (props: CascaderProps) {
         </Button>
       </UI.ButtonDiv>
     </>
-
-    return <UI.Cascader
-      {...antProps}
-      value={currentValues}
-      multiple
-      onChange={setCurrentValues}
-      dropdownRender={withFooter}
-      expandTrigger='hover'
-      maxTagCount='responsive'
-      showSearch
-      onDropdownVisibleChange={setOpen}
-      open={open}
-      getPopupContainer={(triggerNode) => triggerNode.parentNode}
-      onClear={antProps.allowClear ? onClearMultiple : undefined}
-      removeIcon={open ? undefined : null}
-    />
+    const currentLabels = antProps.options?.reduce(
+      (acc: React.ReactNode[], option: Option) => {
+        if ((currentValues as string[]).flat().includes(option.value as string))
+          return [...acc, option.label]
+        return acc
+      },
+      []
+    )
+    return (
+      <UI.Cascader
+        {...antProps}
+        style={{ maxWidth: 165 }}
+        showArrow={true}
+        value={currentValues}
+        multiple
+        onChange={setCurrentValues}
+        dropdownRender={withFooter}
+        expandTrigger='hover'
+        maxTagCount='responsive'
+        showSearch
+        onDropdownVisibleChange={setOpen}
+        open={open}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        onClear={antProps.allowClear ? onClearMultiple : undefined}
+        removeIcon={open ? undefined : null}
+        maxTagPlaceholder={
+          <div title={currentLabels?.toString()}>
+            {$t(selectedItemsDesc,{ selectedItemsCount: currentValues.length })}
+          </div>
+        }
+      />
+    )
   } else {
     return <UI.Cascader
       {...antProps}
