@@ -20,3 +20,11 @@ export interface DpskSaveData {
   expirationDate?: string; // If 'expirationType' is SPECIFIED_DATE then this field is the related date in format YYYY-MM-DD.
   networkIds?: string[]
 }
+export interface DpskList {
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+  sort: string[];
+  content: DpskSaveData[]
+}

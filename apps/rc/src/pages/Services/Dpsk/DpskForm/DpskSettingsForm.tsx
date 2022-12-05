@@ -16,12 +16,14 @@ import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
+import { useLazyDpskListQuery } from '@acx-ui/rc/services'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
   DpskNetworkType,
   DpskSaveData,
-  CreateDpskFormFields
+  CreateDpskFormFields,
+  checkObjectNotExists
 } from '@acx-ui/rc/utils'
 
 import {
@@ -40,6 +42,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat')
   const { data } = props
   const { Option } = Select
+  const [ dpskList ] = useLazyDpskListQuery()
 
   useEffect(() => {
     form.resetFields()
@@ -53,7 +56,10 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
   }, [data, form])
 
   const nameValidator = async (value: string) => {
-    return Promise.resolve(value)
+    const list = (await dpskList({}).unwrap()).content
+      .filter(n => n.id !== data?.id)
+      .map(n => ({ name: n.name }))
+    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'DPSK service' }))
   }
 
   const passphraseOptions = Object.keys(PassphraseFormatEnum).map((key =>
@@ -107,7 +113,10 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
         </Form.Item>
         <Form.Item
           name='passphraseLength'
-          rules={[{ required: true }]}
+          rules={[{
+            required: true,
+            message: intl.$t({ defaultMessage: 'Please enter Passphrase Length' })
+          }]}
           label={
             <>
               { intl.$t({ defaultMessage: 'Passphrase Length' }) }

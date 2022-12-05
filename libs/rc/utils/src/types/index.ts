@@ -16,8 +16,7 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { EPDG } from './wifiCallingService'
-
+import { EPDG } from './services'
 
 export * from './ap'
 export * from './venue'
@@ -27,9 +26,8 @@ export * from './services'
 export * from './msp'
 export * from './edge'
 export * from './policy'
-export * from './wifiCallingService'
 export * from './portalService'
-
+export * from './client'
 export interface CommonResult {
   requestId: string
   response?:{}
@@ -418,7 +416,7 @@ export class ExpirationDateEntity {
 
   setToByDate (date: string) {
     this.mode = ExpirationMode.BY_DATE
-    this.type = undefined
+    this.type = ExpirationType.SPECIFIED_DATE
     this.offset = undefined
     this.date = date
   }

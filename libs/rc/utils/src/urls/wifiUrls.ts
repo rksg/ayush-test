@@ -157,6 +157,30 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
   },
+  getApPhoto: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture'
+  },
+  addApPhoto: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep'
+  },
+  deleteApPhoto: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture'
+  },
+  getApRadio: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  updateApRadio: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  deleteApRadio: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
   pingAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'

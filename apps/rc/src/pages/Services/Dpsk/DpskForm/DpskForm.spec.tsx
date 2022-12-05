@@ -6,7 +6,8 @@ import {
   DpskNetworkType,
   DpskUrls,
   transformDpskNetwork,
-  websocketServerUrl
+  websocketServerUrl,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
@@ -17,15 +18,14 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { getServiceListRoutePath } from '../../serviceRouteUtils'
-
 import{
   createPath,
   editPath,
   mockedCreateFormData,
   mockedEditFormData,
   mockedTenantId,
-  mockedServiceId
+  mockedServiceId,
+  mockedDpskList
 } from './__tests__/fixtures'
 import DpskForm from './DpskForm'
 
@@ -56,6 +56,10 @@ describe('DpskForm', () => {
       rest.get(
         DpskUrls.getDpsk.url,
         (req, res, ctx) => res(ctx.json(mockedEditFormData))
+      ),
+      rest.get(
+        DpskUrls.getDpskList.url,
+        (req, res, ctx) => res(ctx.json(mockedDpskList))
       ),
       rest.get(
         websocketServerUrl,
@@ -131,7 +135,7 @@ describe('DpskForm', () => {
         <DpskForm editMode={true} />
       </Provider>, {
         route: {
-          params: { tenantId: mockedTenantId, serviceId: '__Service_ID__' },
+          params: { tenantId: mockedTenantId, serviceId: mockedServiceId },
           path: editPath
         }
       }
@@ -144,7 +148,7 @@ describe('DpskForm', () => {
 
   it('should show toast when edit service profile failed', async () => {
     mockServer.use(
-      rest.put(
+      rest.patch(
         DpskUrls.updateDpsk.url,
         (req, res, ctx) => res(ctx.status(404), ctx.json({}))
       )

@@ -27,7 +27,8 @@ import {
   DpskUrls,
   PortalDetailInstances,
   Portal,
-  PortalUrlsInfo
+  PortalUrlsInfo,
+  DpskList
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -293,9 +294,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
         const reqParams = { ...params }
-        if (params && !params.serviceId) {
-          reqParams.serviceId = 'none'
-        }
         const wifiCallingServiceReq = createHttpRequest(
           WifiCallingUrls.getWifiCalling, reqParams, RKS_NEW_UI
         )
@@ -361,6 +359,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
+    dpskList: build.query<DpskList, RequestPayload>({
+      query: () => {
+        const getDpskListReq = createHttpRequest(DpskUrls.getDpskList)
+        return {
+          ...getDpskListReq
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
     getDpsk: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
         const getDpskReq = createHttpRequest(DpskUrls.getDpsk, params)
@@ -419,6 +426,7 @@ export const {
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
+  useLazyDpskListQuery,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,

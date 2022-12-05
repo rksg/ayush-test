@@ -464,88 +464,74 @@ exports[`DpskForm should render the form 1`] = `
                                 id="details_expiration_mode"
                               >
                                 <div
-                                  class="ant-space ant-space-vertical"
+                                  class="sc-cCsOjp iTElTD"
                                 >
-                                  <div
-                                    class="ant-space-item"
-                                    style="margin-bottom: 16px;"
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
                                   >
-                                    <label
-                                      class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
+                                    <span
+                                      class="ant-radio ant-radio-checked"
                                     >
+                                      <input
+                                        checked=""
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="NEVER"
+                                      />
                                       <span
-                                        class="ant-radio ant-radio-checked"
-                                      >
-                                        <input
-                                          checked=""
-                                          class="ant-radio-input"
-                                          type="radio"
-                                          value="NEVER"
-                                        />
-                                        <span
-                                          class="ant-radio-inner"
-                                        />
-                                      </span>
-                                      <span>
-                                        Never expires
-                                      </span>
-                                    </label>
-                                  </div>
-                                  <div
-                                    class="ant-space-item"
-                                    style="margin-bottom: 16px;"
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Never expires
+                                    </span>
+                                  </label>
+                                </div>
+                                <div
+                                  class="sc-cCsOjp gwBQ"
+                                >
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                   >
-                                    <label
-                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                    <span
+                                      class="ant-radio"
                                     >
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="BY_DATE"
+                                      />
                                       <span
-                                        class="ant-radio"
-                                      >
-                                        <input
-                                          class="ant-radio-input"
-                                          type="radio"
-                                          value="BY_DATE"
-                                        />
-                                        <span
-                                          class="ant-radio-inner"
-                                        />
-                                      </span>
-                                      <span>
-                                        <div
-                                          class="sc-idiyUo dsiMJS"
-                                        >
-                                          By date
-                                        </div>
-                                      </span>
-                                    </label>
-                                  </div>
-                                  <div
-                                    class="ant-space-item"
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      By date
+                                    </span>
+                                  </label>
+                                </div>
+                                <div
+                                  class="sc-cCsOjp dTTKzd"
+                                >
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                   >
-                                    <label
-                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                    <span
+                                      class="ant-radio"
                                     >
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="AFTER_TIME"
+                                      />
                                       <span
-                                        class="ant-radio"
-                                      >
-                                        <input
-                                          class="ant-radio-input"
-                                          type="radio"
-                                          value="AFTER_TIME"
-                                        />
-                                        <span
-                                          class="ant-radio-inner"
-                                        />
-                                      </span>
-                                      <span>
-                                        <div
-                                          class="sc-idiyUo fkyxOP"
-                                        >
-                                          After...
-                                        </div>
-                                      </span>
-                                    </label>
-                                  </div>
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      After...
+                                    </span>
+                                  </label>
                                 </div>
                               </div>
                             </div>

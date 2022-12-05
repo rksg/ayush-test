@@ -3,22 +3,22 @@ import { ApiInfo } from '../../apiService'
 export const DpskUrls: { [key: string]: ApiInfo } = {
   getDpsk: {
     method: 'get',
-    url: '/api/tenant/:tenantId/dpsk/dpskServiceProfiles/:serviceId'
+    url: '/dpskServices/:serviceId'
+  },
+  getDpskList: {
+    method: 'get',
+    url: '/dpskServices'
   },
   addDpsk: {
     method: 'post',
-    url: '/api/tenant/:tenantId/dpsk/dpskServiceProfiles'
+    url: '/dpskServices'
   },
   updateDpsk: {
-    method: 'put',
-    url: '/api/tenant/:tenantId/dpsk/dpskServiceProfiles/:serviceId'
+    method: 'patch',
+    url: '/dpskServices/:serviceId'
   },
   deleteDpsk: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/dpsk/dpskServiceProfiles/:serviceId'
-  },
-  deleteDpskList: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/dpsk/dpskServiceProfiles'
+    url: '/dpskServices/:serviceId'
   }
 }

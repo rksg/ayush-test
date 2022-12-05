@@ -240,10 +240,10 @@ exports[`WifiCallingSummaryForm should render form successfully 1`] = `
                 class="ant-form-item-control-input-content"
               >
                 <div>
-                  nwId1
+                  nwName1
                 </div>
                 <div>
-                  nwId2
+                  nwName2
                 </div>
               </div>
             </div>

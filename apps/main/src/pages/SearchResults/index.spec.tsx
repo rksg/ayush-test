@@ -5,8 +5,8 @@ import { Provider }                                                    from '@ac
 import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
-  venueListData,
-  overViewData
+  networkListData,
+  venueListData
 } from './__fixtures__/searchMocks'
 
 import SearchResults from '.'
@@ -14,28 +14,16 @@ import SearchResults from '.'
 const params = { searchVal: 'test%3F', tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
 describe('Search Results', () => {
-  beforeEach(async () => {
-    const body = venueListData
-
+  beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', {
       status: 200,
-      data: body
+      data: venueListData,
+      totalCount: 1
     })
-
-    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', {
-      status: 200,
-      data: overViewData
+    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', {
+      data: networkListData,
+      totalCount: 3
     })
-  })
-
-  it('should render correctly', async () => {
-    const { baseElement } = render(
-      <Provider>
-        <SearchResults />
-      </Provider>,
-      { route: { params } }
-    )
-    expect(baseElement).toHaveTextContent('Search Results')
   })
 
   it('should decode search string correctly', async () => {
@@ -45,11 +33,10 @@ describe('Search Results', () => {
       </Provider>,
       { route: { params } }
     )
-    expect(await screen.findByText('Search Results for "test?" (0)')).toBeVisible()
+    expect(await screen.findByText('Search Results for "test?" (4)')).toBeVisible()
   })
 
   it('should render venue table correctly', async () => {
-
     render(
       <Provider>
         <SearchResults />
@@ -61,5 +48,7 @@ describe('Search Results', () => {
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('500')).toBeInTheDocument()
+    const vlan1s = await screen.findAllByText(/VLAN-1/i)
+    expect(vlan1s).toHaveLength(2)
   })
 })
