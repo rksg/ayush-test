@@ -378,19 +378,19 @@ exports[`NetworkSegmentationForm should create form successfully 1`] = `
                         <div
                           class="ant-alert-message"
                         >
-                          Please make sure you're done the following preparations before creating a Network Segmentation:
+                          Please make sure you’ve done the following preparations before creating a Network Segmentation:
                           <br />
                           <svg
                             data-testid="CheckMarkCircleSolid"
                             style="color: green;"
                           />
-                           Already enabled the Property Management service for the venue where you want to apply
+                          Already enabled the Property Management service for the venue where you want to apply
                           <br />
                           <svg
                             data-testid="CheckMarkCircleSolid"
                             style="color: green;"
                           />
-                           Already had an SmartEdge deployed in the venue where you want to apply
+                          Already had an SmartEdge deployed in the venue where you want to apply
                         </div>
                       </div>
                     </div>

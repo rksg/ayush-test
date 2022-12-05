@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 
-import { CheckMarkCircleSolid }                 from '@acx-ui/icons'
+
 import { Form, Input, Row, Col, Select } from 'antd'
 import { DefaultOptionType }             from 'antd/lib/select'
-import { defineMessage, useIntl }        from 'react-intl'
+import { useIntl, FormattedMessage }     from 'react-intl'
 
-import { Alert, StepsForm }   from '@acx-ui/components'
-import { useVenuesListQuery } from '@acx-ui/rc/services'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { Alert, StepsForm }     from '@acx-ui/components'
+import { CheckMarkCircleSolid } from '@acx-ui/icons'
+import { useVenuesListQuery }   from '@acx-ui/rc/services'
+import { useParams }            from '@acx-ui/react-router-dom'
+
 
 const defaultPayload = {
   fields: ['name', 'id'],
@@ -34,17 +36,22 @@ export function GeneralSettings () {
     }
   }, [venuesList])
 
-  const waringMsg = defineMessage({
-    id: 'waringMsg',
-    // eslint-disable-next-line max-len
-    defaultMessage: 'Please make sure you\'re done the following preparations before creating a Network Segmentation:' +
-      '{br}' +
+  const waringMsg = <FormattedMessage
+    defaultMessage={
       // eslint-disable-next-line max-len
-      '{CheckMarkCircleSolid} Already enabled the Property Management service for the venue where you want to apply' +
-      '{br}' +
+      'Please make sure you’ve done the following preparations before creating a Network Segmentation:' +
+      '<br></br>' +
       // eslint-disable-next-line max-len
-      '{CheckMarkCircleSolid} Already had an SmartEdge deployed in the venue where you want to apply'
-  })
+      '<icon></icon>Already enabled the Property Management service for the venue where you want to apply' +
+      '<br></br>' +
+      '<icon></icon>Already had an SmartEdge deployed in the venue where you want to apply'}
+
+    values={{
+      p: (...chunks) => <p>{chunks}</p>,
+      br: () => <br />,
+      icon: () => <CheckMarkCircleSolid style={{ color: 'green' }}/>
+    }}
+  />
 
   return (
     <>
@@ -73,14 +80,7 @@ export function GeneralSettings () {
 
       <Row gutter={20}>
         <Col span={12}>
-          {/* eslint-disable-next-line max-len */}
-          <Alert message={intl.formatMessage(waringMsg, {
-            p: (...chunks) => <p>{chunks}</p>,
-            br: <br />,
-            CheckMarkCircleSolid: <CheckMarkCircleSolid style={{ color: 'green' }}/>
-          })}
-          type='info' />
-
+          <Alert message={waringMsg} type='info' />
         </Col>
       </Row>
 
