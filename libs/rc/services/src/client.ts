@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit
 
 import {
   EventMeta,
+  Client,
   ClientList,
   ClientListMeta,
   CommonUrlsInfo,
@@ -52,14 +53,14 @@ export const clientApi = baseClientApi.injectEndpoints({
           : { error: clientListQuery.error as FetchBaseQueryError }
       }
     }),
-    getHistoricalClientList: build.query<TableResult<ClientList>, RequestPayload>({
+    getHistoricalClientList: build.query<TableResult<Client>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const clientDetails = {
           ...createHttpRequest(CommonUrlsInfo.getHistoricalClientList, arg.params),
           body: arg.payload
         }
         const baseDetailsQuery = await fetchWithBQ(clientDetails)
-        const baseDetails = baseDetailsQuery.data as TableResult<ClientList>
+        const baseDetails = baseDetailsQuery.data as TableResult<Client>
 
         const metaInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),

@@ -5,7 +5,7 @@ import { cssStr, Subtitle }                from '@acx-ui/components'
 import { Table, TableProps, Loader }       from '@acx-ui/components'
 import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
 import {
-  ClientList,
+  Client,
   useTableQuery
 }                                                            from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
@@ -13,7 +13,7 @@ import { formatter }  from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter('dateTimeFormat')
-  const columns: TableProps<ClientList>['columns'] = [{
+  const columns: TableProps<Client>['columns'] = [{
     key: 'hostname',
     title: intl.$t({ defaultMessage: 'Hostname' }),
     dataIndex: 'hostname',

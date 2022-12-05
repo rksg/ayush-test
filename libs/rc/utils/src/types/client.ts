@@ -41,14 +41,6 @@ export interface ClientList {
   switchName?: string
   healthClass: string
   sessStartTimeParssed: boolean
-  id?: string
-  wifiCallingCarrierName?: string
-  wifiCallingQosPriority?: string
-  wifiCallingTotal?: number
-  wifiCallingTx?: number
-  wifiCallingRx?: number
-  isVenueExists?: boolean
-  isApExists?: boolean
 }
 
 export interface ClientListMeta {
