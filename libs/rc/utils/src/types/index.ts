@@ -380,3 +380,30 @@ export interface catchErrorResponse {
   },
   status: number
 }
+
+export enum ClientStatusEnum {
+  HISTORICAL = 'historical',
+  CONNECTED = 'connected'
+}
+
+export interface EventMeta {
+  apName: string,
+  id: string,
+  isApExists: boolean,
+  isClientExists: boolean,
+  isVenueExists: boolean,
+  networkId: string,
+  venueName: string,
+}
+
+export interface ClientStatistic {
+  applications: number;
+  apsConnected: number;
+  avgRateBPS: string;
+  avgSessionLengthSeconds: unknown | number;
+  sessions: number;
+  userTrafficBytes: number;
+  userTraffic5GBytes: number;
+  userTraffic6GBytes: number;
+  userTraffic24GBytes: number;
+}

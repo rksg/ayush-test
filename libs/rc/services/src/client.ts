@@ -1,10 +1,13 @@
 import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
 import {
+  Client,
   ClientList,
   ClientListMeta,
+  ClientStatistic,
   CommonUrlsInfo,
   createHttpRequest,
+  EventMeta,
   getClientHealthClass,
   RequestPayload,
   TableResult,
@@ -48,6 +51,55 @@ export const clientApi = baseClientApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: clientListQuery.error as FetchBaseQueryError }
       }
+    }),
+    getClientDetails: build.query<Client, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getClientDetails, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getHistoricalClientList: build.query<TableResult<Client>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const clientDetails = {
+          ...createHttpRequest(CommonUrlsInfo.getHistoricalClientList, arg.params),
+          body: arg.payload
+        }
+        const baseDetailsQuery = await fetchWithBQ(clientDetails)
+        const baseDetails = baseDetailsQuery.data as TableResult<Client>
+
+        const metaInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
+          body: {
+            fields: ['networkId', 'venueName', 'apName'],
+            filters: { id: baseDetails?.data?.map(d => d.id) }
+          }
+        }
+        const metaListQuery = await fetchWithBQ(metaInfo)
+        const metaList = metaListQuery?.data as { data: EventMeta[] }
+
+        return {
+          data: {
+            ...baseDetails,
+            data: baseDetails?.data?.map((item) => {
+              return {
+                ...item,
+                ...metaList?.data?.filter(data => data.id === item.id)?.[0]
+              }
+            })
+          }
+        }
+      }
+    }),
+    getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
 
   })
@@ -82,5 +134,10 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   }
 }
 export const {
-  useGetClientListQuery
+  useGetClientListQuery,
+  useGetClientDetailsQuery,
+  useLazyGetClientDetailsQuery,
+  useGetHistoricalClientListQuery,
+  useLazyGetHistoricalClientListQuery,
+  useGetHistoricalStatisticsReportsQuery
 } = clientApi

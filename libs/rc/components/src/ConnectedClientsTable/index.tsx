@@ -8,11 +8,12 @@ import { ClientList, getDeviceTypeIcon, getOsTypeIcon, useTableQuery } from '@ac
 import { TenantLink }                                                  from '@acx-ui/react-router-dom'
 import { formatter }                                                   from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
+import * as UI from './styledComponents'
+
 // TODO: userProfileService.userHasRole(user, 'OFFICE_ADMIN')
-const hasGuestManagerRole = false 
+const hasGuestManagerRole = false
 
 function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const columns: TableProps<ClientList>['columns'] = [

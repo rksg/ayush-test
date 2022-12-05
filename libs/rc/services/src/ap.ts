@@ -411,6 +411,7 @@ export const {
   usePingApMutation,
   useTraceRouteApMutation,
   useGetApQuery,
+  useLazyGetApQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
   useApGroupListQuery,
@@ -437,6 +438,7 @@ export const {
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
   useGetApCapabilitiesQuery,
+  useLazyGetApCapabilitiesQuery,
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation
 } = apApi

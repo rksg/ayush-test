@@ -31,6 +31,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  getEventListMeta: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/meta'
+  },
   getApsList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps'
@@ -246,6 +250,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getClientMeta: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/client/meta'
+  },
+  getClientDetails: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/client/:clientId'
+  },
+  getHistoricalClientList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
+  },
+  getHistoricalStatisticsReportsV2: {
+    method: 'post',
+    url: '/api/reporting/tenant/:tenantId/report/clientStats/v2'
   },
   getApNetworkList: {
     method: 'post',
