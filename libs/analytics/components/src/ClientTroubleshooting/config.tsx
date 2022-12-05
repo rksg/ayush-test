@@ -73,7 +73,7 @@ export const transformEvents = (events: ConnectionEvent[], selectedEvents: strin
     const time = +new Date(timestamp)
 
     const skip = eventsToHide.includes(state) || selectedEvents.length
-      ? (!selEventsFilterMap.includes(eventType) && !selEventsFilterMap.includes(radio))
+      ? !selEventsFilterMap.includes(eventType) || !selEventsFilterMap.includes(radio)
       : false
     
     if (skip) return acc

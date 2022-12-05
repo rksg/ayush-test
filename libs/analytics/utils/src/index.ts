@@ -13,7 +13,8 @@ export { getRootCauseAndRecommendations, codeToFailureTypeMap } from './rootCaus
 export {
   clientEventDescription,
   mapCodeToReason,
-  mapCodeToAttempt
+  mapCodeToAttempt,
+  failureCodeTextMap
 } from './reasonCodeMap'
 export * from './timeseries'
 export * from './sorters'
