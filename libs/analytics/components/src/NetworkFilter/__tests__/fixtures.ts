@@ -38,7 +38,7 @@ export const networkHierarchy = {
     aps: [{ name: 'ap3', mac: 'ap-mac3' }],
     switches: [{ name: 'switch3', mac: 'switch-mac3' }]
   }
-],
+  ],
   name: 'Network',
   type: 'network',
   path: defaultNetworkPath
