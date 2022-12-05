@@ -5,7 +5,7 @@ import { useParams }                                                            
 import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
 
 import { showActionModal, Table, TableProps }                          from '@acx-ui/components'
-import { ListSolid }                                                   from '@acx-ui/icons'
+import { Drag }                                                        from '@acx-ui/icons'
 import { useRoguePolicyQuery }                                         from '@acx-ui/rc/services'
 import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleTypeEnum } from '@acx-ui/rc/utils'
 
@@ -49,7 +49,7 @@ const RuleTable = (props: RuleTableProps) => {
   }
 
   const DragHandle = SortableHandle(() =>
-    <ListSolid style={{ cursor: 'grab', color: '#6e6e6e' }} />
+    <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
   )
 
   const basicColumns: TableProps<RogueAPRule>['columns'] = [
@@ -123,8 +123,7 @@ const RuleTable = (props: RuleTableProps) => {
   // @ts-ignore
   const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const DraggableContainer = (props: any) => {
+  const DraggableContainer = (props: SortableContainerProps) => {
     return <SortContainer
       useDragHandle
       disableAutoscroll
