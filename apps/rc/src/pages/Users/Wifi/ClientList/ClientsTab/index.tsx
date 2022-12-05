@@ -1,5 +1,5 @@
-import GuestsTable from '../GuestsTab/GuestsTable'
+import { ConnectedClientsTable } from '@acx-ui/rc/components'
 
 export function ClientsTab () {
-  return <GuestsTable />
+  return <ConnectedClientsTable />
 }
