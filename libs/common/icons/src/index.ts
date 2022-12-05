@@ -54,6 +54,7 @@ export { ReactComponent as CaretDownOutlined } from './icons/CaretDownOutlined.s
 export { ReactComponent as CaretDownSolid } from './icons/CaretDownSolid.svg'
 export { ReactComponent as CaretLeftOutlined } from './icons/CaretLeftOutlined.svg'
 export { ReactComponent as CaretLeftSolid } from './icons/CaretLeftSolid.svg'
+export { ReactComponent as CaretRightList } from './icons/CaretRightList.svg'
 export { ReactComponent as CaretRightOutlined } from './icons/CaretRightOutlined.svg'
 export { ReactComponent as CaretRightSolid } from './icons/CaretRightSolid.svg'
 export { ReactComponent as CaretUpOutlined } from './icons/CaretUpOutlined.svg'
