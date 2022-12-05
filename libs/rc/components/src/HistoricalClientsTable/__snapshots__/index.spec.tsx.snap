@@ -751,7 +751,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/tenant-id/users/aps/24:41:8c:c3:16:df/details/overview?clientStatus=historical"
+                                  href="/t/tenant-id/users/wifi/clients/24:41:8c:c3:16:df/details/overview?clientStatus=historical"
                                 >
                                   LP-YGUO1
                                 </a>
@@ -811,7 +811,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/tenant-id/users/aps/b2:db:24:a0:08:a9/details/overview?clientStatus=historical"
+                                  href="/t/tenant-id/users/wifi/clients/b2:db:24:a0:08:a9/details/overview?clientStatus=historical"
                                 >
                                   --
                                 </a>

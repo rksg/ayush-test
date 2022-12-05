@@ -147,6 +147,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/file/tenant/:tenantId/upload-url'
   },
+  getAllDevices: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/devices'
+  },
   getVenueCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
@@ -243,10 +247,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   },
-  getApNetworkList: {
-    method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'
-  },
   getClientList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/client/clientlist'
@@ -258,5 +258,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getClientMeta: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/client/meta'
+  },
+  getGuestsList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/guests'
+  },
+  getApNetworkList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'
   }
 }

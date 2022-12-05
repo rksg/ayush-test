@@ -1,30 +1,9 @@
 {
-  "+20FW7": {
-    "defaultMessage": "JP-Devices"
-  },
-  "+7PjfV": {
-    "defaultMessage": "JP-1 day"
-  },
-  "+8jGZ4": {
-    "defaultMessage": "JP-network filter"
-  },
-  "+COaOp": {
-    "defaultMessage": "JP-Networks ({networksCount})"
-  },
-  "+MOZEQ": {
-    "defaultMessage": "JP-SAE Passphrase"
-  },
   "+U6ozc": {
     "defaultMessage": "JP-Type"
   },
-  "+a1n2f": {
-    "defaultMessage": "JP-AP never contacted cloud"
-  },
   "/9+YKH": {
     "defaultMessage": "JP-<p>Format options:</p> <p>Most secured - all printable ASCII characters can be used</p> <p>Keyboard friendly - only letters and numbers will be used</p> <p>Numbers only - only numbers will be used</p>"
-  },
-  "/uhiJw": {
-    "defaultMessage": "JP-AP disconnected from cloud"
   },
   "/zC7P0": {
     "defaultMessage": "JP-DHCP failures are unusually high in {scope}"
@@ -39,33 +18,6 @@
   "0QEzt5": {
     "defaultMessage": "JP-AP Group"
   },
-  "0xwsto": {
-    "defaultMessage": "JP-Use MAC Auth"
-  },
-  "16lBmU": {
-    "defaultMessage": "JP-Channel Conditions"
-  },
-  "1EYCdR": {
-    "defaultMessage": "JP-Tags"
-  },
-  "25rEb3": {
-    "defaultMessage": "JP-Shared Secret"
-  },
-  "2O2sfp": {
-    "defaultMessage": "JP-Finish"
-  },
-  "2n2eHo": {
-    "defaultMessage": "JP-{count,plural,one{For the following venue, the network could not be activated on all Venues:} other{For the following venues, the network could not be activated on all Venues:}}"
-  },
-  "34xBI0": {
-    "defaultMessage": "JP-APs"
-  },
-  "3HCg1n": {
-    "defaultMessage": "JP-Configuration update failed"
-  },
-  "3KyZGF": {
-    "defaultMessage": "JP-All Radios"
-  },
   "3LyeET": {
     "defaultMessage": "JP-3rd Party Captive Portal (WISPr)",
     "description": "Guest network type - 3rd Party Captive Portal (WISPr)"
@@ -73,26 +25,11 @@
   "3Spwog": {
     "defaultMessage": "JP-AP(s) operating in Low Power Mode: {scope}."
   },
-  "3mdxYI": {
-    "defaultMessage": "JP-No Switch Clients"
-  },
-  "47FYwb": {
-    "defaultMessage": "JP-Cancel"
-  },
   "4Gn5Ub": {
     "defaultMessage": "JP-Firmware:"
   },
-  "4M0IEe": {
-    "defaultMessage": "JP-Never contacted cloud"
-  },
   "4RbqN8": {
     "defaultMessage": "JP-No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
-  },
-  "4VPIXt": {
-    "defaultMessage": "JP-Alarms"
-  },
-  "4dk4rO": {
-    "defaultMessage": "JP-Accounting Service"
   },
   "4ldizo": {
     "defaultMessage": "JP-{scope} is experiencing unusually high CPU usage"
@@ -110,45 +47,9 @@
   "5jeq8P": {
     "defaultMessage": "JP-Unknown"
   },
-  "5lQx5r": {
-    "defaultMessage": "JP-Scheduling"
-  },
-  "5mHBBz": {
-    "defaultMessage": "JP-Operational - applying configuration"
-  },
-  "5q3qC0": {
-    "defaultMessage": "JP-Download"
-  },
-  "6+FdTf": {
-    "defaultMessage": "JP-[Tomorrow,] HH:mm"
-  },
-  "6UiBZi": {
-    "defaultMessage": "JP-WPA3 SAE Passphrase"
-  },
-  "6g0glr": {
-    "defaultMessage": "JP-Networking Devices"
-  },
-  "6xap9L": {
-    "defaultMessage": "JP-Good"
-  },
-  "724CrE": {
-    "defaultMessage": "JP-Select..."
-  },
   "76jC1v": {
     "defaultMessage": "JP-This value should be higher than or equal to $'{min}'",
     "description": "Validation - min checks"
-  },
-  "7Kk96z": {
-    "defaultMessage": "JP-Use Cloudpath Server:"
-  },
-  "7UOvbT": {
-    "defaultMessage": "JP-Offline"
-  },
-  "7xgyj8": {
-    "defaultMessage": "JP-Numbers Only"
-  },
-  "8B04tJ": {
-    "defaultMessage": "JP-WPA"
   },
   "8Bwvdr": {
     "defaultMessage": "JP-mDNS Proxy"
@@ -156,77 +57,14 @@
   "8EGRF9": {
     "defaultMessage": "JP-Load"
   },
-  "8Fo71r": {
-    "defaultMessage": "JP-MSP Space"
-  },
-  "8J+OUY": {
-    "defaultMessage": "JP-8 characters minimum"
-  },
-  "8O9cAb": {
-    "defaultMessage": "JP-Last 24 hours"
-  },
-  "8TEDlL": {
-    "defaultMessage": "JP-Use MAC Auth:"
-  },
-  "8cF6CF": {
-    "defaultMessage": "JP-Error: Can not detect passphrase expiration value"
-  },
   "8lHXaF": {
     "defaultMessage": "JP-DHCP failures are high in {scope} impacting connectivity for {impact} of clients."
-  },
-  "9+Ddtu": {
-    "defaultMessage": "JP-Next"
-  },
-  "9GvlpZ": {
-    "defaultMessage": "JP-Open Settings"
-  },
-  "9MxQUk": {
-    "defaultMessage": "JP-Shared Secret:"
-  },
-  "9bpZCJ": {
-    "defaultMessage": "JP-DHCP for Wi-Fi"
-  },
-  "9t1iiv": {
-    "defaultMessage": "JP-Configure"
   },
   "9uOFF3": {
     "defaultMessage": "JP-Overview"
   },
-  "9wJSG8": {
-    "defaultMessage": "JP-Map is not enabled"
-  },
   "AA5h7P": {
     "defaultMessage": "JP-Performance"
-  },
-  "AJBpR8": {
-    "defaultMessage": "JP-Network Type"
-  },
-  "AJFEms": {
-    "defaultMessage": "JP-Sub-optimal channel conditions detected for 2.4 GHz in {scope}"
-  },
-  "AcxDgz": {
-    "defaultMessage": "JP-Activate"
-  },
-  "AetaeJ": {
-    "defaultMessage": "JP-Select venues to activate this network"
-  },
-  "AfUjYu": {
-    "defaultMessage": "JP-Config Change"
-  },
-  "Ao2xin": {
-    "defaultMessage": "JP-Most Secured"
-  },
-  "AudUdt": {
-    "defaultMessage": "JP-AP offline"
-  },
-  "AwuN57": {
-    "defaultMessage": "JP-6 months"
-  },
-  "BNHFY1": {
-    "defaultMessage": "JP-Only letters and numbers can be used"
-  },
-  "BeT3j9": {
-    "defaultMessage": "JP-WPA3"
   },
   "BuZFs1": {
     "defaultMessage": "JP-High memory utilization detected in {scope}."
@@ -234,17 +72,8 @@
   "C5Rw0o": {
     "defaultMessage": "JP-Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server."
   },
-  "CM0JAR": {
-    "defaultMessage": "JP-Entire Organization"
-  },
-  "CNTrZU": {
-    "defaultMessage": "JP-2 years"
-  },
   "CPn6si": {
     "defaultMessage": "JP-802.11 Authentication failures are unusually high in {scope}"
-  },
-  "CasKsA": {
-    "defaultMessage": "JP-Add Secondary Server"
   },
   "CzRokW": {
     "defaultMessage": "JP-WEP",
@@ -262,33 +91,11 @@
   "EDi8nU": {
     "defaultMessage": "JP-WAN"
   },
-  "EKxuZ2": {
-    "defaultMessage": "JP-Add Service"
-  },
-  "EP8xiD": {
-    "defaultMessage": "JP-AP heartbeat lost"
-  },
   "EWw/tK": {
     "defaultMessage": "JP-Apply"
   },
-  "EYIw2M": {
-    "defaultMessage": "JP-Clear selection"
-  },
-  "EnTkxu": {
-    "defaultMessage": "JP-Recommendations"
-  },
-  "F3C5Zx": {
-    "defaultMessage": "JP-{key,select,name{{entityName} with that name already exists} other{{entityName} with that value already exists}}",
-    "description": "Validation - duplication checks"
-  },
   "FACmOV": {
     "defaultMessage": "JP-Ports:"
-  },
-  "FbnpZB": {
-    "defaultMessage": "JP-Cluster of {count} Venues"
-  },
-  "FnRTEV": {
-    "defaultMessage": "JP-Average"
   },
   "FoE42e": {
     "defaultMessage": "JP-Requires Attention"
@@ -301,57 +108,18 @@
     "defaultMessage": "JP-Open Captive Portal",
     "description": "WLAN security type - Open Captive Portal"
   },
-  "Gk3sbv": {
-    "defaultMessage": "JP-Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}."
-  },
-  "H44xvD": {
-    "defaultMessage": "JP-Switch Clients"
-  },
-  "HUu4+K": {
-    "defaultMessage": "JP-MAC Address Format:"
-  },
   "HX3vfn": {
     "defaultMessage": "JP-The controller cluster is sending data with an incorrect future timestamp. To avoid false or misleading data analysis, all future timestamped data is dropped."
   },
-  "HuqGcJ": {
-    "defaultMessage": "JP-WPA2 (Recommended)"
-  },
-  "I1ZCPK": {
-    "defaultMessage": "JP-Technology"
-  },
   "I3JhPS": {
     "defaultMessage": "JP-Network"
-  },
-  "I3b4hn": {
-    "defaultMessage": "JP-Version"
-  },
-  "IBNdTs": {
-    "defaultMessage": "JP-VLAN"
-  },
-  "IDKI0Y": {
-    "defaultMessage": "JP-{ipAddress}:{port}"
-  },
-  "IQrRCX": {
-    "defaultMessage": "JP-No data to display"
   },
   "IShDlj": {
     "defaultMessage": "JP-WPA2 Enterprise",
     "description": "WLAN security type - WPA2 Enterprise"
   },
-  "IdweXY": {
-    "defaultMessage": "JP-Select Columns"
-  },
-  "Imc8gS": {
-    "defaultMessage": "JP-Incident Details"
-  },
-  "IozuIQ": {
-    "defaultMessage": "JP-Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}."
-  },
   "IqBkBl": {
     "defaultMessage": "JP-DHCP"
-  },
-  "J4gOpG": {
-    "defaultMessage": "JP-Service Name"
   },
   "JKnT12": {
     "defaultMessage": "JP-The controller cluster is sending data with an incorrect past timestamp. To avoid false or misleading data analysis, past timestamped data is not analyzed for incidents."
@@ -361,12 +129,6 @@
   },
   "JkubB5": {
     "defaultMessage": "JP-Enterprise AAA (802.1X)"
-  },
-  "K3r6DQ": {
-    "defaultMessage": "JP-Delete"
-  },
-  "K7AkdL": {
-    "defaultMessage": "JP-Show"
   },
   "KtZV9p": {
     "defaultMessage": "JP-Connection"
@@ -378,26 +140,11 @@
   "L84G40": {
     "defaultMessage": "JP-The controller cluster is sending data with an incorrect past timestamp"
   },
-  "LEyNkY": {
-    "defaultMessage": "JP-SAE Passphrase:"
-  },
   "LHLIvm": {
     "defaultMessage": "JP-Wi-Fi Calling"
   },
-  "LTNKL8": {
-    "defaultMessage": "JP-1 week"
-  },
   "Ls00yh": {
     "defaultMessage": "JP-{scope} is experiencing unusually high CPU usage. Prolonged high usage can cause CPU tasks to be queued, and also impact sending of data to northbound systems, including, but not limited to, RUCKUS Analytics."
-  },
-  "M+rBpe": {
-    "defaultMessage": "JP-Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}"
-  },
-  "MH2Tp4": {
-    "defaultMessage": "JP-Sub-optimal channel conditions detected for 2.4 GHz in {scope}."
-  },
-  "MHWaDv": {
-    "defaultMessage": "JP-[Last] dddd[,] HH:mm"
   },
   "Mu/Odk": {
     "defaultMessage": "JP-EAP failures are unusually high in {scope}"
@@ -405,42 +152,15 @@
   "NH/H5U": {
     "defaultMessage": "JP-Dynamic Pre-Shared Key (DPSK)"
   },
-  "NKPfmm": {
-    "defaultMessage": "JP-{count} selected"
-  },
-  "NUBQfj": {
-    "defaultMessage": "JP-Management Frame Protection:"
-  },
-  "NV6/gE": {
-    "defaultMessage": "JP-Create New Network"
-  },
-  "Nr2pru": {
-    "defaultMessage": "JP-Network History"
-  },
-  "Nt8DSX": {
-    "defaultMessage": "JP-Authentication Service"
-  },
   "OT4kCw": {
     "defaultMessage": "JP-AP Name"
-  },
-  "Ok71Hw": {
-    "defaultMessage": "JP-Security Protocol:"
   },
   "P0HnjZ": {
     "defaultMessage": "JP-Click-Through",
     "description": "Guest network type - Click-Through"
   },
-  "PYmHhr": {
-    "defaultMessage": "JP-Venue"
-  },
-  "Pc+tM3": {
-    "defaultMessage": "JP-Generate"
-  },
   "Pg+LLi": {
     "defaultMessage": "JP-Up"
-  },
-  "Ppx673": {
-    "defaultMessage": "JP-Reports"
   },
   "Q8Qw5B": {
     "defaultMessage": "JP-Description"
@@ -448,38 +168,8 @@
   "QBomBf": {
     "defaultMessage": "JP-EAP"
   },
-  "QH7XOz": {
-    "defaultMessage": "JP-New Clients"
-  },
-  "QQQKE7": {
-    "defaultMessage": "JP-No active alarms"
-  },
   "Qb4SoA": {
     "defaultMessage": "JP-IP Address:"
-  },
-  "QfVD/H": {
-    "defaultMessage": "JP-Use Cloudpath Server"
-  },
-  "R66tOc": {
-    "defaultMessage": "JP-{title}:"
-  },
-  "RAjs+g": {
-    "defaultMessage": "JP-{isCaptiveNetwork,select,true{Captive Portal - {captiveNetworkType}} other{Portal - {captiveNetworkType}}}"
-  },
-  "RUoi+Y": {
-    "defaultMessage": "JP-Keyboard Friendly"
-  },
-  "RrCui3": {
-    "defaultMessage": "JP-Summary"
-  },
-  "Ru1Owh": {
-    "defaultMessage": "JP-Serial Number"
-  },
-  "S33j4r": {
-    "defaultMessage": "JP-Services ({servicesCount})"
-  },
-  "SDi0Ka": {
-    "defaultMessage": "JP-WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise. <highlight> Security protocols other than WPA3 are not be supported in 6 GHz radio. </highlight>"
   },
   "Se22H1": {
     "defaultMessage": "JP-Please enter a valid IP address",
@@ -491,15 +181,6 @@
   "T0/74h": {
     "defaultMessage": "JP-RADIUS failures are unusually high in {scope}"
   },
-  "T3UF92": {
-    "defaultMessage": "JP-Authentication Server"
-  },
-  "TE4fIS": {
-    "defaultMessage": "JP-City"
-  },
-  "TY81Tv": {
-    "defaultMessage": "JP-Passphrase Format:"
-  },
   "TzOlQm": {
     "defaultMessage": "JP-No leading or trailing spaces allowed",
     "description": "Validation - no leading/trailing whitespace checks"
@@ -507,20 +188,11 @@
   "U+7zaY": {
     "defaultMessage": "JP-The controller cluster is sending data with an incorrect future timestamp"
   },
-  "U9tjJ5": {
-    "defaultMessage": "JP-2 days"
-  },
-  "UaCh1c": {
-    "defaultMessage": "JP-Add Server"
-  },
   "Uc+xJO": {
     "defaultMessage": "JP-PoE power denied in {scope}"
   },
   "V52jNn": {
     "defaultMessage": "JP-Enabled"
-  },
-  "VDgGIa": {
-    "defaultMessage": "JP-Admin State"
   },
   "VebTZq": {
     "defaultMessage": "JP-WPA Enterprise",
@@ -530,36 +202,12 @@
     "defaultMessage": "JP-Host Approval",
     "description": "Guest network type - Host Approval"
   },
-  "W/V6+Y": {
-    "defaultMessage": "JP-Collapse"
-  },
-  "WEJ7ak": {
-    "defaultMessage": "JP-No APs"
-  },
-  "WH4SDF": {
-    "defaultMessage": "JP-Service Type"
-  },
   "XB8fV9": {
     "defaultMessage": "JP-Last 24 Hours"
-  },
-  "XIcSUF": {
-    "defaultMessage": "JP-WPA2 Passphrase:"
-  },
-  "XYVgGy": {
-    "defaultMessage": "JP-Alarm Time"
   },
   "XquVRg": {
     "defaultMessage": "JP-Spaces are not allowed",
     "description": "Validation - no whitespace checks"
-  },
-  "XuyXtG": {
-    "defaultMessage": "JP-High AP-Controller connection failures in {scope}."
-  },
-  "Y2pNUx": {
-    "defaultMessage": "JP-AP operational - applying firmware"
-  },
-  "YDMrKK": {
-    "defaultMessage": "JP-Users"
   },
   "YLZ+2O": {
     "defaultMessage": "JP-Switches:"
@@ -567,54 +215,18 @@
   "YwXyyX": {
     "defaultMessage": "JP-DPSK"
   },
-  "Z4WqBL": {
-    "defaultMessage": "JP-Remove Secondary Server"
-  },
-  "ZOI9Fb": {
-    "defaultMessage": "JP-High AP-Controller connection failures in {scope}"
-  },
-  "ZWz5If": {
-    "defaultMessage": "JP-Network Info"
-  },
   "ZtxCeY": {
     "defaultMessage": "JP-This value should be lower than or equal to $'{max}'",
     "description": "Validation - max checks"
   },
-  "ZvKSfJ": {
-    "defaultMessage": "JP-Events"
-  },
   "aTpeqQ": {
     "defaultMessage": "JP-High memory utilization detected in {scope}"
-  },
-  "b5YpHX": {
-    "defaultMessage": "JP-AP operational"
   },
   "bDtQ06": {
     "defaultMessage": "JP-Clients:"
   },
-  "bHHMAb": {
-    "defaultMessage": "JP-Firmware update failed"
-  },
-  "bK2o7Y": {
-    "defaultMessage": "JP-Access Point"
-  },
-  "bS/cRP": {
-    "defaultMessage": "JP-Venues"
-  },
-  "bnaSLU": {
-    "defaultMessage": "JP-Connected Clients Over Time"
-  },
   "c8uKl6": {
     "defaultMessage": "JP-Wi-Fi"
-  },
-  "c9uA84": {
-    "defaultMessage": "JP-RF Channels"
-  },
-  "cRmipE": {
-    "defaultMessage": "JP-Passphrase expiration"
-  },
-  "cVVoGX": {
-    "defaultMessage": "JP-Error: Can not detect passphrase format value"
   },
   "cfMkrE": {
     "defaultMessage": "JP-Last Month"
@@ -633,122 +245,24 @@
     "defaultMessage": "JP-Require users to enter a passphrase to connect. The passphrase is unique per device",
     "description": "Description for Dynamic Pre-Shared Key (DPSK)"
   },
-  "d0A0aG": {
-    "defaultMessage": "JP-Radius Authentication Service"
-  },
-  "d63gFk": {
-    "defaultMessage": "JP-AI Analytics"
-  },
   "dA+hnZ": {
     "defaultMessage": "JP-Infrastructure"
-  },
-  "dElQAw": {
-    "defaultMessage": "JP-Wi-Fi Clients"
-  },
-  "dP02B8": {
-    "defaultMessage": "JP-Heartbeat lost"
   },
   "dVx3yz": {
     "defaultMessage": "JP-Memory"
   },
-  "dg6Mrs": {
-    "defaultMessage": "JP-Number of characters in passphrase. Valid range 8-63"
-  },
   "dnnI3G": {
     "defaultMessage": "JP-The network latency between the SZ nodes is unusually high"
   },
-  "dty181": {
-    "defaultMessage": "JP-Traffic by Volume"
-  },
-  "e0kEtS": {
-    "defaultMessage": "JP-Deactivate"
-  },
-  "e6Ph5+": {
-    "defaultMessage": "JP-Address"
-  },
-  "eOJNIA": {
-    "defaultMessage": "JP-Connected Clients"
-  },
-  "eSgRCS": {
-    "defaultMessage": "JP-{nodeType}: {nodeName}",
-    "description": "Uses to generate incident impacted scope for various incident descriptions"
-  },
-  "eWzMDx": {
-    "defaultMessage": "JP-Activated"
-  },
-  "ekXood": {
-    "defaultMessage": "JP-Unlimited"
-  },
-  "eoV49s": {
-    "defaultMessage": "JP-Poor"
-  },
   "epNuT+": {
     "defaultMessage": "JP-802.11 Authentication failures are high in {scope} impacting connectivity for {impact} of clients."
-  },
-  "f+sh2j": {
-    "defaultMessage": "JP-Administration"
-  },
-  "fCkfBx": {
-    "defaultMessage": "JP-APs ({apsCount})"
-  },
-  "fKJjD9": {
-    "defaultMessage": "JP-Initializing"
-  },
-  "fUSCNN": {
-    "defaultMessage": "JP-Deployment Type"
-  },
-  "fqiBvd": {
-    "defaultMessage": "JP-Coming soon..."
-  },
-  "gevCaB": {
-    "defaultMessage": "JP-Passphrase length"
-  },
-  "gmXCZq": {
-    "defaultMessage": "JP-Top 5 Switches by PoE Usage"
-  },
-  "h8X9hC": {
-    "defaultMessage": "JP-All APs"
-  },
-  "hSGclh": {
-    "defaultMessage": "JP-Network Name"
   },
   "hdGKYY": {
     "defaultMessage": "JP-Require users to enter a passphrase (that you have defined for the network) to connect",
     "description": "Description for Pre-Shared Key (PSK)"
   },
-  "hlmkcL": {
-    "defaultMessage": "JP-Health"
-  },
-  "hzSNj4": {
-    "defaultMessage": "JP-Dashboard"
-  },
-  "i5bVOD": {
-    "defaultMessage": "JP-Network Name:"
-  },
-  "iCpuph": {
-    "defaultMessage": "JP-Clients"
-  },
-  "iFh/mp": {
-    "defaultMessage": "JP-Passphrase Generation Parameters"
-  },
-  "iI2oMQ": {
-    "defaultMessage": "JP-Use the DPSK Service"
-  },
-  "iXt6x5": {
-    "defaultMessage": "JP-{nodeA} > {nodeB}",
-    "description": "FormattedPath: Uses to join path nodes together in a chain"
-  },
-  "ioS2ep": {
-    "defaultMessage": "JP-Disconnected from cloud"
-  },
-  "jNR5e0": {
-    "defaultMessage": "JP-Network Details"
-  },
   "jSqwdW": {
     "defaultMessage": "JP-Coverage"
-  },
-  "jgaeq0": {
-    "defaultMessage": "JP-[Today,] HH:mm"
   },
   "jnzQzj": {
     "defaultMessage": "JP-Last 7 Days"
@@ -757,48 +271,17 @@
     "defaultMessage": "JP-WPA",
     "description": "WLAN security type - WPA"
   },
-  "k1Qd05": {
-    "defaultMessage": "JP-dddd[,] HH:mm"
-  },
   "kSbbL9": {
     "defaultMessage": "JP-PoE"
   },
   "kaKdM0": {
     "defaultMessage": "JP-Model:"
   },
-  "keJaJz": {
-    "defaultMessage": "JP-Letters, numbers and symbols can be used"
-  },
-  "khS4NF": {
-    "defaultMessage": "JP-TLS Encryption:"
-  },
-  "kmrE95": {
-    "defaultMessage": "JP-2 weeks"
-  },
-  "ktaLzx": {
-    "defaultMessage": "JP-AP operational - applying configuration"
-  },
-  "ktxCvs": {
-    "defaultMessage": "JP-{nodeName} ({nodeType})",
-    "description": "FormattedPath: Uses to show path node name & type"
-  },
   "l/e8Fv": {
     "defaultMessage": "JP-AP(s) operating in Low Power Mode: {scope}"
   },
-  "l513ME": {
-    "defaultMessage": "JP-Radius Shared Secret"
-  },
-  "lPKfjk": {
-    "defaultMessage": "JP-Rebooting"
-  },
-  "lfIk1B": {
-    "defaultMessage": "JP-Add..."
-  },
   "mpbHiW": {
     "defaultMessage": "JP-Association failures are unusually high in {scope}"
-  },
-  "mqq9sX": {
-    "defaultMessage": "JP-MAC Address Format"
   },
   "mtr3R4": {
     "defaultMessage": "JP-Incidents"
@@ -809,21 +292,9 @@
   "n1Whvj": {
     "defaultMessage": "JP-Switch"
   },
-  "n7yYXG": {
-    "defaultMessage": "JP-Service"
-  },
-  "nCMnED": {
-    "defaultMessage": "JP-Passphrase Length:"
-  },
   "nCxCzM": {
     "defaultMessage": "JP-Managed Guest Pass",
     "description": "Guest network type - Managed Guest Pass"
-  },
-  "nJn+t1": {
-    "defaultMessage": "JP-Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}"
-  },
-  "nVdqEC": {
-    "defaultMessage": "JP-No Switches"
   },
   "naPxCD": {
     "defaultMessage": "JP-Captive Portal",
@@ -833,42 +304,14 @@
     "defaultMessage": "JP-WPA2",
     "description": "WLAN security type - WPA2"
   },
-  "nhKqj3": {
-    "defaultMessage": "JP-Only numbers can be used"
-  },
-  "nijCnW": {
-    "defaultMessage": "JP-{isComplexName,select,true{{name} ({nodeName})} other{{nodeName}}}",
-    "description": "Uses to format path node name, when isComplexName = true the nodeName would be something like AP or Switch MAC address"
-  },
   "nso3Mj": {
     "defaultMessage": "JP-Scope"
   },
   "nwViUa": {
     "defaultMessage": "JP-Association failures are high in {scope} impacting connectivity for {impact} of clients."
   },
-  "o43JQW": {
-    "defaultMessage": "JP-Operational - applying firmware"
-  },
-  "o5l+pK": {
-    "defaultMessage": "JP-Proxy Service"
-  },
-  "oNA+iT": {
-    "defaultMessage": "JP-Passphrase:"
-  },
   "ojxMGa": {
     "defaultMessage": "JP-In Setup Phase"
-  },
-  "ox304v": {
-    "defaultMessage": "JP-An error occurred"
-  },
-  "p1dNds": {
-    "defaultMessage": "JP-1 month"
-  },
-  "p4N05H": {
-    "defaultMessage": "JP-Upload"
-  },
-  "p5WNkO": {
-    "defaultMessage": "JP-Temporarily degraded"
   },
   "pJVOdI": {
     "defaultMessage": "JP-AP service is affected due to high number of AP reboots."
@@ -876,14 +319,8 @@
   "pS5Lez": {
     "defaultMessage": "JP-RADIUS"
   },
-  "pUlxda": {
-    "defaultMessage": "JP-Total Incidents"
-  },
   "pyZg46": {
     "defaultMessage": "JP-{type,select,aaa{AAA Settings} dpsk{DPSK Settings} other{Settings}}"
-  },
-  "q15Qnb": {
-    "defaultMessage": "JP-Clients ({clientsCount})"
   },
   "q2wzm3": {
     "defaultMessage": "JP-Time to connect is high in {scope}, impacting connectivity for {impact} of clients."
@@ -893,9 +330,6 @@
   },
   "qEplfM": {
     "defaultMessage": "JP-AP service is affected due to high number of AP reboots"
-  },
-  "qQ6P9N": {
-    "defaultMessage": "JP-Activated in venues"
   },
   "qYBnMW": {
     "defaultMessage": "JP-WPA3",
@@ -910,57 +344,15 @@
   "rPBWRi": {
     "defaultMessage": "JP-MAC Address:"
   },
-  "rQgpPD": {
-    "defaultMessage": "JP-[Yesterday,] HH:mm"
-  },
   "rXq1Sc": {
     "defaultMessage": "JP-Pre-Shared Key (PSK)"
-  },
-  "rhSI1/": {
-    "defaultMessage": "JP-Model"
-  },
-  "rsSUP3": {
-    "defaultMessage": "JP-Port"
-  },
-  "rsToNV": {
-    "defaultMessage": "JP-Top 5 Applications by Traffic"
-  },
-  "rwIPgH": {
-    "defaultMessage": "JP-1 year"
-  },
-  "rz46vg": {
-    "defaultMessage": "JP-Passphrase format"
-  },
-  "sMnDSO": {
-    "defaultMessage": "JP-Wi-Fi APs"
   },
   "sTAlko": {
     "defaultMessage": "JP-WPA3/WPA2 Mixed",
     "description": "WLAN security type - WPA3/WPA2 Mixed"
   },
-  "sZFybj": {
-    "defaultMessage": "JP-Services"
-  },
-  "slvgtQ": {
-    "defaultMessage": "JP-Devices ({devicesCount})"
-  },
-  "ss6kle": {
-    "defaultMessage": "JP-Reset to default"
-  },
-  "stDOc1": {
-    "defaultMessage": "JP-Mesh Role"
-  },
   "sw6FHg": {
     "defaultMessage": "JP-DPSK Settings"
-  },
-  "t/5Nxo": {
-    "defaultMessage": "JP-{count} Characters"
-  },
-  "t071V3": {
-    "defaultMessage": "JP-Info:"
-  },
-  "tB5At5": {
-    "defaultMessage": "JP-MMM DD HH:mm"
   },
   "tOwHZm": {
     "defaultMessage": "JP-Last 1 Hour"
@@ -978,38 +370,11 @@
   "tvJbQP": {
     "defaultMessage": "JP-WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019."
   },
-  "tzMNF3": {
-    "defaultMessage": "JP-Status"
-  },
-  "u0lL8w": {
-    "defaultMessage": "JP-Services is not enabled"
-  },
-  "uJV0wU": {
-    "defaultMessage": "JP-IP Address"
-  },
-  "uKatq7": {
-    "defaultMessage": "JP-Edit Network"
-  },
   "uS4sop": {
     "defaultMessage": "JP-Type:"
   },
-  "ubGrOj": {
-    "defaultMessage": "JP-Passphrase Expiration:"
-  },
-  "ubQ1f+": {
-    "defaultMessage": "JP-Shared secret"
-  },
-  "ueL7OS": {
-    "defaultMessage": "JP-WPA3 SAE Passphrase:"
-  },
-  "ukFIyf": {
-    "defaultMessage": "JP-Your Attention is Required"
-  },
   "upVeXQ": {
     "defaultMessage": "JP-VLAN mismatch found in {scope}."
-  },
-  "utCJRG": {
-    "defaultMessage": "JP-Proxy Service:"
   },
   "v9+jd5": {
     "defaultMessage": "JP-EAP failures are high in {scope} impacting connectivity for {impact} of clients."
@@ -1017,26 +382,8 @@
   "vCAhII": {
     "defaultMessage": "JP-Severity"
   },
-  "vONi+O": {
-    "defaultMessage": "JP-Country"
-  },
-  "vXfkMH": {
-    "defaultMessage": "JP-Add Wi-Fi Network"
-  },
-  "vhRKaX": {
-    "defaultMessage": "JP-AP rebooting"
-  },
-  "vknTf8": {
-    "defaultMessage": "JP-Must be 26 hex characters"
-  },
   "voFdJV": {
     "defaultMessage": "JP-Association"
-  },
-  "w0OUOh": {
-    "defaultMessage": "JP-Health Score"
-  },
-  "wEQDC6": {
-    "defaultMessage": "JP-Edit"
   },
   "wfZEER": {
     "defaultMessage": "JP-VLAN Mismatch"
@@ -1048,29 +395,11 @@
     "defaultMessage": "JP-Open",
     "description": "WLAN security type - Open"
   },
-  "xGSuuE": {
-    "defaultMessage": "JP-Security Protocol"
-  },
-  "xKYak9": {
-    "defaultMessage": "JP-Hex Key:"
-  },
   "xKk/lt": {
     "defaultMessage": "JP-The network latency between the SZ nodes is unusually high."
   },
-  "xLx5Gv": {
-    "defaultMessage": "JP-Management Frame Protection (802.11w)"
-  },
-  "xXDHjy": {
-    "defaultMessage": "JP-Add Venue"
-  },
   "xhBLiY": {
     "defaultMessage": "JP-Down"
-  },
-  "xukzKg": {
-    "defaultMessage": "JP-Networks"
-  },
-  "xzWp9X": {
-    "defaultMessage": "JP-Switches"
   },
   "y8zW5H": {
     "defaultMessage": "JP-PoE power denied in {scope}."
@@ -1081,12 +410,6 @@
   "yFgHXj": {
     "defaultMessage": "JP-Portal"
   },
-  "yJ7+dR": {
-    "defaultMessage": "JP-Cloudpath Server"
-  },
-  "yV5oYe": {
-    "defaultMessage": "JP-Policies"
-  },
   "ykBQn4": {
     "defaultMessage": "JP-Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}"
   },
@@ -1094,28 +417,4706 @@
     "defaultMessage": "JP-Users are authorized through a captive portal in various methods",
     "description": "Description for Captive Portal"
   },
-  "z5epQF": {
-    "defaultMessage": "JP-Radios"
-  },
-  "zI1owl": {
-    "defaultMessage": "JP-Venues ({venuesCount})"
-  },
-  "zLM75r": {
-    "defaultMessage": "JP-No AP Clients"
-  },
   "zT3YgI": {
     "defaultMessage": "JP-Impacted Clients"
   },
   "zWgbGg": {
     "defaultMessage": "JP-Today"
   },
-  "zWkvNO": {
-    "defaultMessage": "JP-Timeline"
-  },
-  "zg0sQG": {
-    "defaultMessage": "JP-AP initializing"
-  },
   "zifKlV": {
     "defaultMessage": "JP-Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}."
+  },
+  "++Tcv+": {
+    "defaultMessage": "<p>This is an uncommon client authentication failure type, which happens when the client sends a different Identifier in the Response and Request messages.</p>"
+  },
+  "+Cc4k7": {
+    "defaultMessage": "{serverType} servers are prioritized for the following: <br></br> {disabledList}. <br></br> In order to delete {count, plural, one {this} other {these}} {serverType} {count, plural, one {server} other {servers}} you must define a different method."
+  },
+  "+P7ARI": {
+    "defaultMessage": "WWW HTTPs"
+  },
+  "+btGfn": {
+    "defaultMessage": "last 7 days"
+  },
+  "+cdm35": {
+    "defaultMessage": "Guest ID Auth Failure"
+  },
+  "+iQZtX": {
+    "defaultMessage": "{successCount} of {totalCount} sessions"
+  },
+  "+moBZd": {
+    "defaultMessage": "Reboot due to mesh mode change or country code change"
+  },
+  "+wmC/5": {
+    "defaultMessage": "Apple TV"
+  },
+  "/+G1qq": {
+    "defaultMessage": "<p>Connectivity is failing because the security type (cipher suite) requested by the client is not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.</p>"
+  },
+  "/74lz0": {
+    "defaultMessage": "System fault"
+  },
+  "/76ZBW": {
+    "defaultMessage": "DHCP Failures"
+  },
+  "/KbU2j": {
+    "defaultMessage": "{successCount} of {totalCount} connections"
+  },
+  "/VnDMl": {
+    "defaultMessage": "Other"
+  },
+  "/bEP9l": {
+    "defaultMessage": "Accounting"
+  },
+  "/f0cXL": {
+    "defaultMessage": "HT or VHT rate set mismatch"
+  },
+  "/fKYcX": {
+    "defaultMessage": "STA Deauth (Leaving)"
+  },
+  "00UcJN": {
+    "defaultMessage": "CCD_REASON_8021X_AUTH_FAILURE"
+  },
+  "0E37pm": {
+    "defaultMessage": "Reason by AP"
+  },
+  "0R5z1l": {
+    "defaultMessage": "<p>System has detected an abnormally high number of AP reboots. This can occur due to the following reasons:</p> <ol> <li>Insufficient power from the Power over Ethernet (PoE) switch or PoE injector device aka. Power Sourcing Equipment (PSE).</li> <li>Configuration download failures.</li> <li>Firmware update failures.</li> <li>System initiated reboots.</li> </ol>"
+  },
+  "0VV/sK": {
+    "defaultMessage": "Goal"
+  },
+  "0ceRGX": {
+    "defaultMessage": "<p>PoE power has been denied due to power exhaustion or because another high priority device is plugged in.</p>"
+  },
+  "0pnNqw": {
+    "defaultMessage": "No Auth before Assoc"
+  },
+  "14AxbZ": {
+    "defaultMessage": "Client RSS"
+  },
+  "18rcDe": {
+    "defaultMessage": "Root cause"
+  },
+  "1IGVC6": {
+    "defaultMessage": "<p>This disconnect issue is happening because clients are disconnected because they are sending unsupported frames (i.e. Class2) before forming a valid open authentication.</p>"
+  },
+  "1WCywA": {
+    "defaultMessage": "<p>Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key.</p> <p>This scenario is most commonly caused in the following scenarios:</p> <ol> <li>The roam-from and roam-to APs cannot share keys with one another, which happens if they are not RF neighbors or if they do not have IP connectivity for AP-to-AP communication.</li> <li>The roam-from and roam-to APs are not RF neighbors. Clients may assume that all APs sharing an SSID will have the key, but the key may only be shared with RF neighbors.</li> </ol>"
+  },
+  "1abM6m": {
+    "defaultMessage": "Google Chromecast"
+  },
+  "1uY0Dm": {
+    "defaultMessage": "<p>Though this issue is uncommon, it may occur due to unexpected configuration changes or incompatibilities:</p> <ol> <li>Are the impacted clients configured to use a WLAN type that mismatches the AP/SSID settings?</li> <li>Were devices recently upgraded with new firmware?</li> <li>Was the WLAN configuration changed on the infrastructure?</li> </ol>"
+  },
+  "1xvLbG": {
+    "defaultMessage": "WLAN"
+  },
+  "2078fK": {
+    "defaultMessage": "Cannot contain Exclamation mark(!) and space",
+    "description": "Validation - Cannot contain Exclamation mark(!) and space"
+  },
+  "218h0n": {
+    "defaultMessage": "<p>Clients are attempting to associate without first performing 802.11 open authentication. Typically this happens when the client/AP state machine is out of sync.</p>"
+  },
+  "2GjxSF": {
+    "defaultMessage": "-10dB"
+  },
+  "2UG+ET": {
+    "defaultMessage": "AirPlay"
+  },
+  "2YcyrG": {
+    "defaultMessage": "Timeout Expired"
+  },
+  "2bCYZp": {
+    "defaultMessage": "<p>Users are failing to successfully connect at the authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>"
+  },
+  "34zaaY": {
+    "defaultMessage": "<p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p> <ol> <li>Were the firmware or drivers recently updated on impacted clients?</li> <li>Were new client types recently introduced into the environment?</li> </ol>"
+  },
+  "36lcvI": {
+    "defaultMessage": "{threshold}"
+  },
+  "3AWmVY": {
+    "defaultMessage": "<p>Users are failing to successfully connect at the 802.11 association stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>"
+  },
+  "3HBQtF": {
+    "defaultMessage": "Station kicked out due to retries"
+  },
+  "3Ibjii": {
+    "defaultMessage": "AAA Auth Failure"
+  },
+  "3K5Y0C": {
+    "defaultMessage": "<p>This problem should be uncommon, and is most likely caused by transient security state machine mismatch. If the problem persists, check for these common issues that may introduce behavior issues:</p> <ol> <li>Were new clients or APs introduced in the environment?</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Was the AP firmware recently upgraded?</li> <li>Were the AP radio or WLAN settings recently modified?</li> </ol>"
+  },
+  "3bNuBq": {
+    "defaultMessage": "AP-to-RUCKUS Cloud Latency"
+  },
+  "3wVI4A": {
+    "defaultMessage": "Unspecified"
+  },
+  "43C/hj": {
+    "defaultMessage": "MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)"
+  },
+  "47SgpC": {
+    "defaultMessage": "Not allow to change Venue on DHCP AP."
+  },
+  "4MTOLI": {
+    "defaultMessage": "-6dB(1/4)"
+  },
+  "4Xs/u5": {
+    "defaultMessage": "<p>This WPA Information Element mismatch issue is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of Information Element mismatches.</p> <p>If the problem persists, check common situations that may have introduced this interoperability behavior:</p> <ol> <li>Are the impacted clients using problematic drivers or firmware?</li> <li>Was the firmware recently updated on impacted clients so as to introduce interoperability issues?</li> <li>Were new client types recently introduced into the environment?</li> </ol>"
+  },
+  "4fOqW7": {
+    "defaultMessage": "One of the values you entered conflicts with an existing accounting server configuration in another network."
+  },
+  "4iAV3u": {
+    "defaultMessage": "Apple Mobile Devices"
+  },
+  "53VZpT": {
+    "defaultMessage": "The time-series graph on the left displays the percentage of DHCP connection attempts that have completed successfully. A DHCP connection attempt is deemed successful when the Wifi client has received an IP address from the DHCP server. Do note that a single Wifi client could have multiple DHCP connection attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "5BnKVM": {
+    "defaultMessage": "Cannot contain space",
+    "description": "Validation - Cannot contain space"
+  },
+  "5Fmn0p": {
+    "defaultMessage": "RADIUS Attempts"
+  },
+  "5gTKDx": {
+    "defaultMessage": "The IP addresses you entered conflict with existing authentication and accounting server configuration in another network. Please change the IP address."
+  },
+  "5gkDFW": {
+    "defaultMessage": "Cannot contain double quote and space",
+    "description": "Validation - Cannot contain double quote and space"
+  },
+  "5khpOQ": {
+    "defaultMessage": "{milliseconds} {milliseconds, plural, one {millisecond} other {milliseconds}}"
+  },
+  "5qWJS5": {
+    "defaultMessage": "EAPOL-Key Msg in Invalid State"
+  },
+  "5vlBCw": {
+    "defaultMessage": "{percentage} of failures caused by ''{dominant}''"
+  },
+  "5wlsf0": {
+    "defaultMessage": "Screen Sharing"
+  },
+  "6JiLXT": {
+    "defaultMessage": "<p>Clients are failing 802.1X/EAP authentication, which is typically caused by:</p> <ol> <li>Invalid EAP (PEAP or TTLS) username and password.</li> <li>Invalid EAP certificates.</li> <li>Expired or untrusted server certificates.</li> </ol>"
+  },
+  "6XtweV": {
+    "defaultMessage": "Reboot due to firmware change"
+  },
+  "6aDXdc": {
+    "defaultMessage": "{value, number, ::percent}"
+  },
+  "6lI1hS": {
+    "defaultMessage": "Recv\\'d DHCP NAK"
+  },
+  "6uZC61": {
+    "defaultMessage": "<p>No recommendation.</p>"
+  },
+  "7AnAwd": {
+    "defaultMessage": "L3 Authentication Attempts"
+  },
+  "7IpYkA": {
+    "defaultMessage": "AssocReq WPA IE Mismatch with Msg 2 of 4"
+  },
+  "7NfnJg": {
+    "defaultMessage": "Connection Success"
+  },
+  "7PBdgx": {
+    "defaultMessage": "-9dB(1/8)"
+  },
+  "7b1r0D": {
+    "defaultMessage": "dbm"
+  },
+  "7fuwrN": {
+    "defaultMessage": "<p>Users are experiencing a higher time to connect compared to the configured SLA goal. User's Wi-Fi connection process goes through several stages. Delays in any of the stages will result in a higher time to connect for the user.</p> <ol> <li>802.11 authentication, association.</li> <li>802.11 re-association in case of roaming</li> <li>L2/L3 authentication - Typical with 802.1x WLAN when RADIUS server is configured</li> <li>DHCP</li> </ol>"
+  },
+  "7tSsC/": {
+    "defaultMessage": "<p>This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider modifying the policy configurations:</p> <ol> <li>Confirm the L2 MAC ACL policy.</li> <li>Confirm the Blocked Client List.</li> </ol>"
+  },
+  "8+sCzk": {
+    "defaultMessage": "{name}<br></br> <space><b>{formattedValue} {value, plural, one {client} other {clients} }</b></space>"
+  },
+  "83fQYi": {
+    "defaultMessage": "Authentication Attempts"
+  },
+  "8Aco2j": {
+    "defaultMessage": "{name}<br></br><space><b>{formattedValue}</b></space>",
+    "description": "StackedBarChart: default tooltip format for stacked bar chart"
+  },
+  "8IGp4W": {
+    "defaultMessage": "{successCount} of {totalCount} APs"
+  },
+  "8TQoLR": {
+    "defaultMessage": "seconds"
+  },
+  "8Ua7wn": {
+    "defaultMessage": "Sub-Category"
+  },
+  "8VB3FY": {
+    "defaultMessage": "Failed Connections"
+  },
+  "8X5Tc7": {
+    "defaultMessage": "{seconds} s"
+  },
+  "8hHLAJ": {
+    "defaultMessage": "<p>Might be caused by network stability issues.</p>"
+  },
+  "8q5Hc0": {
+    "defaultMessage": "Reason by Event"
+  },
+  "8xLJKq": {
+    "defaultMessage": "Provides IP address to end devices"
+  },
+  "9Fc19F": {
+    "defaultMessage": "Provides \"portal\" for guest access. Includes hotspot access (Passpoint, OpenRoaming)"
+  },
+  "9VIDP4": {
+    "defaultMessage": "The username may only be known if the user has successfully passed authentication"
+  },
+  "9fIalQ": {
+    "defaultMessage": "{threshold} dBm"
+  },
+  "9qW5S9": {
+    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}Requires Attention"
+  },
+  "A4AHkc": {
+    "defaultMessage": "Min"
+  },
+  "ADdJjw": {
+    "defaultMessage": "802.3at"
+  },
+  "APcLKh": {
+    "defaultMessage": "<p>The RADIUS server is offline or unreachable from RUCKUS Cloud/AP (message from RUCKUS Cloud/AP to RADIUS is failing), which is often caused by:</p> <ol> <li>AP/SZ misconfiguration (Bad IP, bad port).</li> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable on the network (e.g. network path or routing issues).</li> </ol>"
+  },
+  "AYxQ/s": {
+    "defaultMessage": "{successCount} of {totalCount} RADIUS attempts"
+  },
+  "Ajj55k": {
+    "defaultMessage": "<p>System has detected VLAN mismatches in your network. This is usually caused by misses during the VLAN configuration process.</p>"
+  },
+  "AkCxS/": {
+    "defaultMessage": "Reason"
+  },
+  "Aoylz0": {
+    "defaultMessage": "{successCount} of {totalCount} association attempts"
+  },
+  "Ap1QMj": {
+    "defaultMessage": "Client Manufacturer"
+  },
+  "BCBdiT": {
+    "defaultMessage": "<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in the RUCKUS UI. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>"
+  },
+  "BKadru": {
+    "defaultMessage": "<p>In many cases with authentication failure, each client device behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to double-check any recent changes:</p> <ol> <li>Credential changes.</li> <li>Bulk expiry of passwords.</li> <li>Certificate changes.</li> <li>Infrastructure changes.</li> <li>Introduction of new client device types, or software upgrades of existing clients.</li> </ol>"
+  },
+  "BRD/yN": {
+    "defaultMessage": "User Failed Authorization"
+  },
+  "Bi+2ZQ": {
+    "defaultMessage": "<p>The connection was not completed because the client has left, or is leaving, the network.</p>"
+  },
+  "C+epMC": {
+    "defaultMessage": "Association Capacity Reached"
+  },
+  "C28EQ8": {
+    "defaultMessage": "Cannot be composed of ALL digits, e.g., 12345",
+    "description": "Validation - Cannot be composed of ALL digits"
+  },
+  "CFZujf": {
+    "defaultMessage": "IE Invalid"
+  },
+  "CHeh2t": {
+    "defaultMessage": "A connection is deemed successful when a Wifi client is able to complete the 802.11 authentication, association, L2 authentication and receives an IP address from the DHCP. If any of these stages fail, it is considered as a failed connection. For L3 authentication, such as WISPr and captive portal authentication, since the Wifi client will receive an IP address before the L3 authentication, the client connection will be deemed successful before the L3 authentication completes.{br}{br}The time-series graph on the left displays the percentage of successful connections across time, and the bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "CHxHdT": {
+    "defaultMessage": "The time-series graph on the left displays the percentage of 802.11 authentication attempts that has completed successfully. 802.11 authentication is the first step in establishing a WiFi connection, and it requires a WiFi client to establish its identity as a valid 802.11 device with an AP. No data encryption or security is available at this stage, and it is not to be confused with WPA or 802.1X authentication.{br}{br}The bar chart on the right captures the daily percentage over the past 7 days. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the histogram will stay constant based on the selected date range at the top of the page."
+  },
+  "CQg4Lt": {
+    "defaultMessage": "{years} y"
+  },
+  "CY1L4I": {
+    "defaultMessage": "<p>If the problem does not resolve on its own, check the infrastructure and client population for recent changes likely to produce this failure:</p> <ol> <li>Were new clients or APs introduced in the environment?</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Was the AP firmware recently upgraded?</li> <li>Were the AP radio or WLAN settings recently modified?</li> </ol>"
+  },
+  "D4bMOH": {
+    "defaultMessage": "Can be a single VLAN ID, a VLAN ID range or a combination of both, separated with commas e.g. 1,3,5-7"
+  },
+  "D8/GHB": {
+    "defaultMessage": "DHCP Attempts"
+  },
+  "DNSfqE": {
+    "defaultMessage": "High AP-RUCKUS Cloud connection failures in {scope}"
+  },
+  "DUpLCq": {
+    "defaultMessage": "<p>This behavior may be a desirable consequence of the admin's configuration-to prevent any one AP from serving too many clients. If so, no action is needed.</p> <p>If this issue is having an undesirable client impact, there are a few possible recommendations:</p> <ol> <li>If the max configured limit is too low, change the SSID or AP radio settings to increase the max number of allowed clients.</li> <li>If there is a very high amount of client transience and the SSID's client inactivity timeout is set too high, the AP may be honoring clients that are no longer connected. Reduce the inactivity timeout on the SSID.</li> <li>If band or load balancing are disabled, consider enabling them to more proactively spread client load across service sets.</li> <li>If the RF design allows for it, add APs to supplement capacity.</li> </ol>"
+  },
+  "E+AiRv": {
+    "defaultMessage": "<p>The user's connectivity is failing at DHCP because the server is unable to satisfy the client's request. This may be caused by one of several reasons:</p> <ol> <li>The server received duplicate DHCP requests from the same client.</li> <li>The client is requesting an address on an incorrect subnet.</li> <li>There may be more than one DHCP server replying to the same client.</li> </ol>"
+  },
+  "E65tJO": {
+    "defaultMessage": "Client roamed"
+  },
+  "E7Kzs3": {
+    "defaultMessage": "{impactedClients} clients impacted"
+  },
+  "EHSiM6": {
+    "defaultMessage": "AirDisk"
+  },
+  "ELmJ40": {
+    "defaultMessage": "PSK Failure (passphrase mismatch) - Invalid MIC"
+  },
+  "EP4Z84": {
+    "defaultMessage": "Assoc Failure"
+  },
+  "EQ5Tdm": {
+    "defaultMessage": "RADIUS Server"
+  },
+  "ETUQ7U": {
+    "defaultMessage": "-1dB"
+  },
+  "EhdInS": {
+    "defaultMessage": "WAN Link Capability"
+  },
+  "ElF8H7": {
+    "defaultMessage": "Invalid WPA/RSN IE"
+  },
+  "Emb+jc": {
+    "defaultMessage": "<p>This disconnect reason can be difficult to troubleshoot because the reason is unspecified and may be initiated by the AP or client. Some high-level troubleshooting guidance follows:</p> <ol> <li>Check for isolated areas of impact in the network (e.g. a specific WLAN, client OS, AP model, AP group, etc) with unique settings or behavior that may be causing this.</li> <li>Check for recent OS upgrades or configuration changes that are having isolated impact.</li> <li>Check the client troubleshooting page for impacted clients (see Client Impact details below) to diagnose the failure stage in the connection flow.</li> </ol>"
+  },
+  "EwYq30": {
+    "defaultMessage": "Rogue AP Detection"
+  },
+  "Ez/ZY3": {
+    "defaultMessage": "The time to connect (TTC) measures the total time taken for a Wifi client to successfully go through all the required stages in order to establish a IP connection, namely 802.11 authentication, association, L2 authentication, and receiving an IP address from the DHCP. For L3 authentication, such as WISPr and captive portal authentication, since the Wifi client will receive an IP address before the L3 authentication, the time to connect does not include the time taken for L3 authentication.{br}{br}The time-series graph on the left displays the percentage of successful connections across time that meet the configured TTC SLA. Bar chart on the right displays the distribution of TTC. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "EzTaEJ": {
+    "defaultMessage": "Dropped auth frame by Transient Client Management"
+  },
+  "F1bMju": {
+    "defaultMessage": "L3 Authentication"
+  },
+  "F73zBU": {
+    "defaultMessage": "802.3at+ Switch/Injector"
+  },
+  "F98vZb": {
+    "defaultMessage": "Previous Auth Invalid"
+  },
+  "FRpcYr": {
+    "defaultMessage": "<p>This failure typically represents a behavioral bug in which a frame includes an information element that does not conform to 802.11 specifications.</p>"
+  },
+  "FV+P4u": {
+    "defaultMessage": "802.3af"
+  },
+  "FeeZwa": {
+    "defaultMessage": "RSN IE is inconsistent"
+  },
+  "FhDyOD": {
+    "defaultMessage": "Rogue AP Detection description (TBD)"
+  },
+  "FwxRgx": {
+    "defaultMessage": "<p>The client connection exchange is failing because of a group key update timeout. Group keys are refreshed on a regular interval and should not typically interrupt the connection process.</p>"
+  },
+  "Fx+OK0": {
+    "defaultMessage": "<p>This failure happens when the message integrity check (MIC) of connection frames fails, typically due to keying errors or expiration, or during passphrase authentication failures.</p>"
+  },
+  "GA2hk8": {
+    "defaultMessage": "802.3af Switch/Injector"
+  },
+  "GHbJKA": {
+    "defaultMessage": "<p>This state machine mismatch problem happens somewhat regularly in Wi-Fi as a transient problem, but is usually self-corrected by the client/AP. If the problem is having a noticeable impact on user connectivity, double-check the common situations that introduce misbehavior like this:</p> <ol> <li>Was the firmware recently updated on the infrastructure or impacted clients?</li> <li>Were new client types recently introduced into the environment, and are they Wi-Fi certified?</li> </ol>"
+  },
+  "GQSMoL": {
+    "defaultMessage": "AP Capacity"
+  },
+  "GSsBwa": {
+    "defaultMessage": "-4dB"
+  },
+  "GTySz+": {
+    "defaultMessage": "<p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p> <ol> <li>Were the firmware or drivers recently updated on the infrastructure or impacted clients?</li> <li>Were new client types recently introduced into the environment, and are they able to support the AP's WLAN security types?</li> </ol>"
+  },
+  "GUGtP5": {
+    "defaultMessage": "<p>Clients are disconnected during the connection sequence, but the reason is unknown and unspecified by the disconnecting device.</p>"
+  },
+  "GXgXs4": {
+    "defaultMessage": "RADIUS Server Unavailable"
+  },
+  "GgGw+A": {
+    "defaultMessage": "Enter the native VLAN ID (no VLAN tag in its Ethernet frames)"
+  },
+  "H7QJsZ": {
+    "defaultMessage": "No WPA/RSN IE in Assoc Req"
+  },
+  "H9nXqy": {
+    "defaultMessage": "meets goal"
+  },
+  "HUTzkq": {
+    "defaultMessage": "<p>Connectivity is failing because the security type (Robust Security Network (RSN)) requested by the client is not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.</p>"
+  },
+  "Hab5wQ": {
+    "defaultMessage": "<p>Connectivity is failing because the security type (authentication and key management protocol (AKMP)) requested by the client is not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.</p>"
+  },
+  "HsFqgS": {
+    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Test network connection between AP and RUCKUS Cloud.</li> <li>Ensure that there is clear communication on all required ports.</li> <li>Test WAN connection health to ensure there is a route from AP to RUCKUS Cloud and there is no or acceptable packet loss.</li> <li>Ensure that AP certificate is valid. Work with Ruckus customer support to identify and resolve this condition.</li> </ol>"
+  },
+  "Hui74f": {
+    "defaultMessage": "Event Type"
+  },
+  "I/yBco": {
+    "defaultMessage": "This incident impacted {count} {count, plural, one {WLAN} other {WLANs} }"
+  },
+  "I44QmF": {
+    "defaultMessage": "Only one record can be selected for editing!"
+  },
+  "I5d+Q5": {
+    "defaultMessage": "<p>To resolve this issue, you may need to check RADIUS log details for authentication reject messages.</p> <p>Recent changes in the authentication infrastructure may cause a sudden spike of EAP failures like this:</p> <ol> <li>RADIUS server certificate changes or expiration.</li> <li>Mass user password changes or credential expiry.</li> <li>Client onboarding or provisioning with wrong our outdated trust or credential profiles.</li> </ol>"
+  },
+  "ILVg4S": {
+    "defaultMessage": "<p>Users are failing to successfully connect at the RADIUS stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>"
+  },
+  "ITjNEL": {
+    "defaultMessage": "<p>Calculating...</p>"
+  },
+  "IhCoX/": {
+    "defaultMessage": "Unsupported RSN IE Version"
+  },
+  "ImFhNX": {
+    "defaultMessage": "RADIUS Servers ({count})"
+  },
+  "IrnXwi": {
+    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  },
+  "IuFETn": {
+    "defaultMessage": "Duration"
+  },
+  "J5v2Qm": {
+    "defaultMessage": "802.3bt/Class 8"
+  },
+  "JAB4A4": {
+    "defaultMessage": "Online APs"
+  },
+  "JAspuT": {
+    "defaultMessage": "Client associated (802.11)"
+  },
+  "JGFtqZ": {
+    "defaultMessage": "This incident impacted {count} {count, plural, one {client manufacturer} other {client manufacturers} }"
+  },
+  "JNRYDN": {
+    "defaultMessage": "<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>"
+  },
+  "JU41ei": {
+    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Check the peer device configuration. It should match with AP WAN Port capacity.</li> <li>Check the peer device capacity for supporting multi gig throughput.</li> <li>Check the cable for good Ethernet link negotiation.</li> </ol>"
+  },
+  "Jhc1+v": {
+    "defaultMessage": "AAA Server"
+  },
+  "Jl1pRt": {
+    "defaultMessage": "Secure File Sharing"
+  },
+  "JnhNgm": {
+    "defaultMessage": "Please enter valid GPS coordinates",
+    "description": "Validation - GPS coordinates checks"
+  },
+  "K9PPzT": {
+    "defaultMessage": "<p>Client connections are temporarily suppressed by Transient Client Management behavior configured on the WLAN.</p>"
+  },
+  "KC4xeC": {
+    "defaultMessage": "{threshold} Mbps"
+  },
+  "KVCA44": {
+    "defaultMessage": "{minutes} m"
+  },
+  "Kj0P8X": {
+    "defaultMessage": "You selected CLI profiles with overlapping switch models. Please correct your selection"
+  },
+  "L1p24z": {
+    "defaultMessage": "The time-series graph on the left displays the percentage of EAP attempts (consisting the 4-way handshake between client and AP) that have completed successfully. An EAP attempt is deemed successful when all the necessary handshakes are completed. Do note that a single Wifi client could have multiple EAP attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "L3NiJZ": {
+    "defaultMessage": "<p>System has detected the AP(s) are underperforming w.r.t WiFi Radio spatial streams due to insufficient power available on PoE port. This can occur due to following reasons:</p> <ol> <li>Insufficient power from the Power over Ethernet (PoE) switch or PoE injector device aka. Power Sourcing Equipment (PSE).</li> <li>Faulty cables, Wrong cable types and very long cables can lead to power deterioration supplied to AP.</li> </ol>"
+  },
+  "LJY1PV": {
+    "defaultMessage": "<p>Clients are failing authentication (4-way handshake) because the AP is receiving EAPOL keys (typically msg2 or msg4) from clients in an incorrect sequence.</p>"
+  },
+  "LaH6QQ": {
+    "defaultMessage": "CCD_REASON_MAX_VALUE"
+  },
+  "Lk4Mip": {
+    "defaultMessage": "<p>Clients are failing authentication because the passphrase (PSK) does not match the AP/SSID configuration.</p>"
+  },
+  "Lpfnla": {
+    "defaultMessage": "One of the values you entered conflicts with an existing authentication server configuration in another network."
+  },
+  "Lxa/r0": {
+    "defaultMessage": "<p>Increase power capacity by adding a second power supply or add additional switches if the switch doesn't have pluggable power supply. If the switch is part of a stack, connect the device to a different switch in the stack based on proximity.</p> <ol> <li>If there is no more room for adding power supplies either due to the switch type or all the power supply slots are used, increase power capacity by adding additional switches because there is no room to add more power supplies.</li> <li>If the switch has room for more power supplies, increase power capacity by adding a second power supply.</li> </ol>"
+  },
+  "M4esmj": {
+    "defaultMessage": "The time-series graph on the left displays the percentage of RADIUS authentication attempts that have completed successfully. A RADIUS authentication attempt is deemed successful when all the necessary handshakes in the RADIUS protocol are completed, and the client is either allowed or denied access. Do note that a single Wifi client could have multiple authentication attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "MD9KMR": {
+    "defaultMessage": "Secure Shell"
+  },
+  "MFUhPL": {
+    "defaultMessage": "<p>TBD</p>"
+  },
+  "MKh96v": {
+    "defaultMessage": "Read Write"
+  },
+  "MM1Svk": {
+    "defaultMessage": "The {entityName} can not include {exclusionItems}",
+    "description": "Validation - exclusion checks"
+  },
+  "MOwOvp": {
+    "defaultMessage": "Designated APs in this venue are running the DHCP Server instance. Typically configured when multiple APs are at the same site and roaming across APs is needed"
+  },
+  "MWnWBw": {
+    "defaultMessage": "Client throughput measures the down link throughput estimate of the client, taking into consideration RF channel conditions, interference, channel contention and client capabilities.{br}{br}The time-series graph on the left displays the percentage of Wifi sessions across time that have a client throughput that meet the configured SLA. The bar chart on the right displays the distribution of the client throughput. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "McKt/u": {
+    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Operational"
+  },
+  "MiqoP+": {
+    "defaultMessage": "802.11 Auth Failure"
+  },
+  "N7oEbl": {
+    "defaultMessage": "system recovery by WatchDog"
+  },
+  "NL+Vrv": {
+    "defaultMessage": "<p>Impacted clients are failing association because of a DoS prevention feature that temporarily blocks their connections after they have excessive authentication failures in a short period of time.</p>"
+  },
+  "NXI/XL": {
+    "defaultMessage": "Auto"
+  },
+  "NYnkyd": {
+    "defaultMessage": "Full"
+  },
+  "NZAj0i": {
+    "defaultMessage": "Event Time"
+  },
+  "Nm6bpB": {
+    "defaultMessage": "802.3at+"
+  },
+  "NoVNdx": {
+    "defaultMessage": "Reboot due to mesh enablement or country code change"
+  },
+  "Nprvd1": {
+    "defaultMessage": "-8dB"
+  },
+  "O0k4eg": {
+    "defaultMessage": "Dropped auth frame by blocked client"
+  },
+  "O4kmTd": {
+    "defaultMessage": "Reboot due to mesh enablement"
+  },
+  "O5f/aO": {
+    "defaultMessage": "Apple File Sharing"
+  },
+  "OF3pml": {
+    "defaultMessage": "<p>This issue happens when the client begins a connection attempt, but leaves the BSS before the connection is complete.</p>"
+  },
+  "OGfo2P": {
+    "defaultMessage": "{name}<br></br> <space><b>{formattedValue}</b> ({formattedPercent})</space>"
+  },
+  "OLRG6o": {
+    "defaultMessage": "STA Deauth (Leaving) (DHCP Timeout)"
+  },
+  "OLrMrb": {
+    "defaultMessage": "\"`\" is not allowed",
+    "description": "Validation - grave accent checks"
+  },
+  "OiCFHC": {
+    "defaultMessage": "<p>Clients are failing authentication because of key data errors in msg2 of the 4-way handshake (sent from client to AP). This may be caused by cipher/key incompatibilities or invalid key data.</p>"
+  },
+  "OiPmMw": {
+    "defaultMessage": "Port Number"
+  },
+  "Om9Mvg": {
+    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>This stage typically does not contribute to delays. Delays in this stage might indicates RF issues. Try changing channel or band.</li> <li>Delays in this stage might indicate roaming issues. User device may be trying to connect to far off APs. Try changing channel or band.</li> <li>(Typical) Delays in this stage might indicate high latency to the RADIUS server or an overloaded RADIUS server. Inspect RADIUS server configuration, isolate the component with high network latency or try dedicating CPU, memory, and disk to the RADIUS server if it is hosted on a shared VM.</li> <li>(Typical) If there is high latency in receiving the DHCP response or if the DHCP response is not received it can add significant delays to the connection process. Common causes are overloaded DHCP server - DHCP server IP pool exhaustion or DHCP server not able to keep up with the rate of incoming DHCP requests. Inspect DHCP server configuration and assign dedicated CPU, memory, disk space to the DHCP server.</li> </ol>"
+  },
+  "OzDfRb": {
+    "defaultMessage": "{years} {years, plural, one {year} other {years}}"
+  },
+  "P0c/ms": {
+    "defaultMessage": "One of the values you entered conflicts with existing authentication and accounting server configurations in another network."
+  },
+  "P4UW09": {
+    "defaultMessage": "Most impacted WLAN: {ssid}"
+  },
+  "P7PLVj": {
+    "defaultMessage": "Date"
+  },
+  "PJMqbz": {
+    "defaultMessage": "<p>Some modest DHCP NAKs are normal in every network (e.g. client device sent duplicate DHCP Requests), but excessive DHCP failures with a NAK may be resolved by checking common DHCP server configuration or network design problems:</p> <ol> <li>Did the WLAN's IP subnet recently change, and is now causing DHCP renewal failures?</li> <li>Is there a new L3 network boundary where devices are roaming and failing to renew their prior IP address?</li> <li>If two DHCP servers are serving the same subnet, ensure they are properly configured for load balancing or passive standby.</li> </ol>"
+  },
+  "PL8DeQ": {
+    "defaultMessage": "AP lost connection to gateway for more than 1800 seconds"
+  },
+  "PMVvkt": {
+    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Consider turning on auto channel selection algorithms - Background scan or ChannelFly.</li> <li>If ChannelFly is selected it is mandatory to turn ON background scan.</li> <li>If static channel assignment is desired consider reducing Channelization to 20MHz / 40MHz.</li> <li>Scan your environments for rogue APs and remove them if possible.</li> <li>In the Zone/ AP group configuration, remove DFS channels with excessive DFS events.</li> </ol>"
+  },
+  "PQgDLT": {
+    "defaultMessage": "The time-series graph on the left displays the percentage of association attempts that have completed successfully. An association attempt is deemed successful when the Wifi client receives an Association ID from the AP. It is normal for a single Wifi client to have more than one association attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "Pbb+rM": {
+    "defaultMessage": "<p>This is a common problem in networks where passphrase authentication (e.g. WPA2-Personal) is used. To resolve the issue, check the following:</p> <ol> <li>Was the passphrase recently changed on the infrastructure, while client devices still used the old passphrase?</li> <li>Was there a spike of new users who may have been provided with the wrong passphrase?</li> <li>Were client devices provisioned automatically with device management software with the wrong passphrase?</li> </ol>"
+  },
+  "PusDI/": {
+    "defaultMessage": "TACACS+ Servers ({count})"
+  },
+  "PzXpbh": {
+    "defaultMessage": "<p>This invalid key sequence issue happens in Wi-Fi as a transient problem, but is usually self-corrected by the client/AP. If the problem is having a noticeable impact on user connectivity, double-check the common situations that introduce misbehavior like this:</p> <ol> <li>Was the AP's airtime utilization excessively high during the failure window? Busy RF conditions may manifest in this way.</li> <li>Was the firmware recently updated on impacted clients so as to introduce interoperability issues?</li> <li>Were new client types recently introduced into the environment?</li> </ol>"
+  },
+  "Q1ylRq": {
+    "defaultMessage": "{count} {count, plural, one {reason} other {reasons} } contributed to this incident"
+  },
+  "Q7nVr8": {
+    "defaultMessage": "Client Throughput"
+  },
+  "QHoTDP": {
+    "defaultMessage": "Class3 Frame from Non-Assoc STA"
+  },
+  "Qo4kOJ": {
+    "defaultMessage": "802.1X Auth Failure"
+  },
+  "RgxG85": {
+    "defaultMessage": "L3 Authentication Failures"
+  },
+  "RhJnEj": {
+    "defaultMessage": "{threshold} ms"
+  },
+  "RrBlvY": {
+    "defaultMessage": "<p>Check for common areas of PSK authentication delay in the network:</p> <ol> <li>If the WLAN is utilizing external DPSK, check the latency between the AP and the authentication store.</li> <li>If the WLAN is utilizing a normal PSK or internal DPSK, this problem should not occur under normal performance situations. Check for RF contention or interference to see if the environment is causing frame errors and delays.</li> </ol>"
+  },
+  "Rt94VA": {
+    "defaultMessage": "Reboot due to WLAN migration"
+  },
+  "S/zSb/": {
+    "defaultMessage": "Client Isolation"
+  },
+  "S3VrmZ": {
+    "defaultMessage": "<p>The RADIUS authentication exchange is failing because of a timeout waiting for a response from the RADIUS server. This is typically caused by the following reasons:</p> <ol> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable by RUCKUS Cloud/APAP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>The RADIUS server is overloaded and unable to reply.</li> <li>The wireless link is experiencing high congestion, retries/errors, or other unreliability issues.</li> </ol>"
+  },
+  "SB0Muc": {
+    "defaultMessage": "Optical Disk Sharing"
+  },
+  "SNxApV": {
+    "defaultMessage": "<p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue).</p> <p>This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>"
+  },
+  "SPUXV4": {
+    "defaultMessage": "Invalid User Login Context"
+  },
+  "SWOBSx": {
+    "defaultMessage": "<p>Clients are failing to connect during the association stage, but the exact reason for the failures is unclear.</p>"
+  },
+  "Sl7JdH": {
+    "defaultMessage": "Multiple AP DHCP"
+  },
+  "SovbT0": {
+    "defaultMessage": "Configured PoE Mode"
+  },
+  "SqY6EK": {
+    "defaultMessage": "EAPOL Attempts"
+  },
+  "SyNc08": {
+    "defaultMessage": "ms"
+  },
+  "T68KmP": {
+    "defaultMessage": "AP Firmware"
+  },
+  "TJOQoX": {
+    "defaultMessage": "<p>This state machine mismatch problem happens somewhat regularly in Wi-Fi as a transient problem, but is usually self-corrected by the client/AP. If the problem is having a noticeable impact on user connectivity, double-check the common situations that introduce misbehavior like this:</p> <ol> <li>Was the firmware recently updated on impacted clients?</li> <li>Were new client types recently introduced into the environment?</li> </ol>"
+  },
+  "TKYlMB": {
+    "defaultMessage": "STA Disassoc (DHCP Timeout)"
+  },
+  "TLHCw/": {
+    "defaultMessage": "{months} mo"
+  },
+  "TP9LC9": {
+    "defaultMessage": "<p>This problem should be a transient issue in a network if many clients leave at the same time; but, it is usually associated with disconnect events, and should not impact connection attempts. If it does, this may be a data issue that can be reported to RUCKUS Support if it persists in your network.</p>"
+  },
+  "TcVF+X": {
+    "defaultMessage": "<p>Please check the network routing, NIC to the switch, cable/medium between SZ nodes, upstream device interface hardware settings (duplex, speed, etc.) or interface errors, saturation status and upstream device port status as well.</p>"
+  },
+  "TfAXIA": {
+    "defaultMessage": "RUCKUS Dynamic Pre Shared Key Service"
+  },
+  "Tflm+8": {
+    "defaultMessage": "<p>In many cases with RADIUS failure, each client device or RADIUS server behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end RADIUS setup and network performance:</p> <ol> <li>Check the RADIUS server and RUCKUS Cloud settings to identify matching configurations (IP address, port, and shared secret).</li> <li>Check for RADIUS reachability by RUCKUS Cloud/APAP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>Check for recent changes in the RADIUS infrastructure that may be leading to issues.</li> <li>Check RADIUS performance metrics to ensure it has sufficient capacity and is not overloaded.</li> <li>Check the wireless link for high congestion, retries/errors, or other unreliability issues.</li> </ol>"
+  },
+  "TgLtSR": {
+    "defaultMessage": "Provides voice calling service over WiFi"
+  },
+  "TiNXxz": {
+    "defaultMessage": "{days} d"
+  },
+  "TtsWJ7": {
+    "defaultMessage": "Reboot due to firmware download failure"
+  },
+  "TvGhMJ": {
+    "defaultMessage": "The local username cannot be 'admin'",
+    "description": "Validation - The local username cannot be 'admin'"
+  },
+  "UOFwAv": {
+    "defaultMessage": "Connection Success Ratio"
+  },
+  "UOtY4N": {
+    "defaultMessage": "<p>Clients are attempting to associate without first performing 802.11 open authentication, or if the prior open authentication has expired. Typically this happens when the client/AP state machine is out of sync.</p>"
+  },
+  "Uctgj5": {
+    "defaultMessage": "Local User"
+  },
+  "Uehd61": {
+    "defaultMessage": "success"
+  },
+  "UfzePs": {
+    "defaultMessage": "TACACS+"
+  },
+  "Ui4lDR": {
+    "defaultMessage": "<p>DHCP timeouts will be resolved by isolating the DHCP server issue or network implementation problem:</p> <ol> <li>Is the DHCP server online with scopes configured and available addresses?</li> <li>Is the DHCP server available and reachable by clients with minimal latency?</li> <li>Are the APs (where failures are happening) and their switch ports properly configured with VLANs?</li> <li>Is the DHCP helper IP address properly configured on the subnet gateway?</li> </ol>"
+  },
+  "UkR6UT": {
+    "defaultMessage": "Radio"
+  },
+  "UmkImZ": {
+    "defaultMessage": "{months} {months, plural, one {month} other {months}}"
+  },
+  "UuBzOO": {
+    "defaultMessage": "Auth Frame Withheld"
+  },
+  "V+3KR9": {
+    "defaultMessage": "Client (re)associated (802.11)"
+  },
+  "VFny+X": {
+    "defaultMessage": "Not available in this Beta version"
+  },
+  "VK81Ki": {
+    "defaultMessage": "Invalid Pairwise Key Cipher"
+  },
+  "VKikS4": {
+    "defaultMessage": "Invalid RSN IE Capability"
+  },
+  "VW5079": {
+    "defaultMessage": "{hours} h"
+  },
+  "VWIe2D": {
+    "defaultMessage": "VLAN Pools"
+  },
+  "VaMt0P": {
+    "defaultMessage": "Please enter a valid subnet mask",
+    "description": "Validation - subnet mask checks"
+  },
+  "VbkryH": {
+    "defaultMessage": "-7dB"
+  },
+  "VigLYG": {
+    "defaultMessage": "Provides mDNS service"
+  },
+  "VsvsYE": {
+    "defaultMessage": "MIC Failure"
+  },
+  "W/8riE": {
+    "defaultMessage": "<p>System has detected the AP(s) are underperforming due to low WAN bandwidth availability. This can occur due to following reasons:</p> <ol> <li>Upstream peer device configuration is wrong and not matching as per AP Ethernet WAN port capacity.</li> <li>Upstream peer device cannnot support multi gig throughput needed by APs.</li> <li>Faulty cables and incorrect cable types can lead to Ethernet link not negotiated properly.</li> </ol>"
+  },
+  "W2vkco": {
+    "defaultMessage": "<span><b>{formattedValue}</b></span>"
+  },
+  "W9355R": {
+    "defaultMessage": "Unmute"
+  },
+  "WCrt3+": {
+    "defaultMessage": "Reboot due to mesh mode change"
+  },
+  "WIdA6/": {
+    "defaultMessage": "The time-series graph on the left displays the percentage of client sessions with average RSS that has met the configured SLA. The bar chart on the right captures the distribution of the RSS. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "WLgpc9": {
+    "defaultMessage": "{successCount} of {totalCount} attempts"
+  },
+  "WNtrPx": {
+    "defaultMessage": "Client join"
+  },
+  "WtpyqP": {
+    "defaultMessage": "Association Attempts"
+  },
+  "X+4NJJ": {
+    "defaultMessage": "Mobility Domain ID Mismatch"
+  },
+  "X5ZcOD": {
+    "defaultMessage": "AP capacity measures the downlink saturated throughput estimate of the AP radios, taking into consideration the RF channel conditions, interference, channel contention and client capabilities.{br}{br}The time-series graph on the left displays the percentage of AP capacity samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP capacity across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "X8W99F": {
+    "defaultMessage": "Mbps"
+  },
+  "XUz8We": {
+    "defaultMessage": "Cipher Suite Rejected"
+  },
+  "XXmzTE": {
+    "defaultMessage": "This metric measures the percentage of roaming attempts that have completed successfully. A roaming attempt is deemed successful when the Wifi client has its session transferred from one AP to the next. It is possible for a single Wifi client to have multiple roaming attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "XZRi3V": {
+    "defaultMessage": "<p>In these multi-issue failures, there are a few general recommendations to check:</p> <ol> <li>Were new clients or APs introduced in the environment?</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Was the AP firmware recently upgraded?</li> <li>Were the AP radio or WLAN settings recently modified?</li> <li>Check for high levels of RF performance interference, which may be causing high error rates.</li> <li>Compare the configuration and operating deployment of the affected WLAN or network scope (AP, AP group, etc) with others to identify any unique settings that may be causing issues.</li> </ol>"
+  },
+  "XvgMCU": {
+    "defaultMessage": "Roaming Success"
+  },
+  "XwYgzD": {
+    "defaultMessage": "Designated APs in this venue are running the DHCP Server instance. The DHCP server APs connected to the WAN, the rest of APs get their Private IP address from a local IP Pool with VLAN ID 1 from the DHCP Server AP"
+  },
+  "Y4DCYe": {
+    "defaultMessage": "AP Version"
+  },
+  "YETHtM": {
+    "defaultMessage": "Interface"
+  },
+  "YHPAyk": {
+    "defaultMessage": "Hierarchical AP DHCP"
+  },
+  "YLraaM": {
+    "defaultMessage": "You must have at least one RADIUS or TACACS+ server set-up in order to enable authorization or accounting"
+  },
+  "YeKWbP": {
+    "defaultMessage": "Authentication"
+  },
+  "YlLmvh": {
+    "defaultMessage": "Switch Name"
+  },
+  "YqxKme": {
+    "defaultMessage": "<p>In most cases, clients will immediately fall back to a \"slow roam\" if 802.11r (FT) roams fail.</p> <p>To enable 802.11r roaming, make sure that APs are able to communicate with their RF neighbors via the IP (wired) infrastructure.</p>"
+  },
+  "YzlWah": {
+    "defaultMessage": "Client Impact"
+  },
+  "ZBqG4y": {
+    "defaultMessage": "Invalid Auth/Key Mgmt Protocol"
+  },
+  "ZJvcHR": {
+    "defaultMessage": "{name}<br></br> <space><b>{formattedValue} {value, plural, one {event} other {events} }</b></space>"
+  },
+  "ZLzqDd": {
+    "defaultMessage": "Reboot due to country code change"
+  },
+  "ZZLHgd": {
+    "defaultMessage": "{successCount} of {totalCount} Auth attempts"
+  },
+  "ZjT8D6": {
+    "defaultMessage": "<p>The client(s) was actively disconnected due to an 802.11v BSS Transition Management (BTM) action to improve client load distribution.</p>"
+  },
+  "ZqvXR5": {
+    "defaultMessage": "Reboot due to WLAN migration or firmware download failure"
+  },
+  "a0nN4F": {
+    "defaultMessage": "<p>Users are failing to successfully connect at the 802.11 authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>"
+  },
+  "a3u/wa": {
+    "defaultMessage": "<ul> <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li> <li>The selected CLI profiles cannot contain overlapping switch models</li> </ul>"
+  },
+  "aRS8Am": {
+    "defaultMessage": "VLAN ID must be between 1 and 4094",
+    "description": "Validation - VLAN range checks"
+  },
+  "aYNxcR": {
+    "defaultMessage": "WAN Link"
+  },
+  "alYY14": {
+    "defaultMessage": "<p>High CPU usage can occur due to many reasons. CPU spikes can also occur for short duration under normal operation. This incident is raised when sustained high CPU usage is detected. Smartzone CPU is used by multiple processes, services and applications. There are approximately 5 groups of applications.</p> <ol> <li>Messaging group: This consists of applications that process, store, distribute and export stats.</li> <li>Web group: This consists of the web server and other applications that process internal and external APIs.</li> <li>Event group: This mainly consists of services that handle events and alarms.</li> <li>WISPRr group: This consists of services that process user login/logout, session management etc.</li> <li>Device group: This mainly consists of AP and switch connection status management.</li> </ol> <p>Sometimes memory intensive processes like downloading files or uploading firmwares might cause high CPU usage</p>"
+  },
+  "amm2jz": {
+    "defaultMessage": "{successCount} of {totalCount} EAP attempts"
+  },
+  "aonhCk": {
+    "defaultMessage": "This incident impacted {count} {count, plural, one {radio} other {radios} }"
+  },
+  "b6PqIY": {
+    "defaultMessage": "System recovery for target problem"
+  },
+  "b9AG+Q": {
+    "defaultMessage": "Association Failures"
+  },
+  "bDQ0Eu": {
+    "defaultMessage": "{hours} {hours, plural, one {hour} other {hours}}"
+  },
+  "bIqjmO": {
+    "defaultMessage": "TACACS+ Server"
+  },
+  "bJdBrE": {
+    "defaultMessage": "EAP Identifier Mismatch"
+  },
+  "bT9NBq": {
+    "defaultMessage": "Assoc Failure (STA Not Auth\\'d)"
+  },
+  "bZOjOB": {
+    "defaultMessage": "Mesh AP cannot be moved to a different venue"
+  },
+  "bZd1AA": {
+    "defaultMessage": "{name}: <b>{value}</b>"
+  },
+  "biaxSK": {
+    "defaultMessage": "Thumbnail for {floorPlanName}"
+  },
+  "bu6Csa": {
+    "defaultMessage": "<p>Client uplink RSSI is unusually low, which can have several root causes. Consider the following common behavior and design issues:</p> <ol> <li>General under-coverage (insufficient APs), localized coverage holes, or sub-optimal AP placement.</li> <li>Conservative roaming behavior, also known as sticky clients (clients will not roam until their RSSI is very low).</li> <li>If this problem is only affecting certain client types or OS versions, client firmware or configuration settings may be leading to aggressive power save measures that decrease transmit power.</li> </ol>"
+  },
+  "bvFsep": {
+    "defaultMessage": "<p>Clients are failing authentication because the WPA Information Element in msg2 of the 4-way handshake (sent from client to AP) does not match the WPA Information Element sent in the Association Request.</p>"
+  },
+  "bwf0Ca": {
+    "defaultMessage": "Access Control description (TBD)"
+  },
+  "c3gDWz": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}In Setup Phase"
+  },
+  "cG5p0q": {
+    "defaultMessage": "{value, number, ::K .##/@##r}"
+  },
+  "cIG04t": {
+    "defaultMessage": "BTM Disassoc"
+  },
+  "cPckOG": {
+    "defaultMessage": "Client Auth Dropped by Policy/ACL"
+  },
+  "cSEodU": {
+    "defaultMessage": "{successCount} of {totalCount} DHCP attempts"
+  },
+  "cVyu0h": {
+    "defaultMessage": "<p>No specific root cause.</p>"
+  },
+  "cbz/ey": {
+    "defaultMessage": "AirPrint"
+  },
+  "ccXLVi": {
+    "defaultMessage": "Category"
+  },
+  "cye5/B": {
+    "defaultMessage": "The hostname may only be known if the user has successfully obtained an IP address from DHCP"
+  },
+  "cz4piV": {
+    "defaultMessage": "Background Scanning"
+  },
+  "d8o6Hc": {
+    "defaultMessage": "<p>This incident can be caused due to the following reasons:</p> <ol> <li>An incorrect static channel configuration in Zone/AP Group may lead to APs in overlapping channels.</li> <li>High number of rogue APs in the RF environment may cause APs to select overlapping channels.</li> </ol>"
+  },
+  "dQKcaA": {
+    "defaultMessage": "<p>Client authentication is failing because of a timeout in the authentication exchange with the client. This is commonly caused by the following reasons:</p> <ol> <li>EAP Request timeout waiting for client EAP Response.</li> <li>4-way handshake timeout waiting for the client response.</li> </ol>"
+  },
+  "dU7NoG": {
+    "defaultMessage": "EAP Attempts"
+  },
+  "dx09pY": {
+    "defaultMessage": "FT (11r) Roam Failure"
+  },
+  "e1BV06": {
+    "defaultMessage": "\"`\" and \"$(\" are not allowed",
+    "description": "Validation - grave accent and dollar sign checks"
+  },
+  "e2LsxU": {
+    "defaultMessage": "Captive Portal - {captiveNetworkType}"
+  },
+  "eCJUml": {
+    "defaultMessage": "Channel Fly"
+  },
+  "eVN5dK": {
+    "defaultMessage": "<p>In these multi-issue failures, there are a few general recommendations to check:</p> <ol> <li>Were new clients or APs introduced in the environment?</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Was the AP firmware recently upgraded?</li> <li>Were the AP radio or WLAN settings recently modified?</li> <li>Check for high levels of RF performance interference, which may be causing high error rates.</li> <li>Compare the configuration and operating deployment of the affected WLAN or network scope (AP, AP group, etc) with others to identify unique settings that may be causing issues.</li> </ol>"
+  },
+  "efBg3C": {
+    "defaultMessage": "RADIUS Failures"
+  },
+  "ejDjCV": {
+    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Ensure that PSE (PoE switch or PoE injector) capacity is appropriately matching with deployed AP models power requirement.</li> <li>Check the cable length, cable type for good PoE use.</li> </ol>"
+  },
+  "ensjiZ": {
+    "defaultMessage": "{value, number, ::percent .##}"
+  },
+  "ett4PX": {
+    "defaultMessage": "Online APs measures the percentage of APs which are online and connected to Smart Zone.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "f3ccIk": {
+    "defaultMessage": "<p>Clients are failing association because the association request is missing the WPA/RSN information element(s), which typically indicates interoperability issues.</p>"
+  },
+  "fA/xlX": {
+    "defaultMessage": "<p>This problem should resolve on its own, but if it persists, check the infrastructure and client population for recent changes likely to produce this failure:</p> <ol> <li>Were new clients or APs introduced in the environment?</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Was the AP firmware recently upgraded?</li> <li>Were the AP radio or WLAN settings recently modified?</li> </ol>"
+  },
+  "fD7kFi": {
+    "defaultMessage": "<p>This disconnect issue is very uncommon, but may be caused if the AP is suffering from excessive performance load and cannot satisfy the client's connection request.</p>"
+  },
+  "fEE7ng": {
+    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Transient Issue"
+  },
+  "fHh7yn": {
+    "defaultMessage": "<p>System has detected abnormally high memory utilization in the switch. At the current rate, the switch will reach threshold limit soon, as indicated in the graph.</p> <p>Switch might run out of memory if the memory usage rate continues. This is typically indicative of a memory leak in the switch.</p> <p>*Note: Threshold limit is auto-calculated by the system.</p>"
+  },
+  "fK4NXJ": {
+    "defaultMessage": "{milliseconds} ms"
+  },
+  "fMoa0h": {
+    "defaultMessage": "Avg Time To Connect"
+  },
+  "faDss4": {
+    "defaultMessage": "<p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between RUCKUS Cloud/AP and the RADIUS server.</p> <p>If all services are up and functional, double-check the RADIUS configuration on RUCKUS Cloud/AP.</p>"
+  },
+  "fkx2+f": {
+    "defaultMessage": "802.3at Switch/Injector"
+  },
+  "fm/xyQ": {
+    "defaultMessage": "Authentication Failures"
+  },
+  "gI9WSC": {
+    "defaultMessage": "Simple DHCP"
+  },
+  "gLTYox": {
+    "defaultMessage": "802.3bt/Class 6"
+  },
+  "gPtJBP": {
+    "defaultMessage": "\"$(\" is not allowed",
+    "description": "Validation - dollar sign checks"
+  },
+  "gVrnzq": {
+    "defaultMessage": "<p>Connectivity is failing because the security type (group cipher suite) from the client is not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.</p>"
+  },
+  "gjjYcv": {
+    "defaultMessage": "Cannot contain Exclamation mark(!), double quotes and space",
+    "description": "Validation - Cannot contain Exclamation mark(!), double quotes and space"
+  },
+  "gn/Z1y": {
+    "defaultMessage": "Invalid Group Key Cipher"
+  },
+  "hDMRzb": {
+    "defaultMessage": "The password needs to:<br></br> <ul> <li>Be 8 to 64 characters long</li> <li>Include both uppercase and lowercase characters (ABC, xyz)</li> <li>Include at least one number (0-9)</li> <li>Include at least one symbol (@, #, $, %, etc. use of \"!\" is not allowed)</li> </ul> Password cannot: <ul> <li>Contain spaces</li> </ul>"
+  },
+  "hLsp5G": {
+    "defaultMessage": "<p>Clients are failing to associate due to one of the following permission features:</p> <ol> <li>The L2 MAC ACL settings do not permit this client (client MAC exists in denial list, or does not exist in permitted list).</li> <li>The client MAC is included in the blocked client list configured by the admin.</li> </ol>"
+  },
+  "hbiilD": {
+    "defaultMessage": "Class2 Frame from Non-Auth STA"
+  },
+  "hkHovQ": {
+    "defaultMessage": "<p>This problem should self-correct when the client device actively uses the Wi-Fi network again. If the issue appears to be affecting active clients and is posing connectivity problems for users, check the following possible issues:</p> <ol> <li>Were new clients or APs introduced in the environment?</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Was the AP firmware recently upgraded?</li> <li>Were the AP radio or WLAN settings recently modified?</li> </ol>"
+  },
+  "holi8H": {
+    "defaultMessage": "iTunes Sharing"
+  },
+  "hpExgW": {
+    "defaultMessage": "<p>Check and configure missing VLAN, or ensure type (untagged/tagged) match on both ends of the connection.</p>"
+  },
+  "hvHylk": {
+    "defaultMessage": "The time-series graph on the left displays the percentage of APs that have AP-to-SZ control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "hykXOO": {
+    "defaultMessage": "Xgrid"
+  },
+  "iChz4G": {
+    "defaultMessage": "Each AP in this venue is running it’s own DHCP server instance. Typically configured when APs are at different sites and roaming is not required"
+  },
+  "iEqpOs": {
+    "defaultMessage": "EAP Failures"
+  },
+  "iHlZH2": {
+    "defaultMessage": "<p>If this issue does not resolve on its own, this is often a case of client compatibility issues, which may be caused by:</p> <ol> <li>Client software issues or upgrades.</li> <li>Recent configuration changes on the client authentication settings (username/password or identity settings).</li> </ol>"
+  },
+  "iIbgC5": {
+    "defaultMessage": "{seconds} {seconds, plural, one {second} other {seconds}}"
+  },
+  "iJ+fGj": {
+    "defaultMessage": "You don't have permission to set threshold for selected network node."
+  },
+  "ia0RRf": {
+    "defaultMessage": "Client disconnected"
+  },
+  "icAnE9": {
+    "defaultMessage": "{number}%"
+  },
+  "is4gkW": {
+    "defaultMessage": "Open Directory Master"
+  },
+  "ivPyUu": {
+    "defaultMessage": "AP lost connection to controller for more than 14400 seconds"
+  },
+  "j52BhR": {
+    "defaultMessage": "Unknown reason"
+  },
+  "j5hPAQ": {
+    "defaultMessage": "Auth Algorithm Mismatch"
+  },
+  "jJFkGD": {
+    "defaultMessage": "Client Isolation description (TBD)"
+  },
+  "jehzVz": {
+    "defaultMessage": "iTunes Remote"
+  },
+  "jm/spn": {
+    "defaultMessage": "Reset"
+  },
+  "k5KI1E": {
+    "defaultMessage": "<p>Users are failing to successfully connect at the DHCP stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>"
+  },
+  "kTLXSZ": {
+    "defaultMessage": "{name}<br></br> <space><b>{formattedValue} {value, plural, one {AP} other {APs} }</b></space>"
+  },
+  "kaxley": {
+    "defaultMessage": "AP-RUCKUS Cloud connection uptime measures the percentage of time the AP radios are fully available for client service. The time-series graph on the left displays the percentage of AP-RUCKUS Cloud connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "kcUzlc": {
+    "defaultMessage": "<p>Client associations are failing on the AP due to one of several possible capacity conditions:</p> <ol> <li>The AP radio has reached its max client limit (fixed limit of HW/SW).</li> <li>The AP has reached its total client limit for both radios (fixed limit of HW/SW).</li> <li>The AP radio has reached its max allowed client limit, as specified by the admin in the configuration.</li> </ol>"
+  },
+  "kkjl2v": {
+    "defaultMessage": "Max"
+  },
+  "kuYN1a": {
+    "defaultMessage": "AirTunes"
+  },
+  "l1IQlQ": {
+    "defaultMessage": "Please enter a valid password",
+    "description": "Validation - Please enter a valid password"
+  },
+  "l4NqVU": {
+    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Consider turning on auto channel selection algorithms - Background scan or ChannelFly.</li> <li>If ChannelFly is selected it is mandatory to turn ON background scan.</li> <li>Scan your environments for rogue APs and remove them if possible.</li> </ol>"
+  },
+  "l5MUct": {
+    "defaultMessage": "WWW HTTP"
+  },
+  "l6kkAc": {
+    "defaultMessage": "Configures VLAN tag usage for the port"
+  },
+  "l7HNFB": {
+    "defaultMessage": "Reboot due to IP mode change or mesh enablement"
+  },
+  "l9JdDM": {
+    "defaultMessage": "STA Disassoc"
+  },
+  "lLyFJV": {
+    "defaultMessage": "<p>Connectivity is failing because the security type capabilities (Robust Security Network (RSN) Capabilities) requested by the client are not valid or are not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.</p>"
+  },
+  "lNcpaa": {
+    "defaultMessage": "Reboot due to IP mode change"
+  },
+  "leCm3C": {
+    "defaultMessage": "<p>RADIUS timeouts are most likely to be resolved by investigating the RADIUS server health directly, typically by focusing on load or service availability metrics and logs:</p> <ol> <li>Is the RADIUS server reliable and reachable (by ping from the AP or RUCKUS Cloud)?</li> <li>Is the RADIUS server experiencing high load?</li> <li>Is the RADIUS hardware infrastructure (CPU, Memory, IO) over-loaded or otherwise suffering a service outage?</li> <li>Do the RADIUS logs indicate unusual failures messages or reasons?</li> <li>Is the wireless link showing symptoms of congestion (high airtime utilization or interference)?</li> </ol>"
+  },
+  "ln7Utz": {
+    "defaultMessage": "<p>This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider disabling Transient Client Management or make the logic more conservative.</p>"
+  },
+  "m6WOAM": {
+    "defaultMessage": "The PoE Utilization measures the percentage of the switches that utilize less power than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of PoE Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "m8B9gB": {
+    "defaultMessage": "<p>P3 - Contact RUCKUS Support.</p> <p>P2 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p> <p>P1 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p>"
+  },
+  "mKXiR0": {
+    "defaultMessage": "{name}<br></br><space><b>{formattedValue}</b></space>",
+    "description": "DonutChart: default tooltip format for donut chart"
+  },
+  "mMBc1K": {
+    "defaultMessage": "<p>This incident can be caused due to the following reasons:</p> <ol> <li>An incorrect static channel configuration in Zone/AP Group may lead to APs in overlapping channels.</li> <li>High number of rogue APs in the RF environment may cause APs to select overlapping channels.</li> <li>In 5 GHz band, APs might select overlapping channels to avoid channels with DFS events.</li> </ol>"
+  },
+  "mOYFFL": {
+    "defaultMessage": "System reboot"
+  },
+  "mQbCtp": {
+    "defaultMessage": "Management Frame Protection (MFP) is defined in 802.11w to protect 802.11 Robust Management frames, including Disassociation, Deauthentication, and Robust Action frames. <ul> <li>Optional allows legacy devices that do not support the 802.11w standard to associate with the SSID while also allowing devices that support 802.11w to use the 802.11w features.</li> <li>Required will prevent clients that do not support 802.11w from associating.</li> </ul>"
+  },
+  "mgHLcZ": {
+    "defaultMessage": "<p>System has detected high number of AP-RUCKUS Cloud connection failures. This can occur due to following reasons:</p> <ol> <li>Intermittent or permanent loss of connectivity between AP and RUCKUS Cloud. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-RUCKUS Cloud connection failures.</li> <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-RUCKUS Cloud communication failure.</li> <li>Lack of reachability from AP to RUCKUS Cloud over a WAN connection or cloud would cause APs to disconnect from RUCKUS Cloud.</li> <li>In rare cases, AP certificate is invalid which forces RUCKUS Cloud to deny the incoming connection from the AP.</li> </ol>"
+  },
+  "mmPSWH": {
+    "defaultMessage": "Read Only"
+  },
+  "mtg3Og": {
+    "defaultMessage": "By default, will be used as the network SSID as well. Length is limited to 2-32 characters (depending on the language you use)"
+  },
+  "n6imqg": {
+    "defaultMessage": "PoE Utilization"
+  },
+  "nF/6O6": {
+    "defaultMessage": "{minutes} {minutes, plural, one {minute} other {minutes}}"
+  },
+  "nSSwf0": {
+    "defaultMessage": "AP-RUCKUS Cloud Connection Uptime"
+  },
+  "nUcJKL": {
+    "defaultMessage": "Reboot due to WLAN migration or firmware change"
+  },
+  "nWhVMo": {
+    "defaultMessage": "Operating PoE Mode"
+  },
+  "naKH0w": {
+    "defaultMessage": "System recovery for target failure"
+  },
+  "nbyqr2": {
+    "defaultMessage": "AP cannot find uplink and is in island state"
+  },
+  "noTj55": {
+    "defaultMessage": "<p>To diagnose this issue further, check the following situations:</p> <ol> <li>High RF interference, airtime utilization, or other poor RF conditions, which disrupts normal channel access.</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Were the WLAN settings (especially DPSK) recently modified?</li> </ol>"
+  },
+  "nr5cB+": {
+    "defaultMessage": "-2dB"
+  },
+  "nu+ICw": {
+    "defaultMessage": "<p>Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.</p>"
+  },
+  "o0jcye": {
+    "defaultMessage": "OS"
+  },
+  "o5N/oy": {
+    "defaultMessage": "iCloud Sync"
+  },
+  "oAzpTF": {
+    "defaultMessage": "<p>Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.</p>"
+  },
+  "oLejFI": {
+    "defaultMessage": "AP Model"
+  },
+  "oTAW/k": {
+    "defaultMessage": "<p>Given the broad set of potential reasons for low RSSI, the recommendation will be based on the actual root cause, including some of the following possibilities:</p> <ol> <li>In cases of general or localized under-coverage (all clients have low RSSI), add APs as needed.</li> <li>In cases of sub-optimal AP placement (sufficient APs, but localized coverage issues), consider re-locating APs based on RF design best practices or adding APs to supplement.</li> <li>In cases of sticky clients, consider utilizing features like SmartRoam to assist clients with proactive roaming guidance (first, double-check to see if clients support 802.11v, or if the sticky client issue is affecting application performance).</li> <li>In cases where low tx power is affecting only a subset of clients, check for unique configuration settings regarding power save, or potentially firmware upgrades that resolve client-side tx issues.</li> </ol>"
+  },
+  "osY7bu": {
+    "defaultMessage": "{successCount} of {totalCount} switches"
+  },
+  "ouzbwK": {
+    "defaultMessage": "802.3bt/Class 7"
+  },
+  "ozB49A": {
+    "defaultMessage": "Assoc reject by software internal error"
+  },
+  "ozC+ck": {
+    "defaultMessage": "<p>Connectivity is failing because the management frame information elements from the client are not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.</p>"
+  },
+  "p9cc+P": {
+    "defaultMessage": "Name must be between 2 and 32 alpha-numeric characters. Backtick \"`\" and the \"$(\" combination are not allowed."
+  },
+  "pR9NkG": {
+    "defaultMessage": "WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise."
+  },
+  "pa7dvf": {
+    "defaultMessage": "Invalid Key Data in EAPOL-Key Msg 2 of 4"
+  },
+  "pmWxxv": {
+    "defaultMessage": "Syslog description (TBD)"
+  },
+  "pq900d": {
+    "defaultMessage": "<p>Client connection attempts are failing because the device is attempting to use a previously expired authentication key management (AKM) credential. This issue should be a transient problem in the network and should self-correct.</p>"
+  },
+  "q+1Dri": {
+    "defaultMessage": "AC/DC Power supply"
+  },
+  "q1pcCI": {
+    "defaultMessage": "Disassoc Due to Inactivity Timeout"
+  },
+  "q5IqDv": {
+    "defaultMessage": "{count} {count, plural, one {event type} other {event types} } contributed to this incident"
+  },
+  "qBnfE9": {
+    "defaultMessage": "<section> <p>* The following LAN Port settings can’t work because DHCP is enabled.</p> <p>You cannot edit LAN Port setting on this device because it has assigned to the venue which already has enabled DHCP service.</p> </section>"
+  },
+  "qPiMUC": {
+    "defaultMessage": "Airport Management"
+  },
+  "qWBAzj": {
+    "defaultMessage": "Assoc DoS Prevention"
+  },
+  "r2CU5S": {
+    "defaultMessage": "<p>The DHCP exchange is failing because of a timeout waiting for a response from the DHCP server. This is typically caused by the following reasons:</p> <ol> <li>The DHCP server is offline.</li> <li>The DHCP server is unreachable on the LAN (a network path issue) or there is high network latency.</li> <li>The VLAN/DVLAN infrastructure is not properly configured on the SSID, AP, or switch ports.</li> <li>The DHCP server is overloaded and unable to reply.</li> <li>The DHCP helper IP address is not configured on the subnet.</li> </ol>"
+  },
+  "rIgzAj": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Offline"
+  },
+  "rMaVjw": {
+    "defaultMessage": "Disassoc Due to Busy AP"
+  },
+  "rrNFNw": {
+    "defaultMessage": "AP lost connection to controller for more than 7200 seconds"
+  },
+  "rtUW4z": {
+    "defaultMessage": "Default (All)"
+  },
+  "rzm6Ac": {
+    "defaultMessage": "{threshold} seconds"
+  },
+  "s5tGxo": {
+    "defaultMessage": "Please enter a valid number between 0 and 65535",
+    "description": "Validation - Please enter a valid port number between 0 and 65535"
+  },
+  "sEHAR3": {
+    "defaultMessage": "VLAN Pool description (TBD)"
+  },
+  "swJCKh": {
+    "defaultMessage": "<p>In many cases with DHCP failure, each client device behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end DHCP setup:</p> <ol> <li>Check DHCP server IP scopes are configured and enabled with available addresses.</li> <li>Check the network infrastructure is configured with proper VLANs (to the AP), IP helpers, or DHCP Proxy in place.</li> <li>Check for availability of DHCP servers and IP reachability by client devices.</li> <li>Check any recent changes in the DHCP infrastructure that may be leading to issues.</li> </ol>"
+  },
+  "t7Y1lT": {
+    "defaultMessage": "WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise. <highlight> 6GHz radios are only supported with WPA3. </highlight>"
+  },
+  "t7yH3z": {
+    "defaultMessage": "EAPOL Failures"
+  },
+  "tMSNXZ": {
+    "defaultMessage": "<p>Clients are failing association because the association request has unsupported or malformed security information in the WPA/RSN information element(s), which typically indicates interoperability issues.</p>"
+  },
+  "taS9eS": {
+    "defaultMessage": "The IP addresses you entered conflict with existing authentication server configuration in another network. Please change the IP address."
+  },
+  "tba7nY": {
+    "defaultMessage": "<p>For each group of reasons, corresponding recommendations are below:</p> <ol> <li>Turn off unused features - AVC, Wi-Fi Calling, Mesh, URL Filtering, Rogue client etc.</li> <li>Check the rate and volume of data requested through public API calls.</li> <li>Consider removing unnecessary events or reducing the duration of event storage.</li> <li>Check the rate and volume of user login requests.</li> <li>Address any alarms related to AP or switch connection status.</li> </ol> <p>Generally memory and I/O intensive process are transient. If a sustained high memory usage is observed, please work with Ruckus customer team.</p>"
+  },
+  "tgNqci": {
+    "defaultMessage": "Successful Connections"
+  },
+  "tzKBMY": {
+    "defaultMessage": "{duration1} {duration2}",
+    "description": "e.g. duration1 = 3 mo, duration2 = 2 d, result = 3 mo 2 d"
+  },
+  "u47m2x": {
+    "defaultMessage": "AAA description (TBD)"
+  },
+  "u57LMs": {
+    "defaultMessage": "-3dB(1/2)"
+  },
+  "u8oqR0": {
+    "defaultMessage": "Access Control"
+  },
+  "uDSCxx": {
+    "defaultMessage": "<p>Incorrect data timestamps are typically caused by NTP issues either on the controller or the underlying infrastructure.</p>"
+  },
+  "uWx1Qp": {
+    "defaultMessage": "High AP-RUCKUS Cloud connection failures in {scope}."
+  },
+  "uZFxCb": {
+    "defaultMessage": "Port Config"
+  },
+  "udk0yj": {
+    "defaultMessage": "<p>If the issue does not resolve on its own, check the traffic and client load of the affected APs to see if there is a persistent load issue. Packet captures may also help to confirm the behavior is initiated by the AP. If that is the case, and clients cannot remain connected, an AP reboot may be necessary.</p>"
+  },
+  "ui0tHD": {
+    "defaultMessage": "<p>n/a</p>"
+  },
+  "uqoLDd": {
+    "defaultMessage": "Cannot save threshold at organisation level. Please select a Venue or AP to set a threshold."
+  },
+  "urCWaH": {
+    "defaultMessage": "<p>The connection is failing because of a mismatch in the connection state machine. Clients are attempting to associate prior to forming a successful open authentication.</p>"
+  },
+  "uwQ8Iq": {
+    "defaultMessage": "{days} {days, plural, one {day} other {days}}"
+  },
+  "v5rkH1": {
+    "defaultMessage": "This incident impacted {count} {count, plural, one {AP model} other {AP models} }"
+  },
+  "vKQows": {
+    "defaultMessage": "above"
+  },
+  "w6rFmt": {
+    "defaultMessage": "<p>To resolve data timestamp issues, check the controller time for accuracy:</p> <ol> <li>Ensure that the NTP server is online and reachable.</li> <li>Execute a manual NTP sync to update the time.</li> <li>Check the underlying infrastructure (in a VM environment) to ensure the hypervisor is providing the correct time.</li> </ol>"
+  },
+  "wGTCRY": {
+    "defaultMessage": "met goal"
+  },
+  "wNvwIx": {
+    "defaultMessage": "<p>This disconnect issue is happening because the device is being disassociated by the AP due to inactivity. The WLAN configuration includes an inactivity timeout, which allows the AP to disconnect client devices if it has not seen frames to/from the device for the duration of the timeout interval.</p>"
+  },
+  "wYJqw/": {
+    "defaultMessage": "<p>Invalid key data is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of invalid keys.</p> <p>If the problem persists, check common situations that may have introduced this interoperability behavior:</p> <ol> <li>Are the impacted clients using problematic drivers or firmware?</li> <li>Was the firmware recently updated on impacted clients so as to introduce interoperability issues?</li> <li>Were new client types recently introduced into the environment?</li> </ol>"
+  },
+  "wZF/6d": {
+    "defaultMessage": "Local Users ({count})"
+  },
+  "wpLCnH": {
+    "defaultMessage": "Incident Description"
+  },
+  "x82IOl": {
+    "defaultMessage": "Mute"
+  },
+  "xFA1TY": {
+    "defaultMessage": "under"
+  },
+  "xI4nIt": {
+    "defaultMessage": "<p>Connectivity is failing because the security type (cipher suite) requested by the client is not valid or is not supported by the AP/WLAN.</p>"
+  },
+  "xKHf+Y": {
+    "defaultMessage": "PoE Injector"
+  },
+  "xbKzeb": {
+    "defaultMessage": "Block a client for <blockingPeriod></blockingPeriod> seconds after <failThreshold></failThreshold> repeat authentication failures within <checkPeriod></checkPeriod> seconds"
+  },
+  "xjmqi+": {
+    "defaultMessage": "Syslog Server"
+  },
+  "xrKHS6": {
+    "defaultMessage": "Success"
+  },
+  "xxIzVH": {
+    "defaultMessage": "<p>The connection exchange is failing because the 4-way handshake is taking too long, typically because of busy RF environmental conditions, or possibly due to high latency if using an external PSK authentication mechanism (like external DPSK).</p>"
+  },
+  "y3xbhj": {
+    "defaultMessage": "below"
+  },
+  "y4oJuw": {
+    "defaultMessage": "Incident {severityKey}"
+  },
+  "yCeZ/i": {
+    "defaultMessage": "VLAN Pool: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
+  },
+  "yI8Rg+": {
+    "defaultMessage": "This incident impacted {count} {count, plural, one {AP firmware} other {AP firmwares} }"
+  },
+  "yK/eML": {
+    "defaultMessage": "The IP addresses you entered conflict with existing accounting server configuration in another network. Please change the IP address."
+  },
+  "yK1gsB": {
+    "defaultMessage": "-5dB"
+  },
+  "yKhFVq": {
+    "defaultMessage": "<p>Though this issue is uncommon, it may occur due to unexpected configuration changes or incompatibilities:</p> <ol> <li>Are the impacted clients configured to use a WLAN type that mismatches the AP/SSID settings?</li> <li>Were devices recently upgraded with new firmware that may be introducing bugs?</li> <li>Was the WLAN configuration changed on the infrastructure?</li> </ol>"
+  },
+  "yWfRpm": {
+    "defaultMessage": "{percentage} of failures impacted {dominant}"
+  },
+  "yxEwuj": {
+    "defaultMessage": "<p>This disconnect issue is happening because clients are sending unsupported frames (i.e. Class3) before forming a valid open association.</p>"
+  },
+  "z/4kqd": {
+    "defaultMessage": "Mgmt Group Cipher is not valid"
+  },
+  "zF86sK": {
+    "defaultMessage": "EAPOL"
+  },
+  "zK1Tuz": {
+    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Ensure that PSE - PoE switch or PoE injector capacity and cumulative power requirements of all APs for full operation are appropriately matched.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS Cloud. In rare cases it might indicate configuration corruption.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS Cloud. Download time out is the main cause.</li> <li>RUCKUS Cloud can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing RUCKUS Cloud to reboot the AP. In these cases, an alarm is raised. Use RUCKUS Cloud alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li> </ol>"
+  },
+  "zKrbuH": {
+    "defaultMessage": "<p>This event is a normal function of network load distribution and should not be a concern unless it persists in the network as a source of connection failures. A single incident of this type should not be a concern.</p>"
+  },
+  "zgMsos": {
+    "defaultMessage": "Authorization"
+  },
+  "zs74F6": {
+    "defaultMessage": "This incident impacted {count} {count, plural, one {operating system} other {operating systems} }"
+  },
+  "+20FW7": {
+    "defaultMessage": "Devices"
+  },
+  "+6yi4P": {
+    "defaultMessage": "Next License Expiration"
+  },
+  "+7PjfV": {
+    "defaultMessage": "1 day"
+  },
+  "+COaOp": {
+    "defaultMessage": "Networks ({networksCount})"
+  },
+  "+MOZEQ": {
+    "defaultMessage": "SAE Passphrase"
+  },
+  "+V1JPZ": {
+    "defaultMessage": "Clone"
+  },
+  "+a1n2f": {
+    "defaultMessage": "AP never contacted cloud"
+  },
+  "+cCc3S": {
+    "defaultMessage": "Accounting port"
+  },
+  "+lDACy": {
+    "defaultMessage": "Device Name"
+  },
+  "+vI1wY": {
+    "defaultMessage": "Packet Capture"
+  },
+  "/0H8fR": {
+    "defaultMessage": "AP Properties"
+  },
+  "/7L+LZ": {
+    "defaultMessage": "Delete AP"
+  },
+  "/8hgbZ": {
+    "defaultMessage": "Show bands for other countries"
+  },
+  "/FEiLZ": {
+    "defaultMessage": "Tri-band radio settings"
+  },
+  "/H12m5": {
+    "defaultMessage": "(As venue)"
+  },
+  "/JlOnM": {
+    "defaultMessage": "3G:"
+  },
+  "/KAQjA": {
+    "defaultMessage": "Data Roaming"
+  },
+  "/YEy66": {
+    "defaultMessage": "Select Type..."
+  },
+  "/b3UL8": {
+    "defaultMessage": "Photo"
+  },
+  "/namqn": {
+    "defaultMessage": "Per AP Group"
+  },
+  "/tczv9": {
+    "defaultMessage": "Regular Profiles"
+  },
+  "/uhiJw": {
+    "defaultMessage": "AP disconnected from cloud"
+  },
+  "/vTLtO": {
+    "defaultMessage": "Add Model"
+  },
+  "/wvHFt": {
+    "defaultMessage": "Policies & Profiles"
+  },
+  "/z73ES": {
+    "defaultMessage": "Address must be in"
+  },
+  "0/CPYf": {
+    "defaultMessage": "Add Wi-Fi Calling Service"
+  },
+  "00EmN7": {
+    "defaultMessage": "WiFi"
+  },
+  "04dPHW": {
+    "defaultMessage": "None",
+    "description": "WLAN security type - None"
+  },
+  "08tui5": {
+    "defaultMessage": "No group (inherit from Venue)"
+  },
+  "0Azlrb": {
+    "defaultMessage": "Manage"
+  },
+  "0BOSOm": {
+    "defaultMessage": "Executive Authorization"
+  },
+  "0K9j9i": {
+    "defaultMessage": "Add another"
+  },
+  "0PZCfQ": {
+    "defaultMessage": "Clients will recieve IP addresses in an isolated {guestDhcpIpSpec} network."
+  },
+  "0Vwmgl": {
+    "defaultMessage": "4G (LTE) only"
+  },
+  "0YH7lb": {
+    "defaultMessage": "Threshold set successfully."
+  },
+  "0a9con": {
+    "defaultMessage": "Airtime Decongestion:"
+  },
+  "0en4ku": {
+    "defaultMessage": "Top 5 Venues/Services with poor experience"
+  },
+  "0ikJdX": {
+    "defaultMessage": "SINR"
+  },
+  "0kmMVs": {
+    "defaultMessage": "Existing configuration will be wiped, AP firmware will be modified to standalone image. AP will be ready to connect to any controller or operate standalone. Please note that this option will download and update your AP firmware, which will take longer."
+  },
+  "0t1qvq": {
+    "defaultMessage": "Add Rule"
+  },
+  "0t4WRs": {
+    "defaultMessage": "Expires on"
+  },
+  "0xwsto": {
+    "defaultMessage": "Use MAC Auth"
+  },
+  "1/+/pa": {
+    "defaultMessage": "Split 5GHz into lower and upper bands"
+  },
+  "11oARw": {
+    "defaultMessage": "Pool"
+  },
+  "12bGxj": {
+    "defaultMessage": "Channel selection:"
+  },
+  "1EYCdR": {
+    "defaultMessage": "Tags"
+  },
+  "1FxV5K": {
+    "defaultMessage": "Server Configuration Conflict"
+  },
+  "1I+2ee": {
+    "defaultMessage": "in this Venue"
+  },
+  "1ItAoW": {
+    "defaultMessage": "DoS Protection:"
+  },
+  "1OEMD7": {
+    "defaultMessage": "Add Portal Service"
+  },
+  "1PUJv9": {
+    "defaultMessage": "Lower 5G"
+  },
+  "1VdwyQ": {
+    "defaultMessage": "Select APs by tag"
+  },
+  "1cI6CZ": {
+    "defaultMessage": "This value should be lower than or equal to 65535",
+    "description": "Validation - This value should be lower than or equal to 65535"
+  },
+  "1exMzJ": {
+    "defaultMessage": "More Services"
+  },
+  "1f7SOL": {
+    "defaultMessage": "Connection status"
+  },
+  "1gk95Q": {
+    "defaultMessage": "Device Inventory"
+  },
+  "1iEPTM": {
+    "defaultMessage": "General"
+  },
+  "1oawH2": {
+    "defaultMessage": "Cellular Options"
+  },
+  "1ugiGW": {
+    "defaultMessage": "Enable 5 GHz:"
+  },
+  "2/2yg+": {
+    "defaultMessage": "Add"
+  },
+  "2/5yiK": {
+    "defaultMessage": "Tenant Id"
+  },
+  "24snoi": {
+    "defaultMessage": "VAR Customers"
+  },
+  "25rEb3": {
+    "defaultMessage": "Shared Secret"
+  },
+  "2CYEJa": {
+    "defaultMessage": "Troubleshooting"
+  },
+  "2HAKVL": {
+    "defaultMessage": "Telnet Authentication requires SSH Authentication also to be turned ON."
+  },
+  "2LuahP": {
+    "defaultMessage": "AP LAN port default image"
+  },
+  "2O2sfp": {
+    "defaultMessage": "Finish"
+  },
+  "2VOXow": {
+    "defaultMessage": "Select the wireless networks where the Portal Service will be applied:"
+  },
+  "2YZPfu": {
+    "defaultMessage": "Download Limit"
+  },
+  "2YaZtB": {
+    "defaultMessage": "Mesh Network"
+  },
+  "2eRO6y": {
+    "defaultMessage": "Device Type"
+  },
+  "2hq3YI": {
+    "defaultMessage": "The following information was reported for the error you encountered"
+  },
+  "2n2eHo": {
+    "defaultMessage": "For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:"
+  },
+  "2qaZeq": {
+    "defaultMessage": "Select the venues and APs where the mDNS Proxy Service will be applied:"
+  },
+  "307CiC": {
+    "defaultMessage": "Cloudpath Captive Portal"
+  },
+  "34xBI0": {
+    "defaultMessage": "APs"
+  },
+  "36pknT": {
+    "defaultMessage": "All Active Venues"
+  },
+  "3Dh+ye": {
+    "defaultMessage": "Connection confirmed"
+  },
+  "3HCg1n": {
+    "defaultMessage": "Configuration update failed"
+  },
+  "3Rh+pv": {
+    "defaultMessage": "Japan"
+  },
+  "3VI9mt": {
+    "defaultMessage": "Save Changes"
+  },
+  "3cb3/Z": {
+    "defaultMessage": "Disable this channel"
+  },
+  "3j670j": {
+    "defaultMessage": "DHCP Configuration"
+  },
+  "3mdxYI": {
+    "defaultMessage": "No Switch Clients"
+  },
+  "3mm94F": {
+    "defaultMessage": "ApReportsTab"
+  },
+  "3qkzJ4": {
+    "defaultMessage": "License Management"
+  },
+  "3rC3Kh": {
+    "defaultMessage": "External Antenna"
+  },
+  "3uGxRc": {
+    "defaultMessage": "Customer Admins"
+  },
+  "3yf2ND": {
+    "defaultMessage": "Operator"
+  },
+  "40a9l1": {
+    "defaultMessage": "Select the APs that the mDNS Proxy Service will be applied to at venue “{venueName}”."
+  },
+  "450Fty": {
+    "defaultMessage": "None"
+  },
+  "47FYwb": {
+    "defaultMessage": "Cancel"
+  },
+  "49IDCw": {
+    "defaultMessage": "RSRQ"
+  },
+  "4BcnhO": {
+    "defaultMessage": "Instances ({count})"
+  },
+  "4EchZi": {
+    "defaultMessage": "Wi-Fi Licenses"
+  },
+  "4M0IEe": {
+    "defaultMessage": "Never contacted cloud"
+  },
+  "4OldR8": {
+    "defaultMessage": "Language Settings"
+  },
+  "4QNqkK": {
+    "defaultMessage": "LAN Port:"
+  },
+  "4VPIXt": {
+    "defaultMessage": "Alarms"
+  },
+  "4ZxpR0": {
+    "defaultMessage": "More than {years} {years, plural, one {Year} other {Years}}"
+  },
+  "4dbI7q": {
+    "defaultMessage": "Generate Usage Report"
+  },
+  "4dk4rO": {
+    "defaultMessage": "Accounting Service"
+  },
+  "4xykWm": {
+    "defaultMessage": "5.0 GHz Radio is disabled"
+  },
+  "56DzI+": {
+    "defaultMessage": "Capacity"
+  },
+  "56gVH8": {
+    "defaultMessage": "Signal from previous hop"
+  },
+  "58hopM": {
+    "defaultMessage": "Invalid Image type!"
+  },
+  "58ybZm": {
+    "defaultMessage": "{nodeA}{newline}> {nodeB}",
+    "description": "FormattedPath: Uses to join path nodes together in a chain"
+  },
+  "5MwFbA": {
+    "defaultMessage": "Network lost count"
+  },
+  "5OPzqo": {
+    "defaultMessage": "Service Expired On"
+  },
+  "5WJxZ/": {
+    "defaultMessage": "APs not assigned to any group"
+  },
+  "5lQx5r": {
+    "defaultMessage": "Scheduling"
+  },
+  "5mHBBz": {
+    "defaultMessage": "Operational - applying configuration"
+  },
+  "5q3qC0": {
+    "defaultMessage": "Download"
+  },
+  "5sg7KC": {
+    "defaultMessage": "Password"
+  },
+  "5wrnrq": {
+    "defaultMessage": "SIM 0"
+  },
+  "5wroMh": {
+    "defaultMessage": "From VLAN and To VLAN must be different"
+  },
+  "6+4gib": {
+    "defaultMessage": "Impacted Switches"
+  },
+  "6+FdTf": {
+    "defaultMessage": "[Tomorrow,] HH:mm"
+  },
+  "60sXC0": {
+    "defaultMessage": "Run background scan every:"
+  },
+  "65eM4S": {
+    "defaultMessage": "No Accounting"
+  },
+  "662y5z": {
+    "defaultMessage": "Add DHCP for Switch Service"
+  },
+  "669iia": {
+    "defaultMessage": "Please enter valid target host or IP address",
+    "description": "Validation - target host checks"
+  },
+  "6B4OxJ": {
+    "defaultMessage": "({hops} hop)"
+  },
+  "6CIm64": {
+    "defaultMessage": "Add AP"
+  },
+  "6HjdRR": {
+    "defaultMessage": "Welcome text"
+  },
+  "6LYw6b": {
+    "defaultMessage": "Upgrade your license to add new APs to the system"
+  },
+  "6M/kaN": {
+    "defaultMessage": "VLAN Pool:"
+  },
+  "6UGqCY": {
+    "defaultMessage": "Terms &amp; Conditions"
+  },
+  "6UiBZi": {
+    "defaultMessage": "WPA3 SAE Passphrase"
+  },
+  "6ZdwfK": {
+    "defaultMessage": "WiFi Users"
+  },
+  "6Zxzo9": {
+    "defaultMessage": "Vlan"
+  },
+  "6dDMJg": {
+    "defaultMessage": "Custom settings"
+  },
+  "6g0glr": {
+    "defaultMessage": "Networking Devices"
+  },
+  "6k/2gL": {
+    "defaultMessage": "My Customers"
+  },
+  "6lmxPg": {
+    "defaultMessage": "Please enter a valid URL",
+    "description": "Validation - Please enter a valid URL"
+  },
+  "6nAe2O": {
+    "defaultMessage": "Select image"
+  },
+  "6o7Qcc": {
+    "defaultMessage": "Total Events"
+  },
+  "6tQ/KS": {
+    "defaultMessage": "Factory reset to Cloud ready"
+  },
+  "6vjF8Q": {
+    "defaultMessage": "Bandwidth"
+  },
+  "6xap9L": {
+    "defaultMessage": "Good"
+  },
+  "7+xUAJ": {
+    "defaultMessage": "{n} of {d} APs online"
+  },
+  "724CrE": {
+    "defaultMessage": "Select..."
+  },
+  "7Erb27": {
+    "defaultMessage": "Add SmartEdge"
+  },
+  "7IoaJU": {
+    "defaultMessage": "The target host or IP address must be a valid IP address or domain name"
+  },
+  "7Kk96z": {
+    "defaultMessage": "Use Cloudpath Server:"
+  },
+  "7ONDU9": {
+    "defaultMessage": "Edit Rule"
+  },
+  "7UOvbT": {
+    "defaultMessage": "Offline"
+  },
+  "7eQeDA": {
+    "defaultMessage": "Cellular (Primary) with ethernet failover"
+  },
+  "7fL2Xm": {
+    "defaultMessage": "Customer'sVenue"
+  },
+  "7gYbG8": {
+    "defaultMessage": "Directed MC/BC Threshold:"
+  },
+  "7iaw3U": {
+    "defaultMessage": "test"
+  },
+  "7ruLSs": {
+    "defaultMessage": "Floor Plan"
+  },
+  "7vTvJh": {
+    "defaultMessage": "WiFi4EU is enabled but not configured!"
+  },
+  "7xgyj8": {
+    "defaultMessage": "Numbers Only"
+  },
+  "8/Df6W": {
+    "defaultMessage": "Add ePDG"
+  },
+  "8/iYO/": {
+    "defaultMessage": "Transmit Power adjustment:"
+  },
+  "8AN/pf": {
+    "defaultMessage": "Executive Accounting"
+  },
+  "8B04tJ": {
+    "defaultMessage": "WPA"
+  },
+  "8BH+xm": {
+    "defaultMessage": "Access Control Policy"
+  },
+  "8HCPWj": {
+    "defaultMessage": "Enable load balancing between all radios"
+  },
+  "8J+OUY": {
+    "defaultMessage": "8 characters minimum"
+  },
+  "8K1Ldm": {
+    "defaultMessage": "Channel selection method:"
+  },
+  "8O9cAb": {
+    "defaultMessage": "Last 24 hours"
+  },
+  "8Ou4hT": {
+    "defaultMessage": "Reset Zoom"
+  },
+  "8SMhm/": {
+    "defaultMessage": "Privilege"
+  },
+  "8TEDlL": {
+    "defaultMessage": "Use MAC Auth:"
+  },
+  "8X85RE": {
+    "defaultMessage": "Selected Profiles"
+  },
+  "8cF6CF": {
+    "defaultMessage": "Error: Can not detect passphrase expiration value"
+  },
+  "8nW+7X": {
+    "defaultMessage": "Impacted APs"
+  },
+  "8rp5p6": {
+    "defaultMessage": "Note: file is limited to the latest 20 MB of captured packets"
+  },
+  "8vkP0f": {
+    "defaultMessage": "Search {searchables}"
+  },
+  "8wm6f9": {
+    "defaultMessage": "Networking"
+  },
+  "8ytZts": {
+    "defaultMessage": "Card removal count"
+  },
+  "9+Ddtu": {
+    "defaultMessage": "Next"
+  },
+  "91pVwu": {
+    "defaultMessage": "Signal"
+  },
+  "94TYGd": {
+    "defaultMessage": "Client Isolation:"
+  },
+  "95qc6M": {
+    "defaultMessage": "Floor Plan Image"
+  },
+  "9620Js": {
+    "defaultMessage": "Wi-Fi License Utilization"
+  },
+  "99tjyG": {
+    "defaultMessage": "IP"
+  },
+  "9DBkVr": {
+    "defaultMessage": "Out Errors"
+  },
+  "9GFJS4": {
+    "defaultMessage": "AP Details"
+  },
+  "9GvlpZ": {
+    "defaultMessage": "Open Settings"
+  },
+  "9IEBd8": {
+    "defaultMessage": "IP address space"
+  },
+  "9MxQUk": {
+    "defaultMessage": "Shared Secret:"
+  },
+  "9O4d/E": {
+    "defaultMessage": "Abandonment Rate"
+  },
+  "9OeqOC": {
+    "defaultMessage": "View as:"
+  },
+  "9Q5dzu": {
+    "defaultMessage": "Telnet Authentication"
+  },
+  "9U7nUR": {
+    "defaultMessage": "Reboot"
+  },
+  "9rWVBF": {
+    "defaultMessage": "Select configuration profile"
+  },
+  "9t1iiv": {
+    "defaultMessage": "Configure"
+  },
+  "9v3vPe": {
+    "defaultMessage": "Enable PoE Out"
+  },
+  "9wD/ZK": {
+    "defaultMessage": "Disconnections"
+  },
+  "9wJSG8": {
+    "defaultMessage": "Map is not enabled"
+  },
+  "9yVN2S": {
+    "defaultMessage": "Signal Strength"
+  },
+  "A4BVBW": {
+    "defaultMessage": "Configuration Profile"
+  },
+  "A7K9Pi": {
+    "defaultMessage": "Search for..."
+  },
+  "A7ugfn": {
+    "defaultMessage": "More Actions"
+  },
+  "ACEaua": {
+    "defaultMessage": "IMEI"
+  },
+  "AJBpR8": {
+    "defaultMessage": "Network Type"
+  },
+  "AN1aoL": {
+    "defaultMessage": "Users connect through a 3rd party captive portal, authenticated by a AAA server",
+    "description": "Description for 3rd Party Captive Portal(WISPr)"
+  },
+  "AQYvl/": {
+    "defaultMessage": "Please enter valid DNS Server IPs"
+  },
+  "AURxhH": {
+    "defaultMessage": "Data Rate Control (2.4 GHz & 5 GHz)"
+  },
+  "AXuW2u": {
+    "defaultMessage": "Available Profiles"
+  },
+  "AcAA5x": {
+    "defaultMessage": "Components"
+  },
+  "AcxDgz": {
+    "defaultMessage": "Activate"
+  },
+  "AetaeJ": {
+    "defaultMessage": "Select venues to activate this network"
+  },
+  "AfUjYu": {
+    "defaultMessage": "Config Change"
+  },
+  "Afqu+e": {
+    "defaultMessage": "Enable OFDM only (disable 802.11b)"
+  },
+  "Ai+g6T": {
+    "defaultMessage": "Add New Venue"
+  },
+  "AkpYoC": {
+    "defaultMessage": "European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam"
+  },
+  "Ao2xin": {
+    "defaultMessage": "Most Secured"
+  },
+  "ArhATs": {
+    "defaultMessage": "Client Experience"
+  },
+  "AszHoG": {
+    "defaultMessage": "Capturing..."
+  },
+  "AudUdt": {
+    "defaultMessage": "AP offline"
+  },
+  "AvMr/E": {
+    "defaultMessage": "Group Details"
+  },
+  "AwuN57": {
+    "defaultMessage": "6 months"
+  },
+  "B2LeOJ": {
+    "defaultMessage": "SSH Authentication"
+  },
+  "BAqvno": {
+    "defaultMessage": "Including any AP that will be added to this venue in the future."
+  },
+  "BBA7Er": {
+    "defaultMessage": "DHCP request rate limit"
+  },
+  "BMa+lq": {
+    "defaultMessage": "Paste the text here..."
+  },
+  "BNHFY1": {
+    "defaultMessage": "Only letters and numbers can be used"
+  },
+  "BO/rhB": {
+    "defaultMessage": "Policy Details"
+  },
+  "BOQjpt": {
+    "defaultMessage": "24/7"
+  },
+  "BQ+5/G": {
+    "defaultMessage": "Log is ready."
+  },
+  "BV3GJo": {
+    "defaultMessage": "Switch count"
+  },
+  "BW+dz5": {
+    "defaultMessage": "5 GHz Antenna gain:"
+  },
+  "BWpuKl": {
+    "defaultMessage": "Update"
+  },
+  "BY343C": {
+    "defaultMessage": "Change"
+  },
+  "BYvdbS": {
+    "defaultMessage": "Leave empty or enter valid MAC address"
+  },
+  "BeT3j9": {
+    "defaultMessage": "WPA3"
+  },
+  "BtcX2v": {
+    "defaultMessage": "Optimized Connectivity Experience (OCE):"
+  },
+  "BvHv17": {
+    "defaultMessage": "Inherit from 5GHz"
+  },
+  "BvrYv4": {
+    "defaultMessage": "Please confirm that..."
+  },
+  "C2zdFr": {
+    "defaultMessage": "Do you want to discard your changes in \"{title}\"?"
+  },
+  "C5VhoH": {
+    "defaultMessage": "Secondary SIM"
+  },
+  "C9eWwX": {
+    "defaultMessage": "DNS Proxy"
+  },
+  "CAaXKK": {
+    "defaultMessage": "Samples"
+  },
+  "CIgJwr": {
+    "defaultMessage": "Users register their details in the portal including their host email - the host needs to approve the request",
+    "description": "Description for Host Approval"
+  },
+  "CLTfqs": {
+    "defaultMessage": "Report SNR Threshold:"
+  },
+  "CM0JAR": {
+    "defaultMessage": "Entire Organization"
+  },
+  "CNTrZU": {
+    "defaultMessage": "2 years"
+  },
+  "CO0HfJ": {
+    "defaultMessage": "MAC Address Filter:"
+  },
+  "CO8css": {
+    "defaultMessage": "No active data"
+  },
+  "CYFags": {
+    "defaultMessage": "Wi-Fi Licenses Utilization"
+  },
+  "CaZvab": {
+    "defaultMessage": "Group Name"
+  },
+  "CasKsA": {
+    "defaultMessage": "Add Secondary Server"
+  },
+  "CgEpzt": {
+    "defaultMessage": "Selected channels will be available for radio broadcasting in this venue. Hover to see overlapping channels"
+  },
+  "Clmz5o": {
+    "defaultMessage": "Top 5 Switches by Error"
+  },
+  "D3BkBR": {
+    "defaultMessage": "{language} ({languageInLocale})"
+  },
+  "D73EmX": {
+    "defaultMessage": "{n} of {d} connections under {threshold}"
+  },
+  "DGsOsb": {
+    "defaultMessage": "Add Floor Plan"
+  },
+  "DNDXNi": {
+    "defaultMessage": "Edit ePDG"
+  },
+  "DUVQwN": {
+    "defaultMessage": "Select profiles"
+  },
+  "DW1gVH": {
+    "defaultMessage": "Please input in as specified in your antenna data sheet"
+  },
+  "DXvbAq": {
+    "defaultMessage": "Show less settings"
+  },
+  "DZX0It": {
+    "defaultMessage": "Number of Pools"
+  },
+  "Di7wzm": {
+    "defaultMessage": "ppm"
+  },
+  "DpMjKF": {
+    "defaultMessage": "Cellular only"
+  },
+  "DqD1yK": {
+    "defaultMessage": "Applications"
+  },
+  "EAiv4D": {
+    "defaultMessage": "custom"
+  },
+  "EKxuZ2": {
+    "defaultMessage": "Add Service"
+  },
+  "ENWiJM": {
+    "defaultMessage": "Historical data is slightly delayed, and not real-time"
+  },
+  "EP8xiD": {
+    "defaultMessage": "AP heartbeat lost"
+  },
+  "ES9cdj": {
+    "defaultMessage": "Managed as"
+  },
+  "ETNaf7": {
+    "defaultMessage": "6 GHz"
+  },
+  "EXlQBN": {
+    "defaultMessage": "Calculating..."
+  },
+  "EYIw2M": {
+    "defaultMessage": "Clear selection"
+  },
+  "EjXr3g": {
+    "defaultMessage": "Active From"
+  },
+  "EnTkxu": {
+    "defaultMessage": "Recommendations"
+  },
+  "ErVD/x": {
+    "defaultMessage": "Primary WAN Recovery Timer must be between 10 and 300"
+  },
+  "EsRolr": {
+    "defaultMessage": "End IP Address"
+  },
+  "Ex+U6K": {
+    "defaultMessage": "# of Un-successful Allocations"
+  },
+  "F3tw3L": {
+    "defaultMessage": "Lower 5 GHz"
+  },
+  "F7JJRF": {
+    "defaultMessage": "Roaming Status"
+  },
+  "FX7pkg": {
+    "defaultMessage": "The service is currently not supported in the country which you entered.<br></br>Please make sure that you entered the correct address."
+  },
+  "FY6igM": {
+    "defaultMessage": "Minutes"
+  },
+  "FZFrre": {
+    "defaultMessage": "Insert WiFi4EU Snippet"
+  },
+  "FbnpZB": {
+    "defaultMessage": "Cluster of {count} Venues"
+  },
+  "FckSlh": {
+    "defaultMessage": "Domain 1 countries"
+  },
+  "Fjlm8K": {
+    "defaultMessage": "Available APs"
+  },
+  "FkTtCJ": {
+    "defaultMessage": "Failed to load Google Maps"
+  },
+  "FnRTEV": {
+    "defaultMessage": "Average"
+  },
+  "FnzYcL": {
+    "defaultMessage": "EC"
+  },
+  "G/yZLu": {
+    "defaultMessage": "Remove"
+  },
+  "G54Mar": {
+    "defaultMessage": "AP external Antenna image"
+  },
+  "GAy1wp": {
+    "defaultMessage": "Currently off. Scheduled to turn on at"
+  },
+  "GK53wj": {
+    "defaultMessage": "Select venue..."
+  },
+  "GKhzqE": {
+    "defaultMessage": "Are you sure you want to delete {count, plural, one {this} other {these} } {formattedEntityName}?"
+  },
+  "GUin5n": {
+    "defaultMessage": "Preparing log ..."
+  },
+  "GW3TA0": {
+    "defaultMessage": "Dropped Packets"
+  },
+  "GWq2QI": {
+    "defaultMessage": "Allowed values are 30-600"
+  },
+  "GbUFoG": {
+    "defaultMessage": "Server 1 IP Address"
+  },
+  "GjrgLY": {
+    "defaultMessage": "Onboarding"
+  },
+  "GkBOpH": {
+    "defaultMessage": "Layer 3"
+  },
+  "Gm+GOA": {
+    "defaultMessage": "Save as AC Profile"
+  },
+  "Gq8n90": {
+    "defaultMessage": "Mgmt Tx Rate:"
+  },
+  "Gr1SAu": {
+    "defaultMessage": "Customer Name"
+  },
+  "GuTAgz": {
+    "defaultMessage": "Host Approval"
+  },
+  "H1V4eP": {
+    "defaultMessage": "Guest network pool details:"
+  },
+  "H3WzvD": {
+    "defaultMessage": "Sefl Sign In"
+  },
+  "H44xvD": {
+    "defaultMessage": "Switch Clients"
+  },
+  "H4yPwC": {
+    "defaultMessage": "Pool Name"
+  },
+  "H8wOLa": {
+    "defaultMessage": "No Authentication"
+  },
+  "HAlOn1": {
+    "defaultMessage": "Name"
+  },
+  "HDSu9X": {
+    "defaultMessage": "Ext. IP Address"
+  },
+  "HJ5lFe": {
+    "defaultMessage": "Blink LEDs"
+  },
+  "HKoyST": {
+    "defaultMessage": "Select separate profiles"
+  },
+  "HUfA9c": {
+    "defaultMessage": "Incident Sub-Category"
+  },
+  "HUu4+K": {
+    "defaultMessage": "MAC Address Format:"
+  },
+  "HeRL5C": {
+    "defaultMessage": "Configure mDNS Proxy Service"
+  },
+  "Hg/gtW": {
+    "defaultMessage": "WiFi4EU UUID"
+  },
+  "HiAhyX": {
+    "defaultMessage": "Make sure to include a city and country in the address"
+  },
+  "HoC8fU": {
+    "defaultMessage": "WiFi4EU Snippet Settings"
+  },
+  "HpoDwk": {
+    "defaultMessage": "Group"
+  },
+  "HuqGcJ": {
+    "defaultMessage": "WPA2 (Recommended)"
+  },
+  "HxrZSJ": {
+    "defaultMessage": "Available Servers"
+  },
+  "I+1HSy": {
+    "defaultMessage": "Trial"
+  },
+  "I/kQ+g": {
+    "defaultMessage": "creating"
+  },
+  "I1ZCPK": {
+    "defaultMessage": "Technology"
+  },
+  "I21S2+": {
+    "defaultMessage": "Root Cause Analysis"
+  },
+  "I3b4hn": {
+    "defaultMessage": "Version"
+  },
+  "I5NMJ8": {
+    "defaultMessage": "More"
+  },
+  "IBNdTs": {
+    "defaultMessage": "VLAN"
+  },
+  "IBbIwV": {
+    "defaultMessage": "Policies & Profiles ({policyCount})"
+  },
+  "IDKI0Y": {
+    "defaultMessage": "{ipAddress}:{port}"
+  },
+  "IDVD4E": {
+    "defaultMessage": "Radio uptime"
+  },
+  "IObDwo": {
+    "defaultMessage": "Primary DNS IP"
+  },
+  "IPcciE": {
+    "defaultMessage": "Activate {count} network(s)"
+  },
+  "IQrRCX": {
+    "defaultMessage": "No data to display"
+  },
+  "IUrYhX": {
+    "defaultMessage": "Add Policy or Profile"
+  },
+  "IcrxPd": {
+    "defaultMessage": "Clients ({count})"
+  },
+  "IdweXY": {
+    "defaultMessage": "Select Columns"
+  },
+  "Ij6myE": {
+    "defaultMessage": "Select the way users gain access to the network through the captive portal"
+  },
+  "Ij89oU": {
+    "defaultMessage": "Enable 2.4 GHz:"
+  },
+  "IkWh5s": {
+    "defaultMessage": "WIFICALLING_PRI_VIDEO"
+  },
+  "Ima+cm": {
+    "defaultMessage": "Account Admins"
+  },
+  "Imc8gS": {
+    "defaultMessage": "Incident Details"
+  },
+  "ItEQ44": {
+    "defaultMessage": "Resend Invitation"
+  },
+  "IuPcxE": {
+    "defaultMessage": "6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation."
+  },
+  "IygFVO": {
+    "defaultMessage": "Please select Layer 2 profile"
+  },
+  "Iyizdh": {
+    "defaultMessage": "You cannot activate this network to this AP Group. A network with the same SSID is already active"
+  },
+  "J+xAaN": {
+    "defaultMessage": "5GHz settings:"
+  },
+  "J2kaW1": {
+    "defaultMessage": "4G:"
+  },
+  "J4gOpG": {
+    "defaultMessage": "Service Name"
+  },
+  "J5Vx07": {
+    "defaultMessage": "Configuration History"
+  },
+  "J7lsnc": {
+    "defaultMessage": "Select profile..."
+  },
+  "J9w68+": {
+    "defaultMessage": "And {total} more"
+  },
+  "JCIgkj": {
+    "defaultMessage": "Username"
+  },
+  "JOnNBb": {
+    "defaultMessage": "Supported formats: PNG, JPEG, GIF, SVG"
+  },
+  "JWDcRP": {
+    "defaultMessage": "Client Rate Limit"
+  },
+  "JWHn/U": {
+    "defaultMessage": "AP"
+  },
+  "Jhsv5I": {
+    "defaultMessage": "Add configuration profile"
+  },
+  "JjEhAQ": {
+    "defaultMessage": "Add AP Group"
+  },
+  "K1uUiB": {
+    "defaultMessage": "Account Type"
+  },
+  "K3kfTi": {
+    "defaultMessage": "Event Start Time"
+  },
+  "K3r6DQ": {
+    "defaultMessage": "Delete"
+  },
+  "K56Dim": {
+    "defaultMessage": "Organization"
+  },
+  "K7AkdL": {
+    "defaultMessage": "Show"
+  },
+  "KCgj9+": {
+    "defaultMessage": "Forwarding Rules:"
+  },
+  "KLRE0U": {
+    "defaultMessage": "Ethernet (Primary) with cellular failover"
+  },
+  "KN7zKn": {
+    "defaultMessage": "Error"
+  },
+  "KZge6k": {
+    "defaultMessage": "Connectivity"
+  },
+  "KeO51o": {
+    "defaultMessage": "Channel"
+  },
+  "KfLzRP": {
+    "defaultMessage": "You can place your devices on floor plans or map to view their geographical distribution"
+  },
+  "KiXNvz": {
+    "defaultMessage": "Run"
+  },
+  "Kkrvpp": {
+    "defaultMessage": "Back to device details"
+  },
+  "KqPbq8": {
+    "defaultMessage": "This value should be higher than or equal to 1",
+    "description": "Validation - This value should be higher than or equal to 1"
+  },
+  "Kv+Tqp": {
+    "defaultMessage": "Recommended size: 1920*1080"
+  },
+  "KzcTy4": {
+    "defaultMessage": "Memory Utilization"
+  },
+  "L+UydQ": {
+    "defaultMessage": "Technical Details"
+  },
+  "L/BmLn": {
+    "defaultMessage": "VLAN-{id}"
+  },
+  "L1cqjp": {
+    "defaultMessage": "GPS Coordinates"
+  },
+  "L5c6Ey": {
+    "defaultMessage": "Hide bands for other countries"
+  },
+  "LEyNkY": {
+    "defaultMessage": "SAE Passphrase:"
+  },
+  "LG+bSR": {
+    "defaultMessage": "Channel Change Frequency:"
+  },
+  "LI3+v4": {
+    "defaultMessage": "Join RSSI Threshold:"
+  },
+  "LNH75V": {
+    "defaultMessage": "You cannot set Mesh off because you have connected Mesh APs"
+  },
+  "LSibcU": {
+    "defaultMessage": "Scheduled to be on until"
+  },
+  "LTNKL8": {
+    "defaultMessage": "1 week"
+  },
+  "LUtYvq": {
+    "defaultMessage": "Enable 802.11k neighbor reports"
+  },
+  "LaRQmP": {
+    "defaultMessage": "IGMP Snooping"
+  },
+  "Ldk2g+": {
+    "defaultMessage": "Local Users"
+  },
+  "LiHQih": {
+    "defaultMessage": "Coming Soon"
+  },
+  "Lu5KZ2": {
+    "defaultMessage": "IP address and Port combinations must be unique"
+  },
+  "Lv0zJu": {
+    "defaultMessage": "Details"
+  },
+  "LxxUDn": {
+    "defaultMessage": "Tx"
+  },
+  "M6phHD": {
+    "defaultMessage": "S/N"
+  },
+  "MDPHxV": {
+    "defaultMessage": "Add Customer"
+  },
+  "MGdMpU": {
+    "defaultMessage": "The wifi calling service with that name already exists"
+  },
+  "MHWaDv": {
+    "defaultMessage": "[Last] dddd[,] HH:mm"
+  },
+  "MHf6hy": {
+    "defaultMessage": "You cannot activate the Mesh Network on this venue because it already has enable DHCP settings"
+  },
+  "MJ2jZQ": {
+    "defaultMessage": "Total"
+  },
+  "MN6Kh7": {
+    "defaultMessage": "Please select Layer 3 profile"
+  },
+  "MUmf9z": {
+    "defaultMessage": "Top 5 Switches by Traffic"
+  },
+  "MWOkOg": {
+    "defaultMessage": "Dynamic VLAN"
+  },
+  "MYuNsQ": {
+    "defaultMessage": "Under {threshold}"
+  },
+  "MftJjW": {
+    "defaultMessage": "Failed to download AP support log."
+  },
+  "MiYx1b": {
+    "defaultMessage": "Wireless Networks"
+  },
+  "MqQ+w8": {
+    "defaultMessage": "Select Model..."
+  },
+  "MsGXc3": {
+    "defaultMessage": "Clear Filters"
+  },
+  "N/8KCC": {
+    "defaultMessage": "Enter the latitude and longitude. e.g. 37.4117499, -122.0193697"
+  },
+  "N01vOB": {
+    "defaultMessage": "License for"
+  },
+  "N4ReBT": {
+    "defaultMessage": "View Details"
+  },
+  "N7EdjU": {
+    "defaultMessage": "Seconds"
+  },
+  "NBfpt8": {
+    "defaultMessage": "Drop It"
+  },
+  "NGOEXC": {
+    "defaultMessage": "Preparing file..."
+  },
+  "NIO6X8": {
+    "defaultMessage": "APs WAN Throughput Impact"
+  },
+  "NK0jqg": {
+    "defaultMessage": "ON now"
+  },
+  "NKPfmm": {
+    "defaultMessage": "{count} selected"
+  },
+  "NM5ZxG": {
+    "defaultMessage": "Failures"
+  },
+  "NO0VM6": {
+    "defaultMessage": "Override the conflicting server configuration"
+  },
+  "NUBQfj": {
+    "defaultMessage": "Management Frame Protection:"
+  },
+  "NUxIws": {
+    "defaultMessage": "Existing configuration will be wiped, AP firmware will remain Cloud-only firmware. AP will be ready to re-connect to the Cloud."
+  },
+  "NV6/gE": {
+    "defaultMessage": "Create New Network"
+  },
+  "NZ9+vv": {
+    "defaultMessage": "Control"
+  },
+  "NfVqC2": {
+    "defaultMessage": "Activated on"
+  },
+  "NmZv2o": {
+    "defaultMessage": "Floor Plan Name"
+  },
+  "NnLddn": {
+    "defaultMessage": "Reboot by System Event"
+  },
+  "Nr2pru": {
+    "defaultMessage": "Network History"
+  },
+  "Nt8DSX": {
+    "defaultMessage": "Authentication Service"
+  },
+  "NwfJ1M": {
+    "defaultMessage": "LAN Port"
+  },
+  "Ny0rQw": {
+    "defaultMessage": "Instance"
+  },
+  "O0h2x8": {
+    "defaultMessage": "Guest Pass Credentials"
+  },
+  "ODTJT0": {
+    "defaultMessage": "Venues to apply"
+  },
+  "ODg339": {
+    "defaultMessage": "Transient Client Management:"
+  },
+  "OFSvR4": {
+    "defaultMessage": "QosPriority"
+  },
+  "OGq7HG": {
+    "defaultMessage": "SIM 1"
+  },
+  "OHgaBG": {
+    "defaultMessage": "ApTimelineTab"
+  },
+  "OKjSEy": {
+    "defaultMessage": "AP LAN port image - {apModel}"
+  },
+  "ONScAg": {
+    "defaultMessage": "Forwarding Rules"
+  },
+  "OOIyTN": {
+    "defaultMessage": "Up:"
+  },
+  "OWOk5N": {
+    "defaultMessage": "Client Impact Count"
+  },
+  "Ok71Hw": {
+    "defaultMessage": "Security Protocol:"
+  },
+  "OruViT": {
+    "defaultMessage": "Selected APs"
+  },
+  "P/GTu2": {
+    "defaultMessage": "Enable 2.4 GHz band:"
+  },
+  "P2PgnZ": {
+    "defaultMessage": "Accounting Port"
+  },
+  "PAgn3K": {
+    "defaultMessage": "Display Language"
+  },
+  "PLUhm9": {
+    "defaultMessage": "VLAN ID"
+  },
+  "PLboZB": {
+    "defaultMessage": "Select Wi-Fi Calling Profiles"
+  },
+  "PNzAyO": {
+    "defaultMessage": "SIM Present"
+  },
+  "PYmHhr": {
+    "defaultMessage": "Venue"
+  },
+  "PZtLWa": {
+    "defaultMessage": "Current RF Band"
+  },
+  "Pc+tM3": {
+    "defaultMessage": "Generate"
+  },
+  "PgM1mM": {
+    "defaultMessage": "DHCP Settings"
+  },
+  "Po66cI": {
+    "defaultMessage": "Number of hosts"
+  },
+  "Ppx673": {
+    "defaultMessage": "Reports"
+  },
+  "PqMTDA": {
+    "defaultMessage": "LTE Bank Lock"
+  },
+  "Ps3Zw0": {
+    "defaultMessage": "This network will be only applied to APs with the tags."
+  },
+  "PsYWdL": {
+    "defaultMessage": "Ap Guests Tab"
+  },
+  "PxQpsu": {
+    "defaultMessage": "Max clients per radio:"
+  },
+  "Py189G": {
+    "defaultMessage": "Security"
+  },
+  "Pz28rk": {
+    "defaultMessage": "Show Expired Licenses"
+  },
+  "Q+Hovx": {
+    "defaultMessage": "Powered By"
+  },
+  "Q1vSy1": {
+    "defaultMessage": "Load Control"
+  },
+  "Q634TH": {
+    "defaultMessage": "Active Incindents"
+  },
+  "Q6F+Bs": {
+    "defaultMessage": "Access Points"
+  },
+  "Q7r9fB": {
+    "defaultMessage": "Enable Mesh"
+  },
+  "Q94rcp": {
+    "defaultMessage": "APN:"
+  },
+  "QH7XOz": {
+    "defaultMessage": "New Clients"
+  },
+  "QO3d1l": {
+    "defaultMessage": "Above {threshold}"
+  },
+  "QPK1am": {
+    "defaultMessage": "Max Rate:"
+  },
+  "QQQKE7": {
+    "defaultMessage": "No active alarms"
+  },
+  "Qa5kz3": {
+    "defaultMessage": "DNS"
+  },
+  "Qb4f56": {
+    "defaultMessage": "ACL Name"
+  },
+  "QbhjI5": {
+    "defaultMessage": "Operational Status"
+  },
+  "QfVD/H": {
+    "defaultMessage": "Use Cloudpath Server"
+  },
+  "Qh71fV": {
+    "defaultMessage": "Please enter the domain name"
+  },
+  "QiN9tn": {
+    "defaultMessage": "Wi-Fi Calling:"
+  },
+  "QmHS60": {
+    "defaultMessage": "Delete {count, plural, one {\"{entityValue}\"} other {{count} APs} }?"
+  },
+  "QxB6z2": {
+    "defaultMessage": "Factory reset to standalone firmware"
+  },
+  "R66tOc": {
+    "defaultMessage": "{title}:"
+  },
+  "RUoi+Y": {
+    "defaultMessage": "Keyboard Friendly"
+  },
+  "RYWzks": {
+    "defaultMessage": "Option Name"
+  },
+  "RZ1YTe": {
+    "defaultMessage": "AP Reboot by System"
+  },
+  "RahCRH": {
+    "defaultMessage": "Expired"
+  },
+  "RfvGpL": {
+    "defaultMessage": "Use 5 and 6 Ghz bands"
+  },
+  "Rih+Vn": {
+    "defaultMessage": "Failed to \"{buttonLabel}\""
+  },
+  "RkTgwV": {
+    "defaultMessage": "Top 5 SSIDs by Clients"
+  },
+  "RlKUNk": {
+    "defaultMessage": "No IP Addresses"
+  },
+  "RmlmiT": {
+    "defaultMessage": "Enable 802.11r Fast BSS Transition"
+  },
+  "RnonLg": {
+    "defaultMessage": "Syslog Server Configuration"
+  },
+  "RpUlXG": {
+    "defaultMessage": "Domain Name"
+  },
+  "RqHopj": {
+    "defaultMessage": "Add Integrator"
+  },
+  "RrCui3": {
+    "defaultMessage": "Summary"
+  },
+  "Rs9fn9": {
+    "defaultMessage": "ApOverviewTab"
+  },
+  "Ru1Owh": {
+    "defaultMessage": "Serial Number"
+  },
+  "RuGYyg": {
+    "defaultMessage": "Per AP"
+  },
+  "Rwtjde": {
+    "defaultMessage": "Enable port"
+  },
+  "RzoePB": {
+    "defaultMessage": "Servers & Users"
+  },
+  "S0vx0o": {
+    "defaultMessage": "Indoor APs"
+  },
+  "S33j4r": {
+    "defaultMessage": "Services ({servicesCount})"
+  },
+  "S5M5Mt": {
+    "defaultMessage": "Active Alarms"
+  },
+  "S9tXPE": {
+    "defaultMessage": "Secondary text"
+  },
+  "SAKAs9": {
+    "defaultMessage": "updating"
+  },
+  "SV49SQ": {
+    "defaultMessage": "Group Member"
+  },
+  "ScFzUg": {
+    "defaultMessage": "Venue Name"
+  },
+  "SgYtSu": {
+    "defaultMessage": "CLI profiles selected"
+  },
+  "SnDvUq": {
+    "defaultMessage": "Add DHCP for Wi-Fi Service"
+  },
+  "T/eFBt": {
+    "defaultMessage": "eMesh AP"
+  },
+  "T/wmhO": {
+    "defaultMessage": "Radius Accounting Service"
+  },
+  "T3UF92": {
+    "defaultMessage": "Authentication Server"
+  },
+  "T6/xG6": {
+    "defaultMessage": "Uplink Bandwidth for LTE"
+  },
+  "TE4fIS": {
+    "defaultMessage": "City"
+  },
+  "TIJjX6": {
+    "defaultMessage": "Wireless Radio"
+  },
+  "TISByd": {
+    "defaultMessage": "DHCP Configuration:"
+  },
+  "TJo5E6": {
+    "defaultMessage": "Preview"
+  },
+  "TKmub+": {
+    "defaultMessage": "This field is required"
+  },
+  "TO3YlU": {
+    "defaultMessage": "Occured Error"
+  },
+  "TPv/Zv": {
+    "defaultMessage": "Demo"
+  },
+  "TSeLp1": {
+    "defaultMessage": "Domain 2 countries"
+  },
+  "TXpOBi": {
+    "defaultMessage": "Customize"
+  },
+  "TY81Tv": {
+    "defaultMessage": "Passphrase Format:"
+  },
+  "Tffbyh": {
+    "defaultMessage": "Guest Pass - Forgot password"
+  },
+  "TjkrkK": {
+    "defaultMessage": "Users can sign in with their social media account or register their details in the portal and get personal password",
+    "description": "Description for Sefl Sign In"
+  },
+  "TkYZBT": {
+    "defaultMessage": "Customers"
+  },
+  "TlvdT2": {
+    "defaultMessage": "Add another pool"
+  },
+  "Tyzlz2": {
+    "defaultMessage": "Please select VLAN Pool profile"
+  },
+  "U+zzqF": {
+    "defaultMessage": "Including any AP that will be added to a selected AP group in the future."
+  },
+  "U7va+7": {
+    "defaultMessage": "Please select Applications profile"
+  },
+  "U8VGv7": {
+    "defaultMessage": "Manage own account"
+  },
+  "U9Z6Iv": {
+    "defaultMessage": "Type the word \"{text}\" to confirm:"
+  },
+  "U9tjJ5": {
+    "defaultMessage": "2 days"
+  },
+  "UB5AkF": {
+    "defaultMessage": "Slow Connections"
+  },
+  "UDFpiZ": {
+    "defaultMessage": "Per radio client count at which an AP will stop converting group addressed data traffic to unicast"
+  },
+  "UF3jdf": {
+    "defaultMessage": "Add DNS Proxy Rule"
+  },
+  "UFGC6+": {
+    "defaultMessage": "Set Priority"
+  },
+  "UG0rT7": {
+    "defaultMessage": "Bands for current country"
+  },
+  "UTUiSZ": {
+    "defaultMessage": "Enable this channel"
+  },
+  "UVQmuB": {
+    "defaultMessage": "2 Mbps"
+  },
+  "UVw7ee": {
+    "defaultMessage": "Serial number is already registered"
+  },
+  "UaCh1c": {
+    "defaultMessage": "Add Server"
+  },
+  "UjplOu": {
+    "defaultMessage": "Integrator"
+  },
+  "V3HPvg": {
+    "defaultMessage": "Floor Number"
+  },
+  "V425wM": {
+    "defaultMessage": "Rogue AP Classification Profile:"
+  },
+  "VI/+Qx": {
+    "defaultMessage": "Manufacturer"
+  },
+  "VLdSEe": {
+    "defaultMessage": "Resend Invitation Email"
+  },
+  "VRcOHM": {
+    "defaultMessage": "CLI Configuration:"
+  },
+  "VSVKlS": {
+    "defaultMessage": "Total Errors"
+  },
+  "VWHJSv": {
+    "defaultMessage": "Ap Clients Tab"
+  },
+  "VfDWQ5": {
+    "defaultMessage": "Available Servers & Users"
+  },
+  "VfJn+B": {
+    "defaultMessage": "Force DHCP"
+  },
+  "Vh3HCl": {
+    "defaultMessage": "+ Add Floor Plan"
+  },
+  "ViS54z": {
+    "defaultMessage": "If you have Mesh-APs, you will not be able to disable this option."
+  },
+  "Vlg571": {
+    "defaultMessage": "{entityName} with that {key, select, name {name} other {value} } already exists{ extra }",
+    "description": "Validation - duplication checks"
+  },
+  "VoKx4v": {
+    "defaultMessage": "A configuration request is currently being executed and additional requests cannot be performed at this time.<br></br>Try again once the request has completed."
+  },
+  "VpxgW7": {
+    "defaultMessage": "Rebooting the AP will disconnect all connected clients. Are you sure you want to reboot?"
+  },
+  "Vs/VPd": {
+    "defaultMessage": "Excluded Range"
+  },
+  "VuTwsh": {
+    "defaultMessage": "9 Mbps"
+  },
+  "W/V6+Y": {
+    "defaultMessage": "Collapse"
+  },
+  "W0+ZGa": {
+    "defaultMessage": "Profile Name"
+  },
+  "W3G6Mz": {
+    "defaultMessage": "You are deleting one or more offline APs. When these offline devices come back online their configuration will be factory reset and they will be removed from Ruckus Cloud."
+  },
+  "WCtGMq": {
+    "defaultMessage": "Upper 5 GHz"
+  },
+  "WEJ7ak": {
+    "defaultMessage": "No APs"
+  },
+  "WH4SDF": {
+    "defaultMessage": "Service Type"
+  },
+  "WYeNY7": {
+    "defaultMessage": "Instances ({instanceCount})"
+  },
+  "WfsT9l": {
+    "defaultMessage": "Cellular Radio"
+  },
+  "WrKsq/": {
+    "defaultMessage": "WAN Connection:"
+  },
+  "WroDTC": {
+    "defaultMessage": "6 Mbps"
+  },
+  "Wsj2fc": {
+    "defaultMessage": "Active Incidents"
+  },
+  "WvU+bE": {
+    "defaultMessage": "Customers Assigned"
+  },
+  "X72sXx": {
+    "defaultMessage": "Unicast"
+  },
+  "X86+n+": {
+    "defaultMessage": "Traffic History"
+  },
+  "X8fWM2": {
+    "defaultMessage": "5.5 Mbps"
+  },
+  "X9MIG9": {
+    "defaultMessage": "# of Ports"
+  },
+  "XCvHUK": {
+    "defaultMessage": "Authentication Port"
+  },
+  "XGJRPa": {
+    "defaultMessage": "You Have Invalid Changes"
+  },
+  "XHHR08": {
+    "defaultMessage": "Data"
+  },
+  "XIcSUF": {
+    "defaultMessage": "WPA2 Passphrase:"
+  },
+  "XT3ib4": {
+    "defaultMessage": "Selected Profile"
+  },
+  "XTdAcD": {
+    "defaultMessage": "Rule"
+  },
+  "XYVgGy": {
+    "defaultMessage": "Alarm Time"
+  },
+  "XlSj6N": {
+    "defaultMessage": "PoE Operating Mode"
+  },
+  "XmLyur": {
+    "defaultMessage": "No Authorization"
+  },
+  "XtTZGc": {
+    "defaultMessage": "LAN"
+  },
+  "XxKaPB": {
+    "defaultMessage": "Unassigned APs"
+  },
+  "XyCalE": {
+    "defaultMessage": "Anti-spoofing:"
+  },
+  "Y2pNUx": {
+    "defaultMessage": "AP operational - applying firmware"
+  },
+  "Y9h/3r": {
+    "defaultMessage": "No active incidents"
+  },
+  "YDMrKK": {
+    "defaultMessage": "Users"
+  },
+  "YMD6en": {
+    "defaultMessage": "Add another ePDG"
+  },
+  "YMqGu8": {
+    "defaultMessage": "Mac Address"
+  },
+  "YNOFVh": {
+    "defaultMessage": "Active Alarm"
+  },
+  "YNci6Q": {
+    "defaultMessage": "More than {months} {months, plural, one {Month} other {Months}}"
+  },
+  "YR3GXj": {
+    "defaultMessage": "Select a configuration profile to apply:"
+  },
+  "YTEoZ0": {
+    "defaultMessage": "{serverType} Server Required"
+  },
+  "YW6xQe": {
+    "defaultMessage": "Radio Band"
+  },
+  "YhT3Ab": {
+    "defaultMessage": "{latitude}, {longitude} {status}"
+  },
+  "YpA2O2": {
+    "defaultMessage": "AP Connection Lost"
+  },
+  "Yppozn": {
+    "defaultMessage": "Routed Interfaces"
+  },
+  "YxWOcg": {
+    "defaultMessage": "Failed to download packet capture."
+  },
+  "Z4WqBL": {
+    "defaultMessage": "Remove Secondary Server"
+  },
+  "Z9Shiu": {
+    "defaultMessage": "Connection Status"
+  },
+  "ZA6UTY": {
+    "defaultMessage": "Types of mDNS Services"
+  },
+  "ZDnQlW": {
+    "defaultMessage": "Allowed values are 2-25"
+  },
+  "ZDpTud": {
+    "defaultMessage": "Traffic"
+  },
+  "ZF2Mdk": {
+    "defaultMessage": "Please enter Serial Number"
+  },
+  "ZOZNDn": {
+    "defaultMessage": "Downlink Bandwidth for LTE"
+  },
+  "ZWd/mu": {
+    "defaultMessage": "Venues & APs ({apCount})"
+  },
+  "ZWz5If": {
+    "defaultMessage": "Network Info"
+  },
+  "ZX+yhN": {
+    "defaultMessage": "BSS Min Rate:"
+  },
+  "ZXUANb": {
+    "defaultMessage": "Automatic support for VRRP/HSRP:"
+  },
+  "Zag45t": {
+    "defaultMessage": "{n} of {d} sessions above {threshold}"
+  },
+  "ZbWc+A": {
+    "defaultMessage": "IP address"
+  },
+  "Zh+5A6": {
+    "defaultMessage": "On"
+  },
+  "ZvJmlk": {
+    "defaultMessage": "WAN Interface"
+  },
+  "ZvKSfJ": {
+    "defaultMessage": "Events"
+  },
+  "ZyfdhP": {
+    "defaultMessage": "Search Results for \"{searchVal}\" ({count})"
+  },
+  "a/mYqc": {
+    "defaultMessage": "Tags:"
+  },
+  "a0Uc0P": {
+    "defaultMessage": "Port {id}"
+  },
+  "a2ACr8": {
+    "defaultMessage": "Same as Venue"
+  },
+  "aAX86Y": {
+    "defaultMessage": "Option ID"
+  },
+  "aB8bp7": {
+    "defaultMessage": "Mesh AP"
+  },
+  "aCdAsI": {
+    "defaultMessage": "Copy to clipboard"
+  },
+  "aI80kg": {
+    "defaultMessage": "Properties"
+  },
+  "acKqTO": {
+    "defaultMessage": "When ground floor is 0"
+  },
+  "ag5e/w": {
+    "defaultMessage": "Download Information"
+  },
+  "aimq5t": {
+    "defaultMessage": "Upload Limit"
+  },
+  "ameTZN": {
+    "defaultMessage": "{type, select, ap {{value, plural, one {AP} other {APs}}} client {{value, plural, one {client} other {clients}}} other {Unknown} }"
+  },
+  "aqtEnj": {
+    "defaultMessage": "LEDs Status"
+  },
+  "arPp4e": {
+    "defaultMessage": "Terms & Conditions"
+  },
+  "awnELK": {
+    "defaultMessage": "Please select DHCP Configuration"
+  },
+  "azzByo": {
+    "defaultMessage": "<p> Currently using radio settings of the venue (<venuelink></venuelink>) </p>"
+  },
+  "b5YpHX": {
+    "defaultMessage": "AP operational"
+  },
+  "b9mNtU": {
+    "defaultMessage": "Deactivate {count} network(s)"
+  },
+  "bCOi8M": {
+    "defaultMessage": "Your GPS coordinates are outside the venue: {venueName}. Are you sure you want to place the device in this new position?\""
+  },
+  "bHHMAb": {
+    "defaultMessage": "Firmware update failed"
+  },
+  "bK2o7Y": {
+    "defaultMessage": "Access Point"
+  },
+  "bP+7cx": {
+    "defaultMessage": "Policies is not enabled"
+  },
+  "bPyOFk": {
+    "defaultMessage": "Terms & conditions"
+  },
+  "bRwQfU": {
+    "defaultMessage": "Copy from your WiFi4EU installation report"
+  },
+  "bS/cRP": {
+    "defaultMessage": "Venues"
+  },
+  "bZrNnv": {
+    "defaultMessage": "dBm"
+  },
+  "bc/VNM": {
+    "defaultMessage": "Error occurred while {action} AP"
+  },
+  "bg1oeI": {
+    "defaultMessage": "Show more settings"
+  },
+  "bh/fRy": {
+    "defaultMessage": "Switch Configuration"
+  },
+  "bhIl+g": {
+    "defaultMessage": "Venue Details"
+  },
+  "bhlT71": {
+    "defaultMessage": "Connection Events"
+  },
+  "birfxK": {
+    "defaultMessage": "Rogue AP Detection:"
+  },
+  "blWvag": {
+    "defaultMessage": "Models"
+  },
+  "bnaSLU": {
+    "defaultMessage": "Connected Clients Over Time"
+  },
+  "brO4kV": {
+    "defaultMessage": "Join Expire Time:"
+  },
+  "bydnK2": {
+    "defaultMessage": "2.4 GHz Radio is disabled"
+  },
+  "bzEaXJ": {
+    "defaultMessage": "What are you looking for?"
+  },
+  "c/gK2n": {
+    "defaultMessage": "Marketing Message"
+  },
+  "c9uA84": {
+    "defaultMessage": "RF Channels"
+  },
+  "cGyHv9": {
+    "defaultMessage": "Spanning Tree"
+  },
+  "cPhKTw": {
+    "defaultMessage": "Not available"
+  },
+  "cPk5H+": {
+    "defaultMessage": "Traceroute"
+  },
+  "cR/5Jp": {
+    "defaultMessage": "Signal strength(RSSI)"
+  },
+  "cRmipE": {
+    "defaultMessage": "Passphrase expiration"
+  },
+  "cTanrr": {
+    "defaultMessage": "Rx Packets/Bytes"
+  },
+  "cVVoGX": {
+    "defaultMessage": "Error: Can not detect passphrase format value"
+  },
+  "cVwwun": {
+    "defaultMessage": "# of Successful Allocations"
+  },
+  "cW0Q6k": {
+    "defaultMessage": "Advanced Settings"
+  },
+  "clZ3Y9": {
+    "defaultMessage": "Top 5 Switch Models"
+  },
+  "cmEYig": {
+    "defaultMessage": "Manage Components"
+  },
+  "cnMdze": {
+    "defaultMessage": "18 Mbps"
+  },
+  "cwzwJR": {
+    "defaultMessage": "Back to venue details"
+  },
+  "cyR7Kh": {
+    "defaultMessage": "Back"
+  },
+  "d0A0aG": {
+    "defaultMessage": "Radius Authentication Service"
+  },
+  "d2JKts": {
+    "defaultMessage": "Switch Id"
+  },
+  "d63gFk": {
+    "defaultMessage": "AI Analytics"
+  },
+  "d8EqQY": {
+    "defaultMessage": "Days"
+  },
+  "dElQAw": {
+    "defaultMessage": "Wi-Fi Clients"
+  },
+  "dFjEMa": {
+    "defaultMessage": "Users sign in with personal password which they need to get in advance from the network administration staff",
+    "description": "Description for Guest Pass"
+  },
+  "dJcHEX": {
+    "defaultMessage": "Customized SLA Threshold"
+  },
+  "dP02B8": {
+    "defaultMessage": "Heartbeat lost"
+  },
+  "dQrGQp": {
+    "defaultMessage": "{count} Impacted {count, plural, one {AP} other {APs}}"
+  },
+  "dUHjMC": {
+    "defaultMessage": "ECIO"
+  },
+  "ddvGQi": {
+    "defaultMessage": "Topology"
+  },
+  "dg6Mrs": {
+    "defaultMessage": "Number of characters in passphrase. Valid range 8-63"
+  },
+  "dl8WIb": {
+    "defaultMessage": "ARP request rate limit"
+  },
+  "dty181": {
+    "defaultMessage": "Traffic by Volume"
+  },
+  "e/WYt2": {
+    "defaultMessage": "Device Model"
+  },
+  "e0kEtS": {
+    "defaultMessage": "Deactivate"
+  },
+  "e4Fp4M": {
+    "defaultMessage": "SSID Name"
+  },
+  "e5mAvq": {
+    "defaultMessage": "Select what should happen to the APs’ configuration:"
+  },
+  "e63Zu2": {
+    "defaultMessage": "RSSI-Based Association Rejection Threshold:"
+  },
+  "e6Ph5+": {
+    "defaultMessage": "Address"
+  },
+  "e7G365": {
+    "defaultMessage": "Tx Packets/Bytes"
+  },
+  "e7ftF5": {
+    "defaultMessage": "Do you want to save your changes in \"{title}\", or discard all changes?"
+  },
+  "e9uDQ/": {
+    "defaultMessage": "Technical details"
+  },
+  "eCHUaE": {
+    "defaultMessage": "Service Name:"
+  },
+  "eIxy5c": {
+    "defaultMessage": "Join Wait Threshold:"
+  },
+  "eOJNIA": {
+    "defaultMessage": "Connected Clients"
+  },
+  "eSgRCS": {
+    "defaultMessage": "{nodeType}: {nodeName}",
+    "description": "Uses to generate incident impacted scope for various incident descriptions"
+  },
+  "eUlsfK": {
+    "defaultMessage": "Server 2 IP Address"
+  },
+  "eWzMDx": {
+    "defaultMessage": "Activated"
+  },
+  "eZfcug": {
+    "defaultMessage": "CLI Profiles"
+  },
+  "ee1cXT": {
+    "defaultMessage": "{years} {years, plural, one {Year} other {Years}}"
+  },
+  "eg+KhG": {
+    "defaultMessage": "ASIA"
+  },
+  "egVuI2": {
+    "defaultMessage": "You cannot enable the DHCP service because the network is activated in a Mesh enabled Venue."
+  },
+  "ehA2tj": {
+    "defaultMessage": "Total Time To Connect"
+  },
+  "eiWFx6": {
+    "defaultMessage": "MSP Licenses"
+  },
+  "ekXood": {
+    "defaultMessage": "Unlimited"
+  },
+  "eoV49s": {
+    "defaultMessage": "Poor"
+  },
+  "ervUAG": {
+    "defaultMessage": "The default user \"admin\" cannot be deleted"
+  },
+  "exhVJF": {
+    "defaultMessage": "ACL Type"
+  },
+  "f+os+R": {
+    "defaultMessage": "LTE Firmware"
+  },
+  "f+sh2j": {
+    "defaultMessage": "Administration"
+  },
+  "f9/Y46": {
+    "defaultMessage": "WIFICALLING_PRI_BG"
+  },
+  "fCkfBx": {
+    "defaultMessage": "APs ({apsCount})"
+  },
+  "fDGasJ": {
+    "defaultMessage": "VLAN untag ID"
+  },
+  "fEYxZ5": {
+    "defaultMessage": "Authentication port"
+  },
+  "fKJjD9": {
+    "defaultMessage": "Initializing"
+  },
+  "fNCCY7": {
+    "defaultMessage": "Basic"
+  },
+  "fO6qJ+": {
+    "defaultMessage": "AP Reboot by User"
+  },
+  "fQg7dl": {
+    "defaultMessage": "This field is invalid"
+  },
+  "fUQLUN": {
+    "defaultMessage": "11 Mbps"
+  },
+  "fUSCNN": {
+    "defaultMessage": "Deployment Type"
+  },
+  "fcFq3u": {
+    "defaultMessage": "Wired"
+  },
+  "fcaqUt": {
+    "defaultMessage": "User-1"
+  },
+  "fiNfmb": {
+    "defaultMessage": "Language:"
+  },
+  "frN4vy": {
+    "defaultMessage": "Last Seen"
+  },
+  "g0F8jM": {
+    "defaultMessage": "Clients per Portal Type"
+  },
+  "g3Yz+8": {
+    "defaultMessage": "Start IP Address"
+  },
+  "g4QFIz": {
+    "defaultMessage": "{formattedPercentage} ({count} {count, plural, one {client} other {clients}})"
+  },
+  "gGNTOa": {
+    "defaultMessage": "Network is ON 24/7"
+  },
+  "gI6szY": {
+    "defaultMessage": "{count} {count, plural, one {AP} other {APs}}"
+  },
+  "gKltCY": {
+    "defaultMessage": "Root AP"
+  },
+  "gMepyh": {
+    "defaultMessage": "24 Mbps"
+  },
+  "gMwomv": {
+    "defaultMessage": "Isolate Packets:"
+  },
+  "gNVVvs": {
+    "defaultMessage": "1 Mbps"
+  },
+  "gXscYU": {
+    "defaultMessage": "AP Impact Count"
+  },
+  "gevCaB": {
+    "defaultMessage": "Passphrase length"
+  },
+  "ghycc5": {
+    "defaultMessage": "Tx (bytes)"
+  },
+  "gmXCZq": {
+    "defaultMessage": "Top 5 Switches by PoE Usage"
+  },
+  "h7F8QS": {
+    "defaultMessage": "Client Inactivity Timeout:"
+  },
+  "h8X9hC": {
+    "defaultMessage": "All APs"
+  },
+  "hCooY2": {
+    "defaultMessage": "Currently using LAN port settings of the venue ({venue})"
+  },
+  "hDJDN/": {
+    "defaultMessage": "More details"
+  },
+  "hNA6lI": {
+    "defaultMessage": "Set address here"
+  },
+  "hRAJsj": {
+    "defaultMessage": "Services ({serviceCount})"
+  },
+  "hSGclh": {
+    "defaultMessage": "Network Name"
+  },
+  "haIwNk": {
+    "defaultMessage": "Enable logging client data to external syslog"
+  },
+  "hiowAO": {
+    "defaultMessage": "Please enter a valid email address",
+    "description": "Validation - email address checks"
+  },
+  "hkENym": {
+    "defaultMessage": "Customer"
+  },
+  "hkIfkj": {
+    "defaultMessage": "disabled"
+  },
+  "hlmkcL": {
+    "defaultMessage": "Health"
+  },
+  "hooWXi": {
+    "defaultMessage": "Client Isolation Allowlist by Venue:"
+  },
+  "hpSf0W": {
+    "defaultMessage": "Delete \"{count, plural, one {{entityValue}} other {{count} {formattedEntityName}} }\"?"
+  },
+  "hr/G8O": {
+    "defaultMessage": "DHCP timeout count"
+  },
+  "hsyP6a": {
+    "defaultMessage": "Once deleted, the AP will factory reset to Cloud ready. The existing configuration will be wiped, AP firmware will remain Cloud-only firmware. AP will be ready to re-connect to the Cloud."
+  },
+  "ht+J5h": {
+    "defaultMessage": "Select venues to activate this DHCP service"
+  },
+  "hzSNj4": {
+    "defaultMessage": "Dashboard"
+  },
+  "hzXHmo": {
+    "defaultMessage": "models"
+  },
+  "i5bVOD": {
+    "defaultMessage": "Network Name:"
+  },
+  "i647fD": {
+    "defaultMessage": "Select Profile"
+  },
+  "iBPNTa": {
+    "defaultMessage": "Add DHCP Pool"
+  },
+  "iBcdCZ": {
+    "defaultMessage": "Users just need to accept Terms and Conditions in order to access the network",
+    "description": "Description for Click-Through"
+  },
+  "iCpuph": {
+    "defaultMessage": "Clients"
+  },
+  "iFh/mp": {
+    "defaultMessage": "Passphrase Generation Parameters"
+  },
+  "iI2oMQ": {
+    "defaultMessage": "Use the DPSK Service"
+  },
+  "iIDu8o": {
+    "defaultMessage": "Number of Clients"
+  },
+  "iM+D06": {
+    "defaultMessage": "Connected clients"
+  },
+  "iSWh+H": {
+    "defaultMessage": "MSP Admins"
+  },
+  "iU0Fa3": {
+    "defaultMessage": "Firmware updating"
+  },
+  "iXlQJL": {
+    "defaultMessage": "Signal to previous hop"
+  },
+  "inXdbQ": {
+    "defaultMessage": "Directed Multicast"
+  },
+  "inZ2fY": {
+    "defaultMessage": "US"
+  },
+  "ioS2ep": {
+    "defaultMessage": "Disconnected from cloud"
+  },
+  "ipGIol": {
+    "defaultMessage": "Device & OS"
+  },
+  "ipM9j0": {
+    "defaultMessage": "Please select Device & OS profile"
+  },
+  "iq0pKr": {
+    "defaultMessage": "Multicast/broadcast"
+  },
+  "irPvxF": {
+    "defaultMessage": "Edit DHCP Service"
+  },
+  "j24fP+": {
+    "defaultMessage": "ACLs"
+  },
+  "j8Ap2j": {
+    "defaultMessage": "VLAN Name"
+  },
+  "j9Y9nu": {
+    "defaultMessage": "Hours"
+  },
+  "jNR5e0": {
+    "defaultMessage": "Network Details"
+  },
+  "jUmhKd": {
+    "defaultMessage": "No Online information"
+  },
+  "jXCNGL": {
+    "defaultMessage": "AAA"
+  },
+  "jYV6My": {
+    "defaultMessage": "Set background color"
+  },
+  "jZ5XsT": {
+    "defaultMessage": "Disconnect Client"
+  },
+  "jcVvsw": {
+    "defaultMessage": "Alternative languages"
+  },
+  "jgaeq0": {
+    "defaultMessage": "[Today,] HH:mm"
+  },
+  "jtBBJ9": {
+    "defaultMessage": "RSS Distribution"
+  },
+  "jvo0vs": {
+    "defaultMessage": "Save"
+  },
+  "jwhET3": {
+    "defaultMessage": "Application"
+  },
+  "k+BdkG": {
+    "defaultMessage": "dBi"
+  },
+  "k1Qd05": {
+    "defaultMessage": "dddd[,] HH:mm"
+  },
+  "k1Xf+m": {
+    "defaultMessage": "Proxy ARP:"
+  },
+  "k3gi94": {
+    "defaultMessage": "Primary WAN Recovery Timer:"
+  },
+  "k4xCwB": {
+    "defaultMessage": "Join Wait Time:"
+  },
+  "k81S1y": {
+    "defaultMessage": "Logo"
+  },
+  "kAEQyV": {
+    "defaultMessage": "OK"
+  },
+  "kB4V15": {
+    "defaultMessage": "MSP Customers"
+  },
+  "kBbkVq": {
+    "defaultMessage": "Enable load balancing between APs"
+  },
+  "kDUPr0": {
+    "defaultMessage": "{formattedCount} of {formattedTotal} {formattedType} ({formattedRatio})",
+    "description": "E.g. 1 of 10 clients (10%)"
+  },
+  "kGOgw/": {
+    "defaultMessage": "Rule with same Type and VLAN IDs already exists"
+  },
+  "kJCLzI": {
+    "defaultMessage": "TACACS+ Servers"
+  },
+  "kKvQx7": {
+    "defaultMessage": "Switch Models"
+  },
+  "kMA1V2": {
+    "defaultMessage": "From VLAN"
+  },
+  "kQAf2d": {
+    "defaultMessage": "Select"
+  },
+  "kSfxuT": {
+    "defaultMessage": "Edit Floor Plan"
+  },
+  "kUkjpS": {
+    "defaultMessage": "Edit Portal Service"
+  },
+  "kXe2bT": {
+    "defaultMessage": "Edit DNS Proxy Rule"
+  },
+  "kbMnL8": {
+    "defaultMessage": "Use Venue Settings"
+  },
+  "keJaJz": {
+    "defaultMessage": "Letters, numbers and symbols can be used"
+  },
+  "khS4NF": {
+    "defaultMessage": "TLS Encryption:"
+  },
+  "kmrE95": {
+    "defaultMessage": "2 weeks"
+  },
+  "kqishl": {
+    "defaultMessage": "APs PoE Impact"
+  },
+  "ktaLzx": {
+    "defaultMessage": "AP operational - applying configuration"
+  },
+  "ktxCvs": {
+    "defaultMessage": "{nodeName} ({nodeType})",
+    "description": "FormattedPath: Uses to show path node name & type"
+  },
+  "l+dCsB": {
+    "defaultMessage": "Custom Settings"
+  },
+  "l513ME": {
+    "defaultMessage": "Radius Shared Secret"
+  },
+  "l8ULH4": {
+    "defaultMessage": "\"{name}\" cannot be saved as first option."
+  },
+  "l95G8t": {
+    "defaultMessage": "DHCP option"
+  },
+  "lBmRD4": {
+    "defaultMessage": "RSCP"
+  },
+  "lPKfjk": {
+    "defaultMessage": "Rebooting"
+  },
+  "lSIFEb": {
+    "defaultMessage": "Server Responses"
+  },
+  "lWDmGO": {
+    "defaultMessage": "{n} of {d} attempts"
+  },
+  "ljYyt3": {
+    "defaultMessage": "VLAN Pooling:"
+  },
+  "lleSjD": {
+    "defaultMessage": "Qos Priority"
+  },
+  "llixxa": {
+    "defaultMessage": "If unchecked, users will reach the page they originally requested"
+  },
+  "lxaJ7B": {
+    "defaultMessage": "3G/4G (LTE) Selection:"
+  },
+  "m0RdHL": {
+    "defaultMessage": "Purpose"
+  },
+  "m6lDC9": {
+    "defaultMessage": "Management"
+  },
+  "m9MVq0": {
+    "defaultMessage": "Selected order"
+  },
+  "mG2Tkh": {
+    "defaultMessage": "Apply Radio"
+  },
+  "mOFG3K": {
+    "defaultMessage": "Start"
+  },
+  "mTDw4Q": {
+    "defaultMessage": "Upper 5G"
+  },
+  "mZctHe": {
+    "defaultMessage": "The AP's firmware does not support resetting them to standalone AP."
+  },
+  "mqq9sX": {
+    "defaultMessage": "MAC Address Format"
+  },
+  "mu/IQL": {
+    "defaultMessage": "Type",
+    "description": "Path node type"
+  },
+  "n7yYXG": {
+    "defaultMessage": "Service"
+  },
+  "nCMnED": {
+    "defaultMessage": "Passphrase Length:"
+  },
+  "nClUuM": {
+    "defaultMessage": "Save AAA"
+  },
+  "nDRMt4": {
+    "defaultMessage": "Radius"
+  },
+  "nEFCX7": {
+    "defaultMessage": "Active SIM"
+  },
+  "nF9Me3": {
+    "defaultMessage": "Redirect users to"
+  },
+  "nJoN2N": {
+    "defaultMessage": "Switch Licenses"
+  },
+  "nKFjcP": {
+    "defaultMessage": "Time left"
+  },
+  "nN3zS7": {
+    "defaultMessage": "Not allow to delete DHCP APs"
+  },
+  "nNBKra": {
+    "defaultMessage": "Secondary DNS IP"
+  },
+  "nPtY37": {
+    "defaultMessage": "Australia, Brazil, Mexico, New Zealand, Taiwan"
+  },
+  "nVdqEC": {
+    "defaultMessage": "No Switches"
+  },
+  "nWeBxO": {
+    "defaultMessage": "3G only"
+  },
+  "nhKqj3": {
+    "defaultMessage": "Only numbers can be used"
+  },
+  "nijCnW": {
+    "defaultMessage": "{isComplexName, select, true {{name} ({nodeName})} other {{nodeName}} }",
+    "description": "Uses to format path node name, when isComplexName = true the nodeName would be something like AP or Switch MAC address"
+  },
+  "nmqTps": {
+    "defaultMessage": "Hop Count"
+  },
+  "npVP+k": {
+    "defaultMessage": "LAN Ports"
+  },
+  "nvX4E4": {
+    "defaultMessage": "Bandwidth:"
+  },
+  "o1vbho": {
+    "defaultMessage": "Policy"
+  },
+  "o43JQW": {
+    "defaultMessage": "Operational - applying firmware"
+  },
+  "o5l+pK": {
+    "defaultMessage": "Proxy Service"
+  },
+  "oAFgOq": {
+    "defaultMessage": "Domain"
+  },
+  "oG97S0": {
+    "defaultMessage": "Show Muted Incidents"
+  },
+  "oHZ6Af": {
+    "defaultMessage": "{title} ({count})"
+  },
+  "oI8Hht": {
+    "defaultMessage": "Allow AP wired clients"
+  },
+  "oJqFFx": {
+    "defaultMessage": "The cellular AP cannot be moved to the venue which doesn't enable DHCP service"
+  },
+  "oLkLww": {
+    "defaultMessage": "Score"
+  },
+  "oNA+iT": {
+    "defaultMessage": "Passphrase:"
+  },
+  "oTabD0": {
+    "defaultMessage": "Ethernet only"
+  },
+  "oWyLWG": {
+    "defaultMessage": "Cannot move AP to another venue in different country",
+    "description": "Validation - Venue Country checks"
+  },
+  "oavy3S": {
+    "defaultMessage": "Wi-Fi Radio Settings"
+  },
+  "ob4aTr": {
+    "defaultMessage": "Command Authorization"
+  },
+  "oscT0g": {
+    "defaultMessage": "Portal Web Page"
+  },
+  "ot6wfY": {
+    "defaultMessage": "Total Failures"
+  },
+  "ouldQo": {
+    "defaultMessage": "Select the wireless networks where the Wi-Fi Calling Service will be applied:"
+  },
+  "ovBfLm": {
+    "defaultMessage": "It is suggested to only enable this service on a single AP per service."
+  },
+  "ox304v": {
+    "defaultMessage": "An error occurred"
+  },
+  "p02DgL": {
+    "defaultMessage": "Access Policy"
+  },
+  "p1dNds": {
+    "defaultMessage": "1 month"
+  },
+  "p4N05H": {
+    "defaultMessage": "Upload"
+  },
+  "p5WNkO": {
+    "defaultMessage": "Temporarily degraded"
+  },
+  "p6nnXh": {
+    "defaultMessage": "Please enter the ip address"
+  },
+  "pJMAFC": {
+    "defaultMessage": "Please enter a valid email address!"
+  },
+  "pLebAW": {
+    "defaultMessage": "No model selected"
+  },
+  "pP1DiE": {
+    "defaultMessage": "QoS Priority"
+  },
+  "pRfbkU": {
+    "defaultMessage": "Multicast Version"
+  },
+  "pUlxda": {
+    "defaultMessage": "Total Incidents"
+  },
+  "pVBJf0": {
+    "defaultMessage": "VLAN member"
+  },
+  "pcUnyI": {
+    "defaultMessage": "Guest Pass - Connect"
+  },
+  "peC2DB": {
+    "defaultMessage": "More Settings"
+  },
+  "poNUJy": {
+    "defaultMessage": "SmartEdge Name"
+  },
+  "pqetoR": {
+    "defaultMessage": "Select specific AP groups"
+  },
+  "pr6SmF": {
+    "defaultMessage": "Import from file"
+  },
+  "pxJSs0": {
+    "defaultMessage": "AP-RUCKUS Cloud Disconnections"
+  },
+  "pxrNYp": {
+    "defaultMessage": "RSS Quality by Clients"
+  },
+  "pyy2lm": {
+    "defaultMessage": "Never contacted Active Switch"
+  },
+  "q/Yu5v": {
+    "defaultMessage": "Subnet Mask"
+  },
+  "q/uwLT": {
+    "defaultMessage": "Stop"
+  },
+  "q15Qnb": {
+    "defaultMessage": "Clients ({clientsCount})"
+  },
+  "q1ga0b": {
+    "defaultMessage": "(dBm)"
+  },
+  "q24q53": {
+    "defaultMessage": "WIFICALLING_PRI_BE"
+  },
+  "qFnkzN": {
+    "defaultMessage": "Update Licenses"
+  },
+  "qFpN4j": {
+    "defaultMessage": "ON"
+  },
+  "qNTMH/": {
+    "defaultMessage": "Capture Interface:"
+  },
+  "qQ6P9N": {
+    "defaultMessage": "Activated in venues"
+  },
+  "qeLeFb": {
+    "defaultMessage": "Option Value"
+  },
+  "qhLVVY": {
+    "defaultMessage": "Service Health"
+  },
+  "qkyUSt": {
+    "defaultMessage": "Reboot Access Point?"
+  },
+  "qmxtis": {
+    "defaultMessage": "You Have Unsaved Changes"
+  },
+  "r+Cfi6": {
+    "defaultMessage": "Down:"
+  },
+  "r0lBNR": {
+    "defaultMessage": "Integrators"
+  },
+  "rAMgEh": {
+    "defaultMessage": "Add option"
+  },
+  "rITqXY": {
+    "defaultMessage": "Broadcast Probe Response Delay:"
+  },
+  "rO0Gus": {
+    "defaultMessage": "Command Accounting"
+  },
+  "rQgpPD": {
+    "defaultMessage": "[Yesterday,] HH:mm"
+  },
+  "rV0gjK": {
+    "defaultMessage": "{count} Impacted {count, plural, one {Client} other {Clients}}"
+  },
+  "rY9YLn": {
+    "defaultMessage": "Image must smaller than 20MB!"
+  },
+  "rhSI1/": {
+    "defaultMessage": "Model"
+  },
+  "rikb48": {
+    "defaultMessage": "5 GHz"
+  },
+  "rntENh": {
+    "defaultMessage": "AP LEDs Blink ..."
+  },
+  "roT9uc": {
+    "defaultMessage": "To VLAN"
+  },
+  "rqhoDi": {
+    "defaultMessage": "VLAN (L2) Profile Details"
+  },
+  "rsSUP3": {
+    "defaultMessage": "Port"
+  },
+  "rsToNV": {
+    "defaultMessage": "Top 5 Applications by Traffic"
+  },
+  "rwIPgH": {
+    "defaultMessage": "1 year"
+  },
+  "rz46vg": {
+    "defaultMessage": "Passphrase format"
+  },
+  "rzI95B": {
+    "defaultMessage": "IMSI"
+  },
+  "s2XFtX": {
+    "defaultMessage": "Are you sure you want to delete {count, plural, one {this AP} other {these APs} } ?"
+  },
+  "s51hiG": {
+    "defaultMessage": "Add {serverType}"
+  },
+  "s8Z+Bf": {
+    "defaultMessage": "Option Format"
+  },
+  "sCE7Sn": {
+    "defaultMessage": "2.4 GHz / 5 GHz"
+  },
+  "sJpKWq": {
+    "defaultMessage": "Subnet mask"
+  },
+  "sLnDOb": {
+    "defaultMessage": "Discard Changes"
+  },
+  "sMnDSO": {
+    "defaultMessage": "Wi-Fi APs"
+  },
+  "sW8y98": {
+    "defaultMessage": "Click Through"
+  },
+  "sZFybj": {
+    "defaultMessage": "Services"
+  },
+  "savb5K": {
+    "defaultMessage": "Top 5 SSIDs by Traffic"
+  },
+  "sgDRXx": {
+    "defaultMessage": "Unplaced Devices (0)"
+  },
+  "skHgaw": {
+    "defaultMessage": "Network Impact"
+  },
+  "slvgtQ": {
+    "defaultMessage": "Devices ({devicesCount})"
+  },
+  "sp6WVm": {
+    "defaultMessage": "Log-in Authentication"
+  },
+  "spjWVz": {
+    "defaultMessage": "Total Traffic"
+  },
+  "ss6kle": {
+    "defaultMessage": "Reset to default"
+  },
+  "stDOc1": {
+    "defaultMessage": "Mesh Role"
+  },
+  "t/5Nxo": {
+    "defaultMessage": "{count} Characters"
+  },
+  "t0DVKb": {
+    "defaultMessage": "VLANs"
+  },
+  "t3qBD9": {
+    "defaultMessage": "2.4 GHz"
+  },
+  "t6OINb": {
+    "defaultMessage": "Model Affected"
+  },
+  "tABiSQ": {
+    "defaultMessage": "Enable:"
+  },
+  "tAYdWP": {
+    "defaultMessage": "Primary SIM"
+  },
+  "tB5At5": {
+    "defaultMessage": "MMM DD HH:mm"
+  },
+  "tBWoTd": {
+    "defaultMessage": "Default gateway"
+  },
+  "tC85Q4": {
+    "defaultMessage": "Select Access Control profile"
+  },
+  "tD3JW/": {
+    "defaultMessage": "Alternative languages:"
+  },
+  "tME5Fe": {
+    "defaultMessage": "You cannot activate this network on this AP Group because it already has 15 active networks"
+  },
+  "tQV8l8": {
+    "defaultMessage": "Unknown Error"
+  },
+  "tT2D9t": {
+    "defaultMessage": "Edit User"
+  },
+  "tToNsb": {
+    "defaultMessage": "Hide SSID"
+  },
+  "tUF+Zj": {
+    "defaultMessage": "2.4 GHz Antenna gain:"
+  },
+  "tVErvc": {
+    "defaultMessage": "External Servers"
+  },
+  "tW5HWY": {
+    "defaultMessage": "No Profile is selected"
+  },
+  "tp9dhw": {
+    "defaultMessage": "Rebooted APs"
+  },
+  "tu9GFW": {
+    "defaultMessage": "{count} {count, plural, one {Switch} other {Switches}}"
+  },
+  "tvOSzO": {
+    "defaultMessage": "Rx"
+  },
+  "tzMNF3": {
+    "defaultMessage": "Status"
+  },
+  "u/AAXr": {
+    "defaultMessage": "SmartEdge"
+  },
+  "u0lL8w": {
+    "defaultMessage": "Services is not enabled"
+  },
+  "u81G9+": {
+    "defaultMessage": "Uptime"
+  },
+  "u9b1zq": {
+    "defaultMessage": "Self Sign In - Connect"
+  },
+  "uDmz7E": {
+    "defaultMessage": "Add DHCP options:"
+  },
+  "uGu5Jg": {
+    "defaultMessage": "Account Email"
+  },
+  "uJV0wU": {
+    "defaultMessage": "IP Address"
+  },
+  "uKatq7": {
+    "defaultMessage": "Edit Network"
+  },
+  "uPDgth": {
+    "defaultMessage": "Hostname"
+  },
+  "uSAdpT": {
+    "defaultMessage": "Add another rule"
+  },
+  "uTnplY": {
+    "defaultMessage": "Description:"
+  },
+  "uUfVAP": {
+    "defaultMessage": "Target host or IP address"
+  },
+  "uWddQs": {
+    "defaultMessage": "OFF now"
+  },
+  "uZfS5N": {
+    "defaultMessage": "Wi-Fi Configuration"
+  },
+  "ub++Ab": {
+    "defaultMessage": "Enable Ruckus DHCP service"
+  },
+  "ubGrOj": {
+    "defaultMessage": "Passphrase Expiration:"
+  },
+  "ubQ1f+": {
+    "defaultMessage": "Shared secret"
+  },
+  "ueL7OS": {
+    "defaultMessage": "WPA3 SAE Passphrase:"
+  },
+  "uepYTv": {
+    "defaultMessage": "Client Queries"
+  },
+  "ukFIyf": {
+    "defaultMessage": "Your Attention is Required"
+  },
+  "umxyzM": {
+    "defaultMessage": "Enter the email of the administrator you need to re-send an invitation to:"
+  },
+  "urouUu": {
+    "defaultMessage": "ApTroubleshootingTab"
+  },
+  "utCJRG": {
+    "defaultMessage": "Proxy Service:"
+  },
+  "v3H4kh": {
+    "defaultMessage": "WiFi4EU:"
+  },
+  "v4kE47": {
+    "defaultMessage": "Custom radio settings"
+  },
+  "v9QAvq": {
+    "defaultMessage": "Ping"
+  },
+  "vJxOux": {
+    "defaultMessage": "e.g. http://www.example.com"
+  },
+  "vKVHCN": {
+    "defaultMessage": "Guest Pass"
+  },
+  "vONi+O": {
+    "defaultMessage": "Country"
+  },
+  "vOesSn": {
+    "defaultMessage": "Set DHCP Pools"
+  },
+  "vTnbeM": {
+    "defaultMessage": "Error setting threshold, please try again later."
+  },
+  "vXVdl3": {
+    "defaultMessage": "Unicast and multicast/broadcast"
+  },
+  "vXfkMH": {
+    "defaultMessage": "Add Wi-Fi Network"
+  },
+  "vYwf3w": {
+    "defaultMessage": "DFS"
+  },
+  "vaUHDg": {
+    "defaultMessage": "4G/3G channel"
+  },
+  "vcTCAn": {
+    "defaultMessage": "OFF"
+  },
+  "vhRKaX": {
+    "defaultMessage": "AP rebooting"
+  },
+  "viofnV": {
+    "defaultMessage": "Select APs"
+  },
+  "vknTf8": {
+    "defaultMessage": "Must be 26 hex characters"
+  },
+  "vmHFSQ": {
+    "defaultMessage": "Outdoor APs"
+  },
+  "vtTf8G": {
+    "defaultMessage": "Welcome Text"
+  },
+  "vwTOQc": {
+    "defaultMessage": "Self Sign In - Register/Confirm"
+  },
+  "vzGrnm": {
+    "defaultMessage": "Scope",
+    "description": "Incident impacted scope"
+  },
+  "w/JlMl": {
+    "defaultMessage": "Lease time"
+  },
+  "w0OUOh": {
+    "defaultMessage": "Health Score"
+  },
+  "w0edPi": {
+    "defaultMessage": "LAN {index}"
+  },
+  "w6rqqn": {
+    "defaultMessage": "Configure Wi-Fi Calling Service"
+  },
+  "w6vmP5": {
+    "defaultMessage": "{apCount} APs"
+  },
+  "wEQDC6": {
+    "defaultMessage": "Edit"
+  },
+  "wHrrdo": {
+    "defaultMessage": "3rd Party Captive Portal(WISPr)"
+  },
+  "wL7VAE": {
+    "defaultMessage": "Actions"
+  },
+  "wZUcfj": {
+    "defaultMessage": "TX Power"
+  },
+  "wkYPjX": {
+    "defaultMessage": "Use existing server configuration"
+  },
+  "wlWd60": {
+    "defaultMessage": ","
+  },
+  "wogVOU": {
+    "defaultMessage": "The cellular AP cannot be moved to the venue which doesn't enable DHCP service",
+    "description": "Validation - Cellular AP Dhcp checks"
+  },
+  "wuSrFv": {
+    "defaultMessage": "WiFi4EU Snippet"
+  },
+  "wyVIOU": {
+    "defaultMessage": "Users connect through an enhanced captive portal experience with Cloudpath",
+    "description": "Description for Cloudpath Captive Portal"
+  },
+  "x+bGoE": {
+    "defaultMessage": "Host Approval - Register/Confirm"
+  },
+  "xBkv0R": {
+    "defaultMessage": "Layer 2"
+  },
+  "xGSuuE": {
+    "defaultMessage": "Security Protocol"
+  },
+  "xK7rmd": {
+    "defaultMessage": "Insights"
+  },
+  "xKYak9": {
+    "defaultMessage": "Hex Key:"
+  },
+  "xLx5Gv": {
+    "defaultMessage": "Management Frame Protection (802.11w)"
+  },
+  "xXDHjy": {
+    "defaultMessage": "Add Venue"
+  },
+  "xeM0ap": {
+    "defaultMessage": "No Profile"
+  },
+  "xjdsWp": {
+    "defaultMessage": "VLAN Pool: {poolName}"
+  },
+  "xoQr3X": {
+    "defaultMessage": "Event End Time"
+  },
+  "xsvEdn": {
+    "defaultMessage": "{count, plural, one {{apGroupName}} other {{count} AP Groups} }"
+  },
+  "xuRIYt": {
+    "defaultMessage": "Add IP Address"
+  },
+  "xukzKg": {
+    "defaultMessage": "Networks"
+  },
+  "xzWp9X": {
+    "defaultMessage": "Switches"
+  },
+  "y1Qr81": {
+    "defaultMessage": "Level"
+  },
+  "y1Z3or": {
+    "defaultMessage": "Language"
+  },
+  "y3Ug49": {
+    "defaultMessage": "AP Heartbeat Lost"
+  },
+  "y4BMC+": {
+    "defaultMessage": "{simCardNumber} {legend}"
+  },
+  "y6JJ3j": {
+    "defaultMessage": "In Errors"
+  },
+  "y7LpQW": {
+    "defaultMessage": "Click-Through"
+  },
+  "yBERKU": {
+    "defaultMessage": "EU"
+  },
+  "yEOq71": {
+    "defaultMessage": "All Bands"
+  },
+  "yF+5T2": {
+    "defaultMessage": "Bad"
+  },
+  "yFFbN3": {
+    "defaultMessage": "Lease Time"
+  },
+  "yJ7+dR": {
+    "defaultMessage": "Cloudpath Server"
+  },
+  "yJKjxl": {
+    "defaultMessage": "USA & Canada"
+  },
+  "yL4n+O": {
+    "defaultMessage": "Port type"
+  },
+  "yMMKAH": {
+    "defaultMessage": "Rx (bytes)"
+  },
+  "yPaca7": {
+    "defaultMessage": "RF"
+  },
+  "yQg16M": {
+    "defaultMessage": "Evolved Packet Data Gateway (ePDG)"
+  },
+  "yRL7VQ": {
+    "defaultMessage": "RSRP"
+  },
+  "yUqKrh": {
+    "defaultMessage": "12 Mbps"
+  },
+  "yV5oYe": {
+    "defaultMessage": "Policies"
+  },
+  "yb2LRB": {
+    "defaultMessage": "The Selected Order must be configured."
+  },
+  "ydLU1G": {
+    "defaultMessage": "Define how this network will be activated on venue \"{venueName}\""
+  },
+  "yeStuE": {
+    "defaultMessage": "Max. image size: 20 MB"
+  },
+  "yjldnC": {
+    "defaultMessage": "Edit {serverType}"
+  },
+  "ykUMzk": {
+    "defaultMessage": "Download Log"
+  },
+  "ysmIeD": {
+    "defaultMessage": "Recommended Action"
+  },
+  "yxlmeE": {
+    "defaultMessage": "Time To Connect (By Stage)"
+  },
+  "yzhlpu": {
+    "defaultMessage": "WIFICALLING_PRI_VOICE"
+  },
+  "z2kpwG": {
+    "defaultMessage": "Drag and drop the marker to the location where this device is placed"
+  },
+  "z3cooI": {
+    "defaultMessage": "SmartEdge Group"
+  },
+  "z5epQF": {
+    "defaultMessage": "Radios"
+  },
+  "z6gTpo": {
+    "defaultMessage": "Add mDNS Proxy Service"
+  },
+  "z7KUHa": {
+    "defaultMessage": "RADIUS Servers"
+  },
+  "zAkzsG": {
+    "defaultMessage": "Admin Password"
+  },
+  "zAlTBD": {
+    "defaultMessage": "These settings apply only to AP models that support tri-band, such as R760 and R560"
+  },
+  "zEAQk8": {
+    "defaultMessage": "ICCID"
+  },
+  "zI1owl": {
+    "defaultMessage": "Venues ({venuesCount})"
+  },
+  "zIq/Ye": {
+    "defaultMessage": "Total Connections"
+  },
+  "zKxpz2": {
+    "defaultMessage": "Floor Plans"
+  },
+  "zLM75r": {
+    "defaultMessage": "No AP Clients"
+  },
+  "zQvVDJ": {
+    "defaultMessage": "All"
+  },
+  "zWkvNO": {
+    "defaultMessage": "Timeline"
+  },
+  "zaqZpB": {
+    "defaultMessage": "IP Addresses"
+  },
+  "zg0sQG": {
+    "defaultMessage": "AP initializing"
+  },
+  "zgJJ4Y": {
+    "defaultMessage": "Delete {formattedEntityName}"
+  },
+  "znlhKm": {
+    "defaultMessage": "DNS Proxy:"
+  },
+  "zsWRsx": {
+    "defaultMessage": "Mobility Domain ID"
+  },
+  "ztrWAy": {
+    "defaultMessage": "Enable 5.0 GHz band:"
+  },
+  "zyo7yY": {
+    "defaultMessage": "Frame Type Filter:"
   }
 }

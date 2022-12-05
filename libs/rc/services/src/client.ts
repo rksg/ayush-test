@@ -7,8 +7,7 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   getClientHealthClass,
-  getDeviceTypeIcon,
-  getOsTypeIcon,
+  Guest,
   RequestPayload,
   TableResult,
   transformByte
@@ -19,6 +18,7 @@ export const baseClientApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'clientApi',
   refetchOnMountOrArgChange: true,
+  tagTypes: ['Client', 'Guest'],
   endpoints: () => ({ })
 })
 
@@ -83,6 +83,19 @@ export const clientApi = baseClientApi.injectEndpoints({
           }
         }
       }
+    }),
+    getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getGuestsList,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Guest', id: 'LIST' }]
     })
 
   })
@@ -98,15 +111,14 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
     const tmp = {
       ...client,
       ...meta,
-      deviceTypeIcon: getDeviceTypeIcon(client.deviceTypeStr),
-      // osTypeIcon: getOsTypeIcon(client.osType),
       healthClass: getClientHealthClass(client.healthCheckStatus),
       totalTraffic: transformByte(client.totalTraffic),
       trafficToClient: transformByte(client.trafficToClient),
       trafficFromClient: transformByte(client.trafficFromClient)
     }
     if (tmp.sessStartTime && tmp.sessStartTime > 0 && !tmp.sessStartTimeParssed) {
-      tmp.sessStartTimeString = formatter('longDurationFormat')(convertEpochToRelativeTime(client.sessStartTime))
+      tmp.sessStartTimeString =
+      formatter('longDurationFormat')(convertEpochToRelativeTime(client.sessStartTime))
       tmp.sessStartTimeParssed = true
     }
     data.push(tmp)
@@ -119,5 +131,6 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
 }
 export const {
   useGetClientListQuery,
-  useGetHistoricalClientListQuery
+  useGetHistoricalClientListQuery,
+  useGetGuestsListQuery
 } = clientApi

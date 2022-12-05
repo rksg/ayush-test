@@ -21,7 +21,8 @@ function ApEditTabs () {
   const basePath = useTenantLink(`/devices/aps/${params.serialNumber}/edit/`)
   const {
     editContextData,
-    setEditContextData
+    setEditContextData,
+    editRadioContextData
   } = useContext(ApEditContext)
 
   const onTabChange = (tab: string) => {
@@ -47,6 +48,7 @@ function ApEditTabs () {
         showUnsavedModal(
           editContextData,
           setEditContextData,
+          editRadioContextData,
           tx.retry
         )
       })

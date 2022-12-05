@@ -40,6 +40,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
 
+import { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
+
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
 interface ApGroupModalState { // subset of ApGroupModalWidgetProps
@@ -79,6 +81,16 @@ const notificationMessage = defineMessage({
   defaultMessage: 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
 })
 
+interface SchedulingModalState {
+  visible: boolean,
+  networkVenue?: NetworkVenue,
+  venue?: Venue
+}
+
+interface schedule {
+  [key: string]: string
+}
+
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
@@ -87,6 +99,9 @@ export function NetworkVenuesTab () {
   })
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
+    visible: false
+  })
+  const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
 
@@ -341,6 +356,11 @@ export function NetworkVenuesTab () {
 
   const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.preventDefault()
+    setScheduleModalState({
+      visible: true,
+      venue: row,
+      networkVenue: getCurrentVenue(row)
+    })
   }
 
   const handleClickApGroups = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -355,6 +375,9 @@ export function NetworkVenuesTab () {
 
   const handleCancel = () => {
     setApGroupModalState({
+      visible: false
+    })
+    setScheduleModalState({
       visible: false
     })
   }
@@ -374,6 +397,42 @@ export function NetworkVenuesTab () {
         })
       })
     }
+  }
+
+  const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
+    let data = _.cloneDeep(scheduleModalState.networkVenue)
+    // const schdule = info.values.map
+
+    let tmpScheduleList: schedule = { type: info.values?.scheduler.type }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let map: { [key: string]: any } = info.values?.scheduler
+    for (let key in map) {
+      if(key === 'type'){
+        continue
+      }
+      if (map.hasOwnProperty(key) && map['type'] === 'CUSTOM') {
+        let scheduleList: string[] = []
+        for(let i = 0; i < 96; i++){
+          scheduleList.push('0')
+        }
+        map[key].map((item: string) => {
+          const value = parseInt(item.split('_')[1], 10)
+          scheduleList[value] = '1'
+        })
+        tmpScheduleList[key] = scheduleList.join('')
+      }
+    }
+
+    const payload = _.assign(data, { scheduler: tmpScheduleList })
+
+    updateNetworkVenue({ params: {
+      tenantId: params.tenantId,
+      networkVenueId: payload.id
+    }, payload: payload }).then(()=>{
+      setScheduleModalState({
+        visible: false
+      })
+    })
   }
 
   return (
@@ -406,7 +465,16 @@ export function NetworkVenuesTab () {
           tenantId={params.tenantId}
           formName='networkApGroupForm'
           onCancel={handleCancel}
-          // onOk={handleOk}
+        />
+      </Form.Provider>
+      <Form.Provider
+        onFormFinish={handleScheduleFormFinish}
+      >
+        <NetworkVenueScheduleDialog
+          {...scheduleModalState}
+          formName='networkVenueScheduleForm'
+          network={networkQuery.data}
+          onCancel={handleCancel}
         />
       </Form.Provider>
     </Loader>

@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 export const noDataSymbol = '-' as const
 // commented codes acc to prod rc config
 export const incidentCodes = [
@@ -27,10 +29,16 @@ export const incidentCodes = [
 
 export type IncidentCode = typeof incidentCodes[number]
 
-export const categoryNames = [
-  { text: 'Connection', value: 'connection' },
-  { text: 'Performance', value: 'performance' },
-  { text: 'Infrastructure', value: 'infrastructure' }
+export type CategoryOption = 'connection' | 'performance' | 'infrastructure'
+export const categoryOptions = [
+  { value: 'connection', label: defineMessage({ defaultMessage: 'Connection' }) },
+  { value: 'performance', label: defineMessage({ defaultMessage: 'Performance' }) },
+  { value: 'infrastructure', label: defineMessage({ defaultMessage: 'Infrastructure' }) }
+]
+export type CategoryTab = 'overview' | CategoryOption
+export const categoryTabs = [
+  { value: 'overview', label: defineMessage({ defaultMessage: 'Overview' }) },
+  ...categoryOptions
 ]
 
 export const categoryCodeMap = {

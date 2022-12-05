@@ -20,7 +20,9 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     sorter: true,
     defaultSortOrder: 'ascend',
     render: (data, row) =>
-      <TenantLink to={`/users/aps/${row.clientMac}/details/overview?clientStatus=historical`}>
+      <TenantLink
+        to={`/users/wifi/clients/${row.clientMac}/details/overview?clientStatus=historical`}
+      >
         {data ? data : '--'}
       </TenantLink>
   }, {
@@ -112,7 +114,7 @@ export function HistoricalClientsTable ({ searchString } : { searchString: strin
         onChange={tableQuery.handleTableChange}
         rowKey='id'
       />
-      {!!tableQuery.data?.data.length && <Typography.Text style={{
+      {!!tableQuery.data?.data?.length && <Typography.Text style={{
         fontSize: '10px',
         color: cssStr('--acx-neutrals-60')
       }}>{
