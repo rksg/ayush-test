@@ -22,7 +22,8 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
 
   return <Card type='solid-bg'>
     <Loader states={[{
-      isLoading: !Object.keys(clientStatus).length
+      isLoading: !Object.keys(clientStatistic ?? {}).length
+        || !Object.keys(clientStatus).length
         || !Object.keys(clientDetails).length
     }]}>
       <GridRow style={{ flexGrow: '1' }}>
@@ -31,7 +32,9 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
             $t({ defaultMessage: 'Current Status' })
           }</UI.Title>
           <Subtitle level={2}>{
-            clientStatus.toUpperCase()
+            clientStatus.toLowerCase() === 'connected'
+              ? $t({ defaultMessage: 'Connected' })
+              : $t({ defaultMessage: 'Disconnected' })
           }</Subtitle>
         </UI.GridCol>
         <UI.GridCol col={{ span: 5 }}>
@@ -64,7 +67,12 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
           }</UI.Title>
           <Subtitle level={2}>{
             formatter('durationFormat')(
-              convertEpochToRelativeTime(clientDetails.timeConnectedMs)
+              clientDetails?.timeConnectedMs
+                ? convertEpochToRelativeTime(clientDetails?.timeConnectedMs)
+                : (clientDetails?.sessionDuration
+                  ? clientDetails?.sessionDuration * 1000
+                  : 0
+                )
             )
           }</Subtitle>
         </UI.GridCol>
@@ -111,15 +119,14 @@ function getUserTrafficChart (data: ClientStatistic) {
   const totalValueUnit = totalTraffic?.split(' ')?.[1]
 
   const getLabelFormatter = (params: CallbackDataParams) => {
-    const value = (params.data as string[])?.[1] ?? params.data
-    const unit = (params.data as string[])?.[2] ?? params.data
+    const value = (params.data as string[])?.[1]
+    const unit = (params.data as string[])?.[2]
     const userTraffic = value ? value + '' + (unit) : '--'
-    return '{user_traffic|' + userTraffic + '}'
+    return '{traffic|' + userTraffic + '}'
   }
 
-  // TODO
   const getLabelRichStyle = () => ({
-    user_traffic: {
+    traffic: {
       color: cssStr('--acx-primary-black'),
       fontFamily: cssStr('--acx-neutral-brand-font'),
       fontSize: cssNumber('--acx-subtitle-5-font-size'),
@@ -140,7 +147,7 @@ function getUserTrafficChart (data: ClientStatistic) {
   ]
 
   return <BarChart
-    style={{ height: 140 }}
+    style={{ height: 160 }}
     data={{
       dimensions: ['ChannelType', 'UserTraffic', 'Unit'],
       source: [
@@ -154,7 +161,7 @@ function getUserTrafficChart (data: ClientStatistic) {
       }]
     }}
     labelFormatter={getLabelFormatter}
-    labelRichStyle={getLabelRichStyle}
+    labelRichStyle={getLabelRichStyle()}
     barColors={getBarColors}
   />
 }

@@ -155,5 +155,6 @@ export const {
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
   useGetHistoricalStatisticsReportsQuery,
+  useLazyGetHistoricalStatisticsReportsQuery,
   useGetGuestsListQuery
 } = clientApi

@@ -24,7 +24,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (data, row) =>
-        <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
+        <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}`}>{data || '--'}</TenantLink>
     },
     {
       key: 'osType',

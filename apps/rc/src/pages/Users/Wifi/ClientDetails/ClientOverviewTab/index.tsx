@@ -6,15 +6,17 @@ import { useIntl }  from 'react-intl'
 import {
   useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
+import { showToast }                           from '@acx-ui/components'
 import {
-  useGetHistoricalStatisticsReportsQuery,
   useLazyGetApCapabilitiesQuery,
   useLazyGetApQuery,
   useLazyGetClientDetailsQuery,
-  useLazyGetHistoricalClientListQuery
+  useLazyGetHistoricalClientListQuery,
+  useLazyGetHistoricalStatisticsReportsQuery
 } from '@acx-ui/rc/services'
 import {
   Client,
+  ClientStatistic,
   ClientStatusEnum
 } from '@acx-ui/rc/utils'
 import {
@@ -55,25 +57,15 @@ export function ClientOverviewTab () {
 
   const [getClientDetails] = useLazyGetClientDetailsQuery()
   const [getHistoricalClientList] = useLazyGetHistoricalClientListQuery()
+  const [getHistoricalStatisticsReports] = useLazyGetHistoricalStatisticsReportsQuery()
   const [getAp] = useLazyGetApQuery()
   const [getApCapabilities] = useLazyGetApCapabilitiesQuery()
 
   const [clientStatus, setClientStatus]
     = useState(searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED)
   const [clientDetails, setClientDetails] = useState({} as Client)
-  const [isTribandAp, setIsTribandAp] = useState(false)
-
-  const { data: statisticsReports } = useGetHistoricalStatisticsReportsQuery({
-    params: { tenantId },
-    payload: {
-      filters: {
-        clientMAC: [clientId],
-        fromTime: filters.startDate,
-        toTime: filters.endDate,
-        isTribandAp: isTribandAp
-      }
-    }
-  })
+  const [clientStatistics, setClientStatistics] = useState({} as ClientStatistic)
+  const [isTribandAp, setIsTribandAp] = useState(null as unknown as boolean)
 
   useEffect(() => {
     const getClientData = async () => {
@@ -103,29 +95,57 @@ export function ClientOverviewTab () {
   }, [])
 
   useEffect(() => {
-    if (clientDetails?.apSerialNumber) {
+    const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
+    if (serialNumber) {
       const checkTribandAp = async () => {
         const apDetails = await getAp({
-          params: { tenantId, serialNumber: clientDetails?.apSerialNumber }
+          params: { tenantId, serialNumber }
         }, true)?.unwrap()
 
         const capabilities = await getApCapabilities({
-          params: { tenantId, serialNumber: clientDetails?.apSerialNumber }
+          params: { tenantId, serialNumber }
         }, true)?.unwrap()
 
-        const apCapabilities = capabilities.apModels.find(cap => cap.model === apDetails?.model)
+        const apCapabilities = capabilities?.apModels?.find(cap => cap.model === apDetails?.model)
         setIsTribandAp(apCapabilities?.supportTriRadio ?? false)
       }
-
       checkTribandAp()
     }
   }, [clientDetails])
+
+  useEffect(() => {
+    const getClientData = async () => {
+      try {
+        const clientStatistics = await getHistoricalStatisticsReports({
+          params: { tenantId },
+          payload: {
+            filters: {
+              clientMAC: [clientId],
+              fromTime: filters.startDate,
+              toTime: filters.endDate,
+              isTribandAp: isTribandAp
+            }
+          }
+        }, true)?.unwrap()
+        setClientStatistics(clientStatistics as ClientStatistic)
+      } catch {
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'An error occurred' })
+        })
+      }
+    }
+
+    if (isTribandAp !== null) {
+      getClientData()
+    }
+  }, [filters, isTribandAp])
 
   return <Row gutter={24}>
     <Col span={18}>
       <UI.CardWrapper>
         <ClientOverviewWidget
-          clientStatistic={statisticsReports}
+          clientStatistic={clientStatistics}
           clientStatus={clientStatus}
           clientDetails={clientDetails}
         />
