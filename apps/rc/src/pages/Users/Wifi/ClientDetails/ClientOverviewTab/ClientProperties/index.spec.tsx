@@ -17,7 +17,7 @@ import {
   clientNetworkList,
   eventMetaList,
   histClientList
-} from '../../../../__tests__/fixtures'
+} from '../../../__tests__/fixtures'
 
 import { ClientProperties } from '.'
 

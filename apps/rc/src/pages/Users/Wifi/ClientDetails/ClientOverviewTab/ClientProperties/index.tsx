@@ -110,8 +110,7 @@ export function ClientProperties () {
           apData = await getAp({
             params: { tenantId, serialNumber }
           }, true).unwrap()
-        } catch {
-        }
+        } catch {}
       }
 
       const getVenueData = async () => {
@@ -119,8 +118,7 @@ export function ClientProperties () {
           venueData = await getVenue({
             params: { tenantId, venueId: clientDetails?.venueId }
           }, true).unwrap()
-        } catch {
-        }
+        } catch {}
       }
 
       const getNetworkData = async () => {
