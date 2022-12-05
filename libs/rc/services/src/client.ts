@@ -9,6 +9,7 @@ import {
   createHttpRequest,
   EventMeta,
   getClientHealthClass,
+  Guest,
   RequestPayload,
   TableResult,
   transformByte
@@ -19,6 +20,7 @@ export const baseClientApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'clientApi',
   refetchOnMountOrArgChange: true,
+  tagTypes: ['Client', 'Guest'],
   endpoints: () => ({ })
 })
 
@@ -100,6 +102,19 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getGuestsList,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Guest', id: 'LIST' }]
     })
 
   })
@@ -139,5 +154,6 @@ export const {
   useLazyGetClientDetailsQuery,
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
-  useGetHistoricalStatisticsReportsQuery
+  useGetHistoricalStatisticsReportsQuery,
+  useGetGuestsListQuery
 } = clientApi

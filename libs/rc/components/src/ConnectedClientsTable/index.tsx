@@ -24,7 +24,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (data, row) =>
-        <TenantLink to={`users/aps/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
+        <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
     },
     {
       key: 'osType',
@@ -68,7 +68,9 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'clientMac',
       sorter: true,
       render: (data) => {
-        return data || '--'
+        return <Tooltip title={data}>
+          {data || '--'}
+        </Tooltip>
       }
     },
     {
@@ -77,7 +79,9 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'ipAddress',
       sorter: true,
       render: (data) => {
-        return data || '--'
+        return <Tooltip title={data}>
+          {data || '--'}
+        </Tooltip>
       }
     },
     {
@@ -86,7 +90,9 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'Username',
       sorter: true,
       render: (data) => {
-        return data || '--'
+        return <Tooltip title={data}>
+          {data || '--'}
+        </Tooltip>
       }
     },
     {
@@ -344,7 +350,7 @@ export const ConnectedClientsTable = (props:{ showAllColumns?: boolean }) => {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='id'
+          rowKey='clientMac'
         />
       </Loader>
     )

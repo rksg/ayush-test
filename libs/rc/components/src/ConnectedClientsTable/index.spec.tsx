@@ -38,7 +38,6 @@ describe('Connected Clients Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    // expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('MBP')
     await screen.findByText('iphone')

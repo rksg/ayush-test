@@ -147,6 +147,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/file/tenant/:tenantId/upload-url'
   },
+  getAllDevices: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/devices'
+  },
   getVenueCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
@@ -262,6 +266,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getHistoricalStatisticsReportsV2: {
     method: 'post',
     url: '/api/reporting/tenant/:tenantId/report/clientStats/v2'
+  },
+  getGuestsList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/guests'
   },
   getApNetworkList: {
     method: 'post',

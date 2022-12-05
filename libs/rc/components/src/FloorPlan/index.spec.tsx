@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
+import { act }  from 'react-dom/test-utils'
 
-import { CommonUrlsInfo, FloorPlanDto }                                     from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                      from '@acx-ui/test-utils'
 
 import { FloorPlan, sortByFloorNumber } from '.'
 
@@ -35,6 +36,41 @@ const list: FloorPlanDto[] = [
     '/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
   }]
 
+const deviceData = {
+  fields: [
+    // eslint-disable-next-line max-len
+    'serialNumber','xPercent','yPercent','switchName','name','rogueCategory','apMac','id','floorplanId','deviceStatus'],
+  totalCount: 5,
+  page: 1,
+  data: [
+    {
+      ap: [{
+        deviceStatus: ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
+        floorplanId: '94bed28abef24175ab58a3800d01e24a',
+        id: '302002015732',
+        name: '3 02002015736',
+        serialNumber: '302002015732',
+        xPercent: 65.20548,
+        yPercent: 9.839357,
+        networkDeviceType: NetworkDeviceType.ap
+      }],
+      switches: [{
+        deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+        floorplanId: '94bed28abef24175ab58a3800d01e24a',
+        id: 'FEK3224R72N',
+        name: 'FEK3224R232N',
+        serialNumber: 'FEK3224R72N',
+        xPercent: 52.739727,
+        yPercent: 7.056452,
+        networkDeviceType: NetworkDeviceType.switch
+      }],
+      LTEAP: [],
+      RogueAP: [],
+      cloudpath: [],
+      DP: []
+    }
+  ]
+}
 describe('Floor Plans', () => {
   let params: { tenantId: string, venueId: string }
   beforeEach(() => {
@@ -50,6 +86,10 @@ describe('Floor Plans', () => {
       rest.put(
         CommonUrlsInfo.updateFloorplan.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getAllDevices.url,
+        (req, res, ctx) => res(ctx.json(deviceData))
       )
     )
     params = {
@@ -78,6 +118,11 @@ describe('Floor Plans', () => {
     fireEvent.click(screen.getByRole('button', { name: /Edit/i }))
     await screen.findByText('Edit Floor Plan')
 
+    const editForm: HTMLFormElement = await screen.findByTestId('floor-plan-form')
+    await act(() => {
+      editForm.submit()
+    })
+
     const deleteFloorplanButton = await screen.findByText('Delete Floor Plan')
     fireEvent.click(deleteFloorplanButton)
 
@@ -85,8 +130,31 @@ describe('Floor Plans', () => {
     expect(plainViewImage[0]).not.toBeInTheDocument()
     expect(thumbnailImages[0]).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getAllByTestId('fpImage')[0])
-    await expect(await screen.findAllByTestId('floorPlanImage')).toHaveLength(1)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('Floor Plans should render gallery correctly', async () => {
+
+    const { asFragment } = await render(<Provider><FloorPlan /></Provider>, {
+      route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
+    })
+
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    const plainViewImage = await screen.findAllByTestId('floorPlanImage')
+    const thumbnailImages = screen.getAllByTestId('thumbnailBg')
+    await expect(plainViewImage).toHaveLength(1)
+    expect(thumbnailImages).toHaveLength(list.length)
+
+    fireEvent.click(await screen.findByTestId('ApplicationsSolid'))
+    expect(plainViewImage[0]).not.toBeInTheDocument()
+    expect(thumbnailImages[0]).not.toBeInTheDocument()
+    const fpImage = await screen.findAllByTestId('fpImage')
+    expect(fpImage[0]).toBeVisible()
+
+    fireEvent.click(await fpImage[0])
+    expect(fpImage[0]).not.toBeVisible()
 
     expect(asFragment()).toMatchSnapshot()
   })
