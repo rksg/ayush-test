@@ -6,11 +6,13 @@ import { CollapseInactive } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 import { ClientInfoData } from './services'
+import { Filters } from '.'
 
 type HistoryContentProps = {
     historyContentToggle : boolean,
     setHistoryContentToggle : CallableFunction,
-    data?: ClientInfoData
+    data?: ClientInfoData,
+    filters: Filters
   }
 
 const sampleData = [
@@ -32,8 +34,8 @@ const sampleData = [
 ]
 export function History (props : HistoryContentProps) {
   const { $t } = useIntl()
-  const { setHistoryContentToggle, historyContentToggle, data } = props
-  console.log(data)
+  const { setHistoryContentToggle, historyContentToggle, data, filters } = props
+  console.log(data, filters)
   return (
     <UI.History>
       <UI.HistoryHeader>
