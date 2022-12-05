@@ -4,9 +4,19 @@ import { dataApi }        from '@acx-ui/analytics/services'
 import { incidentCodes  } from '@acx-ui/analytics/utils'
 import { DateFilter }     from '@acx-ui/utils'
 
+export type ConnectionEvent = {
+  event: string,
+  state: string, 
+  timestamp: string, 
+  mac: string, 
+  ttc: number, 
+  radio: string,
+  failedMsgId: string,
+  code: string
+}
 export type ClientInfoData = {
   connectionDetailsByAp: object[]
-  connectionEvents: object[]
+  connectionEvents: ConnectionEvent[]
   connectionQualities: object[]
   incidents: object[]
 }

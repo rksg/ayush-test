@@ -7,6 +7,7 @@ import { CollapseInactive } from '@acx-ui/icons'
 import * as UI from './styledComponents'
 import { ClientInfoData } from './services'
 import { Filters } from '.'
+import { transformEvents } from './config'
 
 type HistoryContentProps = {
     historyContentToggle : boolean,
@@ -15,6 +16,16 @@ type HistoryContentProps = {
     filters: Filters
   }
 
+const transformData = (clientInfo: ClientInfoData, filters: Filters) => {
+  const events = transformEvents(
+    clientInfo.connectionEvents,
+    [
+      ...(filters.type ?? []),
+      ...(filters.radio ?? [])
+    ]
+  ) ?? []
+  
+}
 const sampleData = [
   {
     date: '06/07/2022 11:21:48',
@@ -36,6 +47,7 @@ export function History (props : HistoryContentProps) {
   const { $t } = useIntl()
   const { setHistoryContentToggle, historyContentToggle, data, filters } = props
   console.log(data, filters)
+  const histData = transformData(data, filters)
   return (
     <UI.History>
       <UI.HistoryHeader>
