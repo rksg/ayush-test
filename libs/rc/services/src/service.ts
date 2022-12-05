@@ -27,7 +27,8 @@ import {
   DpskUrls,
   PortalDetailInstances,
   Portal,
-  PortalUrlsInfo
+  PortalUrlsInfo,
+  DpskList
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -358,6 +359,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
+    dpskList: build.query<DpskList, RequestPayload>({
+      query: () => {
+        const getDpskListReq = createHttpRequest(DpskUrls.getDpskList)
+        return {
+          ...getDpskListReq
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
     getDpsk: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
         const getDpskReq = createHttpRequest(DpskUrls.getDpsk, params)
@@ -416,6 +426,7 @@ export const {
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
+  useLazyDpskListQuery,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,

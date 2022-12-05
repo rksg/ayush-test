@@ -19,3 +19,11 @@ export interface DpskSaveData {
   expirationOffset?: number; // If 'expirationType' is not SPECIFIED_DATE then this field is the offset amount
   expirationDate?: string; // If 'expirationType' is SPECIFIED_DATE then this field is the related date in format YYYY-MM-DD.
 }
+export interface DpskList {
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+  sort: string[];
+  content: DpskSaveData[]
+}

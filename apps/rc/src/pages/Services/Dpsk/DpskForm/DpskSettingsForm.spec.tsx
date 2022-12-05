@@ -1,41 +1,49 @@
-import { Form } from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { DpskSaveData, ExpirationType, PassphraseFormatEnum } from '@acx-ui/rc/utils'
-import { render, screen }                                     from '@acx-ui/test-utils'
+import { DpskUrls }                   from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import DpskSettingsForm from './DpskSettingsForm'
+import { mockedDpskList, mockedGetFormData } from './__tests__/fixtures'
+import DpskSettingsForm                      from './DpskSettingsForm'
 
 describe('DpskSettingsForm', () => {
-  it('should render the form with the giving data', async ()=> {
-    const mockedData: DpskSaveData = {
-      name: 'DPSK 1',
-      passphraseLength: 18,
-      passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
-      expirationType: ExpirationType.DAYS_AFTER_TIME,
-      expirationOffset: 1
-    }
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getDpskList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskList }))
+      )
+    )
+  })
 
+  it('should render the form with the giving data', async ()=> {
     render(
-      <Form>
-        <DpskSettingsForm data={mockedData} />
-      </Form>
+      <Provider>
+        <Form><DpskSettingsForm data={mockedGetFormData} /></Form>
+      </Provider>
     )
 
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
-    expect(nameInput).toHaveValue(mockedData.name)
+    expect(nameInput).toHaveValue(mockedGetFormData.name)
 
     const expirationModeRadio = await screen.findByRole('radio', { name: /After/ })
     expect(expirationModeRadio).toBeChecked()
   })
 
-  it('should render the form without data', async ()=> {
+  it('should validate the service name', async ()=> {
     render(
-      <Form>
-        <DpskSettingsForm />
-      </Form>
+      <Provider>
+        <Form><DpskSettingsForm /></Form>
+      </Provider>
     )
 
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
-    expect(nameInput).toHaveValue('')
+    await userEvent.type(nameInput, mockedDpskList.content[0].name)
+
+    const errorMessageElem = await screen.findByRole('alert')
+    expect(errorMessageElem.textContent).toBe('DPSK service with that name already exists')
   })
 })
