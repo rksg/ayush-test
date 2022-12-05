@@ -16,13 +16,16 @@ import {
   useLazyGetHistoricalClientListQuery
 } from '@acx-ui/rc/services'
 import {
+  ApDeep,
   Client,
   ClientStatusEnum,
   getNoiseFloorStatus,
   getRssiStatus,
   getOsTypeIcon,
+  NetworkSaveData,
   transformQosPriorityType,
-  QosPriorityEnum
+  QosPriorityEnum,
+  VenueExtended
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useSearchParams } from '@acx-ui/react-router-dom'
 import { formatter }                              from '@acx-ui/utils'
@@ -46,7 +49,7 @@ interface ClientExtended extends Client {
 }
 
 export function ClientProperties () {
-  const { tenantId, userId: clientId } = useParams()
+  const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
 
   const [clientStatus, setClientStatus]
@@ -97,42 +100,65 @@ export function ClientProperties () {
 
 
   useEffect(() => {
-    if (clientDetails) {
+    if (Object.keys(clientDetails)?.length) {
+      let apData = null as unknown as ApDeep
+      let venueData = null as unknown as VenueExtended
+      let networkData = null as NetworkSaveData | null
       const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
-      const setData = async () => {
-        const apData = await getAp({
-          params: { tenantId, serialNumber }
-        }, true).unwrap()
+      const getApData = async () => {
+        try {
+          apData = await getAp({
+            params: { tenantId, serialNumber }
+          }, true).unwrap()
+        } catch {
+        }
+      }
 
-        const venueData = await getVenue({
-          params: { tenantId, venueId: clientDetails?.venueId }
-        }, true).unwrap()
+      const getVenueData = async () => {
+        try {
+          venueData = await getVenue({
+            params: { tenantId, venueId: clientDetails?.venueId }
+          }, true).unwrap()
+        } catch {
+        }
+      }
 
-        const networkData = await getNetwork({
-          params: { tenantId, networkId: clientDetails?.networkId }
-        }, true).unwrap()
+      const getNetworkData = async () => {
+        try {
+          networkData = await getNetwork({
+            params: { tenantId, networkId: clientDetails?.networkId }
+          }, true).unwrap()
+          setData(apData, venueData, networkData)
+        } catch {
+          setData(apData, venueData, networkData)
+        }
+      }
 
+      const setData = (apData: ApDeep, venueData: VenueExtended, networkData: NetworkSaveData | null
+      ) => {
         setNetworkType(networkData?.type || '')
         setClient({
           ...clientDetails,
-          apName: apData?.name,
-          venueName: venueData?.name,
-          networkName: networkData?.name || clientDetails.networkName,
           hasSwitch: false, // TODO: this.userProfileService.isSwitchEnabled(profile);
+          ...(apData && { apName: apData?.name }),
+          ...(venueData && { venueName: venueData?.name }),
+          ...(networkData && { networkName: networkData?.name }),
           enableLinkToAp: !!apData,
-          enableLinkToVenue: !!venueData,
-          enableLinkToNetwork: !!networkData
+          enableLinkToNetwork: !!networkData,
+          enableLinkToVenue: !!venueData
         })
-
-        // TODO: get dpsk/guest data
-        // if (networkData?.type === 'dpsk') {
-        //   const dpskData = await getDpskPassphraseByQuery({
-        //     params: { tenantId }, payload: {}
-        //   }, true).unwrap()
-        // }
       }
 
-      serialNumber && setData()
+      getApData()
+      getVenueData()
+      getNetworkData()
+
+      // TODO: get dpsk/guest data
+      // if (networkData?.type === 'dpsk') {
+      //   const dpskData = await getDpskPassphraseByQuery({
+      //     params: { tenantId }, payload: {}
+      //   }, true).unwrap()
+      // }
     }
   }, [clientDetails])
 

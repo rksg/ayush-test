@@ -29,7 +29,7 @@ jest.mock('react-router-dom', () => ({
 
 const params = {
   tenantId: 'tenant-id',
-  userId: 'user-id'
+  clientId: 'client-id'
 }
 
 describe('ClientProperties', () => {
@@ -61,7 +61,7 @@ describe('ClientProperties', () => {
   describe('Normal Client', () => {
     it('should render client correctly', async () => {
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
-        route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
+        route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
       })
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -74,7 +74,7 @@ describe('ClientProperties', () => {
 
     it('should render client without some data correctly', async () => {
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
-        route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
+        route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
       })
 
       mockServer.use(
@@ -139,7 +139,7 @@ describe('ClientProperties', () => {
         )
       )
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
-        route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
+        route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
       })
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -167,7 +167,7 @@ describe('ClientProperties', () => {
         )
       )
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
-        route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
+        route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
       })
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -184,7 +184,7 @@ describe('ClientProperties', () => {
     it('should render historical client correctly', async () => {
       jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
-        route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
+        route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()
@@ -214,7 +214,7 @@ describe('ClientProperties', () => {
           (_, res, ctx) => res(ctx.json(null)))
       )
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
-        route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
+        route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()
@@ -255,7 +255,7 @@ describe('ClientProperties', () => {
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
         route: {
           params,
-          path: '/:tenantId/users/aps/:userId/details/overview',
+          path: '/:tenantId/users/wifi/clients/:clientId/details/overview',
           search: '?clientStatus=historical'
         }
       })
@@ -279,7 +279,7 @@ describe('ClientProperties', () => {
         )
       )
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
-        route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
+        route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()
@@ -298,7 +298,7 @@ describe('ClientProperties', () => {
       )
 
       const { asFragment } = render(<Provider><ClientProperties /></Provider>, {
-        route: { params, path: '/:tenantId/users/aps/:userId/details/overview' }
+        route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
       })
       await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
       expect(await screen.findByText('Client Details')).toBeVisible()

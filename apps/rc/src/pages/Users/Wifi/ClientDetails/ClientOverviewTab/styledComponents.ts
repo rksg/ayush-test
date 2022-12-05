@@ -13,9 +13,10 @@ export const Form = styled(AntForm)`
 
 export const OsType = styled(Space)`
   svg {
-    width: 16px;
+    width: 20px;
+    height: 20px;
     vertical-align: middle;
-    path: {
+    path {
       fill: var(--acx-neutrals-70)
     }
   }

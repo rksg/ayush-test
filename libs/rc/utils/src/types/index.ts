@@ -16,7 +16,7 @@ import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomiz
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
 import { ApModel } from './ap'
-import { EPDG } from './services'
+import { EPDG }    from './services'
 
 export * from './ap'
 export * from './venue'

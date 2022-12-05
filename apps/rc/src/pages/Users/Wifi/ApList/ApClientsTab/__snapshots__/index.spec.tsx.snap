@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`ApClientsTab should render correctly 1`] = `
-<DocumentFragment>
-  Ap Clients Tab
-</DocumentFragment>
-`;
