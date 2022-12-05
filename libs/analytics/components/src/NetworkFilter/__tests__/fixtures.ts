@@ -29,7 +29,16 @@ export const networkHierarchy = {
     path: [...defaultNetworkPath, { type: 'switchGroup', name: 'swg' }],
     aps: [],
     switches: [{ name: 'switch2', mac: 'switch-mac2' }]
-  }],
+  },
+  {
+    id: 'id5',
+    type: 'switchGroup',
+    name: 'swg1',
+    path: [...defaultNetworkPath, { type: 'switchGroup', name: 'swg1' }],
+    aps: [{ name: 'ap3', mac: 'ap-mac3' }],
+    switches: [{ name: 'switch3', mac: 'switch-mac3' }]
+  }
+],
   name: 'Network',
   type: 'network',
   path: defaultNetworkPath
