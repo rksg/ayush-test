@@ -44,25 +44,24 @@ export function ApPhoto () {
   const apPhoto = useGetApPhotoQuery({ params })
 
   useEffect(() => {
-    if (!apPhoto.isLoading) {
-      if(apPhoto?.data?.imageUrl){
-        setActiveImage([true, false])
-        setImageUrl(apPhoto?.data.imageUrl)
-      }else{
-        setActiveImage([true])
-        setImageUrl('')
-      }
-    }
     if(wifiCapabilities){
       const allModelsCapabilities = wifiCapabilities?.apModels
       const filteredModelCapabilities = allModelsCapabilities?.filter((modelCapabilities:
         { model: string })=> modelCapabilities.model === apViewModelQuery.data?.model)
       if(filteredModelCapabilities[0]){
-        setActiveImage([true])
         setDefaultImageUrl(filteredModelCapabilities[0].pictureDownloadUrl)
       }else{
-        setActiveImage([true])
         setDefaultImageUrl(PlaceHolder)
+      }
+      setActiveImage([false,true])
+    }
+    if (!apPhoto.isLoading) {
+      if(apPhoto?.data?.imageUrl){
+        setActiveImage([true, false])
+        setImageUrl(apPhoto?.data.imageUrl)
+      }else{
+        setActiveImage([false, true])
+        setImageUrl('')
       }
     }
   }, [apPhoto, currentAP, wifiCapabilities])
@@ -161,8 +160,7 @@ export function ApPhoto () {
             {defaultImageUrl !== '' &&
               <div
                 className={`dot ${activeImage[1] ? 'active-dot' : ''}`}
-                onClick={() => imageUrl !== '' ?
-                  setActiveImage([false, true]) : setActiveImage([true])}
+                onClick={() => setActiveImage([false, true])}
                 data-testid='dot2'>
               </div>
             }
