@@ -247,6 +247,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/guests'
   },
+  addGuestPass: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/guest-user'
+  },
   getApNetworkList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'

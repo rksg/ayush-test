@@ -182,6 +182,7 @@ export { ReactComponent as PlusSquareOutlined } from './icons/PlusSquareOutlined
 export { ReactComponent as PlusSquareSolid } from './icons/PlusSquareSolid.svg'
 export { ReactComponent as PoliciesSolid } from './icons/PoliciesSolid.svg'
 export { ReactComponent as PoliciesOutlined } from './icons/PoliciesOutlined.svg'
+export { ReactComponent as Print } from './icons/Print.svg'
 export { ReactComponent as QuestionMarkCircleOutlined }
   from './icons/QuestionMarkCircleOutlined.svg'
 export { ReactComponent as QuestionMarkCircleSolid } from './icons/QuestionMarkCircleSolid.svg'

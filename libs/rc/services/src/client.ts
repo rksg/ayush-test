@@ -4,7 +4,10 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   Guest,
+  Network,
+  onSocketActivityChanged,
   RequestPayload,
+  showActivityMessage,
   TableResult
 } from '@acx-ui/rc/utils'
 
@@ -29,10 +32,39 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Guest', id: 'LIST' }]
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Guest', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, ['AddGuest', 'DeleteGuest'], () => {
+            api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    addGuestPass: build.mutation<Guest, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
+        return {
+          ...networkListReq,
+          body: payload
+        }
+      }
     })
   })
 })
 export const {
-  useGetGuestsListQuery
+  useGetGuestsListQuery,
+  useAddGuestPassMutation,
+  useLazyGetGuestNetworkListQuery
 } = clientApi

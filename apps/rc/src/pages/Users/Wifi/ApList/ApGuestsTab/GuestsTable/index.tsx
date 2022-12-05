@@ -24,6 +24,8 @@ import { getIntl }    from '@acx-ui/utils'
 
 import { GuestsDetail } from '../GuestsDetail'
 
+import { AddGuestDrawer } from './addGuestDrawer'
+
 const defaultPayload = {
   searchString: '',
   searchTargetFields: [
@@ -77,6 +79,7 @@ export default function GuestsTable () {
       </span>
 
     const [visible, setVisible] = useState(false)
+    const [drawerVisible, setDrawerVisible] = useState(false)
     const [currentGuest, setCurrentGuest] = useState({} as Guest)
 
     const columns: TableProps<Guest>['columns'] = [
@@ -177,6 +180,18 @@ export default function GuestsTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='name'
+          actions={[{
+            label: $t({ defaultMessage: 'Add Guest' }),
+            onClick: () => setDrawerVisible(true)
+          },{
+            label: $t({ defaultMessage: 'Add Guest Pass Network' }),
+            onClick: () => {}
+          },
+          {
+            label: $t({ defaultMessage: 'Import from file' }),
+            onClick: () => {}
+          }
+          ]}
         />
 
         <Drawer
@@ -190,6 +205,11 @@ export default function GuestsTable () {
             />
           }
           width={'550px'}
+        />
+
+        <AddGuestDrawer
+          visible={drawerVisible}
+          setVisible={setDrawerVisible}
         />
       </Loader>
     )
