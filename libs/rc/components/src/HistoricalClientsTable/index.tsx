@@ -112,7 +112,7 @@ export function HistoricalClientsTable ({ searchString } : { searchString: strin
         dataSource={tableQuery.data?.data}
         pagination={false}
         onChange={tableQuery.handleTableChange}
-        rowKey='id'
+        rowKey='clientMac'
       />
       {!!tableQuery.data?.data?.length && <Typography.Text style={{
         fontSize: '10px',

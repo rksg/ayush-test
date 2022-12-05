@@ -745,7 +745,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="1de34a75f8414e759bfb9761130ac33c"
+                              data-row-key="24:41:8c:c3:16:df"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
@@ -805,7 +805,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="228f155adae54b89ae3e2296587a2116"
+                              data-row-key="b2:db:24:a0:08:a9"
                             >
                               <td
                                 class="ant-table-cell ant-table-column-sort"
