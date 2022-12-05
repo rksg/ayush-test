@@ -181,6 +181,32 @@ describe('Network Filter', () => {
     expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
     await userEvent.click(screen.getByRole('combobox'))
   })
+  it('should select network node and bands', async () => {
+    const mockFn = jest.fn()
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+    render(<Provider><NetworkFilter
+      shouldQuerySwitch
+      showBand={true}
+      onApplyWithBand={mockFn}
+      replaceWithId={true}
+    /></Provider>)
+    await screen.findByText('Entire Organization')
+    await userEvent.click(screen.getByRole('combobox'))
+    const band6GHz = screen.getByLabelText('6 GHz')
+    const band2_4GHz = screen.getByLabelText('2.4 GHz')
+    await userEvent.click(band6GHz)
+    await userEvent.click(band2_4GHz)
+    screen.getByRole('button', { name: 'Apply' }).click()
+    expect(mockFn).toBeCalledWith({
+      bands: ['6','2.4'],
+      paths: [[{ name: 'Network', type: 'network' }]]
+    })
+  })
   it('should not select non-selectable element', async () => {
     const select = jest.fn()
     render(<NonSelectableItem onClick={select}>item</NonSelectableItem>)
