@@ -104,7 +104,8 @@ export function useMenuConfig () {
           },
           {
             path: '/devices/switches',
-            name: $t({ defaultMessage: 'Switch' })
+            name: $t({ defaultMessage: 'Switch' }),
+            disabled: true
           }
         ]
     },
@@ -136,12 +137,13 @@ export function useMenuConfig () {
       disabled: !useIsSplitOn(Features.USERS),
       routes: [
         {
-          path: '/users/aps',
+          path: '/users/wifi',
           name: $t({ defaultMessage: 'WiFi' })
         },
         {
-          path: '/users/switches',
-          name: $t({ defaultMessage: 'Switch' })
+          path: '/users/switch',
+          name: $t({ defaultMessage: 'Switch' }),
+          disabled: true
         }
       ]
     },

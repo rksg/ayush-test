@@ -2,13 +2,14 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                  from '@acx-ui/components'
+import { Tabs, Tooltip }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../index'
 
 import { LanPorts }      from './LanPorts'
 import { RadioSettings } from './RadioTab/RadioSettings'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 const { TabPane } = Tabs
 
@@ -60,10 +61,12 @@ export function ApSettingsTab () {
       <TabPane tab={tabTitleMap('lanPort')} key='lanPort'>
         <LanPorts />
       </TabPane>
-      <TabPane tab={tabTitleMap('proxy')} key='proxy'>
+      <TabPane disabled tab={<Tooltip title={$t(notAvailableMsg)}>
+        {tabTitleMap('proxy')}</Tooltip>} key='proxy'>
         {$t({ defaultMessage: 'mDNS Proxy' })}
       </TabPane>
-      <TabPane tab={tabTitleMap('multicast')} key='multicast'>
+      <TabPane disabled tab={<Tooltip title={$t(notAvailableMsg)}>
+        {tabTitleMap('multicast')}</Tooltip>} key='multicast'>
         {$t({ defaultMessage: 'Directed Multicast' })}
       </TabPane>
     </Tabs>

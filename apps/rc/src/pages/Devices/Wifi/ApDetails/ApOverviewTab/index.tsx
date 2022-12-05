@@ -9,7 +9,7 @@ import {
   TrafficByVolume
 } from '@acx-ui/analytics/components'
 import { AnalyticsFilter, useAnalyticsFilter }    from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                       from '@acx-ui/components'
+import { GridCol, GridRow, Tooltip }                       from '@acx-ui/components'
 import { ApInfoWidget }                           from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
 import { ApDetails, ApViewModel }                 from '@acx-ui/rc/utils'
@@ -17,8 +17,11 @@ import { useParams }                              from '@acx-ui/react-router-dom
 
 import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
+import { useIntl } from 'react-intl'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 export function ApOverviewTab () {
+  const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
   const [ apFilter, setApFilter ] = useState(null as unknown as AnalyticsFilter)
   const params = useParams()
@@ -55,7 +58,7 @@ export function ApOverviewTab () {
         <ApPhoto />
       </GridCol>
       <GridCol col={{ span: 18 }} style={{ background: '#F7F7F7' }}>
-        Floor Plan
+        <Tooltip title={$t(notAvailableMsg)}>Floor Plan</Tooltip>
       </GridCol>
       <GridCol col={{ span: 6 }}>
         <ApProperties

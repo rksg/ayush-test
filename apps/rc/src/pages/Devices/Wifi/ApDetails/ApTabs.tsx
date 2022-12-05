@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                  from '@acx-ui/components'
+import { Tabs, Tooltip }                                  from '@acx-ui/components'
 import { ApDetailHeader, ApDeviceStatusEnum }    from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
@@ -27,20 +28,35 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
       {currentApOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })} key='reports' />
+      <Tabs.TabPane 
+       disabled
+       tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Reports' })}</Tooltip>}
+       key='reports' 
+      />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount: apDetail?.headers?.networks })}
         key='networks'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: apDetail?.headers?.clients })}
+        disabled
+        tab={<Tooltip title={$t(notAvailableMsg)}>
+          {$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: apDetail?.headers?.clients })}
+        </Tooltip>}
         key='clients'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: apDetail?.headers?.services || 0 })} // TODO: API support
+        disabled
+        tab={<Tooltip title={$t(notAvailableMsg)}>
+        {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: apDetail?.headers?.services || 0 })} 
+        {/* TODO: API support */}
+      </Tooltip>}
         key='services'
       />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
+      <Tabs.TabPane 
+        disabled
+        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Timeline' })} </Tooltip>}
+        key='timeline' 
+      />
     </Tabs>
   )
 }

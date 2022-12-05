@@ -23,8 +23,8 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'hostname',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) =>
-        <TenantLink to={`users/aps/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
+      render: (data) => <> {data || '--'} </>
+        // <TenantLink to={`users/aps/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
     },
     {
       key: 'osType',

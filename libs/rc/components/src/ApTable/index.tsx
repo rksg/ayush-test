@@ -171,9 +171,9 @@ export function ApTable (props?: ApTableProps) {
             showTotal={false}
             barColors={[cssStr(deviceStatusColors.empty)]}
           />
-          <TenantLink to={`/devices/aps/${row.serialNumber}/details/incidents`}>
-            {data ? data: 0}
-          </TenantLink>
+          {/* <TenantLink to={`/devices/aps/${row.serialNumber}/details/incidents`}> */}
+            {data ? data: 0}  
+          {/* </TenantLink> */}
         </Space>)
       }
     }, {
@@ -205,9 +205,10 @@ export function ApTable (props?: ApTableProps) {
       dataIndex: 'clients',
       align: 'center',
       render: (data, row) => (
-        <TenantLink to={`/aps/${row.serialNumber}/details/clients`}>
-          {transformDisplayNumber(row.clients)}
-        </TenantLink>
+        // <TenantLink to={`/devices/aps/${row.serialNumber}/details/clients`}>
+        //   {transformDisplayNumber(row.clients)} 
+        // </TenantLink> 
+        <>{transformDisplayNumber(row.clients)}</>
       )
     }, {
       key: 'deviceGroupName',
