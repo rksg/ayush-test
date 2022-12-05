@@ -36,7 +36,7 @@ export function GeneralSettings () {
     }
   }, [venuesList])
 
-  const waringMsg = <FormattedMessage
+  const warningMsg = <FormattedMessage
     defaultMessage={
       // eslint-disable-next-line max-len
       'Please make sure you’ve done the following preparations before creating a Network Segmentation:' +
@@ -80,7 +80,7 @@ export function GeneralSettings () {
 
       <Row gutter={20}>
         <Col span={12}>
-          <Alert message={waringMsg} type='info' />
+          <Alert message={warningMsg} type='info' />
         </Col>
       </Row>
 

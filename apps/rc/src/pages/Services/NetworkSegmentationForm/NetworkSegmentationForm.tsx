@@ -7,7 +7,7 @@ import { NetworkSegmentationSaveData }              from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
 
 import NetworkSegmentationFormContext from './NetworkSegmentationFormContext'
-import { GeneralSettings }            from './wizardSteps/GeneralSettings'
+import { GeneralSettings }            from './GeneralSettings'
 
 
 export default function NetworkSegmentationForm () {
