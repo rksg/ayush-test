@@ -59,7 +59,7 @@ exports[`ExpirationDateSelector should render the selector 1`] = `
                   </label>
                 </div>
                 <div
-                  class="sc-jSMfEi hPuIoa"
+                  class="sc-jSMfEi eWVdJY"
                 >
                   <label
                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -82,7 +82,7 @@ exports[`ExpirationDateSelector should render the selector 1`] = `
                   </label>
                 </div>
                 <div
-                  class="sc-jSMfEi cgHqWP"
+                  class="sc-jSMfEi jfDJtJ"
                 >
                   <label
                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
