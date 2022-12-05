@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input, Tooltip } from 'antd'
+import { useIntl }              from 'react-intl'
 
 import { Modal } from '@acx-ui/components'
 
@@ -98,8 +98,10 @@ export default function TwitterSetting () {
   </Form>
   return (
     <>
-      <UI.ConfigurationSolid title='settingicon'
-        onClick={() => {setVisible(true)}}/>
+      <Tooltip title={$t({ defaultMessage: 'Edit Twitter app' })}
+        placement='bottom'>
+        <UI.ConfigurationSolid title='settingicon'
+          onClick={() => {setVisible(true)}}/></Tooltip>
       <Modal
         title={$t({ defaultMessage: 'Edit Twitter App' })}
         visible={visible}

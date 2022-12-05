@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 
-import { Form, Input } from 'antd'
+import { Form, Input, Tooltip } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { Modal } from '@acx-ui/components'
@@ -100,8 +100,9 @@ export default function FacebookSetting () {
   </Form>
   return (
     <>
-      <UI.ConfigurationSolid title='settingicon'
-        onClick={() => {setVisible(true)}}/>
+      <Tooltip title={$t({ defaultMessage: 'Edit Facebook app' })}
+        placement='bottom'><UI.ConfigurationSolid title='settingicon'
+          onClick={() => {setVisible(true)}}/></Tooltip>
       <Modal
         title={$t({ defaultMessage: 'Edit Facebook App' })}
         visible={visible}

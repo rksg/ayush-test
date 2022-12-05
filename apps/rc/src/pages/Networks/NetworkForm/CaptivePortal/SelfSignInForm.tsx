@@ -163,57 +163,61 @@ export function SelfSignInForm () {
           label={<>
             {$t({ defaultMessage: 'Allow Sign-In Using:(At least one option must be selected)' })}
           </>}
-        >
-          <Form.Item name={['guestPortal','enableSmsLogin']}>
-            <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
-              ['guestPortal','enableSmsLogin'])}
-            checked={enableSmsLogin}>
-              <UI.SMSToken/>
-              {$t({ defaultMessage: 'SMS Token' })}
-            </UI.Checkbox>
-            <Tooltip title={$t({ defaultMessage: 'Self-service signup using one '+
-                'time token sent to a mobile number' })}
-            placement='bottom'>
-              <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
-            </Tooltip>
-          </Form.Item>
-          <Form.Item name={['guestPortal','socialIdentities','facebook']}>
-            <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
-              ['guestPortal','socialIdentities','facebook'])}
-            checked={facebook}>
-              <UI.Facebook/>
-              {$t({ defaultMessage: 'Facebook' })}
-            </UI.Checkbox>
-            <Tooltip title={$t({ defaultMessage: 'Edit Facebook app' })}
+        />
+        <Form.Item name={['guestPortal','enableSmsLogin']}
+          children={<>
+              <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
+                ['guestPortal','enableSmsLogin'])}
+              checked={enableSmsLogin}>
+                <UI.SMSToken/>
+                {$t({ defaultMessage: 'SMS Token' })}
+              </UI.Checkbox>
+              <Tooltip title={$t({ defaultMessage: 'Self-service signup using one '+
+                  'time token sent to a mobile number' })}
               placement='bottom'>
+                <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+              </Tooltip>
+            </>
+          }
+        />
+        <Form.Item name={['guestPortal','socialIdentities','facebook']}
+          children={<>
+              <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
+                ['guestPortal','socialIdentities','facebook'])}
+              checked={facebook}>
+                <UI.Facebook/>
+                {$t({ defaultMessage: 'Facebook' })}
+              </UI.Checkbox>
               {facebook&&<FacebookSetting/>}
-            </Tooltip>
-          </Form.Item>
-          <Form.Item name={['guestPortal','socialIdentities','google']}>
-            <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
-              ['guestPortal','socialIdentities','google'])}
-            checked={google}>
-              <UI.Google/>
-              {$t({ defaultMessage: 'Google' })}
-            </UI.Checkbox>
-            <Tooltip title={$t({ defaultMessage: 'Edit Google app' })}
-              placement='bottom'>
+            </>
+          }
+        />
+        <Form.Item name={['guestPortal','socialIdentities','google']}
+          children={<>
+              <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
+                ['guestPortal','socialIdentities','google'])}
+              checked={google}>
+                <UI.Google/>
+                {$t({ defaultMessage: 'Google' })}
+              </UI.Checkbox>
               {google&&<GoogleSetting/>}
-            </Tooltip>
-          </Form.Item>
-          <Form.Item name={['guestPortal','socialIdentities','twitter']}>
+            </>
+          }
+        />
+        <Form.Item name={['guestPortal','socialIdentities','twitter']}
+          children={<>
             <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
               ['guestPortal','socialIdentities','twitter'])}
             checked={twitter}>
               <UI.Twitter/>
               {$t({ defaultMessage: 'Twitter' })}
             </UI.Checkbox>
-            <Tooltip title={$t({ defaultMessage: 'Edit Twitter app' })}
-              placement='bottom'>
-              {twitter&&<TwitterSetting/>}
-            </Tooltip>
-          </Form.Item>
-          <Form.Item name={['guestPortal','socialIdentities','linkedin']}>
+            {twitter&&<TwitterSetting/>}
+          </>
+          }
+        />
+        <Form.Item name={['guestPortal','socialIdentities','linkedin']}
+          children={<>
             <UI.Checkbox onChange={(e)=>updateAllowSign(e.target.checked,
               ['guestPortal','socialIdentities','linkedin'])}
             checked={linkedin}>
@@ -224,8 +228,9 @@ export function SelfSignInForm () {
               placement='bottom'>
               {linkedin&&<LinkedInSetting/>}
             </Tooltip>
-          </Form.Item>
-        </Form.Item>
+          </>
+          }
+        />
         <Form.Item
           label={<>
             {$t({ defaultMessage: 'Here is some information about' })}&nbsp;&nbsp;
