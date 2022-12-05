@@ -6,8 +6,8 @@ import { PageHeader, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { NetworkSegmentationSaveData }              from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
 
-import NetworkSegmentationFormContext from './NetworkSegmentationFormContext'
 import { GeneralSettings }            from './GeneralSettings'
+import NetworkSegmentationFormContext from './NetworkSegmentationFormContext'
 
 
 export default function NetworkSegmentationForm () {
