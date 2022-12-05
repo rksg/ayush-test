@@ -4,34 +4,43 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
-  PolicyOperation
-}           from '@acx-ui/rc/utils'
+  PolicyOperation,
+  getServiceListRoutePath,
+  getSelectServiceRoutePath,
+  ServiceOperation,
+  getServiceRoutePath
+} from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import SwitchesTable     from './pages/Devices/Switch/SwitchesTable'
-import ApDetails         from './pages/Devices/Wifi/ApDetails'
-import { ApForm }        from './pages/Devices/Wifi/ApForm'
-import ApsTable          from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails    from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm       from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable     from './pages/Networks/NetworksTable'
-import PoliciesTable     from './pages/Policies/PoliciesTable'
-import SelectPolicyForm  from './pages/Policies/SelectPolicyForm'
-import DHCPDetail        from './pages/Services/DHCPDetail'
-import DHCPForm          from './pages/Services/DHCPForm/DHCPForm'
-import MdnsProxyForm     from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import SelectServiceForm from './pages/Services/SelectServiceForm'
-import {
-  getSelectServiceRoutePath,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation
-} from './pages/Services/serviceRouteUtils'
+import Edges                    from './pages/Devices/Edge'
+import AddEdge                  from './pages/Devices/Edge/AddEdge'
+import EditEdge                 from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import SwitchesTable            from './pages/Devices/Switch/SwitchesTable'
+import ApDetails                from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }               from './pages/Devices/Wifi/ApEdit'
+import { ApForm }               from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }          from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                 from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails           from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm              from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable            from './pages/Networks/NetworksTable'
+import PoliciesTable            from './pages/Policies/PoliciesTable'
+import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
+import DHCPDetail               from './pages/Services/DHCPDetail'
+import DHCPForm                 from './pages/Services/DHCPForm/DHCPForm'
+import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
+import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import NetworkSegmentationForm  from './pages/Services/NetworkSegmenationForm/NetworkSegmentationForm'
+import PortalServiceDetail      from './pages/Services/Portal/PortalDetail'
+import PortalForm               from './pages/Services/Portal/PortalForm/PortalForm'
+import SelectServiceForm        from './pages/Services/SelectServiceForm'
 import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
+import WifiClientList           from './pages/Users/Wifi/ClientList'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -40,6 +49,7 @@ export default function RcRoutes () {
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
       <Route path='policies/*' element={<PolicyRoutes />} />
+      <Route path='users/*' element={<UserRoutes />} />
     </Route>
   )
   return (
@@ -53,11 +63,30 @@ function DeviceRoutes () {
       <Route path='devices' element={<TenantNavigate replace to='/devices/aps' />} />
       <Route path='devices/aps' element={<ApsTable />} />
       <Route path='devices/aps/:action' element={<ApForm />} />
+      <Route path='devices/aps/:serialNumber/:action/:activeTab' element={<ApEdit />} />
+      <Route
+        path='devices/aps/:serialNumber/:action/:activeTab/:activeSubTab'
+        element={<ApEdit />}
+      />
+      <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route
         path='devices/aps/:serialNumber/details/:activeTab'
-        element={<ApDetails />}
-      />
+        element={<ApDetails />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab/:activeSubTab'
+        element={<ApDetails />} />
+      <Route
+        path='devices/aps/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+        element={<ApDetails />} />
+      <Route path='devices/edge/add' element={<AddEdge />} />
+      <Route
+        path='devices/edge/:serialNumber/edit/:activeTab'
+        element={<EditEdge />} />
+      <Route
+        path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        element={<EditEdge />} />
       <Route path='devices/switches' element={<SwitchesTable />} />
+      <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )
 }
@@ -69,6 +98,10 @@ function NetworkRoutes () {
       <Route path='networks/add' element={<NetworkForm />} />
       <Route
         path='networks/:networkId/network-details/:activeTab'
+        element={<NetworkDetails />}
+      />
+      <Route
+        path='networks/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
       />
       <Route
@@ -94,7 +127,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}
-        element={<h1>mDNS Proxy details page</h1>}
+        element={<MdnsProxyDetail />}
       />
       <Route
         // eslint-disable-next-line max-len
@@ -122,6 +155,28 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<DHCPDetail/>}
       />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.CREATE })}
+        element={<NetworkSegmentationForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.EDIT })}
+        element={<NetworkSegmentationForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
+        element={<PortalForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
+        element={<PortalForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
+        element={<PortalServiceDetail/>}
+      />
     </Route>
   )
 }
@@ -145,6 +200,26 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<h1>Rogue AP detection details page</h1>}
+      />
+    </Route>
+  )
+}
+
+function UserRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
+      <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
+      <Route path='users/wifi/:activeTab' element={<WifiClientList />} />
+      <Route
+        path='users/wifi/:activeTab/:clientId/details/'
+        element={
+          <TenantNavigate replace to='/users/wifi/:activeTab/:clientId/details/overview' />
+        }
+      />
+      <Route
+        path='users/wifi/:activeTab/:clientId/details/:activeTab'
+        element={<WifiClientDetails />}
       />
     </Route>
   )

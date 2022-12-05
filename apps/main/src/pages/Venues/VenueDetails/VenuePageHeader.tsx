@@ -23,14 +23,13 @@ function DatePicker () {
 
   return (enableVenueAnalytics)
     ? <RangePicker
-      key='date-filter'
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
       enableDates={dateRangeForLast(3,'months')}
       onDateApply={setDateFilter as CallableFunction}
       showTimePicker
       selectionType={range}
     />
-    : <DisabledButton key='date-filter' icon={<ClockOutlined />}>
+    : <DisabledButton icon={<ClockOutlined />}>
       {$t({ defaultMessage: 'Last 24 Hours' })}
     </DisabledButton>
 }
@@ -51,7 +50,7 @@ function VenuePageHeader () {
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
       extra={[
-        <DatePicker />,
+        <DatePicker key='date-filter' />,
         <Button
           key='configure'
           type='primary'

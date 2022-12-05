@@ -2,10 +2,10 @@ import { useContext } from 'react'
 
 import moment from 'moment'
 
-import { BrowserRouter as Router }  from '@acx-ui/react-router-dom'
-import { act, renderHook }          from '@acx-ui/test-utils'
-import { TimeStampRange }           from '@acx-ui/types'
-import { DateRange, useDateFilter } from '@acx-ui/utils'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+import { act, renderHook }         from '@acx-ui/test-utils'
+import { TimeStampRange }          from '@acx-ui/types'
+import { resetRanges }             from '@acx-ui/utils'
 
 import {
   HealthPageContext,
@@ -17,6 +17,7 @@ const original = Date.now
 describe('HealthPageContextProvider', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetRanges()
   })
 
   afterAll(() => Date.now = original)
@@ -34,7 +35,11 @@ describe('HealthPageContextProvider', () => {
 
   it('update timeWindow when setTimeWindow called', async () => {
     const { result, rerender } = renderHook(() => useContext(HealthPageContext), {
-      wrapper: ({ children }) => <Router><HealthPageContextProvider children={children} /></Router>
+      wrapper: ({ children }) => <Router>
+        <HealthPageContextProvider>
+          {children}
+        </HealthPageContextProvider>
+      </Router>
     })
 
     expect(result.current.timeWindow).toEqual(expectedTimeWindow)
@@ -76,10 +81,10 @@ describe('HealthPageContextProvider', () => {
     }
 
     const { result, rerender } = renderHook(() => {
-      const filters = useDateFilter()
-      const startDate = moment(filters.startDate).utc().toISOString()
-      const endDate = moment(filters.endDate).utc().toISOString()
-      return { ...useContext(HealthPageContext), ...filters, startDate, endDate }
+      const context = useContext(HealthPageContext)
+      const startDate = moment(context.startDate).utc().toISOString()
+      const endDate = moment(context.endDate).utc().toISOString()
+      return { ...context, startDate, endDate }
     }, {
       wrapper: ({ children }) => <Router><Wrapper children={children} /></Router>
     })
@@ -94,11 +99,7 @@ describe('HealthPageContextProvider', () => {
       moment('2021-12-31T00:00:00+00:00').utc().toISOString()
     ]
 
-    act(() => result.current.setDateFilter!({
-      range: DateRange.custom,
-      startDate: nextTimeWindow[0],
-      endDate: nextTimeWindow[1]
-    }))
+    act(() => result.current.setTimeWindow!(nextTimeWindow as TimeStampRange))
 
     rerender()
 

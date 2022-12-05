@@ -3,12 +3,15 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
+import { resetRanges, fixedEncodeURIComponent } from '@acx-ui/utils'
+
 import { useAnalyticsFilter } from './analyticsFilter'
 
 const original = Date.now
 describe('useAnalyticsFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetRanges()
   })
 
   afterAll(() => Date.now = original)
@@ -34,7 +37,7 @@ describe('useAnalyticsFilter', () => {
     ],
     raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
   }
-  const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+  const path = fixedEncodeURIComponent(JSON.stringify(filter))
   it('should render correctly', () => {
     function Component () {
       const { filters } = useAnalyticsFilter()
@@ -89,7 +92,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
@@ -112,7 +115,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
@@ -137,7 +140,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
@@ -160,7 +163,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
@@ -183,7 +186,7 @@ describe('useAnalyticsFilter', () => {
       ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
-    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>

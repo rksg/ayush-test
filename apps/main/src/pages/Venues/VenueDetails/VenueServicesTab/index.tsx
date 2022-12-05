@@ -9,6 +9,11 @@ import { ServiceType }              from '@acx-ui/rc/utils'
 import DHCPInstance from './DHCPInstance'
 
 
+import { Tabs }        from '@acx-ui/components'
+import { ServiceType } from '@acx-ui/rc/utils'
+
+import MdnsProxyInstances from './MdnsProxyInstances'
+
 export function VenueServicesTab () {
   const { $t } = useIntl()
   const params = useParams()
@@ -34,9 +39,8 @@ export function VenueServicesTab () {
 
         </Tabs>
       </Tabs.TabPane>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })}
-        key={ServiceType.MDNS_PROXY}>
-        <p>Content of Tab Pane 1</p>
+       <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>
+        <MdnsProxyInstances />
       </Tabs.TabPane>
     </Tabs>
   )

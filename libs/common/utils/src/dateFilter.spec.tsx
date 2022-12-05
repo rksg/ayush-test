@@ -1,17 +1,17 @@
-import React from 'react'
-
 import { renderHook, render } from '@testing-library/react'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 
-import { useDateFilter }                                from './dateFilter'
-import { defaultRanges, DateRange, getDateRangeFilter } from './dateUtil'
+import { useDateFilter }                                             from './dateFilter'
+import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'
+import { fixedEncodeURIComponent }                                   from './encodedParameter'
 
 const original = Date.now
 describe('useDateFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetRanges()
   })
 
   afterAll(() => Date.now = original)
@@ -60,9 +60,11 @@ describe('useDateFilter', () => {
     }
     const location = {
       ...window.location,
-      search:
-        // eslint-disable-next-line max-len
-        '?period=eyJzdGFydERhdGUiOiIyMDIyLTA3LTIzVDE4OjMxOjAwKzA4OjAwIiwiZW5kRGF0ZSI6IjIwMjItMDctMjRUMTg6MzE6MDArMDg6MDAiLCJyYW5nZSI6Ikxhc3QgMjQgSG91cnMifQ=='
+      search: fixedEncodeURIComponent(JSON.stringify({
+        startDate: '2022-07-23T18:31:00+08:00',
+        endDate: '2022-07-24T18:31:00+08:00',
+        range: 'Last 24 Hours'
+      }))
     }
     Object.defineProperty(window, 'location', {
       writable: true,

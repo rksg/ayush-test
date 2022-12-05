@@ -12,6 +12,12 @@ import { IncidentBySeverityDonutChart } from '.'
 
 const sample = { P1: 0, P2: 2, P3: 3, P4: 4 } as IncidentsBySeverityData
 
+jest.mock('@acx-ui/icons', ()=> {
+  const icons = jest.requireActual('@acx-ui/icons')
+  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(keys)
+})
+
 describe('IncidentBySeverityDonutChart', () => {
   const filters = {
     startDate: '2022-01-01T00:00:00+08:00',
@@ -39,6 +45,19 @@ describe('IncidentBySeverityDonutChart', () => {
     const { asFragment } = render(
       <Provider>
         <IncidentBySeverityDonutChart filters={filters} />
+      </Provider>
+    )
+    await screen.findByText('Incidents')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+  it('should render no card style chart', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+      data: { network: { hierarchyNode: { ...sample } } }
+    })
+    const { asFragment } = render(
+      <Provider>
+        <IncidentBySeverityDonutChart type='no-card-style' filters={filters} />
       </Provider>
     )
     await screen.findByText('Incidents')

@@ -37,7 +37,221 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
       </span>
     </div>
     <div
-      class="sc-fEOsli bNatxU"
+      class="sc-bjUoiL lnemyN"
+    >
+      <div
+        class="ant-row"
+        style="margin: -10px -8px -10px -8px;"
+      >
+        <div
+          class="ant-col ant-col-12"
+          style="padding: 10px 8px 10px 8px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+            type="default"
+          >
+            <div
+              class="ant-card"
+            >
+              <div
+                class="ant-card-head"
+              >
+                <div
+                  class="ant-card-head-wrapper"
+                >
+                  <div
+                    class="ant-card-head-title"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                        >
+                          TEST_2
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-card-extra"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-card-body"
+              >
+                <div
+                  class="sc-gKXOVf LHzlb"
+                >
+                  <div>
+                    <div
+                      class="sc-jSMfEi bMgpfk device-container gallery"
+                      style="top: 9.839357%; left: 65.20548%;"
+                    >
+                      <div
+                        class="marker ap-status-severity-attention"
+                        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                      >
+                        <svg
+                          data-testid="SignalUp"
+                        />
+                         
+                      </div>
+                    </div>
+                    <div
+                      class="sc-jSMfEi bMgpfk device-container gallery"
+                      style="top: 7.056452%; left: 52.739727%;"
+                    >
+                      <div
+                        class="marker switch-status-never-contacted-cloud"
+                        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                      >
+                        <svg
+                          data-testid="DeviceOutlined"
+                        />
+                         
+                      </div>
+                    </div>
+                  </div>
+                  <img
+                    alt="img"
+                    data-testid="fpImage"
+                    src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                    style="width: auto; height: 100%;"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12"
+          style="padding: 10px 8px 10px 8px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+            type="default"
+          >
+            <div
+              class="ant-card"
+            >
+              <div
+                class="ant-card-head"
+              >
+                <div
+                  class="ant-card-head-wrapper"
+                >
+                  <div
+                    class="ant-card-head-title"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                        >
+                          dscx
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-card-extra"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-card-body"
+              >
+                <div
+                  class="sc-gKXOVf LHzlb"
+                >
+                  <div />
+                  <img
+                    alt="img"
+                    data-testid="fpImage"
+                    src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                    style="width: auto; height: 100%;"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center sc-hAZoDl bdSFjv"
+      >
+        <div
+          class="ant-space-item"
+          style="margin-right: 24px;"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            data-testid="AddEditLinks"
+            type="button"
+          >
+            <span>
+              + Add Floor Plan
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            style="cursor: not-allowed;"
+          >
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              disabled=""
+              style="pointer-events: none;"
+              type="button"
+            >
+              <span>
+                Unplaced Devices (0)
+              </span>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="sc-bjUoiL lnemyN"
     >
       <div
         class="ant-row ant-row-space-between"
@@ -111,12 +325,13 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         style="margin: 0px;"
       />
       <div
-        class="sc-iqcoie gjonlY"
+        class="sc-crXcEl iISlpP"
       >
         <div
-          class="sc-crXcEl bIKyNN"
+          class="sc-evZas khzpeU"
           data-testid="image-container"
         >
+          <div />
           <img
             alt="TEST_2"
             data-testid="floorPlanImage"
@@ -125,7 +340,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           />
         </div>
         <div
-          class="sc-evZas fMXKrO"
+          class="sc-breuTD jPunmx"
         >
           <div
             class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
@@ -165,7 +380,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-vertical sc-breuTD jPZPPH"
+        class="ant-space ant-space-vertical sc-ksZaOG hjKBLQ"
       >
         <div
           class="ant-space-item"
@@ -176,7 +391,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             data-testid="image-zoom-in"
             type="button"
           >
-            <div
+            <svg
               data-testid="MagnifyingGlassPlusOutlined"
             />
           </button>
@@ -200,7 +415,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             data-testid="image-zoom-out"
             type="button"
           >
-            <div
+            <svg
               data-testid="MagnifyingGlassMinusOutlined"
             />
           </button>
@@ -224,7 +439,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             data-testid="image-zoom-original"
             type="button"
           >
-            <div
+            <svg
               data-testid="SearchFullOutlined"
             />
           </button>
@@ -247,7 +462,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             data-testid="image-zoom-fit"
             type="button"
           >
-            <div
+            <svg
               data-testid="SearchFitOutlined"
             />
           </button>
@@ -257,17 +472,17 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         class="ant-row"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center sc-ftvSup kaRCgq"
+          class="ant-space ant-space-horizontal ant-space-align-center sc-papXJ kCOujv"
         >
           <div
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-papXJ bTQhPm"
+              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
               data-testid="galleryIcon"
               type="button"
             >
-              <div
+              <svg
                 data-testid="ApplicationsSolid"
               />
             </button>
@@ -277,20 +492,44 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           class="ant-col ant-col-23"
         >
           <div
-            class="ant-space ant-space-horizontal ant-space-align-center sc-gKXOVf jDtRez"
+            class="ant-space ant-space-horizontal ant-space-align-center sc-iBkjds clKEDl"
           >
             <div
               class="ant-space-item"
               style="margin-right: 4px;"
             >
               <div
-                class="sc-kDDrLX fnBzKa"
+                class="sc-iqcoie gurVXX"
               >
                 <div
                   active="1"
-                  class="ant-card-grid sc-iBkjds kkmNtr"
+                  class="ant-card-grid sc-ftvSup jMZzgQ"
                   data-testid="thumbnailBg"
                 >
+                  <div>
+                    <div
+                      class="sc-jSMfEi bMgpfk device-container context-Album"
+                      style="top: 9.839357%; left: 65.20548%;"
+                    >
+                      <div
+                        class="marker ap-status-severity-attention"
+                        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                      >
+                         
+                      </div>
+                    </div>
+                    <div
+                      class="sc-jSMfEi bMgpfk device-container context-Album"
+                      style="top: 7.056452%; left: 52.739727%;"
+                    >
+                      <div
+                        class="marker switch-status-never-contacted-cloud"
+                        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                      >
+                         
+                      </div>
+                    </div>
+                  </div>
                   <div
                     class="ant-image"
                   >
@@ -303,7 +542,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="sc-jqUVSM eSsbfn"
+                  class="sc-kDDrLX kNPqaQ"
                 >
                   TEST_2
                 </div>
@@ -313,13 +552,14 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               class="ant-space-item"
             >
               <div
-                class="sc-kDDrLX fnBzKa"
+                class="sc-iqcoie gurVXX"
               >
                 <div
                   active="0"
-                  class="ant-card-grid sc-iBkjds zCSKy"
+                  class="ant-card-grid sc-ftvSup kBjKN"
                   data-testid="thumbnailBg"
                 >
+                  <div />
                   <div
                     class="ant-image"
                   >
@@ -332,7 +572,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="sc-jqUVSM hpiOJJ"
+                  class="sc-kDDrLX iSVmu"
                 >
                   dscx
                 </div>
@@ -342,7 +582,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-ksZaOG fpDmbs"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-hAZoDl bdSFjv"
       >
         <div
           class="ant-space-item"

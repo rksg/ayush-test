@@ -6,7 +6,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
       type="default"
     >
       <div
@@ -22,9 +22,25 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
-                Incidents
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 4px;"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  >
+                    Incidents
+                  </div>
+                </div>
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    data-testid="HistoricalOutlined"
+                  />
+                </div>
               </div>
             </div>
             <div
@@ -32,7 +48,21 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center"
-              />
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
+                    title="Expand"
+                    type="button"
+                  >
+                    <div
+                      data-testid="ArrowChevronRight"
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -209,7 +239,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                       />
                       <text
                         dominant-baseline="central"
-                        fill="#333333"
+                        fill="#5496EA"
                         style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
                         transform="translate(85 659.1667)"
@@ -224,7 +254,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                       />
                       <text
                         dominant-baseline="central"
-                        fill="#333333"
+                        fill="#5496EA"
                         style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
                         transform="translate(85 395.5)"
@@ -239,7 +269,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                       />
                       <text
                         dominant-baseline="central"
-                        fill="#333333"
+                        fill="#5496EA"
                         style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
                         transform="translate(85 131.8333)"

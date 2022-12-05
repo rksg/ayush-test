@@ -198,6 +198,7 @@ exports[`Select Service Form should render form 1`] = `
                                 </div>
                                 <div
                                   class="ant-space-item"
+                                  style="margin-right: 8px;"
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -220,6 +221,34 @@ exports[`Select Service Form should render form 1`] = `
                                         class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
                                       >
                                         RUCKUS Dynamic Pre Shared Key Service
+                                      </div>
+                                    </span>
+                                  </label>
+                                </div>
+                                <div
+                                  class="ant-space-item"
+                                >
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-radio"
+                                    >
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="Network Segmentation"
+                                      />
+                                      <span
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Network Segmentation
+                                      <div
+                                        class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                      >
+                                        Controls network traffic by different segments
                                       </div>
                                     </span>
                                   </label>
@@ -351,7 +380,7 @@ exports[`Select Service Form should render form 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
               type="button"
             >
               <span>

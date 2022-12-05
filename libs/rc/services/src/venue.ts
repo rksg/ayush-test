@@ -39,7 +39,9 @@ import {
   TriBandSettings,
   AvailableLteBands,
   VenueApModelCellular,
-  UploadUrlResponse
+  UploadUrlResponse,
+  NetworkDeviceResponse,
+  NetworkDevicePayload
 } from '@acx-ui/rc/utils'
 
 
@@ -252,6 +254,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
+    }),
+    getAllDevices: build.query<NetworkDeviceResponse, RequestPayload<NetworkDevicePayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getAllDevices, params)
+        return {
+          ...req,
+          body: payload as NetworkDevicePayload
+        }
+      }
     }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
@@ -621,9 +632,11 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
+  useLazyGetVenueQuery,
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
   useGetVenueSettingsQuery,
+  useLazyGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
@@ -634,11 +647,13 @@ export const {
   useAddFloorPlanMutation,
   useGetUploadURLMutation,
   useUpdateFloorPlanMutation,
+  useGetAllDevicesQuery,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
   useGetVenueLanPortsQuery,
+  useLazyGetVenueLanPortsQuery,
   useUpdateVenueLanPortsMutation,
   useVenueSwitchAAAServerListQuery,
   useGetAaaSettingQuery,

@@ -109,7 +109,7 @@ describe('VenueNetworksTab', () => {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const requestSpy = jest.fn()
 

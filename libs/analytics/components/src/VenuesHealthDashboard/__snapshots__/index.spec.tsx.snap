@@ -6,7 +6,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
       type="default"
     >
       <div
@@ -22,12 +22,28 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
-                Client Experience
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 4px;"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  >
+                    Client Experience
+                  </div>
+                </div>
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    data-testid="HistoricalOutlined"
+                  />
+                </div>
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-5 WCnhY"
+                class="styledComponents__SubTitle-sc-13w5wfx-6 kpCmOz"
               >
                 Top 5 Venues/Services with poor experience
               </div>
@@ -37,7 +53,21 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center"
-              />
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
+                    title="Expand"
+                    type="button"
+                  >
+                    <div
+                      data-testid="ArrowChevronRight"
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -108,7 +138,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                 class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd exmmDQ"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
                 >
                   <div
                     class="ant-space-item"
@@ -147,7 +177,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
       type="default"
     >
       <div
@@ -163,12 +193,28 @@ exports[`HealthWidget should render widget with proper data 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 bHAubW"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
-                Client Experience
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 4px;"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  >
+                    Client Experience
+                  </div>
+                </div>
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    data-testid="HistoricalOutlined"
+                  />
+                </div>
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-5 WCnhY"
+                class="styledComponents__SubTitle-sc-13w5wfx-6 kpCmOz"
               >
                 Top 5 Venues/Services with poor experience
               </div>
@@ -178,7 +224,21 @@ exports[`HealthWidget should render widget with proper data 1`] = `
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center"
-              />
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
+                    title="Expand"
+                    type="button"
+                  >
+                    <div
+                      data-testid="ArrowChevronRight"
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -284,26 +344,9 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                     style="overflow-x: auto; overflow-y: hidden;"
                                   >
                                     <table
-                                      style="min-width: 100%; table-layout: auto;"
+                                      style="width: 100%; min-width: 100%; table-layout: auto;"
                                     >
-                                      <colgroup>
-                                        <col />
-                                        <col
-                                          style="width: 40px;"
-                                        />
-                                        <col
-                                          style="width: 40px;"
-                                        />
-                                        <col
-                                          style="width: 80px;"
-                                        />
-                                        <col
-                                          style="width: 90px;"
-                                        />
-                                        <col
-                                          style="width: 40px;"
-                                        />
-                                      </colgroup>
+                                      <colgroup />
                                       <thead
                                         class="ant-table-thead"
                                       >
@@ -414,7 +457,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/f0997ab93fa24670a961c98446d47ae6/venue-details/overview"
@@ -461,19 +504,10 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            43%
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
-                                              1%
-                                            </span>
                                             <span
-                                              class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                              data-tooltip="11.3K of 26.5K attempts"
                                             >
-                                              Under 2 s
+                                              43%
                                             </span>
                                           </td>
                                           <td
@@ -481,19 +515,44 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span>
+                                              <span
+                                                data-tooltip="20 of 1.44K connections under 2 seconds"
+                                              >
+                                                1%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                Under 2 s
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span>
+                                              <span
+                                                data-tooltip="675 of 675 sessions above 10 Mbps"
+                                              >
+                                                100%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                Above 10 Mbps
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              data-tooltip="1 of 1 APs online"
+                                            >
                                               100%
                                             </span>
-                                            <span
-                                              class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
-                                            >
-                                              Above 10 Mbps
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            100%
                                           </td>
                                         </tr>
                                         <tr
@@ -504,7 +563,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/96bf314d575341cf95942caa2b072106/venue-details/overview"
@@ -551,19 +610,10 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            94%
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
-                                              100%
-                                            </span>
                                             <span
-                                              class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                              data-tooltip="68 of 72 attempts"
                                             >
-                                              Under 2 s
+                                              94%
                                             </span>
                                           </td>
                                           <td
@@ -571,19 +621,44 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span>
-                                              18%
-                                            </span>
-                                            <span
-                                              class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
-                                            >
-                                              Above 10 Mbps
+                                              <span
+                                                data-tooltip="27 of 27 connections under 2 seconds"
+                                              >
+                                                100%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                Under 2 s
+                                              </span>
                                             </span>
                                           </td>
                                           <td
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            50%
+                                            <span>
+                                              <span
+                                                data-tooltip="2 of 11 sessions above 10 Mbps"
+                                              >
+                                                18%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                Above 10 Mbps
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              data-tooltip="2 of 4 APs online"
+                                            >
+                                              50%
+                                            </span>
                                           </td>
                                         </tr>
                                         <tr
@@ -594,7 +669,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/e5d28cb30cb44be9bea1c8e7135da928/venue-details/overview"
@@ -641,19 +716,10 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            71%
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
-                                              93%
-                                            </span>
                                             <span
-                                              class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
+                                              data-tooltip="251 of 354 attempts"
                                             >
-                                              Under 2 s
+                                              71%
                                             </span>
                                           </td>
                                           <td
@@ -661,19 +727,44 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span>
+                                              <span
+                                                data-tooltip="27 of 29 connections under 2 seconds"
+                                              >
+                                                93%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                Under 2 s
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span>
+                                              <span
+                                                data-tooltip="15 of 15 sessions above 10 Mbps"
+                                              >
+                                                100%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                Above 10 Mbps
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              data-tooltip="12 of 12 APs online"
+                                            >
                                               100%
                                             </span>
-                                            <span
-                                              class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
-                                            >
-                                              Above 10 Mbps
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            100%
                                           </td>
                                         </tr>
                                         <tr
@@ -684,7 +775,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/1c0683276dce48679013dea12bf6abe0/venue-details/overview"
@@ -731,19 +822,27 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            80%
+                                            <span
+                                              data-tooltip="4 of 5 attempts"
+                                            >
+                                              80%
+                                            </span>
                                           </td>
                                           <td
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
                                             <span>
-                                              100%
-                                            </span>
-                                            <span
-                                              class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
-                                            >
-                                              Under 2 s
+                                              <span
+                                                data-tooltip="2 of 2 connections under 2 seconds"
+                                              >
+                                                100%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                Under 2 s
+                                              </span>
                                             </span>
                                           </td>
                                           <td
@@ -758,7 +857,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            100%
+                                            <span
+                                              data-tooltip="1 of 1 APs online"
+                                            >
+                                              100%
+                                            </span>
                                           </td>
                                         </tr>
                                         <tr
@@ -769,7 +872,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 gbWRA-d"
+                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
                                                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/555548721e264115bda45a75043f65d7/venue-details/overview"
@@ -816,7 +919,11 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            81%
+                                            <span
+                                              data-tooltip="22 of 27 attempts"
+                                            >
+                                              81%
+                                            </span>
                                           </td>
                                           <td
                                             class="ant-table-cell"
@@ -831,19 +938,27 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span>
-                                              100%
-                                            </span>
-                                            <span
-                                              class="styledComponents__KpiShortText-sc-s2cdzz-5 styledComponents__ThresholdText-sc-hs49h-2 SzMSs bBDJpT"
-                                            >
-                                              Above 10 Mbps
+                                              <span
+                                                data-tooltip="4 of 4 sessions above 10 Mbps"
+                                              >
+                                                100%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                Above 10 Mbps
+                                              </span>
                                             </span>
                                           </td>
                                           <td
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            100%
+                                            <span
+                                              data-tooltip="5 of 5 APs online"
+                                            >
+                                              100%
+                                            </span>
                                           </td>
                                         </tr>
                                       </tbody>

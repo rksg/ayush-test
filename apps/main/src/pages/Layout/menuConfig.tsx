@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
 import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   AIOutlined as AIOutlinedBase,
   AISolid as AISolidBase,
@@ -94,18 +95,18 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Devices' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
-      // TODO: add back when needed, comment for now
-      // routes: [
-      //   {
-      //     path: '/devices/aps',
-      //     name: $t({ defaultMessage: 'WiFi' })
-      //   },
-      //   {
-      //     path: '/devices/switches',
-      //     name: $t({ defaultMessage: 'Switch' })
-      //   }
-      // ],
-      disabled: true
+      disabled: !useIsSplitOn(Features.DEVICES),
+      routes:
+        [
+          {
+            path: '/devices/aps',
+            name: $t({ defaultMessage: 'WiFi' })
+          },
+          {
+            path: '/devices/switches',
+            name: $t({ defaultMessage: 'Switch' })
+          }
+        ]
     },
     {
       path: '/networks',
@@ -118,21 +119,31 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Services' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.SERVICES)
     },
     {
       path: '/policies',
       name: $t({ defaultMessage: 'Policies' }),
       inactiveIcon: PoliciesOutlined,
       activeIcon: PoliciesSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.POLICIES)
     },
     {
       path: '/users',
       name: $t({ defaultMessage: 'Users' }),
       inactiveIcon: AccountCircleOutlined,
       activeIcon: AccountCircleSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.USERS),
+      routes: [
+        {
+          path: '/users/aps',
+          name: $t({ defaultMessage: 'WiFi' })
+        },
+        {
+          path: '/users/switches',
+          name: $t({ defaultMessage: 'Switch' })
+        }
+      ]
     },
     genPlaceholder(),
     {

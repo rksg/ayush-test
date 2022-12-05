@@ -505,9 +505,9 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg>
-                                                      SettingsOutlined.svg
-                                                    </svg>
+                                                    <svg
+                                                      data-testid="SettingsOutlined"
+                                                    />
                                                   </div>
                                                 </div>
                                               </div>
@@ -1068,7 +1068,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
                   type="button"
                 >
                   <span>

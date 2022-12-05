@@ -9,8 +9,11 @@ import {
   baseServiceApi as serviceApi,
   apApi,
   baseUserApi as userApi,
+  baseDhcpApi as dhcpApi,
   baseMspApi as mspApi,
-  basePolicyApi as policyApi
+  baseEdgeApi as edgeApi,
+  basePolicyApi as policyApi,
+  baseClientApi as clientApi
 } from '@acx-ui/rc/services'
 
 export const store = configureStore({
@@ -22,9 +25,12 @@ export const store = configureStore({
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [dataApi.reducerPath]: dataApi.reducer,
+    [dhcpApi.reducerPath]: dhcpApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
     [mspApi.reducerPath]: mspApi.reducer,
-    [policyApi.reducerPath]: policyApi.reducer
+    [edgeApi.reducerPath]: edgeApi.reducer,
+    [policyApi.reducerPath]: policyApi.reducer,
+    [clientApi.reducerPath]: clientApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -40,9 +46,12 @@ export const store = configureStore({
       apApi.middleware,
       userApi.middleware,
       dataApi.middleware,
+      dhcpApi.middleware,
       serviceApi.middleware,
       mspApi.middleware,
-      policyApi.middleware
+      edgeApi.middleware,
+      policyApi.middleware,
+      clientApi.middleware
     ])
   },
 

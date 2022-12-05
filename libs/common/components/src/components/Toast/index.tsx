@@ -1,7 +1,10 @@
-import { CloseOutlined } from '@ant-design/icons'
-import { message }       from 'antd'
-import { ArgsProps }     from 'antd/lib/message'
-import { v4 as uuidv4 }  from 'uuid'
+import { CloseOutlined }   from '@ant-design/icons'
+import { message }         from 'antd'
+import { ArgsProps }       from 'antd/lib/message'
+import { RawIntlProvider } from 'react-intl'
+import { v4 as uuidv4 }    from 'uuid'
+
+import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -35,7 +38,7 @@ export const showToast = (config: ToastProps): string | number => {
     icon: <></>,
     duration: durationMap[config.type],
     ...config,
-    content: toastContent(key, config)
+    content: <RawIntlProvider value={getIntl()} children={toastContent(key, config)} />
   })
   return key
 }
@@ -43,7 +46,7 @@ export const showToast = (config: ToastProps): string | number => {
 const toastContent = (key: string | number, config: ToastProps) => {
   const { content, extraContent, link, type: toastType, onClose, closable = true } = config
   return (
-    <UI.Toast>
+    <UI.Toast data-testid='toast-content'>
       <UI.Content>
         <label>{content}</label>
         { extraContent || null }
