@@ -12,7 +12,8 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  dhcpResponse
+  dhcpResponse,
+  selfsignData
 } from '../__tests__/fixtures'
 import NetworkForm from '../NetworkForm'
 
@@ -22,20 +23,18 @@ async function fillInBeforeSettings (networkName: string) {
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating)
-
-  await userEvent.click(await screen.findByRole('radio', { name: /through a captive portal/ }))
   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
   await waitFor(async () => {
     expect(await screen.findByRole('heading', { level: 3, name: 'Portal Type' })).toBeVisible()
   })
-  await userEvent.click(await screen.findByRole('radio', { name: /social media account/ }))
   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 }
 
 describe('CaptiveNetworkForm-SelfSignIn', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'Self sign in network test'
+    const selfSignInRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
+      guestPortal: selfsignData.guestPortal }
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -54,15 +53,15 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+        (_, res, ctx) => res(ctx.json(selfSignInRes))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
+        (_, res, ctx) => res(ctx.json({ response: [selfSignInRes] })))
     )
   })
 
-  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it('should create Self sign in network successfully', async () => {
+  it('should test Self sign in network successfully', async () => {
     const { asFragment } = render(<Provider><NetworkForm /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
 
@@ -71,20 +70,14 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /SMS Token/ }))
     await userEvent.click(await screen.findByText('Next'))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable Ruckus DHCP service/ }))
     await userEvent.click(await screen.findByText('More details'))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
-    await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Facebook/ }))
-    await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Google/ }))
-    await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Twitter/ }))
-    await userEvent.click(await screen.findByRole('checkbox',
-      { name: /LinkedIn/ }))
     await userEvent.click(await screen.findByRole('checkbox', { name: /Allowed Domains/ }))
     const domainsInput = await screen.findByPlaceholderText('Enter domain(s) separated by comma')
     fireEvent.change(domainsInput, { target: { value: 'www.123.com,222.com' } })

@@ -210,7 +210,7 @@ exports[`PortalSummaryForm should render host approval successfully 1`] = `
             <div
               class="ant-form-item-control-input-content"
             >
-              Original URL request
+              dbaidu.com
             </div>
           </div>
         </div>
@@ -377,7 +377,7 @@ exports[`PortalSummaryForm should render self sign in successfully 1`] = `
             <div
               class="ant-form-item-control-input-content"
             >
-              Original URL request
+              dbaidu.com
             </div>
           </div>
         </div>

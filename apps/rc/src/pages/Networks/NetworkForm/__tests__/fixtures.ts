@@ -238,20 +238,14 @@ export const policyListResponse = {
   page: 1
 }
 export const dhcpResponse = {
-  fields: [
-    'name','vlanId','subnetAddress','subnetMask','startIpAddress','endIpAddress',
-    'primaryDnsIp','secondaryDnsIp','leaseTimeHours','leaseTimeMinutes','id'
-  ],
-  data:
-    {
-      id: '6cf550cdb67641d798d804793aaa82db',name: 'My-DHCP',
-      vlanId: 0,subnetAddress: '2.2.2.3',subnetMask: '255.255.255.0',
-      startIpAddress: '10.2.2.2',endIpAddress: '10.2.2.20',primaryDnsIp: '10.1.1.1',
-      secondaryDnsIp: '10.2.3.3',leaseTimeHours: 2, leaseTimeMinutes: 2
-    }
+  id: '6cf550cdb67641d798d804793aaa82db',name: 'My-DHCP',
+  vlanId: 0,subnetAddress: '2.2.2.3',subnetMask: '255.255.255.0',
+  startIpAddress: '10.2.2.2',endIpAddress: '10.2.2.20',primaryDnsIp: '10.1.1.1',
+  secondaryDnsIp: '10.2.3.3',leaseTimeHours: 2, leaseTimeMinutes: 2
 }
 export const hostapprovalData={
   guestPortal: {
+    redirectUrl: 'dbaidu.com',
     guestNetworkType: GuestNetworkTypeEnum.HostApproval,
     hostGuestConfig: {
       hostDomains: ['aa.com'],
@@ -305,8 +299,27 @@ export const wisprDataWPA23={
     saePassphrase: 'bbbbbbbbb'
   }
 }
+export const wisprDataWPA2={
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'Select provider',
+      authRadius: { secondary: true },
+      accountingRadius: { secondary: true }
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+	  wlanSecurity: WlanSecurityEnum.WPA2Personal,
+	  passphrase: 'aaaaaaaaaa'
+  }
+}
 export const selfsignData={
   guestPortal: {
+    redirectUrl: 'dbaidu.com',
     guestNetworkType: GuestNetworkTypeEnum.SelfSignIn,
     enableSmsLogin: true,
     socialIdentities: {
@@ -316,6 +329,7 @@ export const selfsignData={
       linkedin: { source: SocialIdentitySource.CUSTOM }
     },
     socialEmails: true,
+    socialDomains: ['http://123.com'],
     smsPasswordDuration: {
       duration: 12,
       unit: TimeUnitEnum.HOUR

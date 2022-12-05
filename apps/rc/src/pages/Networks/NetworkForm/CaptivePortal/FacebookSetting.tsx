@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 
 import { Form, Input, Tooltip } from 'antd'
-import { useIntl }     from 'react-intl'
+import { useIntl }              from 'react-intl'
 
 import { Modal } from '@acx-ui/components'
 

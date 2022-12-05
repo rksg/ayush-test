@@ -14,6 +14,7 @@ import {
 import {
   portalList
 } from '../__tests__/fixtures'
+import NetworkFormContext from '../NetworkFormContext'
 
 import PortalInstance from '.'
 
@@ -29,10 +30,14 @@ describe('Portal Instance Page', () => {
 
   it('should render instance page', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const { asFragment } = render(<Provider><Form><PortalInstance/></Form></Provider>,
-      {
-        route: { params }
-      })
+    const { asFragment } = render(<Provider><NetworkFormContext.Provider value={{
+      editMode: false, cloneMode: false, data: { guestPortal:
+        { enableSmsLogin: true, socialIdentities: {} } }
+    }}><Form><PortalInstance />
+      </Form></NetworkFormContext.Provider></Provider>,
+    {
+      route: { params }
+    })
     expect(asFragment()).toMatchSnapshot()
     await userEvent.click(await screen.findByText('Add Guest Portal Service'))
     await userEvent.click(await screen.findByText('Cancel'))

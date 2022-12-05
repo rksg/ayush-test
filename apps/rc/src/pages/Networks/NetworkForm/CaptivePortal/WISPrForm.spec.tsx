@@ -13,7 +13,8 @@ import {
   successResponse,
   networkDeepResponse,
   dhcpResponse,
-  externalProviders
+  externalProviders,
+  wisprDataWPA2
 } from '../__tests__/fixtures'
 import NetworkForm from '../NetworkForm'
 
@@ -23,20 +24,20 @@ async function fillInBeforeSettings (networkName: string) {
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating)
-
-  await userEvent.click(await screen.findByRole('radio', { name: /through a captive portal/ }))
   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
   await waitFor(async () => {
     expect(await screen.findByRole('heading', { level: 3, name: 'Portal Type' })).toBeVisible()
   })
-  await userEvent.click(await screen.findByRole('radio', { name: /3rd party captive portal/ }))
   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 }
 
 describe('CaptiveNetworkForm-WISPr', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'WISPr network test'
+    const wisprRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
+      guestPortal: wisprDataWPA2.guestPortal,
+      wlan: { ...networkDeepResponse.wlan, ...wisprDataWPA2.wlan } }
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -57,15 +58,15 @@ describe('CaptiveNetworkForm-WISPr', () => {
       rest.get(CommonUrlsInfo.getExternalProviders.url,
         (_, res, ctx) => res(ctx.json( externalProviders ))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+        (_, res, ctx) => res(ctx.json(wisprRes))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
+        (_, res, ctx) => res(ctx.json({ response: [wisprRes] })))
     )
   })
 
-  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it('should create WISPr network successfully', async () => {
+  it('should test WISPr network successfully', async () => {
     const { asFragment } = render(<Provider><NetworkForm /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
 
@@ -82,9 +83,6 @@ describe('CaptiveNetworkForm-WISPr', () => {
     const providerNameInput = await screen.findByLabelText(/Provider Name/)
     fireEvent.change(providerNameInput, { target: { value: 'namep1' } })
     fireEvent.blur(providerNameInput)
-    await userEvent.click(await screen.findByRole('switch'))
-    await userEvent.click((await screen.findAllByText('Add Secondary Server'))[0])
-    await userEvent.click((await screen.findAllByText('Add Secondary Server'))[0])
     const ips = await screen.findAllByLabelText(/IP Address/)
     const secrets = await screen.findAllByLabelText(/Shared secret/)
     fireEvent.change(ips[0], { target: { value: '2.3.3.4' } })
@@ -109,13 +107,14 @@ describe('CaptiveNetworkForm-WISPr', () => {
 
     await userEvent.click((await screen.findAllByText('Remove Secondary Server'))[0])
     await userEvent.click((await screen.findAllByText('Remove Secondary Server'))[0])
+    await userEvent.click((await screen.findAllByText('Add Secondary Server'))[0])
+    await userEvent.click((await screen.findAllByText('Add Secondary Server'))[0])
     await userEvent.click(await screen.findByRole('switch'))
 
     const insertInput = await screen.findByLabelText(/Captive Portal URL/)
     fireEvent.change(insertInput, { target: { value: 'http://ruckus.abc.com' } })
     fireEvent.blur(insertInput)
     await userEvent.click(await screen.findByText('Copy Key'))
-    await userEvent.click(await screen.findByRole('checkbox', { name: /Enable Pre-Shared Key/ }))
     await userEvent.click((await screen.findAllByTitle('WPA2 (Recommended)'))[0])
     await userEvent.click((await screen.findAllByTitle('WEP'))[0])
     const hexKey = await screen.findByLabelText(/Hex Key/)
@@ -133,7 +132,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
     fireEvent.blur(wpa3Pass)
 
     const walledGarden = await screen.findByLabelText(/Walled Garden/)
-    fireEvent.change(walledGarden, { target: { value: 'aa.com' } })
+    fireEvent.change(walledGarden, { target: { value: 'test123.com' } })
     fireEvent.blur(walledGarden)
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')

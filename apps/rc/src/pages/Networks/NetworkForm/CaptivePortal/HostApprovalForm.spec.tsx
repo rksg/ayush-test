@@ -12,7 +12,8 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  dhcpResponse
+  dhcpResponse,
+  hostapprovalData
 } from '../__tests__/fixtures'
 import NetworkForm from '../NetworkForm'
 
@@ -22,20 +23,19 @@ async function fillInBeforeSettings (networkName: string) {
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating)
-
-  await userEvent.click(await screen.findByRole('radio', { name: /through a captive portal/ }))
   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
   await waitFor(async () => {
     expect(await screen.findByRole('heading', { level: 3, name: 'Portal Type' })).toBeVisible()
   })
-  await userEvent.click(await screen.findByRole('radio', { name: /Users register their details/ }))
   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 }
 
 describe('CaptiveNetworkForm-HostApproval', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'Host approval network test'
+    const hostDataRes= { ...networkDeepResponse, enableDhcp: true, type: 'guest',
+      guestPortal: hostapprovalData.guestPortal }
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -54,15 +54,15 @@ describe('CaptiveNetworkForm-HostApproval', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+        (_, res, ctx) => res(ctx.json(hostDataRes))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
+        (_, res, ctx) => res(ctx.json({ response: [hostDataRes] })))
     )
   })
 
-  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it('should create Host approval network successfully', async () => {
+  it('should test Host approval network successfully', async () => {
     const { asFragment } = render(<Provider><NetworkForm /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
 
