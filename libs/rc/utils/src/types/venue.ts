@@ -1,13 +1,13 @@
 import { Key } from 'react'
 
-import { CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
-import { BandBalancing }                                                      from '../models/BandBalancing'
-import { DenialOfServiceProtection }                                          from '../models/DenialOfServiceProtection'
-import { Mesh }                                                               from '../models/Mesh'
-import { VenueDhcpServiceSetting }                                            from '../models/VenueDhcpServiceSetting'
-import { VenueRadioCustomization }                                            from '../models/VenueRadioCustomization'
-import { VenueRogueAp }                                                       from '../models/VenueRogueAp'
-import { VenueSyslog }                                                        from '../models/VenueSyslog'
+import { ApDeviceStatusEnum, CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
+import { BandBalancing }                                                                          from '../models/BandBalancing'
+import { DenialOfServiceProtection }                                                              from '../models/DenialOfServiceProtection'
+import { Mesh }                                                                                   from '../models/Mesh'
+import { VenueDhcpServiceSetting }                                                                from '../models/VenueDhcpServiceSetting'
+import { VenueRadioCustomization }                                                                from '../models/VenueRadioCustomization'
+import { VenueRogueAp }                                                                           from '../models/VenueRogueAp'
+import { VenueSyslog }                                                                            from '../models/VenueSyslog'
 
 
 import { ApStatusDetails, ApModel, LanPort } from './ap'
@@ -73,6 +73,86 @@ export interface FloorPlanDto {
 	imageUrl?: string,
 	imageBlob?: string, //used for SVG
 	imageName?: string
+}
+
+export interface TypeWiseNetworkDevices {
+	ap: NetworkDevice[];
+	switches: NetworkDevice[];
+	LTEAP: NetworkDevice[];
+	RogueAP: NetworkDevice[];
+	cloudpath: NetworkDevice[];
+	DP: NetworkDevice[];
+}
+
+export enum FloorplanContext {
+	venue = 'Venue',
+	album = 'Album',
+	unplaced = 'Unplaced',
+	ap = 'Ap',
+	switch = 'Switch',
+	lte_ap = 'LteAp',
+	rogue_ap = 'RogueAp',
+	cloudpath = 'Cloudpath'
+  }
+
+export interface APStatus {
+	message: string;
+	icon: string;
+	color: string;
+  }
+
+export interface NetworkDevicePayload {
+	fields: string[];
+	pageSize: number;
+	sortField: string;
+	sortOrder: string;
+}
+
+export enum NetworkDeviceType {
+	ap = 'ap',
+	switch = 'switches',
+	lte_ap = 'LTEAP',
+	rogue_ap = 'RogueAP',
+	cloudpath = 'cloudpath',
+	dp = 'DP'
+}
+export interface NetworkDevice {
+    id?: string; // used by devices type other than AP & switch
+	name: string;
+	switchName?: string;
+	deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum;
+	networkDeviceType: NetworkDeviceType;
+	serialNumber: string;
+	floorplanId?: string;
+	xPercent?: number;
+	yPercent?: number;
+	position?: NetworkDevicePosition;
+	isActive?: boolean;
+	rogueCategory?: string;
+	snr?: number;
+	macAddress?: string;
+	rogueCategoryType?: RogueDeviceCategoryType;
+}
+
+export enum RogueDeviceCategoryType {
+	malicious = 'Malicious',
+	ignored = 'Ignored',
+	unclassified = 'Unclassified',
+	known = 'Known'
+}
+
+export interface NetworkDevicePosition {
+	floorplanId?: string;
+	xPercent?: number;
+	yPercent?: number;
+	x?: number;
+	y?: number;
+}
+export interface NetworkDeviceResponse {
+	fields: string[];
+	totalCount: number;
+	page: number;
+	data: { [key in NetworkDeviceType ]: NetworkDevice[] }[];
 }
 
 export interface FloorPlanImage {
@@ -363,6 +443,55 @@ export interface VenueDefaultRegulatoryChannelsForm {
 	  changeInterval: number,
 	  txPower: string
 	}
+}
+
+export interface ApRadioChannelsForm {
+  apRadioParams24G: {
+	allowedChannels: string[],
+	changeInterval: number,
+	channelBandwidth: string,
+	manualChannel: number,
+	method: string,
+	txPower: string
+  },
+  apRadioParams50G: {
+	allowedChannels: string[],
+	changeInterval: number,
+	channelBandwidth: string,
+	manualChannel: number,
+	method: string,
+	txPower: string
+  },
+  apRadioParams6G: {
+	bssMinRate6G: string,
+	changeInterval: number,
+	channelBandwidth: string,
+	manualChannel: number,
+	method: string,
+	mgmtTxRate6G: string,
+	txPower: string
+  },
+  apRadioParamsDual5G: {
+	enabled: boolean,
+	radioParamsLower5G: {
+	  changeInterval: number,
+	  channelBandwidth: string,
+	  manualChannel: number,
+	  method: string,
+	  txPower: string
+	},
+	radioParamsUpper5G: {
+	  changeInterval: number,
+	  channelBandwidth: string,
+	  manualChannel: number,
+	  method: string,
+	  txPower: string
+	}
+  },
+  enable6G: boolean,
+  enable24G: boolean,
+  enable50G: boolean,
+  useVenueSettings: boolean
 }
 
 export interface AvailableLteBands {

@@ -1,42 +1,31 @@
-import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { useAnalyticsFilter }                           from '@acx-ui/analytics/utils'
-import { categoryNames, categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
-import { AnalyticsFilter }                              from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, Tabs }                       from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
+import {
+  useAnalyticsFilter,
+  categoryTabs,
+  CategoryTab,
+  CategoryOption,
+  categoryCodeMap,
+  IncidentCode,
+  AnalyticsFilter
+}                                                from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, Tabs }                from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { Header }             from '../Header'
 import { IncidentBySeverity } from '../IncidentBySeverity'
 import { IncidentTable }      from '../IncidentTable'
 import { NetworkHistory }     from '../NetworkHistory'
 
-const incidentTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
-type IncidentListTabs = 'overview' | 'connection' | 'performance' | 'infrastructure'
-
-const tabsMap : Record<IncidentListTabs, MessageDescriptor> = {
-  connection: defineMessage({
-    defaultMessage: 'Connection'
-  }),
-  overview: defineMessage({
-    defaultMessage: 'Overview'
-  }),
-  performance: defineMessage({
-    defaultMessage: 'Performance'
-  }),
-  infrastructure: defineMessage({
-    defaultMessage: 'Infrastructure'
-  })
-}
-
-export const IncidentTabContent = (props: { tabSelection?: IncidentListTabs,
-  filters? : AnalyticsFilter }) => {
+export const IncidentTabContent = (props: {
+  tabSelection?: CategoryTab,
+  filters? : AnalyticsFilter
+}) => {
   const { tabSelection,filters: widgetFilters } = props
   const { filters } = useAnalyticsFilter()
   const incidentsPageFilters = widgetFilters ? widgetFilters : filters
-  const incidentCodesBasedOnCategory: IncidentCode[] | undefined = categoryCodeMap[
-    tabSelection as Exclude<IncidentListTabs, 'overview'>
-  ]?.codes as IncidentCode[]
+  const incidentCodesBasedOnCategory: IncidentCode[] | undefined
+    = categoryCodeMap[tabSelection as CategoryOption]?.codes as IncidentCode[]
 
   return (
     <GridRow>
@@ -62,7 +51,7 @@ export const IncidentTabContent = (props: { tabSelection?: IncidentListTabs,
 
 function IncidentListPage () {
   const { $t } = useIntl()
-  const { activeTab = incidentTabs[0].value } = useParams()
+  const { activeTab = categoryTabs[0].value } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/tab/')
 
@@ -77,14 +66,16 @@ function IncidentListPage () {
         title={$t({ defaultMessage: 'Incidents' })}
         shouldQuerySwitch
         withIncidents
-        footer={<Tabs activeKey={activeTab} onChange={onTabChange}>
-          {incidentTabs.map((tabInfo) => (
-            <Tabs.TabPane
-              tab={$t(tabsMap[tabInfo.value as IncidentListTabs])}
-              key={tabInfo.value} />
-          ))}
-        </Tabs>} />
-      <IncidentTabContent tabSelection={activeTab as IncidentListTabs} /></>
+        footer={
+          <Tabs activeKey={activeTab} onChange={onTabChange}>
+            {categoryTabs.map(({ value, label }) => (
+              <Tabs.TabPane tab={$t(label)} key={value} />
+            ))}
+          </Tabs>
+        }
+      />
+      <IncidentTabContent tabSelection={activeTab as CategoryTab} />
+    </>
   )
 }
 export { IncidentListPage }

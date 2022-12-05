@@ -89,6 +89,18 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
   },
+  getAp: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=false'
+  },
+  getApLanPorts: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
+  },
+  getApRadioCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
   getWifiCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities'
@@ -96,10 +108,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   addAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap'
-  },
-  getAp: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber'
   },
   updateAp: {
     method: 'put',
@@ -129,6 +137,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/ap'
   },
+  deleteSoloAp: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber?resetFirmware=true'
+  },
+  deleteSoloAps: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/?resetFirmware=true'
+  },
   downloadApLog: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/download-log'
@@ -140,5 +156,69 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   factoryResetAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
+  },
+  getApPhoto: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture'
+  },
+  addApPhoto: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep'
+  },
+  deleteApPhoto: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture'
+  },
+  getApRadio: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  updateApRadio: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  deleteApRadio: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
+  },
+  pingAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'
+  },
+  traceRouteAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
+  },
+  startPacketCapture: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start'
+  },
+  stopPacketCapture: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop'
+  },
+  getPacketCaptureState: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture'
+  },
+  blinkLedAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led'
+  },
+  updateApLanPorts: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
+  },
+  getApCapabilities: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
+  },
+  updateApCustomization: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
+  },
+  resetApCustomization: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
   }
 }

@@ -12,7 +12,13 @@ import { apDetailData } from './__tests__/fixtures'
 import ApDetails from '.'
 
 /* eslint-disable max-len */
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  RangePicker: () => <div data-testid={'analytics-RangePicker'} title='RangePicker' />
+}))
 jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
+  AnalyticsTabs: () => <div data-testid={'analytics-AnalyticsTabs'} title='AnalyticsTabs' />,
   ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
   IncidentBySeverity: () => <div data-testid={'analytics-IncidentBySeverity'} title='IncidentBySeverity' />,
   NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
@@ -28,6 +34,7 @@ jest.mock('@acx-ui/analytics/components', () => ({
   VenueHealth: () => <div data-testid={'analytics-VenueHealth'} title='VenueHealth' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
   TopologyFloorPlanWidget: () => <div data-testid={'rc-TopologyFloorPlanWidget'} title='TopologyFloorPlanWidget' />,
   VenueAlarmWidget: () => <div data-testid={'rc-VenueAlarmWidget'} title='VenueAlarmWidget' />,
   VenueDevicesWidget: () => <div data-testid={'rc-VenueDevicesWidget'} title='VenueDevicesWidget' />
@@ -40,7 +47,7 @@ describe('ApDetails', () => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getApDetailHeader.url,
-        (req, res, ctx) => res(ctx.json(apDetailData))
+        (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
   })
@@ -51,14 +58,12 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'overview'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
     })
 
-    expect(await screen.findByText('test-ap')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(8)
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Overview')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(7)
   })
 
   it('should navigate to analytic tab correctly', async () => {

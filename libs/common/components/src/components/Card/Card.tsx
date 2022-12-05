@@ -8,10 +8,14 @@ export type CardTypes = 'default' | 'no-border' | 'solid-bg'
 
 export interface CardProps extends Pick<AntCardProps, 'children'> {
   type?: CardTypes
-  title?: string | { title?: string, icon: JSX.Element }
+  title?: string | { title?: string, icon: JSX.Element | null }
   subTitle?: string
   onArrowClick?: () => void
   onMoreClick?: () => void
+  action?: {
+    actionName: string
+    onActionClick: () => void
+  }
 }
 
 function Card ({
@@ -35,7 +39,7 @@ function Card ({
         title={<>
           <Space size={4}>
             <UI.Title children={title} />
-            {icon}
+            {title && icon}
           </Space>
           {subTitle ? (
             <UI.SubTitle children={subTitle} />
@@ -55,6 +59,10 @@ function Card ({
               icon={<UI.MoreVerticalIcon />}
               onClick={props.onMoreClick}
             /> : null }
+            { props.action ?
+              <UI.LinkButton type='link' onClick={props.action.onActionClick}>
+                {props.action.actionName}
+              </UI.LinkButton> : null }
           </Space>
         }
       >

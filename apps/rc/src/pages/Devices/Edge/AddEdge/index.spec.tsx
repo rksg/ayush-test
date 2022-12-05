@@ -9,18 +9,9 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import AddEdge from './index'
+import { mockVenueData } from '../__tests__/fixtures'
 
-const mockVenueData = {
-  fields: ['name', 'id'],
-  totalCount: 3,
-  page: 1,
-  data: [
-    { id: 'mock_venue_1', name: 'Mock Venue 1' },
-    { id: 'mock_venue_2', name: 'Mock Venue 2' },
-    { id: 'mock_venue_3', name: 'Mock Venue 3' }
-  ]
-}
+import AddEdge from './index'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -85,7 +76,7 @@ describe('AddEdge', () => {
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
-      { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
+      { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     // AddEdge success should back to /devices/edge/list, use UI to test this case is normal
@@ -147,7 +138,7 @@ describe('AddEdge api fail', () => {
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
-      { name: 'Serial Number QuestionMarkCircleOutlined.svg' })
+      { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('An error occurred')

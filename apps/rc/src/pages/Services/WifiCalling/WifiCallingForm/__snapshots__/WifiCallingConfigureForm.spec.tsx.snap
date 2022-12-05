@@ -254,43 +254,6 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                       </div>
                     </div>
                     <div
-                      class="ant-form-item"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-label"
-                        >
-                          <label
-                            class=""
-                            for="settings_tags"
-                            title="Tags"
-                          >
-                            Tags
-                          </label>
-                        </div>
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <input
-                                class="ant-input"
-                                id="settings_tags"
-                                type="text"
-                                value=""
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
                       class="ant-form-item ant-form-item-has-success"
                     >
                       <div
@@ -300,7 +263,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                           class="ant-col ant-form-item-label"
                         >
                           <label
-                            class="ant-form-item-required"
+                            class=""
                             for="settings_description"
                             title="Description"
                           >
@@ -320,9 +283,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                 class="ant-input ant-input-status-success"
                                 id="settings_description"
                                 rows="4"
-                              >
-                                descriptionTest
-                              </textarea>
+                              />
                             </div>
                           </div>
                         </div>
@@ -354,32 +315,68 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                             <div
                               class="ant-form-item-control-input-content"
                             >
-                              <select
+                              <div
+                                class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
                                 data-testid="selectQosPriorityId"
-                                id="settings_qosPriority"
                                 style="width: 100%;"
                               >
-                                <option
-                                  value="WIFICALLING_PRI_VOICE"
+                                <div
+                                  class="ant-select-selector"
                                 >
-                                  WIFICALLING_PRI_VOICE
-                                </option>
-                                <option
-                                  value="WIFICALLING_PRI_VIDEO"
+                                  <span
+                                    class="ant-select-selection-search"
+                                  >
+                                    <input
+                                      aria-activedescendant="settings_qosPriority_list_0"
+                                      aria-autocomplete="list"
+                                      aria-controls="settings_qosPriority_list"
+                                      aria-haspopup="listbox"
+                                      aria-owns="settings_qosPriority_list"
+                                      autocomplete="off"
+                                      class="ant-select-selection-search-input"
+                                      id="settings_qosPriority"
+                                      readonly=""
+                                      role="combobox"
+                                      style="opacity: 0;"
+                                      type="search"
+                                      unselectable="on"
+                                      value=""
+                                    />
+                                  </span>
+                                  <span
+                                    class="ant-select-selection-item"
+                                    title="Voice"
+                                  >
+                                    Voice
+                                  </span>
+                                </div>
+                                <span
+                                  aria-hidden="true"
+                                  class="ant-select-arrow"
+                                  style="user-select: none;"
+                                  unselectable="on"
                                 >
-                                  WIFICALLING_PRI_VIDEO
-                                </option>
-                                <option
-                                  value="WIFICALLING_PRI_BE"
-                                >
-                                  WIFICALLING_PRI_BE
-                                </option>
-                                <option
-                                  value="WIFICALLING_PRI_BG"
-                                >
-                                  WIFICALLING_PRI_BG
-                                </option>
-                              </select>
+                                  <span
+                                    aria-label="down"
+                                    class="anticon anticon-down ant-select-suffix"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="down"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -395,7 +392,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                           class="ant-col ant-form-item-label"
                         >
                           <label
-                            class=""
+                            class="ant-form-item-required"
                             for="settings_dataGateway"
                             title="Evolved Packet Data Gateway (ePDG)"
                           >
@@ -465,9 +462,9 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg>
-                                                      SettingsOutlined.svg
-                                                    </svg>
+                                                    <svg
+                                                      data-testid="SettingsOutlined"
+                                                    />
                                                   </div>
                                                 </div>
                                               </div>
@@ -833,9 +830,9 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                                   <div
                                                     class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <svg>
-                                                      SettingsOutlined.svg
-                                                    </svg>
+                                                    <svg
+                                                      data-testid="SettingsOutlined"
+                                                    />
                                                   </div>
                                                 </div>
                                               </div>

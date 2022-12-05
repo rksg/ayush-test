@@ -32,18 +32,4 @@ describe('VenueAnalyticsTab', () => {
       '/t/t1/venues/v1/venue-details/analytics/health/overview'
     )
   })
-  it('should handle tab changes', async () => {
-    jest.spyOn(router, 'useParams').mockImplementation(() => ({ activeSubTab: 'incidents' }))
-    render(<Provider>
-      <VenueAnalyticsTab />
-    </Provider>, {
-      route: {
-        path: '/t/t1/venues/v1/venue-details/analytics/incidents/overview'
-      }
-    })
-    fireEvent.click(await screen.findByText('Health'))
-    expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t/t1/venues/v1/venue-details/analytics/health/overview'
-    )
-  })
 })

@@ -2,13 +2,7 @@ import { render, screen, act } from '@testing-library/react'
 
 import { Card } from '.'
 
-jest.mock('@acx-ui/icons', ()=> {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
-  return Object.fromEntries(keys)
-})
-
-describe('Card', () => {
+describe('Card component', () => {
   it('should render card with title', () => {
     render(<Card title='title'/>)
     expect(screen.getByText('title')).toBeVisible()
@@ -27,6 +21,16 @@ describe('Card', () => {
     act(() => screen.getByTitle('More').click())
     expect(onArrowClick).toBeCalledTimes(1)
     expect(onMoreClick).toBeCalledTimes(1)
+  })
+  it('should render card with action link', () => {
+    const onActionClick = jest.fn()
+    render(<Card action={{
+      actionName: 'Details',
+      onActionClick: onActionClick
+    }}/>)
+    expect(onActionClick).toBeCalledTimes(0)
+    act(() => screen.getByText('Details').click())
+    expect(onActionClick).toBeCalledTimes(1)
   })
   it('should render card with no border', () => {
     const { asFragment } = render(<Card type='no-border'>test</Card>)

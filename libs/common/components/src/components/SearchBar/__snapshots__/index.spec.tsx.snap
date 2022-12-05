@@ -8,8 +8,8 @@ exports[`SearchBar should match snapshot 1`] = `
     <span
       class="ant-input-prefix"
     >
-      <div
-        data-testid="search-icon"
+      <svg
+        data-testid="SearchOutlined"
       />
     </span>
     <input

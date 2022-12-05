@@ -1,12 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, MdnsProxyUrls, ServiceType, websocketServerUrl } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }                                        from '@acx-ui/react-router-dom'
-import { Provider }                                                       from '@acx-ui/store'
-import { mockServer, render, renderHook, screen }                         from '@acx-ui/test-utils'
-
-import { getServiceRoutePath, ServiceOperation } from '../../serviceRouteUtils'
+import {
+  CommonUrlsInfo,
+  MdnsProxyUrls,
+  ServiceType,
+  websocketServerUrl,
+  getServiceRoutePath,
+  ServiceOperation
+} from '@acx-ui/rc/utils'
+import { Path, To, useTenantLink }                from '@acx-ui/react-router-dom'
+import { Provider }                               from '@acx-ui/store'
+import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { mockedFormData, mockedTenantId, mockedVenueList } from './__tests__/fixtures'
 import MdnsProxyForm                                       from './MdnsProxyForm'
