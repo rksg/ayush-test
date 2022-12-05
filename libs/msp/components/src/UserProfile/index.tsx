@@ -16,7 +16,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DetailLevel,
-  ProfileDataToUpdate
+  ProfileDataToUpdate,
+  RolesEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -28,18 +29,24 @@ import {
   RecentLogin
 } from '../RecentLogin'
 
-interface Map {
-  [key: string]: string
-}
 interface fromLoc {
   from: string
 }
 
-const RoleString: Map = {
-  PRIME_ADMIN: 'Prime Admin',
-  ADMIN: 'Administrator',
-  OFFICE_ADMIN: 'Guest Manager',
-  READ_ONLY: 'Read-Only'
+const GetRoleString = ( role: RolesEnum ) => {
+  const { $t } = useIntl()
+  switch (role) {
+    case RolesEnum.PRIME_ADMIN:
+      return $t({ defaultMessage: 'Prime Admin' })
+    case RolesEnum.ADMINISTRATOR:
+      return $t({ defaultMessage: 'Administrator' })
+    case RolesEnum.GUEST_MANAGER:
+      return $t({ defaultMessage: 'Guest Manager' })
+    case RolesEnum.READ_ONLY:
+      return $t({ defaultMessage: 'Read Only' })
+    default:
+      return $t({ defaultMessage: 'Known' })
+  }
 }
 
 export function UserProfile () {
@@ -62,16 +69,12 @@ export function UserProfile () {
     if (data) {
       setInitial(data.firstName[0].toUpperCase() + data.lastName[0].toLocaleUpperCase())
       setUserName( `${data.firstName} ${data.lastName}`)
-      setRole(getRoleString(data.role))
+      setRole(data.role)
       setEmail(data.email)
       setDateFormat(data.dateFormat)
       setDetailLevel(data.detailLevel)
     }
   }, [data])
-
-  const getRoleString = (role: string ) => {
-    return RoleString[role]
-  }
 
   const UserCircle = styled.div`
   text-align: center;
@@ -117,9 +120,11 @@ export function UserProfile () {
         </Col>
         <Col style={{ margin: '15px' }}>
           <Subtitle style={{ marginBottom: '0px' }} level={2}>{ userName }</Subtitle>
-          <label style={{ color: 'var(--acx-neutrals-50)' }}>{userRole}</label>
+          <label
+            style={{ color: 'var(--acx-neutrals-50)' }}>{GetRoleString(userRole as RolesEnum)}
+          </label>
           <Row style={{ marginTop: '10px' }}>
-            <Col><EmailSolidXsmall style={{ fontSize: '10px' }} /></Col>
+            <Col><EmailSolidXsmall /></Col>
             <Col><h4>{ userEmail }</h4></Col>
             {/* <Col style={{ marginLeft: '25px' }}><h4>+1 408-234-9811</h4></Col> */}
             <Col style={{ marginLeft: '25px' }}><b>Tenant ID</b></Col>
@@ -249,13 +254,13 @@ export function UserProfile () {
                   </Select>
                 }
               />
-              <Form.Item
+              {/* <Form.Item
                 name='event_tooltip'
                 label={$t({ defaultMessage:
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
                 'Aenean euismod bibendum laoreet. Proin gravida dolor sit amet ' +
                 'lacus accumsan et viverra justo' })}
-              />
+              /> */}
 
               <Form.Item
                 name='preferred_language'
@@ -317,7 +322,7 @@ export function UserProfile () {
       <UserData/>
 
       <Tabs style={{ marginTop: '25px' }}>
-        <Tabs.TabPane tab={$t({ defaultMessage: 'Notfications' })} key='Notfications'>
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='Notfications'>
           <NotificationTab />
         </Tabs.TabPane>
 
