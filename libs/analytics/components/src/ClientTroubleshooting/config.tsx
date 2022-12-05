@@ -68,11 +68,14 @@ export const transformEvents = (events: ConnectionEvent[], selectedEvents: strin
 
     const category = categorizeEvent(event, ttc)
     const eventType = category === 'failure' ? filterEventMap[FAILURE] : event
+
+    const selEventsFilterMap = selectedEvents.map(e => filterEventMap[e as keyof typeof filterEventMap])
     const time = +new Date(timestamp)
 
-    const skip = eventsToHide.includes(state) ||
-      !selectedEvents.includes(eventType) ||
-      !selectedEvents.includes(radio)
+    const skip = eventsToHide.includes(state) || selectedEvents.length
+      ? (!selEventsFilterMap.includes(eventType) && !selEventsFilterMap.includes(radio))
+      : false
+    
     if (skip) return acc
 
     acc.push({

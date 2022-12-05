@@ -17,14 +17,12 @@ type HistoryContentProps = {
   }
 
 const transformData = (clientInfo: ClientInfoData, filters: Filters) => {
+  const [ types ] = filters?.type ?? [[]]
+  const [ radios ] = filters?.radio ?? [[]]
   const events = transformEvents(
     clientInfo.connectionEvents,
-    [
-      ...(filters.type ?? []),
-      ...(filters.radio ?? [])
-    ]
-  ) ?? []
-  
+    [...(types ?? []), ...(radios ?? [])]
+  )
 }
 const sampleData = [
   {
@@ -46,8 +44,7 @@ const sampleData = [
 export function History (props : HistoryContentProps) {
   const { $t } = useIntl()
   const { setHistoryContentToggle, historyContentToggle, data, filters } = props
-  console.log(data, filters)
-  const histData = transformData(data, filters)
+  const histData = transformData(data!, filters)
   return (
     <UI.History>
       <UI.HistoryHeader>
