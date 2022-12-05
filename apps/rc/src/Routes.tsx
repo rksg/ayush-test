@@ -109,7 +109,6 @@ function NetworkRoutes () {
         path='networks/:networkId/:action'
         element={<NetworkForm />}
       />
-      <Route path='services' element={<ServicesTable />} />
     </Route>
   )
 }
@@ -160,6 +159,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
         element={<DpskForm />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+        element={<DpskForm editMode={true} />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
