@@ -14,7 +14,7 @@ import * as UI from './styledComponents'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
-export type Band = '6 GHz' | '5 GHz' | '2.4 GHz'
+export type Band = '6' | '5' | '2.4'
 
 // taken from antd Cascader API: https://ant.design/components/cascader/#Option
 export interface Option {
@@ -87,7 +87,19 @@ export function NetworkFilter (props: CascaderProps) {
         <div style={{ padding: '10px', width: '350px' }}>
           <span style={{ marginRight: '10px' }}>Radio:</span>
           <Checkbox.Group
-            options={['6 GHz','5 GHz', '2.4 GHz']}
+            options={[{
+              label: '6 GHz',
+              value: '6'
+            },
+            {
+              label: '5 GHz',
+              value: '5'
+            },
+            {
+              label: '2.4 GHz',
+              value: '2.4'
+            }
+            ]}
             defaultValue={initialBands}
             onChange={onBandChange}/>
         </div>)}

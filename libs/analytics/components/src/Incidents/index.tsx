@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { useAnalyticsFilter }                           from '@acx-ui/analytics/utils'
@@ -8,11 +6,10 @@ import { AnalyticsFilter }                              from '@acx-ui/analytics/
 import { GridRow, GridCol, Tabs }                       from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
 
-import { Header }                                  from '../Header'
-import { IncidentBySeverity }                      from '../IncidentBySeverity'
-import { IncidentTable }                           from '../IncidentTable'
-import { NetworkFilterContext, NetworkFilterData } from '../NetworkFilter/NetworkFilterContext'
-import { NetworkHistory }                          from '../NetworkHistory'
+import { Header }             from '../Header'
+import { IncidentBySeverity } from '../IncidentBySeverity'
+import { IncidentTable }      from '../IncidentTable'
+import { NetworkHistory }     from '../NetworkHistory'
 
 const incidentTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
 type IncidentListTabs = 'overview' | 'connection' | 'performance' | 'infrastructure'
@@ -66,14 +63,8 @@ export const IncidentTabContent = (props: { tabSelection?: IncidentListTabs,
 function IncidentListPage () {
   const { $t } = useIntl()
   const { activeTab = incidentTabs[0].value } = useParams()
-  const [ filterData, setFilterData ] = useState<NetworkFilterData>({ paths: null, bands: null })
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/tab/')
-
-  useEffect(()=>{
-    // eslint-disable-next-line no-console
-    console.log({ filterData })
-  },[filterData])
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -81,27 +72,19 @@ function IncidentListPage () {
       pathname: `${basePath.pathname}/${tab}`
     })
   return (
-    <NetworkFilterContext.Provider value={{
-      data: filterData,
-      setData: setFilterData
-    }}>
+    <>
       <Header
         title={$t({ defaultMessage: 'Incidents' })}
         shouldQuerySwitch
         withIncidents
-        footer={
-          <Tabs activeKey={activeTab} onChange={onTabChange}>
-            {incidentTabs.map((tabInfo) => (
-              <Tabs.TabPane
-                tab={$t(tabsMap[tabInfo.value as IncidentListTabs])}
-                key={tabInfo.value}
-              />
-            ))}
-          </Tabs>
-        }
-      />
-      <IncidentTabContent tabSelection={activeTab as IncidentListTabs} />
-    </NetworkFilterContext.Provider>
+        footer={<Tabs activeKey={activeTab} onChange={onTabChange}>
+          {incidentTabs.map((tabInfo) => (
+            <Tabs.TabPane
+              tab={$t(tabsMap[tabInfo.value as IncidentListTabs])}
+              key={tabInfo.value} />
+          ))}
+        </Tabs>} />
+      <IncidentTabContent tabSelection={activeTab as IncidentListTabs} /></>
   )
 }
 export { IncidentListPage }
