@@ -6,10 +6,10 @@ import { DateFilter }     from '@acx-ui/utils'
 
 export type ConnectionEvent = {
   event: string,
-  state: string, 
-  timestamp: string, 
-  mac: string, 
-  ttc: number, 
+  state: string,
+  timestamp: string,
+  mac: string,
+  ttc: number,
   radio: string,
   failedMsgId: string,
   code: string

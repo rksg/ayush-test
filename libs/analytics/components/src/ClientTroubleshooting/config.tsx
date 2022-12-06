@@ -1,12 +1,12 @@
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { formatter }        from '@acx-ui/utils'
-
 import {
   categoryOptions,
   mapCodeToFailureText,
   clientEventDescription
 } from '@acx-ui/analytics/utils'
+import { formatter } from '@acx-ui/utils'
+
 
 import { ConnectionEvent } from './services'
 
@@ -58,7 +58,7 @@ export const spuriousEvents = [
   EVENT_STATES.SPURIOUS_INFO_UPDATED
 ]
 
-export type DisplayEvent = {
+export type DisplayEvent = ConnectionEvent & {
   start: number,
   end: number,
   code: string,
@@ -88,34 +88,35 @@ export const categorizeEvent = (name: string, ttc: number) => {
 export const transformEvents = (
   events: ConnectionEvent[], selectedEventTypes: string[], selectedRadios: string[]
 ) => events.reduce((acc, data, index) => {
-    const { event, state, timestamp, mac, ttc, radio, code, failedMsgId  } = data
-    if (code === 'eap' && EAPOLMessageIds.includes(failedMsgId)) {
-      data = { ...data, code: 'eapol' }
-    }
+  const { event, state, timestamp, mac, ttc, radio, code, failedMsgId } = data
+  if (code === 'eap' && EAPOLMessageIds.includes(failedMsgId)) {
+    data = { ...data, code: 'eapol' }
+  }
 
-    const category = categorizeEvent(event, ttc)
-    const eventType = category === 'failure' ? filterEventMap[FAILURE] : event
+  const category = categorizeEvent(event, ttc)
+  const eventType = category === 'failure' ? filterEventMap[FAILURE] : event
 
-    const filterEventTypes = selectedEventTypes.map(e => filterEventMap[e as keyof typeof filterEventMap])
-    const filterRadios = selectedRadios.map(e => filterEventMap[e as keyof typeof filterEventMap])
-    const time = +new Date(timestamp)
-  
-    let skip = eventsToHide.includes(state)
+  const filterEventTypes =
+    selectedEventTypes.map(e => filterEventMap[e as keyof typeof filterEventMap])
+  const filterRadios = selectedRadios.map(e => filterEventMap[e as keyof typeof filterEventMap])
+  const time = new Date(timestamp).getTime()
+
+  let skip = eventsToHide.includes(state)
       || filterEventTypes.length && !filterEventTypes.includes(eventType)
       || filterRadios.length && !filterRadios.includes(radio)
-  
-    if (skip) return acc
 
-    acc.push({
-      ...data,
-      type: event === 'EVENT_CLIENT_ROAMING' ? TYPES.ROAMING : TYPES.CONNECTION_EVENTS,
-      key: time + mac + eventType + index,
-      start: time,
-      end: time,
-      category
-    })
-    return acc
-  }, [] as object[]
+  if (skip) return acc
+
+  acc.push({
+    ...data,
+    type: event === 'EVENT_CLIENT_ROAMING' ? TYPES.ROAMING : TYPES.CONNECTION_EVENTS,
+    key: time + mac + eventType + index,
+    start: time,
+    end: time,
+    category
+  })
+  return acc
+}, [] as object[]
 )
 
 export const formatEventDesc = (evtObj: DisplayEvent, intl: IntlShape) : string => {

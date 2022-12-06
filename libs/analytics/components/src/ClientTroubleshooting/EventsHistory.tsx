@@ -34,27 +34,11 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     return {
       date: formatter('dateTimeFormatWithSeconds')(event.start),
       description: formatEventDesc(event, intl),
-      icon: <UI.EventTypeIcon color={color} />
+      icon: <ConnectionEvents event={event}><UI.EventTypeIcon color={color} /></ConnectionEvents>
     }
   })
 }
-const sampleData = [
-  {
-    date: '06/07/2022 11:21:48',
-    description: 'Infrastructure (Service availabilty)',
-    icon: <ConnectionEvents><UI.EventTypeIcon color='--acx-semantics-green-50'/></ConnectionEvents>
-  },
-  {
-    date: '06/07/2022 11:21:48',
-    description: 'Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)',
-    icon: <UI.EventTypeIcon color='--acx-neutrals-50'/>
-  },
-  {
-    date: '06/07/2022 11:21:48',
-    description: 'Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)',
-    icon: <UI.IncidentEvent color='--acx-semantics-red-50'>P1</UI.IncidentEvent>
-  }
-]
+
 export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
