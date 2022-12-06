@@ -9,7 +9,7 @@ import {
   StepsForm,
   Subtitle
 } from '@acx-ui/components'
-import { EmailSolidXsmall }      from '@acx-ui/icons'
+import { EnvelopClosedSolid }    from '@acx-ui/icons'
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation
@@ -76,6 +76,10 @@ export function UserProfile () {
     }
   }, [data])
 
+  const EnvelopClosedSolidIcon = styled(EnvelopClosedSolid)`
+  width: 16px;
+  height: 16px;
+`
   const UserCircle = styled.div`
   text-align: center;
   width: 100px;
@@ -124,7 +128,7 @@ export function UserProfile () {
             style={{ color: 'var(--acx-neutrals-50)' }}>{GetRoleString(userRole as RolesEnum)}
           </label>
           <Row style={{ marginTop: '10px' }}>
-            <Col><EmailSolidXsmall /></Col>
+            <Col><EnvelopClosedSolidIcon /></Col>
             <Col><h4>{ userEmail }</h4></Col>
             {/* <Col style={{ marginLeft: '25px' }}><h4>+1 408-234-9811</h4></Col> */}
             <Col style={{ marginLeft: '25px' }}><b>Tenant ID</b></Col>
