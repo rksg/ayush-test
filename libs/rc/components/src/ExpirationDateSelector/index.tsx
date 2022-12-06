@@ -2,7 +2,6 @@ import {
   Select,
   InputNumber,
   Radio,
-  DatePicker,
   Form,
   DatePickerProps
 } from 'antd'
@@ -11,6 +10,7 @@ import moment               from 'moment-timezone'
 import { StoreValue }       from 'rc-field-form/lib/interface'
 import { useIntl }          from 'react-intl'
 
+import { DatePicker }                     from '@acx-ui/components'
 import { ExpirationMode, ExpirationType } from '@acx-ui/rc/utils'
 
 import {
