@@ -92,7 +92,7 @@ export function SingleRadioSettings (props:{
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
 
   if (context === 'venue') {
-    const { indoor, outdoor, dfs, indoorForOutdoorAp } = supportChannels
+    const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
     hasIndoorBandwidth = !isEmpty(indoor)
     hasOutdoorBandwidth = !isEmpty(outdoor)
     //hasDfsBandwidth = !isEmpty(dfs)

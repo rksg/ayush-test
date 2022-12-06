@@ -8,7 +8,7 @@ import { CommonUrlsInfo, VenueDefaultRegulatoryChannelsForm, WifiUrlsInfo } from
 import { Provider, store }                                                  from '@acx-ui/store'
 import { mockServer, screen, render, within }                               from '@acx-ui/test-utils'
 
-import { VenueEditContext }        from '../..'
+import { VenueEditContext }       from '../..'
 import {
   venueData,
   venueSetting,

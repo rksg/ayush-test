@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                    from '@acx-ui/components'
+import { Tabs }                                   from '@acx-ui/components'
 import {
   useNavigate,
   useParams,
