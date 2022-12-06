@@ -1,15 +1,16 @@
-import { Divider, Form } from 'antd'
-import moment            from 'moment-timezone'
-import { useIntl }       from 'react-intl'
+import { Divider, Dropdown, Form, Menu, MenuProps, Space } from 'antd'
+import moment                                              from 'moment-timezone'
+import { useIntl }                                         from 'react-intl'
 
-import { cssStr, Table, TableProps } from '@acx-ui/components'
+import { Button, cssStr, Table, TableProps } from '@acx-ui/components'
+import { ArrowExpand }                       from '@acx-ui/icons'
 import {
   Guest,
   GuestClient,
   GuestStatusEnum,
   transformDisplayText
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import {
   renderAllowedNetwork,
@@ -17,6 +18,8 @@ import {
   renderGuestType
 } from '../GuestsTable'
 import { DrawerFormItem } from '../styledComponents'
+
+import { useGuestActions } from './guestActions'
 
 
 interface GuestDetailsDrawerProps {
@@ -26,7 +29,7 @@ interface GuestDetailsDrawerProps {
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { currentGuest } = props
-
+  const { tenantId } = useParams()
   const hasOnlineClient = currentGuest.guestStatus.indexOf(GuestStatusEnum.ONLINE)!== -1
 
   const renderStatus = function (row: Guest) {
@@ -105,9 +108,70 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     }
   ]
 
+  const guestAction = useGuestActions()
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    const actionMap = {
+      // generatePassword: guestAction.showRebootAp,
+      // downloadInformation: guestAction.showDownloadApLog,
+      // disableGuest: guestAction.showBlinkLedAp,
+      // enableGuest: guestAction.showBlinkLedAp,
+      deleteGuest: guestAction.showDeleteGuest
+    }
+    actionMap[e.key as keyof typeof actionMap](currentGuest, tenantId)
+  }
+
+
+  const menu = (
+    <Menu
+      onClick={handleMenuClick}
+      items={[{
+        label: $t({ defaultMessage: 'Generate New Password' }),
+        key: 'generatePassword'
+      }, {
+        label: $t({ defaultMessage: 'Download Information' }),
+        key: 'downloadInformation'
+      }, {
+        label: $t({ defaultMessage: 'Disable Guest' }),
+        key: 'disableGuest'
+      }, {
+        label: $t({ defaultMessage: 'Enable Guest' }),
+        key: 'enableGuest'
+      }, {
+        label: $t({ defaultMessage: 'Delete Guest' }),
+        key: 'deleteGuest'
+      }].filter((item) => {
+        if (item.key === 'enableGuest' &&
+          currentGuest.guestStatus !== GuestStatusEnum.DISABLED) {
+          return false
+        } else if (item.key === 'disableGuest' &&
+          currentGuest.guestStatus === GuestStatusEnum.DISABLED) {
+          return false
+        } else if (currentGuest.guestStatus === GuestStatusEnum.EXPIRED
+          && (item.key === 'disableGuest' || item.key === 'enableGuest'
+            || item.key === 'generatePassword')) {
+          return false
+        }
+        return true
+      })}
+    />
+  )
+
+
   return (<Form
     labelCol={{ span: 10 }}
     labelAlign='left' >
+    <div style={{
+      textAlign: 'right'
+    }}>
+      <Dropdown overlay={menu} key='actions'>
+        <Button type='secondary'>
+          <Space>
+            {$t({ defaultMessage: 'Actions' })}
+            <ArrowExpand />
+          </Space>
+        </Button>
+      </Dropdown>
+    </div>
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Guest Type:' })}
