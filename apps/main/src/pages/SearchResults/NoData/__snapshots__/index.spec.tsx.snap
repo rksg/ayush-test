@@ -333,9 +333,9 @@ exports[`SearchResults - NoData should render correctly for snapshot test with t
                           class="ant-list-item-meta-title"
                         >
                           <a
-                            href="/t/1234/users/aps"
+                            href="/t/1234/users/wifi/clients"
                           >
-                            WiFi Clients
+                            Wi-Fi Clients
                           </a>
                         </h4>
                       </div>
@@ -361,9 +361,9 @@ exports[`SearchResults - NoData should render correctly for snapshot test with t
                           class="ant-list-item-meta-title"
                         >
                           <a
-                            href="/t/1234/users/switches"
+                            href="/t/1234/users/switches/clients"
                           >
-                            Wired Clients
+                            Switch Clients
                           </a>
                         </h4>
                       </div>
