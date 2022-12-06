@@ -2,12 +2,13 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { DpskUrls }                   from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { DpskUrls }                               from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
+import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { mockedDpskList, mockedGetFormData } from './__tests__/fixtures'
 import DpskSettingsForm                      from './DpskSettingsForm'
+import { transferSaveDataToFormFields }      from './parser'
 
 describe('DpskSettingsForm', () => {
   beforeEach(() => {
@@ -20,9 +21,16 @@ describe('DpskSettingsForm', () => {
   })
 
   it('should render the form with the giving data', async ()=> {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    formRef.current.setFieldsValue(transferSaveDataToFormFields(mockedGetFormData))
+
     render(
       <Provider>
-        <Form><DpskSettingsForm data={mockedGetFormData} /></Form>
+        <Form form={formRef.current}><DpskSettingsForm /></Form>
       </Provider>
     )
 

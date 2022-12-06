@@ -4,6 +4,7 @@ import {
 } from '../../constants'
 
 export interface CreateDpskFormFields {
+  id?: string;
   name: string;
   passphraseLength: number;
   passphraseFormat: PassphraseFormatEnum;

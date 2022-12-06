@@ -45,6 +45,7 @@ export function transferSaveDataToFormFields (data: DpskSaveData): CreateDpskFor
   }
 
   return {
+    id: data.id,
     name: data.name,
     passphraseFormat: data.passphraseFormat,
     passphraseLength: data.passphraseLength,

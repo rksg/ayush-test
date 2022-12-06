@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -13,7 +13,6 @@ import {
 import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@acx-ui/rc/services'
 import {
   CreateDpskFormFields,
-  DpskSaveData,
   PassphraseFormatEnum,
   getServiceListRoutePath
 } from '@acx-ui/rc/utils'
@@ -23,8 +22,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import DpskSettingsForm                 from './DpskSettingsForm'
-import { transferFormFieldsToSaveData } from './parser'
+import DpskSettingsForm                                               from './DpskSettingsForm'
+import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'
 
 interface DpskFormProps {
   editMode?: boolean
@@ -41,17 +40,14 @@ export default function DpskForm (props: DpskFormProps) {
   const [ updateDpsk ] = useUpdateDpskMutation()
   const { data: dataFromServer } = useGetDpskQuery({ params }, { skip: !editMode })
   const formRef = useRef<StepsFormInstance<CreateDpskFormFields>>()
-
-  const [data, setData] = useState<DpskSaveData>({
-    name: '',
+  const initialValues: Partial<CreateDpskFormFields> = {
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
-    passphraseLength: 18,
-    expirationType: null
-  })
+    passphraseLength: 18
+  }
 
   useEffect(() => {
     if (dataFromServer && editMode) {
-      setData(dataFromServer)
+      formRef.current?.setFieldsValue(transferSaveDataToFormFields(dataFromServer))
     }
   }, [dataFromServer, editMode])
 
@@ -90,8 +86,9 @@ export default function DpskForm (props: DpskFormProps) {
         <StepsForm.StepForm<CreateDpskFormFields>
           name='details'
           title={$t({ defaultMessage: 'Settings' })}
+          initialValues={initialValues}
         >
-          <DpskSettingsForm data={data} />
+          <DpskSettingsForm />
         </StepsForm.StepForm>
       </StepsForm>
     </>
