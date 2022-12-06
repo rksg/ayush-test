@@ -2,28 +2,55 @@ import { Space, List } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { GridRow, GridCol }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { CaretRightList, SearchResultNoData } from '@acx-ui/icons'
 import { TenantLink }                         from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
-const linkData = [
-  {
-    title: 'Venues',
-    to: '/venues'
-  },
-  {
-    title: 'Dashboard',
-    to: '/dashboard'
-  },
-  {
-    title: 'Networks',
-    to: '/networks'
-  }
-]
-
 const useLinkData = () => {
   const { $t } = useIntl()
+  const linkData = [
+    {
+      title: 'Venues',
+      to: '/venues'
+    },
+    {
+      title: 'Networks',
+      to: '/networks'
+    }
+  ]
+  // feature toggles to be handled
+  const devicesToggle = useIsSplitOn(Features.DEVICES)
+  if (devicesToggle) {
+    linkData.push({
+      title: 'APs',
+      to: '/devices/aps'
+    })
+    linkData.push({
+      title: 'Switches',
+      to: '/devices/switches'
+    })
+  }
+
+  const usersToggle = useIsSplitOn(Features.USERS)
+  if (usersToggle) {
+    linkData.push({
+      title: 'WiFi Clients',
+      to: '/users/aps'
+    })
+    linkData.push({
+      title: 'Wired Clients',
+      to: '/users/switches'
+    })
+  }
+
+  // last key is dashboard
+  linkData.push({
+    title: 'Dashboard',
+    to: '/dashboard'
+  })
+
   const data = linkData.map(val => <TenantLink to={val.to}>
     {$t({ defaultMessage: '{title}' }, { title: val.title })}
   </TenantLink>)

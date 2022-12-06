@@ -95,9 +95,9 @@ exports[`SearchResults - NoData should render correctly for snapshot test 1`] = 
                           class="ant-list-item-meta-title"
                         >
                           <a
-                            href="/t/1234/dashboard"
+                            href="/t/1234/networks"
                           >
-                            Dashboard
+                            Networks
                           </a>
                         </h4>
                       </div>
@@ -123,9 +123,9 @@ exports[`SearchResults - NoData should render correctly for snapshot test 1`] = 
                           class="ant-list-item-meta-title"
                         >
                           <a
-                            href="/t/1234/networks"
+                            href="/t/1234/dashboard"
                           >
-                            Networks
+                            Dashboard
                           </a>
                         </h4>
                       </div>

@@ -66,6 +66,7 @@ describe('Search Results', () => {
       data: [],
       totalCount: 0
     })
+    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', { data: [], totalCount: 0 })
     render(
       <Provider>
         <SearchResults />
