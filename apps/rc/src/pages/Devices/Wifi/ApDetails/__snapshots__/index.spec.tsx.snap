@@ -17,7 +17,7 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -415,7 +415,7 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -779,7 +779,7 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -1177,7 +1177,7 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -1541,7 +1541,7 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -1905,7 +1905,7 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -2269,7 +2269,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>

@@ -98,7 +98,7 @@ describe('ApEdit', () => {
     it('should handle data updated', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
 
       await screen.findByText('test ap')
@@ -136,7 +136,7 @@ describe('ApEdit', () => {
       )
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
 
       await screen.findByText('test ap')
@@ -169,7 +169,7 @@ describe('ApEdit', () => {
 
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
       await screen.findByText('test ap')
       await waitFor(async () => {
@@ -188,7 +188,7 @@ describe('ApEdit', () => {
       )
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
       await screen.findByText('test ap')
       await waitFor(async () => {
@@ -204,7 +204,7 @@ describe('ApEdit', () => {
     it('should open unsaved changes modal', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
 
       await screen.findByText('test ap')
@@ -221,7 +221,7 @@ describe('ApEdit', () => {
     it('should open invalid changes modal', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
 
       await screen.findByText('test ap')
@@ -272,7 +272,7 @@ describe('ApEdit', () => {
     it('should render correctly', async () => {
       const { asFragment } = render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
       await screen.findByText('test ap')
@@ -284,7 +284,7 @@ describe('ApEdit', () => {
     it('should handle customized setting updated', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await screen.findByText('test ap')
       await screen.findByText(/Currently using LAN port settings of the venue/)
@@ -306,7 +306,7 @@ describe('ApEdit', () => {
 
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await screen.findByText('test ap')
       await screen.findByText(/Custom settings/)
@@ -319,7 +319,7 @@ describe('ApEdit', () => {
     it('should open unsaved changes modal', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await screen.findByText('test ap')
       await screen.findByText(/Currently using LAN port settings of the venue/)
@@ -339,7 +339,7 @@ describe('ApEdit', () => {
 
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await screen.findByText('test ap')
       await screen.findByText(/Custom settings/)

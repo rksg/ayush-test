@@ -267,7 +267,7 @@ export function ApForm () {
     {!isEditMode && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
+        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
     />}
     <StepsForm

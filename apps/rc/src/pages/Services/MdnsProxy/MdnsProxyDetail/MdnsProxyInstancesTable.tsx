@@ -28,7 +28,7 @@ export function MdnsProxyInstancesTable () {
       sorter: true,
       render: (data, row) => {
         // eslint-disable-next-line max-len
-        return <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       }
     },
     {

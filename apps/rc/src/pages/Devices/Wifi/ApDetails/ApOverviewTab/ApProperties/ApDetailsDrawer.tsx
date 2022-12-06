@@ -157,7 +157,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 <Form.Item
                   label={$t({ defaultMessage: 'Root AP' })}
                   children={
-                    <TenantLink to={`/devices/aps/${currentAP.rootAP.serialNumber}/details/overview`}>
+                    <TenantLink to={`/devices/wifi/${currentAP.rootAP.serialNumber}/details/overview`}>
                       {currentAP.rootAP.name}
                     </TenantLink>
                   }
