@@ -26,7 +26,7 @@ export function PersonaForm (props: {
   const { form, defaultValue } = props
   const [createMode, setCreateMode] = useState(PersonaCreateMode.Manually)
   const [selectedGroupId, setSelectedGroupId] = useState('')
-  const [importFileName, setImportFileName] = useState<string>()
+  // const [importFileName, setImportFileName] = useState<string>()
 
   useEffect(() => {
     if (defaultValue) {
@@ -44,8 +44,8 @@ export function PersonaForm (props: {
 
   const handlePreview = (file: RcFile) => {
     // TODO: Handle file import and parsing
-    setImportFileName(file.name)
-    return false
+    // setImportFileName(file.name)
+    return !!file
   }
 
   return (

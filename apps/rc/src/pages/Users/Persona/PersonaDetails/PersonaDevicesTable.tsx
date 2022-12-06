@@ -124,7 +124,6 @@ export function PersonaDevicesTable (props: {
   }
 
   const handleModalSubmit = (data: Extract<PersonaDeviceItem, ['macAddress', 'hostname']>[]) => {
-    console.log('Modal submit with data ', data)
     addPersonaDevicesMutation({
       params: { groupId: persona?.groupId, id: persona?.id },
       payload: data

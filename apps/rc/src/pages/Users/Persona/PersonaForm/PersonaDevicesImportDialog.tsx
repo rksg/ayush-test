@@ -55,10 +55,10 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
     // FIXME: need to filter unique device items, but it have type issue
     form.validateFields()
       .then(values => {
-        console.log('Current dialog fields value = ', values)
+        // console.log('Current dialog fields value = ', values)
         onSubmit(values.devices ?? [])
         onModalCancel()
-      }).catch(e => {})
+      })
   }
 
   const onImportModeChange = (e: RadioChangeEvent) => {
