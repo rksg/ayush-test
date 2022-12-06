@@ -7,7 +7,7 @@ import { useParams, Params } from '@acx-ui/react-router-dom'
 import { UseQuery }          from '@acx-ui/types'
 
 
-interface RequestPayload <Payload = any> extends Record<string,any> {
+interface RequestPayload <Payload = unknown> {
   params?: Params<string>
   payload?: Payload
 }
@@ -130,7 +130,7 @@ export function useNewTableQuery <
     filters,
     sorters
   ) => {
-    console.log('[handleTableChange] pagination = ', pagination)
+    // console.log('[handleTableChange] pagination = ', pagination)
 
     // Implementation expect there will only be 1 sortable column
     const sorter = Array.isArray(sorters)
@@ -154,7 +154,7 @@ export function useNewTableQuery <
       page: `${currentPage}`,
       size: `${pagination.pageSize}`
     })
-    console.log('[HandleTableChange] :: TableProps: ', tableProps, ' -- payload: ', payload)
+    // console.log('[HandleTableChange] :: TableProps: ', tableProps, ' -- payload: ', payload)
     setPayload({ ...payload, ...tableProps })
   }
 
