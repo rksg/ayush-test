@@ -67,3 +67,34 @@ export const networkListData = {
     }
   ]
 }
+
+export const apListData = {
+  fields: [
+    'clients','serialNumber','IP','apMac','apStatusData.APRadio.channel','deviceStatus','tags',
+    'venueName','meshRole','apStatusData.APRadio.band','apStatusData.APRadio.radioId','switchName',
+    'deviceGroupId','venueId','name','deviceGroupName','model','fwVersion'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [{
+    serialNumber: '932173000117',
+    name: '350-11-69',
+    model: 'R350',
+    fwVersion: '6.2.0.103.513',
+    venueId: '70ffc8b0c3f540049379a84c17e5bab3',
+    venueName: '123roam',
+    deviceStatus: '2_00_Operational',
+    IP: '192.168.11.69',
+    apMac: '58:FB:96:01:9A:30',
+    apStatusData: {
+      APRadio: [
+        { txPower: null,channel: 9,band: '2.4G',Rssi: null,radioId: 0 },
+        { txPower: null,channel: 40,band: '5G',Rssi: null,radioId: 1 }
+      ]
+    },
+    meshRole: 'DISABLED',
+    deviceGroupId: '48392c8c2eda43be90213e8dd09468fe',
+    tags: '',
+    deviceGroupName: ''
+  }]
+}

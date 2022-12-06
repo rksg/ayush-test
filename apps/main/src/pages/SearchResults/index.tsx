@@ -1,10 +1,26 @@
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { PageHeader, Loader }                            from '@acx-ui/components'
-import { NetworkTable, defaultNetworkPayload }           from '@acx-ui/rc/components'
-import { useNetworkListQuery, useVenuesListQuery }       from '@acx-ui/rc/services'
-import { Network, RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { PageHeader, Loader } from '@acx-ui/components'
+import {
+  ApTable,
+  defaultApPayload,
+  NetworkTable,
+  defaultNetworkPayload
+}           from '@acx-ui/rc/components'
+import {
+  useApListQuery,
+  useNetworkListQuery,
+  useVenuesListQuery
+}       from '@acx-ui/rc/services'
+import {
+  RequestPayload,
+  useTableQuery,
+  Network,
+  Venue,
+  AP,
+  ApExtraParams
+} from '@acx-ui/rc/utils'
 
 import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
@@ -43,6 +59,22 @@ const searches = [
       result,
       title: $t({ defaultMessage: 'Networks' }),
       component: <NetworkTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<AP, RequestPayload<unknown>, ApExtraParams>({
+      useQuery: useApListQuery,
+      defaultPayload: {
+        ...defaultApPayload,
+        searchString,
+        searchTargetFields: ['name', 'model', 'IP', 'apMac', 'tags', 'serialNumber']
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'APs' }),
+      component: <ApTable tableQuery={result} />
     }
   }
 ]
