@@ -87,7 +87,7 @@ export function ApGroupForm () {
         ...values
       }
       await addApGroup({ params: { tenantId: tenantId }, payload }).unwrap()
-      navigate(`${basePath.pathname}/aps`, { replace: true })
+      navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -123,7 +123,7 @@ export function ApGroupForm () {
       onFinish={handleAddApGroup}
       onCancel={() => navigate({
         ...basePath,
-        pathname: `${basePath.pathname}/aps`
+        pathname: `${basePath.pathname}/wifi`
       })}
       buttonLabel={{
         submit: $t({ defaultMessage: 'Add' })
