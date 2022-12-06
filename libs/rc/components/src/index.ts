@@ -1,6 +1,6 @@
 export { AlarmWidget } from './AlarmWidget'
 export { ApInfoWidget } from './ApInfoWidget'
-export { ApTable, APStatus } from './ApTable'
+export { ApTable, APStatus, defaultApPayload } from './ApTable'
 export { ClientsWidget } from './ClientsWidget'
 export { DevicesDashboardWidget } from './DevicesDashboardWidget'
 export { DevicesWidget } from './DevicesWidget'
