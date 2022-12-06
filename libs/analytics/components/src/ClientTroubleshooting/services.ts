@@ -12,7 +12,8 @@ export type ConnectionEvent = {
   ttc: number,
   radio: string,
   failedMsgId: string,
-  code: string
+  code: string,
+  ssid: string,
 }
 export type ClientInfoData = {
   connectionDetailsByAp: object[]

@@ -88,7 +88,7 @@ export const categorizeEvent = (name: string, ttc: number) => {
 export const transformEvents = (
   events: ConnectionEvent[], selectedEventTypes: string[], selectedRadios: string[]
 ) => events.reduce((acc, data, index) => {
-  const { event, state, timestamp, mac, ttc, radio, code, failedMsgId } = data
+  const { event, state, timestamp, mac, ttc, radio, code, failedMsgId, ssid } = data
   if (code === 'eap' && EAPOLMessageIds.includes(failedMsgId)) {
     data = { ...data, code: 'eapol' }
   }
@@ -113,6 +113,7 @@ export const transformEvents = (
     key: time + mac + eventType + index,
     start: time,
     end: time,
+    ssid,
     category
   })
   return acc

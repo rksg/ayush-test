@@ -3,32 +3,27 @@ import React from 'react'
 import { Popover } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { mapCodeToFailureText } from '@acx-ui/analytics/utils'
+
 import { FAILURE, DisplayEvent } from './config'
 import * as UI                   from './styledComponents'
 
-type ConnectionDetailsType = {
-  mac: string,
-  apName: string,
-  ssid: string,
-  radio: string,
-  failureType?: string,
-  reason?: string,
-}
-
 const useConnectionDetail = (event: DisplayEvent) => {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const isFailure = event.category === FAILURE
-  const { mac, apName, state, radio, failedMsgId, code } = event
-  const data: ConnectionDetailsType = {
-    mac: $t({ defaultMessage: 'AP MAC: {mac}' }, { mac }),
-    apName: $t({ defaultMessage: 'AP Name: {apName}' }, { apName }),
-    ssid: $t({ defaultMessage: 'SSID: {state}' }, { state }),
-    radio: $t({ defaultMessage: 'Radio: {radio} GHz' }, { radio })
-  }
+  const { mac, apName, ssid, radio, failedMsgId, code } = event
+  const data = [
+    $t({ defaultMessage: 'AP MAC: {mac}' }, { mac }),
+    $t({ defaultMessage: 'AP Name: {apName}' }, { apName }),
+    $t({ defaultMessage: 'SSID: {ssid}' }, { ssid }),
+    $t({ defaultMessage: 'Radio: {radio} GHz' }, { radio })
+  ]
 
   if (isFailure) {
-    data.failureType = $t({ defaultMessage: 'Failure Type: {failedMsgId}' }, { failedMsgId })
-    data.reason = $t({ defaultMessage: 'Reason: {code}' }, { code })
+    const reason = mapCodeToFailureText(code, intl)
+    data.push($t({ defaultMessage: 'Failure Type: {reason}' }, { reason }))
+    data.push($t({ defaultMessage: 'Reason: {failedMsgId}' }, { failedMsgId }))
   }
 
   return Object.values(data).join('\n')
