@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 import { Divider, Form, Space } from 'antd'
-import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
 import { Card, Loader, Subtitle, Tooltip } from '@acx-ui/components'
@@ -461,7 +460,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
   const { $t } = getIntl()
   const durationFormatter = formatter('durationFormat')
   const getTimeFormat = (data: number) =>
-    moment(data * 1000).format('DD/MM/YYYY hh:mm A')
+    formatter('dateTime12hourFormat')(data * 1000)
 
   return <>
     <Subtitle level={4}>

@@ -260,6 +260,10 @@ describe('formatter', () => {
       expect(formatter('hourFormat')(1456885800000))
         .toBe(moment(1456885800000).format('HH'))
     })
+    it('Should format a timestamp to DD/MM/YYYY hh:mm A', () => {
+      expect(formatter('dateTime12hourFormat')(1456885800000))
+        .toBe(moment(1456885800000).format('DD/MM/YYYY hh:mm A'))
+    })
     it('With tz', () => {
       expect(formatter('dateTimeFormatWithSeconds')(1456885800000, 'America/Los_Angeles'))
         .toBe(moment(1456885800000).tz('America/Los_Angeles')

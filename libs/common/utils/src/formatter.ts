@@ -165,7 +165,8 @@ export const dateTimeFormats = {
   dateTimeFormatWithSeconds: 'MMM DD YYYY HH:mm:ss',
   hourFormat: 'HH',
   timeFormat: 'HH:mm',
-  secondFormat: 'HH:mm:ss'
+  secondFormat: 'HH:mm:ss',
+  dateTime12hourFormat: 'DD/MM/YYYY hh:mm A'
 } as const
 
 const countFormat: MessageDescriptor = defineMessage({
