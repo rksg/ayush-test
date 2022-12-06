@@ -38,6 +38,9 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import PersonaPortal            from './pages/Users/Persona'
+import PersonaDetails           from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails      from './pages/Users/Persona/PersonaGroupDetails'
 import UserApDetails            from './pages/Users/Wifi/ApDetails'
 import UserApList               from './pages/Users/Wifi/ApList'
 
@@ -195,6 +198,13 @@ function UserRoutes () {
       <Route path='users/aps/:activeTab' element={<UserApList />} />
       <Route path='users/aps/:userId/details/' element={<UserApDetails />} />
       <Route path='users/aps/:userId/details/:activeTab' element={<UserApDetails />} />
+      <Route path='users/persona' element={<PersonaPortal />} />
+      <Route path='users/persona-group' element={<PersonaPortal />} />
+      <Route path='users/persona-group/:personaGroupId' element={<PersonaGroupDetails />} />
+      <Route
+        path='users/persona-group/:personaGroupId/persona/:personaId'
+        element={<PersonaDetails />}
+      />
     </Route>
   )
 }

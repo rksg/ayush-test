@@ -28,6 +28,8 @@ export * from './edge'
 export * from './policy'
 export * from './wifiCallingService'
 export * from './portalService'
+export * from './macRegistrationList'
+export * from './persona'
 
 export interface CommonResult {
   requestId: string

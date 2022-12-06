@@ -7,6 +7,7 @@ export * from './contents'
 export * from './onSocketActivityChanged'
 export * from './useTableQuery'
 export * from './validator'
+export * from './useNewTableQuery'
 
 export * from './msp.utils'
 export * from './toast/toastService'

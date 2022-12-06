@@ -39,6 +39,9 @@ function AllRoutes () {
         <Route path='services/*' element={<ServicesBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
+        <Route path='users/*' element={<UsersBase />}>
+          <Route path='*' element={<RcRoutes />} />
+        </Route>
         <Route path='policies/*' element={<PoliciesBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
