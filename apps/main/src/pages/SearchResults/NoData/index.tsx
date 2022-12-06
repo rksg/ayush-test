@@ -36,12 +36,12 @@ const useLinkData = () => {
   const usersToggle = useIsSplitOn(Features.USERS)
   if (usersToggle) {
     linkData.push({
-      title: 'WiFi Clients',
-      to: '/users/aps'
+      title: 'Wi-Fi Clients',
+      to: '/users/wifi/clients'
     })
     linkData.push({
-      title: 'Wired Clients',
-      to: '/users/switches'
+      title: 'Switch Clients',
+      to: '/users/switches/clients'
     })
   }
 
