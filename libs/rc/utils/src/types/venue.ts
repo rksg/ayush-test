@@ -1,16 +1,16 @@
 import { Key } from 'react'
 
-import { CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
-import { BandBalancing }                                                      from '../models/BandBalancing'
-import { DenialOfServiceProtection }                                          from '../models/DenialOfServiceProtection'
-import { Mesh }                                                               from '../models/Mesh'
-import { VenueDhcpServiceSetting }                                            from '../models/VenueDhcpServiceSetting'
-import { VenueRadioCustomization }                                            from '../models/VenueRadioCustomization'
-import { VenueRogueAp }                                                       from '../models/VenueRogueAp'
-import { VenueSyslog }                                                        from '../models/VenueSyslog'
+import { ApDeviceStatusEnum, CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
+import { BandBalancing }                                                                          from '../models/BandBalancing'
+import { DenialOfServiceProtection }                                                              from '../models/DenialOfServiceProtection'
+import { Mesh }                                                                                   from '../models/Mesh'
+import { VenueDhcpServiceSetting }                                                                from '../models/VenueDhcpServiceSetting'
+import { VenueRadioCustomization }                                                                from '../models/VenueRadioCustomization'
+import { VenueRogueAp }                                                                           from '../models/VenueRogueAp'
+import { VenueSyslog }                                                                            from '../models/VenueSyslog'
 
 
-import { ApStatusDetails, ApModel, LanPort } from './ap'
+import { ApStatusDetails, LanPort } from './ap'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
@@ -75,6 +75,86 @@ export interface FloorPlanDto {
 	imageName?: string
 }
 
+export interface TypeWiseNetworkDevices {
+	ap: NetworkDevice[];
+	switches: NetworkDevice[];
+	LTEAP: NetworkDevice[];
+	RogueAP: NetworkDevice[];
+	cloudpath: NetworkDevice[];
+	DP: NetworkDevice[];
+}
+
+export enum FloorplanContext {
+	venue = 'Venue',
+	album = 'Album',
+	unplaced = 'Unplaced',
+	ap = 'Ap',
+	switch = 'Switch',
+	lte_ap = 'LteAp',
+	rogue_ap = 'RogueAp',
+	cloudpath = 'Cloudpath'
+  }
+
+export interface APStatus {
+	message: string;
+	icon: string;
+	color: string;
+  }
+
+export interface NetworkDevicePayload {
+	fields: string[];
+	pageSize: number;
+	sortField: string;
+	sortOrder: string;
+}
+
+export enum NetworkDeviceType {
+	ap = 'ap',
+	switch = 'switches',
+	lte_ap = 'LTEAP',
+	rogue_ap = 'RogueAP',
+	cloudpath = 'cloudpath',
+	dp = 'DP'
+}
+export interface NetworkDevice {
+    id?: string; // used by devices type other than AP & switch
+	name: string;
+	switchName?: string;
+	deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum;
+	networkDeviceType: NetworkDeviceType;
+	serialNumber: string;
+	floorplanId?: string;
+	xPercent?: number;
+	yPercent?: number;
+	position?: NetworkDevicePosition;
+	isActive?: boolean;
+	rogueCategory?: string;
+	snr?: number;
+	macAddress?: string;
+	rogueCategoryType?: RogueDeviceCategoryType;
+}
+
+export enum RogueDeviceCategoryType {
+	malicious = 'Malicious',
+	ignored = 'Ignored',
+	unclassified = 'Unclassified',
+	known = 'Known'
+}
+
+export interface NetworkDevicePosition {
+	floorplanId?: string;
+	xPercent?: number;
+	yPercent?: number;
+	x?: number;
+	y?: number;
+}
+export interface NetworkDeviceResponse {
+	fields: string[];
+	totalCount: number;
+	page: number;
+	data: { [key in NetworkDeviceType ]: NetworkDevice[] }[];
+}
+
 export interface FloorPlanImage {
 	id: string,
 	name: string
@@ -98,10 +178,6 @@ export interface FileValidation {
 	isValidFileSize: boolean
 }
 
-export interface VenueCapabilities {
-	apModels: ApModel[]
-	version: string
-}
 export interface VenueLed {
 	ledEnabled: boolean
 	model: string,

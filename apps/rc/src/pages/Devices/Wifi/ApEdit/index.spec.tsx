@@ -117,12 +117,12 @@ describe('ApEdit', () => {
         fireEvent.change(within(dialog).getByTestId('coordinates-input'),
           { target: { value: '51.508506, -0.124915' } })
       })
-      await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
+      await fireEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
       expect(await screen.findByText('Please confirm that...')).toBeVisible()
-      await userEvent.click(await screen.findByRole('button', { name: 'Drop It' }))
+      await fireEvent.click(await screen.findByRole('button', { name: 'Drop It' }))
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
-      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      await fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
 
     it('should handle invalid changes', async () => {

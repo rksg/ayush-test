@@ -2,15 +2,23 @@ import { useEffect, useState } from 'react'
 
 import { Col, Row } from 'antd'
 
-import { Card }         from '@acx-ui/components'
-import { FloorPlanDto } from '@acx-ui/rc/utils'
+import { Card }                                                    from '@acx-ui/components'
+import { FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+
+import NetworkDevices from '../NetworkDevices'
 
 import * as UI from './styledComponents'
 
 
-export default function GalleryView (props: { floorPlans: FloorPlanDto[],
-    onFloorPlanClick: Function }) {
-  const { floorPlans, onFloorPlanClick } = { ...props }
+
+export default function GalleryView (props: {
+  floorPlans: FloorPlanDto[],
+  onFloorPlanClick: Function,
+  networkDevices: {
+    [key: string]: TypeWiseNetworkDevices
+  },
+  networkDevicesVisibility: NetworkDeviceType[] }) {
+  const { floorPlans, onFloorPlanClick, networkDevices, networkDevicesVisibility } = { ...props }
   const [span, setSpan] = useState(12)
 
   useEffect(() => {
@@ -26,6 +34,14 @@ export default function GalleryView (props: { floorPlans: FloorPlanDto[],
       { floorPlans?.map((floorPlan, index) => <Col key={index} span={span}>
         <Card title={floorPlan?.name}>
           <UI.StyledImageWrapper>
+            <NetworkDevices
+              imageLoaded={true}
+              networkDevicesVisibility={networkDevicesVisibility}
+              selectedFloorPlan={floorPlan}
+              networkDevices={networkDevices}
+              contextAlbum={false}
+              galleryMode={true}
+              context=''/>
             <img alt='img'
               data-testid='fpImage'
               onClick={() => onFloorplanImageClick(floorPlan)}
