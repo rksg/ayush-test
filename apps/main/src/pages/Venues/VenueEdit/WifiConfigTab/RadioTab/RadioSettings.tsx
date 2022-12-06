@@ -439,7 +439,7 @@ export function RadioSettings () {
         formRef={formRef}
         onFormChange={handleChange}
       >
-        <StepsForm.StepForm>
+        <StepsForm.StepForm data-testid='radio-settings'>
           <Row gutter={20}>
             <Col span={10}>
               {triBandRadioFeatureFlag &&
@@ -526,6 +526,7 @@ export function RadioSettings () {
           </Tabs>
           <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
             <SingleRadioSettings
+              testId='radio-24g-tab'
               radioType={ApRadioTypeEnum.Radio24G}
               supportChannels={support24GChannels}
               bandwidthOptions={bandwidth24GOptions}
@@ -534,6 +535,7 @@ export function RadioSettings () {
           </div>
           <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
             <SingleRadioSettings
+              testId='radio-5g-tab'
               radioType={ApRadioTypeEnum.Radio5G}
               supportChannels={support5GChannels}
               bandwidthOptions={bandwidth5GOptions}
@@ -543,6 +545,7 @@ export function RadioSettings () {
           { isTriBandRadio &&<div style={{ display: isTriBandRadio &&
                 currentTab === 'Normal6GHz' ? 'block' : 'none' }}>
             <SingleRadioSettings
+              testId='radio-6g-tab'
               radioType={ApRadioTypeEnum.Radio6G}
               supportChannels={support6GChannels}
               bandwidthOptions={bandwidth6GOptions}
@@ -580,6 +583,7 @@ export function RadioSettings () {
                   </Col>
                 </Row>
                 <SingleRadioSettings
+                  testId='radio-u5g-tab'
                   inherit5G={isLower5gInherit}
                   radioType={ApRadioTypeEnum.RadioLower5G}
                   supportChannels={support5GLowerChannels}
@@ -616,6 +620,7 @@ export function RadioSettings () {
                   </Col>
                 </Row>
                 <SingleRadioSettings
+                  testId='radio-u5g-tab'
                   inherit5G={isUpper5gInherit}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
                   supportChannels={support5GUpperChannels}

@@ -181,21 +181,45 @@ describe('RadioTab', () => {
     const triBand = await section.findByRole('switch')
     await userEvent.click(triBand)
 
+    // radio 2.4g settings
     const tabEl = await section.findByTestId('radio-24g-tab')
     const tab = within(tabEl)
 
     const channelSelect = await tab.findByRole('combobox', { name: /Channel selection/i })
     await userEvent.click(channelSelect)
-    await userEvent.click((await screen.findAllByTitle('Channel Fly'))[0])
+    await userEvent.click((await tab.findAllByTitle('Channel Fly'))[0])
 
     const scanIntervalInput = await tab.findByLabelText('Run background scan every:')
     await userEvent.type(scanIntervalInput, '40')
+
     const bandwidthSelect = await tab.findByRole('combobox', { name: /Bandwidth/i })
     await userEvent.click(bandwidthSelect)
-    await userEvent.click((await screen.findAllByTitle('40MHz'))[0])
-    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    await userEvent.click((await tab.findAllByTitle('40 MHz'))[0])
+
+    const transmitSelect = await tab.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect)
-    await userEvent.click((await screen.findAllByTitle('Auto'))[0])
+    await userEvent.click((await tab.findAllByTitle('Full'))[0])
+
+/*
+    // radio 5g settings
+    const tab5gEl = await section.findByTestId('radio-5g-tab')
+    const tab5g = within(tab5gEl)
+
+    const channelSelect5g = await tab5g.findByRole('combobox', { name: /Channel selection/i })
+    await userEvent.click(channelSelect5g)
+    await userEvent.click((await tab5g.findAllByTitle('Background Scanning'))[0])
+
+    const scanIntervalInput5g = await tab5g.findByLabelText('Run background scan every:')
+    await userEvent.type(scanIntervalInput5g, '40')
+
+    const bandwidthSelect5g = await tab5g.findByRole('combobox', { name: /Bandwidth/i })
+    await userEvent.click(bandwidthSelect5g)
+    await userEvent.click((await tab5g.findAllByTitle('160 MHz'))[0])
+
+    const transmitSelect5g = await tab5g.findByRole('combobox', { name: /Transmit Power/i })
+    await userEvent.click(transmitSelect5g)
+    await userEvent.click((await tab5g.findAllByTitle('Auto'))[0])
+*/
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })

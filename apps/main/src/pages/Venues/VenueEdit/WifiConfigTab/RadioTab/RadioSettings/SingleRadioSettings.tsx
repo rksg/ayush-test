@@ -47,12 +47,13 @@ export function SingleRadioSettings (props:{
   supportChannels: any,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editContext: React.Context<any>,
-  onResetDefaultValue?: Function
+  onResetDefaultValue?: Function,
+  testId?: string
 }) {
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { disable = false, inherit5G = false, context = 'venue' } = props
+  const { disable = false, inherit5G = false, context = 'venue', testId } = props
   const { radioType, supportChannels, bandwidthOptions, editContext } = props
   const isSupportRadio = bandwidthOptions?.length > 0
   const displayRadioBarSettings = ['5G', 'DFS']
@@ -242,7 +243,7 @@ export function SingleRadioSettings (props:{
       {
         isSupportRadio &&
       <>
-        <Row gutter={20}>
+        <Row gutter={20} data-testid={testId}>
           <Col span={8}>
             <RadioSettingsForm
               radioType={radioType}
@@ -376,7 +377,7 @@ export function SingleRadioSettings (props:{
       </>
       }
       {!isSupportRadio &&
-        <div>
+        <div data-testid={testId}>
           {$t({ defaultMessage: 'This band is not supported for APs in current country' })}
         </div>
       }
