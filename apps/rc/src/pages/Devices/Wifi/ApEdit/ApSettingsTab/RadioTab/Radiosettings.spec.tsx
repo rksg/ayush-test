@@ -113,4 +113,36 @@ describe('RadioSettingsTab', () => {
     expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
+  it('should render correctly with 40Mhz bandwidth', async () => {
+    apRadioCustomization.radioParams50G.channelBandwidth = '40Mhz'
+    const { asFragment } = render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn(),
+          editRadioContextData: {},
+          setEditRadioContextData: jest.fn()
+        }}
+        >
+          <RadioSettings />
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    fireEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'DFS' }))
+    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    fireEvent.click(transmitSelect)
+    fireEvent.click((await screen.findAllByTitle('Auto'))[0])
+    fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+
+    expect(asFragment()).toMatchSnapshot()
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
+  })
 })
