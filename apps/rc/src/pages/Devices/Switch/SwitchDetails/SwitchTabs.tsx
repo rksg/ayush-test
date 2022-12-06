@@ -1,0 +1,38 @@
+/* eslint-disable max-len */
+import { useIntl } from 'react-intl'
+
+import { Tabs }                                  from '@acx-ui/components'
+import { SwitchViewModel }                       from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+function SwitchTabs (props:{ switchDetail: SwitchViewModel }) {
+  const { $t } = useIntl()
+  const params = useParams()
+  const basePath = useTenantLink(`/devices/switch/${params.switchId}/${params.serialNumber}/details/`)
+  const navigate = useNavigate()
+  const onTabChange = (tab: string) =>
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+
+  const { switchDetail } = props
+
+  return (
+    <Tabs onChange={onTabChange} activeKey={params.activeTab}>
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })} key='troubleshooting' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })} key='reports' />
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: switchDetail?.clientCount })}
+        key='clients'
+      />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Configuration' })} key='configuration' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
+    </Tabs>
+  )
+}
+
+export default SwitchTabs

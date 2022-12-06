@@ -13,7 +13,8 @@ import {
   baseMspApi as mspApi,
   baseEdgeApi as edgeApi,
   basePolicyApi as policyApi,
-  baseClientApi as clientApi
+  baseClientApi as clientApi,
+  baseSwitchApi as switchApi
 } from '@acx-ui/rc/services'
 
 export const store = configureStore({
@@ -30,7 +31,8 @@ export const store = configureStore({
     [mspApi.reducerPath]: mspApi.reducer,
     [edgeApi.reducerPath]: edgeApi.reducer,
     [policyApi.reducerPath]: policyApi.reducer,
-    [clientApi.reducerPath]: clientApi.reducer
+    [clientApi.reducerPath]: clientApi.reducer,
+    [switchApi.reducerPath]: switchApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -51,7 +53,8 @@ export const store = configureStore({
       mspApi.middleware,
       edgeApi.middleware,
       policyApi.middleware,
-      clientApi.middleware
+      clientApi.middleware,
+      switchApi.middleware
     ])
   },
 
