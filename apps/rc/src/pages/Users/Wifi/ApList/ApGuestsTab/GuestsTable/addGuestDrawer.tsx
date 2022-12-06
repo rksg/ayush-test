@@ -1,21 +1,34 @@
+/* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
 
 import { Checkbox, Col, Divider, Form, Input, InputNumber, Radio, Row, Select } from 'antd'
 import { PhoneNumberUtil }                                                      from 'google-libphonenumber'
+import { HumanizeDuration, HumanizeDurationLanguage }                           from 'humanize-duration-ts'
 import _                                                                        from 'lodash'
+import moment                                                                   from 'moment'
 import { useIntl }                                                              from 'react-intl'
 import { useParams }                                                            from 'react-router-dom'
 
-import { Loader, Button, Drawer, cssStr, showActionModal }          from '@acx-ui/components'
-import { useLazyGetGuestNetworkListQuery, useAddGuestPassMutation } from '@acx-ui/rc/services'
+import { Loader, Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
+import {
+  useLazyGetGuestNetworkListQuery,
+  useAddGuestPassMutation,
+  useLazyGetNetworkQuery,
+  useLazyGetUserProfileQuery
+} from '@acx-ui/rc/services'
 import {
   excludeExclamationRegExp,
   phoneRegExp,
   emailRegExp,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  Network
+  Network,
+  getGuestDictionaryByLangCode,
+  base64Images,
+  PdfGeneratorService,
+  Guest,
+  LangCode
 } from '@acx-ui/rc/utils'
 
 import {
@@ -62,6 +75,9 @@ export function AddGuestDrawer (props: AddGuestProps) {
   ] = useAddGuestPassMutation()
 
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
+  const [getNetwork] = useLazyGetNetworkQuery()
+  const [getUserProfile] = useLazyGetUserProfileQuery()
+
 
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
@@ -82,6 +98,264 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   const numberOfDevicesOptions = createNumberOfDevicesList()
+
+  const getMomentLocale = (langCode: string) => {
+    const LOCALE_MAP = new Map<string, string>([
+      ['pt_BR', 'pt-br'],   // Brazilian Portuguese
+      ['pt_PT', 'pt'],      // Portuguese
+      ['no', 'nb'],         // Norwegian
+      ['eng', 'en'],
+      ['zh_TW', 'zh-tw']
+    ])
+
+    if (!langCode) {
+      return 'en'
+    }
+
+    return LOCALE_MAP.has(langCode) ? LOCALE_MAP.get(langCode) : langCode
+  }
+
+  const getHumanizedLocale = (langCode: string) => {
+    const LOCALE_MAP = new Map<string, string>([
+      ['pt_BR', 'pt'],    // Brazilian Portuguese
+      ['pt_PT', 'pt'],    // Portuguese
+      ['cz', 'cs']        // Czech
+    ])
+
+    if (!langCode) {
+      return 'en'
+    }
+
+    return LOCALE_MAP.has(langCode) ? LOCALE_MAP.get(langCode) : langCode
+  }
+
+  const humanizedDate = (validDuration: number, langCode: string) => {
+    const langService = new HumanizeDurationLanguage()
+    const humanizer = new HumanizeDuration(langService)
+    return humanizer.humanize(validDuration, {
+      language: langCode,
+      round: true,
+      units: ['d', 'h']
+    })
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const genUpdatedTemplate = (guestDetails: any, langDictionary: any) => {
+    const userName = guestDetails.name
+    const ssid = guestDetails.wifiNetwork
+
+    return `
+    <div style="max-width: 600px;margin:0 auto;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+        <tbody>
+          <tr>
+            <td style="border-top:6.94px solid #EC7100;direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+              <div style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
+                          <tbody>
+                            <tr>
+                              <td style="width:149px;">
+                                <img alt="Header ruckus logo" height="auto" src="${base64Images.ruckusCommScopeLogo}"
+                                style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:12px;" width="149" />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
+                          <div style="line-height:16px;">${langDictionary['hello']} ${userName}, </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
+                          <div style="line-height:16px;">${langDictionary['youCanAccess']}: </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
+                          <div id="credentials${guestDetails.guestNumber}" style="font-weight:600;color:#333333;font-size:10px;line-height:10px;height:19px">
+                            ${langDictionary['wifiNetwork']}
+                          </div>
+                          <div class="light-gray" style="padding:10px;font-size:20px;color:#333333;line-height:24px;border-radius:4px;font-weight:600;">
+                            ${ssid}
+                          </div>
+                          <br><br>
+                          <div style="font-weight:bold;color:#333333;font-size:10px;line-height:10px;height:19px">
+                            ${langDictionary['password']}
+                          </div>
+                          <div class="light-gray" style="padding:10px;font-size:20px;color:#333333;line-height:24px;border-radius:4px;font-weight:600;">
+                            ${guestDetails.password}
+                          </div>
+                          <br><br>
+                          <div style="line-height:16px;">
+                            ${langDictionary['accessIsValid']}${guestDetails.validFor}
+                          <div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="right" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
+                          <tbody>
+                            <tr>
+                              <td style="width:126px;">
+                                <img alt="Footer power logo" height="auto" src="${base64Images.poweredBy}"
+                                style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:12px;" width="126" />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td align="left" style="font-size:0px;word-break:break-word;">
+              <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
+                <div class="footer-bg" style="height:40px;">
+                  <div style="font-size: 8px;text-align:center;line-height:10px;padding-top:16px;color:#808284;">
+                    © 2022 Ruckus Wireless, Inc., a CommScope Company, 350 West Java Dr. Sunnyvale, CA 94089 USA
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    `
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const genTemplate = (guestDetails: any, langDictionary: any) => {
+    return `
+      <div class="color-2" style="text-align: left; margin-bottom: 2cm; font-size: 11pt;font-weight: normal">` + guestDetails.currentDate + `</div>
+      <div style="margin-bottom: 1cm;">
+         <img src="data:image/jpeg;base64; ` + base64Images.guestLogo + `" style="width: 3cm;margin:0 auto;">
+      </div>
+      <div class="color-1" style="font-size: 28px; margin-bottom: 1.2cm; word-break:break-all;">
+         ` + langDictionary['hello'] + guestDetails.name + `</div>
+      <div class="color-2" style="opacity: 0.5; font-size: 14px; margin-bottom: 1.5cm;">` + langDictionary['youCanAccess'] + `</div>
+      <div id="credentials` + guestDetails.guestNumber + `" style="display: inline-block !important; min-width: 10cm">
+      <div style="text-align: left;font-size: 12pt;">` + langDictionary['wifiNetwork'] + `</div>
+      <div class="network" style="border: solid 1px black; border-radius: 0.1cm; text-align: left;padding: 0.5cm;margin-bottom: 1cm;display:flex !important;align-items: center;">
+        <img src="data:image/jpeg;base64; ` + base64Images.wlanIcon + `" style="width: 1.3cm;height: 1.3cm;margin-right: 0.5cm;">
+        <span class="color-1" style="word-break: break-all;text-align: left; font-size: 24px; vertical-align: middle;">` + guestDetails.wifiNetwork + `</span>
+      </div>
+      <div style="text-align: left;font-size: 12pt;">` + langDictionary['password'] + `</div>
+      <div style="border: solid 1px black; border-radius: 0.1cm; text-align: left;padding: 0.5cm;margin-bottom: 1cm;display: flex !important; align-items:center;">
+        <img src="data:image/jpeg;base64; ` + base64Images.lockIcon + `" style="width: 1.3cm; height: 1.3cm;margin-right: 0.5cm">
+        <span class="color-1" style="text-align: left; font-size: 24px; vertical-align: middle;">` + guestDetails.password + `</span>
+      </div>
+      </div>
+      <div class="color-2" style="margin-bottom: 1.5cm;font-size: 14px;">` + langDictionary['accessIsValid'] + guestDetails.validFor + `</div>
+      <div class="color-1" style="font-size: 20px; margin-bottom: 0.5cm;">` + langDictionary['enjoy'] + `</div>
+      <div class="color-3" style="border-top: solid 1px black; margin: 0 auto; padding-top: 0.5cm; width: 6cm; font-size: 10px;">
+        <div style="margin: 0px 75px 10px -5px;">` + langDictionary['poweredBy'] + `</div></div>
+      <div>
+        <img src="data:image/jpeg;base64; ` + base64Images.ruckusLogo + `" style="width: 3.5cm;margin: 0 auto">
+      </div>`
+  }
+
+  const getGuestPrintTemplate =
+  (guestDetails: { langCode: LangCode }, useUpdatedTemplate = false) => {
+    const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
+    return (useUpdatedTemplate) ?
+      genUpdatedTemplate(guestDetails, langDictionary) :
+      genTemplate(guestDetails, langDictionary)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const prepareGuestToPrint = async (guest: any, guestNumber: any, expiresDate: any) =>{
+    const currentMoment = moment()
+    const userProfile = await getUserProfile({ params })
+    const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
+    const langCode = guest.langCode || guest.locale
+    const momentLocale = getMomentLocale(langCode)
+    moment.locale(momentLocale)
+
+    const name = guest.name
+    const wifiNetwork = guest.ssid
+    let password = ''
+    let guestExpiresDate = expiresDate
+
+    if (guest.password) {
+      password = guest.password
+      if (!guestExpiresDate) {
+        if (guest.expirationDate) {
+          guestExpiresDate = guest.expirationDate
+        } else {
+          if (guest.expiration.unit === 'Hour') {
+            guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
+          } else {
+            guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
+          }
+        }
+      }
+    }
+    const validForDuration = moment(guestExpiresDate).diff(currentMoment)
+    const huminitazationLangCode = getHumanizedLocale(langCode) || ''
+    const validFor = humanizedDate(validForDuration, huminitazationLangCode)
+
+    return {
+      guestNumber: guestNumber,
+      validFor: validFor,
+      currentDate: currentDate,
+      password: password,
+      wifiNetwork: wifiNetwork,
+      name: name,
+      langCode: langCode
+    }
+  }
+
+  const generateGuestPrint = async (guests: Guest[], useUpdatedTemplate = false, expiresDate?: string) =>{
+    let printTemplate = ''
+    for (let i = 0; i < guests.length; i++) {
+      /** Insert page break if multi-page */
+      if (i > 0) {
+        printTemplate = printTemplate + '<div class=\'page-break-before\'>&nbsp;</div>'
+      }
+      const guestToPrint = prepareGuestToPrint(guests[i], i, expiresDate)
+      printTemplate = printTemplate + getGuestPrintTemplate(await guestToPrint, useUpdatedTemplate)
+    }
+    const pdfGenerator = new PdfGeneratorService()
+    pdfGenerator.generatePrint(printTemplate)
+  }
+
+  const handleGuestPassResponse = async (jsonGuest: { requestId: string, response: Guest[] }) => {
+    let printCondition = false
+    let guestsArr: Guest[] = []
+    if (jsonGuest.response) {
+      printCondition = jsonGuest.response[0].deliveryMethods.indexOf('PRINT') !== -1
+      for (let i = 0; i < jsonGuest.response.length; i++) {
+        guestsArr[i] = { ...jsonGuest.response[i], langCode: '' }
+      }
+    }
+
+    if (printCondition) {
+      const networkData = await getNetwork({
+        params: { tenantId: params.tenantId, networkId: jsonGuest.response[0].networkId } })
+      const langCode = (networkData?.data && networkData?.data?.guestPortal && networkData?.data?.guestPortal?.guestPage && networkData?.data?.guestPortal?.guestPage.langCode) || ''
+      for (let i = 0; i < guestsArr.length; i++) {
+        guestsArr[i].langCode = langCode
+      }
+      generateGuestPrint(guestsArr, false)
+    }
+  }
 
   const onClose = () => {
     setVisible(false)
@@ -114,6 +388,55 @@ export function AddGuestDrawer (props: AddGuestProps) {
       })
     }else{
       addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((res: any) => {
+          if (res.error &&
+            (res.error.status === 400 || res.error.status === 422 || res.error.status === 409)) {
+            const errors = res.error.data.error.rootCauseErrors || []
+            if (errors[0].code === 'GUEST-409001') {
+              showActionModal({
+                type: 'error',
+                title: $t({ defaultMessage: 'Mobile Phone Already Registered' }),
+                // eslint-disable-next-line max-len
+                content: $t({ defaultMessage: 'A guest with the same mobile phone number already exists on the selected guest network. Please select a different network or change the guest\'s mobile phone number.' })
+              })
+            } else {
+              showActionModal({
+                type: 'error',
+                title: 'Error',
+                content: errors[0].message
+              })
+            }
+          } else {
+            handleGuestPassResponse(res.data)
+          }
+        }).catch(err => {
+          if (err.errorCode === 1002) {
+            showActionModal({
+              type: 'error',
+              title: $t({ defaultMessage: 'Invalid Phone Number' }),
+              // eslint-disable-next-line max-len
+              content: $t({ defaultMessage: 'The entered mobile phone number is not valid. Please change to a valid number.' })
+            })
+          } else if (err.errorCode === 1025 ||
+            (err.error && err.error.rootCauseErrors[0].code === 'GUEST-409001')) {
+            showActionModal({
+              type: 'error',
+              title: $t({ defaultMessage: 'Mobile Phone Already Registered' }),
+              // eslint-disable-next-line max-len
+              content: $t({ defaultMessage: 'A guest with the same mobile phone number already exists on the selected guest network.  Please select a different network or change the guest\'s mobile phone number. Mobile Phone Already Registered' })
+            })
+          } else {
+            const errorMsg = err.errorMessage ?
+              err.errorMessage : err.error && err.error.rootCauseErrors['0'].message
+            showActionModal({
+              type: 'error',
+              title: $t({ defaultMessage: 'Error' }),
+              // eslint-disable-next-line max-len
+              content: errorMsg
+            })
+          }
+        })
       setVisible(false)
     }
   }

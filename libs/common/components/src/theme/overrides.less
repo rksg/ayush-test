@@ -801,3 +801,80 @@
     max-height: 255px !important;
   }
 }
+
+@media print {
+
+  -webkit-print-color-adjust: exact;
+
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  body.not-printable {
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  .color-1 {
+    color: #1D1D1B !important;
+  }
+
+  color-2 {
+    color: #3c3c3b !important;
+  }
+
+  color-3 {
+    color: #343434 !important;
+  }
+
+  #printArea {
+    width: 80%;
+    margin: 1cm auto 0 auto;
+    display: block !important;
+    text-align: center;
+    font-size: 14pt;
+    font-weight: bold;
+  }
+
+  #printArea div {
+    display: block !important;
+  }
+
+  body.not-printable > *:not(#printArea) * {
+    display: none;
+  }
+
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  @page {
+    size: auto;
+    margin: 0;
+  }
+
+  // Removing low-resolution message for print layout
+  .overlayout-panel {
+    display: none;
+  }
+
+  .light-gray {
+    -webkit-print-color-adjust: exact;
+    background-color: #f7f7f7;
+    width: max-content;
+    min-width: 50%;
+  }
+  .footer-bg {
+    -webkit-print-color-adjust: exact;
+    background-color: #f8f8fa;
+  }
+}
+
+#printArea {
+  display: none;
+}
+
+#printArea div {
+  display: block !important;
+}

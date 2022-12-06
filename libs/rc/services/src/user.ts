@@ -4,7 +4,8 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   RequestPayload,
-  UserSettings
+  UserSettings,
+  UserProfile
 } from '@acx-ui/rc/utils'
 
 export const baseUserApi = createApi({
@@ -33,7 +34,22 @@ export const userApi = baseUserApi.injectEndpoints({
         })
         return result
       }
+    }),
+    getUserProfile: build.query<UserProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getUserProfile,
+          params
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
-export const { useGetAllUserSettingsQuery } = userApi
+
+export const {
+  useGetAllUserSettingsQuery,
+  useLazyGetUserProfileQuery
+} = userApi
