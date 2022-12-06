@@ -57,7 +57,6 @@ export function History (props : HistoryContentProps) {
   const { $t } = intl
   const { setHistoryContentToggle, historyContentToggle, data, filters } = props
   const histData = transformData(data!, filters, intl)
-  console.log(histData)
   return (
     <UI.History>
       <UI.HistoryHeader>
@@ -73,25 +72,23 @@ export function History (props : HistoryContentProps) {
         </UI.HistoryIcon>
       </UI.HistoryHeader>
       <AutoSizer>
-        {({ height, width }) => {
-          console.log('height', height)
-          return (
-      <UI.HistoryContent style={{ height: height - 44, width }}>
-        <List
-          itemLayout='horizontal'
-          dataSource={histData}
-          renderItem={(item) => (
-            <List.Item title={item.description}>
-              <List.Item.Meta
-                avatar={item.icon}
-                title={item.date}
-                description={item.description} />
-            </List.Item>
-          )}
-        />
-      </UI.HistoryContent>
-         )}}
-        </AutoSizer>
+        {({ height, width }) => (
+        <UI.HistoryContent style={{ height: height - 44, width }}>
+          <List
+            itemLayout='horizontal'
+            dataSource={histData}
+            renderItem={(item) => (
+              <List.Item title={item.description}>
+                <List.Item.Meta
+                  avatar={item.icon}
+                  title={item.date}
+                  description={item.description} />
+              </List.Item>
+            )}
+          />
+        </UI.HistoryContent>
+        )}
+      </AutoSizer>
     </UI.History>   
   )
 }
