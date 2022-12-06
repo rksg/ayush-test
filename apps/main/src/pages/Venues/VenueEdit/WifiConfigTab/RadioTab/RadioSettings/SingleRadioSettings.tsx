@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
@@ -58,7 +58,7 @@ export function SingleRadioSettings (props:{
   const displayRadioBarSettings = ['5G', 'DFS']
   const radioDataKey = ApRadioTypeDataKeyMap[radioType]
 
-  const methodFieldName = [...radioDataKey, 'method']
+  //const methodFieldName = [...radioDataKey, 'method']
   const channelBandwidthFieldName = [...radioDataKey, 'channelBandwidth']
   const allowedChannelsFieldName = [...radioDataKey, 'allowedChannels']
   const allowedIndoorChannelsFieldName = [...radioDataKey, 'allowedIndoorChannels']
@@ -67,7 +67,7 @@ export function SingleRadioSettings (props:{
   const [channelList, setChannelList] = useState<RadioChannel[]>([])
   const [indoorChannelList, setIndoorChannelList] = useState<RadioChannel[]>([])
   const [outdoorChannelList, setOutdoorChannelList] = useState<RadioChannel[]>([])
-  const [channelBars, setChannelBars] = useState({ ...initChannelBars })
+  const [channelBars] = useState({ ...initChannelBars })
   const [indoorChannelBars, setIndoorChannelBars] = useState({ ...initChannelBars })
   const [outdoorChannelBars, setOutdoorChannelBars] = useState({ ...initChannelBars })
 
@@ -77,22 +77,17 @@ export function SingleRadioSettings (props:{
   const [indoorChannelErrMsg, setIndoorChannelErrMsg] = useState<string>()
   const [outdoorChannelErrMsg, setOutdoorChannelErrMsg] = useState<string>()
 
-  const {
-    editContextData,
-    setEditContextData
-  } = useContext(editContext)
-
-
-  let bandwidthList: string[] = []
   let hasIndoorBandwidth = false
   let hasOutdoorBandwidth = false
-  let hasDfsBandwidth = false
+  //let hasDfsBandwidth = false
   let allowIndoorForOutdoor = false
   let hasIndoorForOutdoor = false
-
+  /*
+  let bandwidthList: string[] = []
   let bandwidthIndoorList = []
   let bandwidthOutdoorList = []
   let bandwidthDfsList = []
+  */
 
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
 
@@ -100,9 +95,10 @@ export function SingleRadioSettings (props:{
     const { indoor, outdoor, dfs, indoorForOutdoorAp } = supportChannels
     hasIndoorBandwidth = !isEmpty(indoor)
     hasOutdoorBandwidth = !isEmpty(outdoor)
-    hasDfsBandwidth = !isEmpty(dfs)
+    //hasDfsBandwidth = !isEmpty(dfs)
     hasIndoorForOutdoor = !isEmpty(indoorForOutdoorAp)
 
+    /*
     if (!hasIndoorBandwidth && !hasOutdoorBandwidth) {
       bandwidthList = Object.keys(supportChannels)
     }
@@ -110,12 +106,13 @@ export function SingleRadioSettings (props:{
     bandwidthIndoorList = hasIndoorBandwidth? Object.keys(indoor) : []
     bandwidthOutdoorList = hasOutdoorBandwidth? Object.keys(outdoor) : []
     bandwidthDfsList = hasDfsBandwidth? Object.keys(dfs): []
+    */
     allowIndoorForOutdoor = (radioType === ApRadioTypeEnum.Radio5G
                              && hasIndoorForOutdoor === true
                              && allowIndoorForOutdoorFeatureFlag)
 
   } else {// context === 'ap'
-    bandwidthList = Object.keys(supportChannels)
+    //bandwidthList = Object.keys(supportChannels)
   }
 
   /*
@@ -125,13 +122,13 @@ export function SingleRadioSettings (props:{
   */
 
   const [
-    channelMethod,
+    //channelMethod,
     channelBandwidth,
     allowedChannels,
     allowedIndoorChannels,
     allowedOutdoorChannels
   ] = [
-    useWatch<string>(methodFieldName),
+    //useWatch<string>(methodFieldName),
     useWatch<string>(channelBandwidthFieldName),
     useWatch<string[]>(allowedChannelsFieldName),
     useWatch<string[]>(allowedIndoorChannelsFieldName),
@@ -305,7 +302,7 @@ export function SingleRadioSettings (props:{
         }
         {!hasIndoorBandwidth && !hasOutdoorBandwidth &&
           <Row gutter={20}>
-            <Col span={18}>
+            <Col span={20}>
               <RadioSettingsChannels
                 formName={allowedChannelsFieldName}
                 groupSize={groupSize}
@@ -333,7 +330,7 @@ export function SingleRadioSettings (props:{
             }
           </Row>
           <Row gutter={20}>
-            <Col span={18}>
+            <Col span={20}>
               <RadioSettingsChannels
                 formName={allowedIndoorChannelsFieldName}
                 groupSize={groupSize}
@@ -362,7 +359,7 @@ export function SingleRadioSettings (props:{
             }
           </Row>
           <Row gutter={20}>
-            <Col span={18}>
+            <Col span={20}>
               <RadioSettingsChannels
                 formName={allowedOutdoorChannelsFieldName}
                 groupSize={groupSize}

@@ -191,7 +191,7 @@ export function RadioSettingsChannels (props: {
 
     const index = findIndex(channelValueList, (channel) => channel === avaliableBarChannels[0])
     return channelLength
-      ? { left: 30 * index, width: 30 * (channelLength + adjustLength) - 6 }
+      ? { left: 32 * index, width: 32 * (channelLength + adjustLength) - 6 }
       : { left: 0, width: 0 }
   }
 

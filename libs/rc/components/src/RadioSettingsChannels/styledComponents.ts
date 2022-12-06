@@ -52,7 +52,7 @@ div.ant-checkbox-group {
 }
 `
 const channelWidth = '26px'
-const channelMarginRight = '4px'
+const channelMarginRight = '6px'
 
 export const CheckboxGroup = styled(Checkbox.Group)`
   .ant-checkbox-wrapper {
@@ -119,6 +119,13 @@ export const CheckboxGroup = styled(Checkbox.Group)`
   }
   &.group-8 .ant-checkbox-wrapper {
     width: calc(${channelWidth}*8 + ${channelMarginRight}*7);
+  }
+
+  span .channels {
+    text-align: center;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-around;
   }
 }
 `

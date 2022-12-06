@@ -1,12 +1,8 @@
-
-import { useContext } from 'react'
-
 import { Form, Select, Slider, InputNumber, Space } from 'antd'
 import { useIntl }                                  from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { VenueEditContext }     from '../../..'
 import {
   ApRadioTypeEnum,
   channelSelectionMethodsOptions,
@@ -50,11 +46,7 @@ export function RadioSettingsForm (props:{
   const bssMinRate6gFieldName = [...radioDataKey, 'bssMinRate6G']
   const mgmtTxRate6gFieldName = [...radioDataKey, 'mgmtTxRate6G']
 
-  const [
-    channelMethod
-  ] = [
-    useWatch<string>(methodFieldName)
-  ]
+  const [channelMethod] = [useWatch<string>(methodFieldName)]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
