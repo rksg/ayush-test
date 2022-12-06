@@ -1350,7 +1350,7 @@ exports[`SwitchDetails should navigate to incidents tab correctly 1`] = `
                     role="tab"
                     tabindex="0"
                   >
-                    Clients ()
+                    Clients (0)
                   </div>
                 </div>
                 <div

@@ -56,7 +56,7 @@ function SwitchPageHeader () {
   )
   return (
     <PageHeader
-      title={data?.name || ''}
+      title={data?.name || data?.switchName || data?.serialNumber || ''}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
