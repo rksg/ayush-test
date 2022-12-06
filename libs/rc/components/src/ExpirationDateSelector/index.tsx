@@ -15,10 +15,10 @@ import { ExpirationMode, ExpirationType } from '@acx-ui/rc/utils'
 
 import {
   ExpirationModeLabel
-} from './models'
+} from './contentsMap'
 import * as UI from './styledComponents'
 
-export * from './models'
+export * from './contentsMap'
 
 export interface ExpirationDateSelectorProps {
   inputName?: string,

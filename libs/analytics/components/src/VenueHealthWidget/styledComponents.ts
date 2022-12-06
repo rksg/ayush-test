@@ -1,11 +1,7 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-import { Card, HistoricalCard } from '@acx-ui/components'
-
-export const Title = styled(Card.Title)`
-  height: unset;
-`
+import { HistoricalCard } from '@acx-ui/components'
 
 export const Wrapper = styled(Space)`
   justify-content: left;

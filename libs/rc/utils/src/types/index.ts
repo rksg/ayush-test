@@ -16,7 +16,8 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { EPDG } from './services'
+import { ApModel } from './ap'
+import { EPDG }    from './services'
 
 export * from './ap'
 export * from './venue'
@@ -28,6 +29,7 @@ export * from './edge'
 export * from './policy'
 export * from './portalService'
 export * from './client'
+export * from './components'
 export interface CommonResult {
   requestId: string
   response?:{}
@@ -381,50 +383,22 @@ export interface catchErrorResponse {
   status: number
 }
 
-export enum ExpirationType {
-  SPECIFIED_DATE = 'SPECIFIED_DATE',
-  MINUTES_AFTER_TIME = 'MINUTES_AFTER_TIME',
-  HOURS_AFTER_TIME = 'HOURS_AFTER_TIME',
-  DAYS_AFTER_TIME = 'DAYS_AFTER_TIME',
-  WEEKS_AFTER_TIME = 'WEEKS_AFTER_TIME',
-  MONTHS_AFTER_TIME = 'MONTHS_AFTER_TIME',
-  YEARS_AFTER_TIME = 'YEARS_AFTER_TIME'
+export enum ClientStatusEnum {
+  HISTORICAL = 'historical',
+  CONNECTED = 'connected'
 }
 
-export enum ExpirationMode {
-  NEVER = 'NEVER',
-  BY_DATE = 'BY_DATE',
-  AFTER_TIME = 'AFTER_TIME'
+export interface Capabilities {
+	apModels: ApModel[]
+	version: string
 }
 
-export class ExpirationDateEntity {
-  mode: ExpirationMode
-  type?: ExpirationType // undefined means Never expires
-  offset?: number // If 'expirationType' is not SPECIFIED_DATE then this field is the offset amount
-  date?: string // If 'expirationType' is SPECIFIED_DATE then this field is the related date in format YYYY-MM-DD.
-
-  constructor () {
-    this.mode = ExpirationMode.NEVER
-  }
-
-  setToNever () {
-    this.mode = ExpirationMode.NEVER
-    this.type = undefined
-    this.offset = undefined
-    this.date = undefined
-  }
-
-  setToByDate (date: string) {
-    this.mode = ExpirationMode.BY_DATE
-    this.type = ExpirationType.SPECIFIED_DATE
-    this.offset = undefined
-    this.date = date
-  }
-
-  setToAfterTime (type: ExpirationType, offset: number) {
-    this.mode = ExpirationMode.AFTER_TIME
-    this.type = type
-    this.offset = offset
-    this.date = undefined
-  }
+export interface EventMeta {
+  apName: string,
+  id: string,
+  isApExists: boolean,
+  isClientExists: boolean,
+  isVenueExists: boolean,
+  networkId: string,
+  venueName: string,
 }
