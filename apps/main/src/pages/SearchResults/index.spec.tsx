@@ -5,6 +5,7 @@ import { Provider }                                                    from '@ac
 import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
+  apListData,
   networkListData,
   venueListData
 } from './__fixtures__/searchMocks'
@@ -24,6 +25,7 @@ describe('Search Results', () => {
       data: networkListData,
       totalCount: 3
     })
+    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', apListData)
   })
 
   it('should decode search string correctly', async () => {
@@ -33,11 +35,11 @@ describe('Search Results', () => {
       </Provider>,
       { route: { params } }
     )
-    expect(await screen.findByText('Search Results for "test?" (4)')).toBeVisible()
+    expect(await screen.findByText('Search Results for "test?" (5)')).toBeVisible()
   })
 
-  it('should render venue table correctly', async () => {
-    render(
+  it('should render tables correctly', async () => {
+    const { asFragment } = render(
       <Provider>
         <SearchResults />
       </Provider>,{
@@ -47,9 +49,11 @@ describe('Search Results', () => {
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('500')).toBeInTheDocument()
-    const vlan1s = await screen.findAllByText(/VLAN-1/i)
-    expect(vlan1s).toHaveLength(2)
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach(element => element.removeAttribute('_echarts_instance_'))
+    expect(fragment).toMatchSnapshot()
   })
 
   it('should render empty result correctly', async () => {
