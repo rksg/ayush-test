@@ -200,7 +200,7 @@ describe('RadioTab', () => {
     await userEvent.click(transmitSelect)
     await userEvent.click((await tab.findAllByTitle('Full'))[0])
 
-/*
+    /*
     // radio 5g settings
     const tab5gEl = await section.findByTestId('radio-5g-tab')
     const tab5g = within(tab5gEl)
@@ -219,7 +219,7 @@ describe('RadioTab', () => {
     const transmitSelect5g = await tab5g.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect5g)
     await userEvent.click((await tab5g.findAllByTitle('Auto'))[0])
-*/
+    */
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })
