@@ -3,6 +3,15 @@ import {
   PassphraseFormatEnum
 } from '../../constants'
 
+export interface NewTableResult<T> {
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+  sort: string[];
+  content: T[]
+}
+
 export interface CreateDpskFormFields {
   name: string;
   passphraseLength: number;
@@ -20,11 +29,13 @@ export interface DpskSaveData {
   expirationDate?: string; // If 'expirationType' is SPECIFIED_DATE then this field is the related date in format YYYY-MM-DD.
   networkIds?: string[]
 }
-export interface DpskList {
-  totalElements: number;
-  totalPages: number;
-  page: number;
-  size: number;
-  sort: string[];
-  content: DpskSaveData[]
+export interface DpskPassphrase {
+  id: string;
+  passphrase: string;
+  username?: string;
+  vlanId?: string;
+  mac?: string;
+  numberOfDevices?: number;
+  createdDate: string;
+  expirationDate?: string;
 }

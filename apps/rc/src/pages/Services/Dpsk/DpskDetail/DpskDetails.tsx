@@ -4,15 +4,14 @@ import { Path, useNavigate, useParams } from 'react-router-dom'
 import { Button, DisabledButton, PageHeader, Tabs } from '@acx-ui/components'
 import { ClockOutlined }                            from '@acx-ui/icons'
 import { useGetDpskQuery }                          from '@acx-ui/rc/services'
-import { ServiceType }                              from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                from '@acx-ui/react-router-dom'
-
 import {
+  ServiceType,
   DpskDetailsTabKey,
   getServiceDetailsLink,
   getServiceListRoutePath,
   ServiceOperation
-} from '../../serviceRouteUtils'
+} from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { dpskTabNameMapping }   from './contentsMap'
 import DpskOverview             from './DpskOverview'

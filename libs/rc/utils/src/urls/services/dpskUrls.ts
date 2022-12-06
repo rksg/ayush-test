@@ -20,5 +20,21 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   deleteDpsk: {
     method: 'delete',
     url: '/dpskServices/:serviceId'
+  },
+  getPassphraseList: {
+    method: 'get',
+    url: '/dpskServices/:serviceId/passphrases'
+  },
+  addPassphrase: {
+    method: 'post',
+    url: '/dpskServices/:serviceId/passphrases'
+  },
+  uploadPassphrases: {
+    method: 'post',
+    url: '/dpskServices/:serviceId/passphrases/upload'
+  },
+  deletePassphrase: {
+    method: 'delete',
+    url: '/dpskServices/:serviceId/passphrases/:passphraseId'
   }
 }

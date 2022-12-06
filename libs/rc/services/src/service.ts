@@ -28,7 +28,8 @@ import {
   PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
-  DpskList
+  NewTableResult,
+  DpskPassphrase
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -47,7 +48,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service'],
+  tagTypes: ['Service', 'DpskPassphrase'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -359,7 +360,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    dpskList: build.query<DpskList, RequestPayload>({
+    dpskList: build.query<NewTableResult<DpskSaveData>, RequestPayload>({
       query: () => {
         const getDpskListReq = createHttpRequest(DpskUrls.getDpskList)
         return {
@@ -377,6 +378,22 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    dpskPassphraseList: build.query<TableResult<DpskPassphrase>, RequestPayload>({
+      query: ({ params }) => {
+        const getDpskPassphraseListReq = createHttpRequest(DpskUrls.getPassphraseList, params)
+        return {
+          ...getDpskPassphraseListReq
+        }
+      },
+      transformResponse (result: NewTableResult<DpskPassphrase>) {
+        return {
+          data: result.content,
+          page: result.page,
+          totalCount: result.totalElements
+        }
+      },
+      providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
@@ -427,6 +444,7 @@ export const {
   useUpdateDpskMutation,
   useGetDpskQuery,
   useLazyDpskListQuery,
+  useDpskPassphraseListQuery,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,

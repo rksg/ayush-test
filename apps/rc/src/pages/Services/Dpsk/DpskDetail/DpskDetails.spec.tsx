@@ -1,16 +1,22 @@
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { CommonUrlsInfo, DpskUrls, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
+import {
+  CommonUrlsInfo,
+  DpskUrls,
+  ServiceType,
+  DpskDetailsTabKey,
+  getServiceDetailsLink,
+  getServiceRoutePath,
+  ServiceOperation
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
   renderHook,
   screen
 } from '@acx-ui/test-utils'
-
-import { DpskDetailsTabKey, getServiceDetailsLink, getServiceRoutePath, ServiceOperation } from '../../serviceRouteUtils'
 
 import { mockedNetworks, mockedDpsk } from './__tests__/fixtures'
 import { dpskTabNameMapping }         from './contentsMap'
