@@ -58,7 +58,7 @@ export default function Dashboard () {
     <>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
+      <ContentSwitcher tabDetails={tabDetails} size='large' />
     </>
   )
 }

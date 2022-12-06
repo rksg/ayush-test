@@ -16,7 +16,8 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { EPDG } from './services'
+import { ApModel } from './ap'
+import { EPDG }    from './services'
 
 export * from './ap'
 export * from './venue'
@@ -379,4 +380,24 @@ export interface catchErrorResponse {
     requestId: string
   },
   status: number
+}
+
+export enum ClientStatusEnum {
+  HISTORICAL = 'historical',
+  CONNECTED = 'connected'
+}
+
+export interface Capabilities {
+	apModels: ApModel[]
+	version: string
+}
+
+export interface EventMeta {
+  apName: string,
+  id: string,
+  isApExists: boolean,
+  isClientExists: boolean,
+  isVenueExists: boolean,
+  networkId: string,
+  venueName: string,
 }
