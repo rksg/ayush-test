@@ -25,6 +25,7 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
+import { ClientProperties }     from './ClientProperties'
 import * as UI                  from './styledComponents'
 
 const clientPayload = {
@@ -152,7 +153,7 @@ export function ClientOverviewTab () {
       </UI.CardWrapper>
     </Col>
     <Col span={6}>
-      {$t({ defaultMessage: 'ClientProperties' })}
+      <ClientProperties />
     </Col>
   </Row>
 }

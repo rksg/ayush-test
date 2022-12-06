@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { apApi, venueApi, networkApi, clientApi } from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }           from '@acx-ui/rc/utils'
-import { Provider, store }                        from '@acx-ui/store'
+import { apApi, venueApi, networkApi, clientApi }       from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -46,7 +46,7 @@ describe('ClientOverviewTab', () => {
     store.dispatch(networkApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getClientDetails.url,
+      rest.get(ClientUrlsInfo.getClientDetails.url,
         (_, res, ctx) => res(ctx.json(clientList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
@@ -73,7 +73,7 @@ describe('ClientOverviewTab', () => {
       route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Current Status')).toBeVisible()
     expect(await screen.findByText('Connected')).toBeVisible()
     await checkDataVisible(asFragment)
@@ -96,7 +96,7 @@ describe('ClientOverviewTab', () => {
     const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Current Status')).toBeVisible()
     expect(await screen.findByText('Disconnected')).toBeVisible()
     await checkDataVisible(asFragment)
@@ -105,14 +105,14 @@ describe('ClientOverviewTab', () => {
   it('should render correctly when search parameters is disappeared', async () => {
     jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('')
     mockServer.use(
-      rest.get(CommonUrlsInfo.getClientDetails.url,
+      rest.get(ClientUrlsInfo.getClientDetails.url,
         (_, res, ctx) => res(ctx.status(404), ctx.json({}))
       )
     )
     const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Current Status')).toBeVisible()
     expect(await screen.findByText('Disconnected')).toBeVisible()
     await checkDataVisible(asFragment)

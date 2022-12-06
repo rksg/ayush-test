@@ -5,14 +5,17 @@ import {
   ClientList,
   ClientListMeta,
   ClientStatistic,
+  ClientUrlsInfo,
   CommonUrlsInfo,
   createHttpRequest,
+  DpskPassphrase,
   EventMeta,
   getClientHealthClass,
   Guest,
   RequestPayload,
   TableResult,
-  transformByte
+  transformByte,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { convertEpochToRelativeTime, formatter } from '@acx-ui/utils'
 
@@ -56,7 +59,7 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     getClientDetails: build.query<Client, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getClientDetails, params)
+        const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params)
         return {
           ...req
         }
@@ -115,8 +118,16 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -149,11 +160,13 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   }
 }
 export const {
-  useGetClientListQuery,
   useGetClientDetailsQuery,
   useLazyGetClientDetailsQuery,
+  useGetDpskPassphraseByQueryQuery,
+  useLazyGetDpskPassphraseByQueryQuery,
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
+  useGetClientListQuery,
   useGetHistoricalStatisticsReportsQuery,
   useLazyGetHistoricalStatisticsReportsQuery,
   useGetGuestsListQuery
