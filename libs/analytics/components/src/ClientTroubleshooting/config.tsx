@@ -1,9 +1,18 @@
-import { defineMessage } from 'react-intl'
+import { defineMessage, IntlShape } from 'react-intl'
 
-import { categoryOptions } from '@acx-ui/analytics/utils'
+import {
+  categoryOptions,
+  mapCodeToFailureText,
+  clientEventDescription
+} from '@acx-ui/analytics/utils'
+import { formatter } from '@acx-ui/utils'
+
 
 import { ConnectionEvent } from './services'
 
+export const SUCCESS = 'success'
+export const SLOW = 'slow'
+export const DISCONNECT = 'disconnect'
 export const INFO_UPDATED = 'info-updated'
 export const JOIN = 'join'
 export const ROAMED = 'roamed'
@@ -49,49 +58,78 @@ export const spuriousEvents = [
   EVENT_STATES.SPURIOUS_INFO_UPDATED
 ]
 
+export type DisplayEvent = {
+  start: number,
+  end: number,
+  code: string,
+  apName: string,
+  mac: string,
+  radio: string,
+  state: string,
+  event: string,
+  category: string
+}
+export const eventColorByCategory = {
+  [DISCONNECT]: '--acx-neutrals-50',
+  [SUCCESS]: '--acx-semantics-green-50',
+  [FAILURE]: '--acx-semantics-red-50',
+  [SLOW]: '--acx-semantics-yellow-50'
+}
 export const categorizeEvent = (name: string, ttc: number) => {
   const successEvents = [INFO_UPDATED, JOIN, ROAMED].map(
     key => filterEventMap[key as keyof typeof filterEventMap]
   )
-  if (name === 'EVENT_CLIENT_DISCONNECT') return 'disconnect'
-  if (!successEvents.includes(name)) return 'failure'
-  if (ttc !== null && ttc >= 4000) return 'slow'
-  return 'success'
+  if (name === 'EVENT_CLIENT_DISCONNECT') return DISCONNECT
+  if (!successEvents.includes(name)) return FAILURE
+  if (ttc !== null && ttc >= 4000) return SLOW
+  return SUCCESS
 }
 // common utility for history and connection events chart
-export const transformEvents = (events: ConnectionEvent[], selectedEvents: string[]) => {
-  return events.reduce((acc, data, index) => {
-    const { event, state, timestamp, mac, ttc, radio, code, failedMsgId } = data
-    if (code === 'eap' && EAPOLMessageIds.includes(failedMsgId)) {
-      data = { ...data,code: 'eapol' }
-    }
+export const transformEvents = (
+  events: ConnectionEvent[], selectedEventTypes: string[], selectedRadios: string[]
+) => events.reduce((acc, data, index) => {
+  const { event, state, timestamp, mac, ttc, radio, code, failedMsgId } = data
+  if (code === 'eap' && EAPOLMessageIds.includes(failedMsgId)) {
+    data = { ...data, code: 'eapol' }
+  }
 
-    const category = categorizeEvent(event, ttc)
-    const eventType = category === 'failure' ? filterEventMap[FAILURE] : event
+  const category = categorizeEvent(event, ttc)
+  const eventType = category === 'failure' ? filterEventMap[FAILURE] : event
 
-    const selEventsFilterMap = selectedEvents.map(
-      (e) => filterEventMap[e as keyof typeof filterEventMap]
-    )
-    const time = +new Date(timestamp)
+  const filterEventTypes = selectedEventTypes.map(
+    (e) => filterEventMap[e as keyof typeof filterEventMap]
+  )
+  const filterRadios = selectedRadios.map(e => filterEventMap[e as keyof typeof filterEventMap])
+  const time = +new Date(timestamp)
 
-    const skip = eventsToHide.includes(state) || selectedEvents.length
-      ? !selEventsFilterMap.includes(eventType) || !selEventsFilterMap.includes(radio)
-      : false
+  let skip =
+    eventsToHide.includes(state) ||
+    (filterEventTypes.length && !filterEventTypes.includes(eventType)) ||
+    (filterRadios.length && !filterRadios.includes(radio))
 
-    if (skip) return acc
+  if (skip) return acc
 
-    acc.push({
-      ...data,
-      type: event === 'EVENT_CLIENT_ROAMING' ? TYPES.ROAMING : TYPES.CONNECTION_EVENTS,
-      key: time + mac + eventType + index,
-      start: time,
-      end: time,
-      category
-    })
-    return acc
-  }, [] as object[])
+  acc.push({
+    ...data,
+    type: event === 'EVENT_CLIENT_ROAMING' ? TYPES.ROAMING : TYPES.CONNECTION_EVENTS,
+    key: time + mac + eventType + index,
+    start: time,
+    end: time,
+    category
+  })
+  return acc
+}, [] as object[]
+)
+
+export const formatEventDesc = (evtObj: DisplayEvent, intl: IntlShape) : string => {
+  const { code, apName, mac, radio, state, event } = evtObj
+  const ap = [apName, mac ? `(${mac})` : ''].filter(Boolean).join(' ')
+  return [
+    code ? `${mapCodeToFailureText(code, intl)}:` : '',
+    `${intl.$t(clientEventDescription(event,state))} @`,
+    `${ap} ${formatter('radioFormat')(radio)}`
+  ].filter(Boolean).join(' ')
 }
-
 export const ClientTroubleShootingConfig = {
   selection: [
     {

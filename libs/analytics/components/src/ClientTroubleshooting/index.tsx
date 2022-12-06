@@ -28,7 +28,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const results = useClientInfoQuery({ startDate, endDate, range, clientMac })
   const filters = read()
   return (
-    <Row gutter={[16, 16]}>
+    <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>
         <Row gutter={[16, 16]}>
           <Col span={historyContentToggle ? 12 : 10} />

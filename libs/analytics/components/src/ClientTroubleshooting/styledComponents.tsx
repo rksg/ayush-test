@@ -18,17 +18,18 @@ const eventIconStyle = css`
 export const History = styled.div`
   border-radius: 4px;
   border: 1px solid var(--acx-neutrals-25);
-  min-height: 480px;
+  flex:1;
 `
 export const HistoryHeader = styled.div`
-  padding : 12px 0px 12px 16px;
+  padding : 12px 0 12px 16px;
   display : flex
 `
 export const HistoryContent = styled.div`
   .ant-list-item {
     border-bottom: none;
+    padding: 0 0 8px 0;
   }
-  padding : 12px 16px 12px 16px;  
+  padding : 0 16px 0px 16px;  
   .ant-list-item-meta-title {
     color: var(--acx-neutrals-70);
     font-size: 10px;
@@ -42,7 +43,8 @@ export const HistoryContent = styled.div`
   }
   .ant-list-item-meta-avatar {
     margin-right: 2px;
-}
+  }
+  overflow: auto;
 `
 export const HistoryContentTitle = styled.span`
   font-weight: 600;

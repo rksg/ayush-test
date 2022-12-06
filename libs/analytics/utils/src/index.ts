@@ -14,7 +14,7 @@ export {
   clientEventDescription,
   mapCodeToReason,
   mapCodeToAttempt,
-  failureCodeTextMap
+  mapCodeToFailureText
 } from './reasonCodeMap'
 export * from './timeseries'
 export * from './sorters'
