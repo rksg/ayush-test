@@ -48,6 +48,9 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   return next(action)
 }
 
+const isDev = process.env['NODE_ENV'] === 'development'
+const isProd = process.env['NODE_ENV'] === 'production'
+
 export const store = configureStore({
   reducer: {
     [networkApi.reducerPath]: networkApi.reducer,
@@ -65,12 +68,11 @@ export const store = configureStore({
   },
 
   middleware: (getDefaultMiddleware) => {
-    const isDev = process.env['NODE_ENV'] === 'development'
     return getDefaultMiddleware({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
-      ...(isDev ? [] : [errorMiddleware]),
+      ...(isProd ? [errorMiddleware] : []),
       networkApi.middleware,
       venueApi.middleware,
       eventAlarmApi.middleware,
@@ -86,7 +88,7 @@ export const store = configureStore({
     ])
   },
 
-  devTools: process.env['NODE_ENV'] !== 'production'
+  devTools: !isDev
 })
 
 export type AppState = ReturnType<typeof store.getState>
