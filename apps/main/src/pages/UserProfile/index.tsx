@@ -28,7 +28,7 @@ import {
 
 import {
   RecentLogin
-} from '../RecentLogin'
+} from './RecentLogin'
 
 interface fromLoc {
   from: string
@@ -80,15 +80,16 @@ export function UserProfile () {
   const EnvelopClosedSolidIcon = styled(EnvelopClosedSolid)`
   width: 16px;
   height: 16px;
+  margin-right: 4px;
 `
   const UserCircle = styled.div`
   text-align: center;
   width: 100px;
   height: 100px;
   line-height: 100px;
-  font-size: 36px;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
+  font-size: 32px;//var(--acx-headline-0-font-size);
+  font-family: var(--acx-accent-brand-font);
+  font-weight: 700;//var(--acx-headline-0-font-weight);
   color: #fff;
   background: var(--acx-neutrals-40);
   border-radius: 50px;
@@ -119,9 +120,7 @@ export function UserProfile () {
     return (
       <Row>
         <Col>
-          <UserCircle
-            style={{ width: '100px' }}
-          >{userInitial}</UserCircle>
+          <UserCircle>{userInitial}</UserCircle>
         </Col>
         <Col style={{ margin: '15px' }}>
           <Subtitle style={{ marginBottom: '0px' }} level={2}>{ userName }</Subtitle>

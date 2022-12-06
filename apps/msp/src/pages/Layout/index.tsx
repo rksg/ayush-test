@@ -12,11 +12,10 @@ import {
   WorldSolid,
   ArrowExpand,
   AccountCircleSolid,
-  Logout,
   NotificationSolid,
   QuestionMarkCircleSolid
 } from '@acx-ui/icons'
-import { Outlet, TenantLink, MspTenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 
@@ -29,27 +28,6 @@ function Layout () {
       { key: 'US', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'US' })}</TenantLink> },
       { key: 'EU', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'EU' })}</TenantLink> },
       { key: 'Asia', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'ASIA' })}</TenantLink> }
-    ]}
-  />
-  const location = useLocation()
-  const userMenu = <Menu
-    items={[
-      { key: 'user-profile',
-        label: <MspTenantLink
-          state={{ from: location.pathname }}
-          to='/userprofile/'>{$t({ defaultMessage: 'User Profile' })}
-        </MspTenantLink>
-      },
-      { key: 'change-password',
-        disabled: true,
-        label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Change Password' })}</TenantLink>
-      },
-      { type: 'divider' },
-      { key: 'logout',
-        disabled: true,
-        icon: <Logout/>,
-        label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Log out' })}</TenantLink>
-      }
     ]}
   />
 
@@ -70,9 +48,7 @@ function Layout () {
         <LayoutUI.Divider />
         <LayoutUI.ButtonSolid icon={<NotificationSolid />} />
         <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
-        <Dropdown overlay={userMenu}>{() =>
-          <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
-        }</Dropdown>
+        <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
       </>}
     />
   )

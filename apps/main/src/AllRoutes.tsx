@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { UserProfile }                       from '@acx-ui/msp/components'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import AnalyticsBase    from './pages/Analytics'
@@ -11,6 +10,7 @@ import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
+import { UserProfile }  from './pages/UserProfile'
 import UsersBase        from './pages/Users'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'

@@ -10,7 +10,6 @@ import {
 import { SplitProvider }    from '@acx-ui/feature-toggle'
 import {
   AccountCircleSolid,
-  Logout,
   QuestionMarkCircleSolid
 }                          from '@acx-ui/icons'
 import { AlarmsHeaderButton }              from '@acx-ui/main/components'
@@ -38,7 +37,6 @@ function Layout () {
       { type: 'divider' },
       { key: 'logout',
         disabled: true,
-        icon: <Logout/>,
         label: <TenantLink to='TODO'>{useIntl().$t({ defaultMessage: 'Log out' })}</TenantLink>
       }
     ]}

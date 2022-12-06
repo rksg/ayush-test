@@ -144,7 +144,6 @@ export { ReactComponent as LoadingSolid } from './icons/LoadingSolid.svg'
 export { ReactComponent as LocationOutlined } from './icons/LocationOutlined.svg'
 export { ReactComponent as LocationSolid } from './icons/LocationSolid.svg'
 export { ReactComponent as Logo } from './icons/Logo.svg'
-export { ReactComponent as Logout } from './icons/Logout.svg'
 export { ReactComponent as MagnifyingGlassMinusOutlined }
   from './icons/MagnifyingGlassMinusOutlined.svg'
 export { ReactComponent as MagnifyingGlassMinusSolid } from './icons/MagnifyingGlassMinusSolid.svg'

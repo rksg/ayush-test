@@ -1,5 +1,4 @@
 import { ConfigProvider }                    from '@acx-ui/components'
-import { UserProfile }                       from '@acx-ui/msp/components'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
@@ -26,7 +25,6 @@ export default function MspRoutes () {
       <Route path='deviceinventory' element={<DeviceInventory />} />
       <Route path='msplicenses' element={<LicensesTab />} />
       <Route path='portalSetting' element={<div>Portal Setting</div>} />
-      <Route path='userprofile' element={<UserProfile />} />
     </Route>
   )
   return (
