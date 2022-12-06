@@ -26,6 +26,7 @@ export * from './msp'
 export * from './edge'
 export * from './policy'
 export * from './portalService'
+export * from './radiusClientConfig'
 
 export interface CommonResult {
   requestId: string
