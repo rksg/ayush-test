@@ -78,7 +78,7 @@ describe('Guest Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    fireEvent.click(await screen.findByText('01/01/2000 00:00'))
+    fireEvent.click(await screen.findByText('20/11/2022 08:57'))
     await screen.findByText('Guest Details')
   })
 
