@@ -35,8 +35,8 @@ const clientPayload = {
   fields: [
     'hostname', 'osType', 'healthCheckStatus', 'clientMac', 'ipAddress', 'Username',
     'serialNumber', 'venueId', 'switchSerialNumber', 'ssid', 'wifiCallingClient',
-    'sessStartTime', 'clientAnalytics', 'clientVlan', 'deviceTypeStr', 'modelName', 'totalTraffic',
-    'trafficToClient', 'trafficFromClient', 'receiveSignalStrength', 'rssi',
+    'sessStartTime', 'clientAnalytics', 'clientVlan', 'deviceTypeStr', 'modelName',
+    'totalTraffic', 'trafficToClient', 'trafficFromClient', 'receiveSignalStrength', 'rssi',
     'radio.mode', 'cpeMac', 'authmethod', 'status', 'encryptMethod', 'packetsToClient',
     'packetsFromClient', 'packetsDropFrom', 'radio.channel', 'noiseFloor', 'cog', 'venueName',
     'apName', 'clientVlan', 'networkId', 'switchName', 'healthStatusReason', 'lastUpdateTime']
@@ -153,7 +153,10 @@ export function ClientOverviewTab () {
       </UI.CardWrapper>
     </Col>
     <Col span={6}>
-      <ClientProperties />
+      <ClientProperties
+        clientStatus={clientStatus}
+        clientDetails={clientDetails}
+      />
     </Col>
   </Row>
 }

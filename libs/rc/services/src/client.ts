@@ -32,14 +32,14 @@ export const clientApi = baseClientApi.injectEndpoints({
     getClientList: build.query<TableResult<ClientList>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const clientListInfo = {
-          ...createHttpRequest(CommonUrlsInfo.getClientList, arg.params),
+          ...createHttpRequest(ClientUrlsInfo.getClientList, arg.params),
           body: arg.payload
         }
         const clientListQuery = await fetchWithBQ(clientListInfo)
         const clientList = clientListQuery.data as TableResult<ClientList>
 
         const clientListMetaInfo = {
-          ...createHttpRequest(CommonUrlsInfo.getClientMeta, arg.params),
+          ...createHttpRequest(ClientUrlsInfo.getClientMeta, arg.params),
           body: {
             fields: ['switchSerialNumber', 'venueName', 'apName', 'switchName'],
             filters: {

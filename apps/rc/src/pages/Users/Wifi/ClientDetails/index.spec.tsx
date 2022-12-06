@@ -27,7 +27,7 @@ describe('ApDetails', () => {
   mockServer.use(
     rest.get(ClientUrlsInfo.getClientDetails.url,
       (_, res, ctx) => res(ctx.json(clientList[0]))),
-    rest.get(WifiUrlsInfo.getAp.url,
+    rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
       (_, res, ctx) => res(ctx.json(clientApList[0]))),
     rest.get(WifiUrlsInfo.getNetwork.url,
       (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
@@ -54,7 +54,11 @@ describe('ApDetails', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(screen.getAllByRole('tab')).toHaveLength(4)
-    expect(asFragment()).toMatchSnapshot()
+
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
+    expect(fragment).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('tab', { name: 'Troubleshooting' }))
   })
 

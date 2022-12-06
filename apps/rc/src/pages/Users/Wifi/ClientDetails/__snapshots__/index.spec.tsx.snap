@@ -1770,7 +1770,7 @@ exports[`ApDetails should render correctly 1`] = `
                       <h2
                         class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                       >
-                        12 d 1 h
+                        12 d 4 h
                       </h2>
                     </div>
                   </div>
@@ -1844,7 +1844,6 @@ exports[`ApDetails should render correctly 1`] = `
                       class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
                     >
                       <div
-                        _echarts_instance_="ec_1670305573377"
                         class="echarts-for-react "
                         size-sensor-id="1"
                         style="height: 160px; position: relative;"
