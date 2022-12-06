@@ -1,14 +1,18 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                    from '@acx-ui/store'
+import {
+  CommonUrlsInfo,
+  ServiceType,
+  DpskDetailsTabKey,
+  getServiceRoutePath,
+  ServiceOperation
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
-
-import { DpskDetailsTabKey, getServiceRoutePath, ServiceOperation } from '../../serviceRouteUtils'
 
 import { mockedNetworks } from './__tests__/fixtures'
 import DpskInstancesTable from './DpskInstancesTable'
