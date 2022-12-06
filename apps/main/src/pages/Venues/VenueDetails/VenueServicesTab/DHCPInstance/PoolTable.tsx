@@ -118,10 +118,10 @@ export default function VenuePoolTable (){
           checked={row.activated}
           onChange={(checked)=>{
             const activeMsg =
-            $t({ defaultMessage: 'Are you sure you want to active this DHCP Pool?' })
+            $t({ defaultMessage: 'Are you sure you want to activate this DHCP Pool?' })
             const deactivateMsg =
             $t({ defaultMessage: 'Are you sure you want to deactivate this DHCP Pool?' })
-            const activeTitle = $t({ defaultMessage: 'Active DHCP Pool' })
+            const activeTitle = $t({ defaultMessage: 'Activate DHCP Pool' })
             const deactivateTitle = $t({ defaultMessage: 'Deactivate DHCP Pool' })
             showActionModal({
               type: 'confirm',
